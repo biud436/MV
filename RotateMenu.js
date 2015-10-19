@@ -1,7 +1,7 @@
 /**
  * @author biud436
  * @date 2015.10.17
- * @version 1.0
+ * @version 1.1
  */
  
 var oRSUtils = function() { 
@@ -80,6 +80,12 @@ Array.prototype.min = function() {
         this._originPosition = [this._utils.X, this._utils.Y];
         this._r = 3;
         this._angle = 0.0;
+		
+		this._firstPos = {x: 0, y: 0};
+		this._lastPos = {x: 0, y: 0};
+		this._x_velocity = 0;
+		this._y_velocity = 0;
+		this._touch_velocity = false
     
         this.makeSprite();
     };
@@ -91,10 +97,37 @@ Array.prototype.min = function() {
             this.updateSprite() ; 
         }
         
+		if(TouchInput.isMoved() && !this._touch_velocity) {
+		
+			this._firstPos = 
+			{
+				x: TouchInput.x, 
+				y: TouchInput.y
+			};
+			
+			this._touch_velocity = true;
+		}	
+		else	if(TouchInput.isReleased() && this._touch_velocity) {
+			this._lastPos = 
+			{
+				x: TouchInput.x, 
+				y: TouchInput.y
+			};
+			
+			this._x_velocity = this._lastPos.x - this._firstPos.y;
+			this._y_velocity = this._lastPos.x - this._firstPos.y;	
+			
+			this._x_velocity < 0? this.left(true) : this.right(true);
+			this._y_velocity < 0? this.left(true) : this.right(true);
+			
+			this._touch_velocity = false;
+			
+		}
+		
         this.left(Input.isTriggered("left"));
-        this.right(Input.isTriggered("right"));
+        this.right(Input.isTriggered("right") );
         
-        if(Input.isTriggered("ok")) { 
+        if( Input.isTriggered("ok") || TouchInput.isCancelled() ) { 
             this.selectMenu(); 
         }
     };
