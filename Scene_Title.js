@@ -1,8 +1,9 @@
 /**
+ * @name 원형 회전 타이틀 메뉴
  * @author biud436
  * @since 2015.10.17
  * @version 1.2
- *
+ * @description .
  */
 
 var oRSUtils = function() { 
