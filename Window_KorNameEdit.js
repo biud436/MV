@@ -1,7 +1,7 @@
 /**
  * @name 한글 이름 입력 처리
  * @author biud436
- * @date 2015.10.19
+ * @since 2015.10.19
  * @version 1.0
  */
  
