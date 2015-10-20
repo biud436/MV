@@ -20,7 +20,7 @@
       return this[idx];
     }
   });
-  
+  t
   Array.prototype.delete = function(deleteItem) {
     var tmp = this.filter(
       function(findValue) {

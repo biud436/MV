@@ -2,7 +2,7 @@
  * @name 한글 이름 입력 처리
  * @author biud436
  * @since 2015.10.19
- * @version 1.0
+ * @version 1.1
  * @description .
  */
  
@@ -27,6 +27,10 @@ function TextBox() {
     document.body.appendChild(this._textBox);  
   };
   
+  TextBox.prototype.setEvent = function(func) {
+    this._textBox.onchange = func;
+  };  	
+	
   TextBox.prototype.terminateTextBox = function() {
     document.body.removeChild(this._textBox);
   };  
@@ -106,6 +110,7 @@ function TextBox() {
     this._actor = $gameActors.actor(this._actorId);
     this.createEditWindow();
     this.createTextBox();
+		this._textBox.setEvent( this.onInputOk.bind(this) );
   };  
   
   Scene_Name.prototype.createTextBox =  function() {
@@ -114,7 +119,7 @@ function TextBox() {
 
   Scene_Name.prototype.update = function() {
     this._textBox.getFocus();
-    
+
     if (Input.isRepeated('ok') || TouchInput.isRepeated()) {
       this.onInputOk();
     }
