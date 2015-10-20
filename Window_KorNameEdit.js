@@ -3,7 +3,7 @@
  * @author biud436
  * @since 2015.10.19
  * @version 1.1
- * @description .
+ * @description ..
  */
  
 function TextBox() {
@@ -110,7 +110,7 @@ function TextBox() {
     this._actor = $gameActors.actor(this._actorId);
     this.createEditWindow();
     this.createTextBox();
-		this._textBox.setEvent( this.onInputOk.bind(this) );
+    this._textBox.setEvent( this.onInputOk.bind(this) );
   };  
   
   Scene_Name.prototype.createTextBox =  function() {
