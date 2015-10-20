@@ -1,7 +1,7 @@
 /**
  * @name 이벤트 생성 플러그인
  * @author biud436
- * @date 2015.10.16
+ * @since 2015.10.16
  * @version 1.0
  *
  */
