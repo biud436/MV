@@ -30,14 +30,6 @@
     return tmp;
   };
   
-  Array.prototype.compact = function() {
-    var tmp = this.clone();
-    tmp.filter(function(val) { 
-      return val != null; 
-    });
-    return tmp;
-  };
-  
   Utils.instance_create = function(x, y, charName, charIdx) {
     var oEvent = $gameMap._events.last;
     var eventID = oEvent.eventId() + 1;
