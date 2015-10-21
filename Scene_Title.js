@@ -20,7 +20,9 @@
      , _menuSize = 3
      , _maxAngle =  360.0 / _menuSize
      , _angleSpeed = 120.0
-     , _pi = Math.PI;
+     , _pi = Math.PI
+     , _outLineColor = '#6799FF'
+     , _tintColor = 0xD9E5FF;
   
   /*** 각도 함수 */
   var RS = { 
@@ -141,8 +143,10 @@
     l.forEach( function(i) { 
       if(l.indexOf(i) === 0) {
           i.scale.set(1.3,1.3);
+          i.tint = _tintColor;
       } else {
           i.scale.set(1.0,1.0);
+          i.tint = 0xFFFFFF;
       }
     }.bind(this));
     
@@ -245,12 +249,13 @@
   Scene_Title.prototype.makeText = function(str) {
     var text = new Sprite_Button()
         , rect = null;
-        
+          
     text.bitmap = new Bitmap(100, 48);
     rect = text.bitmap.rect;
+    text.bitmap.outlineWidth = 3;
+    text.bitmap.outlineColor = _outLineColor;
     text.bitmap.drawText(String(str), rect.x, rect.y, rect.width, rect.height);
     text.setClickHandler(this.selectMenu.bind(this));
-    
     this.addChild(text);
     
     return text;
