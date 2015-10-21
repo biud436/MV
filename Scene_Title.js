@@ -67,8 +67,6 @@
   Scene_Title.prototype.initTouchParameter = function() {
     this._firstPos = 0;
     this._lastPos = 0;
-    this._x_velocity = 0;
-    this._y_velocity = 0;
     this._touch_velocity = false;  
   };
    
