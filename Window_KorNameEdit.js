@@ -2,7 +2,7 @@
  * @name 한글 이름 입력 처리
  * @author biud436
  * @since 2015.10.19
- * @version 1.1
+ * @version 1.2
  * @description ..
  */
  
@@ -118,12 +118,8 @@ function TextBox() {
   }
 
   Scene_Name.prototype.update = function() {
+  
     this._textBox.getFocus();
-
-    if (Input.isRepeated('ok') || TouchInput.isRepeated()) {
-      this.onInputOk();
-    }
-    
     this._textBox.update();
     Scene_MenuBase.prototype.update.call(this);
   }
