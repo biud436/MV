@@ -1,16 +1,24 @@
-/**
- * @name 한글 이름 입력 처리
- * @author biud436
+﻿/*:
+ * @plugindesc 한글 이름 입력 플러그인
+ * @author 러닝은빛(biud436)
  * @since 2015.10.19
  * @version 1.2
- * @description ..
+ *
+ * @param windowWidth
+ * @desc 윈도우의 폭입니다
+ * @default 580
+ * 
+ * @help 한글 이름 입력 플러그인입니다.
  */
- 
+
 function TextBox() {
   this.initialize.apply(this, arguments);
 };
 
 (function() {
+
+  var parameters = PluginManager.parameters('Window_KorNameEdit');
+  var __windowWidth = Number(parameters['windowWidth'] || 580);
   
   TextBox.prototype.initialize = function(_editWindow)  {
     this._editWindow = _editWindow;
@@ -84,7 +92,7 @@ function TextBox() {
   };
   
   Window_NameEdit.prototype.windowWidth = function () {
-    return 580;
+    return __windowWidth;
   };  
   
   Window_NameEdit.prototype.drawChar = function (index) {
