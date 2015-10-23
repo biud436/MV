@@ -78,7 +78,7 @@ function TextBox() {
   };
 
   TextBox.prototype.update = function() {      
-    if(this.getTextLength() < this._editWindow._maxLength) {
+    if(this.getTextLength() <= this._editWindow._maxLength) {
       this.refreshNameEdit();
     }
   };
