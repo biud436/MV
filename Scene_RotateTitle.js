@@ -226,20 +226,23 @@ var RS = RS || {};
     
     var i = this.menuIndex()
         , result = null;
-    
-    SoundManager.playOk();
-    
+        
     result = {
       1: function() { 
+            SoundManager.playOk();
             this.commandNewGame();
             this._isGameStarted = true;
         }
     , 2: function() {
           if(DataManager.isAnySavefileExists()) {
+            SoundManager.playOk();
             this.commandContinue();
+          } else {
+            SoundManager.playBuzzer();
           }
         }
     , 0: function() {
+          SoundManager.playOk();
           this.commandOptions();
         }
     }[i].call(this);
