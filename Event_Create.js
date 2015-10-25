@@ -1,36 +1,37 @@
-/**
- * @name 이벤트 생성 플러그인
+/*:
+ * @plugindesc 이벤트 생성 플러그인입니다.
  * @author biud436
  * @since 2015.10.16
  * @version 1.0
- * @description .
  */
-
- (function() {
  
-   Object.defineProperty(Array.prototype, "first", {
-    get: function() {
-      return this[0];
-    }
-  });
+var RS = RS || {}; 
+ 
+Object.defineProperty(Array.prototype, "first", {
+  get: function() {
+    return this[0];
+  }
+});
 
-  Object.defineProperty(Array.prototype, "last", {
-    get: function() {
-      var idx = this.length - 1;
-      return this[idx];
+Object.defineProperty(Array.prototype, "last", {
+  get: function() {
+    var idx = this.length - 1;
+    return this[idx];
+  }
+});
+
+Array.prototype.delete = function(deleteItem) {
+  var tmp = this.filter(
+    function(findValue) {
+      return findValue != deleteItem;
     }
-  });
-  t
-  Array.prototype.delete = function(deleteItem) {
-    var tmp = this.filter(
-      function(findValue) {
-        return findValue != deleteItem;
-      }
-    );
-    return tmp;
-  };
+  );
+  return tmp;
+};
   
-  Utils.instance_create = function(x, y, charName, charIdx) {
+(function() {
+  
+  RS.instance_create = function(x, y, charName, charIdx) {
     var oEvent = $gameMap._events.last;
     var eventID = oEvent.eventId() + 1;
     var eventName = "EV" + String(eventID / 100).replace(".","")
@@ -106,7 +107,7 @@
     return Utils.instance_copy(x, y, $gameMap.mapId, eventID);
   }
  
-  Utils.instance_copy = function(x, y, mapID, eventID ) {
+  RS.instance_copy = function(x, y, mapID, eventID ) {
     var _event = new Game_Event(mapID || $gameMap.mapId, eventID || 1);
     _event.setPosition(x || $gamePlayer._x, y || $gamePlayer._y + 1);
     _event.lock();
@@ -116,7 +117,7 @@
     return $gameMap._events.last;
   };
   
-  Utils.instance_destroy = function(_event) {
+  RS.instance_destroy = function(_event) {
     if(_event instanceof Game_Event)
     {
       $gameMap._events.forEach( function(event) {
