@@ -96,8 +96,8 @@ var RS = RS || {};
        , _outLineColor = String(parameters['텍스트 테두리 색상'] || '#6799FF')
        , _tintColor = parseInt(parameters['텍스트의 톤'] || 0xD9E5FF)
        , _gameStart = String(parameters['게임 시작'] || "Game Start")
-       , _gameContinue = String(parameters['게임 시작'] || "Game Continue")
-       , _gameOptions = String(parameters['게임 시작'] || "Game Options");
+       , _gameContinue = String(parameters['게임 계속'] || "Game Continue")
+       , _gameOptions = String(parameters['게임 옵션'] || "Game Options");
        
   Scene_Title.prototype.start = function() {
     _alias_start.call(this);
