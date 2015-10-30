@@ -156,9 +156,9 @@ Array.prototype.delete = function(deleteItem) {
     }
   };  
   
-  var _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  var rsa_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    _Game_Interpreter_pluginCommand.call(this, command, args);
+    rsa_Game_Interpreter_pluginCommand.call(this, command, args);
     if(command === "이벤트") {
     
       var item = (function() {
@@ -169,7 +169,7 @@ Array.prototype.delete = function(deleteItem) {
         return data;
       })();
                
-      switch(args[0]) {
+      switch (args[0]) {
       case '생성':
         RS.instanceCreate.apply(this, item);
         break;
