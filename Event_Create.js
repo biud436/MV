@@ -158,7 +158,7 @@ Array.prototype.delete = function(deleteItem) {
   
   var _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    _Game_Interpreter_pluginCommand.call(this);
+    _Game_Interpreter_pluginCommand.call(this, command, args);
     if(command === "이벤트") {
     
       var item = (function() {
