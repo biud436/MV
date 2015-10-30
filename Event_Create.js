@@ -104,7 +104,7 @@ Array.prototype.delete = function(deleteItem) {
       "x": x,
       "y": y
     });
-    return Utils.instance_copy(x, y, $gameMap.mapId, eventID);
+    return RS.instance_copy(x, y, $gameMap.mapId, eventID);
   }
  
   RS.instance_copy = function(x, y, mapID, eventID ) {
