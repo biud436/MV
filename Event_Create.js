@@ -158,29 +158,30 @@ Array.prototype.delete = function(deleteItem) {
   
   var _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      if(command === "이벤트") {
-      
-        var item = (function() {
-          var data = args.slice(1);
-          data.forEach(function(item,index) { 
-            data[index] = typeof(parseInt(item)) === 'number' ? parseInt(item) : String(item); 
-          }.bind(this));
-          return data;
-        })();
-                 
-        switch(args[0]) {
-        case '생성':
-          RS.instanceCreate.apply(this, item);
-          break;
-        case '복제':
-          RS.instanceCopy.apply(this, item);
-          break;
-        case '삭제':
-          RS.instanceDestroy( this.character(item) );
-          break;
-        }
-        
+    _Game_Interpreter_pluginCommand.call(this);
+    if(command === "이벤트") {
+    
+      var item = (function() {
+        var data = args.slice(1);
+        data.forEach(function(item,index) { 
+          data[index] = typeof(parseInt(item)) === 'number' ? parseInt(item) : String(item); 
+        }.bind(this));
+        return data;
+      })();
+               
+      switch(args[0]) {
+      case '생성':
+        RS.instanceCreate.apply(this, item);
+        break;
+      case '복제':
+        RS.instanceCopy.apply(this, item);
+        break;
+      case '삭제':
+        RS.instanceDestroy( this.character(item) );
+        break;
       }
+      
+    }
   };
  
 })();
