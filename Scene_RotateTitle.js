@@ -43,11 +43,10 @@
  * @namespace RS
  */ 
 var RS = RS || {};  
-
 (function() {
 
   /*** 각도 함수 */
-  RS = { 
+  RS.Utils = { 
     convertToRadian : function(angle) {
       return (Math.PI / 180) * angle;
     },
@@ -160,7 +159,7 @@ var RS = RS || {};
   Scene_Title.prototype.isCheckDir = function(dir) {
   
     var isLeft = !this._rotateRight && this._rotateLeft
-        , radian = RS.convertToRadian(this._max)
+        , radian = RS.Utils.convertToRadian(this._max)
         , isRight = this._rotateRight && !this._rotateLeft
         , result = null;
     
@@ -176,10 +175,10 @@ var RS = RS || {};
       return false;
     }
     if(this.isCheckDir('left')) {
-      RS.wrapAngle(this._angle -= this.upAngle());
+      RS.Utils.wrapAngle(this._angle -= this.upAngle());
     }
     else if(this.isCheckDir('right')) {
-      RS.wrapAngle(this._angle += this.upAngle());
+      RS.Utils.wrapAngle(this._angle += this.upAngle());
     }
     this.moveMenu();
     this.updateScale();
@@ -254,7 +253,7 @@ var RS = RS || {};
       SoundManager.playCursor();
       this._rotateLeft = true;
       this._rotateRight = false;
-      RS.wrapMax(this._max -= _maxAngle);
+      RS.Utils.wrapMax(this._max -= _maxAngle);
     }
   };
 
@@ -263,7 +262,7 @@ var RS = RS || {};
       SoundManager.playCursor();
       this._rotateLeft = false;
       this._rotateRight = true;
-      RS.wrapMax(this._max +=_maxAngle);
+      RS.Utils.wrapMax(this._max +=_maxAngle);
     }
   };  
 
