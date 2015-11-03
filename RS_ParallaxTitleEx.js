@@ -7,7 +7,7 @@
  * @desc 원경 이미지
  * @default BlueSky
  *
- * @param Text Animation
+ * @param TextAnimation
  * @desc  Push, Split
  * @default Push
  *
@@ -130,9 +130,10 @@ var RS = RS || {};
    * 플러그인 매니저에서 변수값을 가져와 설정하는 부분
    * @private
    */
-  var parameters = PluginManager.parameters('Scene_TestTitle');
+  var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
   var parallaxImage = (parameters['parallaxImage'] || 'BlueSky');
-  var textType = String(parameters['Text Animation'] || "Push");
+  console.log("s : " + parameters['TextAnimation']);
+  var textType = parameters['TextAnimation'] || 'Push';
   var szExit = String(parameters['Exit'] || "게임 종료");
   var _x = null;
   var _y = null;
@@ -219,7 +220,7 @@ var RS = RS || {};
       
       // 텍스트 왜곡 처리
       this.scale.x =Math.sin(power);
-      this.scale.y = (textType === 'Push') ? Math.sin(power) : Math.cos(power);
+      this.scale.y = textType.contains("Push") ? Math.sin(power) : Math.cos(power);
       
       // 텍스트 회전 처리
       if(this.rotation <= Math.PI * 2) { 
