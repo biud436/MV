@@ -310,6 +310,7 @@ var RS = RS || {};
     text.bitmap = new Bitmap(100, 48);
     rect = text.bitmap.rect;
     text.bitmap.outlineWidth = 3;
+    text.bitmap.fontSize = 72;
     text.bitmap.outlineColor = _outLineColor;
     text.bitmap.drawText(String(str), rect.x, rect.y, rect.width, rect.height);
     text.setClickHandler(this.selectMenu.bind(this));
