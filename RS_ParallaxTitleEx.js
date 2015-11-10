@@ -10,10 +10,6 @@
  * @param TextAnimation
  * @desc  Push, Split
  * @default Push
- *
- * @param Exit
- * @desc 버튼명
- * @default 게임 종료
  * 
  * @param 간격
  * @desc 
@@ -133,7 +129,7 @@ var RS = RS || {};
   var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
   var parallaxImage = (parameters['parallaxImage'] || 'BlueSky');
   var textType = parameters['TextAnimation'] || 'Push';
-  var szExit = String(parameters['Exit'] || "게임 종료");
+  var szExit = String(parameters['게임 종료'] || "게임 종료");
   var _x = null;
   var _y = null;
   var _dist = Number(parameters['간격'] || 80);
