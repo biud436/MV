@@ -1,12 +1,18 @@
 /*:
  * EventNameDraw.js
  * 
+ * @version 1.2 
+ *
  * @plugindesc 이벤트 이름 표시하기
  * @author biud436
  *
  * @param textSize
  * @desc 텍스트 사이즈
  * @default 16
+ *
+ * @param Show Player Text
+ * @desc 플레이어 이름 표시 (true / false)
+ * @default true
  *
  * @help
  * 
@@ -144,6 +150,7 @@ function Sprite_PlayerName() {
   var parameters = PluginManager.parameters('EventNameDraw');
   var textSize = Number(parameters['textSize'] || 14 );
   var colorMatch = /@color\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/
+  var showPlayerText = String(parameters['Show Player Text'] || 'true');
   
   /**
    * @method drawName
@@ -160,7 +167,8 @@ function Sprite_PlayerName() {
       this.drawEventName(member);
       
     // Game_Player
-    } else if((member instanceof Game_Player)) {
+    } else if((member instanceof Game_Player) &&
+      showPlayerText === 'true') {
       this.drawPlayerName();
     }    
   };
