@@ -121,11 +121,7 @@ function TextBox() {
   TextBox.prototype.terminate =  function() {
     this.terminateTextBox();
   };
-
-})();
   
-(function () {
-
   Scene_Name.prototype.create = function () {
     Scene_MenuBase.prototype.create.call(this);
     this._actor = $gameActors.actor(this._actorId);
