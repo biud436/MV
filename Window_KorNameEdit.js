@@ -1,14 +1,14 @@
 ﻿/*:
+ * Window_KorNameEdit.js
  * @plugindesc 한글 이름 입력 플러그인
  * @author 러닝은빛(biud436)
  * @since 2015.10.19
- * @version 1.2
+ * @version 1.3
  *
  * @param windowWidth
  * @desc 윈도우의 폭입니다
  * @default 580
- * 
- * @help 한글 이름 입력 플러그인입니다.
+ *
  */
 
 function TextBox() {
@@ -31,6 +31,8 @@ function TextBox() {
     this._textBox.type = "text"
     this._textBox.id = "textBox"
     this._textBox.style.opacity = 0;
+    this._textBox.style.zIndex = 3;
+    Graphics._centerElement(this._textBox);
     this._textBox.onkeydown = this.onKeyDown.bind(this);
     document.body.appendChild(this._textBox);  
   };
@@ -54,6 +56,10 @@ function TextBox() {
       }
       break;  
     case 13:
+      if(this.getTextLength() <= 0) {
+        e.preventDefault();
+      }
+      break;
     case 229:
       break;
     }    
@@ -73,10 +79,12 @@ function TextBox() {
   };
   
   TextBox.prototype.backSpace = function() {
-    this._editWindow._name = this._editWindow._name.slice(0, this._textBox.value.length - 1);
-    this._editWindow._index = this._textBox.value.length - 1;
-    this._textBox.value = this._editWindow._name;
-    this._editWindow.refresh();  
+      if (this.getTextLength() > 0) {
+        this._editWindow._name = this._editWindow._name.slice(0, this._textBox.value.length - 1);
+        this._editWindow._index = this._textBox.value.length - 1;
+        this._textBox.value = this._editWindow._name;
+        this._editWindow.refresh();  
+      }
   };
   
   TextBox.prototype.refreshNameEdit = function()  {
@@ -123,6 +131,7 @@ function TextBox() {
   
   Scene_Name.prototype.createTextBox =  function() {
     this._textBox = new TextBox(this._editWindow);
+    this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
   }
 
   Scene_Name.prototype.update = function() {

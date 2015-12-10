@@ -278,7 +278,7 @@ var Color = Color || {};
   var __maxFontSize = Number(parameters['폰트 최대 크기'] || 96);
   
   /**
-   * 표시 할 라인의 수
+   * 텍스트 시작 X
    * @memberOf RS
    * @property __textStartX
    * @type Number
@@ -326,7 +326,7 @@ var Color = Color || {};
   RS.__nameWindowX = Number(parameters['이름 윈도우 X'] || 0);
   
   /**
-   * 이름 윈도우 X
+   * 이름 윈도우 Y
    * @private
    * @memberOf RS
    * @property __nameWindowX
@@ -360,16 +360,7 @@ var Color = Color || {};
    * @type Number
    */        
   RS.__faceOY = Number(parameters['큰 페이스칩 OY'] || 0);
-  
-  /**
-   * 큰 페이스칩 OY
-   * @private
-   * @memberOf RS
-   * @property __faceMirror
-   * @type String
-   */          
-  RS.__faceRightAlignment = String(parameters['큰 페이스칩 오른쪽 정렬'] || 'false');
-  
+    
   /**
    * 말풍선의 폰트사이즈
    * @memberOf RS   
@@ -863,6 +854,21 @@ var Color = Color || {};
           alias_Window_Message_processEscapeCharacter.call(this, code, textState);
       }
       
+  };  
+  
+   /**
+   * 데이터베이스 항목의 이름을 반환합니다.   
+   * @memberOf Window_Message
+   * @method getDBData
+   * @param ev {Array}
+   * @return text {String}
+   */    
+  Window_Message.prototype.getDBData = function(ev) {
+    try {
+      return ev.name;
+    } catch(e) {
+      return "";
+    }
   };  
   
   /**
