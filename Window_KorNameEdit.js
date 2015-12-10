@@ -9,6 +9,10 @@
  * @desc 윈도우의 폭입니다
  * @default 580
  *
+ * @param windowCenter
+ * @desc 중앙에 배치하기 (true / false)
+ * @default false
+ * 
  */
 
 function TextBox() {
@@ -19,6 +23,7 @@ function TextBox() {
 
   var parameters = PluginManager.parameters('Window_KorNameEdit');
   var __windowWidth = Number(parameters['windowWidth'] || 580);
+  var __windowCenter = String(parameters['windowCenter'] || 'false');
   
   TextBox.prototype.initialize = function(_editWindow)  {
     this._editWindow = _editWindow;
@@ -131,7 +136,9 @@ function TextBox() {
   
   Scene_Name.prototype.createTextBox =  function() {
     this._textBox = new TextBox(this._editWindow);
-    this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
+    if(__windowCenter === "true") {
+      this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
+    }
   }
 
   Scene_Name.prototype.update = function() {
