@@ -46,14 +46,12 @@ Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요�
 **Game Core**
 ---
 
-구조적인 차이 때문에 아직 제대로 구현되지 않은 클래스는 회색으로 표시했습니다.
-
 | RGSS Built-in Modules
 | ----------------------
 | Audio
 | Graphics
-| <span style='color:#D5D5D5'>Input </span>
-| <span style='color:#D5D5D5'>RPG </span>
+| Input
+| ~~RPG~~
 
 <Enter>
 
@@ -71,10 +69,10 @@ Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요�
 | <span style='color:#D5D5D5'>Plane </span>
 | Rect
 | Sprite
-| <span style='color:#D5D5D5'>Table </span>
-| <span style='color:#D5D5D5'>Tilemap </span>
-| <span style='color:#D5D5D5'>Tone </span>
-| <span style='color:#D5D5D5'>Viewport </span>
+| ~~Table~~
+| ~~Tilemap~~
+| ~~Tone~~
+| ~~Viewport~~
 | Window
 | RGSSError
 | RGSSReset
@@ -85,8 +83,8 @@ Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요�
 | ----------------------
 | rgss_main { ... }
 | rgss_stop
-| <span style='color:#D5D5D5'>load_data(filename)</span>
-| <span style='color:#D5D5D5'>save_data(obj, filename)</span>
+| ~~load_data(filename)~~
+| ~~save_data(obj, filename)~~
 | msgbox(*args)
 | msgbox_p(*args)
 
