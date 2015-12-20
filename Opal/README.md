@@ -1,10 +1,12 @@
 
 ### RGSS3 (Opal)
 
+[Opal v0.9.0.beta2](http://opalrb.org/)
+
 **Setup**
 ---
 
-Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요합니다.
+[Opal](http://opalrb.org/) 라이브러리를 사용하기 위해서는 index.html 파일의 수정이 필요합니다.
 
 ```html
 <!DOCTYPE html>
@@ -94,7 +96,7 @@ Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요�
 ---
 
 [이 링크](http://biud436.blog.me/220567328766)에 있는 강좌를 바탕으로
-프로젝트를 세팅해주신 다음 아래 함수를 호출하여 코어 스크립트를 로드 해주시기 바랍니다.
+프로젝트를 Setting 해주신 아래와 같은 함수를 호출하여 스크립트를 로드해주시기 바랍니다.
 
 ```javascript
 function loadRubyScript(scripts) {
@@ -114,7 +116,7 @@ function loadRubyScript(scripts) {
 loadRubyScript('Game_Core');
 ```
 
-index.html 파일을 수정하는 방법을 쓸 수도 있습니다.
+index.html 파일을 수정하여 로드할 수도 있습니다
 
 ```html
 <script type="text/ruby" src="rb/Game_Core.rb"></script>
