@@ -124,4 +124,5 @@ index.html 파일을 수정하는 방법을 쓸 수도 있습니다.
 ---
 
 RGSS3 히든 클래스는 아래 소스를 참고해서 만들었습니다.
+
 [RM-Gosu](https://github.com/CaptainJet/RM-Gosu)
