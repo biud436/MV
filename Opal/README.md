@@ -1,8 +1,10 @@
 
+### RGSS3 (Opal)
+
 **index.html**
 ---
 
-Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요합니다. 
+Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요합니다.
 
 ```html
 <!DOCTYPE html>
@@ -60,6 +62,7 @@ Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요�
 | Cache
 
 <Enter>
+
 | RGSS Built-in Classes
 | ----------------------
 | Bitmap
@@ -76,6 +79,8 @@ Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요�
 | RGSSError
 | RGSSReset
 
+<Enter>
+
 | RGSS Built-in Functions
 | ----------------------
 | rgss_main { ... }
@@ -85,6 +90,8 @@ Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요�
 | msgbox(*args)
 | msgbox_p(*args)
 
+
+**Load Ruby Script**
 
 [이 링크](http://biud436.blog.me/220567328766)에 있는 강좌를 바탕으로
 프로젝트를 세팅해주신 다음 아래 함수를 호출하여 코어 스크립트를 로드 해주시기 바랍니다.
