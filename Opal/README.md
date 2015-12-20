@@ -66,7 +66,7 @@ Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요�
 | Bitmap
 | Color
 | Font
-| <span style='color:#D5D5D5'>Plane </span>
+| ~~Plane~~
 | Rect
 | Sprite
 | ~~Table~~
