@@ -1,7 +1,7 @@
 
 ### RGSS3 (Opal)
 
-**index.html**
+**Setup**
 ---
 
 Opal 라이브러리를 사용하기 위해서는 스크립트 로드가 필요합니다.
