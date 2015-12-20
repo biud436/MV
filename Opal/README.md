@@ -1,7 +1,11 @@
 
 ### RGSS3 (Opal)
+RPG Maker VX Ace 스크립트 (RGSS3) 를 RPG Maker MV 로 돌리기 위한 프로젝트입니다.
 
 [Opal v0.9.0.beta2](http://opalrb.org/)
+
+Opal 이라는 라이브러리가 사용됐으며 구현상 아직까지 복잡한 스크립트는 구동할 수 없습니다.
+
 
 **Setup**
 ---
