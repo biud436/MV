@@ -99,8 +99,7 @@ Opal 이라는 라이브러리가 사용됐으며 구현상 아직까지 복잡�
 **Load Ruby Script**
 ---
 
-[이 링크](http://biud436.blog.me/220567328766)에 있는 강좌를 바탕으로
-프로젝트를 Setting 해주신 아래와 같은 함수를 호출하여 스크립트를 로드해주시기 바랍니다.
+스크립트는 아래와 같은 방법으로 불러올 수 있습니다.
 
 ```javascript
 function loadRubyScript(scripts) {
@@ -120,7 +119,7 @@ function loadRubyScript(scripts) {
 loadRubyScript('Game_Core');
 ```
 
-index.html 파일을 수정하여 로드할 수도 있습니다
+index.html 파일을 수정해서 불러올 수도 있습니다.
 
 ```html
 <script type="text/ruby" src="rb/Game_Core.rb"></script>
