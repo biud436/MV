@@ -123,6 +123,6 @@ index.html 파일을 수정하는 방법을 쓸 수도 있습니다.
 **Reference**
 ---
 
-RGSS3 히든 클래스는 아래 소스를 참고해서 만들었습니다.
+'RGSS3 Hidden Class' 는 아래 소스를 참고했습니다.
 
 [RM-Gosu](https://github.com/CaptainJet/RM-Gosu)
