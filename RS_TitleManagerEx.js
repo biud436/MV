@@ -3,12 +3,7 @@
  * @plugindesc 	엔딩 후 타이틀과 BGM 변경 + 엔딩 후 스페셜 메뉴 띄우기
  * @author biud436
  * @date 2015.12.21
- * @version 1.0
- *
- * @param 기본타이틀
- * @desc 기본타이틀
- * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
- * @default ["", "", ""]
+ * @version 1.0.1
  *
  * @param 엔딩1
  * @desc 엔딩1
@@ -102,6 +97,13 @@ RS.EndingClearList = RS.EndingClearList || [];
   RS.Position.X = Number(parameters["맵 X"] || 0);
   RS.Position.Y = Number(parameters["맵 Y"] || 0);
   RS.Position.RESULT = [RS.Position.MAP_ID, RS.Position.X, RS.Position.Y];
+
+  //
+  var alias_Scene_Title_create = Scene_Title.prototype.create;
+  Scene_Title.prototype.create = function() {
+      RS.Tool.RESOURCE["기본타이틀"] = [$dataSystem.title1Name, $dataSystem.title2Name, $dataSystem.titleBgm]
+      alias_Scene_Title_create.call(this);
+  };
 
   // 스폐셜 메뉴를 설정합니다.
   DataManager.setupSpecialGame = function() {
