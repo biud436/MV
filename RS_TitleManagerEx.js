@@ -3,7 +3,8 @@
  * @plugindesc 	엔딩 후 타이틀과 BGM 변경 + 엔딩 후 스페셜 메뉴 띄우기
  * @author biud436
  * @date 2015.12.21
- * @version 1.0.1
+ * @version 1.0.2
+ * 2015.12.22 - 웹 로컬 저장소 저장 & 로드 버그 수정
  *
  * @param 엔딩1
  * @desc 엔딩1
@@ -180,7 +181,7 @@ RS.EndingClearList = RS.EndingClearList || [];
   StorageManager.saveToWebEnding = function(string) {
     var key = 'RPG Ending';
     var json = JSON.stringify(this.publishKey(string));
-    var data = LZString.compressToBase64(this.publishKey(json));
+    var data = LZString.compressToBase64(json);
     localStorage.setItem(key, data);
   };
 
@@ -334,6 +335,7 @@ RS.EndingClearList = RS.EndingClearList || [];
       }
   };
 
+ // 엔딩 클리어 여부 확인
   Game_Map.prototype.isClearEnding = function(string) {
     var result = RS.EndingClearList.filter(function(i){
       if(i === string) {
@@ -345,6 +347,7 @@ RS.EndingClearList = RS.EndingClearList || [];
     return result.length > 0
   };
 
+ // 엔딩 리스트 출력
   Game_Map.prototype.getEnding = function() {
     return RS.EndingClearList;
   };
