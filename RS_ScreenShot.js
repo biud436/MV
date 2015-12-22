@@ -4,6 +4,9 @@
  * @author biud436
  * @version 1.0
  * @date 2015.12.22
+ *
+ * @reference http://stackoverflow.com/questions/32613060/how-to-take-screenshot-with-node-webkit
+ *
  */
 
 var RS = RS || {};
