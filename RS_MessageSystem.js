@@ -103,7 +103,7 @@
  /**
  * @author biud436
  * @since 2015.12.01
- * @version 0.0.3
+ * @version 0.0.4
  * @fileOverview
  * @description
  * <a href='http://www.w3schools.com/html/html_colornames.asp'>HTML5 Colors List</a>
