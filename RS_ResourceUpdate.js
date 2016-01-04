@@ -55,6 +55,7 @@ RS.Net = RS.Net || {};
           return decodeURIComponent(path);
       })();
       this.initDBVersion();
+      this.initList();
       this.isUpdate();
     }
   }
