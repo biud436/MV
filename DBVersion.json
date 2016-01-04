@@ -1,3 +1,11 @@
 {
-  "dbVersion": "0.1.2"
+  "dbVersion": "0.1.2",
+  "list": [
+    "https://raw.githubusercontent.com/biud436/MV/master/HUD/hp.png",
+    "https://raw.githubusercontent.com/biud436/MV/master/HUD/mp.png",
+    "https://raw.githubusercontent.com/biud436/MV/master/HUD/exr.png",
+    "https://raw.githubusercontent.com/biud436/MV/master/HUD/hud_window_empty.png",
+    "https://raw.githubusercontent.com/biud436/MV/master/HUD/gauge.png",
+    "https://raw.githubusercontent.com/biud436/MV/master/HUD/masking.png"
+  ]
 }

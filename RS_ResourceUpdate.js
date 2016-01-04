@@ -27,17 +27,18 @@ RS.Net = RS.Net || {};
   var DBV_URL = parameters["URL_DB"] || "https://raw.githubusercontent.com/biud436/MV/master/DBVersion.json";
 
   // 다운로드 해야 할 이미지 리스트
-  var list = [
-    'https://raw.githubusercontent.com/biud436/MV/master/HUD/hp.png',
-    'https://raw.githubusercontent.com/biud436/MV/master/HUD/mp.png',
-    'https://raw.githubusercontent.com/biud436/MV/master/HUD/exr.png',
-    'https://raw.githubusercontent.com/biud436/MV/master/HUD/hud_window_empty.png',
-    'https://raw.githubusercontent.com/biud436/MV/master/HUD/gauge.png',
-    'https://raw.githubusercontent.com/biud436/MV/master/HUD/masking.png'
-  ];
+  // var list = [
+  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/hp.png',
+  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/mp.png',
+  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/exr.png',
+  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/hud_window_empty.png',
+  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/gauge.png',
+  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/masking.png'
+  // ];
 
   RS.Net._dbVersion = '';
   RS.Net._currentVersion = '0.1.1';
+  RS.Net._list = [];
 
   /**
    * @memberof RS.Net
@@ -109,7 +110,7 @@ RS.Net = RS.Net || {};
    */
   RS.Net.isUpdate = function() {
     if(RS.Net._currentVersion !== this.getDBVersion()) {
-      this.allDataDownload(list);
+      this.allDataDownload(this.getList());
     } else {
       console.log("현재 버전이 최신 버전입니다");
     }
@@ -120,7 +121,20 @@ RS.Net = RS.Net || {};
     xhr.open('GET', DBV_URL);
     xhr.onload = function() {
       if(xhr.status < 400) {
-        RS.Net._dbVersion = JsonEx.parse(xhr.responseText);
+        var json = JsonEx.parse(xhr.responseText);
+        RS.Net._dbVersion = json['dbVersion'];
+      }
+    }
+    xhr.send();
+  }
+
+  RS.Net.initList = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', DBV_URL);
+    xhr.onload = function() {
+      if(xhr.status < 400) {
+        var json = JsonEx.parse(xhr.responseText);
+        RS.Net._list = json['list'];
       }
     }
     xhr.send();
@@ -128,6 +142,10 @@ RS.Net = RS.Net || {};
 
   RS.Net.getDBVersion = function() {
     return RS.Net._dbVersion;
+  }
+
+  RS.Net.getList = function() {
+    return RS.Net._list;
   }
 
   RS.Net.updateCurrentVersion = function() {
