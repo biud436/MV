@@ -1,5 +1,5 @@
 /*:
- * SYS_ResourceUpdate.js
+ * RS_ResourceUpdate.js
  * @plugindesc 리소스 추가 다운로드
  * @author biud436
  *
