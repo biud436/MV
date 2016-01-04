@@ -26,16 +26,6 @@ RS.Net = RS.Net || {};
 
   var DBV_URL = parameters["URL_DB"] || "https://raw.githubusercontent.com/biud436/MV/master/DBVersion.json";
 
-  // 다운로드 해야 할 이미지 리스트
-  // var list = [
-  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/hp.png',
-  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/mp.png',
-  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/exr.png',
-  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/hud_window_empty.png',
-  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/gauge.png',
-  //   'https://raw.githubusercontent.com/biud436/MV/master/HUD/masking.png'
-  // ];
-
   RS.Net._dbVersion = '';
   RS.Net._currentVersion = '0.1.1';
   RS.Net._list = [];
@@ -56,7 +46,6 @@ RS.Net = RS.Net || {};
       })();
       this.initDBVersion();
       this.initList();
-      this.isUpdate();
     }
   }
 
@@ -65,7 +54,7 @@ RS.Net = RS.Net || {};
    * @method downloadData
    * @link http://stackoverflow.com/questions/12740659/downloading-images-with-node-js
    */
-  RS.Net.downloadData = function(filePath, url) {
+  RS.Net.downloadData = function(filePath, url, func) {
     http.request(url, function(response) {
       var data = new Stream();
       var ext = url.match(/(\/www|)\/[^\/]*$/);
@@ -80,6 +69,7 @@ RS.Net = RS.Net || {};
 
       response.on('end', function() {
         fs.writeFileSync('%1%2'.format(filePath, ext), data.read());
+        func();
       });
 
     }).end();
@@ -94,9 +84,11 @@ RS.Net = RS.Net || {};
       var folder = this._folder;
       var picPath = folder + "/img/pictures"
       var length = buf.length;
+      var req = 1;
       buf.forEach(function(data, index, arr) {
-        this.downloadData(picPath, data);
-        console.log( Math.floor(((1 + index) / length) * 100));
+        this.downloadData(picPath, data, function() {
+            console.log( Math.floor(((req++) / length) * 100));
+        });
       }.bind(this));
     } catch(e) {
       console.log("다운로드 실패");
@@ -111,7 +103,7 @@ RS.Net = RS.Net || {};
    */
   RS.Net.isUpdate = function() {
     if(RS.Net._currentVersion !== this.getDBVersion()) {
-      this.allDataDownload(this.getList());
+      this.allDataDownload(RS.Net._list);
     } else {
       console.log("현재 버전이 최신 버전입니다");
     }
@@ -124,6 +116,7 @@ RS.Net = RS.Net || {};
       if(xhr.status < 400) {
         var json = JsonEx.parse(xhr.responseText);
         RS.Net._dbVersion = json['dbVersion'];
+        console.log(RS.Net._dbVersion);
       }
     }
     xhr.send();
@@ -131,11 +124,13 @@ RS.Net = RS.Net || {};
 
   RS.Net.initList = function() {
     var xhr = new XMLHttpRequest();
+    var self = this;
     xhr.open('GET', DBV_URL);
     xhr.onload = function() {
       if(xhr.status < 400) {
         var json = JsonEx.parse(xhr.responseText);
-        RS.Net._list = json['list'];
+        RS.Net._list = json.list;
+        self.isUpdate();
       }
     }
     xhr.send();
@@ -143,10 +138,6 @@ RS.Net = RS.Net || {};
 
   RS.Net.getDBVersion = function() {
     return RS.Net._dbVersion;
-  }
-
-  RS.Net.getList = function() {
-    return RS.Net._list;
   }
 
   RS.Net.updateCurrentVersion = function() {
