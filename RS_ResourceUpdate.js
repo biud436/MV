@@ -7,6 +7,10 @@
  * @desc 버전 문자열이 있는 URL
  * @default https://raw.githubusercontent.com/biud436/MV/master/DBVersion.json
  *
+ * @param Current Version
+ * @desc 현재 버전
+ * @default 0.1.1
+ *
  */
 
 var RS = RS || {};
@@ -27,7 +31,7 @@ RS.Net = RS.Net || {};
   var DBV_URL = parameters["URL_DB"] || "https://raw.githubusercontent.com/biud436/MV/master/DBVersion.json";
 
   RS.Net._dbVersion = '';
-  RS.Net._currentVersion = '0.1.1';
+  RS.Net._currentVersion = parameters["Current Version"] || '0.1.1';
   RS.Net._list = [];
 
   /**
