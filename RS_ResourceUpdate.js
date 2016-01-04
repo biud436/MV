@@ -86,10 +86,10 @@ RS.Net = RS.Net || {};
   RS.Net.allDataDownload = function(buf) {
     try {
       var folder = this._folder;
-      var picPath = folder + "/img/pictures"
-      var length = buf.length;
+      var picPath = folder + buf.src;
+      var length = buf.list.length;
       var req = 1;
-      buf.forEach(function(data, index, arr) {
+      buf.list.forEach(function(data, index, arr) {
         this.downloadData(picPath, data, function() {
             console.log( Math.floor(((req++) / length) * 100));
         });
@@ -133,7 +133,8 @@ RS.Net = RS.Net || {};
     xhr.onload = function() {
       if(xhr.status < 400) {
         var json = JsonEx.parse(xhr.responseText);
-        RS.Net._list = json.list.pictures;
+        // var arr = Object.keys(RS.Net._list);
+        RS.Net._list = json.data.pictures;
         self.isUpdate();
       }
     }
