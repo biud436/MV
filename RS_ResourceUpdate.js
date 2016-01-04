@@ -133,7 +133,7 @@ RS.Net = RS.Net || {};
     xhr.onload = function() {
       if(xhr.status < 400) {
         var json = JsonEx.parse(xhr.responseText);
-        RS.Net._list = json.list;
+        RS.Net._list = json.list.pictures;
         self.isUpdate();
       }
     }
