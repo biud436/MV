@@ -47,8 +47,8 @@
 
          'void main(void) {',
          `   float pi = 3.14159265358;`,
-         '   float cosTime = waveFrequency * sin(2.0 * pi * (mod(waveTime - vTextureCoord.y, waveHeight)));',
-         '   vec2 coord = vec2(vTextureCoord.x + cosTime * UVSpeed, vTextureCoord.y);',
+         '   float time = waveFrequency * sin(2.0 * pi * (mod(waveTime - vTextureCoord.y, waveHeight)));',
+         '   vec2 coord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);',
          '   gl_FragColor = texture2D(uSampler, coord);',
          '}'
      ];
