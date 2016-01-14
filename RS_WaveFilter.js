@@ -8,8 +8,6 @@
  * sprite.wave = true;
  */
 
-var $tilefilter = null;
-
 (function() {
 
   /**
