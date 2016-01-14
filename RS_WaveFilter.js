@@ -6,8 +6,9 @@
  *
  * @help
  * sprite.wave = true;
- * sprite.setWaveHeight(2);
  */
+
+var $tilefilter = null;
 
 (function() {
 
@@ -25,9 +26,9 @@
 
      // set the uniforms
      this.uniforms = {
-         waveHeight: {type: '1f', value: 0.02},
+         waveHeight: {type: '1f', value: 0.5},
          waveSpeed: {type: '1f', value: 2},
-         waveFrequency: {type: '1f', value: 0.5},
+         waveFrequency: {type: '1f', value: 0.02},
          waveTime: {type: '1f', value: 0},
          UVSpeed: {type: '1f', value: 0.25}
      };
@@ -123,10 +124,9 @@
    Sprite.prototype.initialize = function(bitmap) {
      alias_Sprite_initialize.call(this, bitmap);
      this._waveTime = 0;
-     this._waveHeight = 512;
+     this._waveHeight = 0.5;
      this._waveSpeed = 2;
-     this._waveFrequency = 0.05;
-     this.setWaveHeight(3);
+     this._waveFrequency = 0.02;
      this._waveFilter = new PIXI.WaveFilter();
      this._wave = false;
    };
@@ -197,6 +197,5 @@
            }
        }
    });
-
 
 })();
