@@ -2,6 +2,9 @@
  * RS_WaveFilter.js
  * @plugindesc RS_WaveFilter.js
  * @date 2016.01.12
+ * @version 1.1
+ * 2016.01.14 - 필터 해제 기능 추가
+ *
  * @author biud436
  *
  * @help
@@ -191,7 +194,12 @@
              }
              this.filters = [this._waveFilter];
            } else {
-             this.filters = [];
+             this.filters = this.filters.filter(function(i) {
+               if(i.constructor.name === 'WaveFilter') { 
+                 return false;
+               }
+               return true;
+              });             
            }
        }
    });
