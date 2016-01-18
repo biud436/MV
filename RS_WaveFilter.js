@@ -1,14 +1,26 @@
 /*:
  * RS_WaveFilter.js
- * @plugindesc RS_WaveFilter.js
+ * @plugindesc RS_WaveFilter.js(v1.2)
  * @date 2016.01.12
- * @version 1.1
- * 2016.01.14 - 필터 해제 기능 추가
+ * @version 1.2
  *
  * @author biud436
  *
  * @help
  * sprite.wave = true;
+ *
+ * This plugin contains these six types the plugin commands.
+ *
+ * - Plugin Command
+ * Tilemap_Wave Enable
+ * Tilemap_Wave Disable
+ * Tilemap_Wave waveHeight x
+ * Tilemap_Wave wavewaveSpeed x
+ * Tilemap_Wave waveFrequency x
+ * Tilemap_Wave UVSpeed x
+ *
+ * X is a floating-point number between 0 and 1.
+ *
  */
 
 (function() {
@@ -195,13 +207,101 @@
              this.filters = [this._waveFilter];
            } else {
              this.filters = this.filters.filter(function(i) {
-               if(i.constructor.name === 'WaveFilter') { 
+               if(i.constructor.name === 'WaveFilter') {
                  return false;
                }
                return true;
-              });             
+              });
            }
        }
    });
+
+})();
+
+(function() {
+
+  Game_Map.prototype.setTilemap = function(obj) {
+    this._wTileMap = obj;
+  };
+
+  Game_Map.prototype.getTilemap = function() {
+    return this._wTileMap;
+  };
+
+  var alias_Tilemap_initialize = Tilemap.prototype.initialize;
+  Tilemap.prototype.initialize = function() {
+    alias_Tilemap_initialize.call(this);
+    $gameMap.setTilemap(this);
+  }
+
+  var alias_Tilemap_update = Tilemap.prototype.update;
+  Tilemap.prototype.update = function() {
+    alias_Tilemap_update.call(this);
+
+    // Wave Update
+    if(this._wave) {
+      this._waveFilter.waveTime = Date.now() % 10000 / 10000;
+    }
+
+  }
+
+  Tilemap.prototype.setWaveProperty = function(name, value) {
+    if(this._wave && !!this._waveFilter[name]) {
+        this._waveFilter[name] = value;
+    }
+  }
+
+  Object.defineProperty(Tilemap.prototype, 'wave', {
+     get: function() {
+         return this._wave;
+     },
+     set: function(value) {
+         this._wave = value;
+         if(this._wave) {
+           if(!this._waveFilter) {
+             this._waveFilter = new PIXI.WaveFilter();
+             this._waveFilter.padding = Graphics.boxHeight;
+           }
+           this.filters = [this._waveFilter];
+         } else {
+           this.filters = this.filters.filter(function(i) {
+             if(i.constructor.name === 'WaveFilter') {
+               return false;
+             }
+             return true;
+            });
+         }
+     }
+  });
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+      alias_Game_Interpreter_pluginCommand.call(this, command, args);
+      if(command === "Tilemap_Wave") {
+        switch(args[0]) {
+          case 'Enable':
+            $gameMap.getTilemap().wave = true;
+            break;
+          case 'Disable':
+            if(!!$gameMap.getTilemap().wave) {
+                $gameMap.getTilemap().wave = false;
+                $gameMap.getTilemap().filters = null;
+            }
+            break;
+          case 'waveHeight':
+            $gameMap.getTilemap().setWaveProperty('waveHeight', Number(args[1]));
+            break;
+          case 'waveSpeed':
+            $gameMap.getTilemap().setWaveProperty('waveSpeed', Number(args[1]));
+            break;
+          case 'waveFrequency':
+            $gameMap.getTilemap().setWaveProperty('waveFrequency', Number(args[1]));
+            break;
+          case 'UVSpeed':
+            $gameMap.getTilemap().setWaveProperty('UVSpeed', Number(args[1]));
+            break;
+        }
+      }
+  };
 
 })();

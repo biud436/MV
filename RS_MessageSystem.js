@@ -69,6 +69,10 @@
  * @desc 큰 페이스칩 OY
  * @default 0
  *
+ * @param 큰 페이스칩 뒷면 표시
+ * @desc 큰 페이스칩을 메시지창의 뒷면에 표시합니다.
+ * @default false
+ *
  *-------------------------------------------------------------------------------
  * 도움말
  *-------------------------------------------------------------------------------
@@ -362,6 +366,15 @@ var Color = Color || {};
    */
   RS.__faceOY = Number(parameters['큰 페이스칩 OY'] || 0);
 
+  /**
+   * 큰 페이스칩 사이드에 표시
+   * @private
+   * @memberOf RS
+   * @property __faceSide
+   * @type Boolean
+   */  
+  RS.__faceSide = Boolean(parameters['큰 페이스칩 뒷면 표시'] === 'true'|| false);
+  
   /**
    * 말풍선의 폰트사이즈
    * @memberOf RS
@@ -1183,6 +1196,11 @@ Window_Message.prototype.updatePlacement = function() {
    */
   var alias_Window_Message_newPage = Window_Message.prototype.newPage;
   Window_Message.prototype.newPage = function(textState) {
+  
+      if(this.parent && RS.__faceSide) {
+        this.setChildIndex(this._newContents, 0);
+      }  
+      
       if(this._newContents.bitmap) { this._newContents.bitmap = null; }
       this.openBalloon($gameMessage.getBalloon());
       alias_Window_Message_newPage.call(this, textState);
