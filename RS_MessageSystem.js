@@ -1,10 +1,11 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc 한글 메시지 시스템 (v0.0.4)
+ * @plugindesc 한글 메시지 시스템 (v0.0.5)
  * @author 러닝은빛(biud436)
  *-------------------------------------------------------------------------------
  * 업데이트 일지
  *-------------------------------------------------------------------------------
+ * 2016.01.18 - 버그 픽스 (updateNameWindow, calcBalloonRect)
  * 2016.01.01 - 버그 픽스 (resizeMessageSystem)
  * 2015.12.03 - 말풍선 기능 추가
  * 2015.12.02 - 큰 페이스칩 기능 추가
@@ -372,9 +373,9 @@ var Color = Color || {};
    * @memberOf RS
    * @property __faceSide
    * @type Boolean
-   */  
+   */
   RS.__faceSide = Boolean(parameters['큰 페이스칩 뒷면 표시'] === 'true'|| false);
-  
+
   /**
    * 말풍선의 폰트사이즈
    * @memberOf RS
@@ -1094,7 +1095,7 @@ Window_Message.prototype.updatePlacement = function() {
   Window_Message.prototype.updateNameWindow = function() {
       var self = this;
       this._nameWindow.x = this.x + this.newLineX() + RS.__nameWindowX;
-      if($gameMessage.positionType() === 0) {
+      if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
         this._nameWindow.y = 0;
         this.y = this._nameWindow.height + RS.__nameWindowY;
       } else {
@@ -1196,11 +1197,11 @@ Window_Message.prototype.updatePlacement = function() {
    */
   var alias_Window_Message_newPage = Window_Message.prototype.newPage;
   Window_Message.prototype.newPage = function(textState) {
-  
+
       if(this.parent && RS.__faceSide) {
         this.setChildIndex(this._newContents, 0);
-      }  
-      
+      }
+
       if(this._newContents.bitmap) { this._newContents.bitmap = null; }
       this.openBalloon($gameMessage.getBalloon());
       alias_Window_Message_newPage.call(this, textState);
@@ -1308,12 +1309,13 @@ Window_Message.prototype.updatePlacement = function() {
   Window_Message.prototype.calcBalloonRect = function(text) {
       var temp = text;
       var tempText = this.textProcessing(temp);
-      tempText = tempText.split(/[\r\n]/);
+      tempText = tempText.split(/[\r\n]+/);
       tempText = tempText.sort(function(a, b) {
           return b.length - a.length;
       }.bind(this));
+      var height = tempText.length * this.lineHeight() + this.standardPadding() * 2;
       this._bWidth = this.textWidth(tempText[0]) + RS.__STD_PADDING * 2 || RS.__WIDTH;
-      this._bHeight = tempText.length * (RS.__FONT_SIZE + RS.__STD_PADDING) * 2 || RS.__HEIGHT;
+      this._bHeight = height;
   };
 
   /**
@@ -1338,7 +1340,7 @@ Window_Message.prototype.updatePlacement = function() {
 
       // 말풍선 위치 및 크기 설정 (화면 내에 가두지 않습니다)
       this.x =  mx - (this._bWidth / 2);
-      this.y =  my - (this._bHeight + this._bHeight / 2);
+      this.y =  my - this._bHeight - $gameMap.tileHeight();
       this.width = this._bWidth;
       this.height = this._bHeight;
 
