@@ -15,7 +15,7 @@
  * Tilemap_Wave Enable
  * Tilemap_Wave Disable
  * Tilemap_Wave waveHeight x
- * Tilemap_Wave wavewaveSpeed x
+ * Tilemap_Wave waveSpeed x
  * Tilemap_Wave waveFrequency x
  * Tilemap_Wave UVSpeed x
  *
