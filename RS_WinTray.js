@@ -24,17 +24,9 @@
  * @desc 트레이로 최소화
  * @default 숨기기
  *
- * @param Show Window
- * @desc 윈도우 활성화
- * @default 활성화
- *
  * @param Window Always On Top
  * @desc 창을 항상 위로
  * @default 항상 위에
- *
- * @param Fullscreen
- * @desc 전체 화면
- * @default 전체 화면
  *
  * @param Show Internet
  * @desc 제작자 블로그 열기
@@ -58,9 +50,7 @@
   _tooltip = parameters['tooltip'];
   _url = parameters['url'];
   _minimize_to_tray = parameters['Minimize To Tray'];
-  _show_window = parameters['Show Window'];
   _window_always_on_top = parameters['Window Always On Top'];
-  _full_screen = parameters['Fullscreen'];
   _show_internet = parameters['Show Internet'];
   _exit = parameters['Exit'];
 
@@ -115,16 +105,15 @@
    */
   function setupMenu() {
 
-    var menuItem = new gui.MenuItem({ type: 'normal', label: _minimize_to_tray});
+    var menuItem = new gui.MenuItem({ type: 'checkbox', label: _minimize_to_tray});
 
     // 메뉴 추가
     menuItem.click = function() {
-      if(this.label === _minimize_to_tray) {
+
+      if(this.checked) {
         win.hide();
-        this.label = _show_window;
       } else {
         win.show();
-        this.label = _minimize_to_tray;
       }
     };
 
@@ -132,11 +121,6 @@
 
     menu.append(new gui.MenuItem({ type: 'checkbox', label: _window_always_on_top, click: function() {
         win.setAlwaysOnTop(this.checked);
-      }
-    }));
-
-    menu.append(new gui.MenuItem({ type: 'checkbox', label: _full_screen, click: function() {
-        win.isFullscreen = this.checked;
       }
     }));
 
