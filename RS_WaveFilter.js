@@ -1,8 +1,10 @@
 /*:
  * RS_WaveFilter.js
- * @plugindesc RS_WaveFilter.js(v1.2)
+ * @plugindesc RS_WaveFilter.js(v1.3)
  * @date 2016.01.12
- * @version 1.2
+ * @version 1.3
+ *
+ * 2016.01.22 - Save & Load Bug Fixed.
  *
  * @author biud436
  *
@@ -22,6 +24,9 @@
  * X is a floating-point number between 0 and 1.
  *
  */
+
+var RS = RS || {};
+RS.WaveConfig = RS.WaveConfig || {};
 
 (function() {
 
@@ -220,25 +225,51 @@
 
 (function() {
 
-  Game_Map.prototype.setTilemap = function(obj) {
+  RS.WaveConfig.setTilemap = function(obj) {
     this._wTileMap = obj;
+    if(this._config) {
+      obj.setWaveConfig(this._config);
+    }
+  }
+
+  RS.WaveConfig.getTilemap = function() {
+    return this._wTileMap;
   };
 
-  Game_Map.prototype.getTilemap = function() {
-    return this._wTileMap;
+  RS.WaveConfig.makeWaveConfig = function() {
+    if(this._wTileMap) {
+      var config = this.getTilemap().makeWaveConfig();
+      return config;
+    }
+  }
+
+  RS.WaveConfig.setWaveConfig = function(config) {
+    this._config = config;
+  }
+
+  var alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
+  DataManager.makeSaveContents = function() {
+    var contents = alias_DataManager_makeSaveContents.call(this);
+    contents.waveConfig   = RS.WaveConfig.makeWaveConfig();
+    return contents;
+  };
+
+  var DataManager_extractSaveContents = DataManager.extractSaveContents;
+  DataManager.extractSaveContents = function(contents) {
+    DataManager_extractSaveContents.call(this, contents);
+    RS.WaveConfig.setWaveConfig(contents.waveConfig);
   };
 
   var alias_Tilemap_initialize = Tilemap.prototype.initialize;
   Tilemap.prototype.initialize = function() {
     alias_Tilemap_initialize.call(this);
-    $gameMap.setTilemap(this);
+    RS.WaveConfig.setTilemap(this);
   }
 
   var alias_Tilemap_update = Tilemap.prototype.update;
   Tilemap.prototype.update = function() {
     alias_Tilemap_update.call(this);
 
-    // Wave Update
     if(this._wave) {
       this._waveFilter.waveTime = Date.now() % 10000 / 10000;
     }
@@ -248,6 +279,29 @@
   Tilemap.prototype.setWaveProperty = function(name, value) {
     if(this._wave && !!this._waveFilter[name]) {
         this._waveFilter[name] = value;
+        RS.WaveConfig.setWaveConfig(this.makeWaveConfig());
+    }
+  }
+
+  Tilemap.prototype.makeWaveConfig = function() {
+    var config = {};
+    if(this.wave) {
+      config.wave = this.wave;
+      config.waveHeight = this._waveFilter['waveHeight'];
+      config.waveSpeed = this._waveFilter['waveSpeed'];
+      config.waveFrequency = this._waveFilter['waveFrequency'];
+      config.UVSpeed = this._waveFilter['UVSpeed'];
+    }
+    return config;
+  }
+
+  Tilemap.prototype.setWaveConfig = function(config) {
+    if(config && config.wave) {
+      this.wave = true;
+      this.setWaveProperty('waveHeight', config.waveHeight);
+      this.setWaveProperty('waveSpeed', config.waveSpeed);
+      this.setWaveProperty('waveFrequency', config.waveFrequency);
+      this.setWaveProperty('UVSpeed', config.UVSpeed);
     }
   }
 
@@ -280,25 +334,25 @@
       if(command === "Tilemap_Wave") {
         switch(args[0]) {
           case 'Enable':
-            $gameMap.getTilemap().wave = true;
+            RS.WaveConfig.getTilemap().wave = true;
             break;
           case 'Disable':
-            if(!!$gameMap.getTilemap().wave) {
-                $gameMap.getTilemap().wave = false;
-                $gameMap.getTilemap().filters = null;
+            if(!!RS.WaveConfig.getTilemap().wave) {
+                RS.WaveConfig.getTilemap().wave = false;
+                RS.WaveConfig.getTilemap().filters = null;
             }
             break;
           case 'waveHeight':
-            $gameMap.getTilemap().setWaveProperty('waveHeight', Number(args[1]));
+            RS.WaveConfig.getTilemap().setWaveProperty('waveHeight', Number(args[1]));
             break;
           case 'waveSpeed':
-            $gameMap.getTilemap().setWaveProperty('waveSpeed', Number(args[1]));
+            RS.WaveConfig.getTilemap().setWaveProperty('waveSpeed', Number(args[1]));
             break;
           case 'waveFrequency':
-            $gameMap.getTilemap().setWaveProperty('waveFrequency', Number(args[1]));
+            RS.WaveConfig.getTilemap().setWaveProperty('waveFrequency', Number(args[1]));
             break;
           case 'UVSpeed':
-            $gameMap.getTilemap().setWaveProperty('UVSpeed', Number(args[1]));
+            RS.WaveConfig.getTilemap().setWaveProperty('UVSpeed', Number(args[1]));
             break;
         }
       }
