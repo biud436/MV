@@ -16,8 +16,8 @@
  * @default -
  *
  * @param tooltip
- * @desc You can write a tooltip for the tray.
- * When you place your mouse on top of the tray's icon, the tooltip is shown.
+ * @desc You can write a tooltip for the tray. When you place your
+ * mouse on top of the tray's icon, the tooltip is shown.
  * @default Minimized window becomes active.
  *
  * @param Minimize To Tray
