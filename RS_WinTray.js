@@ -5,6 +5,48 @@
  * @version 1.0
  * @date 2016.01.21
  *
+ * @plugindesc This plugin provides a function that minimizes to system tray.
+ * @author biud436
+ *
+ * @param url
+ * @desc game developer's website
+ * @default http://biud436.blog.me/
+ *
+ * @param --Tray Menu--
+ * @default -
+ *
+ * @param tooltip
+ * @desc You can write a tooltip for the tray.
+ * When you place your mouse on top of the tray's icon, the tooltip is shown.
+ * @default Minimized window becomes active.
+ *
+ * @param Minimize To Tray
+ * @desc you can edit a contents about the 'minimize to tray'
+ * @default Active window becomes minimized to tray.
+ *
+ * @param Window Always On Top
+ * @desc you can edit a contents about the 'Window Always On Top'
+ * @default Window Always On Top
+ *
+ * @param Show Internet
+ * @desc Show developer's website
+ * @default Show developer's website
+ *
+ * @param Exit
+ * @desc Game Exit
+ * @default Game Exit
+ *
+ * @help
+ * If you wish to edit an each menu item, you can change through the parameters In the plugin manager.
+ *
+ */
+/*:ko
+ *
+ * RS_WinTray.js (PC)
+ *
+ * @version 1.0
+ * @date 2016.01.21
+ *
  * @plugindesc 트레이로 최소화
  * @author biud436
  *
