@@ -1,75 +1,151 @@
 /*:
  * RS_TitleManagerEx.js
- * @plugindesc 	엔딩 후 타이틀과 BGM 변경 + 엔딩 후 스페셜 메뉴 띄우기
- * @author biud436
- * @date 2015.12.21
- * @version 1.0.2
- * 2015.12.22 - 웹 로컬 저장소 저장 & 로드 버그 수정
  *
- * @param 엔딩1
- * @desc 엔딩1
- * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
+ * @plugindesc After finishing the game's Ending, this plugin changes a title image
+ * and background-music in your game title screen and displays a specific command.
+ *
+ * @author biud436
+ *
+ * @date 2015.12.21
+ * @version 1.0.3
+ *
+ * @param ending1
+ * @desc ending1
+ * ["File name of title 1","File name of title 2","File name of BGM"]
  * @default ["Book", "", "Theme1"]
  *
- * @param 엔딩2
- * @desc 엔딩2
- * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
+ * @param ending2
+ * @desc ending2
+ * ["File name of title 1","File name of title 2","File name of BGM"]
  * @default ["Devil", "", "Field2"]
  *
- * @param 엔딩3
- * @desc 엔딩3
- * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
+ * @param ending3
+ * @desc ending3
+ * ["File name of title 1","File name of title 2","File name of BGM"]
  * @default ["Book", "", "Theme1"]
  *
- * @param 엔딩4
- * @desc 엔딩4
- * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
+ * @param ending4
+ * @desc ending4
+ * ["File name of title 1","File name of title 2","File name of BGM"]
  * @default ["Book", "", "Theme1"]
  *
- * @param 맵 ID
- * @desc 맵 ID
+ * @param Map ID
+ * @desc Map ID
  * @default 1
  *
- * @param 맵 X
- * @desc 맵 X
+ * @param Map X
+ * @desc Map X
  * @default 0
  *
- * @param 맵 Y
- * @desc 맵 Y
+ * @param Map Y
+ * @desc Map Y
  * @default 0
  *
- * @param 스페셜 메뉴
- * @desc 스페셜 메뉴의 이름
- * @default 스페셜 메뉴
+ * @param specific command
+ * @desc specific command's name.
+ * @default specific command
  *
- * @param 스페셜 메뉴 표시 여부
- * @desc 스페셜 메뉴 표시 여부
- * true 또는 false 기입
+ * @param show specific command
+ * @desc If you set to true, A specific command is shown in the game title screen.
  * @default true
  *
  * @help
- * - 엔딩을 설정할 수 있는 플러그인 커맨드입니다
- * 엔딩 설정 엔딩1
- * 엔딩 설정 엔딩2
- * 엔딩 설정 엔딩3
- * 엔딩 설정 엔딩4
+ * This plugin provides a useful plugin command.
  *
- * - 엔딩 파일을 삭제하는 플러그인 커맨드입니다.
- * 엔딩 초기화
+ * Following are the plugin commands.
  *
- * - 엔딩 클리어 여부 확인
- * if($gameMap.isClearEnding("엔딩1")) {
+ * - This plugin command allows you to set the Ending.
+ * Ending Setup ending1
+ * Ending Setup ending2
+ * Ending Setup ending3
+ * Ending Setup ending4
+ *
+ * - This plugin command allows you to initialize the Ending.
+ * Ending Initialize
+ *
+ * - This code confirms an ended Ending of the game.
+ * if($gameMap.isClearEnding("ending1")) {
  *   // true
  * } else {
  *   // false
  * }
  *
- * - 엔딩 클리어 리스트 획득
+ * - Returns a completed game's Ending List. For example.
  * $gameMap.getEnding();
  *
- * - 엔딩 클리어 횟수 출력
+ * - Returns the number of the completed ending. For example.
  * $gameMap.getEnding().length;
  */
+
+ /*:ko
+  * RS_TitleManagerEx.js
+  * @plugindesc 	엔딩 후 타이틀과 BGM 변경 + 엔딩 후 스페셜 메뉴 띄우기
+  * @author biud436
+  *
+  * @param ending1
+  * @desc 엔딩1
+  * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
+  * @default ["Book", "", "Theme1"]
+  *
+  * @param ending2
+  * @desc 엔딩2
+  * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
+  * @default ["Devil", "", "Field2"]
+  *
+  * @param ending3
+  * @desc 엔딩3
+  * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
+  * @default ["Book", "", "Theme1"]
+  *
+  * @param ending4
+  * @desc 엔딩4
+  * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
+  * @default ["Book", "", "Theme1"]
+  *
+  * @param Map ID
+  * @desc 맵 ID
+  * @default 1
+  *
+  * @param Map X
+  * @desc 맵 X
+  * @default 0
+  *
+  * @param Map Y
+  * @desc 맵 Y
+  * @default 0
+  *
+  * @param specific command
+  * @desc 스페셜 메뉴의 이름
+  * @default 스페셜 메뉴
+  *
+  * @param show specific command
+  * @desc 스페셜 메뉴 표시 여부
+  * true 또는 false 기입
+  * @default true
+  *
+  * @help
+  * - 엔딩을 설정할 수 있는 플러그인 커맨드입니다
+  * 엔딩 설정 엔딩1
+  * 엔딩 설정 엔딩2
+  * 엔딩 설정 엔딩3
+  * 엔딩 설정 엔딩4
+  *
+  * - 엔딩 파일을 삭제하는 플러그인 커맨드입니다.
+  * 엔딩 초기화
+  *
+  * - 엔딩 클리어 여부 확인
+  * if($gameMap.isClearEnding("엔딩1")) {
+  *   // true
+  * } else {
+  *   // false
+  * }
+  *
+  * - 엔딩 클리어 리스트 획득
+  * $gameMap.getEnding();
+  *
+  * - 엔딩 클리어 횟수 출력
+  * $gameMap.getEnding().length;
+  */
 
 var RS = RS || {};
 RS.Position = RS.Position || {};
@@ -81,28 +157,28 @@ RS.EndingClearList = RS.EndingClearList || [];
 
   var parameters = PluginManager.parameters("RS_TitleManagerEx");
   var baseResource = "['', '', '']";
-  var specialMenuName = String(parameters['스페셜 메뉴'] || '스페셜 메뉴');
-  var showSpecialMenu = Boolean(parameters['스페셜 메뉴 표시 여부'] === 'true');
+  var specialMenuName = String(parameters['specific command'] || 'specific command');
+  var showSpecialMenu = Boolean(parameters['show specific command'] === 'true');
 
   // 타이틀에서 불러올 그래픽 파일들을 설정합니다
   RS.Tool.RESOURCE = {
-    기본타이틀: eval(parameters['기본타이틀']) || baseResource,
-    엔딩1: eval(parameters["엔딩1"]) || baseResource,
-    엔딩2: eval(parameters["엔딩2"]) || baseResource,
-    엔딩3: eval(parameters["엔딩3"]) || baseResource,
-    엔딩4: eval(parameters["엔딩4"]) || baseResource
+    기본타이틀: eval(parameters['base title']) || baseResource,
+    엔딩1: eval(parameters["ending1"]) || baseResource,
+    엔딩2: eval(parameters["ending2"]) || baseResource,
+    엔딩3: eval(parameters["ending3"]) || baseResource,
+    엔딩4: eval(parameters["ending4"]) || baseResource
   };
 
   // 스페셜 맵 설정
-  RS.Position.MAP_ID = Number(parameters["맵 ID"] || 1);
-  RS.Position.X = Number(parameters["맵 X"] || 0);
-  RS.Position.Y = Number(parameters["맵 Y"] || 0);
+  RS.Position.MAP_ID = Number(parameters["Map ID"] || 1);
+  RS.Position.X = Number(parameters["Map X"] || 0);
+  RS.Position.Y = Number(parameters["Map Y"] || 0);
   RS.Position.RESULT = [RS.Position.MAP_ID, RS.Position.X, RS.Position.Y];
 
   //
   var alias_Scene_Title_create = Scene_Title.prototype.create;
   Scene_Title.prototype.create = function() {
-      RS.Tool.RESOURCE["기본타이틀"] = [$dataSystem.title1Name, $dataSystem.title2Name, $dataSystem.titleBgm]
+      RS.Tool.RESOURCE['base title'] = [$dataSystem.title1Name, $dataSystem.title2Name, $dataSystem.titleBgm]
       alias_Scene_Title_create.call(this);
   };
 
@@ -209,7 +285,7 @@ RS.EndingClearList = RS.EndingClearList || [];
     var ending;
     ending = {};
     ending.version = 0;
-    ending.n = RS.Tool.RESOURCE["기본타이틀"];
+    ending.n = RS.Tool.RESOURCE['base title'];
     ending.endingClearList = RS.EndingClearList;
     return ending;
   }
@@ -245,7 +321,7 @@ RS.EndingClearList = RS.EndingClearList || [];
       this.loadBackground(this.load()[1])
       return true;
     } else {
-      RS.Header.background = RS.Tool.RESOURCE["기본타이틀"];
+      RS.Header.background = RS.Tool.RESOURCE['base title'];
       return false;
     }
   };
@@ -323,12 +399,14 @@ RS.EndingClearList = RS.EndingClearList || [];
   var alias_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
       alias_pluginCommand.call(this, command, args);
-      if(command === "엔딩") {
+      if(command === "Ending" || command === "엔딩") {
         switch (args[0]) {
+          case 'Setup':
           case '설정':
             DataManager.saveToEnding(args[1]);
             break;
           case '초기화':
+          case 'Initialize':
             DataManager.removeEnding();
             break;
         }
