@@ -143,6 +143,70 @@ class Rect
     @js = `new Rectangle(#{@x}, #{@y}, #{@width}, #{@height})`
     @rect = Native(@js)
   end
+  
+  def empty
+    self.x = self.y = self.width = self.height = 0
+  end
+
+  def set(*args)
+    case args.size
+    when 1, 4
+      if args[0].is_a?(Rect)
+        @x, @y, @width, @height = args[0].to_a
+      else
+        @x, @y, @width, @height = *args
+      end
+    else
+      raise ArgumentError
+    end
+    match
+  end
+
+  def to_a
+    [@x, @y, @width, @height]
+  end
+
+  def x=(n)
+    @rect.x = @x = n
+    match
+  end
+
+  def x
+    @rect.x
+  end
+
+  def y=(n)
+    @rect.y = @y = n
+    match
+  end
+
+  def y
+    @rect.y
+  end
+
+  def width=(n)
+    @rect.width = @width = n
+    match
+  end
+
+  def width
+    @rect.width
+  end
+
+  def height=(n)
+    @rect.height = @height = n
+    match
+  end
+
+  def height
+    @rect.height
+  end
+
+  private
+
+  def match
+    @rect.x, @rect.y, @rect.width, @rect.height = *(self.to_a)
+  end
 
 end
 ```
