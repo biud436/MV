@@ -1,16 +1,11 @@
 
-### RGSS3 (Opal)
-RPG Maker VX Ace 스크립트 (RGSS3) 를 RPG Maker MV 로 돌리기 위한 프로젝트입니다.
-
-[Opal v0.9.0.beta2](http://opalrb.org/)
-
-Opal 이라는 라이브러리가 사용됐으며 구현상 아직까지 복잡한 스크립트는 구동할 수 없습니다.
-
-
-**Setup**
+# **What is Opal?**
 ---
+Opal includes a ruby compiler (Ruby to JavaScript Compiler). This library will use to include the Ruby in the RPG Maker MV. This document has been prepared for Opal beginners. It is assumed that the reader has a prior knowledge of HTML coding and JavaScript.
 
-[Opal](http://opalrb.org/) 라이브러리를 사용하기 위해서는 index.html 파일의 수정이 필요합니다.
+## **How to install opal.js**
+---
+From now on, you need to add a [Opal-library](http://opalrb.org/) in the html file. Allows you to modify 'index.html' by launching the text editor. This index.html should change to look like the below.
 
 ```html
 <!DOCTYPE html>
@@ -49,8 +44,9 @@ Opal 이라는 라이브러리가 사용됐으며 구현상 아직까지 복잡�
 ```
 
 
-**Game Core**
+## **Game Core**
 ---
+This script provides game's core. By default, each Ruby script binds with Native JavaScript Object of RPG Maker MV. However, this has not yet been completed.
 
 | RGSS Built-in Modules
 | ----------------------
@@ -95,11 +91,10 @@ Opal 이라는 라이브러리가 사용됐으며 구현상 아직까지 복잡�
 | msgbox_p(*args)
 
 
-
-**Load Ruby Script**
+## **How to import a ruby file form game directory**
 ---
 
-스크립트는 아래와 같은 방법으로 불러올 수 있습니다.
+Allows you to load the ruby scripts by writing the following code at the beginning of your plugin.
 
 ```javascript
 function loadRubyScript(scripts) {
@@ -118,16 +113,46 @@ function loadRubyScript(scripts) {
 
 loadRubyScript('Game_Core');
 ```
+Using this code allows you to import ruby script files into your games. When you will have started the game, this code will only execute the file once.
 
-index.html 파일을 수정해서 불러올 수도 있습니다.
+An example code is:
+
 
 ```html
 <script type="text/ruby" src="rb/Game_Core.rb"></script>
 ```
 
-**Reference**
+## **How to write ruby classes**
 ---
+In the ruby object, calling native JavaScript function is a method.
 
-'RGSS3 Hidden Class' 는 아래 소스를 참고했습니다.
+```ruby
+#================================================
+# ** Rect
+#================================================
+class Rect
+
+  def initialize(x=0, y=0, width=0, height=0)
+    @x = x
+    @y = y
+    @width = width
+    @height = height
+    """
+    If you have used to instance variables in the Ruby Object by
+    associating a JavaScript object and ruby object that can be very
+    useful. When you write ruby script, If using this code, you can
+    declare a native JavaScript object.
+    """
+    @js = `new Rectangle(#{@x}, #{@y}, #{@width}, #{@height})`
+    @rect = Native(@js)
+  end
+
+end
+```
+
+
+## **Reference**
+---
+The hidden sources has referenced the link below.
 
 [RM-Gosu](https://github.com/CaptainJet/RM-Gosu)
