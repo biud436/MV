@@ -2,8 +2,6 @@
 # **What is Opal?**
 Opal includes a ruby compiler (Ruby to JavaScript Compiler). This library will use to include the Ruby in the RPG Maker MV. This document has been prepared for Opal beginners. It is assumed that the reader has a prior knowledge of HTML coding and JavaScript.
 
----
-
 ## **How to install opal.js**
 From now on, you need to add a [Opal-library](http://opalrb.org/) in the html file. Allows you to modify 'index.html' by launching the text editor. This index.html should change to look like the below.
 
@@ -88,7 +86,6 @@ This script provides game's core. By default, each Ruby script binds with Native
 | msgbox(*args)
 | msgbox_p(*args)
 
----
 ## **How to import a ruby file form game directory**
 
 Allows you to load the ruby scripts by writing the following code at the beginning of your plugin.
@@ -118,7 +115,7 @@ An example code is:
 ```html
 <script type="text/ruby" src="rb/Game_Core.rb"></script>
 ```
----
+
 ## **How to write ruby classes**
 
 In the ruby object, calling native JavaScript function is a method.
@@ -143,7 +140,7 @@ class Rect
     @js = `new Rectangle(#{@x}, #{@y}, #{@width}, #{@height})`
     @rect = Native(@js)
   end
-  
+
   def empty
     self.x = self.y = self.width = self.height = 0
   end
@@ -211,7 +208,6 @@ class Rect
 end
 ```
 
----
 ## **Reference**
 
 The hidden sources has referenced the link below.
