@@ -86,7 +86,7 @@ This script provides game's core. By default, each Ruby script binds with Native
 | msgbox(*args)
 | msgbox_p(*args)
 
-## **How to import a ruby file form game directory**
+## **How to import a ruby file from game directory**
 
 Allows you to load the ruby scripts by writing the following code at the beginning of your plugin.
 
