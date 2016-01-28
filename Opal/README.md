@@ -1,10 +1,10 @@
 
 # **What is Opal?**
----
 Opal includes a ruby compiler (Ruby to JavaScript Compiler). This library will use to include the Ruby in the RPG Maker MV. This document has been prepared for Opal beginners. It is assumed that the reader has a prior knowledge of HTML coding and JavaScript.
 
-## **How to install opal.js**
 ---
+
+## **How to install opal.js**
 From now on, you need to add a [Opal-library](http://opalrb.org/) in the html file. Allows you to modify 'index.html' by launching the text editor. This index.html should change to look like the below.
 
 ```html
@@ -43,9 +43,7 @@ From now on, you need to add a [Opal-library](http://opalrb.org/) in the html fi
 
 ```
 
-
 ## **Game Core**
----
 This script provides game's core. By default, each Ruby script binds with Native JavaScript Object of RPG Maker MV. However, this has not yet been completed.
 
 | RGSS Built-in Modules
@@ -90,9 +88,8 @@ This script provides game's core. By default, each Ruby script binds with Native
 | msgbox(*args)
 | msgbox_p(*args)
 
-
-## **How to import a ruby file form game directory**
 ---
+## **How to import a ruby file form game directory**
 
 Allows you to load the ruby scripts by writing the following code at the beginning of your plugin.
 
@@ -121,9 +118,9 @@ An example code is:
 ```html
 <script type="text/ruby" src="rb/Game_Core.rb"></script>
 ```
-
-## **How to write ruby classes**
 ---
+## **How to write ruby classes**
+
 In the ruby object, calling native JavaScript function is a method.
 
 ```ruby
@@ -150,9 +147,9 @@ class Rect
 end
 ```
 
-
-## **Reference**
 ---
+## **Reference**
+
 The hidden sources has referenced the link below.
 
 [RM-Gosu](https://github.com/CaptainJet/RM-Gosu)
