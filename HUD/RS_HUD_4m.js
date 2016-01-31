@@ -1,5 +1,74 @@
 /*:
  * RS_HUD_4m.js
+ * @plugindesc This plugin provides the HUD, That displays the HP and
+ * MP and EXP and Level, on the screen.
+ *
+ * @author biud436
+ * @since 2015.10.31
+ * @date 2016.01.12
+ * @version 1.0
+ *
+ * @param Width
+ * @desc Width
+ * Do not change this when you are using the default sprite batch.
+ * @default 317
+ *
+ * @param Height
+ * @desc Height
+ * Do not change this when you are using the default sprite batch.
+ * @default 101
+ *
+ * @param Margin
+ * @desc Sets the margin to the HUD borders.
+ * @default 0
+ *
+ * @param Gaussian Blur
+ * @desc Sets the Gaussian Blur.
+ * @default true
+ *
+ * @param Show
+ * @desc Sets the visible status.
+ * @default true
+ *
+ * @param Opacity
+ * @desc Sets the opacity.
+ * @default 255
+ *
+ * @param Anchor
+ * @desc LeftTop, LeftBottom, RightTop, RightBottom
+ * @default LeftTop
+ *
+ * @param preloadImportantFaces
+ * @desc Allow you to pre-load the base face chips.
+ * (If you do not to set the parameter, you can happen the error)
+ * @default ['Actor1', 'Actor2', 'Actor3']
+ *
+ * @help
+ * You'll have to download the attached file by clicking the link. Downloads
+ * the resource and place it in your img/pictures folder. You have to download
+ * the plugin and put it in your js/plugins folder. You should allow the plugin
+ * to pre-load the resources by setting preloadImportantFaces parameter.
+ *
+ * Demo Link : https://www.dropbox.com/s/xbwvbz14svo2d9o/hud.zip?dl=0
+ * Resources Link : https://www.dropbox.com/s/dwkre28ii5rjrmx/pictures.zip?dl=0
+ * My Blog Link (Korean) : http://biud436.blog.me/220595076758
+ * Github Link : https://github.com/biud436/MV/blob/master/HUD/RS_HUD_4m.js
+ *
+ * - Sets the opacity
+ * Sets the opacity of the HUD to x. That is a number between 0 and 255.
+ * $gameHud.opacity = 0;
+ *
+ * - Sets the visible
+ * This variable will change the visible option of the HUD.
+ * $gameHud.show = true;
+ * $gameHud.show = false;
+ *
+ * - plugin commands
+ * This plugin does not to provide the plugin commands.
+ *
+ */
+/*:ko
+ * RS_HUD_4m.js
  * @plugindesc 체력, 마력, 경험치를 표시하는 플러그인입니다.
  * 최대 4명까지 지원합니다.
  * @author 러닝은빛(biud436)
@@ -33,8 +102,8 @@
  * @default 255
  *
  * @param Anchor
- * @desc 좌측상단, 좌측하단, 우측상단, 우측하단
- * @default 좌측상단
+ * @desc LeftTop, LeftBottom, RightTop, RightBottom
+ * @default LeftTop
  *
  * @param preloadImportantFaces
  * @desc 기본 페이스칩을 미리 불러옵니다
@@ -62,7 +131,7 @@ function HUD() {
 function HUDFactory(stage) {
   this.stage = stage;
   this.drawAllHud = function() {
-    var items = ["좌측상단", "우측상단", "좌측하단", "우측하단"];
+    var items = ["LeftTop", "RightTop", "LeftBottom", "RightBottom"];
     if(this.stage.children.length > 0) {
       this.stage.removeChildren(0, this.stage.children.length);
     }
@@ -132,7 +201,7 @@ Object.defineProperty(HUDFactory.prototype, 'opacity', {
   var blurProcessing = Boolean(parameters['Gaussian Blur'] ==="true");
   var bShow = Boolean(parameters['Show'] ==="true");
   var nOpacity = Number(parameters['Opacity'] || 255 );
-  var szAnchor = String(parameters['Anchor'] || "좌측상단");
+  var szAnchor = String(parameters['Anchor'] || "LeftTop");
   var preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
 
   RS.HUD = RS.HUD || {};
@@ -146,7 +215,7 @@ Object.defineProperty(HUDFactory.prototype, 'opacity', {
   HUD.prototype.initialize = function(config) {
       Stage.prototype.initialize.call(this);
       this.createHud();
-      this.setAnchor(config.szAnchor || "좌측하단");
+      this.setAnchor(config.szAnchor || "LeftBottom");
       this.setMemberIndex(parseInt(config.nIndex) || 0);
       this.createFace();
       this.createHp();
@@ -158,10 +227,10 @@ Object.defineProperty(HUDFactory.prototype, 'opacity', {
 
   HUD.prototype.getAnchor = function(magnet) {
     var anchor = {
-    "좌측상단": {x: nPD, y: nPD},
-    "좌측하단": {x: nPD, y: Graphics.boxHeight - nHeight - nPD},
-    "우측상단": {x: Graphics.boxWidth - nWidth - nPD, y: nPD},
-    "우측하단": {x: Graphics.boxWidth - nWidth - nPD, y: Graphics.boxHeight - nHeight - nPD}
+    "LeftTop": {x: nPD, y: nPD},
+    "LeftBottom": {x: nPD, y: Graphics.boxHeight - nHeight - nPD},
+    "RightTop": {x: Graphics.boxWidth - nWidth - nPD, y: nPD},
+    "RightBottom": {x: Graphics.boxWidth - nWidth - nPD, y: Graphics.boxHeight - nHeight - nPD}
     };
     return anchor[magnet];
   };
