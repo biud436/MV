@@ -1708,4 +1708,88 @@ Window_Message.prototype.updatePlacement = function() {
       this._msgEvent = ev;
   };
 
+//===============================================================================
+// Add
+//===============================================================================
+  //
+  // /**
+  //  * @class Window_Message
+  //  */
+  //
+  //  var alias_Window_Message_startMessage2 = Window_Message.prototype.startMessage;
+  //  Window_Message.prototype.startMessage = function() {
+  //    alias_Window_Message_startMessage2.call(this);
+  //    this.setAlignCenter(this._textState);
+  //  };
+  //
+  //  /**
+  //   * @memberOf Window_Message
+  //   * @method calcBalloonRect
+  //   * @param text {String}
+  //   */
+  //  Window_Message.prototype.calcTextWidth = function(text) {
+  //      this.__textWidth = 0;
+  //      var tempText = text;
+  //      tempText = tempText.split(/[\r\n]+/);
+  //      tempText = tempText.sort(function(a, b) {
+  //          return b.length - a.length;
+  //      }.bind(this));
+  //      var tempText = this.getTextWidth(tempText[0]);
+  //      return this.__textWidth;
+  //  };
+  //
+  //  /**
+  //   * 텍스트의 폭을 계산합니다.
+  //   * @memberOf Window_Message
+  //   * @method getTextWidth
+  //   * @param textWidth {Number}
+  //   */
+  //  Window_Message.prototype.getTextWidth = function(text) {
+  //    text = text.replace(/\\/g, '\x1b');
+  //    text = text.replace(/\x1b\x1b/g, '\\');
+  //    text = text.replace(/(?:\x1bV|\x1b변수)\[(\d+)\]/gi, function() {
+  //        return $gameVariables.value(parseInt(arguments[1]));
+  //    }.bind(this));
+  //    text = text.replace(/(?:\x1bV|\x1b변수)\[(\d+)\]/gi, function() {
+  //        return $gameVariables.value(parseInt(arguments[1]));
+  //    }.bind(this));
+  //    text = text.replace(/(?:\x1bN|\x1b주인공)\[(\d+)\]/gi, function() {
+  //        return this.actorName(parseInt(arguments[1]));
+  //    }.bind(this));
+  //    text = text.replace(/(?:\x1bP|\x1b파티원)\[(\d+)\]/gi, function() {
+  //        return this.partyMemberName(parseInt(arguments[1]));
+  //    }.bind(this));
+  //    text = text.replace(/(?:\x1bG|\x1b골드)/gi, TextManager.currencyUnit);
+  //    text = text.replace(/\x1b말풍선\[(\d+)\]/gi, '');
+  //    text = text.replace(/\x1b이름\[(.+?)\]/gi, '');
+  //    text = text.replace(/(?:\x1bI|\x1b아이콘)\[(\d+)\]/g,function() {
+  //      this.__textWidth += Window_Base._iconWidth;
+  //      return '';
+  //    }.bind(this));
+  //    text = text.replace(/(?:\x1bC|\x1b색)\[(.+?)\]/gi,'');
+  //    text = text.replace(/(?:\x1b{|\x1b확대)/gi, '');
+  //    text = text.replace(/(?:\x1b}|\x1b축소)/gi, '');
+  //    text = text.replace(/\x1b속도\[(\d+)\]/gi, '');
+  //    text = text.replace(/\x1b크기\[(\d+)\]/gi, '');
+  //    text = text.replace(/\x1b테두리색\[(.+?)\]/gi, '');
+  //    text = text.replace(/\x1b테두리크기\[(\d+)\]/gi, '');
+  //    text = text.replace(/\x1b들여쓰기\[(\d+)\]/gi, '');
+  //    text = text.replace(/\x1b굵게!/gi, '');
+  //    text = text.replace(/\x1b이탤릭!/gi, '');
+  //    text = text.replace(/\x1b그레디언트<(.+)>/gi, '');
+  //    this.__textWidth += (this.textWidth(text) * 2);
+  //    return text;
+  //  };
+  //
+  //  Window_Message.prototype.processNewLine = function(textState) {
+  //     Window_Base.prototype.processNewLine.call(this, textState);
+  //     this.setAlignCenter(textState);
+  //  }
+  //
+  //  Window_Message.prototype.setAlignCenter = function(textState) {
+  //    textState.tx = this.calcTextWidth(textState.text);
+  //    textState.x = textState.tx / 4;
+  //    textState.left = textState.x;
+  //  }
+
 })();
