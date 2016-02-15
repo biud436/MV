@@ -1,18 +1,18 @@
 /*:
- * Event_Create.js
- * @plugindesc 이벤트 생성 플러그인입니다.
+ * RS_EventCreate.js
+ * @plugindesc Custom Event Create
  * @author biud436
  * @since 2015.10.16
  * @version 1.1
  * @help
- * <플러그인 커맨드>
- * 이벤트 생성 X좌표 Y좌표 캐릭터파일명 캐릭터인덱스
- * 이벤트 복제 X좌표 Y좌표 맵ID 이벤트ID
- * 이벤트 삭제 이벤트ID
+ * Plugin Commands
+ * Event Create X Y CharacterName CharacterIndex
+ * Event Copy X Y MapID EventID
+ * Event Delete EventID
  */
- 
-var RS = RS || {}; 
- 
+
+var RS = RS || {};
+
 Object.defineProperty(Array.prototype, "first", {
   get: function() {
     return this[0];
@@ -34,14 +34,14 @@ Array.prototype.delete = function(deleteItem) {
   );
   return tmp;
 };
-  
+
 (function() {
-  
+
   RS.instanceCreate = function(x, y, charName, charIdx) {
     var oEvent = $gameMap._events.last;
     var eventID = oEvent.eventId() + 1;
     var eventName = "EV" + String(eventID).padZero(3);
-    
+
     $dataMap.events.push(  {
       "id": eventID,
       "name": eventName,
@@ -111,9 +111,9 @@ Array.prototype.delete = function(deleteItem) {
       "x": x,
       "y": y
     });
-    
+
     return RS.instanceCopy(x, y, $gameMap.mapId(), eventID);
-    
+
   };
 
   RS.instanceCopy = function(x, y, mapID, eventID ) {
@@ -123,7 +123,7 @@ Array.prototype.delete = function(deleteItem) {
       _event.setupPageSettings();
       $gameMap._events.push(_event);
       SceneManager._scene._spriteset.createCharacters();
-      return $gameMap._events.last;      
+      return $gameMap._events.last;
     } else {
       this.getMapData(x, y, String(mapID), eventID);
     }
@@ -142,7 +142,7 @@ Array.prototype.delete = function(deleteItem) {
       };
     xhr.onerror = function() { throw new Error("맵 데이터를 로드하는데 실패 했습니다."); };
     xhr.send(null);
-  }; 
+  };
 
   RS.instanceDestroy = function(_event) {
     if(_event instanceof Game_Event)
@@ -154,35 +154,37 @@ Array.prototype.delete = function(deleteItem) {
       });
       SceneManager._scene.stage._spriteset.createLowerLayer();
     }
-  };  
-  
+  };
+
   var rsa_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     rsa_Game_Interpreter_pluginCommand.call(this, command, args);
-    if(command === "이벤트") {
-    
+    if(command === "이벤트" || command === "Event") {
+
       var item = (function() {
         var data = args.slice(1);
-        data.forEach(function(item,index) { 
-          data[index] = typeof(parseInt(item)) === 'number' ? parseInt(item) : String(item); 
+        data.forEach(function(item,index) {
+          data[index] = typeof(parseInt(item)) === 'number' ? parseInt(item) : String(item);
         }.bind(this));
         return data;
       })();
-               
+
       switch (args[0]) {
       case '생성':
+      case 'Create':
         RS.instanceCreate.apply(this, item);
         break;
       case '복제':
+      case 'Copy':
         RS.instanceCopy.apply(this, item);
         break;
       case '삭제':
+      case 'Delete':
         RS.instanceDestroy( this.character(item) );
         break;
       }
-      
+
     }
   };
  
 })();
- 
