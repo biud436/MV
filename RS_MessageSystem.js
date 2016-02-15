@@ -1,10 +1,11 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc 한글 메시지 시스템 (v0.0.5)
+ * @plugindesc 한글 메시지 시스템 (v0.0.6)
  * @author 러닝은빛(biud436)
  *-------------------------------------------------------------------------------
  * 업데이트 일지
  *-------------------------------------------------------------------------------
+ * 2016.02.15 - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
  * 2016.01.18 - 버그 픽스 (updateNameWindow, calcBalloonRect)
  * 2016.01.01 - 버그 픽스 (resizeMessageSystem)
  * 2015.12.03 - 말풍선 기능 추가
@@ -103,6 +104,8 @@
  *  \말풍선[이벤트의 ID]
  *  \말풍선[0]
  *  \말풍선[-1]
+ * \정렬자[1]
+ * \정렬자[2]
  */
 
  /**
@@ -290,6 +293,14 @@ var Color = Color || {};
    * @type Number
    */
   RS.__textStartX = Number(parameters['텍스트 시작 X'] || 192);
+
+  /**
+   * 페이스칩이 설정되어있을 때 텍스트의 시작 지점
+   * @memberOf RS
+   * @property __faceStartOriginX
+   * @type Number
+   */
+  RS.__faceStartOriginX = 168;
 
   /**
    * 표시 할 라인의 수
@@ -713,6 +724,7 @@ var Color = Color || {};
       this._waitTime = 0;
       this._gradientText = '';
       this._balloon = -2;
+      this._align = 0;
   }
 
   /**
@@ -789,6 +801,24 @@ var Color = Color || {};
   Game_Message.prototype.getBalloon = function(n) {
       return this._balloon;
   };
+
+  /**
+   * @memberOf Game_Message
+   * @method setAlign
+   * @param n {Number}
+   */
+  Game_Message.prototype.setAlign = function(n) {
+     this._align = n;
+  }
+
+  /**
+   * @memberOf Game_Message
+   * @method getAlign
+   * @param n {Number}
+   */
+  Game_Message.prototype.getAlign = function(n) {
+     return this._align;
+  }
 
   /**
    * @class Window_Message
@@ -1061,6 +1091,10 @@ Window_Message.prototype.updatePlacement = function() {
           $gameMessage.setBalloon(Number(arguments[1] || -2));
           return '';
       }.bind(this));
+      text = text.replace(/\x1b정렬자\[(\d+)]/gi, function() {
+          $gameMessage.setAlign(Number(arguments[1] || 0));
+          return '';
+      }.bind(this));
       return text;
   };
 
@@ -1157,7 +1191,7 @@ Window_Message.prototype.updatePlacement = function() {
       if(/^Big_/i.exec( $gameMessage.faceName() ) ) {
         return ($gameMessage.faceIndex() > 0) ? 0 : RS.__textStartX;
       } else {
-        return (($gameMessage.faceName()) ? 168 : 0);
+        return (($gameMessage.faceName()) ? RS.__faceStartOriginX : 0);
       }
   };
 
@@ -1286,6 +1320,7 @@ Window_Message.prototype.updatePlacement = function() {
     text = text.replace(/(?:\x1bG|\x1b골드)/gi, TextManager.currencyUnit);
     text = text.replace(/\x1b말풍선\[(\d+)\]/gi, '');
     text = text.replace(/\x1b이름\[(.+?)\]/gi, '');
+    text = text.replace(/\x1b정렬자\[(\d+)]/gi, '');
     text = text.replace(/(?:\x1bI|\x1b아이콘)\[(\d+)\]/g,'');
     text = text.replace(/(?:\x1bC|\x1b색)\[(.+?)\]/gi,'');
     text = text.replace(/(?:\x1b{|\x1b확대)/gi, '');
@@ -1578,6 +1613,7 @@ Window_Message.prototype.updatePlacement = function() {
     text = text.replace(/(?:\x1bG|\x1b골드)/gi, TextManager.currencyUnit);
     text = text.replace(/\x1b말풍선\[(\d+)\]/gi, '');
     text = text.replace(/\x1b이름\[(.+?)\]/gi, '');
+    text = text.replace(/\x1b정렬자\[(\d+)]/gi, '');
     text = text.replace(/(?:\x1bI|\x1b아이콘)\[(\d+)\]/g,'');
     text = text.replace(/(?:\x1b{|\x1b확대)/gi, '');
     text = text.replace(/(?:\x1b}|\x1b축소)/gi, '');
@@ -1709,87 +1745,140 @@ Window_Message.prototype.updatePlacement = function() {
   };
 
 //===============================================================================
-// Add
+// 정렬을 위한 추가 함수들입니다.
 //===============================================================================
-  //
-  // /**
-  //  * @class Window_Message
-  //  */
-  //
-  //  var alias_Window_Message_startMessage2 = Window_Message.prototype.startMessage;
-  //  Window_Message.prototype.startMessage = function() {
-  //    alias_Window_Message_startMessage2.call(this);
-  //    this.setAlignCenter(this._textState);
-  //  };
-  //
-  //  /**
-  //   * @memberOf Window_Message
-  //   * @method calcBalloonRect
-  //   * @param text {String}
-  //   */
-  //  Window_Message.prototype.calcTextWidth = function(text) {
-  //      this.__textWidth = 0;
-  //      var tempText = text;
-  //      tempText = tempText.split(/[\r\n]+/);
-  //      tempText = tempText.sort(function(a, b) {
-  //          return b.length - a.length;
-  //      }.bind(this));
-  //      var tempText = this.getTextWidth(tempText[0]);
-  //      return this.__textWidth;
-  //  };
-  //
-  //  /**
-  //   * 텍스트의 폭을 계산합니다.
-  //   * @memberOf Window_Message
-  //   * @method getTextWidth
-  //   * @param textWidth {Number}
-  //   */
-  //  Window_Message.prototype.getTextWidth = function(text) {
-  //    text = text.replace(/\\/g, '\x1b');
-  //    text = text.replace(/\x1b\x1b/g, '\\');
-  //    text = text.replace(/(?:\x1bV|\x1b변수)\[(\d+)\]/gi, function() {
-  //        return $gameVariables.value(parseInt(arguments[1]));
-  //    }.bind(this));
-  //    text = text.replace(/(?:\x1bV|\x1b변수)\[(\d+)\]/gi, function() {
-  //        return $gameVariables.value(parseInt(arguments[1]));
-  //    }.bind(this));
-  //    text = text.replace(/(?:\x1bN|\x1b주인공)\[(\d+)\]/gi, function() {
-  //        return this.actorName(parseInt(arguments[1]));
-  //    }.bind(this));
-  //    text = text.replace(/(?:\x1bP|\x1b파티원)\[(\d+)\]/gi, function() {
-  //        return this.partyMemberName(parseInt(arguments[1]));
-  //    }.bind(this));
-  //    text = text.replace(/(?:\x1bG|\x1b골드)/gi, TextManager.currencyUnit);
-  //    text = text.replace(/\x1b말풍선\[(\d+)\]/gi, '');
-  //    text = text.replace(/\x1b이름\[(.+?)\]/gi, '');
-  //    text = text.replace(/(?:\x1bI|\x1b아이콘)\[(\d+)\]/g,function() {
-  //      this.__textWidth += Window_Base._iconWidth;
-  //      return '';
-  //    }.bind(this));
-  //    text = text.replace(/(?:\x1bC|\x1b색)\[(.+?)\]/gi,'');
-  //    text = text.replace(/(?:\x1b{|\x1b확대)/gi, '');
-  //    text = text.replace(/(?:\x1b}|\x1b축소)/gi, '');
-  //    text = text.replace(/\x1b속도\[(\d+)\]/gi, '');
-  //    text = text.replace(/\x1b크기\[(\d+)\]/gi, '');
-  //    text = text.replace(/\x1b테두리색\[(.+?)\]/gi, '');
-  //    text = text.replace(/\x1b테두리크기\[(\d+)\]/gi, '');
-  //    text = text.replace(/\x1b들여쓰기\[(\d+)\]/gi, '');
-  //    text = text.replace(/\x1b굵게!/gi, '');
-  //    text = text.replace(/\x1b이탤릭!/gi, '');
-  //    text = text.replace(/\x1b그레디언트<(.+)>/gi, '');
-  //    this.__textWidth += (this.textWidth(text) * 2);
-  //    return text;
-  //  };
-  //
-  //  Window_Message.prototype.processNewLine = function(textState) {
-  //     Window_Base.prototype.processNewLine.call(this, textState);
-  //     this.setAlignCenter(textState);
-  //  }
-  //
-  //  Window_Message.prototype.setAlignCenter = function(textState) {
-  //    textState.tx = this.calcTextWidth(textState.text);
-  //    textState.x = textState.tx / 4;
-  //    textState.left = textState.x;
-  //  }
+
+  /**
+   * @class Window_Message
+   */
+
+   /**
+    * 가운데 정렬 여부를 체크합니다.
+    * @method startMessage
+    */
+   var alias_Window_Message_startMessage_setAlignCenter = Window_Message.prototype.startMessage;
+   Window_Message.prototype.startMessage = function() {
+     alias_Window_Message_startMessage_setAlignCenter.call(this);
+
+     // 텍스트를 정렬합니다
+     switch($gameMessage.getAlign()) {
+     case 1:
+       this.setAlignCenter(this._textState);
+       break;
+     case 2:
+       this.setAlignRight(this._textState);
+       break;
+     }
+
+   };
+
+   /**
+    * @method calcBalloonRect
+    * @param text {String}
+    * @return this._textWidth {Number}
+    */
+   Window_Message.prototype.calcTextWidth = function(text) {
+       this.__textWidth = 0;
+       var tempText = text;
+
+       tempText = tempText.split(/[\r\n]+/);
+
+       // 정렬을 하면 긴 문장을 찾게 됩니다
+       tempText = tempText.sort(function(a, b) {
+           return b.length - a.length;
+       }.bind(this));
+
+       // 폭이 계산됩니다
+       this.getTextWidth(tempText[0]);
+
+       return this.__textWidth;
+   };
+
+   /**
+    * 이 함수는 모든 텍스트 코드를 제외한 텍스트의 실질적인 폭을 계산합니다.
+    * @memberOf Window_Message
+    * @method getTextWidth
+    * @param text {String}
+    * @return text {String}
+    */
+   Window_Message.prototype.getTextWidth = function(text) {
+     text = text.replace(/\\/g, '\x1b');
+     text = text.replace(/\x1b\x1b/g, '\\');
+     text = text.replace(/(?:\x1bV|\x1b변수)\[(\d+)\]/gi, function() {
+         return $gameVariables.value(parseInt(arguments[1]));
+     }.bind(this));
+     text = text.replace(/(?:\x1bV|\x1b변수)\[(\d+)\]/gi, function() {
+         return $gameVariables.value(parseInt(arguments[1]));
+     }.bind(this));
+     text = text.replace(/(?:\x1bN|\x1b주인공)\[(\d+)\]/gi, function() {
+         return this.actorName(parseInt(arguments[1]));
+     }.bind(this));
+     text = text.replace(/(?:\x1bP|\x1b파티원)\[(\d+)\]/gi, function() {
+         return this.partyMemberName(parseInt(arguments[1]));
+     }.bind(this));
+     text = text.replace(/(?:\x1bG|\x1b골드)/gi, TextManager.currencyUnit);
+     text = text.replace(/\x1b말풍선\[(\d+)\]/gi, '');
+     text = text.replace(/\x1b이름\[(.+?)\]/gi, '');
+     text = text.replace(/\x1b정렬자\[(\d+)]/gi, '');
+     text = text.replace(/(?:\x1bI|\x1b아이콘)\[(\d+)\]/g,function() {
+       this.__textWidth += Window_Base._iconWidth;
+       return '';
+     }.bind(this));
+     text = text.replace(/(?:\x1bC|\x1b색)\[(.+?)\]/gi,'');
+     text = text.replace(/(?:\x1b{|\x1b확대)/gi, '');
+     text = text.replace(/(?:\x1b}|\x1b축소)/gi, '');
+     text = text.replace(/\x1b속도\[(\d+)\]/gi, '');
+     text = text.replace(/\x1b크기\[(\d+)\]/gi, '');
+     text = text.replace(/\x1b테두리색\[(.+?)\]/gi, '');
+     text = text.replace(/\x1b테두리크기\[(\d+)\]/gi, '');
+     text = text.replace(/\x1b들여쓰기\[(\d+)\]/gi, '');
+     text = text.replace(/\x1b굵게!/gi, '');
+     text = text.replace(/\x1b이탤릭!/gi, '');
+     text = text.replace(/\x1b그레디언트<(.+)>/gi, '');
+     this.__textWidth += (this.textWidth(text) * 2);
+     return text;
+   };
+
+   /**
+    *
+    * @method processNewLine
+    * @param textState {Object}
+    */
+   Window_Message.prototype.processNewLine = function(textState) {
+      Window_Base.prototype.processNewLine.call(this, textState);
+
+      // 텍스트를 정렬합니다
+      switch($gameMessage.getAlign()) {
+      case 1:
+        this.setAlignCenter(this._textState);
+        break;
+      case 2:
+        this.setAlignRight(this._textState);
+        break;
+      }
+
+   }
+
+   /**
+    * 텍스트를 가운데로 정렬하는 함수입니다.
+    * @method setAlignCenter
+    * @param textState {Object}
+    */
+   Window_Message.prototype.setAlignCenter = function(textState) {
+     textState.tx = this.calcTextWidth(textState.text);
+     textState.x = ( this.newLineX() + this.contentsWidth() ) / 2 - textState.tx / 4;
+     textState.left = textState.x;
+   }
+
+   /**
+    * 텍스트를 오른쪽으로 정렬하는 함수입니다.
+    * @method setAlignRight
+    * @param textState {Object}
+    */
+   Window_Message.prototype.setAlignRight = function(textState) {
+     textState.tx = this.calcTextWidth(textState.text);
+     textState.x = ( this.contentsWidth() ) - textState.tx / 2;
+     textState.left = textState.x;
+   }
 
 })();
