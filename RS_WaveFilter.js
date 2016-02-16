@@ -1,9 +1,11 @@
 /*:
  * RS_WaveFilter.js
- * @plugindesc RS_WaveFilter.js(v1.3)
+ * @plugindesc RS_WaveFilter.js(v1.3.1)
  * @date 2016.01.12
- * @version 1.3
+ * @version 1.3.1
  *
+ * 2016.02.16 - Save the plugin's configuration in the memory when you enable
+ * to use the plugin.
  * 2016.01.22 - Save & Load Bug Fixed.
  *
  * @author biud436
@@ -317,6 +319,7 @@ RS.WaveConfig = RS.WaveConfig || {};
              this._waveFilter.padding = Graphics.boxHeight;
            }
            this.filters = [this._waveFilter];
+           RS.WaveConfig.setWaveConfig(this.makeWaveConfig());
          } else {
            this.filters = this.filters.filter(function(i) {
              if(i.constructor.name === 'WaveFilter') {
@@ -340,6 +343,7 @@ RS.WaveConfig = RS.WaveConfig || {};
             if(!!RS.WaveConfig.getTilemap().wave) {
                 RS.WaveConfig.getTilemap().wave = false;
                 RS.WaveConfig.getTilemap().filters = null;
+                RS.WaveConfig._config = null;
             }
             break;
           case 'waveHeight':
