@@ -11,19 +11,48 @@
  * @author biud436
  *
  * @help
- * sprite.wave = true;
  *
+ * The following code applies the wave effect to Sprite.
+ *
+ * var bitmap = ImageManager.loadSvEnemy('Death');
+ * var sprite = new Sprite(bitmap);
+ * SceneManager._scene.addChild(sprite);
+ * sprite.wave = true;
+ * // sprite._waveFilter.UVSpeed = 0.5
+ * // sprite._waveFrequency = 0.02
+ * // sprite._waveHeight = 1
+ *
+ * The following plugin commands applies the wave effect to Tilemap.
  * This plugin contains these six types the plugin commands.
  *
- * - Plugin Command
+ * This plugin commands allows you to enable or disable the wave effect
+ *
  * Tilemap_Wave Enable
  * Tilemap_Wave Disable
- * Tilemap_Wave waveHeight x
- * Tilemap_Wave waveSpeed x
- * Tilemap_Wave waveFrequency x
- * Tilemap_Wave UVSpeed x
  *
- * X is a floating-point number between 0 and 1.
+ * This plugin commands allows you to set the height of the wave effect.
+ * the x is a floating-point number between 0 and 1.
+ * Default value is to 0.5
+ *
+ * Tilemap_Wave waveHeight x
+ *
+ * This plugin commands allows you to set the speed of the wave effect.
+ * the x is a floating-point number between 0 and 2.
+ * Default value is to 2.0. But the fragment shader does not use this value.
+ *
+ * Tilemap_Wave waveSpeed x
+ *
+ * This plugin commands allows you to set the amplitude of the wave effect.
+ * the x is a floating-point number between 0 and 1.
+ * Default value is to 0.02
+ *
+ * Tilemap_Wave waveFrequency x
+ *
+ * This plugin commands allows you to set the UV speed of the wave effect.
+ * the x is a floating-point number between 0 and 1.
+ * Default value is to 0.25
+ *
+ * Tilemap_Wave UVSpeed x
  *
  */
 
