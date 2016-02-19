@@ -1,7 +1,7 @@
 /*:
  * EventNameDraw.js
- * 
- * @version 1.2 
+ *
+ * @version 1.2
  *
  * @plugindesc 이벤트 이름 표시하기
  * @author biud436
@@ -15,13 +15,13 @@
  * @default true
  *
  * @help
- * 
+ *
  */
- 
+
 /**
  * @class Sprite_Name
  * @extends Sprite
- */  
+ */
 function Sprite_Name() {
   this.initialize.apply(this, arguments);
 };
@@ -38,7 +38,7 @@ function Sprite_Name() {
     this.setTextSize(data.textSize);
     this.setTextColor(data.textColor);
     this.setTextOutlineWidth(data.outlineWidth);
-    this.setPosition();  
+    this.setPosition();
     this.setAnchor(data.anchor);
     this.drawName();
     this._visible = this.visible = this.isReady();
@@ -72,7 +72,7 @@ function Sprite_Name() {
 
   /**
    * @method isReady
-   */ 
+   */
   Sprite_Name.prototype.isReady = function() {
     return (this._member.findProperPageIndex() > -1) && (!this.isTransparent()) && (!this.isErased());
   };
@@ -96,11 +96,11 @@ function Sprite_Name() {
   };
 
 })();
- 
+
 /**
  * @class Sprite_PlayerName
  * @extends Sprite_Name
- */ 
+ */
 function Sprite_PlayerName() {
   this.initialize.apply(this, arguments);
 };
@@ -114,7 +114,7 @@ function Sprite_PlayerName() {
     Sprite_Name.prototype.initialize.call(this, data);
     this._visible = this.visible = this.isReady();
   };
-  
+
   Sprite_PlayerName.prototype.setPosition = function() {
     this.x = this._member.screenX();
     this.y = this._member.screenY() - (this._offsetY() || 0) + 10;
@@ -132,7 +132,7 @@ function Sprite_PlayerName() {
     var name = $gameParty.members()[0].name() || "";
     this.bitmap.drawText(name, 0, 0, 120, 40, 'center');
   };
-   
+
   Sprite_PlayerName.prototype.update = function() {
     Sprite.prototype.update.call(this);
     this.x =  this._member.screenX();
@@ -140,120 +140,120 @@ function Sprite_PlayerName() {
     if(this._visible !== this.isReady()) {
       this.visible = this._visible = this.isReady();
     }
-  }; 
-  
+  };
+
 }();
- 
+
 
 (function() {
 
-  var parameters = PluginManager.parameters('EventNameDraw');
+  var parameters = PluginManager.parameters('RS_EventName');
   var textSize = Number(parameters['textSize'] || 14 );
   var colorMatch = /@color\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/
   var showPlayerText = String(parameters['Show Player Text'] || 'true');
-  
+
   /**
    * @method drawName
-   */    
-  Sprite_Character.prototype.drawName = function(member) {     
-    
+   */
+  Sprite_Character.prototype.drawName = function(member) {
+
     if(this._tileId > 0) return;
-    
+
     // Game_Event
     if((member instanceof Game_Event)) {
       if(member._erased) return;
       if(member.isTransparent()) return;
-      if(!member.event().note.match(colorMatch)) return;    
+      if(!member.event().note.match(colorMatch)) return;
       this.drawEventName(member);
-      
+
     // Game_Player
     } else if((member instanceof Game_Player) &&
       showPlayerText === 'true') {
       this.drawPlayerName();
-    }    
+    }
   };
- 
+
   /**
    * @method drawPlayerName
-   */     
+   */
   Sprite_Character.prototype.drawPlayerName = function() {
     this._nameSprite = new Sprite_PlayerName({
       'member': $gamePlayer,
       'textSize': textSize,
-      'textColor': [255,255,255],      
+      'textColor': [255,255,255],
       'outlineWidth': 2,
       'anchor': new Point(0.5, 1.0),
       'height': $gameMap.tileHeight.bind(this)
     });
     this._name = this.getName();
-    this._nameSprite .z = 260;     
-    this.parent.addChild(this._nameSprite);  
+    this._nameSprite .z = 260;
+    this.parent.addChild(this._nameSprite);
   };
-  
+
   /**
    * @method drawEventName
    * @param {Game_Event|Game_Player}
-   */      
+   */
   Sprite_Character.prototype.drawEventName = function(member) {
-      
+
       var color = [];
       color.push(Number(RegExp.$1 || 255));
       color.push(Number(RegExp.$2 || 255));
       color.push(Number(RegExp.$3 || 255));
-      
+
       this._nameSprite = new Sprite_Name({
         'member': member,
         'textSize': textSize,
-        'textColor': color,      
+        'textColor': color,
         'outlineWidth': 2,
         'anchor': new Point(0.5, 1.0),
         'height': this.patternHeight.bind(this)
       });
-      
+
       this._nameSprite.z = 250;
       this._name = this.getName();
-      
-      this.parent.addChild(this._nameSprite);      
-      
+
+      this.parent.addChild(this._nameSprite);
+
   };
-  
+
   /**
    * @method getName
    * @return {Number}
-   */   
+   */
   Sprite_Character.prototype.getName = function() {
-  
+
     // Game_Player
     if(this._character instanceof Game_Player) {
       return $gameParty.members()[0].name();
-      
+
     // Game_Event
     } else if(this._character instanceof Game_Event) {
-      return this._character.event().name; 
+      return this._character.event().name;
     }
   };
-  
+
   Sprite_Character.prototype.redrawName = function() {
-    
+
     if(this._tileId > 0) return false;
     if(!this._nameSprite) return false;
-    
+
     if( this._name !== this.getName() ) {
       this._nameSprite.bitmap.clear();
       this.drawName(this._character);
     }
   };
-  
+
   var aliasUpdateBitmap = Sprite_Character.prototype.updateBitmap;
   Sprite_Character.prototype.updateBitmap = function() {
     aliasUpdateBitmap.call(this);
     this.redrawName();
   };
-  
+
   var alias2 = Sprite_Character.prototype.setCharacterBitmap;
   Sprite_Character.prototype.setCharacterBitmap = function() {
     alias2.call(this);
     this.drawName(this._character);
   };
-  
-})(); 
+
+})();
