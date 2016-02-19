@@ -1,14 +1,27 @@
 /*:
  * RS_EventCreate.js
- * @plugindesc Custom Event Create
+ * @plugindesc It is possible to create or copy or delete an event
+ * through the plugin command.
+ *
  * @author biud436
  * @since 2015.10.16
- * @version 1.1
+ * @version 1.2
+ *
  * @help
- * Plugin Commands
+ *
+ * - Plugin Command
+ * This plugin command creates a new event on currently map.
  * Event Create X Y CharacterName CharacterIndex
+ *
+ * This plugin command is copying an event.
  * Event Copy X Y MapID EventID
+ *
+ * This plugin command deletes a previously created event on currently map.
  * Event Delete EventID
+ *
+ * - Change log
+ * 2016.01.19 - Bug Fixed.
+ *
  */
 
 var RS = RS || {};
@@ -78,12 +91,12 @@ Array.prototype.delete = function(deleteItem) {
         {
           "code": 401,
           "indent": 0,
-          "parameters": ["\\c[4]-테스트-\\c[0]"]
+          "parameters": ["\\c[4]-TEST-\\c[0]"]
         },
         {
           "code": 401,
           "indent": 0,
-          "parameters": ["안녕하세요. 테스트 캐릭터입니다. "]
+          "parameters": ["TEST"]
         },
         {
           "code": 0,
@@ -125,22 +138,32 @@ Array.prototype.delete = function(deleteItem) {
       SceneManager._scene._spriteset.createCharacters();
       return $gameMap._events.last;
     } else {
-      this.getMapData(x, y, String(mapID), eventID);
+      this.getMapData(x, y, mapID, eventID);
     }
   };
 
   RS.getMapData = function(x, y, mapID, eventID) {
+      var self = this;
       var xhr = new XMLHttpRequest();
-      var url = 'data/' + "Map" + mapID.padZero(3) + ".json";
+      var url = 'data/' + "Map" + "%1".format(mapID).padZero(3) + ".json";
       xhr.open('GET', url);
       xhr.overrideMimeType('application/json');
       xhr.onload = function() {
           if (xhr.status < 400) {
-              $dataMap.events.push(JSON.parse(xhr.responseText).events[eventID]);
-              this.instanceCopy(x, y, $gameMap.mapId(), $gameMap._events.last.eventId() + 1);
+              var item = JSON.parse(xhr.responseText);
+              var event = item.events[eventID];
+              event.id = $gameMap.events().length + 1;
+              $dataMap.events[event.id] = event;
+              self.instanceCopy(x, y, $gameMap.mapId(), event.id).setCustomData(event);
           }
-      };
-    xhr.onerror = function() { throw new Error("맵 데이터를 로드하는데 실패 했습니다."); };
+      }
+    xhr.onerror = function() {
+      if($gameSystem.isKorean()) {
+        throw new Error("맵 데이터를 로드하는데 실패 했습니다.");
+      } else {
+        throw new Error('Failed to load: ' + DataManager._errorUrl);
+      }
+    };
     xhr.send(null);
   };
 
@@ -156,35 +179,56 @@ Array.prototype.delete = function(deleteItem) {
     }
   };
 
-  var rsa_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    rsa_Game_Interpreter_pluginCommand.call(this, command, args);
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
     if(command === "이벤트" || command === "Event") {
-
-      var item = (function() {
-        var data = args.slice(1);
-        data.forEach(function(item,index) {
-          data[index] = typeof(parseInt(item)) === 'number' ? parseInt(item) : String(item);
-        }.bind(this));
-        return data;
-      })();
-
       switch (args[0]) {
       case '생성':
       case 'Create':
-        RS.instanceCreate.apply(this, item);
+        RS.instanceCreate(Number(args[1]), Number(args[2]), args[3], Number(args[4]));
         break;
       case '복제':
       case 'Copy':
-        RS.instanceCopy.apply(this, item);
+        RS.instanceCopy(Number(args[1]), Number(args[2]), Number(args[3]), Number(args[4]));
         break;
       case '삭제':
       case 'Delete':
-        RS.instanceDestroy( this.character(item) );
+        RS.instanceDestroy( this.character(Number(args[1])) );
         break;
       }
 
     }
   };
- 
+
+  //============================================================================
+  // Game_Event
+  //============================================================================
+
+  var alias_Game_Event_initialize = Game_Event.prototype.initialize;
+  Game_Event.prototype.initialize = function(mapId, eventId) {
+      alias_Game_Event_initialize.call(this, mapId, eventId);
+      this._isCustomData = false;
+  };
+
+  Game_Event.prototype.setCustomData = function(data) {
+    if(event) {
+      this._isCustomData = true;
+      this._customData = data;
+    }
+  }
+
+  Game_Event.prototype.event = function() {
+    if(this._isCustomData) {
+      return this._customData;
+    } else {
+      return $dataMap.events[this._eventId];
+    }
+  };
+
+
 })();
