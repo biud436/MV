@@ -20,7 +20,7 @@
  * Event Delete EventID
  *
  * - Change log
- * 2016.01.19 - Bug Fixed.
+ * 2016.02.19 - Bug Fixed.
  *
  */
 
