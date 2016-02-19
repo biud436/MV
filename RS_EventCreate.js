@@ -132,7 +132,7 @@ Array.prototype.delete = function(deleteItem) {
   RS.instanceCopy = function(x, y, mapID, eventID ) {
     if($gameMap.mapId() === mapID) {
       var _event = new Game_Event(mapID || $gameMap.mapId(), eventID || 1);
-      _event.setPosition(x || $gamePlayer._x, y || $gamePlayer._y + 1);
+      _event.setPosition(x, y);
       _event.setupPageSettings();
       $gameMap._events.push(_event);
       SceneManager._scene._spriteset.createCharacters();
