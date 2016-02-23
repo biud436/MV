@@ -38,11 +38,11 @@ RS.Game_Variables = RS.Game_Variables || {};
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
     if(command === "변수" || command === "Var") {
       switch (args[0].toLowerCase()) {
-        case '최소값':
+        case '최솟값':
         case 'Min':
           RS.Game_Variables._min = Number(args[1] || 0);
           break;
-        case '최대값':
+        case '최댓값':
         case 'Max':
           RS.Game_Variables._max = Number(args[1] || 999);
           break;
