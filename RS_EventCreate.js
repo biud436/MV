@@ -5,7 +5,7 @@
  *
  * @author biud436
  * @since 2015.10.16
- * @version 1.2
+ * @version 1.3
  *
  * @help
  *
@@ -21,6 +21,7 @@
  *
  * - Change log
  * 2016.02.19 - Bug Fixed.
+ * 2016.02.23 - Bug Fixed.
  *
  */
 
@@ -51,11 +52,10 @@ Array.prototype.delete = function(deleteItem) {
 (function() {
 
   RS.instanceCreate = function(x, y, charName, charIdx) {
-    var oEvent = $gameMap._events.last;
-    var eventID = oEvent.eventId() + 1;
+    var eventID = $gameMap.events().length + 1;
     var eventName = "EV" + String(eventID).padZero(3);
 
-    $dataMap.events.push(  {
+    var event = {
       "id": eventID,
       "name": eventName,
       "note": "",
@@ -123,9 +123,11 @@ Array.prototype.delete = function(deleteItem) {
       }],
       "x": x,
       "y": y
-    });
+    };
 
-    return RS.instanceCopy(x, y, $gameMap.mapId(), eventID);
+    $dataMap.events[event.id] = event;
+
+    return RS.instanceCopy(x, y, $gameMap.mapId(), eventID, event);
 
   };
 
@@ -133,7 +135,8 @@ Array.prototype.delete = function(deleteItem) {
     if($gameMap.mapId() === mapID) {
       var _event = new Game_Event(mapID || $gameMap.mapId(), eventID || 1);
       _event.setPosition(x, y);
-      _event.setupPageSettings();
+      if(arguments[4]) _event.setCustomData(arguments[4]);
+      _event.refresh();
       $gameMap._events.push(_event);
       SceneManager._scene._spriteset.createCharacters();
       return $gameMap._events.last;
@@ -216,9 +219,10 @@ Array.prototype.delete = function(deleteItem) {
   };
 
   Game_Event.prototype.setCustomData = function(data) {
-    if(event) {
+    if(data) {
       this._isCustomData = true;
       this._customData = data;
+      return this;
     }
   }
 
