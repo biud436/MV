@@ -1,12 +1,12 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc This plugin provides the HUD, That displays the HP and
- * MP and EXP and Level, on the screen.
+ * @plugindesc This plugin provides the HUD that displays the HP and
+ * MP and EXP and Level, on the screen. (v1.0.1)
  *
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.0
+ * @version 1.0.1
  *
  * @param Width
  * @desc Width
@@ -44,7 +44,7 @@
  * @default ['Actor1', 'Actor2', 'Actor3']
  *
  * @help
- * You'll have to download the attached file by clicking the link. Downloads
+ * You have to download the attached file by clicking the link. Download
  * the resource and place it in your img/pictures folder. You have to download
  * the plugin and put it in your js/plugins folder. You should allow the plugin
  * to pre-load the resources by setting preloadImportantFaces parameter.
@@ -64,7 +64,13 @@
  * $gameHud.show = false;
  *
  * - plugin commands
- * This plugin does not to provide the plugin commands.
+ *
+ * RS_HUD Opacity x
+ * the x is number value between 0 and 255.
+ *
+ * RS_HUD Visible true
+
+ * RS_HUD Visible false
  *
  */
 /*:ko
@@ -117,7 +123,14 @@
  * $gameHud.show
  *
  * <플러그인 커맨드>
- * - 미지원
+ * RS_HUD Opacity x
+ * x 는 0 ~ 255 사이의 정수입니다.
+ *
+ * RS_HUD Visible true
+ * 화면에서 HUD 를 없앱니다.
+ *
+ * RS_HUD Visible false
+ * 화면에 HUD 를 표시합니다.
  *
  */
 
@@ -503,5 +516,20 @@ Object.defineProperty(HUDFactory.prototype, 'opacity', {
       ImageManager.loadFace(i);
     }.bind(this));
   }
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+      alias_pluginCommand.call(this, command, args);
+      if(command === "RS_HUD") {
+        switch (args[0].toLowerCase()) {
+          case 'Opacity':
+            $gameHud.opacity = Number(args[1]);
+            break;
+          case 'Visible':
+            $gameHud.visible = Boolean(args[1] === "true");
+            break;
+        }
+      }
+  };
 
 })();
