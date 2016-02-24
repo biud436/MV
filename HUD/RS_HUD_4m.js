@@ -519,14 +519,14 @@ Object.defineProperty(HUDFactory.prototype, 'opacity', {
 
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_pluginCommand.call(this, command, args);
+      alias_Game_Interpreter_pluginCommand.call(this, command, args);
       if(command === "RS_HUD") {
         switch (args[0].toLowerCase()) {
-          case 'Opacity':
+          case 'opacity':
             $gameHud.opacity = Number(args[1]);
             break;
-          case 'Visible':
-            $gameHud.visible = Boolean(args[1] === "true");
+          case 'visible':
+            $gameHud.show = Boolean(args[1] === "true");
             break;
         }
       }
