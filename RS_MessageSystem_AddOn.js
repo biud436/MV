@@ -58,7 +58,7 @@
    */
   Window_Message.prototype.updateBalloonPosition = function() {
 
-      // -2 ¶ó¸é ÀÌ ÇÔ¼ö¸¦ Ã³¸®ÇÏÁö ¾Ê½À´Ï´Ù.
+      // -2 ë¼ë©´ ì´ í•¨ìˆ˜ë¥¼ ì²˜ë¦¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
       if($gameMessage.getBalloon() === -2) {
           this.updatePlacement();
           return;
@@ -73,11 +73,11 @@
             $gameMap.camTargetSet($gamePlayer, 800);
           }
 
-          // ¸»Ç³¼± ¼ÒÀ¯ÀÚÀÇ È­¸é ÁÂÇ¥
+          // ë§í’ì„  ì†Œìœ ìì˜ í™”ë©´ ì¢Œí‘œ
           var mx = $gameMap.getMsgOwner().screenX();
           var my = $gameMap.getMsgOwner().screenY();
 
-          // ¸»Ç³¼± À§Ä¡ ¹× Å©±â ¼³Á¤ (È­¸é ³»¿¡ °¡µÎÁö ¾Ê½À´Ï´Ù)
+          // ë§í’ì„  ìœ„ì¹˜ ë° í¬ê¸° ì„¤ì • (í™”ë©´ ë‚´ì— ê°€ë‘ì§€ ì•ŠìŠµë‹ˆë‹¤)
           this.x =  mx - (this._bWidth / 2);
           this.y =  my - this._bHeight - $gameMap.tileHeight();
           this.width = this._bWidth;
@@ -87,7 +87,7 @@
 
       }.bind(this));
 
-      // 1ÇÁ·¹ÀÓ ´ë±â
+      // 1í”„ë ˆì„ ëŒ€ê¸°
       this.startWait(1);
 
   };
@@ -115,11 +115,11 @@
 
   // Window_Message.prototype.setBalloonTargetPosition = function(target) {
   //
-  //   // ¸»Ç³¼± ¼ÒÀ¯ÀÚÀÇ È­¸é ÁÂÇ¥
+  //   // ë§í’ì„  ì†Œìœ ìì˜ í™”ë©´ ì¢Œí‘œ
   //   var mx = target.screenX();
   //   var my = target.screenY();
   //
-  //   // ¸»Ç³¼± À§Ä¡ ¹× Å©±â ¼³Á¤ (È­¸é ³»¿¡ °¡µÎÁö ¾Ê½À´Ï´Ù)
+  //   // ë§í’ì„  ìœ„ì¹˜ ë° í¬ê¸° ì„¤ì • (í™”ë©´ ë‚´ì— ê°€ë‘ì§€ ì•ŠìŠµë‹ˆë‹¤)
   //   this.x =  mx - (this._bWidth / 2);
   //   this.y =  my - this._bHeight - $gameMap.tileHeight();
   //   this.width = this._bWidth;
