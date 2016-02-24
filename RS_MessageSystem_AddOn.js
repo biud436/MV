@@ -4,11 +4,11 @@
  * @author biud436
  * @help
  *
- * ì´ í”ŒëŸ¬ê·¸ì¸ì€ 'GALV_CamControl.js' ì„ í•„ìš”ë¡œ í•©ë‹ˆë‹¤.
- *
  * This plugin requires 'GALV_CamControl.js' plugins.
  *
  * link : http://galvs-scripts.com/category/rmmv-plugins/mv-event-utility/#post-1511
+ *
+ * 2016.02.24 - Bug Fixed
  *
  */
 
@@ -58,7 +58,7 @@
    */
   Window_Message.prototype.updateBalloonPosition = function() {
 
-      // -2 ë¼ë©´ ì´ í•¨ìˆ˜ë¥¼ ì²˜ë¦¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
+      // -2 ¶ó¸é ÀÌ ÇÔ¼ö¸¦ Ã³¸®ÇÏÁö ¾Ê½À´Ï´Ù.
       if($gameMessage.getBalloon() === -2) {
           this.updatePlacement();
           return;
@@ -73,11 +73,11 @@
             $gameMap.camTargetSet($gamePlayer, 800);
           }
 
-          // ë§í’ì„  ì†Œìœ ìì˜ í™”ë©´ ì¢Œí‘œ
+          // ¸»Ç³¼± ¼ÒÀ¯ÀÚÀÇ È­¸é ÁÂÇ¥
           var mx = $gameMap.getMsgOwner().screenX();
           var my = $gameMap.getMsgOwner().screenY();
 
-          // ë§í’ì„  ìœ„ì¹˜ ë° í¬ê¸° ì„¤ì • (í™”ë©´ ë‚´ì— ê°€ë‘ì§€ ì•ŠìŠµë‹ˆë‹¤)
+          // ¸»Ç³¼± À§Ä¡ ¹× Å©±â ¼³Á¤ (È­¸é ³»¿¡ °¡µÎÁö ¾Ê½À´Ï´Ù)
           this.x =  mx - (this._bWidth / 2);
           this.y =  my - this._bHeight - $gameMap.tileHeight();
           this.width = this._bWidth;
@@ -87,7 +87,7 @@
 
       }.bind(this));
 
-      // 1í”„ë ˆì„ ëŒ€ê¸°
+      // 1ÇÁ·¹ÀÓ ´ë±â
       this.startWait(1);
 
   };
@@ -97,7 +97,10 @@
   }
 
   Game_Map.prototype.callBalloonPosition = function() {
-    if(!!this._callbackFunc) this._callbackFunc();
+    if(!!this._callbackFunc) {
+      this._callbackFunc();
+      this._callbackFunc = null;
+    }
   }
 
   if(!!Imported.Galv_CamControl) {
@@ -112,11 +115,11 @@
 
   // Window_Message.prototype.setBalloonTargetPosition = function(target) {
   //
-  //   // ë§í’ì„  ì†Œìœ ìì˜ í™”ë©´ ì¢Œí‘œ
+  //   // ¸»Ç³¼± ¼ÒÀ¯ÀÚÀÇ È­¸é ÁÂÇ¥
   //   var mx = target.screenX();
   //   var my = target.screenY();
   //
-  //   // ë§í’ì„  ìœ„ì¹˜ ë° í¬ê¸° ì„¤ì • (í™”ë©´ ë‚´ì— ê°€ë‘ì§€ ì•ŠìŠµë‹ˆë‹¤)
+  //   // ¸»Ç³¼± À§Ä¡ ¹× Å©±â ¼³Á¤ (È­¸é ³»¿¡ °¡µÎÁö ¾Ê½À´Ï´Ù)
   //   this.x =  mx - (this._bWidth / 2);
   //   this.y =  my - this._bHeight - $gameMap.tileHeight();
   //   this.width = this._bWidth;

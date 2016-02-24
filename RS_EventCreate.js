@@ -22,6 +22,7 @@
  * - Change log
  * 2016.02.19 - Bug Fixed.
  * 2016.02.23 - Bug Fixed.
+ * 2016.02.24 - Delete the default parameters.
  *
  */
 
@@ -78,15 +79,15 @@ Array.prototype.delete = function(deleteItem) {
         "directionFix": false,
         "image": {
           "tileId": 0,
-          "characterName": charName || "Actor1",
+          "characterName": charName,
           "direction": 2,
           "pattern": 1,
-          "characterIndex": charIdx || 4
+          "characterIndex": charIdx
         },
         "list": [{
           "code": 101,
           "indent": 0,
-          "parameters": [charName || "Actor1", charIdx || 4, 0, 2]
+          "parameters": [charName, charIdx, 0, 2]
         },
         {
           "code": 401,
