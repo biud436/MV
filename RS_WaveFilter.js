@@ -73,6 +73,8 @@ RS.WaveConfig = RS.WaveConfig || {};
 
      this.passes = [this];
 
+     this.padding = 512;
+
      // set the uniforms
      this.uniforms = {
          waveHeight: {type: '1f', value: 0.5},
@@ -239,6 +241,7 @@ RS.WaveConfig = RS.WaveConfig || {};
            if(this._wave) {
              if(!this._waveFilter) {
                this._waveFilter = new PIXI.WaveFilter();
+               //this._waveFilter.padding = this.bitmap.width || Graphics.boxWidth;
              }
              this.filters = [this._waveFilter];
            } else {
