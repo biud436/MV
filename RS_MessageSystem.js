@@ -1,10 +1,11 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc 한글 메시지 시스템 (v0.0.6)
+ * @plugindesc 한글 메시지 시스템 (v0.0.7)
  * @author 러닝은빛(biud436)
  *-------------------------------------------------------------------------------
  * 업데이트 일지
  *-------------------------------------------------------------------------------
+ * 2016.02.27 - 숫자 포맷 추가
  * 2016.02.15 - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
  * 2016.01.18 - 버그 픽스 (updateNameWindow, calcBalloonRect)
  * 2016.01.01 - 버그 픽스 (resizeMessageSystem)
@@ -106,6 +107,7 @@
  *  \말풍선[-1]
  * \정렬자[1]
  * \정렬자[2]
+ * \숫자[숫자]
  */
 
  /**
@@ -632,6 +634,9 @@ var Color = Color || {};
       }.bind(this));
       text = text.replace(/\x1b파티원\[(\d+)\]/gi, function() {
           return this.partyMemberName(parseInt(arguments[1]));
+      }.bind(this));
+      text = text.replace(/\x1b숫자\[(\d+)\]/gi, function() {
+          return arguments[1].toComma();
       }.bind(this));
       text = text.replace(/\x1b골드/gi, TextManager.currencyUnit);
       return text;
@@ -1317,6 +1322,9 @@ Window_Message.prototype.updatePlacement = function() {
     text = text.replace(/(?:\x1bP|\x1b파티원)\[(\d+)\]/gi, function() {
         return this.partyMemberName(parseInt(arguments[1]));
     }.bind(this));
+    text = text.replace(/\x1b숫자\[(\d+)\]/gi, function() {
+        return arguments[1].toComma();
+    }.bind(this));
     text = text.replace(/(?:\x1bG|\x1b골드)/gi, TextManager.currencyUnit);
     text = text.replace(/\x1b말풍선\[(\d+)\]/gi, '');
     text = text.replace(/\x1b이름\[(.+?)\]/gi, '');
@@ -1610,6 +1618,9 @@ Window_Message.prototype.updatePlacement = function() {
     text = text.replace(/(?:\x1bP|\x1b파티원)\[(\d+)\]/gi, function() {
         return this.partyMemberName(parseInt(arguments[1]));
     }.bind(this));
+    text = text.replace(/\x1b숫자\[(\d+)\]/gi, function() {
+        return arguments[1].toComma();
+    }.bind(this));
     text = text.replace(/(?:\x1bG|\x1b골드)/gi, TextManager.currencyUnit);
     text = text.replace(/\x1b말풍선\[(\d+)\]/gi, '');
     text = text.replace(/\x1b이름\[(.+?)\]/gi, '');
@@ -1816,6 +1827,9 @@ Window_Message.prototype.updatePlacement = function() {
      text = text.replace(/(?:\x1bP|\x1b파티원)\[(\d+)\]/gi, function() {
          return this.partyMemberName(parseInt(arguments[1]));
      }.bind(this));
+     text = text.replace(/\x1b숫자\[(\d+)\]/gi, function() {
+         return arguments[1].toComma();
+     }.bind(this));
      text = text.replace(/(?:\x1bG|\x1b골드)/gi, TextManager.currencyUnit);
      text = text.replace(/\x1b말풍선\[(\d+)\]/gi, '');
      text = text.replace(/\x1b이름\[(.+?)\]/gi, '');
@@ -1879,6 +1893,27 @@ Window_Message.prototype.updatePlacement = function() {
      textState.tx = this.calcTextWidth(textState.text);
      textState.x = ( this.contentsWidth() ) - textState.tx / 2;
      textState.left = textState.x;
+   }
+
+   /**
+    * String.prototype.reverse
+    */
+   String.prototype.toArray = function(){
+       return this.split("");
+   }
+
+   /**
+    * String.prototype.reverse
+    */
+   String.prototype.reverse = function(){
+       return this.toArray().reverse().join("");
+   }
+
+   /**
+    * String.prototype.to_comma
+    */
+   String.prototype.toComma = function(){
+       return this.reverse().match(/.{1,3}/g).join(",").reverse();
    }
 
 })();
