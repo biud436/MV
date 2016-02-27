@@ -1,6 +1,6 @@
 /*:
  * RS_MenuInformation.js
- * @plugindesc RS_MenuInformation v1.1
+ * @plugindesc RS_MenuInformation v1.1.1
  * @author biud436
  *
  * @param Menu Name
@@ -49,14 +49,10 @@ RS.MenuInformation._menuSymbol = "information";
     //============================================================================
     // Window_MenuCommand
     //============================================================================
-    Window_MenuCommand.prototype.makeCommandList = function() {
-        this.addMainCommands();
-        this.addFormationCommand();
-        this.addOriginalCommands();
-        this.addOptionsCommand();
-        this.addInformationCommand();
-        this.addSaveCommand();
-        this.addGameEndCommand();
+    RS.MenuInformation.addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
+    Window_MenuCommand.prototype.addOriginalCommands = function() {
+      RS.MenuInformation.addOriginalCommands.call(this);
+      this.addInformationCommand();
     };
 
     Window_MenuCommand.prototype.addInformationCommand = function() {
