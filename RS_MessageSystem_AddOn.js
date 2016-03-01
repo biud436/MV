@@ -9,8 +9,11 @@
  * link : http://galvs-scripts.com/category/rmmv-plugins/mv-event-utility/#post-1511
  *
  * 2016.02.24 - Bug Fixed
- *
+ * 2016.03.01 - Imported defined 오류 수정
  */
+
+var Imported = Imported || {};
+Imported.RS_MessageSystem_AddOn = true;
 
 (function() {
   // =================================================================
@@ -58,34 +61,53 @@
    */
   Window_Message.prototype.updateBalloonPosition = function() {
 
+      var self = this;
+
       // -2 라면 이 함수를 처리하지 않습니다.
       if($gameMessage.getBalloon() === -2) {
           this.updatePlacement();
           return;
       };
 
-      $gameMap.addCallback(function() {
-        if(!!Imported.Galv_CamControl) {
+      if(!!Imported.Galv_CamControl) {
 
-          if($gameMessage.isBusy()) {
-            $gameMap.camTargetSet($gameMap.getMsgOwner(), 800);
-          } else {
-            $gameMap.camTargetSet($gamePlayer, 800);
-          }
+        $gameMap.addCallback(function() {
 
-          // 말풍선 소유자의 화면 좌표
-          var mx = $gameMap.getMsgOwner().screenX();
-          var my = $gameMap.getMsgOwner().screenY();
+            if($gameMessage.isBusy()) {
+              $gameMap.camTargetSet($gameMap.getMsgOwner(), 800);
+            } else {
+              $gameMap.camTargetSet($gamePlayer, 800);
+            }
 
-          // 말풍선 위치 및 크기 설정 (화면 내에 가두지 않습니다)
-          this.x =  mx - (this._bWidth / 2);
-          this.y =  my - this._bHeight - $gameMap.tileHeight();
-          this.width = this._bWidth;
-          this.height = this._bHeight;
+            // 말풍선 소유자의 화면 좌표
+            var mx = $gameMap.getMsgOwner().screenX();
+            var my = $gameMap.getMsgOwner().screenY();
 
-        }
+            // 말풍선 위치 및 크기 설정 (화면 내에 가두지 않습니다)
+            this.x =  mx - (this._bWidth / 2);
+            this.y =  my - this._bHeight - $gameMap.tileHeight();
+            this.width = this._bWidth;
+            this.height = this._bHeight;
 
-      }.bind(this));
+        }.bind(this));
+
+      } else {
+
+        // 말풍선 소유자의 화면 좌표
+        var mx = $gameMap.getMsgOwner().screenX();
+        var my = $gameMap.getMsgOwner().screenY();
+
+        // 말풍선의 폭과 높이 범위 제한
+        this._bWidth = this._bWidth.clamp(RS.__WIDTH, Graphics.boxWidth - RS.__WIDTH);
+        this._bHeight = this._bHeight.clamp(RS.__HEIGHT, Graphics.boxHeight - RS.__HEIGHT);
+
+        // 말풍선 위치 및 크기 설정 (화면 내에 가두지 않습니다)
+        this.x =  mx - (this._bWidth / 2);
+        this.y =  my - this._bHeight - $gameMap.tileHeight();
+        this.width = this._bWidth;
+        this.height = this._bHeight;
+
+      }
 
       // 1프레임 대기
       this.startWait(1);
@@ -112,18 +134,5 @@
       }
     }
   }
-
-  // Window_Message.prototype.setBalloonTargetPosition = function(target) {
-  //
-  //   // 말풍선 소유자의 화면 좌표
-  //   var mx = target.screenX();
-  //   var my = target.screenY();
-  //
-  //   // 말풍선 위치 및 크기 설정 (화면 내에 가두지 않습니다)
-  //   this.x =  mx - (this._bWidth / 2);
-  //   this.y =  my - this._bHeight - $gameMap.tileHeight();
-  //   this.width = this._bWidth;
-  //   this.height = this._bHeight;
-  // }
 
 })();

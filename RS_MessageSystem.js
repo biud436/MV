@@ -1,17 +1,18 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc 한글 메시지 시스템 (v0.0.7)
+ * @plugindesc 한글 메시지 시스템 (v0.0.8, 2016.03.01)
  * @author 러닝은빛(biud436)
  *-------------------------------------------------------------------------------
- * 업데이트 일지
+ * 버전 로그(Version Log)
  *-------------------------------------------------------------------------------
- * 2016.02.27 - 통화 서식 추가
- * 2016.02.15 - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
- * 2016.01.18 - 버그 픽스 (updateNameWindow, calcBalloonRect)
- * 2016.01.01 - 버그 픽스 (resizeMessageSystem)
- * 2015.12.03 - 말풍선 기능 추가
- * 2015.12.02 - 큰 페이스칩 기능 추가
- * 2015.12.01 - 최초 작성
+ * 2016.03.01 (v0.0.8) - 말풍선 모드에 페이스칩 표시, 플러그인 커맨드 및 버그 픽스
+ * 2016.02.27 (v0.0.7) - 통화 서식 추가
+ * 2016.02.15 (v0.0.6) - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
+ * 2016.01.18 (v0.0.5) - 버그 픽스 (updateNameWindow, calcBalloonRect)
+ * 2016.01.01 (v0.0.4) - 버그 픽스 (resizeMessageSystem)
+ * 2015.12.03 (v0.0.3) - 말풍선 기능 추가
+ * 2015.12.02 (v0.0.2) - 큰 페이스칩 기능 추가
+ * 2015.12.01 (v0.0.1) - 최초 작성
  *-------------------------------------------------------------------------------
  * 플러그인 매개변수
  *-------------------------------------------------------------------------------
@@ -81,11 +82,28 @@
  *-------------------------------------------------------------------------------
  * @help
  *
+ *
+ * - 플러그인 커맨드
+ * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
+ *
+ * 메시지 텍스트속도 number
+ * 메시지 폰트크기 number
+ * 메시지 폰트최소크기 number
+ * 메시지 폰트최대크기 number
+ * 메시지 그레디언트 color1 color2 color3
+ * 메시지 라인 number
+ * 메시지 시작위치 number
+ * 메시지 이름윈도우 x number
+ * 메시지 이름윈도우 y number
+ * 메시지 이름윈도우 padding number
+ * 메시지 큰페이스칩X number
+ * 메시지 큰페이스칩Y number
+ * 메시지 큰페이스칩Z number
+ *
  * - 큰 페이스칩 설정
  * 페이스칩을 img/faces 에 넣고 페이스칩의 이름을 Big_ 으로 시작하게 합니다.
- *-------------------------------------------------------------------------------
- * 명령어 목록
- *-------------------------------------------------------------------------------
+ *
+ * - 텍스트 코드(명령어) 목록
  * \색[색상명]
  * \속도[값]
  * \테두리색[색상명]
@@ -108,16 +126,28 @@
  * \정렬자[1]
  * \정렬자[2]
  * \숫자[숫자]
- */
-
- /**
- * @author biud436
- * @since 2015.12.01
- * @version 0.0.4
- * @fileOverview
- * @description
- * <a href='http://www.w3schools.com/html/html_colornames.asp'>HTML5 Colors List</a>
- * <p>
+ *
+ * - 색상
+ * 청록, 청록색, c_aqua
+ * 검은색, 검정, c_black
+ * 파란색, 파랑, c_blue
+ * 짙은회색, c_dkgray
+ * 자홍색, 자홍, c_fuchsia
+ * 회색, c_gray
+ * 녹색, c_green
+ * 밝은녹색, 라임, c_lime
+ * 밝은회색, c_ltgray
+ * 밤색, 마룬, c_maroon
+ * 감청색, 네이비, c_navy
+ * 황록색, 올리브, c_olive
+ * 주황색, 주황, 오렌지, c_orange
+ * 보라색, 보라, c_purple
+ * 빨간색, 빨강, c_red
+ * 은색, 은, c_silver
+ * 민트색, c_teal
+ * 흰색, 흰, c_white
+ * 노란색, 노랑, c_yellow
+ * 기본, 기본색, c_normal
  * AliceBlue 
  * AntiqueWhite 
  * Aqua 
@@ -259,8 +289,11 @@
  * WhiteSmoke 
  * Yellow 
  * YellowGreen
- * </p>
+ * #RRGGBB (예를 들면, 빨강색은 \색[#FF0000] 입니다. )
+ *
  */
+var Imported = Imported || {};
+Imported.RS_MessageSystem = true;
 
 /**
  * @namespace RS
@@ -283,10 +316,11 @@ var Color = Color || {};
 (function () {
 
   var parameters = PluginManager.parameters('RS_MessageSystem');
-  var __fontSize = Number(parameters['폰트 크기'] || 28);
-  var __textSpeed = Number(parameters['텍스트 속도'] || 0);
-  var __minFontSize = Number(parameters['폰트 최소 크기'] || 24);
-  var __maxFontSize = Number(parameters['폰트 최대 크기'] || 96);
+
+  RS.__fontSize = Number(parameters['폰트 크기'] || 28);
+  RS.__textSpeed = Number(parameters['텍스트 속도'] || 0);
+  RS.__minFontSize = Number(parameters['폰트 최소 크기'] || 24);
+  RS.__maxFontSize = Number(parameters['폰트 최대 크기'] || 96);
 
   /**
    * 텍스트 시작 X
@@ -599,7 +633,7 @@ var Color = Color || {};
    * @method makeFontSmaller
    */
   Window_Base.prototype.makeFontSmaller = function() {
-      if (this.contents.fontSize >= __minFontSize) {
+      if (this.contents.fontSize >= RS.__minFontSize) {
           this.contents.fontSize -= 12;
       }
   };
@@ -609,7 +643,7 @@ var Color = Color || {};
    * @method makeFontBigger
    */
   Window_Base.prototype.makeFontBigger = function() {
-      if (this.contents.fontSize <= __maxFontSize) {
+      if (this.contents.fontSize <= RS.__maxFontSize) {
           this.contents.fontSize += 12;
       }
   };
@@ -1003,7 +1037,7 @@ var Color = Color || {};
       this.contents.outlineWidth = 4;
       this.contents.outlineColor = 'rgba(0, 0, 0, 0.5)';
       this.contents.fontGradient = false;
-      $gameMessage.setWaitTime(__textSpeed);
+      $gameMessage.setWaitTime(RS.__textSpeed);
   };
 
   /**
@@ -1013,7 +1047,7 @@ var Color = Color || {};
    * @return {Number}
    */
   Window_Message.prototype.standardFontSize = function() {
-      return __fontSize;
+      return RS.__fontSize;
   };
 
   /**
@@ -1346,6 +1380,7 @@ Window_Message.prototype.updatePlacement = function() {
 
   /**
    * @memberOf Window_Message
+   * 2016.03.01 - 말풍선 모드 페이스칩 대응
    * @method calcBalloonRect
    * @param text {String}
    */
@@ -1358,6 +1393,11 @@ Window_Message.prototype.updatePlacement = function() {
       }.bind(this));
       var height = tempText.length * this.lineHeight() + this.standardPadding() * 2;
       this._bWidth = this.textWidth(tempText[0]) + RS.__STD_PADDING * 2 || RS.__WIDTH;
+      if($gameMessage.faceName() !== '') {
+        var min = this.fittingHeight(4);
+        this._bWidth += this.newLineX() + this.standardPadding() * 2;
+        if(height < min) height = height.clamp(min, height + (min - height));
+      }
       this._bHeight = height;
   };
 
@@ -1504,30 +1544,6 @@ Window_Message.prototype.updatePlacement = function() {
       }
   };
 
-  /**
-   * pluginCommand
-   * @memberOf Game_Interpreter
-   * @method pluginCommand
-   * @param command {String}
-   * @param args {Array}
-   */
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      if(command === '메시지') {
-          switch(args[0]) {
-          case '그레디언트':
-            RS.__gradientColor1 = args[1] || Color.gmColor('기본색');
-            RS.__gradientColor2 = args[2] || Color.gmColor('기본색');
-            RS.__gradientColor3 = args[3] || Color.gmColor('기본색');
-            break;
-          case '라인':
-            $gameTemp.setMaxLine(Number(args[1]));
-            break;
-          case '시작위치':
-            RS.__textStartX = Number(args[1] || 192);
-            break;
-          }
-      }
-  };
 
   /**
    * @class RS.Window_Name
@@ -1646,7 +1662,7 @@ Window_Message.prototype.updatePlacement = function() {
   RS.Window_Name.prototype.refresh = function() {
     this.contents.clear();
     this.createContents();
-    this.contents.fontSize = __fontSize;
+    this.contents.fontSize = RS.__fontSize;
     this.text = this.convertEscapeCharacters(this.text);
     this.text = this.textProcessing(this.text);
     this.drawText(this.text, 0, 0, this.width, 'left');
@@ -1659,7 +1675,7 @@ Window_Message.prototype.updatePlacement = function() {
   RS.Window_Name.prototype.drawName = function(text) {
     this.text = text;
     this.width = this.windowWidth();
-    this.contents.fontSize = __fontSize;
+    this.contents.fontSize = RS.__fontSize;
     this.getWidth(this.text);
     this.open();
   };
@@ -1896,7 +1912,7 @@ Window_Message.prototype.updatePlacement = function() {
    }
 
    /**
-    * String.prototype.reverse
+    * String.prototype.toArray
     */
    String.prototype.toArray = function(){
        return this.split("");
@@ -1910,10 +1926,98 @@ Window_Message.prototype.updatePlacement = function() {
    }
 
    /**
+    * String.prototype.reversed (mozilla)
+    */
+   String.prototype.reversed = function() {
+       var r = "";
+       for (var i = this.length - 1; i >= 0; i--) {
+           r += this[i];
+       }
+       return r;
+   }
+
+   /**
     * String.prototype.to_comma
     */
    String.prototype.toComma = function(){
        return this.reverse().match(/.{1,3}/g).join(",").reverse();
    }
+
+   //===============================================================================
+   // 플러그인 커맨드
+   //===============================================================================
+   var alias_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+   Game_Interpreter.prototype.pluginCommand = function(command, args) {
+       alias_pluginCommand.call(this, command, args);
+
+       if(command === "RSM" || command === "메시지") {
+         switch (args[0]) {
+         //-------------------------------------------------------------------------
+         case 'textSpeed': case '텍스트속도':
+           RS.__textSpeed = Number(args[1] || 0);
+           break;
+         //-------------------------------------------------------------------------
+         case 'fontSize': case '폰트크기':
+           RS.__fontSize = Number(args[1] || 28);
+           break;
+         //-------------------------------------------------------------------------
+         case 'minFontSize': case '폰트최소크기':
+           RS.__minFontSize = Number(args[1] || 24);
+           break;
+         //-------------------------------------------------------------------------
+         case 'maxFontSize':  case '폰트최대크기':
+           RS.__maxFontSize = Number(args[1] || 96);
+           break;
+         //-------------------------------------------------------------------------
+         case 'gradient':  case '그레디언트':
+           RS.__gradientColor1 = args[1] || Color.gmColor('기본색');
+           RS.__gradientColor2 = args[2] || Color.gmColor('기본색');
+           RS.__gradientColor3 = args[3] || Color.gmColor('기본색');
+           break;
+         //-------------------------------------------------------------------------
+         case 'line': case '라인':
+           $gameTemp.setMaxLine(Number(args[1] || 4));
+           break;
+         //-------------------------------------------------------------------------
+         case 'textStartX': case '시작위치':
+           RS.__textStartX = Number(args[1] || 192);
+           break;
+         //-------------------------------------------------------------------------
+         case 'name': case '이름윈도우':
+           switch (args[1].toLowerCase()) {
+             case 'x':
+               RS.__nameWindowX = Number(args[2] || 0);
+               break;
+             case 'y':
+               RS.__nameWindowX = Number(args[2] || 0);
+               break;
+             case 'padding':
+               RS.__nameWindowStdPadding = Number(args[2] || 18);
+               break;
+             default:
+            }
+            break;
+         //-------------------------------------------------------------------------
+          case 'faceOX': case '큰페이스칩X':
+            RS.__faceOX = Number(args[1] || 0);
+            break;
+         //-------------------------------------------------------------------------
+          case 'faceOX': case '큰페이스칩Y':
+            RS.__faceOY = Number(args[1] || 0);
+            break;
+         //-------------------------------------------------------------------------
+          case 'faceZ': case '큰페이스칩Z':
+            if(Number(args[1] || 0) === -1) {
+              RS.__faceSide = true;
+            } else {
+              RS.__faceSide = false;
+            }
+            break;
+          // End main switch
+         }
+         // End if
+       }
+       // End Function
+   };
 
 })();
