@@ -34,19 +34,11 @@
       return this._buyRatio || 1.0;
   });
 
-  // Game_Party.prototype.__defineSetter__('sellRatio', function(value) {
-  //     this._sellRatio = value;
-  // });
-  //
-  // Game_Party.prototype.__defineGetter__('sellRatio', function(value) {
-  //     return this._sellRatio || 1.0;
-  // });
-
   var alias_Game_Party_initialize = Game_Party.prototype.initialize;
   Game_Party.prototype.initialize = function() {
     alias_Game_Party_initialize.call(this);
     this._buyRatio = 1.0;
-    // this._sellRatio = 1.0;
+    this._sellRatio = 1.0;
   }
 
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
@@ -55,9 +47,9 @@
       if(command === "Shop" && args[0] === "buyRatio") {
         $gameParty.buyRatio = Number(args[1] || 1.0);
       }
-      // if(command === "Shop" && args[0] === "sellRatio") {
-      //   $gameParty.sellRatio = Number(args[1] || 1.0);
-      // }
+      if(command === "Shop" && args[0] === "sellRatio") {
+        $gameParty.sellRatio = Number(args[1] || 1.0);
+      }
   };
 
 })();
