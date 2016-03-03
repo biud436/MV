@@ -32,7 +32,7 @@ var old_update = sprite.update;
 sprite.update = function() {
  old_update.call(this);
  if(this.wave) {
-   this._waveFilter.UVSpeed = Math.lerp(0.5, 3.0, Graphics.frameRate() / 2);
+   this.wave_speed = Math.lerp(0.5, 3.0, Graphics.frameRate() / 2);
  }
 }
 ```

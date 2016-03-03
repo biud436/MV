@@ -2,7 +2,7 @@
  * RS_WaveFilter.js
  * @plugindesc This plugin applies the wave effect to the all objects by using the Fragment Shader.
  * @date 2016.01.12
- * @version 1.3.1
+ * @version 1.3.2
  *
  * @author biud436
  *
@@ -46,7 +46,18 @@
  *
  * Tilemap_Wave UVSpeed x
  *
+ *
+ *=============================================================================
+ * RPG Maker VX Ace Sprite Wave Properties
+ *=============================================================================
+ * wave_amp (default value is to 0 ~ 1)
+ * wave_length (default value is to 0 ~ maxHeight)
+ * wave_speed (default value is to 0.25)
+ * wave_phase (default value is to 360)
+ *=============================================================================
+ *
  * - Change Log
+ * 2016.03.03 - Added new Sprite Properties (wave_amp, wave_speed, wave_length, wave_phase)
  * 2016.02.26 - Fixed the default padding value of the sprite. (default value is to 512)
  * 2016.02.16 - Fixed Bug (After the player came back to Menu, you had to set the wave effect again)
  * 2016.01.22 - Fixed the Save and Load bug.
@@ -80,10 +91,10 @@ RS.WaveConfig = RS.WaveConfig || {};
      // set the uniforms
      this.uniforms = {
          waveHeight: {type: '1f', value: 0.5},
-         waveSpeed: {type: '1f', value: 2},
          waveFrequency: {type: '1f', value: 0.02},
          waveTime: {type: '1f', value: 0},
-         UVSpeed: {type: '1f', value: 0.25}
+         UVSpeed: {type: '1f', value: 0.25},
+         wavePhase: {type: '1f', value: 6.283185307179586}
      };
 
      this.fragmentSrc = [
@@ -92,16 +103,15 @@ RS.WaveConfig = RS.WaveConfig || {};
          'varying vec4 vColor;',
 
          'uniform float waveHeight;',
-         'uniform float waveSpeed;',
          'uniform float waveFrequency;',
          'uniform float waveTime;',
+         'uniform float wavePhase;',
          'uniform float UVSpeed;',
 
          'uniform sampler2D uSampler;',
 
          'void main(void) {',
-         `   float pi = 3.14159265358;`,
-         '   float time = waveFrequency * sin(2.0 * pi * (mod(waveTime - vTextureCoord.y, waveHeight)));',
+         '   float time = waveFrequency * sin(wavePhase * (mod(waveTime - vTextureCoord.y, waveHeight)));',
          '   vec2 coord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);',
          '   gl_FragColor = texture2D(uSampler, coord);',
          '}'
@@ -130,13 +140,13 @@ RS.WaveConfig = RS.WaveConfig || {};
   * @type Number
   */
   Object.defineProperty(PIXI.WaveFilter.prototype, 'waveSpeed', {
-     get: function() {
-         return this.uniforms.waveSpeed.value;
-     },
-     set: function(value) {
-         this.dirty = true;
-         this.uniforms.waveSpeed.value = value;
-     }
+    get: function() {
+        return this.uniforms.UVSpeed.value;
+    },
+    set: function(value) {
+        this.dirty = true;
+        this.uniforms.UVSpeed.value = value;
+    }
   });
 
   /**
@@ -173,13 +183,28 @@ RS.WaveConfig = RS.WaveConfig || {};
        }
    });
 
+   /**
+   * @property Wave
+   * @type Number
+   */
+   Object.defineProperty(PIXI.WaveFilter.prototype, 'wavePhase', {
+      get: function() {
+          return this.uniforms.wavePhase.value;
+      },
+      set: function(value) {
+          this.dirty = true;
+          this.uniforms.wavePhase.value = (Math.PI / 180) * Number(value);
+      }
+   });
+
    var alias_Sprite_initialize = Sprite.prototype.initialize;
    Sprite.prototype.initialize = function(bitmap) {
      alias_Sprite_initialize.call(this, bitmap);
      this._waveTime = 0;
      this._waveHeight = 0.5;
-     this._waveSpeed = 2;
+     this._waveSpeed = 0.25;
      this._waveFrequency = 0.02;
+     this._wavePhase = 360;
      this._waveFilter = new PIXI.WaveFilter();
      this._wave = false;
    };
@@ -209,6 +234,7 @@ RS.WaveConfig = RS.WaveConfig || {};
        this._waveFilter.waveHeight = this.getWaveHeight();
        this._waveFilter.waveSpeed = this._waveSpeed;
        this._waveFilter.waveFrequency = this._waveFrequency;
+       this._waveFilter.wavePhase = this._wavePhase;
      }
    }
 
@@ -230,6 +256,50 @@ RS.WaveConfig = RS.WaveConfig || {};
        }
    });
 
+   //===========================================================================
+   // RPG Maker VX Ace Sprite Wave Properties
+   //===========================================================================
+   // wave_amp (default value is to 0 ~ 1)
+   // wave_length (default value is to 0 ~ maxHeight)
+   // wave_speed (default value is to 0.25)
+   // wave_phase (default value is to 360)
+   //===========================================================================
+   Object.defineProperty(Sprite.prototype, 'wave_amp', {
+       get: function() {
+           return this._waveFrequency;
+       },
+       set: function(value) {
+         this._waveFrequency = value;
+       }
+   });
+
+   Object.defineProperty(Sprite.prototype, 'wave_length', {
+       get: function() {
+           return this._waveHeight;
+       },
+       set: function(value) {
+         this.setWaveHeight(value);
+       }
+   });
+
+   Object.defineProperty(Sprite.prototype, 'wave_speed', {
+       get: function() {
+           return this._waveSpeed;
+       },
+       set: function(value) {
+         this._waveSpeed = value;
+       }
+   });
+
+   Object.defineProperty(Sprite.prototype, 'wave_phase', {
+       get: function() {
+           return this._wavePhase;
+       },
+       set: function(value) {
+         this._wavePhase = value;
+       }
+   });
+
    /**
     * @property Wave
     * @type Number
@@ -243,7 +313,6 @@ RS.WaveConfig = RS.WaveConfig || {};
            if(this._wave) {
              if(!this._waveFilter) {
                this._waveFilter = new PIXI.WaveFilter();
-               //this._waveFilter.padding = this.bitmap.width || Graphics.boxWidth;
              }
              this.filters = [this._waveFilter];
            } else {
@@ -258,6 +327,10 @@ RS.WaveConfig = RS.WaveConfig || {};
    });
 
 })();
+
+//===========================================================================
+// RS.WaveConfig
+//===========================================================================
 
 (function() {
 
