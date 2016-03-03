@@ -1,6 +1,6 @@
 /*:
  * RS_Game_Variables.js
- * @plugindesc Game_Variables SetMax
+ * @plugindesc This plugin limits the max value of game variables.
  * @author biud436
  * @date 2016.02.23
  *
@@ -11,6 +11,13 @@
  * @param Max
  * @desc Max
  * @default 999
+ *
+ * @help
+ *
+ * This plugin provides the following plugin commands.
+ *
+ * Var Max value
+ * Var Min value
  *
  */
 

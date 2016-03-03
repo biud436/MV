@@ -1,26 +1,18 @@
 /*:
  * RS_WaveFilter.js
- * @plugindesc RS_WaveFilter.js(v1.3.1)
+ * @plugindesc This plugin applies the wave effect to the all objects by using the Fragment Shader.
  * @date 2016.01.12
  * @version 1.3.1
- *
- * 2016.02.16 - Save the plugin's configuration in the memory when you enable
- * to use the plugin.
- * 2016.01.22 - Save & Load Bug Fixed.
  *
  * @author biud436
  *
  * @help
  *
+ * - Type 1 (Sprite)
  * The following code applies the wave effect to Sprite.
+ * http://biud436.tistory.com/17
  *
- * var bitmap = ImageManager.loadSvEnemy('Death');
- * var sprite = new Sprite(bitmap);
- * SceneManager._scene.addChild(sprite);
- * sprite.wave = true;
- * // sprite._waveFilter.UVSpeed = 0.5
- * // sprite._waveFrequency = 0.02
- * // sprite._waveHeight = 1
+ * - Type 2 (Tilemap)
  *
  * The following plugin commands applies the wave effect to Tilemap.
  * This plugin contains these six types the plugin commands.
@@ -53,6 +45,16 @@
  * Default value is to 0.25
  *
  * Tilemap_Wave UVSpeed x
+ *
+ * - Change Log
+ * 2016.02.26 - Fixed the default padding value of the sprite. (default value is to 512)
+ * 2016.02.16 - Fixed Bug (After the player came back to Menu, you had to set the wave effect again)
+ * 2016.01.22 - Fixed the Save and Load bug.
+ * 2016.01.18 - Added the plugin command.
+ * 2016.01.16 - Added the function to remove the filter.
+ *
+ * - Terms of Use
+ * Free for commercial and non-commercial use
  *
  */
 

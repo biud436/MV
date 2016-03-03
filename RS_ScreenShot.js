@@ -1,6 +1,6 @@
 /*
  * RS_ScreenShot.js (PC)
- * @plugindesc
+ * @plugindesc This plugin creates the screenshot file in ScreenShots folder when you press on the 'F7' key.
  * @author biud436
  * @version 1.0
  * @date 2015.12.22
@@ -8,7 +8,7 @@
  * @reference http://stackoverflow.com/questions/32613060/how-to-take-screenshot-with-node-webkit
  *
  * @help
- * F7 버튼을 누르면 ScreenShots 폴더에 스크린샷 파일이 생성됩니다.
+ * This plugin creates the screenshot file in ScreenShots folder when you press on the 'F7' key.
  */
 
 var RS = RS || {};

@@ -1,6 +1,7 @@
 /*:
  * RS_SimpleLight.js
- * @plugindesc This plugin allows you to give a feeling to explore a dark terrain.
+ * @plugindesc  * This plugin applies the lighting effect to the all objects
+ * by using the Fragment Shader, allows you to give a feeling to explore a dark terrain.
  * @author biud436
  *
  * @param coord normalize min
@@ -9,11 +10,24 @@
  *
  * @help
  *
+ * This plugin commands allows you to enable or disable a lantern.
+ *
  * RS_SimpleLight Enable
  * RS_SimpleLight Disable
+ *
+ * This plugin commands allows you to set the offset of the light. The default value is to 0.5 0.5
  * RS_SimpleLight Offset x y
+ *
+ * This plugin commands allows you to set the brightness of light.
+ * The f is a floating-point value between 0.5 and 1.0. The default value is to 1.0
  * RS_SimpleLight Brightness f
+ *
+ * This adjusts brightness of the dark side.
+ * The f is a floating-point value between 5.0 and 12.0. The default value is to 8.0
  * RS_SimpleLight Tight f
+ *
+ * This adjusts tone of the light. Each color value sets an integer between 0 and 255.
+ * The default value is to 255 255 255
  * RS_SimpleLight Tone r g b
  *
  */

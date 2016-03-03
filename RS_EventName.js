@@ -3,7 +3,7 @@
  *
  * @version 1.2
  *
- * @plugindesc 이벤트 이름 표시하기
+ * @plugindesc This plugin displays an event's name above a head.
  * @author biud436
  *
  * @param textSize
@@ -15,6 +15,15 @@
  * @default true
  *
  * @help
+ *
+ * If it sets the note, you can show an event's name above a head. you can set the various color by using the note.
+ *
+ * You can display the name of an event above a head by using the following format.
+ * @color[red, green, blue]
+ *
+ * - Change Log
+ * 2015.11.11 - First Release Date
+ * 2015.11.24 - Added New Function
  *
  */
 

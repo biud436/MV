@@ -1,7 +1,10 @@
 /*:
  * Audio_Additional_Support.js
- * @plugindesc Audio Additional Support
- *
+ * @plugindesc Among various audio formats,
+ * This plugin can only play OGG files in the RPG Maker MV.
+ * @author biud436
+ * @help
+ * 
  */
 
 (function() {

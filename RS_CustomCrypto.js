@@ -1,6 +1,6 @@
 /*:
  * RS_CustomCrypto.js
- * @plugindesc RS_CustomCrypto
+ * @plugindesc This plugin allows you to compress a string by using the secret key.
  * @date 2015.12.29
  * @author biud436
  *

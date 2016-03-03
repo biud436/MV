@@ -1,6 +1,8 @@
 /*:
  * RS_WaveSupport.js
- * @plugindesc AudioManager(Wave Support)
+ *
+ * @plugindesc This can be used to control playback of .wav files.
+ * (AudioManager supports addtional playing the wav file)
  * @author biud436
  * @date 2015.12.25
  *
@@ -10,6 +12,17 @@
  *
  * @help
  *
+ * You can play the wav files by using the following code.
+ *
+ * - Start playing the sound.
+ * The string parameter specifies a WAV file name. (Download the .wav file and place it in your Audio/wav folder)
+ * AudioManager.playWav('file_name');
+ *
+ * - Stop a previously played sound.
+ * AudioManager.stopWav();
+ *
+ * - Change Log
+ * 2015.12.25 (v1.0.0) - First Release Date.
  */
 
 var Imported = Imported || {};

@@ -75,6 +75,10 @@
  *
  * - Returns the number of the completed ending. For example.
  * $gameMap.getEnding().length;
+ *
+ * - Version Log
+ * 1.0.2 (2015.12.22) - Fixed a bug about the web local storage.
+ *
  */
 
  /*:ko

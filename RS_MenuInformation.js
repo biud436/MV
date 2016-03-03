@@ -1,12 +1,22 @@
 /*:
  * RS_MenuInformation.js
- * @plugindesc RS_MenuInformation v1.1.1
+ * @plugindesc This plugin provides the Information Window that adds a text via the global variable.
  * @author biud436
  *
  * @param Menu Name
  * @desc Menu Name
  * @default Information
  *
+ * @help
+ *
+ * This plugin command allows you to add a text.
+ * MenuInformation add Hello, World
+ *
+ * This plugin command allows you to delete all texts.
+ * MenuInformation clear
+ *
+ * - Change Log
+ * 2016.02.27 - Fixed a few code (makeCommandList → addOriginalCommands)
  */
 
 var RS = RS || {};

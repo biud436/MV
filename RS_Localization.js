@@ -1,6 +1,6 @@
 /*:
  * RS_Localization.js
- * @plugindesc Localization
+ * @plugindesc You can change the language settings via this plugin.
  * @author biud436
  * @date 2016.02.20
  *
@@ -9,6 +9,9 @@
  * @default English
  *
  * @help
+ * The following command calls Localization-Change-function using the plugin command function.
+ * For example, If your game offers users the ability to change the language,
+ * you can change your game language into many languages by using this plugin command.
  *
  * - pluginCommand
  * Localization Change type

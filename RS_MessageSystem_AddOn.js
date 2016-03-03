@@ -4,12 +4,13 @@
  * @author biud436
  * @help
  *
- * This plugin requires 'GALV_CamControl.js' plugins.
+ * Require
+ * Glav MV Cam Control - http://galvs-scripts.com/category/rmmv-plugins/mv-event-utility/#post-1511
+ * Korean Message System - http://biud436.tistory.com/37
  *
- * link : http://galvs-scripts.com/category/rmmv-plugins/mv-event-utility/#post-1511
- *
- * 2016.02.24 - Bug Fixed
- * 2016.03.01 - Imported defined 오류 수정
+ * Change Log
+ * 2016.02.24 - Initialize the variable of the Callback function to null after the callback function is called.
+ * 2016.03.01 - Fixed a bug that causes 'Imported defined' problem.
  */
 
 var Imported = Imported || {};

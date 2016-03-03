@@ -19,10 +19,11 @@
  * This plugin command deletes a previously created event on currently map.
  * Event Delete EventID
  *
- * - Change log
- * 2016.02.19 - Bug Fixed.
- * 2016.02.23 - Bug Fixed.
- * 2016.02.24 - Delete the default parameters.
+ * - Change Log
+ * 2015.10.17 - First Release Date
+ * 2016.02.19 - Fixed a bug that causes a serious problem.
+ * 2016.02.23 - Fixed a bug.
+ * 2016.02.24 - Fixed a bug that is initialized to the default value when the parameters were set to zero.
  *
  */
 

@@ -1,6 +1,7 @@
 ﻿/*:
  * Window_KorNameEdit.js
- * @plugindesc 한글 이름 입력 플러그인
+ * @plugindesc (한글 이름 입력 플러그인) This plugin provides a keyboard that allows
+ * you to type in korean or other native language in the Name Input Proccessing
  * @author biud436
  * @since 2015.10.19
  * @version 1.3.2 (2015.02.15)
