@@ -1,8 +1,8 @@
 /*:
  * RS_TitleManagerEx.js
  *
- * @plugindesc After completing the game, This plugin changes the title screen
- * image and title-background-music or displays a special command.
+ * @plugindesc This plugin is changed the title screen image and
+ * title-background-music when the game has been completed.
  *
  * @author biud436
  *
