@@ -107,62 +107,66 @@
  * - Change Log
  * 2015.12.26 (v1.0.0)- First Release.
  * 2016.03.04 (v1.0.1)- Added the comments for include used files.
+ * 2016.03.05 (v1.0.2) - Fixed the class structure.
  *
  */
 
 var Imported = Imported || {};
 Imported.RS_WalkingStepSound = true;
 
-var RS = RS || {};
-RS.WalkingStepSound = RS.WalkingStepSound || {};
-RS.WalkingStepSound.params = {};
-
 (function(){
 
-  var parameters = PluginManager.parameters('RS_WalkingStepSound');
-  RS.WalkingStepSound.params.stepInterval = Number(parameters['Step Interval'] || 2);
-  RS.WalkingStepSound.params.volume = Number(parameters['Volume'] || 30);
-  RS.WalkingStepSound.params.dirtSoundName = eval(parameters['Dirt Sound Name']);
-  RS.WalkingStepSound.params.snowSoundName = eval(parameters['Snow Sound Name']);
-  RS.WalkingStepSound.params.stoneSoundName = eval(parameters['Stone Sound Name']);
-  RS.WalkingStepSound.params.waterSoundName = eval(parameters['Water Sound Name']);
-  RS.WalkingStepSound.params.woodSoundName = eval(parameters['Wood Sound Name']);
-  RS.WalkingStepSound.params.symbolName = String(parameters['Step Sound'] || 'Step Sound')
-
-  RS.WalkingStepSound.ENUM_DIRT = Number(parameters['Dirt Terrain Tag'] || 1);
-  RS.WalkingStepSound.ENUM_SNOW = Number(parameters['Snow Terrain Tag'] || 2);
-  RS.WalkingStepSound.ENUM_STONE = Number(parameters['Stone Terrain Tag'] || 3);
-  RS.WalkingStepSound.ENUM_WATER = Number(parameters['Water Terrain Tag'] || 4);
-  RS.WalkingStepSound.ENUM_WOOD = Number(parameters['Wood Terrain Tag'] || 5);
-
-  RS.WalkingStepSound.type = {
-    'dirt': RS.WalkingStepSound.params.dirtSoundName,
-    'snow': RS.WalkingStepSound.params.snowSoundName,
-    'stone': RS.WalkingStepSound.params.stoneSoundName,
-    'water': RS.WalkingStepSound.params.waterSoundName,
-    'wood': RS.WalkingStepSound.params.woodSoundName
-  };
-
-  RS.WalkingStepSound.setState = function(value) {
-    RS.WalkingStepSound._state = value;
+  // private static class
+  function RSMatch() {
+      throw new Error('This is a static class');
   }
 
-  RS.WalkingStepSound.isRunning = function() {
-    RS.WalkingStepSound._init = false;
-    RS.WalkingStepSound._state = false;
-    RS.WalkingStepSound._steps = 0;
+  RSMatch.params = RSMatch.params || {};
+
+  var parameters = PluginManager.parameters('RS_WalkingStepSound');
+  RSMatch.params.stepInterval = Number(parameters['Step Interval'] || 2);
+  RSMatch.params.volume = Number(parameters['Volume'] || 30);
+  RSMatch.params.dirtSoundName = eval(parameters['Dirt Sound Name']);
+  RSMatch.params.snowSoundName = eval(parameters['Snow Sound Name']);
+  RSMatch.params.stoneSoundName = eval(parameters['Stone Sound Name']);
+  RSMatch.params.waterSoundName = eval(parameters['Water Sound Name']);
+  RSMatch.params.woodSoundName = eval(parameters['Wood Sound Name']);
+  RSMatch.params.symbolName = String(parameters['Step Sound'] || 'Step Sound')
+
+  RSMatch.ENUM_DIRT = Number(parameters['Dirt Terrain Tag'] || 1);
+  RSMatch.ENUM_SNOW = Number(parameters['Snow Terrain Tag'] || 2);
+  RSMatch.ENUM_STONE = Number(parameters['Stone Terrain Tag'] || 3);
+  RSMatch.ENUM_WATER = Number(parameters['Water Terrain Tag'] || 4);
+  RSMatch.ENUM_WOOD = Number(parameters['Wood Terrain Tag'] || 5);
+
+  RSMatch.type = {
+    'dirt': RSMatch.params.dirtSoundName,
+    'snow': RSMatch.params.snowSoundName,
+    'stone': RSMatch.params.stoneSoundName,
+    'water': RSMatch.params.waterSoundName,
+    'wood': RSMatch.params.woodSoundName
+  };
+
+  RSMatch.setState = function(value) {
+    this._state = value;
+  }
+
+  RSMatch.isRunning = function() {
+    RSMatch._init = false;
+    RSMatch._state = false;
+    RSMatch._steps = 0;
     var tileset = $gameMap.tileset();
     var note = tileset.note.split(/[\r\n]/);
     note.forEach(function(i) {
       if(i.match(/<Step Sounds>/i)) {
-        RS.WalkingStepSound._init = true;
+        RSMatch._init = true;
       }
     }.bind(this));
   }
 
-  RS.WalkingStepSound.requestSound = function(type) {
+  RSMatch.requestSound = function(type) {
     if(!Imported.RS_WaveSupport) { return; }
-    var array = RS.WalkingStepSound.type[type];
+    var array = RSMatch.type[type];
     var min = array[1];
     var max = array[2];
     var index = (1 + (Math.random() * max) >> 0).clamp(min, max);
@@ -170,26 +174,26 @@ RS.WalkingStepSound.params = {};
     AudioManager.playWav("%1%2".format(array[0], index), vol);
   }
 
-  RS.WalkingStepSound.isInit = function() {
-    return RS.WalkingStepSound._init && !!ConfigManager.stepSound;
+  RSMatch.isInit = function() {
+    return RSMatch._init && !!ConfigManager.stepSound;
   }
 
-  RS.WalkingStepSound.playSound = function() {
-    if(RS.WalkingStepSound._state && this.isInit()) {
+  RSMatch.playSound = function() {
+    if(RSMatch._state && this.isInit()) {
       switch ($gamePlayer.terrainTag()) {
-        case RS.WalkingStepSound.ENUM_DIRT:
+        case RSMatch.ENUM_DIRT:
           this.requestSound('dirt');
           break;
-        case RS.WalkingStepSound.ENUM_SNOW:
+        case RSMatch.ENUM_SNOW:
           this.requestSound('snow');
           break;
-        case RS.WalkingStepSound.ENUM_STONE:
+        case RSMatch.ENUM_STONE:
           this.requestSound('stone');
           break;
-        case RS.WalkingStepSound.ENUM_WATER:
+        case RSMatch.ENUM_WATER:
           this.requestSound('water');
           break;
-        case RS.WalkingStepSound.ENUM_WOOD:
+        case RSMatch.ENUM_WOOD:
           this.requestSound('wood');
           break;
       }
@@ -200,29 +204,29 @@ RS.WalkingStepSound.params = {};
   var alias_Scene_Map_start = Scene_Map.prototype.start;
   Scene_Map.prototype.start = function() {
     alias_Scene_Map_start.call(this);
-    RS.WalkingStepSound.isRunning();
+    RSMatch.isRunning();
   }
 
-  RS.WalkingStepSound.update = function() {
-    if(RS.WalkingStepSound._state &&
-      $gameParty.steps() === RS.WalkingStepSound._steps) {
+  RSMatch.update = function() {
+    if(RSMatch._state &&
+      $gameParty.steps() === RSMatch._steps) {
       this.playSound();
     } else {
-      if(!RS.WalkingStepSound._state) {
-        RS.WalkingStepSound._steps = $gameParty.steps() + this.getDistance();
+      if(!RSMatch._state) {
+        RSMatch._steps = $gameParty.steps() + this.getDistance();
         this.setState(true);
       }
     }
   };
 
-  RS.WalkingStepSound.getDistance = function() {
-    return RS.WalkingStepSound.params.stepInterval;
+  RSMatch.getDistance = function() {
+    return RSMatch.params.stepInterval;
   }
 
   var alias_Game_Map_update = Game_Map.prototype.update;
   Game_Map.prototype.update = function(sceneActive) {
     alias_Game_Map_update.call(this, sceneActive);
-    RS.WalkingStepSound.update();
+    RSMatch.update();
   };
 
   //-----------------------------------------------------------------------------
@@ -253,7 +257,7 @@ RS.WalkingStepSound.params = {};
   var alias_addVolumeOptions = Window_Options.prototype.addGeneralOptions;
   Window_Options.prototype.addGeneralOptions = function() {
       alias_addVolumeOptions.call(this);
-      this.addCommand(RS.WalkingStepSound.params.symbolName, 'stepSound');
+      this.addCommand(RSMatch.params.symbolName, 'stepSound');
   };
 
 })();
