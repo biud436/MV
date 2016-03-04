@@ -1,50 +1,50 @@
 /*:
  * RS_ParallaxTitleEx.js
  * @plugindesc This plugin changes the title screen image.
- * @author 러닝은빛(biud436)
+ * @author biud436
  *
  * @param parallaxImage
- * @desc 원경 이미지
+ * @desc parallax Image
  * @default BlueSky
  * @require 1
  * @dir img/parallaxes
  * @type file
  *
  * @param TextAnimation
- * @desc  Push, Split
+ * @desc Push, Split
  * @default Push
  *
- * @param 간격
- * @desc
+ * @param Interval
+ * @desc Interval
  * @default 80
  *
- * @param 메뉴 사이즈
- * @desc
+ * @param Menu Size
+ * @desc Menu Size
  * @default 3
  *
- * @param 각속도
- * @desc
+ * @param Angle Speed
+ * @desc Angle Speed
  * @default 120.0
  *
- * @param 텍스트 테두리 색상
- * @desc
+ * @param Text outline Color
+ * @desc Text outline Color
  * @default #6799FF
  *
- * @param 텍스트의 톤
- * @desc
+ * @param Text Tone
+ * @desc Text Tone
  * @default  0xD9FF80
  *
- * @param 게임 시작
- * @desc
- * @default  게임 시작
+ * @param Game Start
+ * @desc Game Start
+ * @default  Game Start
  *
- * @param 게임 계속
- * @desc
- * @default  게임 계속
+ * @param Game Load
+ * @desc Game Load
+ * @default  Game Load
  *
- * @param 게임 종료
- * @desc
- * @default  게임 종료
+ * @param Game Exit
+ * @desc Game Exit
+ * @default  Game Exit
  *
  * @help
  *
@@ -135,19 +135,19 @@ var RS = RS || {};
   var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
   var parallaxImage = (parameters['parallaxImage'] || 'BlueSky');
   var textType = parameters['TextAnimation'] || 'Push';
-  var szExit = String(parameters['게임 종료'] || "게임 종료");
+  var szExit = String(parameters['Game Exit'] || "Game Exit");
   var _x = null;
   var _y = null;
-  var _dist = Number(parameters['간격'] || 80);
-  var _menuSize = Number(parameters['메뉴 사이즈'] || 3);
+  var _dist = Number(parameters['Interval'] || 80);
+  var _menuSize = Number(parameters['Menu Size'] || 3);
   var _maxAngle =  360.0 / _menuSize;
-  var _angleSpeed = parseFloat(parameters['각속도'] || 120.0);
+  var _angleSpeed = parseFloat(parameters['Angle Speed'] || 120.0);
   var _pi = Math.PI;
-  var _outLineColor = String(parameters['텍스트 테두리 색상'] || '#6799FF');
-  var _tintColor = parseInt(parameters['텍스트의 톤'] || 0xD9FF80);
-  var _gameStart = String(parameters['게임 시작'] || "게임 시작");
-  var _gameContinue = String(parameters['게임 계속'] || "게임 계속");
-  var _gameOptions = String(parameters['게임 종료'] || "게임 종료");
+  var _outLineColor = String(parameters['Text outline Color'] || '#6799FF');
+  var _tintColor = parseInt(parameters['Text Tone'] || 0xD9FF80);
+  var _gameStart = String(parameters['Game Start'] || "Game Start");
+  var _gameContinue = String(parameters['Game Load'] || "Game Load");
+  var _gameOptions = String(parameters['Game Exit'] || "Game Exit");
 
   /**
    * 배경화면 생성
@@ -283,7 +283,7 @@ var RS = RS || {};
   };
 
   /**
-   * 게임 종료 커맨드
+   * Game Exit 커맨드
    * @method commandExit
    */
   Scene_Title.prototype.commandExit = function() {
@@ -507,10 +507,10 @@ var RS = RS || {};
     SoundManager.playOk();
 
     result = {
-      // 게임 시작 처리
+      // Game Start 처리
       0: function() {
             this.commandNewGame();
-            // 게임 시작 처리
+            // Game Start 처리
             this._isGameStarted = true;
       },
       // 게임 로드 처리
@@ -519,7 +519,7 @@ var RS = RS || {};
             this.commandContinue();
           }
       },
-      // 게임 종료 처리
+      // Game Exit 처리
       2: function() {
           this.commandExit();
         }
