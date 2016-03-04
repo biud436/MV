@@ -63,16 +63,22 @@
  * KNE opacity number
  * KNE askText string
  *
+ * - Change Log
+ * 2016.03.05 (v1.3.3)- Fixed the class structure.
+ *
  */
 
- var RS = RS || {};
- RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
-
-function TextBox() {
-  this.initialize.apply(this, arguments);
-};
-
 (function() {
+
+  // private static class
+  function RSMatch() {
+      throw new Error('This is a static class');
+  }
+
+  // private class
+  function TextBox() {
+    this.initialize.apply(this, arguments);
+  };
 
   //===========================================================================
   // Private Members
@@ -80,14 +86,14 @@ function TextBox() {
 
   var parameters = PluginManager.parameters('Window_KorNameEdit');
 
-  RS.Window_KorNameEdit.windowWidth = Number(parameters['windowWidth'] || 580);
-  RS.Window_KorNameEdit.windowCenter = String(parameters['windowCenter'] || 'false');
-  RS.Window_KorNameEdit.outlineWidth = Number(parameters['outlineWidth'] || 1);
-  RS.Window_KorNameEdit.outlineColor = String(parameters['outlineColor'] || 'black');
-  RS.Window_KorNameEdit.fontColor = String(parameters['fontColor'] || 'white');
-  RS.Window_KorNameEdit.opacity = Number(parameters['editWindow_Opacity'] || 225);
-  RS.Window_KorNameEdit.askText = String(parameters['askingText'] || '이름을 기입해주세요');
-  RS.Window_KorNameEdit.standardFontSize = Number(parameters['standardFontSize'] || 28);
+  RSMatch.windowWidth = Number(parameters['windowWidth'] || 580);
+  RSMatch.windowCenter = String(parameters['windowCenter'] || 'false');
+  RSMatch.outlineWidth = Number(parameters['outlineWidth'] || 1);
+  RSMatch.outlineColor = String(parameters['outlineColor'] || 'black');
+  RSMatch.fontColor = String(parameters['fontColor'] || 'white');
+  RSMatch.opacity = Number(parameters['editWindow_Opacity'] || 225);
+  RSMatch.askText = String(parameters['askingText'] || '이름을 기입해주세요');
+  RSMatch.standardFontSize = Number(parameters['standardFontSize'] || 28);
 
   //===========================================================================
   // TextBox Class
@@ -187,7 +193,7 @@ function TextBox() {
   Window_NameEdit.prototype.drawActorFace = function(actor, x, y, width, height) {
       this.drawFace(actor.faceName(), actor.faceIndex(), x, y, width, height);
       this.changeTextColor(this.hpColor(actor));
-      this.drawText(RS.Window_KorNameEdit.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
+      this.drawText(RSMatch.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
   };
 
   Window_NameEdit.prototype.itemRect = function(index) {
@@ -200,20 +206,20 @@ function TextBox() {
   };
 
   Window_NameEdit.prototype.windowWidth = function () {
-    return RS.Window_KorNameEdit.windowWidth;
+    return RSMatch.windowWidth;
   };
 
   Window_NameEdit.prototype.drawChar = function (index) {
     var rect = this.itemRect(index);
     this.resetTextColor();
-    this.contents.outlineWidth = RS.Window_KorNameEdit.outlineWidth;
-    this.contents.outlineColor = RS.Window_KorNameEdit.outlineColor;
-    this.contents.fontColor = RS.Window_KorNameEdit.fontColor;
+    this.contents.outlineWidth = RSMatch.outlineWidth;
+    this.contents.outlineColor = RSMatch.outlineColor;
+    this.contents.fontColor = RSMatch.fontColor;
     this.drawText(this._name[index] || '', rect.x, rect.y)
   };
 
   Window_NameEdit.prototype.standardFontSize = function() {
-      return RS.Window_KorNameEdit.standardFontSize;
+      return RSMatch.standardFontSize;
   };
 
   //===========================================================================
@@ -230,10 +236,10 @@ function TextBox() {
 
   Scene_Name.prototype.createTextBox =  function() {
     this._textBox = new TextBox(this._editWindow);
-    if(RS.Window_KorNameEdit.windowCenter === "true") {
+    if(RSMatch.windowCenter === "true") {
       this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
     }
-    this._editWindow.opacity = RS.Window_KorNameEdit.opacity;
+    this._editWindow.opacity = RSMatch.opacity;
   }
 
   Scene_Name.prototype.update = function() {
@@ -258,36 +264,36 @@ function TextBox() {
         switch(args[0]) {
           case 'width':
           case '폭':
-            RS.Window_KorNameEdit.windowWidth = Number(args[1] || 580);
+            RSMatch.windowWidth = Number(args[1] || 580);
             break;
           case 'center':
           case '중앙정렬':
-            RS.Window_KorNameEdit.windowCenter = String(args[1] || 'false');
+            RSMatch.windowCenter = String(args[1] || 'false');
             break;
           case 'outlineWidth':
           case '테두리크기':
-            RS.Window_KorNameEdit.windowWidth = Number(args[1] || 1);
+            RSMatch.windowWidth = Number(args[1] || 1);
             break;
           case 'outlineColor':
           case '테두리색상':
-            RS.Window_KorNameEdit.outlineColor = String(args[1] || 'black');
+            RSMatch.outlineColor = String(args[1] || 'black');
             break;
           case 'fontColor':
           case '폰트색상':
-            RS.Window_KorNameEdit.fontColor = String(args[1] || 'white');
+            RSMatch.fontColor = String(args[1] || 'white');
             break;
           case 'fontSize':
           case '폰트크기':
-            RS.Window_KorNameEdit.standardFontSize = Number(args[1] || 28);
+            RSMatch.standardFontSize = Number(args[1] || 28);
             break;
           case 'opacity':
           case '투명도':
             var _opacity = Number(args[1] || 1);
-            RS.Window_KorNameEdit.opacity = _opacity.clamp(0, 255);
+            RSMatch.opacity = _opacity.clamp(0, 255);
             break;
           case 'askText':
           case '텍스트':
-            RS.Window_KorNameEdit.askText = String(args[1] || '이름을 기입해주세요');
+            RSMatch.askText = String(args[1] || '이름을 기입해주세요');
             break;
         }
       }
