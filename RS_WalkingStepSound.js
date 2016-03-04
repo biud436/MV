@@ -5,6 +5,29 @@
  *
  * @author biud436
  *
+ * @requiredAssets audio/wav/stepdirt_1
+ * @requiredAssets audio/wav/stepdirt_2
+ * @requiredAssets audio/wav/stepdirt_3
+ * @requiredAssets audio/wav/stepdirt_4
+ * @requiredAssets audio/wav/stepdirt_5
+ * @requiredAssets audio/wav/stepdirt_6
+ * @requiredAssets audio/wav/stepdirt_7
+ * @requiredAssets audio/wav/stepdirt_8
+ * @requiredAssets audio/wav/stepsnow_1
+ * @requiredAssets audio/wav/stepsnow_2
+ * @requiredAssets audio/wav/stepstone_1
+ * @requiredAssets audio/wav/stepstone_2
+ * @requiredAssets audio/wav/stepstone_3
+ * @requiredAssets audio/wav/stepstone_4
+ * @requiredAssets audio/wav/stepstone_5
+ * @requiredAssets audio/wav/stepstone_6
+ * @requiredAssets audio/wav/stepstone_7
+ * @requiredAssets audio/wav/stepstone_8
+ * @requiredAssets audio/wav/stepwater_1
+ * @requiredAssets audio/wav/stepwater_2
+ * @requiredAssets audio/wav/stepwood_1
+ * @requiredAssets audio/wav/stepwood_2
+ *
  * @param Dirt Terrain Tag
  * @desc 흙 길
  * @default 1
@@ -80,6 +103,10 @@
  * Stone Terrain / 3
  * Water Terrain / 4
  * Wood Terrain / 5
+ *
+ * - Change Log
+ * 2015.12.26 (v1.0.0)- First Release.
+ * 2016.03.04 (v1.0.1)- Added the comments for include used files.
  *
  */
 

@@ -1,12 +1,19 @@
 /*:
  * RS_HUD_4m.js
  * @plugindesc This plugin provides the HUD that displays the HP and
- * MP and EXP and Level, on the screen. (v1.0.1)
+ * MP and EXP and Level, on the screen. (v1.0.2)
+ *
+ * @requiredAssets img/pictures/exr
+ * @requiredAssets img/pictures/gauge
+ * @requiredAssets img/pictures/hp
+ * @requiredAssets img/pictures/mp
+ * @requiredAssets img/pictures/hud_window_empty
+ * @requiredAssets img/pictures/masking
  *
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.0.1
+ * @version 1.0.2
  *
  * @param Width
  * @desc Width
@@ -69,69 +76,12 @@
  * the x is number value between 0 and 255.
  *
  * RS_HUD Visible true
-
  * RS_HUD Visible false
  *
- */
-/*:ko
- * RS_HUD_4m.js
- * @plugindesc 체력, 마력, 경험치를 표시하는 플러그인입니다.
- * 최대 4명까지 지원합니다.
- * @author 러닝은빛(biud436)
- * @since 2015.10.31
- * @date 2016.01.12
- * @version 1.0
- *
- * @param Width
- * @desc 가로 크기
- * @default 317
- *
- * @param Height
- * @desc 세로 크기
- * @default 101
- *
- * @param Margin
- * @desc 화면 경계선과의 여백 또는 간격을 지정합니다.
- * @default 0
- *
- * @param Gaussian Blur
- * @desc 페이스칩의 가장자리를 다듬어 부드럽게 묘화하는 기능으로
- * 모바일에서만 지원합니다.
- * @default true
- *
- * @param Show
- * @desc 상태
- * @default true
- *
- * @param Opacity
- * @desc 투명도
- * @default 255
- *
- * @param Anchor
- * @desc LeftTop, LeftBottom, RightTop, RightBottom
- * @default LeftTop
- *
- * @param preloadImportantFaces
- * @desc 기본 페이스칩을 미리 불러옵니다
- * (미리 로드해놓지 않으면 오류가 날 수 있습니다)
- * @default ['Actor1', 'Actor2', 'Actor3']
- *
- * @help
- *
- * < 사용가능 변수 >
- * $gameHud.opacity
- * $gameHud.show
- *
- * <플러그인 커맨드>
- * RS_HUD Opacity x
- * x 는 0 ~ 255 사이의 정수입니다.
- *
- * RS_HUD Visible true
- * 화면에서 HUD 를 없앱니다.
- *
- * RS_HUD Visible false
- * 화면에 HUD 를 표시합니다.
- *
+ * - Change Log
+ * 2015.10.31 (v1.0.0) - First Release Date
+ * 2016.02.24 (v1.0.1) - Added the Plugin Command.
+ * 2016.03.04 (v1.0.2) - Added the comments for include used files.
  */
 
 var $gameHud = null

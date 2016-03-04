@@ -6,6 +6,9 @@
  * @param parallaxImage
  * @desc 원경 이미지
  * @default BlueSky
+ * @require 1
+ * @dir img/parallaxes
+ * @type file
  *
  * @param TextAnimation
  * @desc  Push, Split
@@ -52,6 +55,9 @@
  *
  * - Split
  * 텍스트가 좌우로 커졌다가 작아집니다.
+ *
+ * -Change Log
+ * 2016.03.04(v1.0.1) - Added the comments for include used files.
  *
  */
 
