@@ -13,11 +13,26 @@
  * For example, If your game offers users the ability to change the language,
  * you can change your game language into many languages by using this plugin command.
  *
- * - pluginCommand
+ * //---------------------------------------------------------------------------
+ * // pluginCommand
+ * //---------------------------------------------------------------------------
  * Localization Change type
  *
- * - Language Type
+ * //---------------------------------------------------------------------------
+ * // Script
+ * //---------------------------------------------------------------------------
  *
+ * - Check Language
+ * $gameSystem.isLangType('en');
+ * $gameSystem.isLangType('english');
+ * $gameSystem.isLangType('English');
+ *
+ * - Change Language
+ * RS.Localization.changeSystemLanguage('japanese');
+ *
+ * //---------------------------------------------------------------------------
+ * // Language Type
+ * //---------------------------------------------------------------------------
  * 'Afrikaans'
  * 'Afrikaans_South_Africa'
  * 'Arabic'
@@ -257,6 +272,12 @@
  * 'Chinese_T'
  * 'Zulu'
  * 'Zulu_South_Africa'
+ *
+ * //---------------------------------------------------------------------------
+ * // Change Log
+ * //---------------------------------------------------------------------------
+ * 2016.02.20 (v1.0.0) - First Release
+ * 2016.03.05 (v1.0.1) - Added new function.
  *
  */
 
@@ -528,9 +549,8 @@
     }
 
     RS.Localization.changeSystemLanguage = function(reg) {
-      var lang = RS.Localization.findLanguage(reg);
+      var lang = RS.Localization.findLanguage(reg.toLowerCase());
       this.setSL(RS.Localization.lang[lang]);
-      console.log($dataSystem.locale);
     }
 
     var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
@@ -557,5 +577,10 @@
     Game_System.prototype.isEnglish = function() {
         return $dataSystem.locale.match(/^en/);
     };
+
+    Game_System.prototype.isLangType = function(lang) {
+        var lang = RS.Localization.findLanguage(new RegExp("^" + lang, "ig"));
+        return $dataSystem.locale.match(RS.Localization.lang[lang]);
+    }
 
  })(RS.Localization.lang);
