@@ -1,6 +1,6 @@
 /*:
  * RS_ItemStream.js
- * @plugindesc Item Stream
+ * @plugindesc This plugin sends or gets the game item to the specific Save File.
  * @author biud436
  * @date 2016.03.07
  * @version 1.0.0
