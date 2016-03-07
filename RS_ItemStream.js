@@ -275,7 +275,7 @@ Imported.ItemStream = true;
 
           switch (sym) {
             case 'gold':
-              console.log('test1');
+              // console.log('test1');
               this._services.gainGold(id);
               break;
             case 'item':
@@ -289,9 +289,9 @@ Imported.ItemStream = true;
               break;
           }
 
-          console.log('test2');
+          // console.log('test2');
           this.callServices(sender_index, receiver_index);
-          console.log('test3');
+          // console.log('test3');
           this.destroyServices();
 
       } catch(err) {
