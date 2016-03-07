@@ -5,25 +5,40 @@
  * @author biud436
  * @date 2016.03.07
  * @version 1.0.0
+ *
  * @help
  * //===========================================================================
  * // Plugin Command
  * //===========================================================================
  *
+ * This plugin commands allows you to send the gold to the save-data.
  * Stream Send Gold saveFileId gold_value
+ *
+ * This plugin commands allows you to send the weapon to the save-data.
  * Stream Send Weapon saveFileId weapon_id
+ *
+ * This plugin commands allows you to send an armor to the save-data.
  * Stream Send Armor saveFileId armor_id
+ *
+ * This plugin commands allows you to send an item to the save-data.
  * Stream Send Item saveFileId item_id
  *
+ * This plugin commands allows you to get the gold from the save-data.
  * Stream Bring Gold saveFileId gold_value
+ *
+ * This plugin commands allows you to get the weapon from the save-data.
  * Stream Bring WeaponsaveFileId weapon_id
+ *
+ * This plugin commands allows you to get an armor from the save-data.
  * Stream Bring Armor saveFileId armor_id
+ *
+ * This plugin commands allows you to get an item from the save-data.
  * Stream Bring Item saveFileId item_id
  *
  * //===========================================================================
  * // Change Log
  * //===========================================================================
- * 2016.03.07 - First Release
+ * 2016.03.07 (v1.0.0) - First Release
  */
 
 var Imported = Imported || {};
