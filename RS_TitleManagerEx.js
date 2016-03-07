@@ -78,79 +78,9 @@
  *
  * - Version Log
  * 1.0.2 (2015.12.22) - Fixed a bug about the web local storage.
+ * 1.0.3 (2016.03.07) - Fixed a bug about Korean texts.
  *
  */
-
- /*:ko
-  * RS_TitleManagerEx.js
-  * @plugindesc 	엔딩 후 타이틀과 BGM 변경 + 엔딩 후 스페셜 메뉴 띄우기
-  * @author biud436
-  *
-  * @param ending1
-  * @desc 엔딩1
-  * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
-  * @default ["Book", "", "Theme1"]
-  *
-  * @param ending2
-  * @desc 엔딩2
-  * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
-  * @default ["Devil", "", "Field2"]
-  *
-  * @param ending3
-  * @desc 엔딩3
-  * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
-  * @default ["Book", "", "Theme1"]
-  *
-  * @param ending4
-  * @desc 엔딩4
-  * ["타이틀1의 파일명","타이틀2의 파일명","BGM명"]
-  * @default ["Book", "", "Theme1"]
-  *
-  * @param Map ID
-  * @desc 맵 ID
-  * @default 1
-  *
-  * @param Map X
-  * @desc 맵 X
-  * @default 0
-  *
-  * @param Map Y
-  * @desc 맵 Y
-  * @default 0
-  *
-  * @param specific command
-  * @desc 스페셜 메뉴의 이름
-  * @default 스페셜 메뉴
-  *
-  * @param show specific command
-  * @desc 스페셜 메뉴 표시 여부
-  * true 또는 false 기입
-  * @default true
-  *
-  * @help
-  * - 엔딩을 설정할 수 있는 플러그인 커맨드입니다
-  * 엔딩 설정 엔딩1
-  * 엔딩 설정 엔딩2
-  * 엔딩 설정 엔딩3
-  * 엔딩 설정 엔딩4
-  *
-  * - 엔딩 파일을 삭제하는 플러그인 커맨드입니다.
-  * 엔딩 초기화
-  *
-  * - 엔딩 클리어 여부 확인
-  * if($gameMap.isClearEnding("엔딩1")) {
-  *   // true
-  * } else {
-  *   // false
-  * }
-  *
-  * - 엔딩 클리어 리스트 획득
-  * $gameMap.getEnding();
-  *
-  * - 엔딩 클리어 횟수 출력
-  * $gameMap.getEnding().length;
-  */
-
 var RS = RS || {};
 RS.Position = RS.Position || {};
 RS.Tool = RS.Tool || {};
@@ -166,11 +96,11 @@ RS.EndingClearList = RS.EndingClearList || [];
 
   // 타이틀에서 불러올 그래픽 파일들을 설정합니다
   RS.Tool.RESOURCE = {
-    기본타이틀: eval(parameters['base title']) || baseResource,
-    엔딩1: eval(parameters["ending1"]) || baseResource,
-    엔딩2: eval(parameters["ending2"]) || baseResource,
-    엔딩3: eval(parameters["ending3"]) || baseResource,
-    엔딩4: eval(parameters["ending4"]) || baseResource
+    'base title': eval(parameters['base title']) || baseResource,
+    'ending1': eval(parameters["ending1"]) || baseResource,
+    'ending2': eval(parameters["ending2"]) || baseResource,
+    'ending3': eval(parameters["ending3"]) || baseResource,
+    'ending4': eval(parameters["ending4"]) || baseResource
   };
 
   // 스페셜 맵 설정
