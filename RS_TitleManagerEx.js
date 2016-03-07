@@ -78,7 +78,7 @@
  *
  * - Version Log
  * 1.0.2 (2015.12.22) - Fixed a bug about the web local storage.
- * 1.0.3 (2016.03.07) - Fixed a bug about Korean texts.
+ * 1.0.3 (2016.03.07) - Fixed a bug that causes a serious problem when the parameters were set to English.
  *
  */
 var RS = RS || {};
