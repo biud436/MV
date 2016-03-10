@@ -2002,7 +2002,7 @@ Window_Message.prototype.updatePlacement = function() {
             RS.__faceOX = Number(args[1] || 0);
             break;
          //-------------------------------------------------------------------------
-          case 'faceOX': case '큰페이스칩Y':
+          case 'faceOY': case '큰페이스칩Y':
             RS.__faceOY = Number(args[1] || 0);
             break;
          //-------------------------------------------------------------------------
