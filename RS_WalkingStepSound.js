@@ -108,6 +108,7 @@
  * 2015.12.26 (v1.0.0)- First Release.
  * 2016.03.04 (v1.0.1)- Added the comments for include used files.
  * 2016.03.05 (v1.0.2) - Fixed the class structure.
+ * 2016.03.10 (v1.0.3) - Fixed the sound option.
  *
  */
 
@@ -234,7 +235,7 @@ Imported.RS_WalkingStepSound = true;
   //
   //
 
-  ConfigManager.stepSound   = false;
+  ConfigManager.stepSound   = true;
 
   var alias_makeData = ConfigManager.makeData;
   ConfigManager.makeData = function() {
