@@ -72,6 +72,7 @@ Vector2.quadraticBezier = function(vec1, vec2, vec3, t) {
 
 /**
  * 최대 각도, 최소 각도를 제한합니다 (성능을 위해)
+ * @memberof Vector2
  * @function limitAngle
  * @param angle {Number}
  * @static
@@ -79,6 +80,21 @@ Vector2.quadraticBezier = function(vec1, vec2, vec3, t) {
 Vector2.limitAngle = function(angle) {
     while(angle < -Math.PI) angle += Math.PI * 2;
     while(angle >= Math.PI) angle -= Math.PI * 2;
+};
+
+/**
+ * 두 벡터 사이의 거리
+ * @memberof Vector2
+ * @function distance
+ * @param vec1 {Vector2}
+ * @param vec2 {Vector2}
+ * @return dist {Number}
+ * @static
+ */
+Vector2.distance = function(vec1, vec2) {
+    var val;
+    val = Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2);
+    return Math.sqrt(val);
 };
 
 /**
