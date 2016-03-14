@@ -25,7 +25,7 @@ Vector2.empty = function() {
  * @function mix
  * @param vec1 {Vector2}
  * @param vec2 {Vector2}
- * @param t {Number}
+ * @param t {Number} frameTime값. 0 ~ 1 사이의 실수
  * @return val {Number}
  * @static
  */
@@ -58,7 +58,7 @@ Vector2.isNormalize = function(vec) {
  * @param vec1 {Vector2} 시작 지점
  * @param vec2 {Vector2} 중간 지점
  * @param vec3 {Vector2} 끝 지점
- * @param t {Number} 시간
+ * @param t {Number} frameTime값. 0 ~ 1 사이의 실수
  * @return p {Vector2}
  * @static
  */
