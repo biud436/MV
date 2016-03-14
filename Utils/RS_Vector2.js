@@ -30,7 +30,10 @@ Vector2.empty = function() {
  * @static
  */
 Vector2.mix = function(vec1, vec2, t) {
-    return vec1.add( (vec2.minus(this)).mul(t) );
+    var vec = Vector2.empty();
+    vec.x = vec1.x + t * (vec2.x - vec1.x);
+    vec.y = vec1.x + t * (vec2.y - vec1.y);
+    return vec;
 };
 
 /**
