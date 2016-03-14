@@ -72,11 +72,11 @@ Vector2.quadraticBezier = function(vec1, vec2, vec3, t) {
 
 /**
  * 최대 각도, 최소 각도를 제한합니다 (성능을 위해)
- * @function maxAngle
+ * @function limitAngle
  * @param angle {Number}
  * @static
  */
-Vector2.maxAngle = function(angle) {
+Vector2.limitAngle = function(angle) {
     while(angle < -Math.PI) angle += Math.PI * 2;
     while(angle >= Math.PI) angle -= Math.PI * 2;
 };
