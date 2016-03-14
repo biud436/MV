@@ -21,7 +21,7 @@ Vector2.empty = function() {
 
 /**
  * 선형 보간
- * vec1 에서 vec2 로 이동합니다.
+ * vec1 에서 vec2 로 직선 형태로 이동합니다.
  * @memberof Vector2
  * @function mix
  * @param vec1 {Vector2}
@@ -54,6 +54,7 @@ Vector2.isNormalize = function(vec) {
 
 /**
  * 곡선형 보간
+ * vec1 에서 vec3 으로 곡선 형태로 이동합니다.
  * @memberof Vector2
  * @function quadraticBezier
  * @param vec1 {Vector2} 시작 지점
