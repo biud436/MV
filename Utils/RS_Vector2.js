@@ -77,11 +77,13 @@ Vector2.quadraticBezier = function(vec1, vec2, vec3, t) {
  * @memberof Vector2
  * @function limitAngle
  * @param angle {Number}
+ * @return angle {Number}
  * @static
  */
 Vector2.limitAngle = function(angle) {
     while(angle < -Math.PI) angle += Math.PI * 2;
     while(angle >= Math.PI) angle -= Math.PI * 2;
+    return angle;
 };
 
 /**
