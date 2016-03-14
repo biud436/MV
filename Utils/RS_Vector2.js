@@ -44,8 +44,8 @@ Vector2.mix = function(vec1, vec2, t) {
  * @static
  */
 Vector2.isNormalize = function(vec) {
-    if( (vec2.x >= 0.0 && vec2.x <= 1.0) &&
-        (vec2.y >= 0.0 && vec2.y <= 1.0) ) {
+    if( (vec.x >= 0.0 && vec.x <= 1.0) &&
+        (vec.y >= 0.0 && vec.y <= 1.0) ) {
       return true;
     }
     return false;
