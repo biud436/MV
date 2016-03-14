@@ -21,6 +21,7 @@ Vector2.empty = function() {
 
 /**
  * 선형 보간
+ * vec1 에서 vec2 로 이동합니다.
  * @memberof Vector2
  * @function mix
  * @param vec1 {Vector2}
