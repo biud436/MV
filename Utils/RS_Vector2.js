@@ -259,5 +259,5 @@ Vector2.prototype.rotate = function(angle) {
  * @return val {Number}
  */
 Vector2.prototype.pointDirection = function(vec, angle) {
-    return Math.atan2(vec.y - this.x, vec.x - this.y) - (Math.PI / 180) * angle;
+    return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
 };
