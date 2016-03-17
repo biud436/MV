@@ -56,9 +56,8 @@
  * the plugin and put it in your js/plugins folder. You should allow the plugin
  * to pre-load the resources by setting preloadImportantFaces parameter.
  *
- * Demo Link : https://www.dropbox.com/s/xbwvbz14svo2d9o/hud.zip?dl=0
- * Resources Link : https://www.dropbox.com/s/dwkre28ii5rjrmx/pictures.zip?dl=0
- * My Blog Link (Korean) : http://biud436.blog.me/220595076758
+ * Demo Link : https://www.dropbox.com/s/v6prurtempabqqv/hud.zip?dl=0
+ * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
  * Github Link : https://github.com/biud436/MV/blob/master/HUD/RS_HUD_4m.js
  *
  * - Sets the opacity
