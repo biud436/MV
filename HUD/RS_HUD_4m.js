@@ -1,7 +1,7 @@
 /*:
  * RS_HUD_4m.js
  * @plugindesc This plugin provides the HUD that displays the HP and
- * MP and EXP and Level, on the screen. (v1.0.2)
+ * MP and EXP and Level, on the screen. (v1.0.3)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -13,7 +13,7 @@
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.0.2
+ * @version 1.0.3
  *
  * @param Width
  * @desc Width
@@ -40,6 +40,15 @@
  * @param Opacity
  * @desc Sets the opacity.
  * @default 255
+ *
+ * @param Anchor
+ * @desc This parameter is used to be compatible with RS_HUD.js
+ * @default LeftTop
+ *
+ * @param Arrangement
+ * @desc Create an array to set the position of a sprite.
+ * example : ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
+ * @default ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
  *
  * @param Anchor
  * @desc LeftTop, LeftBottom, RightTop, RightBottom
@@ -81,74 +90,11 @@
  * 2015.10.31 (v1.0.0) - First Release Date
  * 2016.02.24 (v1.0.1) - Added the Plugin Command.
  * 2016.03.04 (v1.0.2) - Added the comments for include used files.
+ * 2016.03.18 (v1.0.3) - Added the parameter called 'Arrangement'
  */
 
 var $gameHud = null
 var RS = RS || {};
-
-function HUD() {
-  this.initialize.apply(this, arguments);
-};
-
-function HUDFactory(stage) {
-  this.stage = stage;
-  this.drawAllHud = function() {
-    var items = ["LeftTop", "RightTop", "LeftBottom", "RightBottom"];
-    if(this.stage.children.length > 0) {
-      this.stage.removeChildren(0, this.stage.children.length);
-    }
-    items.forEach(function(item, index){
-      if(!!$gameParty.members()[index]) {
-        this.stage.addChild(new HUD({szAnchor: item, nIndex: index}));
-      }
-    }.bind(this));
-    this.sort();
-  }
-  this.sort = function() {
-    var array = this.stage.children;
-    this.stage.children = array.sort(function(a, b) {
-      return a._memberIndex - b._memberIndex;
-    });
-  }
-  this.refresh = function() {
-    var self = this.stage;
-    this.stage.children.forEach(function(i) {
-        this.stage.removeChild(i);
-    }.bind(this));
-    this.drawAllHud();
-  }
-  this.remove = function(index) {
-    setTimeout(function() {
-      while($gameParty.size() !== this.stage.children.length) {
-        this.drawAllHud();
-      }
-    }.bind(this), 0);
-  }
-};
-
-Object.defineProperty(HUDFactory.prototype, 'show', {
-    get: function() {
-        return this.stage.children[0].show;
-    },
-    set: function(value) {
-        this.stage.children.forEach( function(i) {
-          i.visible = value;
-        }.bind(this));
-        RS.HUD.show = value;
-    },
-});
-
-Object.defineProperty(HUDFactory.prototype, 'opacity', {
-    get: function() {
-        return this.stage.children[0].opacity;
-    },
-    set: function(value) {
-        this.stage.children.forEach( function(i) {
-          i.opacity = value.clamp(0, 255);
-        }.bind(this));
-        RS.HUD.opacity = value.clamp(0, 255);
-    },
-});
 
 /**
  * @class HUD
@@ -164,7 +110,73 @@ Object.defineProperty(HUDFactory.prototype, 'opacity', {
   var bShow = Boolean(parameters['Show'] ==="true");
   var nOpacity = Number(parameters['Opacity'] || 255 );
   var szAnchor = String(parameters['Anchor'] || "LeftTop");
+  var arrangement = eval(parameters['Arrangement']);
   var preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
+
+  function HUD() {
+    this.initialize.apply(this, arguments);
+  };
+
+  function HUDFactory(stage) {
+    this.stage = stage;
+    this.drawAllHud = function() {
+      var items = arrangement;
+      if(this.stage.children.length > 0) {
+        this.stage.removeChildren(0, this.stage.children.length);
+      }
+      items.forEach(function(item, index){
+        if(!!$gameParty.members()[index]) {
+          this.stage.addChild(new HUD({szAnchor: item, nIndex: index}));
+        }
+      }.bind(this));
+      this.sort();
+    }
+    this.sort = function() {
+      var array = this.stage.children;
+      this.stage.children = array.sort(function(a, b) {
+        return a._memberIndex - b._memberIndex;
+      });
+    }
+    this.refresh = function() {
+      var self = this.stage;
+      this.stage.children.forEach(function(i) {
+          this.stage.removeChild(i);
+      }.bind(this));
+      this.drawAllHud();
+    }
+    this.remove = function(index) {
+      setTimeout(function() {
+        while($gameParty.size() !== this.stage.children.length) {
+          this.drawAllHud();
+        }
+      }.bind(this), 0);
+    }
+  };
+
+  Object.defineProperty(HUDFactory.prototype, 'show', {
+      get: function() {
+          return this.stage.children[0].show;
+      },
+      set: function(value) {
+          this.stage.children.forEach( function(i) {
+            i.visible = value;
+          }.bind(this));
+          RS.HUD.show = value;
+      },
+  });
+
+  Object.defineProperty(HUDFactory.prototype, 'opacity', {
+      get: function() {
+          return this.stage.children[0].opacity;
+      },
+      set: function(value) {
+          this.stage.children.forEach( function(i) {
+            i.opacity = value.clamp(0, 255);
+          }.bind(this));
+          RS.HUD.opacity = value.clamp(0, 255);
+      },
+  });
+
 
   RS.HUD = RS.HUD || {};
   RS.HUD.show = RS.HUD.show || bShow;
