@@ -1,7 +1,7 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc This plugin provides the HUD that displays the HP and
- * MP and EXP and Level, on the screen. (v1.0.3)
+ * @plugindesc This plugin draws the HUD, which displays the hp and mp and exp
+ * and level of each party members. (v1.0.3)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -56,17 +56,18 @@
  *
  * @param preloadImportantFaces
  * @desc Allow you to pre-load the base face chips.
- * (If you do not to set the parameter, you can happen the error)
+ * (If you do not set this parameter, It can cause errors in the game.)
  * @default ['Actor1', 'Actor2', 'Actor3']
  *
  * @help
- * You have to download the attached file by clicking the link. Download
- * the resource and place it in your img/pictures folder. You have to download
- * the plugin and put it in your js/plugins folder. You should allow the plugin
- * to pre-load the resources by setting preloadImportantFaces parameter.
+ * Download the resources and place them in your img/pictures folder. 
+ * All the resources can download in the following link.
+ * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
+ *
+ * In Plugin Manager,
+ * You have to pre-load the resources using the parameter called 'preloadImportantFaces'.
  *
  * Demo Link : https://www.dropbox.com/s/v6prurtempabqqv/hud.zip?dl=0
- * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
  * Github Link : https://github.com/biud436/MV/blob/master/HUD/RS_HUD_4m.js
  *
  * - Sets the opacity
