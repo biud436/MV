@@ -1,10 +1,11 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc 한글 메시지 시스템 (v0.0.8, 2016.03.01)
+ * @plugindesc 한글 메시지 시스템 (v0.0.9, 2016.03.21)
  * @author 러닝은빛(biud436)
  *-------------------------------------------------------------------------------
  * 버전 로그(Version Log)
  *-------------------------------------------------------------------------------
+ * 2016.03.21 (v0.0.9) - \t (탭), \r (캐리지 리턴) 추가
  * 2016.03.01 (v0.0.8) - 말풍선 모드에 페이스칩 표시, 플러그인 커맨드 및 버그 픽스
  * 2016.02.27 (v0.0.7) - 통화 서식 추가
  * 2016.02.15 (v0.0.6) - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
@@ -77,6 +78,10 @@
  * @desc 큰 페이스칩을 메시지창의 뒷면에 표시합니다.
  * @default false
  *
+ * @param 탭 크기
+ * @desc 탭 크기
+ * @default 4
+ *
  *-------------------------------------------------------------------------------
  * 도움말
  *-------------------------------------------------------------------------------
@@ -99,6 +104,7 @@
  * 메시지 큰페이스칩X number
  * 메시지 큰페이스칩Y number
  * 메시지 큰페이스칩Z number
+ * 메시지 탭크기 number
  *
  * - 큰 페이스칩 설정
  * 페이스칩을 img/faces 에 넣고 페이스칩의 이름을 Big_ 으로 시작하게 합니다.
@@ -126,6 +132,8 @@
  * \정렬자[1]
  * \정렬자[2]
  * \숫자[숫자]
+ * \t : 탭의 크기는 8 입니다.
+ * \r : X를 시작 위치로 되돌립니다.
  *
  * - 색상
  * 청록, 청록색, c_aqua
@@ -454,6 +462,14 @@ var Color = Color || {};
    * @type Number
    */
   RS.__HEIGHT = RS.__FONT_SIZE + (RS.__STD_PADDING / 2);
+
+  /**
+   * 탭 크기
+   * @memberOf RS
+   * @property __TabSize
+   * @type Number
+   */
+  RS.__TabSize = Number(parameters['탭 크기'] || 4);
 
   /**
    * int 형 정수값에서 CSS 색상 코드를 취득합니다
@@ -933,6 +949,12 @@ var Color = Color || {};
           break;
       case '그레디언트':
           this.setTextGradient(textState);
+          break;
+      case 'T':
+          textState.x += this.textWidth("A") * RS.__TabSize;
+          break;
+      case 'R':
+          textState.x = 0;
           break;
       default:
           alias_Window_Message_processEscapeCharacter.call(this, code, textState);
@@ -2012,6 +2034,10 @@ Window_Message.prototype.updatePlacement = function() {
             } else {
               RS.__faceSide = false;
             }
+            break;
+         //-------------------------------------------------------------------------
+          case 'setTabSize': case '탭크기':
+            RS.__TabSize = Number(args[1] || 4);
             break;
           // End main switch
          }
