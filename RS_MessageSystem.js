@@ -1397,6 +1397,14 @@ Window_Message.prototype.updatePlacement = function() {
     text = text.replace(/\x1b굵게!/gi, '');
     text = text.replace(/\x1b이탤릭!/gi, '');
     text = text.replace(/\x1b그레디언트<(.+)>/gi, '');
+    text = text.replace(/\x1bT/gi, function() {
+        var arr = [];
+        for(var i=0; i<RS.__TabSize; i++) {
+          arr.push(' ');
+        }
+        return arr.join("");
+    }.bind(this));
+    text = text.replace(/\x1bR/gi, '');
     return text;
   };
 
@@ -1674,6 +1682,8 @@ Window_Message.prototype.updatePlacement = function() {
     text = text.replace(/\x1b굵게!/gi, '');
     text = text.replace(/\x1b이탤릭!/gi, '');
     text = text.replace(/\x1b그레디언트<(.+)>/gi, '');
+    text = text.replace(/\x1bT/gi, '');
+    text = text.replace(/\x1bR/gi, '');
     return text;
   };
 
@@ -1887,7 +1897,12 @@ Window_Message.prototype.updatePlacement = function() {
      text = text.replace(/\x1b굵게!/gi, '');
      text = text.replace(/\x1b이탤릭!/gi, '');
      text = text.replace(/\x1b그레디언트<(.+)>/gi, '');
+     text = text.replace(/\x1bT/gi, function() {
+        this.__textWidth += this.textWidth('A') * RS.__TabSize;
+     }.bind(this));
+     text = text.replace(/\x1bR/gi, '');
      this.__textWidth += (this.textWidth(text) * 2);
+
      return text;
    };
 
