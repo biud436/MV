@@ -1,20 +1,33 @@
-/*
- * RS_ScreenShot.js (PC)
- * @plugindesc This plugin creates the screenshot file in ScreenShots folder when you press on the 'F7' key.
+/*:
+ * RS_ScreenShot.js
+ * @plugindesc This plugin creates the screenshot file in ScreenShots
+ * folder when you press on the specific key.
+ *
  * @author biud436
- * @version 1.0
+ * @version 1.0.0
  * @date 2015.12.22
+ *
+ * @param key
+ * @desc Type the keyCode.
+ * @default 118
  *
  * @reference http://stackoverflow.com/questions/32613060/how-to-take-screenshot-with-node-webkit
  *
  * @help
- * This plugin creates the screenshot file in ScreenShots folder when you press on the 'F7' key.
+ * - Key Code Link
+ * https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
+ *
+ * - Change Log
+ * 2016.03.20 - Added parameter called key
  */
 
 var RS = RS || {};
 RS.ScreenShot = RS.ScreenShot || new function() {};
 
 (function($) {
+
+  var parameters = PluginManager.parameters('RS_ScreenShot');
+  RS.ScreenShot.KEY = Number(parameters['key'] || 118 );
 
   $.getPath = function () {
     var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, '/ScreenShots/');
@@ -52,7 +65,7 @@ RS.ScreenShot = RS.ScreenShot || new function() {};
       alias_SceneManager_onKeyDown.apply(this, arguments);
       if (!event.ctrlKey && !event.altKey) {
         switch (event.keyCode) {
-        case 118:   // F7
+        case RS.ScreenShot.KEY:   // F7
           RS.ScreenShot.takeSnapshot();
         break;
         }
