@@ -4,7 +4,7 @@
  * folder when you press on the specific key.
  *
  * @author biud436
- * @version 1.0.0
+ * @version 1.0.1
  * @date 2015.12.22
  *
  * @param key
