@@ -13,6 +13,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_ResourceUpdate = true;
+
 var RS = RS || {};
 RS.Net = RS.Net || {};
 

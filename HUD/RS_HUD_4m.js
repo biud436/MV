@@ -94,6 +94,9 @@
  * 2016.03.18 (v1.0.3) - Added the parameter called 'Arrangement'
  */
 
+var Imported = Imported || {};
+Imported.RS_HUD_4m = true;
+
 var $gameHud = null
 var RS = RS || {};
 

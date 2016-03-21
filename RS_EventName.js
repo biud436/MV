@@ -27,6 +27,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_EventName = true;
+
 /**
  * @class Sprite_Name
  * @extends Sprite

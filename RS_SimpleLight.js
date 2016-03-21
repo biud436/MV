@@ -32,6 +32,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_SimpleLight = true;
+
 var RS = RS || {};
 RS.LightConfig = RS.LightConfig || {};
 

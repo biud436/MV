@@ -14,6 +14,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_ShopSale = true;
+
 (function() {
 
   var parameters = PluginManager.parameters('RS_ShopSale');

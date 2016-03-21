@@ -80,6 +80,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_WinTray = true; 
+
 (function() {
 
   // Private Members

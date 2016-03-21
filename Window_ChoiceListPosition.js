@@ -20,6 +20,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.Window_ChoiceListPosition = true;
+
 (function() {
 
   var parameters = PluginManager.parameters('Window_ChoiceListPosition');

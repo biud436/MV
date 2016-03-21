@@ -281,6 +281,9 @@
  *
  */
 
+ var Imported = Imported || {};
+ Imported.RS_Localization = true;
+
  var RS = RS || {};
  RS.Localization = RS.Localization || {};
  RS.Localization.lang = RS.Localization.lang || {};

@@ -27,6 +27,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_EventCreate = true;
+
 var RS = RS || {};
 
 Object.defineProperty(Array.prototype, "first", {

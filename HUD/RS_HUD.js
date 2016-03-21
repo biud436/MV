@@ -56,6 +56,9 @@
  * 2016.03.04 (v1.0.1) - Added the comments for include used files.
  */
 
+var Imported = Imported || {};
+Imported.RS_HUD = true;
+
 var $gameHud = null;
 
 var RS = RS || {};

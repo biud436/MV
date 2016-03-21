@@ -14,6 +14,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_CustomCrypto = true;
+
 var RS = RS || {};
 RS.CustomCrypto = RS.CustomCrypto || {};
 

@@ -21,6 +21,9 @@
  * 2016.03.20 - Added parameter called key
  */
 
+var Imported = Imported || {};
+Imported.RS_ScreenShot = true;
+
 var RS = RS || {};
 RS.ScreenShot = RS.ScreenShot || new function() {};
 

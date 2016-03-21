@@ -301,7 +301,7 @@
  *
  */
 var Imported = Imported || {};
-Imported.RS_MessageSystem = true;
+Imported.RS_ChineseMessageSystem = true;
 
 /**
  * @namespace RS

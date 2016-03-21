@@ -21,6 +21,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_Game_Variables = true;
+
 var RS = RS || {};
 RS.Game_Variables = RS.Game_Variables || {};
 

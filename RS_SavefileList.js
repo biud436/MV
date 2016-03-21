@@ -4,6 +4,9 @@
  * @author biud436
  */
 
+var Imported = Imported || {};
+Imported.RS_SaveFileList = true;
+
 (function() {
 
 Window_SavefileList.prototype.drawPartyCharacters = function(info, x, y) {

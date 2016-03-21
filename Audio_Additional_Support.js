@@ -4,8 +4,11 @@
  * This plugin can only play OGG files in the RPG Maker MV.
  * @author biud436
  * @help
- * 
+ *
  */
+
+var Imported = Imported || {};
+Imported.OnlyOGG = true;
 
 (function() {
 

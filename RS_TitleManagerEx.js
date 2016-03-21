@@ -81,6 +81,10 @@
  * 1.0.3 (2016.03.07) - Fixed a bug that causes a serious problem when the parameters were set to English.
  *
  */
+
+var Imported = Imported || {};
+Imported.RS_TitleManagerEx = true;
+
 var RS = RS || {};
 RS.Position = RS.Position || {};
 RS.Tool = RS.Tool || {};

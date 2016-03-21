@@ -39,6 +39,10 @@
  * @default  Game Options
  */
 
+var Imported = Imported || {};
+Imported.Scene_RotateTitle = true; 
+
+
 /**
  * @namespace RS
  */

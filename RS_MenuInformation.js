@@ -20,6 +20,9 @@
  * 2016.03.05 - Fixed the class structure.
  */
 
+var Imported = Imported || {};
+Imported.RS_MenuInformation = true;
+
 function Window_Information() {
    this.initialize.apply(this, arguments);
 }

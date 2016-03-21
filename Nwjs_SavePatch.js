@@ -9,6 +9,9 @@
  * This plugin provides functions to solve the problems.
  */
 
+var Imported = Imported || {};
+Imported.Nwjs_SavePatch = true;
+
 if(Utils.isNwjs) {
   StorageManager.localFileDirectoryPath = function() {
       var s = process.execPath.split("\\"); s.pop();

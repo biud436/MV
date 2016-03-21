@@ -61,6 +61,9 @@
  *
  */
 
+var Imported = Imported || {};
+Imported.RS_ParallaxTitleEx = true;
+
 /**
  * RS.Utils
  * @namespace RS

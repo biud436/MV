@@ -68,6 +68,9 @@
  *
  */
 
+ var Imported = Imported || {};
+ Imported.Window_KorNameEdit = true;
+
 (function() {
 
   // private static class

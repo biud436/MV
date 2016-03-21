@@ -42,7 +42,7 @@
  */
 
 var Imported = Imported || {};
-Imported.ItemStream = true;
+Imported.RS_ItemStream = true;
 
 (function() {
 
