@@ -1,0 +1,17 @@
+{
+  "name": "test-toast",
+  "version": "1.0.0",
+  "description": "Toast Plugin",
+  "cordova": {
+    "id": "cordova-plugin-rstoast",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "",
+  "license": "Apache 2.0"
+}
