@@ -70,7 +70,7 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_WaveFilter = true; 
+Imported.RS_WaveFilter = true;
 
 var RS = RS || {};
 RS.WaveConfig = RS.WaveConfig || {};

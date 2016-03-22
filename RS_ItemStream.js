@@ -39,6 +39,8 @@
  * // Change Log
  * //===========================================================================
  * 2016.03.07 (v1.0.0) - First Release
+ * 2016.03.22 (v1.0.1) - The simple light plugin was not compatible
+ * with this plugin, But Fixed it.
  */
 
 var Imported = Imported || {};
@@ -181,6 +183,7 @@ Imported.RS_ItemStream = true;
       contents.party        = data.party;
       contents.map          = data.map;
       contents.player       = data.player;
+      if(!!Imported.RS_SimpleLight) contents.lightConfig = RS.LightConfig.makeLightConfig();
       return contents;
   };
 
