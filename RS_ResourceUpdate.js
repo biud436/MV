@@ -5,7 +5,7 @@
  *
  * @param URL_DB
  * @desc 버전 문자열이 있는 URL
- * @default https://raw.githubusercontent.com/biud436/MV/master/DBVersion.json
+ * @default https://github.com/biud436/MV/raw/master/Laboratory/DBVersion.json
  *
  * @param Current Version
  * @desc 현재 버전
@@ -31,7 +31,7 @@ RS.Net = RS.Net || {};
     fs = require('fs');
   }
 
-  var DBV_URL = parameters["URL_DB"] || "https://raw.githubusercontent.com/biud436/MV/master/DBVersion.json";
+  var DBV_URL = parameters["URL_DB"] || "https://github.com/biud436/MV/raw/master/Laboratory/DBVersion.json";
 
   RS.Net._dbVersion = '';
   RS.Net._currentVersion = parameters["Current Version"] || '0.1.1';
@@ -136,7 +136,6 @@ RS.Net = RS.Net || {};
     xhr.onload = function() {
       if(xhr.status < 400) {
         var json = JsonEx.parse(xhr.responseText);
-        // var arr = Object.keys(RS.Net._list);
         RS.Net._list = json.data.pictures;
         self.isUpdate();
       }
