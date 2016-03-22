@@ -1,10 +1,10 @@
 ﻿/*:
  * Window_KorNameEdit.js
- * @plugindesc (한글 이름 입력 플러그인) This plugin provides a keyboard that allows
+ * @plugindesc This plugin provides a keyboard that allows
  * you to type in korean or other native language in the Name Input Proccessing
  * @author biud436
  * @since 2015.10.19
- * @version 1.3.2 (2015.02.15)
+ * @version 1.4 (2015.03.22)
  *
  * @param windowWidth
  * @desc 윈도우의 폭입니다
@@ -20,7 +20,7 @@
  *
  * @param askingText
  * @desc 화면에 띄울 텍스트를 기입하세요
- * @default 이름을 기입해주세요
+ * @default Please enter the name
  *
  * @param outlineWidth
  * @desc 테두리의 크기입니다
@@ -64,8 +64,8 @@
  * KNE askText string
  *
  * - Change Log
- * 2016.03.05 (v1.3.3)- Fixed the class structure.
- *
+ * 2016.03.05 (v1.3.3) - Fixed the class structure.
+ * 2016.03.22 (v1.4.0) - Fixed a bug that causes a serious problem.
  */
 
  var Imported = Imported || {};
@@ -133,9 +133,9 @@
 
     switch(e.keyCode) {
     case 8:
-      if (this.getTextLength() > 0) {
+      // if (this.getTextLength() > 0) {
         this.backSpace();
-      }
+      // }
       break;
     case 13:
       if(this.getTextLength() <= 0) {
@@ -156,12 +156,12 @@
   };
 
   TextBox.prototype.backSpace = function() {
-      if (this.getTextLength() > 0) {
+      // if (this.getTextLength() > 0) {
         this._editWindow._name = this._editWindow._name.slice(0, this._textBox.value.length - 1);
         this._editWindow._index = this._textBox.value.length - 1;
         this._textBox.value = this._editWindow._name;
         this._editWindow.refresh();
-      }
+      // }
   };
 
   TextBox.prototype.refreshNameEdit = function()  {
@@ -296,7 +296,7 @@
             break;
           case 'askText':
           case '텍스트':
-            RSMatch.askText = String(args[1] || '이름을 기입해주세요');
+            RSMatch.askText = String(args.slice(1).join(""));
             break;
         }
       }
