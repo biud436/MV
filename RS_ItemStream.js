@@ -4,7 +4,7 @@
  * gets an item from the save-file.
  * @author biud436
  * @date 2016.03.07
- * @version 1.0.0
+ * @version 1.0.1
  *
  * @help
  * //===========================================================================
