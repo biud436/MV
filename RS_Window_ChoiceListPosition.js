@@ -1,5 +1,5 @@
 /*:
- * @plugindesc Window_ChoiceListPosition.js
+ * @plugindesc RS_Window_ChoiceListPosition.js
  * @author biud436
  *
  * @param x
@@ -25,7 +25,7 @@ Imported.Window_ChoiceListPosition = true;
 
 (function() {
 
-  var parameters = PluginManager.parameters('Window_ChoiceListPosition');
+  var parameters = PluginManager.parameters('RS_Window_ChoiceListPosition');
   var mx = Number(parameters['x']);
   var my = Number(parameters['y']);
   var enabled = true;
