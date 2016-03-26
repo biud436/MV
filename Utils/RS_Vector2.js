@@ -228,8 +228,10 @@ Vector2.prototype.getAngle = function(vec) {
  */
 Vector2.prototype.normalize = function() {
     var rel = Vector2.empty();
-    rel.x = this.x / this.length;
-    rel.y = this.y / this.length;
+    if(this.length != 0) {
+      rel.x = this.x / this.length;
+      rel.y = this.y / this.length;
+    }
     return rel;
 };
 

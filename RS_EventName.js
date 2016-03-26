@@ -304,7 +304,7 @@ function Sprite_Name() {
 (function() {
 
   Sprite_Name.prototype = Object.create(Sprite.prototype);
-  Sprite_Name.constructor = Sprite_Name;
+  Sprite_Name.prototype.constructor = Sprite_Name;
 
   Sprite_Name.prototype.initialize = function(data) {
       Sprite.prototype.initialize.call(this);
@@ -429,7 +429,7 @@ function Sprite_PlayerName() {
 (function() {
 
   Sprite_PlayerName.prototype = Object.create(Sprite_Name.prototype);
-  Sprite_PlayerName.constructor = Sprite_PlayerName;
+  Sprite_PlayerName.prototype.constructor = Sprite_PlayerName;
 
   /**
    * @method initialize
@@ -467,6 +467,47 @@ function Sprite_PlayerName() {
 
 /**
  * ============================================================================
+ * @class Sprite_VehicleName
+ * @extends Sprite_Name
+ * @constructor
+ * ============================================================================
+ */
+
+function Sprite_VehicleName() {
+    this.initialize.apply(this, arguments);
+};
+
+(function() {
+
+    Sprite_VehicleName.prototype = Object.create(Sprite_Name.prototype);
+    Sprite_VehicleName.prototype.constructor = Sprite_VehicleName;
+
+    Sprite_VehicleName.prototype.initialize = function(data) {
+        Sprite_Name.prototype.initialize.call(this, data);
+        this._name = data.name;
+    };
+
+    Sprite_VehicleName.prototype.isTransparent = function() {
+        return false;
+    };
+
+    Sprite_VehicleName.prototype.isReady = function() {
+        return true;
+    };
+
+    Sprite_VehicleName.prototype.isErased = function() {
+        return false;
+    };
+
+    Sprite_VehicleName.prototype.drawName = function() {
+        var name = this._name || "Vehicle";
+        this.bitmap.drawText(name, 0, 0, 120, 40, 'center');
+    };
+
+})();
+
+/**
+ * ============================================================================
  * @class Sprite_Character
  * ============================================================================
  */
@@ -492,6 +533,8 @@ function Sprite_PlayerName() {
       // Game_Player
       } else if( this.isPlayer(member) && showPlayerText === 'true') {
           this.drawPlayerName();
+      } else if( this.isVehicle(member) && showPlayerText === 'true') {
+          this.drawVehicleName(member);
       }
 
   };
@@ -534,11 +577,46 @@ function Sprite_PlayerName() {
 
   };
 
+Sprite_Character.prototype.drawVehicleName = function(member) {
+
+    var color = [];
+
+    color.push(Number(RegExp.$1 || 255));
+    color.push(Number(RegExp.$2 || 255));
+    color.push(Number(RegExp.$3 || 255));
+
+    this._nameSprite = new Sprite_VehicleName({
+        'member': member,
+        'textSize': textSize,
+        'textColor': color,
+        'outlineWidth': 2,
+        'anchor': new Point(0.5, 1.0),
+        'height': this.patternHeight.bind(this),
+        'name': this.getName.bind(this)
+    });
+
+    this._nameSprite.z = 250;
+    this._name = this.getName();
+
+    this.parent.addChild(this._nameSprite);
+
+};
+
   Sprite_Character.prototype.getName = function() {
       if(this.isPlayer()) {
           return $gameParty.members()[0].name();
       } else if(this.isEvent()) {
           return this._character.event().name;
+      } else if(this.isVehicle()) {
+          if (this._character.isBoat()) {
+              return 'Boat';
+          } else if (this._character.isShip()) {
+              return 'Ship';
+          } else if (this._character.isAirship()) {
+              return 'AirShip';
+          } else {
+              return this._character._type;
+          }
       }
   };
 
@@ -569,8 +647,13 @@ function Sprite_PlayerName() {
   };
 
   Sprite_Character.prototype.isEvent = function (member) {
-    var member = arguments[1] || this._character;
-    return !!(member instanceof Game_Event);
+      var member = arguments[1] || this._character;
+      return !!(member instanceof Game_Event);
+  };
+
+  Sprite_Character.prototype.isVehicle = function () {
+      var member = arguments[1] || this._character;
+      return !!(member instanceof Game_Vehicle);
   };
 
   Sprite_Character.prototype.isRefresh = function () {
