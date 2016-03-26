@@ -14,6 +14,18 @@
  * @desc Show Player Text (true / false)
  * @default true
  *
+ * @param Boat
+ * @desc Boat Name
+ * @default Boat
+ *
+ * @param Ship
+ * @desc Ship Name
+ * @default Ship
+ *
+ * @param AirShip
+ * @desc AirShip Name
+ * @default AirShip
+ *
  * @help
  *
  * If it sets the note, you can show an event's name above a head.
@@ -24,6 +36,7 @@
  *
  * - Change Log
  * 2016.03.25 (v1.3.0) - Added New Function called updateScale();
+ * 2016.03.26 (v1.3.1) - Added Vehicle
  */
 
 var Imported = Imported || {};
@@ -483,8 +496,8 @@ function Sprite_VehicleName() {
     Sprite_VehicleName.prototype.constructor = Sprite_VehicleName;
 
     Sprite_VehicleName.prototype.initialize = function(data) {
-        Sprite_Name.prototype.initialize.call(this, data);
         this._name = data.name;
+        Sprite_Name.prototype.initialize.call(this, data);
     };
 
     Sprite_VehicleName.prototype.isTransparent = function() {
@@ -518,6 +531,9 @@ function Sprite_VehicleName() {
   var textSize = Number(parameters['textSize'] || 14 );
   var colorMatch = /@color\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/
   var showPlayerText = String(parameters['Show Player Text'] || 'true');
+  var airshipName = String(parameters['AirShip'] || 'AirShip');
+  var shipName = String(parameters['Ship'] || 'Ship');
+  var boatName = String(parameters['Boat'] || 'Boat');
 
   Sprite_Character.prototype.drawName = function(member) {
 
@@ -580,6 +596,9 @@ function Sprite_VehicleName() {
 Sprite_Character.prototype.drawVehicleName = function(member) {
 
     var color = [];
+    var name = this.getName();
+
+    console.log(name);
 
     color.push(Number(RegExp.$1 || 255));
     color.push(Number(RegExp.$2 || 255));
@@ -592,11 +611,11 @@ Sprite_Character.prototype.drawVehicleName = function(member) {
         'outlineWidth': 2,
         'anchor': new Point(0.5, 1.0),
         'height': this.patternHeight.bind(this),
-        'name': this.getName.bind(this)
+        'name': name
     });
 
     this._nameSprite.z = 250;
-    this._name = this.getName();
+    this._name = name;
 
     this.parent.addChild(this._nameSprite);
 
@@ -609,11 +628,11 @@ Sprite_Character.prototype.drawVehicleName = function(member) {
           return this._character.event().name;
       } else if(this.isVehicle()) {
           if (this._character.isBoat()) {
-              return 'Boat';
+              return boatName;
           } else if (this._character.isShip()) {
-              return 'Ship';
+              return shipName;
           } else if (this._character.isAirship()) {
-              return 'AirShip';
+              return airshipName;
           } else {
               return this._character._type;
           }
