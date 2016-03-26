@@ -1,7 +1,7 @@
 /*:
  * RS_HUD_4m.js
  * @plugindesc This plugin draws the HUD, which displays the hp and mp and exp
- * and level of each party members. (v1.0.3)
+ * and level of each party members. (v1.0.4)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -13,7 +13,7 @@
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.0.3
+ * @version 1.0.4
  *
  * @param Width
  * @desc Width
@@ -60,7 +60,7 @@
  * @default ['Actor1', 'Actor2', 'Actor3']
  *
  * @help
- * Download the resources and place them in your img/pictures folder. 
+ * Download the resources and place them in your img/pictures folder.
  * All the resources can download in the following link.
  * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
  *
@@ -92,6 +92,8 @@
  * 2016.02.24 (v1.0.1) - Added the Plugin Command.
  * 2016.03.04 (v1.0.2) - Added the comments for include used files.
  * 2016.03.18 (v1.0.3) - Added the parameter called 'Arrangement'
+ * 2016.03.26 (v1.0.4) - Fixed a bug that the HUD is always displayed regardless
+ * of the setting whenever transferring the player to the other map.
  */
 
 var Imported = Imported || {};
@@ -117,6 +119,14 @@ var RS = RS || {};
   var arrangement = eval(parameters['Arrangement']);
   var preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
 
+  var _alias_Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function() {
+    _alias_Game_System_initialize.call(this);
+    this._rs_hud = this._rs_hud || {};
+    this._rs_hud.show = this._rs_hud.show || bShow
+    this._rs_hud.opacity = this._rs_hud.opacity || nOpacity;
+  }
+
   function HUD() {
     this.initialize.apply(this, arguments);
   };
@@ -134,6 +144,7 @@ var RS = RS || {};
         }
       }.bind(this));
       this.sort();
+      this.show = $gameSystem._rs_hud.show;
     }
     this.sort = function() {
       var array = this.stage.children;
@@ -147,6 +158,7 @@ var RS = RS || {};
           this.stage.removeChild(i);
       }.bind(this));
       this.drawAllHud();
+      this.show = $gameSystem._rs_hud.show;
     }
     this.remove = function(index) {
       setTimeout(function() {
@@ -165,7 +177,7 @@ var RS = RS || {};
           this.stage.children.forEach( function(i) {
             i.visible = value;
           }.bind(this));
-          RS.HUD.show = value;
+          $gameSystem._rs_hud.show = value;
       },
   });
 
@@ -177,21 +189,15 @@ var RS = RS || {};
           this.stage.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
           }.bind(this));
-          RS.HUD.opacity = value.clamp(0, 255);
+          $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
   });
-
-
-  RS.HUD = RS.HUD || {};
-  RS.HUD.show = RS.HUD.show || bShow;
-  RS.HUD.opacity = RS.HUD.opacity || nOpacity;
-  RS.HUD.x = RS.HUD.x || 0;
-  RS.HUD.y = RS.HUD.y || 0;
 
   HUD.prototype = new PIXI.Stage();
 
   HUD.prototype.initialize = function(config) {
       Stage.prototype.initialize.call(this);
+      this.visible = false;
       this.createHud();
       this.setAnchor(config.szAnchor || "LeftBottom");
       this.setMemberIndex(parseInt(config.nIndex) || 0);
@@ -415,25 +421,25 @@ var RS = RS || {};
 
   Object.defineProperty(HUD.prototype, 'show', {
       get: function() {
-          return RS.HUD.show;
+          return $gameSystem._rs_hud.show;
       },
       set: function(value) {
           this.children.forEach( function(i) {
             i.visible = value;
           }.bind(this));
-          RS.HUD.show = value;
+          $gameSystem._rs_hud.show = value;
       },
   });
 
   Object.defineProperty(HUD.prototype, 'opacity', {
       get: function() {
-          return RS.HUD.opacity;
+          return $gameSystem._rs_hud.opacity;
       },
       set: function(value) {
           this.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
           }.bind(this));
-          RS.HUD.opacity = value.clamp(0, 255);
+          $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
   });
 
