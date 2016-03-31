@@ -1,0 +1,12 @@
+{
+  "name": "chat",
+  "version": "0.0.1",
+  "description": "chat",
+  "dependencies": {
+    "express": "4.10.2",
+    "socket.io": "1.2.0",
+	"body-parser": "~1.12.4"
+	"crypto-js": "3.1.5"
+	"crypto-js/aes": "~3.1.5"
+	}
+}
