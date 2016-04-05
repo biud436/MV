@@ -106,6 +106,7 @@
 
   TextBox.BACK_SPACE = 8;
   TextBox.ENTER = 13;
+  TextBox.IS_NOT_CHAR = 32;
   TextBox.KEYS_ARRAY = 255;
 
   TextBox.prototype.initialize = function(_editWindow)  {
@@ -159,7 +160,7 @@
   TextBox.prototype.onKeyDown = function(e) {
     var keyCode = e.which;
     this.getFocus();
-    if (keyCode < 32) {
+    if (keyCode < TextBox.IS_NOT_CHAR) {
       if(keyCode === TextBox.BACK_SPACE) {
         this.backSpace();
       } else if(keyCode === TextBox.ENTER) {
