@@ -106,6 +106,7 @@
 
   TextBox.BACK_SPACE = 8;
   TextBox.ENTER = 13;
+  TextBox.KEYS_ARRAY = 255;
 
   TextBox.prototype.initialize = function(_editWindow)  {
     this._editWindow = _editWindow;
@@ -167,8 +168,8 @@
           // console.error("아무 글자도 입력하지 않았습니다");
         }
       }
-    } else if (keyCode < 255) {
-
+    } else if (keyCode < TextBox.KEYS_ARRAY) {
+      //
     }
   }
 
