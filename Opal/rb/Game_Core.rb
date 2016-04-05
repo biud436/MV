@@ -7,7 +7,7 @@
 #================================================
 # ** Change Log
 #================================================
-# 2015.12.16 - 최초 작성
+# 2015.12.16 - First Release
 #================================================
 # ** Reference Link
 #================================================
@@ -17,15 +17,17 @@ require 'native'
 
 #================================================
 # ** Audio
+# This class is executed the AudioManager of JGSS.
 #================================================
 module Audio
 
+  # This statement gets a console object of JGSS.
   $console = Native(`console`)
 
   module_function
 
   def setup_midi
-    $console.warn("이 플랫폼은 미디를 지원하지 않습니다")
+    $console.warn("This platform does not support the MIDI")
   end
 
   def bgm_play(filename, volume, pitch, pos)
@@ -277,16 +279,16 @@ class Color
     a = (alpha / 255)
     sprintf("rgba(%d,%d,%d,%f)",r,g,b,a)
   end
-  
+
   def self.int_to_rgb(rgb)
     [rgb, rgb>>8, rgb>>16].map {|i| i & 0xFF }
   end
-  
+
   def self.hex_to_rgb(hex)
     return unless hex.is_a?(String)
     hex = hex.delete('#').to_i(16)
     return Color.new *int_to_rgb(hex).reverse, 255
-  end    
+  end
 
 end
 
@@ -986,9 +988,11 @@ class Object
     loop { Graphics.update }
   end
 
+  # This method does not supported in Opal.
   def load_data(filename)
   end
 
+  # This method does not supported in Opal.
   def save_data(obj, filename)
   end
 

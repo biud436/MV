@@ -4,7 +4,7 @@
  * you to type in korean or other native language in the Name Input Proccessing
  * @author biud436
  * @since 2015.10.19
- * @version 1.4 (2015.03.22)
+ * @version 1.5 (2015.04.05)
  *
  * @param windowWidth
  * @desc 윈도우의 폭입니다
@@ -66,6 +66,8 @@
  * - Change Log
  * 2016.03.05 (v1.3.3) - Fixed the class structure.
  * 2016.03.22 (v1.4.0) - Fixed a bug that causes a serious problem.
+ * 2016.04.05 (v1.5.0) - Fixed a bug that causes to delete the text automatically
+ * when you can type Hangul text of length less than 2.
  */
 
  var Imported = Imported || {};
@@ -102,6 +104,9 @@
   // TextBox Class
   //===========================================================================
 
+  TextBox.BACK_SPACE = 8;
+  TextBox.ENTER = 13;
+
   TextBox.prototype.initialize = function(_editWindow)  {
     this._editWindow = _editWindow;
     this.createTextBox();
@@ -110,12 +115,35 @@
 
   TextBox.prototype.createTextBox = function() {
     this._textBox = document.createElement('input');
-    this._textBox.type = "text"
-    this._textBox.id = "textBox"
+    this._textBox.type = "text";
+    this._textBox.id = "textBox";
     this._textBox.style.opacity = 0;
-    this._textBox.style.zIndex = 3;
-    Graphics._centerElement(this._textBox);
+    this._textBox.style.zIndex = 1000;
+    this._textBox.autofocus = false;
+    this._textBox.width = 1;
+    this._textBox.height = 1;
+    this._textBox.multiple = false;
+    this._textBox.style.imeMode = 'active';
+
+    if($gameSystem.isJapanese()) {
+      this._textBox.inputmode = 'katakana';
+    }
+
+    this._textBox.style.position = 'absolute';
+    this._textBox.style.top = 0;
+    this._textBox.style.left = 0;
+    this._textBox.style.right = 0;
+    this._textBox.style.bottom = 0;
+
     this._textBox.onkeydown = this.onKeyDown.bind(this);
+
+    // this._textBox.addEventListener("blur", function() {
+    //   console.log('[blur] Input field lost focus');
+    // });
+    // this._textBox.addEventListener("focusout", function() {
+    //   console.log('[focusout] Input field lost focus');
+    // });
+
     document.body.appendChild(this._textBox);
   };
 
@@ -128,22 +156,19 @@
   };
 
   TextBox.prototype.onKeyDown = function(e) {
-
+    var keyCode = e.which;
     this.getFocus();
-
-    switch(e.keyCode) {
-    case 8:
-      // if (this.getTextLength() > 0) {
+    if (keyCode < 32) {
+      if(keyCode === TextBox.BACK_SPACE) {
         this.backSpace();
-      // }
-      break;
-    case 13:
-      if(this.getTextLength() <= 0) {
-        e.preventDefault();
+      } else if(keyCode === TextBox.ENTER) {
+        if(this.getTextLength() <= 0) {
+          e.preventDefault();
+          // console.error("아무 글자도 입력하지 않았습니다");
+        }
       }
-      break;
-    case 229:
-      break;
+    } else if (keyCode < 255) {
+
     }
   }
 
@@ -156,12 +181,10 @@
   };
 
   TextBox.prototype.backSpace = function() {
-      // if (this.getTextLength() > 0) {
-        this._editWindow._name = this._editWindow._name.slice(0, this._textBox.value.length - 1);
-        this._editWindow._index = this._textBox.value.length - 1;
-        this._textBox.value = this._editWindow._name;
-        this._editWindow.refresh();
-      // }
+    this._editWindow._name = this._editWindow._name.slice(0, this._textBox.value.length - 1);
+    this._editWindow._index = this._textBox.value.length;
+    this._textBox.value = this._editWindow._name;
+    this._editWindow.refresh();
   };
 
   TextBox.prototype.refreshNameEdit = function()  {
