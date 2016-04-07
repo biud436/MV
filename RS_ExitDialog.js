@@ -70,13 +70,12 @@
   }
 
   SceneManager.detectScene = function() {
-      var scene = this._scene;
-      if(scene instanceof Scene_Map) {
-        this.goto(Scene_Title);
-      } else if(scene instanceof Scene_Map) {
+      if(SceneManager._scene instanceof Scene_Map) {
+        SceneManager.goto(Scene_Title);
+      } else if(SceneManager._scene instanceof Scene_Title) {
         onBackKeyDown();
       } else {
-        scene.popScene();
+        SceneManager._scene.popScene();
       }
   }
 
