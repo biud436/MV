@@ -566,7 +566,7 @@ var Color = Color || {};
    */
   Window_Base.prototype.obtainEscapeCode = function(textState) {
       textState.index++;
-      var regExp = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[一-拿]+[!]*/iu;
+      var regExp = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[一-鼣]+[!]*/i;
       var arr = regExp.exec(textState.text.slice(textState.index));
       if (arr) {
           textState.index += arr[0].length;
