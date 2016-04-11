@@ -1,6 +1,6 @@
 /*:
  * RS_ChineseMessageSystem.js
- * @plugindesc Chinese Message System (v1.0, 2016.03.11)
+ * @plugindesc Chinese Message System (v1.0.1, 2016.04.11)
  * This plugin provides Chinese text code to the Message System.
  * @author biud436
  *
