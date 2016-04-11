@@ -299,6 +299,8 @@
  * Yellow
  * YellowGreen
  *
+ * - Change Log
+ * 2016.04.11 (v1.0.1) - Fixed a range of the CJK Unified Ideographs. (between 一[19968] and 鼣[40739])
  */
 var Imported = Imported || {};
 Imported.RS_ChineseMessageSystem = true;
