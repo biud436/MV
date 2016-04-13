@@ -4,6 +4,8 @@
  * @author biud436
  */
 
+var RS = RS || {};
+
 function Vector2() {
     this.initialize.apply(this, arguments);
 };
@@ -264,4 +266,39 @@ Vector2.prototype.rotate = function(angle) {
  */
 Vector2.prototype.pointDirection = function(vec, angle) {
     return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
+};
+
+//------------------------------------------------------------------------------
+// RS.Matrix
+//
+//
+
+RS.Matrix = RS.Matrix || {};
+
+/**
+ * @method identity4
+ */
+RS.Matrix.identity4 = function() {
+  var a00 = 1, a10 = 0, a20 = 0, a30 = 0,
+  a01 = 0, a11 = 1, a21 = 0, a31 = 0,
+  a02 = 0, a12 = 0, a22 = 1, a32 = 0,
+  a03 = 0, a13 = 0, a23 = 0, a33 = 1;
+  return [a00, a10, a20, a30,
+          a01, a11, a21, a31,
+          a02, a12, a22, a32,
+          a03, a13, a23, a33];
+};
+
+//------------------------------------------------------------------------------
+// RS.Math
+//
+//
+
+RS.Math = RS.Math || {};
+RS.Math.toRadian = function(angle) {
+  return angle * (180.0 / Math.PI);
+};
+
+RS.Math.toDegree = function(angle) {
+  return angle * (Math.PI / 180.0);
 };
