@@ -221,12 +221,22 @@
   var check_module = null;
   document.addEventListener("deviceready", onDeviceReady, false);
   function onDeviceReady() {
-      check_module = !!PDialog;
+      check_module = true;
       if(!check_module) console.error("failed to check PDialog plugin");
   };
   if(!check_mobile) console.error("This extension does not support by PC.");
 
-  cordova.plugin.pDialog.init({progressStyle : 'HORIZONTAL', title: 'Please Wait...', message : 'Connecting to server...'});
-  cordova.plugin.pDialog.setProgress(25);
+  if(cordova) {
+
+    cordova.plugin.pDialog.init({
+        theme : 'HOLO_DARK',
+        progressStyle : 'SPINNER',
+        cancelable : true,
+        title : 'Please Wait...',
+        message : 'Contacting server ...'
+    });
+    cordova.plugin.pDialog.setProgress(25);
+  }
+
 
 })();
