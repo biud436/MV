@@ -5,6 +5,7 @@
  *
  * @help
  * https://github.com/pbernasconi/cordova-progressIndicator
+ * id : org.pbernasconi.progressindicator
  *
  * ============================================================================
  Apache License
