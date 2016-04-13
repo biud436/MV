@@ -4,8 +4,8 @@ Success
 ##### RS_ChineseMessageSystem.js
 Success
 ##### RS_MobileProgressBar.js
-filed
+failed
 ##### RS_MobileResourceUpdate.js
-filed
+failed
 ##### Scene_RotateTitle.js
-filed
+failed
