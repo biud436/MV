@@ -1,5 +1,5 @@
 /*:
- * RS_MobileProgressBar.js
+ * RS_MobileProgressBar.js (iOS)
  * @plugindesc RS_MobileProgressBar.js
  * @author biud436
  *
