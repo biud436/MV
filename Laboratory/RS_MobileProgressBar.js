@@ -4,6 +4,8 @@
  * @author biud436
  *
  * @help
+ *
+ * 1. cordova-progressIndicator [Android (X), iOS (O)]
  * https://github.com/pbernasconi/cordova-progressIndicator
  * id : org.pbernasconi.progressindicator
  *
@@ -226,8 +228,8 @@
   };
   if(!check_mobile) console.error("This extension does not support by PC.");
   if(check_mobile) {
-    window.alert("The ProgressIndicator plugin is ready.");
-    ProgressIndicator.showBarWithLabel(false, null, "Please Wait....");
+    ProgressIndicator.showBarWithLabel(false, 50000, "Please Wait....");
+    //window.alert("The ProgressIndicator plugin is ready.");
   }
 
   /**
