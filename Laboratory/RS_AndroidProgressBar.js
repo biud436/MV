@@ -1,17 +1,37 @@
 /*:
  * RS_AndroidProgressBar.js
- * @plugindesc RS_AndroidProgressBar.js
+ * @plugindesc This plugin displays the progress dialog, on Android phone.
  * @author biud436
  *
  * @help
  * https://github.com/pwlin/cordova-plugin-pdialog
  * ============================================================================
+ * // Installation
+ *
+ * 1. Add the cordova-plugin-pdialog on Intel XDK.
+ *
+ * 2. Edit an index.html file in your Game Directory using Text Editor such as Notepad++
+ * You have to contain Cordova Script into <body> statement, It looks like this.
+ *
+ * <body style="background-color :black">
+ *    <script type="text/javascript" src="cordova.js"></script>
+ *    ...
+ *    ...
+ * </body>
+ *
+ * 3. Adding a Plugin to your Project
+ * Download the plugin and place it in the folder called your_project_directory/js/plugins.
+ * Then In Plugin Manager, Select the RS_AndroidProgressBar plugin and add it.
+ * 
+ * ============================================================================
+ * // Plugin Command
  *
  * 1. Progress init theme progressStyle cancelable message
  * - theme {String} : TRADITIONAL, DEVICE_DARK, DEVICE_LIGHT (default), HOLO_DARK, HOLO_LIGHT
  * - progressStyle {String} : SPINNER (default), HORIZONTAL
  * - cancelable {Boolean} : true (default) or false
  * - message {String} : contents of the progress dialog (defaults to empty)
+ * ex) Progress init DEVICE_LIGHT SPINNER true Contacting server ...
  *
  * 2. Progress dismiss
  *
@@ -27,6 +47,10 @@
  * 6. Progress setCancleable boolean
  * ex) Progress setCancleable true
  *
+ * ============================================================================
+ * // Change Log
+ *
+ * 2016.04.14 - First Release
  * ============================================================================
  Apache License
                             Version 2.0, January 2004
