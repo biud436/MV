@@ -237,13 +237,13 @@
 
     // TEST
     RS.AndroidProgressBar.last = last;
-    cordova.plugin.pDialog.init({
-        theme : 'HOLO_DARK',
-        progressStyle : 'HORIZONTAL',
-        cancelable : true,
-        title : 'Please Wait...',
-        message : 'Contacting server ...'
-    }).setProgress(25);
+    // cordova.plugin.pDialog.init({
+    //     theme : 'HOLO_DARK',
+    //     progressStyle : 'HORIZONTAL',
+    //     cancelable : true,
+    //     title : 'Please Wait...',
+    //     message : 'Contacting server ...'
+    // }).setProgress(25);
 
   }
 
