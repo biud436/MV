@@ -6,7 +6,7 @@
  * @help
  * https://github.com/pwlin/cordova-plugin-pdialog
  * ============================================================================
- * // Installation
+ * Installation
  *
  * 1. Add the cordova-plugin-pdialog on Intel XDK.
  *
@@ -22,35 +22,22 @@
  * 3. Adding a Plugin to your Project
  * Download the plugin and place it in the folder called your_project_directory/js/plugins.
  * Then In Plugin Manager, Select the RS_AndroidProgressBar plugin and add it.
- * 
- * ============================================================================
- * // Plugin Command
- *
- * 1. Progress init theme progressStyle cancelable message
- * - theme {String} : TRADITIONAL, DEVICE_DARK, DEVICE_LIGHT (default), HOLO_DARK, HOLO_LIGHT
- * - progressStyle {String} : SPINNER (default), HORIZONTAL
- * - cancelable {Boolean} : true (default) or false
- * - message {String} : contents of the progress dialog (defaults to empty)
- * ex) Progress init DEVICE_LIGHT SPINNER true Contacting server ...
- *
- * 2. Progress dismiss
- *
- * 3. Progress setProgress number
- * - number {Number} : This number is between 0 and 100
- *
- * 4. Progress setTitle string
- * ex) Progress setTitle Please Wait...
- *
- * 5. Progress setMessage string
- * ex) Progress setTitle Contacting server...
- *
- * 6. Progress setCancleable boolean
- * ex) Progress setCancleable true
  *
  * ============================================================================
- * // Change Log
+ * Change Log
  *
  * 2016.04.14 - First Release
+ * ============================================================================
+ * Example
+ *
+ * cordova.plugin.pDialog.init({
+ *     theme : 'HOLO_DARK',
+ *     progressStyle : 'HORIZONTAL',
+ *     cancelable : true,
+ *     title : 'Please Wait...',
+ *     message : 'Contacting server ...'
+ * }).setProgress(25);
+ *
  * ============================================================================
  Apache License
                             Version 2.0, January 2004
@@ -276,56 +263,6 @@
 
     last = last || cordova.plugin.pDialog;
 
-    // TEST
-    RS.AndroidProgressBar.last = last;
-    // cordova.plugin.pDialog.init({
-    //     theme : 'HOLO_DARK',
-    //     progressStyle : 'HORIZONTAL',
-    //     cancelable : true,
-    //     title : 'Please Wait...',
-    //     message : 'Contacting server ...'
-    // }).setProgress(25);
-
-  }
-
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    alias_Game_Interpreter_pluginCommand.call(this, command, args);
-    if(command === "Progress") {
-      switch (args[0]) {
-        /**
-         * @param theme {String} TRADITIONAL, DEVICE_DARK, DEVICE_LIGHT (default), HOLO_DARK, HOLO_LIGHT
-         * @param progressStyle {String} SPINNER (default), HORIZONTAL
-         * @param cancelable {Boolean} true (default) or false
-         * @param title {String} title of the progress dialog (defaults to empty)
-         * @param message {String} contents of the progress dialog (defaults to empty)
-         */
-        case 'init':
-          var data = {theme: args[1] || 'DEVICE_LIGHT',
-            progressStyle: args[2] || 'SPINNER',
-            cancelable : args[3] === 'true',
-            title : 'Please Wait...',
-            message: args.slice(4).join("")
-          }
-          last = cordova.plugin.pDialog.init(data);
-          break;
-        case 'dismiss':
-          cordova.plugin.pDialog.dismiss();
-          break;
-        case 'setProgress':
-          cordova.plugin.pDialog.setProgress(Number(args[1]));
-          break;
-        case 'setTitle':
-          cordova.plugin.pDialog.setTitle(args[1]);
-          break;
-        case 'setMessage':
-          cordova.plugin.pDialog.setMessage(args[1]);
-          break;
-        case 'setCancelable':
-          cordova.plugin.pDialog.setCancelable(args[1] === 'true');
-          break;
-      }
-    }
   }
 
 })();
