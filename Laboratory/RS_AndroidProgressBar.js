@@ -5,6 +5,10 @@
  *
  * @help
  * https://github.com/pwlin/cordova-plugin-pdialog
+ * ============================================================================
+ * Progress init theme progressStyle cancelable message
+ *
+ *
  *
  * ============================================================================
  Apache License
@@ -219,24 +223,68 @@
 (function() {
   var check_mobile = Utils.isMobileDevice();
   var check_module = null;
+  var last = null;
   document.addEventListener("deviceready", onDeviceReady, false);
   function onDeviceReady() {
-      check_module = true;
-      if(!check_module) console.error("failed to check PDialog plugin");
   };
   if(!check_mobile) console.error("This extension does not support by PC.");
 
   if(cordova) {
+    check_module = !!cordova.plugin.pDialog;
+    if(!check_module) console.error("failed to check PDialog plugin");
 
+    last = last || cordova.plugin.pDialog;
+
+    // TEST
+    RS.AndroidProgressBar.last = last;
     cordova.plugin.pDialog.init({
         theme : 'HOLO_DARK',
-        progressStyle : 'SPINNER',
+        progressStyle : 'HORIZONTAL',
         cancelable : true,
         title : 'Please Wait...',
         message : 'Contacting server ...'
-    });
-    cordova.plugin.pDialog.setProgress(25);
+    }).setProgress(25);
+
   }
 
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if(command === "Progress") {
+      switch (args[0]) {
+        /**
+         * @param theme {String} TRADITIONAL, DEVICE_DARK, DEVICE_LIGHT (default), HOLO_DARK, HOLO_LIGHT
+         * @param progressStyle {String} SPINNER (default), HORIZONTAL
+         * @param cancelable {Boolean} true (default) or false
+         * @param title {String} title of the progress dialog (defaults to empty)
+         * @param message {String} contents of the progress dialog (defaults to empty)
+         */
+        case 'init':
+          var data = {theme: args[1] || 'DEVICE_LIGHT',
+            progressStyle: args[2] || 'SPINNER',
+            cancelable : args[3] === 'true',
+            title : 'Please Wait...',
+            message: args.slice(4).join("")
+          }
+          last = cordova.plugin.pDialog.init(data);
+          break;
+        case 'dismiss':
+          cordova.plugin.pDialog.dismiss();
+          break;
+        case 'setProgress':
+          cordova.plugin.pDialog.setProgress(Number(args[1]));
+          break;
+        case 'setTitle':
+          cordova.plugin.pDialog.setTitle(args[1]);
+          break;
+        case 'setMessage':
+          cordova.plugin.pDialog.setMessage(args[1]);
+          break;
+        case 'setCancelable':
+          cordova.plugin.pDialog.setCancelable(args[1] === 'true');
+          break;
+      }
+    }
+  }
 
 })();
