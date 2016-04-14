@@ -6,9 +6,26 @@
  * @help
  * https://github.com/pwlin/cordova-plugin-pdialog
  * ============================================================================
- * Progress init theme progressStyle cancelable message
  *
+ * 1. Progress init theme progressStyle cancelable message
+ * - theme {String} : TRADITIONAL, DEVICE_DARK, DEVICE_LIGHT (default), HOLO_DARK, HOLO_LIGHT
+ * - progressStyle {String} : SPINNER (default), HORIZONTAL
+ * - cancelable {Boolean} : true (default) or false
+ * - message {String} : contents of the progress dialog (defaults to empty)
  *
+ * 2. Progress dismiss
+ *
+ * 3. Progress setProgress number
+ * - number {Number} : This number is between 0 and 100
+ *
+ * 4. Progress setTitle string
+ * ex) Progress setTitle Please Wait...
+ *
+ * 5. Progress setMessage string
+ * ex) Progress setTitle Contacting server...
+ *
+ * 6. Progress setCancleable boolean
+ * ex) Progress setCancleable true
  *
  * ============================================================================
  Apache License
