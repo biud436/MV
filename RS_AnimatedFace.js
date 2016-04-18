@@ -28,6 +28,9 @@
  * @desc
  * @default 0.1
  *
+ * @param limited time
+ * @desc
+ * @default 1.0
  *
  * @help
  *
@@ -67,6 +70,7 @@ Imported.RS_AnimatedFace = true;
   var power = Number(parameters['power'] || 200);
   var speed = Number(parameters['speed'] || 0.1);
   var isdeltaTime = parameters['isdeltaTime'] === 'true';
+  var limitedTime = Number(parameters['limited time'] || 1.0);
 
   // Is Updated
   var updated = true;
@@ -147,7 +151,9 @@ Imported.RS_AnimatedFace = true;
                                       {'x': endPos.x, 'y': destVec.y}, time);
       this._newContents.x = d.x;
     }
-    if(time >= 0.9) {
+    if(!isdeltaTime && time >= limitedTime) {
+      updated = false;
+    } else if (isdeltaTime && time >= 0.9) {
       updated = false;
     }
   };
