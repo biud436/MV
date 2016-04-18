@@ -5,6 +5,8 @@
  */
 
 var RS = RS || {};
+var Imported = Imported || {};
+Imported.RS_Vector2 = true;
 
 function Vector2() {
     this.initialize.apply(this, arguments);
