@@ -10,4 +10,5 @@ Biud436
 Free for commercial and non-commercial use.
 
 ## Link & Document ##
-[Biud436's RPG Maker MV Plugins](http://biud436.tistory.com)
+- [Biud436's RPG Maker MV Plugins (English)](http://biud436.tistory.com)
+- [러닝은빛의 작업실(Korean)](http://biud436.blog.me/)
