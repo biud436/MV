@@ -164,7 +164,7 @@ Game_Picture.prototype.updateTone = function() {
 };
 
 Game_Picture.prototype.updateRotation = function() {
-    if (this._rotationSpeed > 0) {
+    if (this._rotationSpeed !== 0) {
         this._angle += this._rotationSpeed / 2;
     }
 };
