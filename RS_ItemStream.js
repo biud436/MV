@@ -41,6 +41,7 @@
  * 2016.03.07 (v1.0.0) - First Release
  * 2016.03.22 (v1.0.1) - The simple light plugin was not compatible
  * with this plugin, But Fixed it.
+ * 2016.04.24 (v1.0.2) - Fixed a bug
  */
 
 var Imported = Imported || {};
