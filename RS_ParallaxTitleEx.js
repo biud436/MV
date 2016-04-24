@@ -476,7 +476,7 @@ var RS = RS || {};
         // 원래 색조로
         i.tint = 0xFFFFFF;
       }
-    }.bind(this));
+    }, this);
 
   };
 

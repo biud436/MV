@@ -369,6 +369,6 @@ Imported.RS_ItemStream = true;
         break;
       }
     }
-  }
+  };
 
 })();

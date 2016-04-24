@@ -298,7 +298,7 @@ function HUD() {
       set: function(value) {
           this.children.forEach( function(i) {
             i.visible = value;
-          }.bind(this));
+          }, this);
           RS.HUD.show = value;
       },
   });
@@ -310,7 +310,7 @@ function HUD() {
       set: function(value) {
           this.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
-          }.bind(this));
+          }, this);
           RS.HUD.opacity = value.clamp(0, 255);
       },
   });

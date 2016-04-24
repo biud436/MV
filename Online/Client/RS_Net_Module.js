@@ -433,7 +433,7 @@ function ChatBox() {
         // 텍스트 추가
         $gameMessage._textList.forEach( function(nowText, index, array) {
           this.drawTextEx(nowText, 0, (index) * 20);
-        }.bind(this));
+        }, this);
 
       }
     };

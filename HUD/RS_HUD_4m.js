@@ -142,7 +142,7 @@ var RS = RS || {};
         if(!!$gameParty.members()[index]) {
           this.stage.addChild(new HUD({szAnchor: item, nIndex: index}));
         }
-      }.bind(this));
+      }, this);
       this.sort();
       this.show = $gameSystem._rs_hud.show;
     }
@@ -156,7 +156,7 @@ var RS = RS || {};
       var self = this.stage;
       this.stage.children.forEach(function(i) {
           this.stage.removeChild(i);
-      }.bind(this));
+      }, this);
       this.drawAllHud();
       this.show = $gameSystem._rs_hud.show;
     }
@@ -176,7 +176,7 @@ var RS = RS || {};
       set: function(value) {
           this.stage.children.forEach( function(i) {
             i.visible = value;
-          }.bind(this));
+          }, this);
           $gameSystem._rs_hud.show = value;
       },
   });
@@ -188,7 +188,7 @@ var RS = RS || {};
       set: function(value) {
           this.stage.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
-          }.bind(this));
+          }, this);
           $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
   });
@@ -426,7 +426,7 @@ var RS = RS || {};
       set: function(value) {
           this.children.forEach( function(i) {
             i.visible = value;
-          }.bind(this));
+          }, this);
           $gameSystem._rs_hud.show = value;
       },
   });
@@ -438,7 +438,7 @@ var RS = RS || {};
       set: function(value) {
           this.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
-          }.bind(this));
+          }, this);
           $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
   });
@@ -485,7 +485,7 @@ var RS = RS || {};
     _Scene_Boot_loadSystemImages.call(this);
     preloadImportantFaces.forEach(function(i) {
       ImageManager.loadFace(i);
-    }.bind(this));
+    }, this);
   }
 
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;

@@ -162,7 +162,7 @@ Imported.RS_WalkingStepSound = true;
       if(i.match(/<Step Sounds>/i)) {
         RSMatch._init = true;
       }
-    }.bind(this));
+    }, this);
   }
 
   RSMatch.requestSound = function(type) {
