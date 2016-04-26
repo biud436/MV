@@ -1,4 +1,4 @@
-﻿/*:
+/*:
  * RS_Window_KorNameEdit.js
  * @plugindesc This plugin provides a keyboard that allows
  * you to type in korean or other native language in the Name Input Proccessing
