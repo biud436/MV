@@ -8,8 +8,8 @@
  * @default 12
  *
  * @help
- * this.chasingPlayer(range)
- * this.chasingEvent(id, range)
+ * this.chasePlayer(range)
+ * this.chaseEvent(id, range)
  */
 
 var Imported = Imported || {};
