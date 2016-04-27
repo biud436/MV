@@ -99,7 +99,7 @@
 var Imported = Imported || {};
 Imported.RS_HUD_4m = true;
 
-var $gameHud = null
+var $gameHud = null;
 var RS = RS || {};
 
 /**
@@ -123,7 +123,7 @@ var RS = RS || {};
   Game_System.prototype.initialize = function() {
     _alias_Game_System_initialize.call(this);
     this._rs_hud = this._rs_hud || {};
-    this._rs_hud.show = this._rs_hud.show || bShow
+    this._rs_hud.show = this._rs_hud.show || bShow;
     this._rs_hud.opacity = this._rs_hud.opacity || nOpacity;
   }
 
