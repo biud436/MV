@@ -10,6 +10,9 @@
  * @help
  * this.chasePlayer(range)
  * this.chaseEvent(id, range)
+ *
+ * - Change Log
+ * 2016.04.26 (v1.0.0) - First Release
  */
 
 var Imported = Imported || {};
