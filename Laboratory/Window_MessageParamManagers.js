@@ -1,6 +1,6 @@
 /*:
  * Window_MessageParamManagers.js
- * @plugindesc 대화창 투명도 조절 등 매개변수 조작 플러그인
+ * @plugindesc 대화창 투명도 조절
  * @author biud436
  *
  * @param back Opacity
