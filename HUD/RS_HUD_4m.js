@@ -94,6 +94,7 @@
  * 2016.03.18 (v1.0.3) - Added the parameter called 'Arrangement'
  * 2016.03.26 (v1.0.4) - Fixed a bug that the HUD is always displayed regardless
  * of the setting whenever transferring the player to the other map.
+ * 2016.05.05 (v1.0.5) - Fixed a bug that the text does not change.
  */
 
 var Imported = Imported || {};
@@ -326,10 +327,11 @@ var RS = RS || {};
     text._tmp = strFunc;
     text._log = strFunc.call(this);
     text.update = function() {
-      if(this._tmp.call(this) != this._log) {
+      if(this._tmp.call(this) !== this._log) {
         this.bitmap.clear();
         this.bitmap.fontSize = 12;
         this.bitmap.drawText(this._tmp.call(this), 0, 0, 120, 20, 'center');
+        text._log = strFunc.call(this);
       }
     };
 

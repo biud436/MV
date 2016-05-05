@@ -37,6 +37,7 @@
  * - Change Log
  * 2016.03.25 (v1.3.0) - Added New Function called updateScale();
  * 2016.03.26 (v1.3.1) - Added Vehicle
+ * 2016.05.05 (v1.3.2) - Updated Vector2 Class
  */
 
 var Imported = Imported || {};
@@ -235,6 +236,11 @@ Object.defineProperty(Vector2.prototype, 'length', {
     }
 });
 
+Vector2.prototype.set = function(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
 /**
  * 벡터의 길이
  * @method getLength
@@ -266,8 +272,10 @@ Vector2.prototype.getAngle = function(vec) {
  */
 Vector2.prototype.normalize = function() {
     var rel = Vector2.empty();
-    rel.x = this.x / this.length;
-    rel.y = this.y / this.length;
+    if(this.length != 0) {
+      rel.x = this.x / this.length;
+      rel.y = this.y / this.length;
+    }
     return rel;
 };
 
@@ -302,6 +310,7 @@ Vector2.prototype.pointDirection = function(vec, angle) {
     return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
 };
 
+
 /**
  * ============================================================================
  * @class Sprite_Name
@@ -318,6 +327,8 @@ function Sprite_Name() {
 
   Sprite_Name.prototype = Object.create(Sprite.prototype);
   Sprite_Name.prototype.constructor = Sprite_Name;
+
+  Sprite_Name.MOUSE_EVENT = Vector2.empty();
 
   Sprite_Name.prototype.initialize = function(data) {
       Sprite.prototype.initialize.call(this);
@@ -387,7 +398,7 @@ function Sprite_Name() {
 
   Sprite_Name.prototype.updateScale = function () {
       var x, y, t;
-      if(Vector2.distance(this, TouchInput) < 48) {
+      if(Vector2.distance(this, Sprite_Name.MOUSE_EVENT) < 48) {
           t = (Date.now() % 10000 / 10000);
           this.scale = Vector2.quadraticBezier({x:1, y:1}, {x:2, y:2}, {x:1, y:1}, t);
       } else {
@@ -416,14 +427,16 @@ function Sprite_Name() {
    * @param {MouseEvent} event
    * @private
    */
-  TouchInput._onMouseMove = function(event) {
-      // if (this._mousePressed) {
-          var x = Graphics.pageToCanvasX(event.pageX);
-          var y = Graphics.pageToCanvasY(event.pageY);
-          this._onMove(x, y);
-      // }
-  };
 
+  var alias_TouchInput_onMouseMove = TouchInput._onMouseMove;
+  TouchInput._onMouseMove = function(event) {
+    alias_TouchInput_onMouseMove.call(this, event);
+    var x = Graphics.pageToCanvasX(event.pageX);
+    var y = Graphics.pageToCanvasY(event.pageY);
+    if(Sprite_Name.MOUSE_EVENT instanceof Vector2) {
+      Sprite_Name.MOUSE_EVENT.set(x, y);
+    }
+  };
 
 })();
 

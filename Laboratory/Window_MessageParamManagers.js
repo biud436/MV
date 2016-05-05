@@ -1,6 +1,6 @@
 /*:
  * Window_MessageParamManagers.js
- * @plugindesc 대화창 투명도 조절
+ * @plugindesc Set the opacity of each element on a Message Box.
  * @author biud436
  *
  * @param back Opacity
@@ -26,6 +26,9 @@
  * @param default outline Color
  * @desc
  * @default rgba(0, 0, 0, 1.0)
+ *
+ * @help
+ * This plugin does not provide plugin commands
  *
  */
 (function() {

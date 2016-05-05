@@ -201,6 +201,11 @@ Object.defineProperty(Vector2.prototype, 'length', {
     }
 });
 
+Vector2.prototype.set = function(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
 /**
  * 벡터의 길이
  * @method getLength
