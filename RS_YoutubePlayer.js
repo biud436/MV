@@ -38,7 +38,8 @@ function onYouTubeIframeAPIReady() {
     videoId: 'BIbpYySZ-2Q',
     events: {
       'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
+      'onStateChange': onPlayerStateChange,
+      'onError': onPlayerError
     }
   });
 }
@@ -46,6 +47,16 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(event) {
   var target = event.target;
   target.playVideo();
+}
+
+function onPlayerError(event) {
+  switch (event.data) {
+    // 요청한 동영상의 소유자가 내장 플레이어에서 동영상을 재생하는 것을 허용하지 않습니다.
+    case 101:
+      console.log("101");
+      break;
+    default:
+  }
 }
 
 function onPlayerStateChange (event) {
@@ -247,7 +258,9 @@ function onPlayerStateChange (event) {
         switch (args[0].toLowerCase()) {
           case 'play':
             var src = args.slice(1, args.length).join('');
-            Graphics.playYoutube(src);
+            setTimeout(function() {
+              Graphics.playYoutube(src);
+            }, 1);
             break;
           case 'stop':
             if(YTPlayer.isPlaying()) YTPlayer.stopVideo();
@@ -292,15 +305,15 @@ function onPlayerStateChange (event) {
   // Scene_Base
   //
   //
-  var alias_Scene_Base_update = Scene_Base.prototype.update;
-  Scene_Base.prototype.update = function() {
-    alias_Scene_Base_update.call(this);
+  var alias_Scene_Map_update = Scene_Map.prototype.update;
+  Scene_Map.prototype.update = function() {
+    alias_Scene_Map_update.call(this);
     this.checkEscapeToYoutube();
   };
 
-  Scene_Base.prototype.checkEscapeToYoutube = function() {
+  Scene_Map.prototype.checkEscapeToYoutube = function() {
     if(TouchInput.isTriggered()) {
-      if(!YTPlayer.isTouched() && (YTPlayer.isPlaying() || YTPlayer.isPaused()) ) {
+      if(!YTPlayer.isTouched() && (YTPlayer._status > 0) ) {
          YTPlayer.stopVideo();
       }
     }
