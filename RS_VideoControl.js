@@ -1,7 +1,7 @@
 /*:
  * RS_VideoControl.js
  * @plugindesc This plugin shows the play control bar of a video,
- * and player stops the move while playing the video.
+ * and the player stops the movement while playing the video.
  * @author biud436
  *
  * @param zIndex
