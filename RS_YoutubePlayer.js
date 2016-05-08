@@ -3,13 +3,20 @@
  * @plugindesc This plugin allows you to start playback of the YouTube video.
  * @author biud436
  * @help
+ * In general, you can stop the video by clicking around the YouTube video.
+ * This plugin will automatically end the video playback if you watches
+ * the video until the end.
  * =============================================================================
  * Plugin Command
  * =============================================================================
- * - This plugin command will start playback of the YouTube video
+ * - This plugin command will start playback of the YouTube video. Please enter
+ * the URL as follows. If the Internet had not connected, It could have caused
+ * the error.
+ *
  * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
  *
- * - Stops playback.
+ * - Stop playback of the YouTube Video.
+ *
  * YTPlayer stop
  *
  * =============================================================================
@@ -302,7 +309,7 @@ function onPlayerStateChange (event) {
   };
 
   // ----------------------------------------------------------------------------
-  // Scene_Base
+  // Scene_Map
   //
   //
   var alias_Scene_Map_update = Scene_Map.prototype.update;
