@@ -122,7 +122,7 @@ function onPlayerStateChange (event) {
 
   YTPlayer.preVideo = function(src) {
     if(src) {
-      var v = src.replace('https://www.youtube.com/watch?v=','');
+      var v = src.replace('https://www.youtube.com/watch?v=','').replace('&feature=youtu.be','');
       this._iframe.src = 'https://www.youtube.com/embed/%1?enablejsapi=1&version=3'.format(v);
     }
     this._iframe.style.opacity = '1';
