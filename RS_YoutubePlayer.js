@@ -3,7 +3,8 @@
  * @plugindesc This plugin allows you to start playback of the YouTube video.
  * @author biud436
  * @help
- * In general, you can stop the video by clicking around the YouTube video.
+ * In general, In Android Chrome and Mobile Safari, It doesn't automatically
+ * start playback. and you can stop the video by clicking around the YouTube video.
  * This plugin will automatically end the video playback if you watches
  * the video until the end.
  * =============================================================================
