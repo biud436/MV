@@ -23,6 +23,7 @@
  * Change Log
  * =============================================================================
  * 2016.05.08 (v1.0.0) - First Release
+ * 2016.05.09 (v1.0.1) - Added Error Handler
  */
 
 var Imported = Imported || {};
@@ -43,6 +44,12 @@ function onYouTubeIframeAPIReady() {
     height: '560',
     width: '315',
     videoId: 'BIbpYySZ-2Q',
+    fs: 1,
+    autoplay: 1,
+    enablejsapi: 1,
+    rel: 1,
+    showinfo: 1,
+    playsinline: 0,
     events: {
       'onReady': onPlayerReady,
       'onStateChange': onPlayerStateChange,
@@ -57,15 +64,41 @@ function onPlayerReady(event) {
 }
 
 function onPlayerError(event) {
+  var errorLog = "";
   switch (event.data) {
-    // 요청한 동영상의 소유자가 내장 플레이어에서 동영상을 재생하는 것을 허용하지 않습니다.
-    case 101:
-      console.log("101");
+    case 2:
+      // 요청에 잘못된 매개변수 값이 포함되어 있습니다. 예를 들어 11자리가 아닌 동영상 ID를 지정하거나
+      // 동영상 ID에 느낌표 또는 별표와 같은 잘못된 문자가 포함된 경우에 이 오류가 발생합니다.
+      errorLog += "Error Code : 2" + '\r\n';
+      errorLog += "The request contains an invalid parameter value. For example, " + '\r\n';
+      errorLog += "this error occurs if you specify a video ID that does not have 11 characters, " + '\r\n';
+      errorLog += "or if the video ID contains invalid characters, " + '\r\n';
+      errorLog += "such as exclamation points or asterisks.      " + '\r\n';
       break;
-    default:
+    case 5:
+      // 요청한 콘텐츠는 HTML5플레이어에서 재생할 수 없는, 또는 HTML5플레이어에 대한 별도의 에러가 발생했습니다.
+      errorLog += "Error Code : 5" + '\r\n';
+      errorLog += " The requested content cannot be played in an HTML5 player" + '\r\n';
+      errorLog += "or another error related to the HTML5 player has occurred." + '\r\n';
+      break;
+    case 100:
+      // 요청한 동영상을 찾을 수 없습니다.
+      // 어떠한 이유로든 동영상이 삭제되었거나 비공개로 표시된 경우에 이 오류가 발생합니다.
+      errorLog += "Error Code : 100" + '\r\n';
+      errorLog += "The video requested was not found. " + '\r\n';
+      errorLog += "This error occurs when a video has been removed (for any reason) " + '\r\n';
+      errorLog += "or has been marked as private." + '\r\n';
+      break;
+    case 101:
+    case 150:
+      // 요청한 동영상의 소유자가 내장 플레이어에서 동영상을 재생하는 것을 허용하지 않습니다.
+      errorLog += "Error Code : 101 or 150" + '\r\n';
+      errorLog += "The owner of the requested video does not allow it to be played in embedded players.";
+      break;
   }
+  YTPlayer.stopVideo();
+  window.alert(errorLog);
 }
-
 function onPlayerStateChange (event) {
   switch(event.data) {
       case YT.PlayerState.ENDED: // 종료됨
