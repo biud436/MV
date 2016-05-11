@@ -132,6 +132,8 @@ function onPlayerStateChange (event) {
 
 (function() {
 
+  var re = /(?:http|https)+(?:\:\/\/youtu.be\/)+(.*)/gi;
+
   //----------------------------------------------------------------------------
   // YTPlayer
   //
