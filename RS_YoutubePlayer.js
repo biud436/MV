@@ -25,6 +25,7 @@
  * =============================================================================
  * 2016.05.08 (v1.0.0) - First Release
  * 2016.05.09 (v1.0.1) - Added Error Handler
+ * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL .
  */
 
 var Imported = Imported || {};
@@ -162,8 +163,14 @@ function onPlayerStateChange (event) {
   };
 
   YTPlayer.preVideo = function(src) {
+    var v;
     if(src) {
-      var v = src.replace('https://www.youtube.com/watch?v=','').replace('&feature=youtu.be','');
+      if(re.test(src)) {
+          // v = src.split(re)[1];
+          v = RegExp.$1;
+      } else {
+          v = src.replace('https://www.youtube.com/watch?v=','').replace('&feature=youtu.be','');
+      }
       this._iframe.src = 'https://www.youtube.com/embed/%1?enablejsapi=1&version=3'.format(v);
     }
     this._iframe.style.opacity = '1';
