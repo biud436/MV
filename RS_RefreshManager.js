@@ -127,14 +127,14 @@
     self._typ['	'.charCodeAt()] = type.Tap;
     self._typ[' '.charCodeAt()] = type.Space;
 
-    // Hangul (한글 처리)
+    // Hangul handling
     for(var i=0x1100; i <= 0x11FF; i++) { self._typ[i] = type.Letter; }
     for(var i=0xAC00; i <= 0xD7AF; i++) { self._typ[i] = type.Letter; }
 
-    // Cyrillic (키릴 문자)
+    // Cyrillic handling
     // for(var i= 0x0400; i <= 0x052F; i++) { self._typ[i] = type.Letter; }
 
-    // All Unicode (모든 유니코드 처리, 메모리 낭비 심함)
+    // All Unicode handling (모든 유니코드 처리, 메모리 낭비 심함)
     // for(var i=0x0100; i <= 0xFFFF; i++) { self._typ[i] = type.Letter; }
 
   };
@@ -188,26 +188,26 @@
     var type = self.ENUM;
     var numValue = 0;
 
-    // 토큰 이름
+    // Token Name
     var text = '';
 
-    // 토큰 종류
+    // Token Kind
     var kind = '';
 
-    // 공백 처리
+    // Space handling
     while(self.isSpace(self._ch)) {
       self._ch = self.nextCharacter();
     }
 
-    // 끝 처리 ( 더 이상 처리할 것이 없을 때)
+    // End handling
     if(self._ch === 0 || self._ch === undefined) {
       return self.createToken(type.EOF_TOKEN, text);
     }
 
-    // 토큰 구분
+    // Categorize Token
     switch (self._typ[self._ch]) {
 
-      // 식별자 처리
+      // Identifier handling
       case type.Dollar: case type.Letter:
         text += String.fromCharCode(self._ch);
         self._ch = self.nextCharacter();
@@ -216,14 +216,14 @@
           self._ch = self.nextCharacter();
         }
         break;
-      // 숫자 처리
+      // Integer handling
       case type.Digit:
         kind = type.Int;
         for(numValue = 0; self._typ[self._ch] === type.Digit; self._ch = self.nextCharacter()) {
           numValue = numValue * 10 + self._ch;
         }
         return self.createToken(type.Int, text, numValue);
-     // 문자열 처리
+     // String handling
       case type.DblQ:
         self._ch = this.nextCharacter();
         while(self._ch !== 0 && self._ch!==34 ) {
@@ -238,7 +238,7 @@
         }
         return self.createToken(type.Istring, text, 0);
       default:
-      // 주석 처리
+      // Comment handling
       if(self._ch === 47 && self.currentCharacter() === 47) {
         for(; self._ch !== '\r'.charCodeAt() || self._ch !== '\n'.charCodeAt(); self._ch = self.nextCharacter()) {
           text += String.fromCharCode(self._ch);
@@ -251,6 +251,7 @@
       self._ch = self.nextCharacter();
     }
 
+    // Other handling
     kind = this.getKeywordKind(text);
 
     if(kind === type.Others) {
@@ -318,8 +319,13 @@
     path = decodeURIComponent(path);
     fs.writeFile(path , texts, function(err) {
       if(err) throw new Error(err);
-      window.alert("플러그인 설정을 변경했습니다 \n \
-                    \r변경된 설정은 F5 버튼을 누르면 적용됩니다");
+      if($gameSystem.isKorean()) {
+        window.alert("플러그인 설정을 변경했습니다 \n \
+                      \r변경된 설정은 F5 버튼을 누르면 적용됩니다");
+      } else {
+        window.alert("Finished!\n \
+                      \r Press the F5 button. ");      
+      }
       self._tokens = [];
       self._typ = [];
     });
