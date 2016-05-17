@@ -1,7 +1,7 @@
 /*:
  * RS_HUD_4m.js
  * @plugindesc This plugin draws the HUD, which displays the hp and mp and exp
- * and level of each party members. (v1.0.4)
+ * and level of each party members. (v1.0.6)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -13,7 +13,7 @@
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.0.4
+ * @version 1.0.6
  *
  * @param Width
  * @desc Width
@@ -95,6 +95,7 @@
  * 2016.03.26 (v1.0.4) - Fixed a bug that the HUD is always displayed regardless
  * of the setting whenever transferring the player to the other map.
  * 2016.05.05 (v1.0.5) - Fixed a bug that the text does not change.
+ * 2016.05.17 (v1.0.6) - Fixed a structure of the class.
  */
 
 var Imported = Imported || {};
@@ -103,10 +104,6 @@ Imported.RS_HUD_4m = true;
 var $gameHud = null;
 var RS = RS || {};
 
-/**
- * @class HUD
- * @extends PIXI.Stage
- */
 (function() {
 
   var parameters = PluginManager.parameters('RS_HUD_4m');
@@ -120,6 +117,10 @@ var RS = RS || {};
   var arrangement = eval(parameters['Arrangement']);
   var preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
 
+  //----------------------------------------------------------------------------
+  // Game_System ($gameSystem)
+  //
+  //
   var _alias_Game_System_initialize = Game_System.prototype.initialize;
   Game_System.prototype.initialize = function() {
     _alias_Game_System_initialize.call(this);
@@ -128,73 +129,115 @@ var RS = RS || {};
     this._rs_hud.opacity = this._rs_hud.opacity || nOpacity;
   }
 
+  //----------------------------------------------------------------------------
+  // HUD
+  //
+  //
   function HUD() {
     this.initialize.apply(this, arguments);
   };
 
-  function HUDFactory(stage) {
-    this.stage = stage;
-    this.drawAllHud = function() {
-      var items = arrangement;
-      if(this.stage.children.length > 0) {
-        this.stage.removeChildren(0, this.stage.children.length);
-      }
-      items.forEach(function(item, index){
-        if(!!$gameParty.members()[index]) {
-          this.stage.addChild(new HUD({szAnchor: item, nIndex: index}));
-        }
-      }, this);
-      this.sort();
-      this.show = $gameSystem._rs_hud.show;
-    }
-    this.sort = function() {
-      var array = this.stage.children;
-      this.stage.children = array.sort(function(a, b) {
-        return a._memberIndex - b._memberIndex;
-      });
-    }
-    this.refresh = function() {
-      var self = this.stage;
-      this.stage.children.forEach(function(i) {
-          this.stage.removeChild(i);
-      }, this);
-      this.drawAllHud();
-      this.show = $gameSystem._rs_hud.show;
-    }
-    this.remove = function(index) {
-      setTimeout(function() {
-        while($gameParty.size() !== this.stage.children.length) {
-          this.drawAllHud();
-        }
-      }.bind(this), 0);
-    }
+  //----------------------------------------------------------------------------
+  // RS_HudLayer
+  //
+  //
+  function RS_HudLayer() {
+    this.initialize.apply(this, arguments);
   };
 
-  Object.defineProperty(HUDFactory.prototype, 'show', {
+  RS_HudLayer.prototype = Object.create(Sprite.prototype);
+  RS_HudLayer.prototype.constructor = RS_HudLayer;
+
+  RS_HudLayer.prototype.initialize = function(bitmap) {
+    Sprite.prototype.initialize.call(this, bitmap);
+    this.createItemLayer();
+  };
+
+  RS_HudLayer.prototype.createItemLayer = function () {
+    this._items = new Sprite();
+    this._items.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    this.addChild(this._items);
+  };
+
+  RS_HudLayer.prototype.update = function() {
+    Sprite.prototype.update.call(this);
+  };
+
+  RS_HudLayer.prototype.drawAllHud = function() {
+    var allHud = this._items;
+    var items = arrangement;
+
+    if(allHud.children.length > 0) {
+      allHud.removeChildren(0, allHud.children.length);
+    }
+
+    items.forEach(function(item, index){
+      if(!!$gameParty.members()[index]) {
+        allHud.addChild(new HUD({szAnchor: item, nIndex: index}));
+      }
+    }, this);
+
+    this.sort();
+
+    this.show = $gameSystem._rs_hud.show;
+
+  };
+
+  RS_HudLayer.prototype.sort = function() {
+    var allHud = this._items;
+    var array = allHud.children;
+    allHud.children = array.sort(function(a, b) {
+      return a._memberIndex - b._memberIndex;
+    });
+  }
+
+  RS_HudLayer.prototype.refresh = function() {
+    var allHud = this._items;
+    allHud.children.forEach(function(i) {
+        allHud.removeChild(i);
+    }, this);
+    this.drawAllHud();
+    this.show = $gameSystem._rs_hud.show;
+  }
+
+  RS_HudLayer.prototype.remove = function(index) {
+    setTimeout(function() {
+      while($gameParty.size() !== this._items.children.length) {
+        this.drawAllHud();
+      }
+    }.bind(this), 0);
+  };
+
+  Object.defineProperty(RS_HudLayer.prototype, 'show', {
       get: function() {
-          return this.stage.children[0].show;
+          return this._items.children[0].show;
       },
       set: function(value) {
-          this.stage.children.forEach( function(i) {
+          this._items.children.forEach( function(i) {
             i.visible = value;
           }, this);
           $gameSystem._rs_hud.show = value;
       },
   });
 
-  Object.defineProperty(HUDFactory.prototype, 'opacity', {
+  Object.defineProperty(RS_HudLayer.prototype, 'opacity', {
       get: function() {
-          return this.stage.children[0].opacity;
+          return this._items.children[0].opacity;
       },
       set: function(value) {
-          this.stage.children.forEach( function(i) {
+          this._items.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
           }, this);
           $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
   });
 
-  HUD.prototype = new PIXI.Stage();
+  //----------------------------------------------------------------------------
+  // HUD
+  //
+  //
+  HUD.prototype = Object.create(Stage.prototype);
+  HUD.prototype.constructor = HUD;
 
   HUD.prototype.initialize = function(config) {
       Stage.prototype.initialize.call(this);
@@ -445,22 +488,24 @@ var RS = RS || {};
       },
   });
 
-  /*** @alias Scene_Map.prorotype.start */
+  //----------------------------------------------------------------------------
+  // Scene_Map
+  //
+  //
   var _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
     _Scene_Map_createDisplayObjects.call(this);
 
-    this._hudLayer = new Sprite();
+    this._hudLayer = new RS_HudLayer();
     this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
-    $gameHud = $gameHud || new HUDFactory(this._hudLayer);
+    $gameHud = $gameHud || this._hudLayer;
     $gameHud.drawAllHud();
 
     this.addChild(this._hudLayer);
     this.swapChildren(this._windowLayer, this._hudLayer);
   };
 
-  /*** @alias Scene_Map.prorotype.terminate */
   var _Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
     this.removeChild(this._hudLayer);
@@ -468,6 +513,10 @@ var RS = RS || {};
     _Scene_Map_terminate.call(this);
   };
 
+  //----------------------------------------------------------------------------
+  // Game_Party
+  //
+  //
   var _Game_Party_addActor = Game_Party.prototype.addActor;
   Game_Party.prototype.addActor = function(actorId) {
     _Game_Party_addActor.call(this, actorId);
@@ -482,6 +531,10 @@ var RS = RS || {};
     _Game_Party_removeActor.call(this, actorId);
   };
 
+  //----------------------------------------------------------------------------
+  // Scene_Boot
+  //
+  //
   var _Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
   Scene_Boot.prototype.loadSystemImages = function() {
     _Scene_Boot_loadSystemImages.call(this);
@@ -490,6 +543,10 @@ var RS = RS || {};
     }, this);
   }
 
+  //----------------------------------------------------------------------------
+  // Game_Interpreter
+  //
+  //
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
       alias_Game_Interpreter_pluginCommand.call(this, command, args);
