@@ -1,7 +1,7 @@
 /*:
  * EventNameDraw.js
  *
- * @version 1.3.0
+ * @version 1.3.3
  *
  * @plugindesc This plugin displays an event's name above a head.
  * @author biud436
@@ -38,10 +38,13 @@
  * 2016.03.25 (v1.3.0) - Added New Function called updateScale();
  * 2016.03.26 (v1.3.1) - Added Vehicle
  * 2016.05.05 (v1.3.2) - Updated Vector2 Class
+ * 2016.05.20 (v1.3.3) - Fixed issues that can cause an increase of opacity and the memory leak.
  */
 
 var Imported = Imported || {};
 Imported.RS_EventName = true;
+
+var $stack = $stack || [];
 
 function Vector2() {
     this.initialize.apply(this, arguments);
@@ -611,8 +614,6 @@ Sprite_Character.prototype.drawVehicleName = function(member) {
     var color = [];
     var name = this.getName();
 
-    console.log(name);
-
     color.push(Number(RegExp.$1 || 255));
     color.push(Number(RegExp.$2 || 255));
     color.push(Number(RegExp.$3 || 255));
@@ -631,7 +632,6 @@ Sprite_Character.prototype.drawVehicleName = function(member) {
     this._name = name;
 
     this.parent.addChild(this._nameSprite);
-
 };
 
   Sprite_Character.prototype.getName = function() {
@@ -690,6 +690,55 @@ Sprite_Character.prototype.drawVehicleName = function(member) {
 
   Sprite_Character.prototype.isRefresh = function () {
       return !!(this._name !== this.getName());
+  };
+
+  Sprite_Character.prototype.disposeName = function() {
+    if(this._nameSprite) this._nameSprite = null;
+  };
+
+  /**
+   * ============================================================================
+   * @class Tilemap
+   * bug fixes : https://github.com/biud436/MV/issues/1
+   * ============================================================================
+   */
+
+  var alias_Tilemap_initialize = Tilemap.prototype.initialize;
+  Tilemap.prototype.initialize = function() {
+    alias_Tilemap_initialize.call(this);
+    this._createNameLayer();
+  };
+
+  Tilemap.prototype._createNameLayer = function() {
+    this._nameLayer = new Sprite();
+    this._nameLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    this._nameLayer.z = 20;
+  };
+
+  Tilemap.prototype.disposeNameLayer = function() {
+    if(!this._nameLayer) return;
+    this.children.forEach(function (i) {
+      if(i instanceof Sprite_Character) {
+        i.disposeName();
+      }
+    });
+    this._nameLayer.visible = false;
+    this._nameLayer = null;
+  };
+
+  /**
+   * ============================================================================
+   * @class Scene_Map
+   * bug fixes : https://github.com/biud436/MV/issues/1
+   * ============================================================================
+   */
+
+  var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
+  Scene_Map.prototype.terminate = function() {
+    alias_Scene_Map_terminate.call(this);
+    if(this._spriteset) {
+      this._spriteset._tilemap.disposeNameLayer();
+    }
   };
 
 })();
