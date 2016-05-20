@@ -3,7 +3,7 @@
  *
  * @version 1.3.3
  *
- * @plugindesc This plugin displays an event's name above a head.
+ * @plugindesc This plugin displays an event's name above a head (1.3.3)
  * @author biud436
  *
  * @param text Size
