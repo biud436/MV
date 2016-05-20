@@ -1,7 +1,7 @@
 /*:
  * RS_HUD_4m.js
  * @plugindesc This plugin draws the HUD, which displays the hp and mp and exp
- * and level of each party members. (v1.0.6)
+ * and level of each party members. (v1.0.7)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
