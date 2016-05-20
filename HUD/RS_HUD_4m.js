@@ -187,6 +187,7 @@ var RS = RS || {};
     this.sort();
 
     this.show = $gameSystem._rs_hud.show;
+    this.opacity = $gameSystem._rs_hud.opacity;
 
   };
 
@@ -505,8 +506,8 @@ var RS = RS || {};
       this._hudLayer = new RS_HudLayer();
       this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
-      $gameHud = $gameHud || this._hudLayer;
-      $gameHud.drawAllHud();
+      $gameHud = this._hudLayer;
+      this._hudLayer.drawAllHud();
 
       this.addChild(this._hudLayer);
       this.swapChildren(this._windowLayer, this._hudLayer);
