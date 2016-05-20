@@ -102,6 +102,7 @@
  * 2016.05.17 (v1.0.6) - Fixed a structure of the class.
  * 2016.05.21 (v1.0.7) - Added the plugin parameter that can be able to display
  * the plugin in battle mode only.
+ * 2016.05.21 (v1.0.8) - Fixed a bug of the opacity.
  */
 
 var Imported = Imported || {};
