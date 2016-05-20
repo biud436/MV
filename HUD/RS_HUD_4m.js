@@ -59,6 +59,10 @@
  * (If you do not set this parameter, It can cause errors in the game.)
  * @default ['Actor1', 'Actor2', 'Actor3']
  *
+ * @param Battle Only
+ * @desc
+ * @default false
+ *
  * @help
  * Download the resources and place them in your img/pictures folder.
  * All the resources can download in the following link.
@@ -96,6 +100,8 @@
  * of the setting whenever transferring the player to the other map.
  * 2016.05.05 (v1.0.5) - Fixed a bug that the text does not change.
  * 2016.05.17 (v1.0.6) - Fixed a structure of the class.
+ * 2016.05.21 (v1.0.7) - Added the plugin parameter that can be able to display
+ * the plugin in battle mode only.
  */
 
 var Imported = Imported || {};
@@ -116,6 +122,7 @@ var RS = RS || {};
   var szAnchor = String(parameters['Anchor'] || "LeftTop");
   var arrangement = eval(parameters['Arrangement']);
   var preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
+  var battleOnly = Boolean(parameters['Battle Only'] === "true");
 
   //----------------------------------------------------------------------------
   // Game_System ($gameSystem)
@@ -327,7 +334,6 @@ var RS = RS || {};
       sprite.bitmap.drawClippingImageNonBlur(this._faceBitmap, 0, 0, sx, sy);
     }
 
-
     this._face = sprite;
     this.addChild(this._face);
   };
@@ -495,21 +501,24 @@ var RS = RS || {};
   var _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
     _Scene_Map_createDisplayObjects.call(this);
+    if(!battleOnly) {
+      this._hudLayer = new RS_HudLayer();
+      this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
-    this._hudLayer = new RS_HudLayer();
-    this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+      $gameHud = $gameHud || this._hudLayer;
+      $gameHud.drawAllHud();
 
-    $gameHud = $gameHud || this._hudLayer;
-    $gameHud.drawAllHud();
-
-    this.addChild(this._hudLayer);
-    this.swapChildren(this._windowLayer, this._hudLayer);
+      this.addChild(this._hudLayer);
+      this.swapChildren(this._windowLayer, this._hudLayer);
+    }
   };
 
   var _Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    this.removeChild(this._hudLayer);
-    $gameHud = null;
+    if(!battleOnly) {
+      this.removeChild(this._hudLayer);
+      $gameHud = null;
+    }
     _Scene_Map_terminate.call(this);
   };
 
@@ -520,15 +529,24 @@ var RS = RS || {};
   var _Game_Party_addActor = Game_Party.prototype.addActor;
   Game_Party.prototype.addActor = function(actorId) {
     _Game_Party_addActor.call(this, actorId);
-    if(!!$gameHud.refresh) {
-      $gameHud.refresh();
+    try {
+      if(!!$gameHud.refresh) {
+        $gameHud.refresh();
+      }
+    } catch(e) {
+
     }
+
   };
 
   var _Game_Party_removeActor = Game_Party.prototype.removeActor;
   Game_Party.prototype.removeActor = function(actorId) {
-    $gameHud.remove(actorId);
-    _Game_Party_removeActor.call(this, actorId);
+    try {
+        $gameHud.remove(actorId);
+        _Game_Party_removeActor.call(this, actorId);
+    } catch(e) {
+
+    }
   };
 
   //----------------------------------------------------------------------------
@@ -561,5 +579,8 @@ var RS = RS || {};
         }
       }
   };
+
+  window.HUD = HUD;
+  window.RS_HudLayer = RS_HudLayer;
 
 })();
