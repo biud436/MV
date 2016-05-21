@@ -1,5 +1,5 @@
 /*:
- * EventNameDraw.js
+ * RS_EventName.js
  *
  * @version 1.3.4
  *
@@ -44,8 +44,6 @@
 
 var Imported = Imported || {};
 Imported.RS_EventName = true;
-
-var $stack = $stack || [];
 
 function Vector2() {
     this.initialize.apply(this, arguments);
@@ -383,8 +381,10 @@ function Sprite_VehicleName() {
       this._characterSprites.forEach(function(i) {
 
         var color = [];
+        var character = i._character;
+        var constructor = character.constructor.name;
 
-        switch(i._character.constructor.name) {
+        switch(constructor) {
 
           case 'Game_Player':
             this._nameLayer.addChild(new Sprite_PlayerName({
@@ -403,12 +403,12 @@ function Sprite_VehicleName() {
             color.push(Number(RegExp.$2 || 255));
             color.push(Number(RegExp.$3 || 255));
 
-            if(i._character._erased) return;
-            if(i._character.isTransparent()) return;
-            if(!i._character.event().note.match(colorMatch)) return;
+            if(character._erased) return;
+            if(character.isTransparent()) return;
+            if(!character.event().note.match(colorMatch)) return;
 
             this._nameLayer.addChild(new Sprite_Name({
-              'member': i._character,
+              'member': character,
               'textSize': textSize,
               'textColor': color,
               'outlineWidth': 2,
@@ -420,13 +420,13 @@ function Sprite_VehicleName() {
           case 'Game_Vehicle':
 
             this._nameLayer.addChild(new Sprite_VehicleName({
-              'member': i._character,
+              'member': character,
               'textSize': textSize,
               'textColor': [255, 255, 255],
               'outlineWidth': 2,
               'anchor': new Point(0.5, 1.0),
               'height': $gameMap.tileHeight.bind(this),
-              'name': i._character._type
+              'name': character._type
             }));
 
           break;
@@ -437,14 +437,18 @@ function Sprite_VehicleName() {
 
   var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    if(this._spriteset._nameLayer) {
-      this._spriteset._nameLayer.children.forEach(function (i) {
+    var layer = this._spriteset._nameLayer;
+    var children = layer.children;
+    var length = children.length;
+    if(layer) {
+      children.forEach(function (i) {
         i.visible = false;
         if(i._member) i._member = null;
         if(i._name) i._name = null;
         if(i._offsetY) i._offsetY = null;
       });
-      this._spriteset._nameLayer.removeChildren(0, this._spriteset._nameLayer.children.length);
+      layer.removeChildren(0, length);
+      layer = null;
       this._spriteset._nameLayer = null;
     }
     alias_Scene_Map_terminate.call(this);
