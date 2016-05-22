@@ -4,9 +4,31 @@
  * @author biud436
  *
  * @help
- * RefreshManager setStatus AltMenuScreen false
+ * RefreshManager open
  *
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2016.05.16 (v0.0.1) - Beta
+ * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
  */
+
+var Imported = Imported || {};
+ Imported.RS_RefreshManager = true;
+
+var RS = RS || {};
+
+function Window_PluginManager() {
+  this.initialize.apply(this, arguments);
+};
+
+function Scene_PluginManager() {
+  this.initialize.apply(this, arguments);
+};
+
+function Window_PluginDesc() {
+  this.initialize.apply(this, arguments);
+};
 
 (function() {
 
@@ -28,6 +50,7 @@
   RefreshManager._token;
   RefreshManager._tokens = [];
   RefreshManager._refresh = true;
+  RefreshManager._changed = false;
 
   RefreshManager.ENUM = {
       Others: 1,
@@ -228,7 +251,7 @@
         self._ch = this.nextCharacter();
         while(self._ch !== 0 && self._ch!==34 ) {
           text += String.fromCharCode(self._ch);
-          self._ch=self.nextCharacter()
+          self._ch = self.nextCharacter()
         }
         if(self._ch === '\"'.charCodeAt()) {
           self._ch = this.nextCharacter();
@@ -319,17 +342,25 @@
     path = decodeURIComponent(path);
     fs.writeFile(path , texts, function(err) {
       if(err) throw new Error(err);
-      if($gameSystem.isKorean()) {
-        window.alert("플러그인 설정을 변경했습니다 \n \
-                      \r변경된 설정은 F5 버튼을 누르면 적용됩니다");
-      } else {
-        window.alert("Finished!\n \
-                      \r Press the F5 button. ");      
-      }
-      self._tokens = [];
-      self._typ = [];
+      RefreshManager._changed = true;
     });
-  }
+  };
+
+  RefreshManager.clear = function() {
+    var self = this;
+    self._tokens = [];
+    self._typ = [];
+  };
+
+  RefreshManager.isChanged = function() {
+    var self = this;
+    return self._changed;
+  };
+
+  //============================================================================
+  // PluginManager
+  //
+  //
 
   PluginManager.setStatus = function(pluginName, status) {
 
@@ -374,11 +405,19 @@
           texts += " " + self._tokens[i].text + " \r\n";
           continue;
         }
+
         // "String"
         if(self._tokens[i].kind === type.Istring && self._tokens[i].text) {
          texts += '\"' + self._tokens[i].text + '\"';
          continue;
         }
+
+        // "String"
+        if(self._tokens[i].kind === type.Istring && self._tokens[i].text === "") {
+         texts += '\"\"';
+         continue;
+        }
+
         // :
         if(self._tokens[i].kind === type.Colon) {
          texts += ":";
@@ -412,14 +451,230 @@
 
   };
 
+  //============================================================================
+  // Window_PluginDesc
+  //
+  //
+
+  Window_PluginDesc.prototype = Object.create(Window_Help.prototype);
+  Window_PluginDesc.prototype.constructor = Window_PluginDesc;
+
+  Window_PluginDesc.prototype.initialize = function(numLines) {
+    Window_Help.prototype.initialize.call(this, numLines);
+  };
+
+  var alias_Window_PluginDesc_processNormalCharacter = Window_PluginDesc.prototype.processNormalCharacter;
+  Window_PluginDesc.prototype.processNormalCharacter = function(textState) {
+      var w = this.textWidth(textState.text[textState.index]);
+      if(textState.x + (w * 2) >= this.contentsWidth()) {
+        textState.index--;
+        this.processNewLine(textState);
+      }
+      alias_Window_PluginDesc_processNormalCharacter.call(this, textState);
+  };
+
+  Window_PluginDesc.prototype.textWidthEx = function(text) {
+    return this.drawTextEx.call(this, text, 0, this.contents.height);
+  };
+
+  //============================================================================
+  // Window_PluginManager
+  //
+  //
+
+  Window_PluginManager.prototype = Object.create(Window_Selectable.prototype);
+  Window_PluginManager.prototype.constructor = Window_PluginManager;
+
+  Window_PluginManager.prototype.initialize = function(x, y) {
+    var width = this.windowWidth();
+    var height = this.windowHeight();
+    Window_Selectable.prototype.initialize.call(this, x, y, width, height);
+    this._data = [];
+    this._index = 0;
+    this.initToken();
+  };
+
+  Window_PluginManager.prototype.initToken = function () {
+    var _this = this;
+
+    RefreshManager.load(function() {
+      var self, type, nameToken, trueToken, falseToken;
+      self = RefreshManager;
+      type = self.ENUM;
+      nameToken = self.createToken(type.Istring, new String("name"), 0);
+      self._tokens.forEach(function(currentToken, idx, token) {
+        if(currentToken.kind === type.Istring && currentToken.text === 'name') {
+          _this._data.push({'name':token[idx + 2],
+                            'status':token[idx + 6],
+                            'description':token[idx + 10]});
+        }
+      });
+      _this.refresh();
+      _this.select(0);
+      _this.activate();
+    });
+
+  };
+
+  Window_PluginManager.prototype.windowWidth = function() {
+    return Graphics.boxWidth;
+  };
+
+  Window_PluginManager.prototype.windowHeight = function() {
+    return Graphics.boxHeight - this.fittingHeight(2);
+  };
+
+  Window_PluginManager.prototype.maxItems = function() {
+    if(this._data) {
+        return this._data.length;
+    } else {
+       return 1;
+    }
+  };
+
+  Window_PluginManager.prototype.item = function(index) {
+    if(this._data) {
+        return this._data[index];
+    } else {
+      return {'name': {text: 'No Plugin'},
+              'status': {text: 'false'},
+              'description': {text: 'No Description'}};
+    }
+  };
+
+  Window_PluginManager.prototype.itemHeight = function() {
+    var clientHeight = this.height - this.padding * 2;
+    return Math.floor(clientHeight / this.numVisibleRows());
+  };
+
+  Window_PluginManager.prototype.numVisibleRows = function() {
+    return 8;
+  };
+
+  Window_PluginManager.prototype.drawItem = function(index) {
+    this.drawScript(index);
+  };
+
+  Window_PluginManager.prototype.drawScript = function(index) {
+    var rect = this.itemRect(index);
+    var item = this.item(index);
+    this.drawText(item.name.text, rect.x, rect.y, rect.width, 'left');
+    this.drawText(item.status.text, rect.x, rect.y, rect.width, 'right');
+  };
+
+  Window_PluginManager.prototype.processOk = function() {
+    try {
+      var item, name, enabled;
+      if (this.isCurrentItemEnabled()) {
+          this.playOkSound();
+          this.updateInputData();
+          this.callOkHandler();
+          item = this.item(this.index());
+          name = item.name.text;
+          enabled = (item.status.text !== 'true');
+          item.status.text = enabled.toString();
+          PluginManager.setStatus(name, enabled);
+      } else {
+          this.playBuzzerSound();
+      }
+    } catch(e) {
+
+    }
+  };
+
+  Window_PluginManager.prototype.drawScript = function(index) {
+    var rect = this.itemRect(index);
+    var item = this.item(index);
+    this.changeTextColor(this.normalColor());
+    this.drawText(item.name.text, rect.x, rect.y, rect.width, 'left');
+    if(item.status.text === 'true') {
+      this.changeTextColor(this.mpGaugeColor1());
+    } else {
+      this.changeTextColor(this.hpGaugeColor1());
+    }
+    this.drawText(item.status.text, rect.x, rect.y, rect.width, 'right');
+  };
+
+  var alias_Window_PluginManager_select = Window_PluginManager.prototype.select;
+  Window_PluginManager.prototype.select = function(index) {
+    alias_Window_PluginManager_select.call(this, index);
+    try {
+      var item = this.item(this.index());
+      var name = item.name.text;
+      var description = item.description.text;
+      this._helpWindow.setText(description);
+    } catch(e) {
+
+    }
+  };
+
+  //============================================================================
+  // Scene_PluginManager
+  //
+  //
+
+  Scene_PluginManager.prototype = Object.create(Scene_Base.prototype);
+  Scene_PluginManager.prototype.constructor = Scene_PluginManager;
+
+  Scene_PluginManager.prototype.initialize = function() {
+    Scene_Base.prototype.initialize.call(this);
+  };
+
+  Scene_PluginManager.prototype.create = function () {
+    Scene_Base.prototype.create.call(this);
+    this.createWindowLayer();
+    this.createAllWindows();
+  };
+
+  Scene_PluginManager.prototype.start = function () {
+    Scene_Base.prototype.start.call(this);
+  };
+
+  Scene_PluginManager.prototype.update = function () {
+    Scene_Base.prototype.update.call(this);
+    if(RefreshManager.isChanged() && this._windowPluginManager) {
+      this._windowPluginManager.activate();
+      this._windowPluginManager.refresh();
+      RefreshManager._changed = false;
+    }
+  };
+
+  Scene_PluginManager.prototype.terminate = function () {
+    Scene_Base.prototype.terminate.call(this);
+    this._windowLayer.removeChild(this._windowPluginManager);
+    // RefreshManager.clear();
+    this._windowPluginManager = null;
+  };
+
+  Scene_PluginManager.prototype.createAllWindows = function () {
+    this._helpWindow = new Window_PluginDesc(2);
+    this._windowPluginManager = new Window_PluginManager(0, this._helpWindow.y + this._helpWindow.height + 1);
+    this._windowPluginManager.setHelpWindow(this._helpWindow);
+    this._windowPluginManager.setHandler('ok', this.onButtonOk.bind(this));
+    this._windowPluginManager.setHandler('cancel', this.onCancel.bind(this));
+    this._windowLayer.addChild(this._helpWindow);
+    this._windowLayer.addChild(this._windowPluginManager);
+  };
+
+  Scene_PluginManager.prototype.onButtonOk = function() {
+  };
+
+  Scene_PluginManager.prototype.onCancel = function() {
+    this.popScene();
+  };
+
+  //============================================================================
+  // Game_Interpreter
+  //
+  //
+
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
     if(command === "RefreshManager") {
       switch (args[0]) {
-      case 'setStatus':
-        var enabled = Boolean(args[2] === 'true');
-        PluginManager.setStatus(args[1], enabled);
+      case 'open':
+        SceneManager.push(Scene_PluginManager);
         break;
       }
     }
@@ -427,4 +682,4 @@
 
   window.RefreshManager = RefreshManager;
 
-})();
+  })();
