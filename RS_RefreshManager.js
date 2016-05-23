@@ -3,7 +3,27 @@
  * @plugindesc This plugin creates or changes a file called 'js/plugins.js'
  * @author biud436
  *
+ * @param Save File ID
+ * @desc Auto Save
+ * @default 1
+ *
+ * @param Show Preview Window
+ * @desc Indicate whether or not the preview window is visible.
+ * @default false
+ *
+ * @param Auto Reload
+ * @desc Decide whether or not to reload the game.
+ * @default true
+ *
+ * @param Auto closing time
+ * @desc delay (Millisecond)
+ * @default 2500
+ *
  * @help
+ * =============================================================================
+ * Plugin Command
+ * =============================================================================
+ *
  * RefreshManager open
  *
  * =============================================================================
@@ -11,6 +31,8 @@
  * =============================================================================
  * 2016.05.16 (v0.0.1) - Beta
  * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
+ * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
+ * window that could be able to show the json file.
  */
 
 var Imported = Imported || {};
@@ -33,6 +55,18 @@ function Window_PluginDesc() {
 (function() {
 
   var parameters = PluginManager.parameters('RS_RefreshManager');
+  var fastLoadFileId = Number(parameters['Save File ID'] || 1);
+
+  var nClosingTime = Number(parameters['Auto closing time'] || 2500);
+
+  // Indicate whether or not the preview window is visible.
+  var isPreviewWindow = Boolean(parameters['Show Preview Window'] === 'true');
+
+  // the preview window. (window object)
+  var _previewWindow = null;
+
+  var isAutoReload =  Boolean(parameters['Auto Reload'] === 'true');
+
   var fs = require('fs');
 
   function RefreshManager() {
@@ -91,8 +125,8 @@ function Window_PluginDesc() {
 
   RefreshManager.load = function(func) {
     var self = this;
-
-    var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, RefreshManager._path);
+    // var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, RefreshManager._path);
+    var path = window.location.pathname.replace(/\/[^\/]*$/, RefreshManager._path);
     if (path.match(/^\/([A-Z]\:)/)) {
         path = path.slice(1);
     }
@@ -157,7 +191,7 @@ function Window_PluginDesc() {
     // Cyrillic handling
     // for(var i= 0x0400; i <= 0x052F; i++) { self._typ[i] = type.Letter; }
 
-    // All Unicode handling (모든 유니코드 처리, 메모리 낭비 심함)
+    // All Unicode handling (Big Memory)
     // for(var i=0x0100; i <= 0xFFFF; i++) { self._typ[i] = type.Letter; }
 
   };
@@ -257,7 +291,7 @@ function Window_PluginDesc() {
           self._ch = this.nextCharacter();
         }
         else {
-          throw new Error("문자열이 잘못되었습니다 : \" 로 끝내지 않았습니다.");
+          throw new Error("This string is wrong.");
         }
         return self.createToken(type.Istring, text, 0);
       default:
@@ -335,6 +369,7 @@ function Window_PluginDesc() {
 
   RefreshManager.makePlugins = function(texts) {
     var self = this;
+
     var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, "/js/plugins.js");
     if (path.match(/^\/([A-Z]\:)/)) {
         path = path.slice(1);
@@ -342,8 +377,14 @@ function Window_PluginDesc() {
     path = decodeURIComponent(path);
     fs.writeFile(path , texts, function(err) {
       if(err) throw new Error(err);
+      var blob = new Blob( [texts], {type: 'text/plane'} );
+      var url = URL.createObjectURL(blob);
+      if(isPreviewWindow) {
+          _previewWindow = window.open(url, '_blank');
+      }
       RefreshManager._changed = true;
     });
+
   };
 
   RefreshManager.clear = function() {
@@ -618,6 +659,7 @@ function Window_PluginDesc() {
 
   Scene_PluginManager.prototype.initialize = function() {
     Scene_Base.prototype.initialize.call(this);
+
   };
 
   Scene_PluginManager.prototype.create = function () {
@@ -635,6 +677,7 @@ function Window_PluginDesc() {
     if(RefreshManager.isChanged() && this._windowPluginManager) {
       this._windowPluginManager.activate();
       this._windowPluginManager.refresh();
+      this.onSavefileOk();
       RefreshManager._changed = false;
     }
   };
@@ -642,7 +685,10 @@ function Window_PluginDesc() {
   Scene_PluginManager.prototype.terminate = function () {
     Scene_Base.prototype.terminate.call(this);
     this._windowLayer.removeChild(this._windowPluginManager);
+
+    // Clean the Memory.
     // RefreshManager.clear();
+
     this._windowPluginManager = null;
   };
 
@@ -663,6 +709,79 @@ function Window_PluginDesc() {
     this.popScene();
   };
 
+  Scene_PluginManager.prototype.onSavefileOk = function() {
+    $gameSystem.onBeforeSave();
+    if (DataManager.saveGame(fastLoadFileId)) {
+        this.onSaveSuccess();
+        if(_previewWindow) {
+
+          setTimeout(function() {
+
+            _previewWindow.close();
+
+            // Decide whether or not to reload the game.
+            if(isAutoReload) window.location.reload();
+
+            _previewWindow = null;
+
+          }, nClosingTime );
+
+        } else {
+
+          // Decide whether or not to reload the game.
+          if(isAutoReload) window.location.reload();
+
+        }
+    } else {
+        this.onSaveFailure();
+    }
+  };
+
+  Scene_PluginManager.prototype.onSaveSuccess = function() {
+    SoundManager.playSave();
+  	StorageManager.cleanBackup(fastLoadFileId);
+    this.popScene();
+  };
+
+  Scene_PluginManager.prototype.onSaveFailure = function() {
+    SoundManager.playBuzzer();
+  };
+
+  Scene_PluginManager.onLoadfileOk = function() {
+    if (DataManager.loadGame(fastLoadFileId)) {
+      this.onLoadSuccess();
+    } else {
+      this.onLoadFailure();
+    }
+  };
+
+  // Static
+
+  Scene_PluginManager.onLoadSuccess = function() {
+    SoundManager.playLoad();
+    Scene_PluginManager.reloadMapIfUpdated();
+    SceneManager.goto(Scene_Map);
+    $gameSystem.onAfterLoad();
+    try {
+        if(StorageManager.exists(fastLoadFileId)) {
+          StorageManager.remove(fastLoadFileId);
+        }
+    } catch(e) {
+
+    }
+  };
+
+  Scene_PluginManager.onLoadFailure = function() {
+    SoundManager.playBuzzer();
+  };
+
+  Scene_PluginManager.reloadMapIfUpdated = function() {
+    if ($gameSystem.versionId() !== $dataSystem.versionId) {
+      $gamePlayer.reserveTransfer($gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
+      $gamePlayer.requestMapReload();
+    }
+  };
+
   //============================================================================
   // Game_Interpreter
   //
@@ -677,6 +796,25 @@ function Window_PluginDesc() {
         SceneManager.push(Scene_PluginManager);
         break;
       }
+    }
+  };
+
+  //============================================================================
+  // Scene_Boot
+  //
+  //
+
+  var alias_Scene_Boot_start = Scene_Boot.prototype.start;
+  Scene_Boot.prototype.start = function() {
+    if(StorageManager.exists(fastLoadFileId)) {
+      Scene_Base.prototype.start.call(this);
+      SoundManager.preloadImportantSounds();
+      this.checkPlayerLocation();
+      DataManager.setupNewGame();
+      Scene_PluginManager.onLoadfileOk();
+      document.title = $dataSystem.gameTitle;
+    } else {
+      alias_Scene_Boot_start.call(this);
     }
   };
 
