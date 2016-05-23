@@ -370,7 +370,7 @@ function Window_PluginDesc() {
   RefreshManager.makePlugins = function(texts) {
     var self = this;
 
-    var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, "/js/plugins.js");
+    var path = window.location.pathname.replace(/\/[^\/]*$/, "/js/plugins.js");
     if (path.match(/^\/([A-Z]\:)/)) {
         path = path.slice(1);
     }
