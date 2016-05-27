@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc This plugin draws the Battle HUD (Addon v1.0.0)
+ * @plugindesc This plugin draws the Battle HUD (Addon v1.1.0)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -11,7 +11,7 @@
  * @requiredAssets img/pictures/hud_window_empty_inbattle
  *
  * @author biud436
- * @version 1.0.0
+ * @version 1.1.0
  *
  * @param Width
  * @desc Width
@@ -51,7 +51,9 @@
  * @help
  *
  * - Change Log
- * 2015.05.21 (v1.0.0) - First Release Date
+ * 2016.05.21 (v1.0.0) - First Release Date
+ * 2016.05.28 (v1.1.0) - Added Active Turn Battle (require YEP_BattleEngineCore
+ * and YEP_X_BattleSysATB)
  */
 
 var Imported = Imported || {};
@@ -75,6 +77,7 @@ var RS = RS || {};
   var alias_HUD_initialize = HUD.prototype.initialize;
   HUD.prototype.initialize = function(config) {
     alias_HUD_initialize.call(this, config);
+    if( !this.inBattle() ) return;
     this.createAllIcon();
     this.initSelectEffect();
   };
@@ -113,7 +116,7 @@ var RS = RS || {};
   }
 
   HUD.prototype.createHud = function() {
-    var name = ( this.inBattle() ) ? 'hud_window_empty_inbattle' : 'hud_window_empty';
+    var name = ( this.inBattle() && $dataSystem.optDisplayTp ) ? 'hud_window_empty_inbattle' : 'hud_window_empty';
     this._hud = new Sprite(ImageManager.loadPicture(name));
     this.addChild(this._hud);
   };
@@ -182,7 +185,7 @@ var RS = RS || {};
 
   HUD.prototype.getExp = function() {
     var player = this.getPlayer();
-    if(this.inBattle()) {
+    if(this.inBattle() & $dataSystem.optDisplayTp) {
         return "%1 / %2".format(player.tp, player.maxTp());
     }
     return "%1 / %2".format(player.currentExp(), player.nextLevelExp());
@@ -190,7 +193,7 @@ var RS = RS || {};
 
   HUD.prototype.getExpRate = function() {
     try {
-      if(this.inBattle()) {
+      if(this.inBattle() & $dataSystem.optDisplayTp) {
         return this._exp.bitmap.width * this.getPlayer().tpRate();
       }
       return this._exp.bitmap.width * (this.getPlayer().currentExp() / this.getPlayer().nextLevelExp());
@@ -250,7 +253,6 @@ var RS = RS || {};
   // Window_BattleStatus
   //
   //
-
   var alias_Window_BattleStatus_refresh = Window_BattleStatus.prototype.refresh;
   Window_BattleStatus.prototype.refresh = function() {
     alias_Window_BattleStatus_refresh.call(this);
@@ -260,6 +262,148 @@ var RS = RS || {};
       }, this);
     }
 
+  };
+
+  //----------------------------------------------------------------------------
+  // (Addon) Yanfly Engine Plugins - Battle System - Active Turn Battle
+  //
+  //
+
+  var alias_yanflyATB_gauge_HUD_initialize = HUD.prototype.initialize;
+  HUD.prototype.initialize = function(config) {
+    alias_yanflyATB_gauge_HUD_initialize.call(this, config);
+    if(!Imported.YEP_BattleEngineCore) return;
+    if(!Imported.YEP_X_BattleSysATB) return;
+    if( !this.inBattle() ) return;
+    this.createATBGauge();
+    this.createArrow();
+  };
+
+  HUD.RAD = Math.PI / 180.0;
+  HUD.PI2 = Math.PI * 2;
+
+  HUD.prototype.createATBGauge = function () {
+    if(!Imported.YEP_BattleEngineCore) return;
+    if(!Imported.YEP_X_BattleSysATB) return;
+    if( !this.inBattle() ) return;
+    var r = 96;
+    this._AtbGauge = new Sprite(new Bitmap(nWidth, nHeight * 2));
+    this._AtbGauge.x = this._hud.x;
+    this._AtbGauge.y = this._hud.y;
+    this.addChild(this._AtbGauge);
+  };
+
+  HUD.prototype.createArrow = function () {
+    if(!Imported.YEP_BattleEngineCore) return;
+    if(!Imported.YEP_X_BattleSysATB) return;
+    if( !this.inBattle() ) return;
+    this._AtbArrow = new Sprite(new Bitmap(24, 24));
+    this._AtbArrow.x = this._hud.x;
+    this._AtbArrow.y = this._hud.y;
+    this._AtbArrow.anchor.x = 0.5;
+    this._AtbArrow.anchor.y = 0;
+    this._AtbArrow.opacity = 0.8;
+    this.drawArraow(45.0, 0.0);
+    this.addChild(this._AtbArrow);
+  };
+
+  Bitmap.prototype.rsDrawArc = function(x, y, r, startingAngle, endingAngle, color) {
+    var ctx = this._context;
+    var grd = ctx.createLinearGradient(0, 0, 110, 65);
+    grd.addColorStop(0, color);
+    grd.addColorStop(1, 'rgba(230,230,230,0.0)');
+    ctx.save();
+    ctx.beginPath();
+    ctx.lineWidth= "3";
+    ctx.arc(x + r + 1, y + r + 4, r - 1, startingAngle , endingAngle, true);
+    ctx.strokeStyle = grd;
+    ctx.globalAlpha = 0.9;
+    ctx.stroke();
+    ctx.restore();
+    this._setDirty();
+  };
+
+  HUD.prototype.convertRad = function(degree) {
+    return (Math.PI / 180.0) * degree;
+  };
+
+  HUD.prototype.drawAtbGauge = function (rate) {
+    if(!Imported.YEP_BattleEngineCore) return;
+    if(!Imported.YEP_X_BattleSysATB) return;
+    if( !this.inBattle() ) return;
+    var x = 0;
+    var y = 0;
+    var player = this.getPlayer();
+    var r = 45;
+    var sAngle = 0;
+    var eAngle = (HUD.PI2) * rate.clamp(0, 1);
+    var color = 'rgba(147,112,219,0.9)';
+    if(rate >= 1) {
+      color = 'rgba(205,92,92,0.9)';
+      this._AtbArrow.visible = false;
+    } else {
+      color = 'rgba(147,112,219,0.9)';
+      this._AtbArrow.visible = true;
+    }
+    this._AtbGauge.bitmap.clear();
+    this._AtbGauge.bitmap.rsDrawArc(x, y, r, sAngle, -eAngle, color);
+    this.setArraowPosition(r, rate);
+  };
+
+  HUD.prototype.setArraowPosition = function(r, rate) {
+    if(!Imported.YEP_BattleEngineCore) return;
+    if(!Imported.YEP_X_BattleSysATB) return;
+    if( !this.inBattle() ) return;
+    var dx = (this._hud.x + r + 1) + r * Math.cos(HUD.PI2 * rate);
+    var dy = (this._hud.y + r + 4) + r * Math.sin(-HUD.PI2 * rate);
+    this._AtbArrow.rotation = (-HUD.PI2) * rate;
+    this._AtbArrow.x = dx;
+    this._AtbArrow.y = dy;
+  }
+
+  HUD.prototype.drawArraow = function(r, rate) {
+    if(!Imported.YEP_BattleEngineCore) return;
+    if(!Imported.YEP_X_BattleSysATB) return;
+    if( !this.inBattle() ) return;
+    var bitmap = ImageManager.loadSystem('Window');
+    var dx = (0 + r + 1) + r * Math.cos(Math.PI * 2 * rate);
+    var dy = (0 + r + 4) + r * Math.sin(-Math.PI * 2 * rate);
+    var offsetX = 12;
+    var offsetY = 12;
+    this._AtbArrow.bitmap.blt(bitmap, 132, 24, 20, 20, 0, 0);
+  }
+
+  //----------------------------------------------------------------------------
+  // (Alias) YEP_X_BattleSysATB
+  //
+  // Callback functions
+
+  var alias_Window_BattleStatus_drawActorAtbGauge =
+    Window_BattleStatus.prototype.drawActorAtbGauge;
+
+  Window_BattleStatus.prototype.drawActorAtbGauge = function(actor, wx, wy, ww) {
+    if(!Imported.YEP_BattleEngineCore) return;
+    if(!Imported.YEP_X_BattleSysATB) return;
+  	alias_Window_BattleStatus_drawActorAtbGauge.call(this, actor, wx, wy, ww);
+    if($gameHud) {
+      $gameHud._items.children.forEach(function (i) {
+        if(i.getPlayer() === actor) i.drawAtbGauge(actor.atbRate());
+      }, this);
+    }
+  };
+
+  var alias_Window_BattleStatus_drawAtbChargeGauge =
+    Window_BattleStatus.prototype.drawAtbChargeGauge;
+
+  Window_BattleStatus.prototype.drawAtbChargeGauge = function(actor, wx, wy, ww) {
+    if(!Imported.YEP_BattleEngineCore) return;
+    if(!Imported.YEP_X_BattleSysATB) return;
+  	alias_Window_BattleStatus_drawAtbChargeGauge.call(this, actor, wx, wy, ww);
+    if($gameHud) {
+      $gameHud._items.children.forEach(function (i) {
+        if(i.getPlayer() === actor) i.drawAtbGauge(actor.atbChargeRate());
+      }, this);
+    }
   };
 
 })();
