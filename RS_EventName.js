@@ -1,9 +1,9 @@
 /*:
  * RS_EventName.js
  *
- * @version 1.3.4
+ * @version 1.3.5
  *
- * @plugindesc This plugin displays an event's name above a head (1.3.4)
+ * @plugindesc This plugin displays an event's name above a head (1.3.5)
  * @author biud436
  *
  * @param text Size
@@ -40,6 +40,7 @@
  * 2016.05.05 (v1.3.2) - Updated Vector2 Class
  * 2016.05.20 (v1.3.3) - Fixed issues that can cause an increase of opacity and the memory leak.
  * 2016.05.21 (v1.3.4) - Fixed issue that causes the memory leak.
+ * 2016.05.28 (v1.3.5) - Fixed Color Bug.
  */
 
 var Imported = Imported || {};
@@ -399,13 +400,13 @@ function Sprite_VehicleName() {
 
           case 'Game_Event':
 
-            color.push(Number(RegExp.$1 || 255));
-            color.push(Number(RegExp.$2 || 255));
-            color.push(Number(RegExp.$3 || 255));
-
             if(character._erased) return;
             if(character.isTransparent()) return;
             if(!character.event().note.match(colorMatch)) return;
+
+            color.push(Number(RegExp.$1 || 255));
+            color.push(Number(RegExp.$2 || 255));
+            color.push(Number(RegExp.$3 || 255));
 
             this._nameLayer.addChild(new Sprite_Name({
               'member': character,
