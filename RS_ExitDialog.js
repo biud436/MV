@@ -19,9 +19,9 @@
  * @desc OK Button's Name
  * @default OK
  *
- * @param Cancle Button
- * @desc Cancle Button's Name
- * @default Cancle
+ * @param Cancel Button
+ * @desc Cancel Button's Name
+ * @default Cancel
  *
  * @help
  *
@@ -42,6 +42,10 @@
  *       <script type="text/javascript" src="js/libs/pixi.js"></script>
  *       ...
  *     </body>
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2016.05.29 - The incorrect character fixed.
  */
 
 (function() {
@@ -49,7 +53,7 @@
   var parameters = PluginManager.parameters('RS_ExitDialog');
   var message = String(parameters['Exit Message'] || "Do you want to exit the game?" );
   var okBtn = String(parameters['OK Button'] || "OK" );
-  var cancleBtn = String(parameters['Cancle Button'] || "Cancle" );
+  var cancelBtn = String(parameters['Cancel Button'] || "Cancel" );
   var dialogName = String(parameters['Dialog Name'] || "Information Dialog" );
   var isCustomDialog = Boolean(parameters['Show Custom Dialog Name'] === 'true')
 
@@ -66,7 +70,7 @@
           if(index === 1) {
               SceneManager.exit();
           }
-      }, dialogName, [okBtn, cancleBtn]);
+      }, dialogName, [okBtn, cancelBtn]);
   }
 
   SceneManager.detectScene = function() {
