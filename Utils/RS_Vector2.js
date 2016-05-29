@@ -2,6 +2,8 @@
  * RS_Vector2.js
  * @plugindesc Vector2 class
  * @author biud436
+ *
+ * 2016.05.29 - Fixed add, minus, mul, div functions
  */
 
 var RS = RS || {};
@@ -123,9 +125,16 @@ Vector2.prototype.initialize = function(x, y) {
  * @return this {Vector2}
  */
 Vector2.prototype.add = function (vec) {
+  if(vec instanceof Number) {
+    this.x = this.x + vec;
+    this.y = this.y + vec;
+    return this;
+  } else if(vec instanceof Vector2){
     this.x = this.x + vec.x;
     this.y = this.y + vec.y;
     return this;
+  }
+  return Vector2.empty();
 };
 
 /**
@@ -135,9 +144,16 @@ Vector2.prototype.add = function (vec) {
  * @return this {Vector2}
  */
 Vector2.prototype.minus = function (vec) {
+  if(vec instanceof Number) {
+    this.x = this.x - vec;
+    this.y = this.y - vec;
+    return this;
+  } else if(vec instanceof Vector2){
     this.x = this.x - vec.x;
     this.y = this.y - vec.y;
     return this;
+  }
+  return Vector2.empty();
 };
 
 /**
@@ -148,9 +164,16 @@ Vector2.prototype.minus = function (vec) {
  *
  */
 Vector2.prototype.mul = function (vec) {
-    this.x = this.x * vec.x;
-    this.y = this.y * vec.y;
-    return this;
+    if(vec instanceof Number) {
+      this.x = this.x * vec;
+      this.y = this.y * vec;
+      return this;
+    } else if(vec instanceof Vector2){
+      this.x = this.x * vec.x;
+      this.y = this.y * vec.y;
+      return this;
+    }
+    return Vector2.empty();
 };
 
 /**
@@ -160,9 +183,16 @@ Vector2.prototype.mul = function (vec) {
  * @return this {Vector2}
  */
 Vector2.prototype.div = function (vec) {
+  if(vec instanceof Number) {
+    this.x = this.x / vec;
+    this.y = this.y / vec;
+    return this;
+  } else if(vec instanceof Vector2){
     this.x = this.x / vec.x;
     this.y = this.y / vec.y;
     return this;
+  }
+  return Vector2.empty();
 };
 
 /**
