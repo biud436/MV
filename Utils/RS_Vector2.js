@@ -3,7 +3,7 @@
  * @plugindesc Vector2 class
  * @author biud436
  *
- * 2016.05.29 - Fixed add, minus, mul, div functions
+ * 2016.05.29 - Added Scalar Multiplication
  */
 
 var RS = RS || {};
