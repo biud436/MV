@@ -1,6 +1,8 @@
 /*:
  * RS_FollowerPassable.js
- * @plugindesc 플레이어가 파티원을 통과하지 못하게 하기
+ * @plugindesc If you are using this plugin, the player will be impossible
+ * to pass other party members.
+ *
  * @author biud436
  *
  * @param Enabled
