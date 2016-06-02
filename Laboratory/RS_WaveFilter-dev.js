@@ -94,6 +94,11 @@ RS.WaveConfig = RS.WaveConfig || {};
       'attribute vec2 aVertexPosition;',
       'attribute vec2 aTextureCoord;',
       'uniform mat3 projectionMatrix;',
+      'uniform float waveHeight;',
+      'uniform float waveFrequency;',
+      'uniform float waveTime;',
+      'uniform float wavePhase;',
+      'uniform float UVSpeed;',
       'varying vec2 vTextureCoord;',
       'varying vec2 vCoord;',
 
@@ -112,12 +117,6 @@ RS.WaveConfig = RS.WaveConfig || {};
        'varying vec2 vTextureCoord;',
 
        'varying vec2 vCoord;',
-
-       'uniform float waveHeight;',
-       'uniform float waveFrequency;',
-       'uniform float waveTime;',
-       'uniform float wavePhase;',
-       'uniform float UVSpeed;',
 
        'uniform sampler2D uSampler;',
 
@@ -141,12 +140,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   PIXI.WaveFilter.prototype = Object.create( PIXI.Filter.prototype );
   PIXI.WaveFilter.prototype.constructor = PIXI.WaveFilter;
 
-  PIXI.WaveFilter.prototype.apply = function (filterManager, input, output, clear)
-  {
-      PIXI.filterManager.applyFilter(this, input, output, clear);
-  };
-
-  Object.defineProperties(PIXI.WaveFilter, {
+  Object.defineProperties(PIXI.WaveFilter.prototype, {
     waveHeight: {
       get: function() {
           return this.uniforms.waveHeight;
