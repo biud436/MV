@@ -57,22 +57,6 @@ RS.LightConfig = RS.LightConfig || {};
       'attribute vec2 aVertexPosition;',
       'attribute vec2 aTextureCoord;',
       'uniform mat3 projectionMatrix;',
-      'varying vec2 vTextureCoord;',
-
-      'void main(void){',
-      '    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
-      '   vTextureCoord = aTextureCoord;',
-      '}'
-    ].join('\n');
-
-    var fragmentSrc = [
-      '#define GLSLIFY 1',
-
-      'precision mediump float;',
-
-      'varying vec2 vTextureCoord;',
-
-      'uniform sampler2D uSampler;',
 
       'uniform vec3 u_LightPos;',
       'uniform float brightness;',
@@ -84,49 +68,73 @@ RS.LightConfig = RS.LightConfig || {};
 
       'uniform float coordMin;',
 
+      'varying vec2 vTextureCoord;',
+      'varying vec2 vTestCoord;',
+      'varying vec2 vTestOffset;',
+      'varying float diffuse;',
+      'varying vec3 vLightVector;',
+
+      'void main(void){',
+      '    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
+      '    vTextureCoord = aTextureCoord;',
+
+      '    vTestCoord = vTextureCoord - offset;',
+      '    float test_distance = length(vTestCoord);',
+      '    diffuse = 1.0;',
+      '    vTestOffset = offset;',
+
+      // 정규화
+      '   vec3 coord = clamp(normalize(vec3(vTextureCoord.x, vTextureCoord.y, 1.0 )), coordMin, 1.0);',
+      '   float distance = distance(coord, u_LightPos);',
+
+      // 광원
+      '   vec3 view = normalize(vec3(vTestCoord, 1.0) - u_LightPos);',
+      '   vLightVector = normalize(coord - u_LightPos);',
+
+      // 회전 행렬 (벡터)
+      '   float s = sin(angle);',
+      '   float c = cos(angle);',
+      '   coord.x = offset.x * c - offset.y * s;',
+      '   coord.y = offset.x * s + offset.y * c;',
+
+      // 입사광 벡터와 법선 벡터 사이의 각도
+      '   diffuse = clamp(dot(-view, coord), 0.5, brightness);',
+
+      // 거리 비율을 적용합니다 (비율 계산)
+      '   diffuse = diffuse * 1.0 / (1.0 + (0.1 * distance ));',
+
+      // 밝기를 항상 30% 으로 설정합니다.
+      '   diffuse = diffuse + 0.3;',
+
+      // 0.0 이하면 오류가 날 수 있으므로 조건문 처리
+      '   if(diffuse > 0.0) {',
+      '     diffuse = pow(diffuse, tight);',
+      '   }',
+      '}'
+    ].join('\n');
+
+    var fragmentSrc = [
+      '#define GLSLIFY 1',
+
+      'precision mediump float;',
+
+      'varying vec2 vTextureCoord;',
+      'varying vec2 vTestCoord;',
+      'varying vec2 vTestOffset;',
+      'varying float diffuse;',
+      'varying vec3 vLightVector;',
+
+      'uniform sampler2D uSampler;',
       'uniform vec3 v_tone;',
 
       'void main(void) {',
 
-        '   vec2 test_coord = vTextureCoord - offset;',
-        '   float test_distance = length(test_coord);',
-        '   float diffuse = 1.0;',
-        '   vec2 test_offset = offset;',
-
-        // 정규화
-        '   vec3 coord = clamp(normalize(vec3(vTextureCoord.x, vTextureCoord.y, 1.0 )), coordMin, 1.0);',
-        '   float distance = distance(coord, u_LightPos);',
-
-        // 광원
-        '   vec3 view = normalize(vec3(test_coord, 1.0) - u_LightPos);',
-        '   vec3 lightVector = normalize(coord - u_LightPos);',
-
-        // 회전 행렬 (벡터)
-        '   float s = sin(angle);',
-        '   float c = cos(angle);',
-        '   coord.x = offset.x * c - offset.y * s;',
-        '   coord.y = offset.x * s + offset.y * c;',
-
-        // 입사광 벡터와 법선 벡터 사이의 각도
-        '   diffuse = clamp(dot(-view, coord), 0.5, brightness);',
-
-        // 거리 비율을 적용합니다 (비율 계산)
-        '   diffuse = diffuse * 1.0 / (1.0 + (0.1 * distance ));',
-
-        // 밝기를 항상 30% 으로 설정합니다.
-        '   diffuse = diffuse + 0.3;',
-
-        // 0.0 이하면 오류가 날 수 있으므로 조건문 처리
-        '   if(diffuse > 0.0) {',
-        '     diffuse = pow(diffuse, tight);',
-        '   }',
-
         //======================================================================
 
-      '   gl_FragColor = texture2D(uSampler, test_coord + test_offset) * diffuse;',
+      '   gl_FragColor = texture2D(uSampler, vTestCoord + vTestOffset) * diffuse;',
 
       // Tone 옵션
-      '   if (length(lightVector) > 0.5) {',
+      '   if (length(vLightVector) > 0.5) {',
          ' gl_FragColor.rgb = gl_FragColor.rgb * v_tone.rgb;',
       '   }',
 
