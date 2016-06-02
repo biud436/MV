@@ -48,29 +48,306 @@
 // Server URL
 
 var RS = RS || {};
+var $serverURL = undefined;
+var $socket = undefined;
 
-RS.Net = RS.Net || {};
 RS.UI = RS.UI || {};
+RS.Net = RS.Net || {};
 
-RS.Net.Params = $plugins.filter(function(i) {
-    if(i.name === 'RS_Net_Module') {
-        return true;
+function Field() {
+  this.initialize.apply(this, arguments);
+};
+
+function TextField() {
+  this.initialize.apply(this, arguments);
+};
+
+function ChatBox() {
+  this.initialize.apply(this, arguments);
+};
+
+(function () {
+
+  RS.Net.Params = $plugins.filter(function(i) {
+      if(i.name === 'RS_Net_Module') {
+          return true;
+      }
+  })[0].parameters;
+
+  RS.Net.createServerURL = function() {
+    var self = this;
+    var param = self.Params;
+    var url = "http://" + param.SERVER_IP + ":" + param.PORT;
+    return url;
+  };
+
+  $serverURL = $serverURL || RS.Net.createServerURL();
+  $socket = $socket || io.connect($serverURL);
+
+  //------------------------------------------------------------------------------
+  // Field
+  //
+  //
+
+  Field.prototype.constructor = Field;
+  Field._instance = null;
+
+  Field.prototype.initialize = function() {
+    this._o = document.createElement('div');
+    this._o.style.position = 'absolute';
+    this._o.style.margin = 'auto';
+    this._o.style.left = '0';
+    this._o.style.top = '0';
+    this._o.style.right = '0';
+    this._o.style.bottom = '0';
+    this._o.style.width = Graphics.boxWidth + 'px';
+    this._o.style.height = Graphics.boxHeight + 'px';
+    this._o.style.zIndex = "1000";
+    document.body.appendChild(this._o);
+  };
+
+  Field.prototype.addChild = function(element) {
+    this._o.appendChild(element);
+  };
+
+  Field.prototype.removeChild = function(element) {
+    this._o.parentNode.removeChild(element);
+    element = null;
+  };
+
+  Field.prototype.terminate = function() {
+    document.body.removeChild(this._o);
+  };
+
+  //------------------------------------------------------------------------------
+  // TextField
+  //
+  //
+
+  TextField.prototype = Object.create(Field.prototype);
+  TextField.prototype.constructor = TextField;
+
+  TextField.CHOSUNG_LIST = [
+    'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ',
+    'ㅅ', 'ㅆ', 'ㅇ' , 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+  ];
+
+  TextField.JUNGSUNG_LIST = [
+    'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ',
+    'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ',
+    'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ',
+    'ㅡ', 'ㅢ', 'ㅣ'
+  ];
+
+  TextField.JONGSUNG_LIST = [
+    ' ', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ',
+    'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ',
+    'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ',
+    'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+  ];
+
+  TextField.prototype.initialize = function(x, y, width, height) {
+
+    this._LastestkeyName = 'none';
+    this._keyMapper = {};
+    this._key = [];
+    this._text = [];
+    this._composition = false;
+    this._newLine = false;
+    this._cursorIndex = 0;
+
+    Field.prototype.initialize.call(this);
+    this._inputField.id = 'input1';
+    this._inputField.type = 'text';
+    this._inputField.style.position = 'absolute';
+    this._inputField.style.margin = 'auto';
+    this._inputField.style.left = x + 'px';
+    this._inputField.style.top = y + '0';
+    this._inputField.style.width = width + 'px';
+    this._inputField.style.height = height + 'px';
+    this._inputField.addEventListener('keydown', this.onkeydown.bind(this));
+    this._inputField.addEventListener('keyup', this.onkeyup.bind(this));
+    this.addChild(this._inputField);
+  };
+
+  TextField.prototype.onresize = function(yPos) {
+    var rect = ChatBox.getEditBoxRect(yPos);
+    this._inputField.style.position = 'absolute'
+    this._inputField.style.left = rect.x + 'px'
+    this._inputField.style.top = rect.y + 'px';
+    this._inputField.style.width= rect.width + "px";
+    this._inputField.style.height = rect.height + 'px';
+  };
+
+  TextField.prototype.onkeydown = function (e) {
+    if(e.keyCode < 255) {
+      this._LastestkeyName = String.fromCharCode( e.keyCode );
+      this._keyMapper[e.keyCode] = true;
+      this._key.push( e.keyCode );
+      this.keyIn( this._LastestkeyName );
     }
-})[0].parameters;
+  };
 
-var $serverURL = (function($) {
-    return "http://" + $.SERVER_IP + ":" + $.PORT;
-})(RS.Net.Params);
-var $socket = $socket || io.connect($serverURL);  
+  TextField.prototype.onkeyup = function (e) {
+    if(e.keyCode < 255) {
+      this._keyMapper[e.keyCode] = false;
+      this._key.pop();
+    }
+  };
 
-/**
- * @memberof RS.Net
- */
+  TextField.prototype.keyIn = function (keyString) {
+    switch (keyString) {
+      case '\r':
+      case '\n':
+        this._text = [];
+        this._newLine = true;
+        break;
+      case '\b':
+        if(this._text.length > 0) {
+          this._text.pop();
+        }
+        break;
+      default:
+        this._text.push(keyString);
+        if(this.isHangul(keyString)) {
+          this.composition();
+        }
+    }
+
+  };
+
+  TextField.prototype.composition = function() {
+
+    // var text = undefined;
+    // var nextText = undefined;
+    // var compositionText = '';
+    // var a, b, c, i;
+    //
+    // var startIdx = 0;
+    // var count = 1;
+    //
+    // this._composition = true;
+    // this._subComposition = false;
+    //
+    // i = 0;
+    //
+    // while(this._composition) {
+    //   text = this._text[i];
+    //   nextText = this._text[i+1];
+    //
+    //   // 초성
+    //   if( (this.CHOSUNG_LIST.indexOf(text) > 0) ) {
+    //     if( (nextText !== 'ㄴ') || (nextText !== 'ㄹ') ||  (nextText !== 'ㅂ')) {
+    //       this._composition = false;
+    //     }
+    //     a = this.CHOSUNG_LIST.indexOf(text);
+    //   }
+    //
+    //   // 중성
+    //   if( (this.JUNGSUNG_LIST.indexOf(text) > 0) ) {
+    //
+    //     b = this.JUNGSUNG_LIST.indexOf(text);
+    //
+    //     if(text === 'ㅗ' && nextText === 'ㅏ') {
+    //       b = this.JUNGSUNG_LIST.indexOf('ㅘ');
+    //     } else if(text === 'ㅗ' && nextText === 'ㅐ') {
+    //       b = this.JUNGSUNG_LIST.indexOf('ㅙ');
+    //     } else if(text === 'ㅗ' && nextText === 'ㅣ') {
+    //       b = this.JUNGSUNG_LIST.indexOf('ㅚ');
+    //     } else if(text === 'ㅗ') {
+    //       b = this.JUNGSUNG_LIST.indexOf('ㅗ');
+    //     }
+    //
+    //   }
+    //
+    //   // 종성
+    //   if( (this.JONGSUNG_LIST.indexOf(text) > 0) ) {
+    //
+    //     c = this.JONGSUNG_LIST.indexOf(text);
+    //
+    //     if(text === 'ㄴ' && nextText === 'ㅈ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄵ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄴ' && nextText === 'ㅎ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄶ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄴ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄴ');
+    //       this._composition = false;
+    //     }
+    //
+    //     if(text === 'ㄹ' && nextText === 'ㄱ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄺ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄹ' && nextText === 'ㅁ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄻ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄹ' && nextText === 'ㅂ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄼ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄹ' && nextText === 'ㅅ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄽ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄹ' && nextText === 'ㅌ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄾ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄹ' && nextText === 'ㅍ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄿ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄹ' && nextText === 'ㅎ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㅀ');
+    //       this._composition = false;
+    //     } else if(text === 'ㄹ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㄹ');
+    //       this._composition = false;
+    //     }
+    //
+    //     if(text === 'ㅂ' && nextText === 'ㅅ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㅄ');
+    //       this._composition = false;
+    //     } else if(text === 'ㅂ') {
+    //       c = this.JONGSUNG_LIST.indexOf('ㅂ');
+    //       this._composition = false;
+    //     }
+    //
+    //   }
+    //
+    // }
+    //
+    // compositionText = String.fromCharCode( 44032 + ( (2 * 588) + (1 * 28) + (8) ) );
+    // this._text.splice(startIdx, count, compositionText);
+  };
+
+  TextField.prototype.isHangul = function(str) {
+    return (
+      (this.CHOSUNG_LIST.indexOf(str) > 0) ||
+      (this.JUNGSUNG_LIST.indexOf(str) > 0) ||
+      (this.JONGSUNG_LIST.indexOf(str) > 0)
+    );
+  }
+
+  TextField.prototype.clear = function () {
+    this._LastestkeyName = 'none';
+    this._text = [];
+    this._key = [];
+  };
+
+  TextField.prototype.terminate = function() {
+    this.clear();
+    this.removeChild(this._inputField);
+  };
+
+})();
+
+//------------------------------------------------------------------------------
+// RS.Net
+//
+//
 
 (function() {
-    
+
   // Download the script from the server.
-  RS.Net.loadScript = function(name) {
+  this.loadScript = function(name) {
       var url = "%1/%2".format($serverURL, name);
       var script = document.createElement('script');
       script.type = 'text/javascript';
@@ -81,141 +358,162 @@ var $socket = $socket || io.connect($serverURL);
   };
 
   // Download the script called 'JsonFormatter.js' from the server.
-  RS.Net.loadScript('JsonFormatter.js');
+  this.loadScript('JsonFormatter.js');
 
   // Get the number of connected users on the server.
-  RS.Net.userCount = function() {
+  this.userCount = function() {
     $socket.on('user count',function(msg) {
       console.log(msg);
     });
   };
 
   // Get the number of connected users on the server.
-  RS.Net.update = function() {
+  this.update = function() {
     $socket.emit('user count', '');
   };
 
   /** 인스턴스 갯수 */
-  RS.Net.count = 0;
-  RS.Net.cryptText = "";
-  RS.Net.cryptKey = "";
+  this.count = 0;
+  this.cryptText = "";
+  this.cryptKey = "";
 
   // Get the time of the server.
-  RS.Net.getTime = function() {
+  this.getTime = function() {
     $socket.emit('get time','');
     $socket.on('get time',function(msg) {
       console.log(msg);
     });
   };
 
-  RS.Net.setCryptKey = function() {
+  this.setCryptKey = function() {
     $socket.emit('get key', '');
   }
 
   /** 암호화 데이터 요청 */
-  RS.Net.setEncryption = function(msg) {
+  this.setEncryption = function(msg) {
     $socket.emit('crypt', msg);
   };
 
   /** 암호화 데이터 획득 */
-  RS.Net.getCryptObject = function(msg) {
-     return JSON.parse(RS.Net.cryptText);
+  this.getCryptObject = function(msg) {
+     return JSON.parse(this.cryptText);
   };
 
-})();
+}).call(RS.Net);
 
-//==============================================================================
+//------------------------------------------------------------------------------
 // RS.UI
-//==============================================================================
+//
+//
 
 (function() {
 
-  /** Prepare Element */
-  RS.UI.prepareElement = function() {
+  // Prepare Element
+  this.prepareElement = function() {
     var divc = document.createElement('div');
     divc.id = 'inputField';
-    divc.innerHTML = "<input id='input1' type='text'></input>";
-    divc.style.left = '0px';
-    divc.style.left = '0px';
-    Graphics._centerElement(divc);
-    divc.style.zIndex="1000";
+    // divc.innerHTML = "<input id='input1' type='text'></input>";
+    divc.style.position = 'absolute';
+    divc.style.margin = 'auto';
+    divc.style.left = '0';
+    divc.style.top = '0';
+    divc.style.right = '0';
+    divc.style.bottom = '0';
+    divc.style.width = Graphics.boxWidth + 'px';
+    divc.style.height = Graphics.boxHeight + 'px';
+    divc.style.zIndex = "1000";
     document.body.appendChild(divc);
     return divc;
   };
 
-  /** Prepare Login Element */
-  RS.UI.prepareLoginElement = function() {
+  this.createInputField = function(x, y, width, height) {
+    var element = document.createElement('input');
+    element.id = 'input1';
+    element.type = 'text';
+    element.style.position = 'absolute';
+    element.style.margin = 'auto';
+    element.style.left = x + 'px';
+    element.style.top = y + '0';
+    element.style.width = width + 'px';
+    element.style.height = height + 'px';
+    var div = document.getElementById('inputField');
+    div.appendChild(element);
+  };
+
+  // Prepare Login Element
+  this.prepareLoginElement = function() {
     var divc = document.createElement('div');
     divc.id = 'loginField';
-    divc.style.zIndex="1010";
-    divc.style.width = '30%'
-    divc.style.height = '30%'
+    divc.style.zIndex = "1010";
+    divc.style.width = Graphics.boxWidth + 'px';
+    divc.style.height = Graphics.boxHeight + 'px';
     Graphics._centerElement(divc);
     document.body.appendChild(divc);
+
     var iframe = document.createElement('iframe');
     iframe.id = 'loginField';
     iframe.src = $serverURL + '/login.html';
     iframe.style.left = '0px';
     iframe.style.top = '0px';
-    iframe.style.zIndex="1001";
+    // iframe.style.width = 300 + 'px';
+    // iframe.style.height = 300 + 'px';
+    iframe.style.zIndex = "1001";
     iframe.style.borderWidth = '0px';
     divc.appendChild(iframe)
     return divc;
   };
 
-  /** Remove Login Element */
-  RS.UI.removeLoginElement = function() {
+  // Remove Login Element
+  this.removeLoginElement = function() {
     var divc = document.getElementById('loginField');
     document.body.removeChild(divc);
   };
 
-  /** Create <input> tag */
-  RS.UI.addTextBox = function(yPosition) {
+  // Create <input> tag
+  this.addTextBox = function(yPosition) {
     var rect, inp;
     rect = ChatBox.getEditBoxRect(yPosition);
     inp =document.getElementById('input1');
     inp.style.position = 'absolute'
     inp.style.backgroundColor =  'rgba(0,0,0,0.6)';
-    inp.style.left = String(rect.x) + 'px'
-    inp.style.top = String(rect.y) + 'px';
-    inp.style.width= String(rect.width) + "px";
-    inp.style.height = String(rect.height) + 'px';
+    inp.style.left = rect.x + 'px'
+    inp.style.top = rect.y + 'px';
+    inp.style.width= rect.width + "px";
+    inp.style.height = rect.height + 'px';
     inp.style.borderColor = inp.style.backgroundColor;
     return inp;
   };
 
-  /** Orientation */
-  RS.UI.getHeight = function() {
+  // Orientation
+  this.getHeight = function() {
     var vv = (window.innerHeight - Graphics.boxHeight), top;
     top = vv > 0 ? (vv / 2) : vv;
     return top;
   };
 
-  /** 윈도우의 크기가 달라졌을 때 */
-  RS.UI.resizeTextBox = function(yPosition) {
+  // 윈도우의 크기가 달라졌을 때
+  this.resizeTextBox = function(yPosition) {
+
     var inp, left;
-    inp =document.getElementById('input1');
+    inp = document.getElementById('input1');
     left = (window.innerWidth - Graphics.boxWidth) / 2;
 
     var rect = ChatBox.getEditBoxRect(yPosition);
 
-    inp.style.position = 'absolute'
-    inp.style.left = String(rect.x) + 'px'
-    inp.style.top = String(rect.y) + 'px';
-    inp.style.width= String(rect.width / Graphics._realScale ) + "px";
-    inp.style.height = String(rect.height) + 'px';
+    inp.style.position = 'absolute';
+    inp.style.left = rect.x + 'px';
+    inp.style.top = rect.y + 'px';
+    inp.style.width= (rect.width / Graphics._realScale ) + "px";
+    inp.style.height = rect.height + 'px';
 
   };
 
-})();
+}).call(RS.UI);
 
-//==============================================================================
+//------------------------------------------------------------------------------
 // ChatBox
-//==============================================================================
-
-function ChatBox() {
-  this.initialize.apply(this, arguments);
-};
+//
+//
 
 (function() {
 
@@ -287,7 +585,9 @@ function ChatBox() {
   };
 
   /** 생성 */
-  var _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
+  var _Scene_Map_createDisplayObjects =
+    Scene_Map.prototype.createDisplayObjects;
+
   Scene_Map.prototype.createDisplayObjects = function() {
     _Scene_Map_createDisplayObjects.call(this);
 
@@ -466,8 +766,8 @@ function ChatBox() {
     var result = "\\c[4][공지] %1".format(text);
     this._textList = this._textList || [];
     this._textList.push(result);
-    setTimeout(function() { 
-        this._textList.shift(); 
+    setTimeout(function() {
+        this._textList.shift();
     }.bind(this), 1000 * 10);
   };
 
@@ -475,7 +775,6 @@ function ChatBox() {
     if($socket) $socket.emit('playYoutube', JSON.stringify(""));
   };
 
-  /*** @alias Scene_Map.prorotype.terminate */
   var _Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
     _Scene_Map_terminate.call(this);

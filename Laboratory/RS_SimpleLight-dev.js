@@ -1,6 +1,6 @@
 /*:
- * RS_SimpleLight.js
- * @plugindesc  * This plugin applies the lighting effect to the all objects
+ * RS_SimpleLight-dev.js
+ * @plugindesc This plugin applies the lighting effect to the all objects
  * by using the Fragment Shader, allows you to give a feeling to explore a dark terrain.
  * @author biud436
  *
@@ -40,7 +40,7 @@ RS.LightConfig = RS.LightConfig || {};
 
 (function() {
 
-  var parameters = PluginManager.parameters('RS_SimpleLight');
+  var parameters = PluginManager.parameters('RS_SimpleLight-dev');
   var f_CoordMin = Number(parameters['coord normalize min'] || 0.4 );
   var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION === "1.3.0");
 
@@ -49,190 +49,179 @@ RS.LightConfig = RS.LightConfig || {};
   //
   // This class creates a light by utilizing a Vertex Shader and Fragment Shader.
 
-if(!isFilterPIXI4) {
+  PIXI.SimpleLightFilter = function() {
 
-  PIXI.SimpleLightFilter = function()
-  {
-     PIXI.AbstractFilter.call( this );
+    var vertexSrc = [
+      '#define GLSLIFY 1',
 
-     this.passes = [this];
+      'attribute vec2 aVertexPosition;',
+      'attribute vec2 aTextureCoord;',
+      'uniform mat3 projectionMatrix;',
+      'varying vec2 vTextureCoord;',
 
-     this.uniforms = {
-         u_LightPos: {type: '3f', value: {x: 1.0 , y: 1.0, z: 1.0}},
-         brightness: {type: '1f', value: 1.0},
-         tight: {type: '1f', value: 8.0},
-         offset: {type: '2f', value:{x:0.5, y:0.5}},
-         angle: {type: '1f', value:5},
-         radius: {type: '1f', value:0.3},
-         coordMin : {type: '1f', value: f_CoordMin},
-         v_tone: {type: '3fv', value: [1.0,1.0,1.0]}
-     };
+      'void main(void){',
+      '    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
+      '   vTextureCoord = aTextureCoord;',
+      '}'
+    ].join('\n');
 
-     // The Fragment Shader can change each the Pixel's color.
-     this.fragmentSrc = [
-       'precision mediump float;',
+    var fragmentSrc = [
+      '#define GLSLIFY 1',
 
-       'varying vec2 vTextureCoord;',
-       'varying vec4 vColor;',
+      'precision mediump float;',
 
-       'uniform sampler2D uSampler;',
+      'varying vec2 vTextureCoord;',
 
-       'uniform vec3 u_LightPos;',
-       'uniform float brightness;',
-       'uniform float tight;',
+      'uniform sampler2D uSampler;',
 
-       'uniform float radius;',
-       'uniform float angle;',
-       'uniform vec2 offset;',
+      'uniform vec3 u_LightPos;',
+      'uniform float brightness;',
+      'uniform float tight;',
 
-       'uniform float coordMin;',
+      'uniform float radius;',
+      'uniform float angle;',
+      'uniform vec2 offset;',
 
-       'uniform vec3 v_tone;',
+      'uniform float coordMin;',
 
-       'void main(void) {',
+      'uniform vec3 v_tone;',
 
-         '   vec2 test_coord = vTextureCoord - offset;',
-         '   float test_distance = length(test_coord);',
-         '   float diffuse = 1.0;',
-         '   vec2 test_offset = offset;',
+      'void main(void) {',
+
+        '   vec2 test_coord = vTextureCoord - offset;',
+        '   float test_distance = length(test_coord);',
+        '   float diffuse = 1.0;',
+        '   vec2 test_offset = offset;',
+
+        // 정규화
+        '   vec3 coord = clamp(normalize(vec3(vTextureCoord.x, vTextureCoord.y, 1.0 )), coordMin, 1.0);',
+        '   float distance = distance(coord, u_LightPos);',
+
+        // 광원
+        '   vec3 view = normalize(vec3(test_coord, 1.0) - u_LightPos);',
+        '   vec3 lightVector = normalize(coord - u_LightPos);',
+
+        // 회전 행렬 (벡터)
+        '   float s = sin(angle);',
+        '   float c = cos(angle);',
+        '   coord.x = offset.x * c - offset.y * s;',
+        '   coord.y = offset.x * s + offset.y * c;',
+
+        // 입사광 벡터와 법선 벡터 사이의 각도
+        '   diffuse = clamp(dot(-view, coord), 0.5, brightness);',
+
+        // 거리 비율을 적용합니다 (비율 계산)
+        '   diffuse = diffuse * 1.0 / (1.0 + (0.1 * distance ));',
+
+        // 밝기를 항상 30% 으로 설정합니다.
+        '   diffuse = diffuse + 0.3;',
+
+        // 0.0 이하면 오류가 날 수 있으므로 조건문 처리
+        '   if(diffuse > 0.0) {',
+        '     diffuse = pow(diffuse, tight);',
+        '   }',
 
         //======================================================================
-        //
-        //======================================================================
-         '   vec3 coord = clamp(normalize(vec3(vTextureCoord.x, vTextureCoord.y, 1.0 )), coordMin, 1.0);',
-         '   float distance = distance(coord, u_LightPos);',
 
-         // 광원
-         '   vec3 view = normalize(vec3(test_coord, 1.0) - u_LightPos);',
-         '   vec3 lightVector = normalize(coord - u_LightPos);',
+      '   gl_FragColor = texture2D(uSampler, test_coord + test_offset) * diffuse;',
 
-         // 회전 행렬 (벡터)
-         '   float s = sin(angle);',
-         '   float c = cos(angle);',
-         '   coord.x = offset.x * c - offset.y * s;',
-         '   coord.y = offset.x * s + offset.y * c;',
+      // Tone 옵션
+      '   if (length(lightVector) > 0.5) {',
+         ' gl_FragColor.rgb = gl_FragColor.rgb * v_tone.rgb;',
+      '   }',
 
-         // 입사광 벡터와 법선 벡터 사이의 각도
-         '   diffuse = clamp(dot(-view, coord), 0.5, brightness);',
+      '}'
+    ].join('\n');
 
-         // 거리 비율을 적용합니다 (비율 계산)
-         '   diffuse = diffuse * 1.0 / (1.0 + (0.1 * distance ));',
+    PIXI.Filter.call( this, vertexSrc , fragmentSrc);
 
-         // 밝기를 항상 30% 으로 설정합니다.
-         '   diffuse = diffuse + 0.3;',
+    this.uniforms.u_LightPos = {x: 1.0 , y: 1.0, z: 1.0};
+    this.uniforms.brightness = 1.0;
+    this.uniforms.tight = 8.0;
+    this.uniforms.offset = {x: 0.5, y: 0.5};
+    this.uniforms.angle = 5.0;
+    this.uniforms.radius = 0.3;
+    this.uniforms.coordMin = f_CoordMin;
+    this.uniforms.v_tone = [1.0, 1.0, 1.0];
 
-         // 0.0 이하면 오류가 날 수 있으므로 조건문 처리
-         '   if(diffuse > 0.0) {',
-         '     diffuse = pow(diffuse, tight);',
-         '   }',
-
-         //======================================================================
-
-       '   gl_FragColor = texture2D(uSampler, test_coord + test_offset) * diffuse;',
-
-       // Tone 옵션
-       '   if (length(lightVector) > 0.5) {',
-      //  '     gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(gl_FragColor.r * 0.2126 + gl_FragColor.g * 0.7152 + gl_FragColor.b * 0.0722), 1.0);',
-
-          ' gl_FragColor.rgb = gl_FragColor.rgb * v_tone.rgb;',
-       '   }',
-
-       '}'
-     ];
+    this.glShaderKey = 'SimpleLight';
 
   };
 
-  PIXI.SimpleLightFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
+  PIXI.SimpleLightFilter.prototype = Object.create( PIXI.Filter.prototype );
   PIXI.SimpleLightFilter.prototype.constructor = PIXI.SimpleLightFilter;
 
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'positionX', {
+  PIXI.SimpleLightFilter.prototype.apply = function (filterManager, input, output, clear)
+  {
+      PIXI.filterManager.applyFilter(this, input, output, clear);
+  };
+
+  Object.defineProperties(PIXI.SimpleLightFilter.prototype, {
+    positionX: {
       get: function() {
-          return this.uniforms.u_LightPos.value.x;
+          return this.uniforms.u_LightPos.x;
       },
       set: function(value) {
-        this.dirty = true;
-        this.uniforms.u_LightPos.value.x = value * 1.0;
+        this.uniforms.u_LightPos.x = value * 1.0;
       }
-  });
-
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'positionY', {
+    },
+    positionY: {
       get: function() {
-          return this.uniforms.u_LightPos.value.y;
+          return this.uniforms.u_LightPos.y;
       },
       set: function(value) {
-        this.dirty = true;
-        this.uniforms.u_LightPos.value.y = value * 1.0;
+        this.uniforms.u_LightPos.y = value * 1.0;
       }
-  });
-
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'positionZ', {
+    },
+    positionZ: {
       get: function() {
-          return this.uniforms.u_LightPos.value.z;
+          return this.uniforms.u_LightPos.z;
       },
       set: function(value) {
-        this.dirty = true;
-        this.uniforms.u_LightPos.value.z = value * 1.0;
+        this.uniforms.u_LightPos.z = value * 1.0;
       }
-  });
-
-  // The brightness of the light
-  // 기본값이 제일 적절한 값입니다.
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'brightness', {
+    },
+    brightness: {
       get: function() {
-          return this.uniforms.brightness.value;
+          return this.uniforms.brightness;
       },
       set: function(value) {
-          this.dirty = true;
-          this.uniforms.brightness.value = value * 1.0;
+          this.uniforms.brightness = value * 1.0;
       }
-  });
-
-  // Range of Light
-  // 값이 높을 수록 광도가 올라가지만 주변이 어두워지면서 잘 보이지 않게 됩니다.
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'tight', {
+    },
+    tight: {
       get: function() {
-          return this.uniforms.tight.value;
+          return this.uniforms.tight;
       },
       set: function(value) {
-          this.dirty = true;
-          this.uniforms.tight.value = value * 1.0;
+          this.uniforms.tight = value * 1.0;
       }
-  });
-
-  // Offset
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'offset', {
+    },
+    offset: {
       get: function() {
-          return this.uniforms.offset.value;
+          return this.uniforms.offset;
       },
       set: function(value) {
-          this.dirty = true;
-          this.uniforms.offset.value = value;
+          this.uniforms.offset = value;
       }
-  });
-
-  // Offset
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'angle', {
+    },
+    angle: {
       get: function() {
-          return this.uniforms.angle.value;
+          return this.uniforms.angle;
       },
       set: function(value) {
-          this.dirty = true;
-          this.uniforms.angle.value = value;
+          this.uniforms.angle = value;
       }
-  });
-
-  // Tone
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'v_tone', {
+    },
+    v_tone: {
       get: function() {
-          return this.uniforms.v_tone.value;
+          return this.uniforms.v_tone;
       },
       set: function(value) {
-          this.dirty = true;
-          this.uniforms.v_tone.value = value;
+          this.uniforms.v_tone = value;
       }
+    }
   });
-
-}
 
   //-----------------------------------------------------------------------------
   // RS.LightConfig
