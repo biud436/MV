@@ -1,11 +1,15 @@
 # encoding: UTF-8
 
-#=======================================================
+#===================================================================
+# Github 
 # RM-Gosu - https://github.com/CaptainJet/RM-Gosu
 # LibGDX + Ruboto - http://github.com/ashes999/terrace
-#======================================== ==============
-
-# Dir["#{root_directory}/**/*.{rb}"].each {|a| require_relative(a) }
+#===================================================================
+# Reference
+# LibGDX API - https://libgdx.badlogicgames.com/nightlies/docs/api/
+# LibGDX Wiki - https://github.com/libgdx/libgdx/wiki
+# JRuby - https://github.com/jruby/jruby/wiki/CallingJavaFromJRuby
+#===================================================================
 
 java_import com.badlogic.gdx.ApplicationAdapter
 java_import com.badlogic.gdx.Gdx
@@ -15,17 +19,17 @@ java_import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 class MainGame < ApplicationAdapter
 
-	def create
-		@batch = SpriteBatch.new
-		@img = Texture.new("badlogic.jpg");
+  def create
+    @batch = SpriteBatch.new
+    @img = Texture.new("badlogic.jpg");
     Graphics.clear_sprites()
-	end
+  end
 
-	def render
-		Gdx.gl.glClearColor(0, 0.25, 0.5, 1)
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-		@batch.begin
-		@batch.draw(@img, 32, 64)
+  def render
+    Gdx.gl.glClearColor(0, 0.25, 0.5, 1)
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    @batch.begin
+    @batch.draw(@img, 32, 64)
     
     Gdx.gl.glEnable(GL20.GL_BLEND)
     
@@ -35,8 +39,8 @@ class MainGame < ApplicationAdapter
     
     Gdx.gl.glDisable(GL20.GL_BLEND)        
 
-		@batch.end
-	end
+    @batch.end
+  end
 
   def key_down(key_code)
     Input.add_key(key_code)
@@ -272,16 +276,16 @@ module Graphics
     # @latest = @current if !@frozen
 
     Gdx.gl.glClearColor(0, 0.25, 0.5, 1)
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-		@batch.begin
-		@batch.draw(@img, 32, 64)
+    @batch.begin
+    @batch.draw(@img, 32, 64)
 
     @@sprites.each do |i|
       @batch.draw(i, i.x, i.y, i.ox, i.oy, i.width, i.height, i.scale_x, i.scale_y, i.rotation)
     end
 
-		@batch.end
+    @batch.end
 
   end
 
