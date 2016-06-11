@@ -15,6 +15,10 @@
 
 require 'native'
 
+Crafty = native('Crafty')
+PIXI = native('PIXI')
+$console = Native(`console`)
+
 #================================================
 # ** Audio
 # This class is executed the AudioManager of JGSS.
@@ -22,7 +26,7 @@ require 'native'
 module Audio
 
   # This statement gets a console object of JGSS.
-  $console = Native(`console`)
+
 
   module_function
 
@@ -112,6 +116,73 @@ module Audio
   end
   def se_stop
     `AudioManager.stopSe();`
+  end
+
+end
+
+#================================================
+# ** AudioTest
+#
+#================================================
+
+require 'JSON'
+
+# RGSS Built-in Modules
+module AudioTest
+
+  extend self
+
+  def setup_midi
+  end
+
+  def bgm_play(filename, volume = 100, pitch = 100 , pos = 0)
+
+    assets = {"audio" => {filename => "#{filename}.ogg"}}.to_json
+    looping = -1
+    volume = volume / 100
+    Crafty.audio.play(filename, looping, volume)
+
+    %x{
+      var assetsObj = {"audio": {#{filename}: "#{filename}.ogg"}};
+      Crafty.load(assetsObj,
+          function() { // when preload
+              Crafty.audio.play("#{filename}", #{looping}, #{volume});
+          },
+          function(e) { //progress
+          },
+          function(e) { //uh oh, error loading
+          }
+      );
+    }
+
+  end
+
+  def bgm_stop
+  end
+
+  def bgm_fade(time)
+  end
+
+  def bgm_pos
+  end
+
+  def bgs_play(filename, volume = 100, pitch = 100, pos = 0)
+  end
+  def bgs_stop
+  end
+  def bgs_fade(time)
+  end
+  def bgs_pos
+  end
+
+  def me_play(filename, volume = 100, pitch = 100)
+  end
+  def me_stop
+  end
+
+  def se_play(filename, volume = 100, pitch = 100)
+  end
+  def se_stop
   end
 
 end
