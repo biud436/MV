@@ -10,7 +10,6 @@
     var url = 'ruby/app.rb';
     var w = WEBRUBY();
     xhr.open('GET', url);
-    xhr.overrideMimeType('text');
     xhr.onload = function() {
         if (xhr.status < 400) {
             w.run_source(xhr.responseText);
@@ -18,7 +17,7 @@
         }
     };
     xhr.send();
-  
+
     </script>
 
   </head>
