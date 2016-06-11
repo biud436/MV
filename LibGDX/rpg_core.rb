@@ -3,7 +3,7 @@
 #===================================================================
 # Github 
 # RM-Gosu - https://github.com/CaptainJet/RM-Gosu
-# LibGDX + Ruboto - http://github.com/ashes999/terrace
+# LibGDX + Ruboto Core - http://github.com/ashes999/terrace
 #===================================================================
 # Reference
 # LibGDX API - https://libgdx.badlogicgames.com/nightlies/docs/api/
