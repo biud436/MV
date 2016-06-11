@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title></title>
     <script src="webruby.js" charset="utf-8"></script>
-  	<script>
+    <script>
 
     var xhr = new XMLHttpRequest();
     var url = 'ruby/app.rb';
@@ -14,12 +14,12 @@
     xhr.onload = function() {
         if (xhr.status < 400) {
             w.run_source(xhr.responseText);
-			w.close();
+            w.close();
         }
     };
     xhr.send();
-	
-  	</script>
+  
+    </script>
 
   </head>
   <body>
