@@ -1,11 +1,11 @@
 /*:
- * Imported.RS_MultipleViewport.js
+ * Imported.RS_MultipleViewports.js
  * @plugindesc This plugin provides Multiple Viewport (WebGL only)
  * @author biud436
  */
 
 var Imported = Imported || {};
-Imported.RS_MultipleViewport = true;
+Imported.RS_MultipleViewports = true;
 
 (function () {
 
