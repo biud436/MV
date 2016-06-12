@@ -9,6 +9,8 @@ Imported.RS_MultipleViewport = true;
 
 (function () {
 
+  if(PIXI.VERSION !== 'v2.2.9') return false;
+
   /**
    * Renders the stage to its webGL view
    *
