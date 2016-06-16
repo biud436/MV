@@ -308,16 +308,16 @@ RS.LightConfig = RS.LightConfig || {};
 
       switch(light_owner.direction()) {
         case 2:
-          this._simpleLightFilter.angle = (Math.PI / 180) * (135.0 - 90.0);
+          this._simpleLightFilter.angle = (Math.PI / 180) * (45.0);
           break;
         case 4:
-          this._simpleLightFilter.angle = (Math.PI / 180) * (135.0 - 180.0);
+          this._simpleLightFilter.angle = (Math.PI / 180) * (-45.0);
           break;
         case 6:
-          this._simpleLightFilter.angle =  (Math.PI / 180) * (135.0 - 0.0);
+          this._simpleLightFilter.angle =  (Math.PI / 180) * (0.0);
           break;
         case 8:
-          this._simpleLightFilter.angle = (Math.PI / 180) * (135.0 - 270.0);
+          this._simpleLightFilter.angle = (Math.PI / 180) * (135.0);
           break;
       }
 
