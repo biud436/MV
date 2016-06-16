@@ -1,6 +1,6 @@
 /*:
  * RS_ChineseMessageSystem.js
- * @plugindesc Chinese Message System (v1.0, 2016.03.11)
+ * @plugindesc Chinese Message System (v1.0.1, 2016.04.11)
  * This plugin provides Chinese text code to the Message System.
  * @author biud436
  *
@@ -299,6 +299,8 @@
  * Yellow
  * YellowGreen
  *
+ * - Change Log
+ * 2016.04.11 (v1.0.1) - Fixed a range of the CJK Unified Ideographs. (between 一[19968] and 鼣[40739])
  */
 var Imported = Imported || {};
 Imported.RS_ChineseMessageSystem = true;
@@ -566,7 +568,7 @@ var Color = Color || {};
    */
   Window_Base.prototype.obtainEscapeCode = function(textState) {
       textState.index++;
-      var regExp = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[一-拿]+[!]*/iu;
+      var regExp = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[一-鼣]+[!]*/i;
       var arr = regExp.exec(textState.text.slice(textState.index));
       if (arr) {
           textState.index += arr[0].length;

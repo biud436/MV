@@ -54,6 +54,7 @@
  * - Change Log
  * 2016.10.31 (v1.0.0) - First Release.
  * 2016.03.04 (v1.0.1) - Added the comments for include used files.
+ * 2016.05.05 (v1.0.2) - Fixed a bug that the text does not change.
  */
 
 var Imported = Imported || {};
@@ -214,10 +215,11 @@ function HUD() {
     text._tmp = strFunc;
     text._log = strFunc.call(this);
     text.update = function() {
-      if(this._tmp.call(this) != this._log) {
+      if(this._tmp.call(this) !== this._log) {
         this.bitmap.clear();
         this.bitmap.fontSize = 12;
         this.bitmap.drawText(this._tmp.call(this), 0, 0, 120, 20, 'center');
+        text._log = strFunc.call(this);
       }
     };
 
@@ -298,7 +300,7 @@ function HUD() {
       set: function(value) {
           this.children.forEach( function(i) {
             i.visible = value;
-          }.bind(this));
+          }, this);
           RS.HUD.show = value;
       },
   });
@@ -310,7 +312,7 @@ function HUD() {
       set: function(value) {
           this.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
-          }.bind(this));
+          }, this);
           RS.HUD.opacity = value.clamp(0, 255);
       },
   });

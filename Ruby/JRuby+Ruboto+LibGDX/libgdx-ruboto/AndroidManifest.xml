@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<manifest package='com.terrace.libgdx' android:versionCode='1' android:versionName='1.0' xmlns:android='http://schemas.android.com/apk/res/android'>
+    <application android:hardwareAccelerated='true' android:icon='@drawable/ic_launcher' android:label='@string/app_name' android:largeHeap='true'>
+        <activity android:label='@string/app_name' android:name='LibgdxActivity'>
+            <intent-filter>
+                <action android:name='android.intent.action.MAIN'/>
+                <category android:name='android.intent.category.LAUNCHER'/>
+            </intent-filter>
+        </activity>
+        <activity android:exported='false' android:name='com.terrace.libgdx.android.AndroidLauncher' android:screenOrientation="landscape"/>
+
+        <!-- Ruboto activities -->
+        <activity android:exported='false' android:name='org.ruboto.RubotoActivity'/>
+        <activity android:configChanges='orientation|screenSize' android:exported='false' android:name='org.ruboto.SplashActivity' android:noHistory='true'/>
+        <activity android:exported='false' android:name='org.ruboto.RubotoDialog' android:theme='@android:style/Theme.Dialog'/>
+        <service android:exported='false' android:name='org.ruboto.RubotoService'/>
+    </application>
+    <uses-sdk android:minSdkVersion='16' android:targetSdkVersion='16'/>
+</manifest>

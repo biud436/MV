@@ -42,11 +42,14 @@ RS.LightConfig = RS.LightConfig || {};
 
   var parameters = PluginManager.parameters('RS_SimpleLight');
   var f_CoordMin = Number(parameters['coord normalize min'] || 0.4 );
+  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION === "1.3.0");
 
   //-----------------------------------------------------------------------------
   // SimpleLightFilter
   //
   // This class creates a light by utilizing a Vertex Shader and Fragment Shader.
+
+if(!isFilterPIXI4) {
 
   PIXI.SimpleLightFilter = function()
   {
@@ -228,6 +231,8 @@ RS.LightConfig = RS.LightConfig || {};
           this.uniforms.v_tone.value = value;
       }
   });
+
+}
 
   //-----------------------------------------------------------------------------
   // RS.LightConfig

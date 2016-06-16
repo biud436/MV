@@ -41,6 +41,7 @@
  * 2016.03.07 (v1.0.0) - First Release
  * 2016.03.22 (v1.0.1) - The simple light plugin was not compatible
  * with this plugin, But Fixed it.
+ * 2016.04.24 (v1.0.2) - Fixed a bug
  */
 
 var Imported = Imported || {};
@@ -190,7 +191,7 @@ Imported.RS_ItemStream = true;
   // 세이브 파일 불러오기
   Stream.loadGameWithoutRescue = function(savefileId) {
       try {
-          if(savefileId === Stream.RECEIVER &&
+          if(savefileId === Stream.RECEIVER ||
              savefileId === Stream.SENDER) {
             return {'header': "", "contents": {'party': $gameParty}};
           }
@@ -369,6 +370,6 @@ Imported.RS_ItemStream = true;
         break;
       }
     }
-  }
+  };
 
 })();

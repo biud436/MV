@@ -40,7 +40,7 @@
  */
 
 var Imported = Imported || {};
-Imported.Scene_RotateTitle = true; 
+Imported.Scene_RotateTitle = true;
 
 
 /**
@@ -207,7 +207,7 @@ var RS = RS || {};
           i.scale.set(1.0,1.0);
           i.tint = 0xFFFFFF;
       }
-    }.bind(this));
+    }, this);
 
   };
 

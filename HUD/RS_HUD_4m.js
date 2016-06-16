@@ -1,7 +1,7 @@
 /*:
  * RS_HUD_4m.js
  * @plugindesc This plugin draws the HUD, which displays the hp and mp and exp
- * and level of each party members. (v1.0.3)
+ * and level of each party members. (v1.0.7)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -13,7 +13,7 @@
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.0.3
+ * @version 1.0.6
  *
  * @param Width
  * @desc Width
@@ -59,8 +59,12 @@
  * (If you do not set this parameter, It can cause errors in the game.)
  * @default ['Actor1', 'Actor2', 'Actor3']
  *
+ * @param Battle Only
+ * @desc
+ * @default false
+ *
  * @help
- * Download the resources and place them in your img/pictures folder. 
+ * Download the resources and place them in your img/pictures folder.
  * All the resources can download in the following link.
  * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
  *
@@ -92,18 +96,21 @@
  * 2016.02.24 (v1.0.1) - Added the Plugin Command.
  * 2016.03.04 (v1.0.2) - Added the comments for include used files.
  * 2016.03.18 (v1.0.3) - Added the parameter called 'Arrangement'
+ * 2016.03.26 (v1.0.4) - Fixed a bug that the HUD is always displayed regardless
+ * of the setting whenever transferring the player to the other map.
+ * 2016.05.05 (v1.0.5) - Fixed a bug that the text does not change.
+ * 2016.05.17 (v1.0.6) - Fixed a structure of the class.
+ * 2016.05.21 (v1.0.7) - Added the plugin parameter that can be able to display
+ * the plugin in battle mode only.
+ * 2016.05.21 (v1.0.8) - Fixed a bug of the opacity.
  */
 
 var Imported = Imported || {};
 Imported.RS_HUD_4m = true;
 
-var $gameHud = null
+var $gameHud = null;
 var RS = RS || {};
 
-/**
- * @class HUD
- * @extends PIXI.Stage
- */
 (function() {
 
   var parameters = PluginManager.parameters('RS_HUD_4m');
@@ -116,82 +123,134 @@ var RS = RS || {};
   var szAnchor = String(parameters['Anchor'] || "LeftTop");
   var arrangement = eval(parameters['Arrangement']);
   var preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
+  var battleOnly = Boolean(parameters['Battle Only'] === "true");
 
+  //----------------------------------------------------------------------------
+  // Game_System ($gameSystem)
+  //
+  //
+  var _alias_Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function() {
+    _alias_Game_System_initialize.call(this);
+    this._rs_hud = this._rs_hud || {};
+    this._rs_hud.show = this._rs_hud.show || bShow;
+    this._rs_hud.opacity = this._rs_hud.opacity || nOpacity;
+  }
+
+  //----------------------------------------------------------------------------
+  // HUD
+  //
+  //
   function HUD() {
     this.initialize.apply(this, arguments);
   };
 
-  function HUDFactory(stage) {
-    this.stage = stage;
-    this.drawAllHud = function() {
-      var items = arrangement;
-      if(this.stage.children.length > 0) {
-        this.stage.removeChildren(0, this.stage.children.length);
-      }
-      items.forEach(function(item, index){
-        if(!!$gameParty.members()[index]) {
-          this.stage.addChild(new HUD({szAnchor: item, nIndex: index}));
-        }
-      }.bind(this));
-      this.sort();
-    }
-    this.sort = function() {
-      var array = this.stage.children;
-      this.stage.children = array.sort(function(a, b) {
-        return a._memberIndex - b._memberIndex;
-      });
-    }
-    this.refresh = function() {
-      var self = this.stage;
-      this.stage.children.forEach(function(i) {
-          this.stage.removeChild(i);
-      }.bind(this));
-      this.drawAllHud();
-    }
-    this.remove = function(index) {
-      setTimeout(function() {
-        while($gameParty.size() !== this.stage.children.length) {
-          this.drawAllHud();
-        }
-      }.bind(this), 0);
-    }
+  //----------------------------------------------------------------------------
+  // RS_HudLayer
+  //
+  //
+  function RS_HudLayer() {
+    this.initialize.apply(this, arguments);
   };
 
-  Object.defineProperty(HUDFactory.prototype, 'show', {
+  RS_HudLayer.prototype = Object.create(Sprite.prototype);
+  RS_HudLayer.prototype.constructor = RS_HudLayer;
+
+  RS_HudLayer.prototype.initialize = function(bitmap) {
+    Sprite.prototype.initialize.call(this, bitmap);
+    this.createItemLayer();
+  };
+
+  RS_HudLayer.prototype.createItemLayer = function () {
+    this._items = new Sprite();
+    this._items.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    this.addChild(this._items);
+  };
+
+  RS_HudLayer.prototype.update = function() {
+    Sprite.prototype.update.call(this);
+  };
+
+  RS_HudLayer.prototype.drawAllHud = function() {
+    var allHud = this._items;
+    var items = arrangement;
+
+    if(allHud.children.length > 0) {
+      allHud.removeChildren(0, allHud.children.length);
+    }
+
+    items.forEach(function(item, index){
+      if(!!$gameParty.members()[index]) {
+        allHud.addChild(new HUD({szAnchor: item, nIndex: index}));
+      }
+    }, this);
+
+    this.sort();
+
+    this.show = $gameSystem._rs_hud.show;
+    this.opacity = $gameSystem._rs_hud.opacity;
+
+  };
+
+  RS_HudLayer.prototype.sort = function() {
+    var allHud = this._items;
+    var array = allHud.children;
+    allHud.children = array.sort(function(a, b) {
+      return a._memberIndex - b._memberIndex;
+    });
+  }
+
+  RS_HudLayer.prototype.refresh = function() {
+    var allHud = this._items;
+    allHud.children.forEach(function(i) {
+        allHud.removeChild(i);
+    }, this);
+    this.drawAllHud();
+    this.show = $gameSystem._rs_hud.show;
+  }
+
+  RS_HudLayer.prototype.remove = function(index) {
+    setTimeout(function() {
+      while($gameParty.size() !== this._items.children.length) {
+        this.drawAllHud();
+      }
+    }.bind(this), 0);
+  };
+
+  Object.defineProperty(RS_HudLayer.prototype, 'show', {
       get: function() {
-          return this.stage.children[0].show;
+          return this._items.children[0].show;
       },
       set: function(value) {
-          this.stage.children.forEach( function(i) {
+          this._items.children.forEach( function(i) {
             i.visible = value;
-          }.bind(this));
-          RS.HUD.show = value;
+          }, this);
+          $gameSystem._rs_hud.show = value;
       },
   });
 
-  Object.defineProperty(HUDFactory.prototype, 'opacity', {
+  Object.defineProperty(RS_HudLayer.prototype, 'opacity', {
       get: function() {
-          return this.stage.children[0].opacity;
+          return this._items.children[0].opacity;
       },
       set: function(value) {
-          this.stage.children.forEach( function(i) {
+          this._items.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
-          }.bind(this));
-          RS.HUD.opacity = value.clamp(0, 255);
+          }, this);
+          $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
   });
 
-
-  RS.HUD = RS.HUD || {};
-  RS.HUD.show = RS.HUD.show || bShow;
-  RS.HUD.opacity = RS.HUD.opacity || nOpacity;
-  RS.HUD.x = RS.HUD.x || 0;
-  RS.HUD.y = RS.HUD.y || 0;
-
-  HUD.prototype = new PIXI.Stage();
+  //----------------------------------------------------------------------------
+  // HUD
+  //
+  //
+  HUD.prototype = Object.create(Stage.prototype);
+  HUD.prototype.constructor = HUD;
 
   HUD.prototype.initialize = function(config) {
       Stage.prototype.initialize.call(this);
+      this.visible = false;
       this.createHud();
       this.setAnchor(config.szAnchor || "LeftBottom");
       this.setMemberIndex(parseInt(config.nIndex) || 0);
@@ -277,7 +336,6 @@ var RS = RS || {};
       sprite.bitmap.drawClippingImageNonBlur(this._faceBitmap, 0, 0, sx, sy);
     }
 
-
     this._face = sprite;
     this.addChild(this._face);
   };
@@ -320,10 +378,11 @@ var RS = RS || {};
     text._tmp = strFunc;
     text._log = strFunc.call(this);
     text.update = function() {
-      if(this._tmp.call(this) != this._log) {
+      if(this._tmp.call(this) !== this._log) {
         this.bitmap.clear();
         this.bitmap.fontSize = 12;
         this.bitmap.drawText(this._tmp.call(this), 0, 0, 120, 20, 'center');
+        text._log = strFunc.call(this);
       }
     };
 
@@ -415,73 +474,99 @@ var RS = RS || {};
 
   Object.defineProperty(HUD.prototype, 'show', {
       get: function() {
-          return RS.HUD.show;
+          return $gameSystem._rs_hud.show;
       },
       set: function(value) {
           this.children.forEach( function(i) {
             i.visible = value;
-          }.bind(this));
-          RS.HUD.show = value;
+          }, this);
+          $gameSystem._rs_hud.show = value;
       },
   });
 
   Object.defineProperty(HUD.prototype, 'opacity', {
       get: function() {
-          return RS.HUD.opacity;
+          return $gameSystem._rs_hud.opacity;
       },
       set: function(value) {
           this.children.forEach( function(i) {
             i.opacity = value.clamp(0, 255);
-          }.bind(this));
-          RS.HUD.opacity = value.clamp(0, 255);
+          }, this);
+          $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
   });
 
-  /*** @alias Scene_Map.prorotype.start */
+  //----------------------------------------------------------------------------
+  // Scene_Map
+  //
+  //
   var _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
     _Scene_Map_createDisplayObjects.call(this);
+    if(!battleOnly) {
+      this._hudLayer = new RS_HudLayer();
+      this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
-    this._hudLayer = new Sprite();
-    this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+      $gameHud = this._hudLayer;
+      this._hudLayer.drawAllHud();
 
-    $gameHud = $gameHud || new HUDFactory(this._hudLayer);
-    $gameHud.drawAllHud();
-
-    this.addChild(this._hudLayer);
-    this.swapChildren(this._windowLayer, this._hudLayer);
+      this.addChild(this._hudLayer);
+      this.swapChildren(this._windowLayer, this._hudLayer);
+    }
   };
 
-  /*** @alias Scene_Map.prorotype.terminate */
   var _Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    this.removeChild(this._hudLayer);
-    $gameHud = null;
+    if(!battleOnly) {
+      this.removeChild(this._hudLayer);
+      $gameHud = null;
+    }
     _Scene_Map_terminate.call(this);
   };
 
+  //----------------------------------------------------------------------------
+  // Game_Party
+  //
+  //
   var _Game_Party_addActor = Game_Party.prototype.addActor;
   Game_Party.prototype.addActor = function(actorId) {
     _Game_Party_addActor.call(this, actorId);
-    if(!!$gameHud.refresh) {
-      $gameHud.refresh();
+    try {
+      if(!!$gameHud.refresh) {
+        $gameHud.refresh();
+      }
+    } catch(e) {
+
     }
+
   };
 
   var _Game_Party_removeActor = Game_Party.prototype.removeActor;
   Game_Party.prototype.removeActor = function(actorId) {
-    $gameHud.remove(actorId);
-    _Game_Party_removeActor.call(this, actorId);
+    try {
+        $gameHud.remove(actorId);
+        _Game_Party_removeActor.call(this, actorId);
+    } catch(e) {
+
+    }
   };
 
+  //----------------------------------------------------------------------------
+  // Scene_Boot
+  //
+  //
   var _Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
   Scene_Boot.prototype.loadSystemImages = function() {
     _Scene_Boot_loadSystemImages.call(this);
     preloadImportantFaces.forEach(function(i) {
       ImageManager.loadFace(i);
-    }.bind(this));
+    }, this);
   }
 
+  //----------------------------------------------------------------------------
+  // Game_Interpreter
+  //
+  //
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
       alias_Game_Interpreter_pluginCommand.call(this, command, args);
@@ -496,5 +581,8 @@ var RS = RS || {};
         }
       }
   };
+
+  window.HUD = HUD;
+  window.RS_HudLayer = RS_HudLayer;
 
 })();

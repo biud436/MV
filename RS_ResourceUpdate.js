@@ -96,7 +96,7 @@ RS.Net = RS.Net || {};
         this.downloadData(picPath, data, function() {
             console.log( Math.floor(((req++) / length) * 100));
         });
-      }.bind(this));
+      }, this);
     } catch(e) {
       console.log("다운로드 실패");
     }

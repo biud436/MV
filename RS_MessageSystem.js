@@ -1422,7 +1422,7 @@ Window_Message.prototype.updatePlacement = function() {
           return b.length - a.length;
       }.bind(this));
       var height = tempText.length * this.lineHeight() + this.standardPadding() * 2;
-      this._bWidth = this.textWidth(tempText[0]) + RS.__STD_PADDING * 2 || RS.__WIDTH;
+      this._bWidth = this.textWidth(tempText[0]) + this.standardPadding() * 2 || RS.__WIDTH;
       if($gameMessage.faceName() !== '') {
         var min = this.fittingHeight(4);
         this._bWidth += this.newLineX() + this.standardPadding() * 2;
@@ -1446,20 +1446,81 @@ Window_Message.prototype.updatePlacement = function() {
       // 말풍선 소유자의 화면 좌표
       var mx = $gameMap.getMsgOwner().screenX();
       var my = $gameMap.getMsgOwner().screenY();
+      var dx, dy, tileHeight;
 
       // 말풍선의 폭과 높이 범위 제한
-      this._bWidth = this._bWidth.clamp(RS.__WIDTH, Graphics.boxWidth - RS.__WIDTH);
-      this._bHeight = this._bHeight.clamp(RS.__HEIGHT, Graphics.boxHeight - RS.__HEIGHT);
+      // this._bWidth = this._bWidth.clamp(RS.__WIDTH, Graphics.boxWidth - RS.__WIDTH);
+      // this._bHeight = this._bHeight.clamp(RS.__HEIGHT, Graphics.boxHeight - RS.__HEIGHT);
+
+      dx =  mx - (this._bWidth / 2);
+      dy =  my - this._bHeight - $gameMap.tileHeight();
+      tileHeight = $gameMap.tileHeight();
+
+      if(mx - (this._bWidth / 2) <= 0) {
+        dx = 0;
+        // this._downArrowSprite.move(this._width, h-q);
+      }
+
+      if(mx - (this._bWidth / 2) >= Graphics.boxWidth - this._bWidth ) {
+        dx = Graphics.boxWidth - this._bWidth ;
+      }
+
+      if( (my - this._bHeight - tileHeight / 2) <= 0 ) {
+        dy = my + tileHeight / 2;
+      }
 
       // 말풍선 위치 및 크기 설정 (화면 내에 가두지 않습니다)
-      this.x =  mx - (this._bWidth / 2);
-      this.y =  my - this._bHeight - $gameMap.tileHeight();
+      this.x =  dx;
+      this.y =  dy;
       this.width = this._bWidth;
       this.height = this._bHeight;
 
       // 1프레임 대기
       this.startWait(1);
 
+  };
+
+  var alias_Window_Message_refreshPauseSign = Window_Message.prototype._refreshPauseSign;
+  Window_Message.prototype._refreshPauseSign = function() {
+
+    // -2 라면 이 함수를 처리하지 않습니다.
+    if($gameMessage.getBalloon() === -2) {
+        return alias_Window_Message_refreshPauseSign.call(this);
+    };
+
+      var sx = 144;
+      var sy = 96;
+      var p = 24;
+      this._windowPauseSignSprite.bitmap = this._windowskin;
+      this._windowPauseSignSprite.anchor.x = 0.5;
+      this._windowPauseSignSprite.anchor.y = 1;
+      this._windowPauseSignSprite.move(this._width / 2, this._height);
+      this._windowPauseSignSprite.setFrame(sx, sy, p, p);
+      this._windowPauseSignSprite.alpha = 0;
+
+  };
+
+  var alias_Window_Message_updatePauseSign = Window_Message.prototype._updatePauseSign;
+  Window_Message.prototype._updatePauseSign = function() {
+
+    // -2 라면 이 함수를 처리하지 않습니다.
+    if($gameMessage.getBalloon() === -2) {
+        return alias_Window_Message_updatePauseSign.call(this);
+    };
+
+      var sprite = this._windowPauseSignSprite;
+      var x = Math.floor(this._animationCount / 16) % 2;
+      var y = Math.floor(this._animationCount / 16 / 2) % 2;
+      var sx = 144;
+      var sy = 96;
+      var p = 24;
+      if (!this.pause) {
+          sprite.alpha = 0;
+      } else if (sprite.alpha < 1) {
+          sprite.alpha = Math.min(sprite.alpha + 0.1, 1);
+      }
+      sprite.setFrame(sx+x*p, sy+y*p, p, p);
+      sprite.visible = this.isOpen();
   };
 
    /**
