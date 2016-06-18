@@ -1,10 +1,11 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc 한글 메시지 시스템 (v0.0.9, 2016.03.21)
+ * @plugindesc 한글 메시지 시스템 (v0.1.0, 2016.06.18)
  * @author 러닝은빛(biud436)
  *-------------------------------------------------------------------------------
  * 버전 로그(Version Log)
  *-------------------------------------------------------------------------------
+ * 2016.06.18 (v0.1.0) - 이름 윈도우 후면에 스프라이트가 그려지지 않는 문제를 수정했습니다.
  * 2016.03.21 (v0.0.9) - \t (탭), \r (캐리지 리턴) 추가
  * 2016.03.01 (v0.0.8) - 말풍선 모드에 페이스칩 표시, 플러그인 커맨드 및 버그 픽스
  * 2016.02.27 (v0.0.7) - 통화 서식 추가
@@ -1652,6 +1653,10 @@ Window_Message.prototype.updatePlacement = function() {
       var height = this.windowHeight();
       Window_Base.prototype.initialize.call(this, 0, 0, width, height);
       this.openness = 0;
+
+      // 스텐실 테스트를 거치지 않게 됩니다.
+      this._isWindow = false;
+
   };
 
   /**
