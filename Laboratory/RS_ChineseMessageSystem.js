@@ -1,6 +1,6 @@
 /*:
  * RS_ChineseMessageSystem.js
- * @plugindesc Chinese Message System (v1.0.1, 2016.04.11)
+ * @plugindesc Chinese Message System (v1.0.2, 2016.06.18)
  * This plugin provides Chinese text code to the Message System.
  * @author biud436
  *
@@ -301,6 +301,7 @@
  *
  * - Change Log
  * 2016.04.11 (v1.0.1) - Fixed a range of the CJK Unified Ideographs. (between 一[19968] and 鼣[40739])
+ * 2016.06.18 (v1.0.2) - Fixed a stencil test issue with RS.NameWindow.
  */
 var Imported = Imported || {};
 Imported.RS_ChineseMessageSystem = true;
@@ -1571,6 +1572,7 @@ Window_Message.prototype.updatePlacement = function() {
       var height = this.windowHeight();
       Window_Base.prototype.initialize.call(this, 0, 0, width, height);
       this.openness = 0;
+      this._isWindow = false;
   };
 
   /**
