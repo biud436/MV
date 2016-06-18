@@ -4,53 +4,53 @@
  * you to type in korean or other native language in the Name Input Proccessing
  * @author biud436
  * @since 2015.10.19
- * @version 1.5 (2015.04.05)
+ * @version 1.6.0 (2016.06.18)
  *
  * @param windowWidth
- * @desc 윈도우의 폭입니다
+ * @desc Number
  * @default 580
  *
  * @param windowCenter
- * @desc Y 좌표를 화면 중앙으로 설정합니다
+ * @desc Boolean
  * @default false
  *
  * @param editWindow_Opacity
- * @desc 투명도를 설정합니다 (0 ~ 255)
+ * @desc This value is opacity of a name edit window between 0 and 255.
  * @default 225
  *
  * @param askingText
- * @desc 화면에 띄울 텍스트를 기입하세요
+ * @desc
  * @default Please enter the name
  *
  * @param outlineWidth
- * @desc 테두리의 크기입니다
+ * @desc
  * @default 1
  *
  * @param outlineColor
- * @desc 테두리의 색상입니다
+ * @desc
  * @default black
  *
  * @param fontColor
- * @desc 폰트의 색상입니다
+ * @desc
  * @default white
  *
  * @param standardFontSize
- * @desc 기본 폰트 크기 (=28)
+ * @desc
  * @default 28
  *
+ * @param Chinese Fonts
+ * @desc
+ * @default SimHei, Heiti TC, sans-serif
+ *
+ * @param Korean Fonts
+ * @desc
+ * @default Dotum, AppleGothic, sans-serif
+ *
+ * @param Default Fonts
+ * @desc
+ * @default GameFont
+ *
  * @help
- *
- *  이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
- *
- * 한국어 명령어 (Korean)
- * KNE 폭 숫자
- * KNE 중앙정렬 true/false
- * KNE 테두리크기 숫자
- * KNE 테두리색상 문자열
- * KNE 폰트색상 문자열
- * KNE 폰트크기 숫자
- * KNE 투명도 숫자
- * KNE 텍스트 문자열
  *
  * This plugin provides following the pluginCommand below.
  *
@@ -63,15 +63,28 @@
  * KNE opacity number
  * KNE askText string
  *
+ * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
+ *
+ * 한국어 명령어 (Korean)
+ * KNE 폭 숫자
+ * KNE 중앙정렬 true/false
+ * KNE 테두리크기 숫자
+ * KNE 테두리색상 문자열
+ * KNE 폰트색상 문자열
+ * KNE 폰트크기 숫자
+ * KNE 투명도 숫자
+ * KNE 텍스트 문자열
+ *
  * - Change Log
  * 2016.03.05 (v1.3.3) - Fixed the class structure.
  * 2016.03.22 (v1.4.0) - Fixed a bug that causes a serious problem.
  * 2016.04.05 (v1.5.0) - Fixed a bug that causes to delete the text automatically
  * when you can type Hangul text of length less than 2.
+ * 2016.06.18 (v1.6.0) - Fixed the inheritance structure, and the parameter called 'askText'.
  */
 
- var Imported = Imported || {};
- Imported.Window_KorNameEdit = true;
+var Imported = Imported || {};
+Imported.Window_KorNameEdit = true;
 
 (function() {
 
@@ -97,9 +110,13 @@
   RSMatch.outlineColor = String(parameters['outlineColor'] || 'black');
   RSMatch.fontColor = String(parameters['fontColor'] || 'white');
   RSMatch.opacity = Number(parameters['editWindow_Opacity'] || 225);
-  RSMatch.askText = String(parameters['askingText'] || '이름을 기입해주세요');
+  RSMatch.askText = String(parameters['askingText'] || 'Please enter the name');
   RSMatch.standardFontSize = Number(parameters['standardFontSize'] || 28);
-
+  RSMatch.fonts = {
+    'ChineseFonts': parameters['Chinese Fonts'] || 'SimHei, Heiti TC, sans-serif',
+    'KoreanFonts': parameters['Korean Fonts'] || 'Dotum, AppleGothic, sans-serif',
+    'DefaultFonts': parameters['Default Fonts'] || 'GameFont',
+  };
   //===========================================================================
   // TextBox Class
   //===========================================================================
@@ -138,13 +155,6 @@
     this._textBox.style.bottom = 0;
 
     this._textBox.onkeydown = this.onKeyDown.bind(this);
-
-    // this._textBox.addEventListener("blur", function() {
-    //   console.log('[blur] Input field lost focus');
-    // });
-    // this._textBox.addEventListener("focusout", function() {
-    //   console.log('[focusout] Input field lost focus');
-    // });
 
     document.body.appendChild(this._textBox);
   };
@@ -213,18 +223,44 @@
   // Window_NameEdit Class
   //===========================================================================
 
-  Window_NameEdit.prototype.charWidth = function () {
-    var text = '\uAC00';
-    return this.textWidth(text)
+  function Window_KorNameEdit() {
+     this.initialize.apply(this, arguments);
+  }
+
+  Window_KorNameEdit.prototype = Object.create(Window_NameEdit.prototype);
+  Window_KorNameEdit.prototype.constructor = Window_KorNameEdit;
+
+  Window_KorNameEdit.prototype.initialize = function(actor, maxLength) {
+    Window_NameEdit.prototype.initialize.call(this, actor, maxLength);
   };
 
-  Window_NameEdit.prototype.drawActorFace = function(actor, x, y, width, height) {
+  Window_KorNameEdit.prototype.standardFontFace = function() {
+      if ($gameSystem.isChinese()) {
+          return RSMatch.fonts.ChineseFonts;
+      } else if ($gameSystem.isKorean()) {
+          return RSMatch.fonts.KoreanFonts;
+      } else {
+          return RSMatch.fonts.DefaultFonts;
+      }
+  };
+
+  Window_KorNameEdit.prototype.charWidth = function () {
+    var text = 'A';
+    if (navigator.language.match(/^zh/)) { // isChinese
+        text = '\u4E00';
+    } else if (navigator.language.match(/^ko/)) { // isKorean
+        text = '\uAC00';
+    }
+    return this.textWidth(text);
+  };
+
+  Window_KorNameEdit.prototype.drawActorFace = function(actor, x, y, width, height) {
       this.drawFace(actor.faceName(), actor.faceIndex(), x, y, width, height);
       this.changeTextColor(this.hpColor(actor));
       this.drawText(RSMatch.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
   };
 
-  Window_NameEdit.prototype.itemRect = function(index) {
+  Window_KorNameEdit.prototype.itemRect = function(index) {
       return {
           x: this.left() + index * this.charWidth(),
           y: this.fittingHeight(1),
@@ -233,11 +269,11 @@
       };
   };
 
-  Window_NameEdit.prototype.windowWidth = function () {
+  Window_KorNameEdit.prototype.windowWidth = function () {
     return RSMatch.windowWidth;
   };
 
-  Window_NameEdit.prototype.drawChar = function (index) {
+  Window_KorNameEdit.prototype.drawChar = function (index) {
     var rect = this.itemRect(index);
     this.resetTextColor();
     this.contents.outlineWidth = RSMatch.outlineWidth;
@@ -246,7 +282,7 @@
     this.drawText(this._name[index] || '', rect.x, rect.y)
   };
 
-  Window_NameEdit.prototype.standardFontSize = function() {
+  Window_KorNameEdit.prototype.standardFontSize = function() {
       return RSMatch.standardFontSize;
   };
 
@@ -254,7 +290,22 @@
   // Scene_Name Class
   //===========================================================================
 
-  Scene_Name.prototype.create = function () {
+  function Scene_KorName() {
+      this.initialize.apply(this, arguments);
+  }
+
+  Scene_KorName.prototype = Object.create(Scene_Name.prototype);
+  Scene_KorName.prototype.constructor = Scene_KorName;
+
+  Scene_KorName.prototype.initialize = function() {
+      Scene_Name.prototype.initialize.call(this);
+  };
+
+  Scene_KorName.prototype.update = function() {
+    Scene_Name.prototype.update.call(this);
+  }
+
+  Scene_KorName.prototype.create = function () {
     Scene_MenuBase.prototype.create.call(this);
     this._actor = $gameActors.actor(this._actorId);
     this.createEditWindow();
@@ -262,7 +313,12 @@
     this._textBox.setEvent( this.onInputOk.bind(this) );
   };
 
-  Scene_Name.prototype.createTextBox =  function() {
+  Scene_KorName.prototype.createEditWindow = function() {
+      this._editWindow = new Window_KorNameEdit(this._actor, this._maxLength);
+      this.addWindow(this._editWindow);
+  };
+
+  Scene_KorName.prototype.createTextBox =  function() {
     this._textBox = new TextBox(this._editWindow);
     if(RSMatch.windowCenter === "true") {
       this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
@@ -270,16 +326,31 @@
     this._editWindow.opacity = RSMatch.opacity;
   }
 
-  Scene_Name.prototype.update = function() {
+  Scene_KorName.prototype.update = function() {
     this._textBox.getFocus();
     this._textBox.update();
     Scene_MenuBase.prototype.update.call(this);
   }
 
-  Scene_Name.prototype.terminate = function() {
+  Scene_KorName.prototype.terminate = function() {
     Scene_MenuBase.prototype.terminate.call(this);
     this._textBox.terminate();
   }
+
+  //===========================================================================
+  // Game_Interpreter
+  //===========================================================================
+
+  // Name Input Processing
+  Game_Interpreter.prototype.command303 = function() {
+      if (!$gameParty.inBattle()) {
+          if ($dataActors[this._params[0]]) {
+              SceneManager.push(Scene_KorName);
+              SceneManager.prepareNextScene(this._params[0], this._params[1]);
+          }
+      }
+      return true;
+  };
 
   //===========================================================================
   // Game_Interpreter
