@@ -67,3 +67,5 @@ window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry)
     var isAppend = true;
     createFile(dirEntry, "fileToAppend.txt", isAppend);
 }, onErrorLoadFs);
+
+alert("loaded");
