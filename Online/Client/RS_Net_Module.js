@@ -88,6 +88,8 @@ function ChatBox() {
   // This is regular expression of the command that can change your nickname.
   RS.Net.nickCommand = eval(RS.Net.Params.REG1);
 
+  RS.Net.Users = [];
+
   //------------------------------------------------------------------------------
   // Game_Interpreter
   //
@@ -116,7 +118,7 @@ function ChatBox() {
   //
 
   // Download the script from the server.
-  this.loadScript = function(name) {
+  RS.Net.loadScript = function(name) {
       var url = "%1/%2".format(RS.Net.SERVER_IP, name);
       var script = document.createElement('script');
       script.type = 'text/javascript';
@@ -127,26 +129,26 @@ function ChatBox() {
   };
 
   // Download the script called 'JsonFormatter.js' from the server.
-  this.loadScript('JsonFormatter.js');
+  RS.Net.loadScript('JsonFormatter.js');
 
   // Get the number of connected users on the server.
-  this.userCount = function() {
+  RS.Net.userCount = function() {
     RS.Net.Socket.on('user count',function(msg) {
       console.log(msg);
     });
   };
 
   // Get the number of connected users on the server.
-  this.update = function() {
+  RS.Net.update = function() {
     RS.Net.Socket.emit('user count', '');
   };
 
-  this.count = 0;
-  this.cryptText = "";
-  this.cryptKey = "";
+  RS.Net.count = 0;
+  RS.Net.cryptText = "";
+  RS.Net.cryptKey = "";
 
   // Get the time of the server.
-  this.getTime = function() {
+  RS.Net.getTime = function() {
     RS.Net.Socket.emit('get time','');
     RS.Net.Socket.on('get time',function(msg) {
       console.log(msg);
@@ -154,17 +156,17 @@ function ChatBox() {
   };
 
   // Set the cipher key
-  this.setCryptKey = function() {
+  RS.Net.setCryptKey = function() {
     RS.Net.Socket.emit('get key', '');
   }
 
   // Request the cipher key.
-  this.setEncryption = function(msg) {
+  RS.Net.setEncryption = function(msg) {
     RS.Net.Socket.emit('crypt', msg);
   };
 
   // Get the coded message.
-  this.getCryptObject = function(msg) {
+  RS.Net.getCryptObject = function(msg) {
      return JSON.parse(this.cryptText);
   };
 
@@ -174,7 +176,7 @@ function ChatBox() {
 //
 
   // Prepare Element
-  this.prepareElement = function() {
+  RS.UI.prepareElement = function() {
     var divc = document.createElement('div');
     divc.id = 'inputField';
     divc.style.position = 'absolute';
@@ -190,7 +192,7 @@ function ChatBox() {
     return divc;
   };
 
-  this.createInputField = function(x, y, width, height) {
+  RS.UI.createInputField = function(x, y, width, height) {
     var element = document.createElement('input');
     element.id = 'input1';
     element.type = 'text';
@@ -205,7 +207,7 @@ function ChatBox() {
   };
 
   // Prepare Login Element
-  this.prepareLoginElement = function() {
+  RS.UI.prepareLoginElement = function() {
     var divc = document.createElement('div');
     divc.id = 'loginField';
     divc.style.zIndex = "1010";
@@ -228,13 +230,13 @@ function ChatBox() {
   };
 
   // Remove Login Element
-  this.removeLoginElement = function() {
+  RS.UI.removeLoginElement = function() {
     var divc = document.getElementById('loginField');
     document.body.removeChild(divc);
   };
 
   // Create <input> tag
-  this.addTextBox = function(yPosition) {
+  RS.UI.addTextBox = function(yPosition) {
     var rect, inp;
     rect = ChatBox.getEditBoxRect(yPosition);
     inp =document.getElementById('input1');
@@ -249,14 +251,14 @@ function ChatBox() {
   };
 
   // Orientation
-  this.getHeight = function() {
+  RS.UI.getHeight = function() {
     var vv = (window.innerHeight - Graphics.boxHeight), top;
     top = vv > 0 ? (vv / 2) : vv;
     return top;
   };
 
   // 윈도우의 크기가 달라졌을 때
-  this.resizeTextBox = function(yPosition) {
+  RS.UI.resizeTextBox = function(yPosition) {
 
     var inp, left;
     inp = document.getElementById('input1');
