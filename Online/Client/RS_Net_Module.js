@@ -88,7 +88,13 @@ function ChatBox() {
   // This is regular expression of the command that can change your nickname.
   RS.Net.nickCommand = eval(RS.Net.Params.REG1);
 
-  RS.Net.Users = [];
+  // Users
+  RS.Net.Users = {};
+
+  // Custom Parameters
+  RS.Net.Params.connectedUsersMSG1 = "현재 접속 인원은 ";
+  RS.Net.Params.connectedUsersMSG2 = " 명 입니다";
+  RS.Net.Params.noticeMSG = "\\c[4][공지]";
 
   //------------------------------------------------------------------------------
   // Game_Interpreter
@@ -450,7 +456,8 @@ function ChatBox() {
 
       // Get Current connected Users to the server.
       RS.Net.Socket.on('current user', function(msg) {
-        $gameMessage.addNotice("현재 접속 인원은 " + msg + " 명 입니다");
+        var param = RS.Net.Params;
+        $gameMessage.addNotice(param.connectedUsersMSG1 + msg + param.connectedUsersMSG2);
       });
 
       RS.Net.setCryptKey();
@@ -471,6 +478,7 @@ function ChatBox() {
       });
 
      RS.Net.count++;
+
     };
 
     // ------------------------------------------------------------------------
@@ -544,7 +552,7 @@ function ChatBox() {
 
   // Show the notification text.
   Game_Message.prototype.addNotice = function(text) {
-    var result = "\\c[4][공지] %1".format(text);
+    var result = RS.Net.Params.noticeMSG + " " + text;
     this._textList = this._textList || [];
     this._textList.push(result);
     setTimeout(function() {
