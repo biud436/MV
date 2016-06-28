@@ -28,6 +28,7 @@
  * 2015.11.24 - Added a function called '$gameMessage.addNotice()'
  * 2015.11.25 - Added functions that could download the login page from the Server.
  * 2016.05.10 - Added plugin parameters that could change the IP or Port of the Server.
+ * 2016.06.28 - Added the parameters.
  *
  * =============================================================================
  * Development Environment
@@ -366,6 +367,8 @@ function ChatBox() {
   Scene_Map.prototype.createDisplayObjects = function() {
     _Scene_Map_createDisplayObjects.call(this);
 
+    // You should always connected the internet
+    // because this function creates the chat box on the field at all times.
     this.createChatBox();
 
   };
