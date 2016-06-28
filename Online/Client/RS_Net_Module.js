@@ -53,11 +53,13 @@
 // Server URL
 
 var RS = RS || {};
-var RS.Net.SERVER_IP = undefined;
-var RS.Net.Socket = undefined;
 
 RS.UI = RS.UI || {};
 RS.Net = RS.Net || {};
+
+RS.Net.SERVER_IP = undefined;
+RS.Net.Socket = undefined;
+
 
 function ChatBox() {
   this.initialize.apply(this, arguments);
@@ -489,6 +491,9 @@ function ChatBox() {
 
     var _chatBox_update = this._chatBox.update;
     this._chatBox.update = function() {
+
+      var _color;
+
       _chatBox_update.call(this);
 
       if($gameMessage._textList && $gameMessage._textList instanceof Array) {
@@ -497,10 +502,10 @@ function ChatBox() {
         this.contents.clear();
 
         // Set the default color
-        var color = 'rgba(0, 0, 0, 0.6)';
+        _color = 'rgba(0, 0, 0, 0.6)';
 
         // Fill the contents to the default color
-        this.contents.fillAll(color);
+        this.contents.fillAll(_color);
 
         // Adding the Text on TextList
         $gameMessage._textList.forEach( function(nowText, index, array) {
