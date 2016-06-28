@@ -264,7 +264,7 @@ function ChatBox() {
     return top;
   };
 
-  // 윈도우의 크기가 달라졌을 때
+  // When you are resizing the window object, This function automatically starts.
   RS.UI.resizeTextBox = function(yPosition) {
 
     var inp, left;
