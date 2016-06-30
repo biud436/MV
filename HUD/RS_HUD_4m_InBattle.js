@@ -13,6 +13,10 @@
  * @author biud436
  * @version 1.1.1
  *
+ * @param Auto Windows Alignment
+ * @desc
+ * @default true
+ *
  * @help
  *
  * - Change Log
@@ -32,6 +36,7 @@ RS.HUD.param = RS.HUD.param || {};
 (function() {
 
   var parameters = PluginManager.parameters('RS_HUD_4m_InBattle');
+  var isWndsAlignment = Boolean(parameters['Auto Windows Alignment'] === 'true');
 
   var alias_HUD_initialize = HUD.prototype.initialize;
   HUD.prototype.initialize = function(config) {
@@ -202,11 +207,13 @@ RS.HUD.param = RS.HUD.param || {};
   var Scene_Battle_createAllWindows = Scene_Battle.prototype.createAllWindows;
   Scene_Battle.prototype.createAllWindows = function() {
     Scene_Battle_createAllWindows.call(this);
-    this._windowLayer.children.forEach(function (i) {
-      if( !(i === this._logWindow || i === this._helpWindow)) {
-        i.y = Graphics.boxHeight / 2 - i.height / 2;
-      }
-    }, this);
+    if(isWndsAlignment) {
+      this._windowLayer.children.forEach(function (i) {
+        if( !(i === this._logWindow || i === this._helpWindow)) {
+          i.y = Graphics.boxHeight / 2 - i.height / 2;
+        }
+      }, this);
+    }
   };
 
   //----------------------------------------------------------------------------
