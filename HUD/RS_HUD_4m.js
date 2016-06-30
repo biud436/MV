@@ -1,7 +1,7 @@
 /*:
  * RS_HUD_4m.js
  * @plugindesc This plugin draws the HUD, which displays the hp and mp and exp
- * and level of each party members. (v1.0.7)
+ * and level of each party members. (v1.0.9)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -13,7 +13,7 @@
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.0.6
+ * @version 1.0.9
  *
  * @param Width
  * @desc Width
@@ -54,7 +54,7 @@
  * @desc LeftTop, LeftBottom, RightTop, RightBottom
  * @default LeftTop
  *
- * @param preloadImportantFaces
+ * @param RS.HUD.param.preloadImportantFaces
  * @desc Allow you to pre-load the base face chips.
  * (If you do not set this parameter, It can cause errors in the game.)
  * @default ['Actor1', 'Actor2', 'Actor3']
@@ -63,13 +63,18 @@
  * @desc
  * @default false
  *
+ * @param Show Comma
+ * @desc Sets the value that indicates whether this parameter displays
+ * the values with commas every three digits.
+ * @default false
+ *
  * @help
  * Download the resources and place them in your img/pictures folder.
  * All the resources can download in the following link.
  * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
  *
  * In Plugin Manager,
- * You have to pre-load the resources using the parameter called 'preloadImportantFaces'.
+ * You have to pre-load the resources using the parameter called 'RS.HUD.param.preloadImportantFaces'.
  *
  * Demo Link : https://www.dropbox.com/s/v6prurtempabqqv/hud.zip?dl=0
  * Github Link : https://github.com/biud436/MV/blob/master/HUD/RS_HUD_4m.js
@@ -103,6 +108,7 @@
  * 2016.05.21 (v1.0.7) - Added the plugin parameter that can be able to display
  * the plugin in battle mode only.
  * 2016.05.21 (v1.0.8) - Fixed a bug of the opacity.
+ * 2016.06.30 (v1.0.9) - Added the parameter that displays the values with commas every three digits.
  */
 
 var Imported = Imported || {};
@@ -110,20 +116,23 @@ Imported.RS_HUD_4m = true;
 
 var $gameHud = null;
 var RS = RS || {};
+RS.HUD = RS.HUD || {};
+RS.HUD.param = RS.HUD.param || {};
 
 (function() {
 
   var parameters = PluginManager.parameters('RS_HUD_4m');
-  var nWidth = Number(parameters['Width'] || 317 );
-  var nHeight = Number(parameters['Height'] || 101 );
-  var nPD = Number(parameters['Margin'] || 0);
-  var blurProcessing = Boolean(parameters['Gaussian Blur'] ==="true");
-  var bShow = Boolean(parameters['Show'] ==="true");
-  var nOpacity = Number(parameters['Opacity'] || 255 );
-  var szAnchor = String(parameters['Anchor'] || "LeftTop");
-  var arrangement = eval(parameters['Arrangement']);
-  var preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
-  var battleOnly = Boolean(parameters['Battle Only'] === "true");
+  RS.HUD.param.nWidth = Number(parameters['Width'] || 317 );
+  RS.HUD.param.nHeight = Number(parameters['Height'] || 101 );
+  RS.HUD.param.nPD = Number(parameters['Margin'] || 0);
+  RS.HUD.param.blurProcessing = Boolean(parameters['Gaussian Blur'] === "true");
+  RS.HUD.param.bShow = Boolean(parameters['Show'] ==="true");
+  RS.HUD.param.nOpacity = Number(parameters['Opacity'] || 255 );
+  RS.HUD.param.szAnchor = String(parameters['Anchor'] || "LeftTop");
+  RS.HUD.param.arrangement = eval(parameters['Arrangement']);
+  RS.HUD.param.preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
+  RS.HUD.param.battleOnly = Boolean(parameters['Battle Only'] === "true");
+  RS.HUD.param.showComma = Boolean(parameters['Show Comma'] === 'true');
 
   //----------------------------------------------------------------------------
   // Game_System ($gameSystem)
@@ -133,8 +142,8 @@ var RS = RS || {};
   Game_System.prototype.initialize = function() {
     _alias_Game_System_initialize.call(this);
     this._rs_hud = this._rs_hud || {};
-    this._rs_hud.show = this._rs_hud.show || bShow;
-    this._rs_hud.opacity = this._rs_hud.opacity || nOpacity;
+    this._rs_hud.show = this._rs_hud.show || RS.HUD.param.bShow;
+    this._rs_hud.opacity = this._rs_hud.opacity || RS.HUD.param.nOpacity;
   }
 
   //----------------------------------------------------------------------------
@@ -173,7 +182,7 @@ var RS = RS || {};
 
   RS_HudLayer.prototype.drawAllHud = function() {
     var allHud = this._items;
-    var items = arrangement;
+    var items = RS.HUD.param.arrangement;
 
     if(allHud.children.length > 0) {
       allHud.removeChildren(0, allHud.children.length);
@@ -264,10 +273,10 @@ var RS = RS || {};
 
   HUD.prototype.getAnchor = function(magnet) {
     var anchor = {
-    "LeftTop": {x: nPD, y: nPD},
-    "LeftBottom": {x: nPD, y: Graphics.boxHeight - nHeight - nPD},
-    "RightTop": {x: Graphics.boxWidth - nWidth - nPD, y: nPD},
-    "RightBottom": {x: Graphics.boxWidth - nWidth - nPD, y: Graphics.boxHeight - nHeight - nPD}
+    "LeftTop": {x: RS.HUD.param.nPD, y: RS.HUD.param.nPD},
+    "LeftBottom": {x: RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD},
+    "RightTop": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: RS.HUD.param.nPD},
+    "RightBottom": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD}
     };
     return anchor[magnet];
   };
@@ -278,7 +287,7 @@ var RS = RS || {};
       this._hud.x = pos.x;
       this._hud.y = pos.y;
     } else {
-      this.setAnchor(szAnchor);
+      this.setAnchor(RS.HUD.param.szAnchor);
     }
   };
 
@@ -330,7 +339,7 @@ var RS = RS || {};
     sprite.y = this._hud.y;
     sprite.bitmap = new Bitmap(96, 96);
 
-    if (blurProcessing) {
+    if (RS.HUD.param.blurProcessing) {
       sprite.bitmap.drawClippingImage(this._faceBitmap, this._maskBitmap, 0, 0, sx, sy);
     } else {
       sprite.bitmap.drawClippingImageNonBlur(this._faceBitmap, 0, 0, sx, sy);
@@ -400,22 +409,38 @@ var RS = RS || {};
 
   HUD.prototype.getHp = function() {
     var player = this.getPlayer();
-    return "%1 / %2".format(player.hp, player.mhp);
+    if(RS.HUD.param.showComma) {
+      return "%1 / %2".appendComma(player.hp, player.mhp);
+    } else {
+      return "%1 / %2".format(player.hp, player.mhp);
+    }
   };
 
   HUD.prototype.getMp = function() {
     var player = this.getPlayer();
-    return "%1 / %2".format(player.mp, player.mmp);
+    if(RS.HUD.param.showComma) {
+      return "%1 / %2".appendComma(player.mp, player.mmp);
+    } else {
+      return "%1 / %2".format(player.mp, player.mmp);
+    }
   };
 
   HUD.prototype.getExp = function() {
     var player = this.getPlayer();
-    return "%1 / %2".format(player.currentExp(), player.nextLevelExp());
+    if(RS.HUD.param.showComma) {
+      return "%1 / %2".appendComma(player.currentExp(), player.nextLevelExp());
+    } else {
+      return "%1 / %2".format(player.currentExp(), player.nextLevelExp());
+    }
   };
 
   HUD.prototype.getLevel = function() {
     var player = this.getPlayer();
-    return "%1".format(player.level);
+    if(RS.HUD.param.showComma) {
+      return "%1".appendComma(player.level);
+    } else {
+      return "%1".format(player.level);
+    }
   };
 
   HUD.prototype.getHpRate = function() {
@@ -503,7 +528,7 @@ var RS = RS || {};
   var _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
     _Scene_Map_createDisplayObjects.call(this);
-    if(!battleOnly) {
+    if(!RS.HUD.param.battleOnly) {
       this._hudLayer = new RS_HudLayer();
       this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
@@ -517,7 +542,7 @@ var RS = RS || {};
 
   var _Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    if(!battleOnly) {
+    if(!RS.HUD.param.battleOnly) {
       this.removeChild(this._hudLayer);
       $gameHud = null;
     }
@@ -558,7 +583,7 @@ var RS = RS || {};
   var _Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
   Scene_Boot.prototype.loadSystemImages = function() {
     _Scene_Boot_loadSystemImages.call(this);
-    preloadImportantFaces.forEach(function(i) {
+    RS.HUD.param.preloadImportantFaces.forEach(function(i) {
       ImageManager.loadFace(i);
     }, this);
   }
@@ -581,6 +606,51 @@ var RS = RS || {};
         }
       }
   };
+
+  //----------------------------------------------------------------------------
+  // String Utils
+  //
+  //
+
+  /**
+   * String.prototype.toArray
+   */
+  String.prototype.toArray = function(){
+      return this.split("");
+  }
+
+  /**
+   * String.prototype.reverse
+   */
+  String.prototype.reverse = function(){
+      return this.toArray().reverse().join("");
+  }
+
+  /**
+   * String.prototype.toComma
+   */
+  String.prototype.toComma = function(){
+      return this.reverse().match(/.{1,3}/g).join(",").reverse();
+  }
+
+  /**
+   * Replaces %1, %2 and so on in the string to the arguments.
+   *
+   * @method String.prototype.format
+   * @param {Any} ...args The objects to format
+   * @return {String} A formatted string
+   */
+  String.prototype.appendComma = function() {
+      var args = arguments;
+      return this.replace(/%([0-9]+)/g, function(s, n) {
+          return (args[Number(n) - 1] + '').toComma();
+      });
+  };
+
+  //----------------------------------------------------------------------------
+  // Output Objects
+  //
+  //
 
   window.HUD = HUD;
   window.RS_HudLayer = RS_HudLayer;

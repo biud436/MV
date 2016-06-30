@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc This plugin draws the Battle HUD (Addon v1.1.0)
+ * @plugindesc This plugin draws the Battle HUD (Addon v1.1.1)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -11,49 +11,14 @@
  * @requiredAssets img/pictures/hud_window_empty_inbattle
  *
  * @author biud436
- * @version 1.1.0
- *
- * @param Width
- * @desc Width
- * Do not change this when you are using the default sprite batch.
- * @default 317
- *
- * @param Height
- * @desc Height
- * Do not change this when you are using the default sprite batch.
- * @default 101
- *
- * @param Margin
- * @desc Sets the margin to the HUD borders.
- * @default 0
- *
- * @param Show
- * @desc Sets the visible status.
- * @default true
- *
- * @param Opacity
- * @desc Sets the opacity.
- * @default 255
- *
- * @param Anchor
- * @desc This parameter is used to be compatible with RS_HUD.js
- * @default LeftTop
- *
- * @param Arrangement
- * @desc Create an array to set the position of a sprite.
- * example : ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
- * @default ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
- *
- * @param Anchor
- * @desc LeftTop, LeftBottom, RightTop, RightBottom
- * @default LeftTop
+ * @version 1.1.1
  *
  * @help
  *
  * - Change Log
  * 2016.05.21 (v1.0.0) - First Release Date
- * 2016.05.28 (v1.1.0) - Added Active Turn Battle (require YEP_BattleEngineCore
- * and YEP_X_BattleSysATB)
+ * 2016.05.28 (v1.1.0) - Added Active Turn Battle (require YEP_BattleEngineCoreand YEP_X_BattleSysATB)
+ * 2016.06.30 (v1.1.1) - Added the parameter that displays the values with commas every three digits.
  */
 
 var Imported = Imported || {};
@@ -61,18 +26,12 @@ Imported.RS_HUD_4m_InBattle = true;
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
+RS.HUD = RS.HUD || {};
+RS.HUD.param = RS.HUD.param || {};
 
 (function() {
 
   var parameters = PluginManager.parameters('RS_HUD_4m_InBattle');
-  var nWidth = Number(parameters['Width'] || 317 );
-  var nHeight = Number(parameters['Height'] || 101 );
-  var nPD = Number(parameters['Margin'] || 0);
-  var bShow = Boolean(parameters['Show'] ==="true");
-  var nOpacity = Number(parameters['Opacity'] || 255 );
-  var szAnchor = String(parameters['Anchor'] || "LeftTop");
-  var battleOnly = Boolean(parameters['Battle Only'] === "true");
-  var arrangement = eval(parameters['Arrangement']);
 
   var alias_HUD_initialize = HUD.prototype.initialize;
   HUD.prototype.initialize = function(config) {
@@ -93,7 +52,7 @@ var RS = RS || {};
     if( !this.inBattle() ) return;
     if(this.getPlayer().isDead()) {
       this.children.forEach(function (i) {
-        i.opacity = (this.getPlayer().isDead()) ? (nOpacity - 100) : nOpacity;
+        i.opacity = (this.getPlayer().isDead()) ? (RS.HUD.param.nOpacity - 100) : RS.HUD.param.nOpacity;
       }, this);
     }
   }
@@ -129,18 +88,18 @@ var RS = RS || {};
 
   HUD.prototype.getAnchor = function(magnet) {
     var anchor = {
-    "LeftTop": {x: nPD, y: nPD},
-    "LeftBottom": {x: nPD, y: Graphics.boxHeight - nHeight - nPD},
-    "RightTop": {x: Graphics.boxWidth - nWidth - nPD, y: nPD},
-    "RightBottom": {x: Graphics.boxWidth - nWidth - nPD, y: Graphics.boxHeight - nHeight - nPD}
+    "LeftTop": {x: RS.HUD.param.nPD, y: RS.HUD.param.nPD},
+    "LeftBottom": {x: RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD},
+    "RightTop": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: RS.HUD.param.nPD},
+    "RightBottom": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD}
     };
     if(this.inBattle()) {
       anchor["LeftTop"].x += Graphics.boxWidth / 8;
-      anchor["LeftTop"].y = Graphics.boxHeight - nHeight * 2 - nPD;
+      anchor["LeftTop"].y = Graphics.boxHeight - RS.HUD.param.nHeight * 2 - RS.HUD.param.nPD;
       anchor["RightBottom"].x -= Graphics.boxWidth / 8;
-      anchor["LeftBottom"].y = Graphics.boxHeight - nHeight - nPD;
-      anchor["RightTop"].y = Graphics.boxHeight - nHeight * 2 - nPD;
-      anchor["RightBottom"].y = Graphics.boxHeight - nHeight - nPD;
+      anchor["LeftBottom"].y = Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD;
+      anchor["RightTop"].y = Graphics.boxHeight - RS.HUD.param.nHeight * 2 - RS.HUD.param.nPD;
+      anchor["RightBottom"].y = Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD;
     }
     return anchor[magnet];
   };
@@ -176,19 +135,20 @@ var RS = RS || {};
 
   HUD.prototype.drawIcon = function(iconIndex, x, y) {
     var bitmap = ImageManager.loadSystem('IconSet');
-    var pw = Window_Base._iconWidth;
-    var ph = Window_Base._iconHeight;
+    var pw = Window_Base._icoRS.HUD.param.nWidth;
+    var ph = Window_Base._icoRS.HUD.param.nHeight;
     var sx = iconIndex % 16 * pw;
     var sy = Math.floor(iconIndex / 16) * ph;
     this._Iconlayer.bitmap.blt(bitmap, sx, sy, pw, ph, x, y);
   };
 
+  var alias_HUD_getExp = HUD.prototype.getExp;
   HUD.prototype.getExp = function() {
     var player = this.getPlayer();
     if(this.inBattle() & $dataSystem.optDisplayTp) {
         return "%1 / %2".format(player.tp, player.maxTp());
     }
-    return "%1 / %2".format(player.currentExp(), player.nextLevelExp());
+    return alias_HUD_getExp.call(this);
   };
 
   HUD.prototype.getExpRate = function() {
@@ -287,7 +247,7 @@ var RS = RS || {};
     if(!Imported.YEP_X_BattleSysATB) return;
     if( !this.inBattle() ) return;
     var r = 96;
-    this._AtbGauge = new Sprite(new Bitmap(nWidth, nHeight * 2));
+    this._AtbGauge = new Sprite(new Bitmap(RS.HUD.param.nWidth, RS.HUD.param.nHeight * 2));
     this._AtbGauge.x = this._hud.x;
     this._AtbGauge.y = this._hud.y;
     this.addChild(this._AtbGauge);
