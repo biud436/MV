@@ -54,7 +54,7 @@
  * @desc LeftTop, LeftBottom, RightTop, RightBottom
  * @default LeftTop
  *
- * @param RS.HUD.param.preloadImportantFaces
+ * @param preloadImportantFaces
  * @desc Allow you to pre-load the base face chips.
  * (If you do not set this parameter, It can cause errors in the game.)
  * @default ['Actor1', 'Actor2', 'Actor3']
