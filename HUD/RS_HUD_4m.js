@@ -74,7 +74,7 @@
  * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
  *
  * In Plugin Manager,
- * You have to pre-load the resources using the parameter called 'RS.HUD.param.preloadImportantFaces'.
+ * You have to pre-load the resources using the parameter called 'preloadImportantFaces'.
  *
  * Demo Link : https://www.dropbox.com/s/v6prurtempabqqv/hud.zip?dl=0
  * Github Link : https://github.com/biud436/MV/blob/master/HUD/RS_HUD_4m.js
