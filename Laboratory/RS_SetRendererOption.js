@@ -21,7 +21,7 @@
  * Graphics._getShaderVersion();
  * Graphics._getRenderer();
  * Graphics._getWebGLVersion();
- * Graphics._getWebGLVender();
+ * Graphics._getWebGLVendor();
  * Graphics._getViewport();
  */
 
@@ -81,7 +81,7 @@ Imported.RS_SetRendererOption = true;
   };
 
   // Returns the company responsible for this WebGL implementation.
-  Graphics._getWebGLVender = function() {
+  Graphics._getWebGLVendor = function() {
     if(!this.isWebGL()) return false;
     var gl = Graphics._renderer.gl;
     return gl.getParameter(gl.VENDOR);
