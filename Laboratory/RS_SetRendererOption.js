@@ -8,16 +8,18 @@
  * @default false
  *
  * @param antialias
- * @desc If the value is false or the implementation does not support
- * antialiasing, no antialiasing is performed.
+ * @desc If the value is false or the implementation does not support antialiasing, no antialiasing is performed.
  * @default false
  *
  * @param preserveDrawingBuffer
- * @desc If the value is true the buffers will not be cleared and will preserve
- * their values until cleared or overwritten by the author.
+ * @desc See the help
  * @default false
  *
  * @help
+ *
+ * preserveDrawingBuffer : If the value is true the buffers will not be cleared
+ * and will preserve their values until cleared or overwritten by the author.
+ *
  * Graphics._getShaderVersion();
  * Graphics._getRenderer();
  * Graphics._getWebGLVersion();
