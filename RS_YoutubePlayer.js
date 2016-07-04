@@ -25,7 +25,8 @@
  * =============================================================================
  * 2016.05.08 (v1.0.0) - First Release
  * 2016.05.09 (v1.0.1) - Added Error Handler
- * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL .
+ * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL.
+ * 2016.07.04 (v1.0.3) - Fixed a few logic about the range were converted to Rectangular object.
  */
 
 var Imported = Imported || {};
@@ -134,6 +135,8 @@ function onPlayerStateChange (event) {
 
   var re = /(?:http|https)+(?:\:\/\/youtu.be\/)+(.*)/gi;
 
+  YTPlayer._boundRect = new Rectangle(0, 0, 1, 1);
+
   //----------------------------------------------------------------------------
   // YTPlayer
   //
@@ -233,7 +236,7 @@ function onPlayerStateChange (event) {
       return true;
     }
     return false;
-  }
+  };
 
   YTPlayer.isPaused = function() {
     if(this._status === YT.PlayerState.PAUSED) {
@@ -266,15 +269,19 @@ function onPlayerStateChange (event) {
     x2 = gw + w;
     y1 = gh - h;
     y2 = gh + h;
-    return new Rectangle(x1, y1, x2, y2);
-  }
+    this._boundRect.x = x1;
+    this._boundRect.y = y1;
+    this._boundRect.width = w
+    this._boundRect.height = h;
+    return this._boundRect;
+  };
 
   YTPlayer.isTouched = function() {
     var x = TouchInput.x;
     var y = TouchInput.y;
     var rect = this.getRect();
-    return x >= rect.x && y >= rect.y && x < rect.width && y < rect.height;
-  }
+    return rect.contains(x, y);
+  };
 
   //----------------------------------------------------------------------------
   // Graphics
@@ -327,7 +334,7 @@ function onPlayerStateChange (event) {
     alias_Game_Player_initMembers.call(this);
     this._locked = false;
     this._prelockDirection = 2;
-  }
+  };
 
   Game_Player.prototype.lock = function() {
     if (!this._locked) {
