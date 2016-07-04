@@ -235,7 +235,7 @@ Imported.RS_WalkingStepSound = true;
   //
   //
 
-  ConfigManager.stepSound   = true;
+  ConfigManager.stepSound = true;
 
   var alias_makeData = ConfigManager.makeData;
   ConfigManager.makeData = function() {
