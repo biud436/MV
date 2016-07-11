@@ -19,6 +19,14 @@
  * @desc delay (Millisecond)
  * @default 2500
  *
+ * @param Target Path
+ * @desc
+ * @default /js/plugins.js
+ *
+ * @param Save Path
+ * @desc
+ * @default /js/plugins.js
+ *
  * @help
  * =============================================================================
  * Plugin Command
@@ -33,6 +41,7 @@
  * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
  * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
  * window that could be able to show the json file.
+ * 2016.07.12 (v1.1.0A) - Added two plugin parameters about File Path.
  */
 
 var Imported = Imported || {};
@@ -73,7 +82,8 @@ function Window_PluginDesc() {
     throw new Error('This is a static class');
   }
 
-  RefreshManager._path = '/js/plugins.js';
+  RefreshManager._path = parameters['Target Path'] || '/js/plugins.js';
+  RefreshManager._savePath = parameters['Save Path'] || '/js/plugins.js';
   RefreshManager._flags = 'utf8';
   RefreshManager._data = "";
   RefreshManager._typ = [];
@@ -370,7 +380,7 @@ function Window_PluginDesc() {
   RefreshManager.makePlugins = function(texts) {
     var self = this;
 
-    var path = window.location.pathname.replace(/\/[^\/]*$/, "/js/plugins.js");
+    var path = window.location.pathname.replace(/\/[^\/]*$/, self._savePath);
     if (path.match(/^\/([A-Z]\:)/)) {
         path = path.slice(1);
     }
