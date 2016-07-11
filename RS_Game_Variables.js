@@ -19,6 +19,10 @@
  * Var Max value
  * Var Min value
  *
+ * - Change Log
+ * 2016.02.23 (v1.0.0) - First Release
+ * 2016.07.11 (v1.0.1) - In pluginCommand, Wrong Character Fixes.
+ *
  */
 
 var Imported = Imported || {};
@@ -46,14 +50,12 @@ RS.Game_Variables = RS.Game_Variables || {};
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
-    if(command === "변수" || command === "Var") {
+    if(command === "Var") {
       switch (args[0].toLowerCase()) {
-        case '최솟값':
-        case 'Min':
+        case 'min':
           RS.Game_Variables._min = Number(args[1] || 0);
           break;
-        case '최댓값':
-        case 'Max':
+        case 'max':
           RS.Game_Variables._max = Number(args[1] || 999);
           break;
       }
