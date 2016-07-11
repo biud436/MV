@@ -1,7 +1,7 @@
 /*:
  * RS_Question66458.js
  * @plugindesc http://cafe.naver.com/sonnysoft2004/66458
- * @author 러닝은빛
+ * @author biud436
  *
  * @param width
  * @desc
