@@ -322,7 +322,7 @@ function Window_PluginDesc() {
     kind = this.getKeywordKind(text);
 
     if(kind === type.Others) {
-      throw new Error("잘못된 토큰이 사용되었습니다 " + text);
+      throw new Error("You were used incorrect tokens." + text);
     }
     return self.createToken(kind, text, 0);
   };
