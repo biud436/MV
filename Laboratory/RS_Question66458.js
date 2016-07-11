@@ -28,7 +28,7 @@ Imported.RS_Question66458 = true;
 
   Scene_Equip.prototype.createStatusWindow = function() {
       this._statusWindow = {
-        'width': 312,
+        'width': width,
         'height': height,
         'x': 0,
         'y': this._helpWindow.height
