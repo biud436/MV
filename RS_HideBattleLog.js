@@ -12,9 +12,12 @@
  * BattleLog hide
  */
 
+ var Imported = Imported || {};
+ Imported.RS_HideBattleLog = true;
+
 (function() {
 
-  var parameters = PluginManager.parameters('RS_FollowerPassable');
+  var parameters = PluginManager.parameters('RS_HideBattleLog');
   var enabled = Boolean(parameters['Enabled'] === 'true');
 
   var alias_Window_BattleLog_initialize =
