@@ -11,10 +11,6 @@
  * @desc Decide whether the play time is drawing.
  * @default true
  *
- * @param Preload Faces
- * @desc Allow you to pre-load the base face chips.
- * @default ['Actor1', 'Actor2', 'Actor3']
- *
  * @help
  * 2015.12.21 (v1.0.0) - First Release
  * 2016.07.15 (v1.0.1) - Fixed the bug and then added plugin parameters
