@@ -15,6 +15,11 @@ RS.Net = RS.Net || {};
 
 (function() {
 
+  //============================================================================
+  // DownloadManager
+  //
+  //
+
   function DownloadManager() {
     throw new Error("this is a static class");
   }
@@ -122,6 +127,38 @@ RS.Net = RS.Net || {};
     window[name] = null;
     xhr.send();
   };
+
+  //============================================================================
+  // ListBuilder
+  //
+  // Write a text file including the name of all the file.
+
+  function ListBuilder() {
+    throw new Error("this is a static class");
+  }
+
+  ListBuilder.buildImageFiles = function() {
+    // read all of the file
+    // converted json for printing a text file
+    // write a text file
+  };
+  ListBuilder.buildAudioFiles = function() {
+    // same as a function above.
+  };
+  ListBuilder.buildFontFiles = function() {
+    // same as a function above.
+  };
+  ListBuilder.buildDataFiles = function() {
+    // same as a function above.
+  };
+  ListBuilder.buildJavascriptFiles = function() {
+    // same as a function above.
+  };
+
+  //============================================================================
+  // DataManager
+  //
+  //
 
   var alias_DataManager_makeSavefileInfo = DataManager.makeSavefileInfo;
   DataManager.makeSavefileInfo = function() {
