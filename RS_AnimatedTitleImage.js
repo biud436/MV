@@ -1,5 +1,5 @@
 /*:
- * RS_ChangeTitle.js
+ * RS_AnimatedTitleImage.js
  * @plugindesc This plugin changes a title screen image at specific time intervals.
  * @author biud436
  * @date 2015.11.09
@@ -26,11 +26,11 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_ChangeTitle = true;
+Imported.AnimatedTitleImage = true;
 
 (function() {
 
-  var parameters = PluginManager.parameters('RS_ChangeTitle');
+  var parameters = PluginManager.parameters('AnimatedTitleImage');
   var titleFile = (function() {
     return parameters['files'].split(/[^\w]/gi);
   })();
