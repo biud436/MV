@@ -22,7 +22,7 @@
  * =============================================================================
  * 2016.04.26 (v1.0.0) - First Release
  * 2016.07.16 (v1.0.1) - Fixed the variable called "_limit" for setting
- * the default value and added the plugin parameter that could set the depth of
+ * the default value and added the plugin command that could set the depth of
  * the search.
  */
 
