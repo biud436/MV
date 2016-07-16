@@ -1,14 +1,14 @@
 /*:
  * RS_ResourceUpdate.js
- * @plugindesc 리소스 추가 다운로드
+ * @plugindesc This plugin allows you to download adding resource files on PC.
  * @author biud436
  *
  * @param URL_DB
- * @desc 버전 문자열이 있는 URL
+ * @desc Please enter the url that has the version text.
  * @default https://github.com/biud436/MV/raw/master/Laboratory/DBVersion.json
  *
  * @param Current Version
- * @desc 현재 버전
+ * @desc Please enter the currently version.
  * @default 0.1.1
  *
  */

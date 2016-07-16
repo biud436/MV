@@ -56,6 +56,10 @@
  * - Split
  * 텍스트가 좌우로 커졌다가 작아집니다.
  *
+ * - To do
+ * 마우스 휠(스크롤) 모션 체크
+ * 버튼 클릭 지점 정확히 체크
+ *
  * -Change Log
  * 2016.03.04(v1.0.1) - Added the comments for include used files.
  *
@@ -70,71 +74,10 @@ Imported.RS_ParallaxTitleEx = true;
  */
 var RS = RS || {};
 
-(function() {
-
-  /**
-   * @static
-   * @memberof RS
-   */
-  RS.Utils = {
-    /**
-     * 라디안 단위로 변경하는 함수
-     * @method wrapMax
-     * @return {Number}
-     */
-    convertToRadian : function(angle) {
-      return (Math.PI / 180) * angle;
-    },
-    /**
-     * 각도 범위 제한 함수
-     * @method wrapMax
-     * @param angle {Number}
-     * @return angle {Number}
-     */
-    wrapMax : function(angle) {
-      while(angle > 360.0) { angle -= 360.0; }
-      while(angle < -360.0) { angle += 360.0; }
-      return angle;
-    },
-    /**
-     * 각도 범위 제한 함수
-     * @method wrapMax
-     * @param angle {Number}
-     * @return angle {Number}
-     */
-    wrapAngle : function(angle) {
-      while(angle > 180.0) { angle -= 360.0; }
-      while(angle < -180.0) { angle += 360.0; }
-      return angle;
-    }
-  };
-
-  /**
-   * Array.prototype.max
-   * @method max
-   * @return {Array}
-   */
-  Array.prototype.max = function() {
-    return this.slice(0).sort().reverse()[0];
-  };
-  /**
-   * Array.prototype.min
-   * @method min
-   * @return {Array}
-   */
-  Array.prototype.min = function() {
-    return this.slice(0).sort()[0];
-  };
-
-})();
-
+RS.Utils = RS.Utils || {};
 
 (function() {
 
-  /**
-   * 플러그인 매니저에서 변수값을 가져와 설정하는 부분
-   * @private
-   */
   var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
   var parallaxImage = (parameters['parallaxImage'] || 'BlueSky');
   var textType = parameters['TextAnimation'] || 'Push';
@@ -151,6 +94,88 @@ var RS = RS || {};
   var _gameStart = String(parameters['Game Start'] || "Game Start");
   var _gameContinue = String(parameters['Game Load'] || "Game Load");
   var _gameOptions = String(parameters['Game Exit'] || "Game Exit");
+
+  //============================================================================
+  // RS.Utils
+  //
+  //
+
+  /**
+   * 라디안 단위로 변경하는 함수
+   * @method wrapMax
+   * @return {Number}
+   */
+  RS.Utils.convertToRadian = function(angle) {
+    return (Math.PI / 180) * angle;
+  };
+
+  /**
+   * 각도 범위 제한 함수
+   * @method wrapMax
+   * @param angle {Number}
+   * @return angle {Number}
+   */
+  RS.Utils.wrapMax = function(angle) {
+    while(angle > 360.0) { angle -= 360.0; }
+    while(angle < -360.0) { angle += 360.0; }
+    return angle;
+  };
+
+  /**
+   * 각도 범위 제한 함수
+   * @method wrapMax
+   * @param angle {Number}
+   * @return angle {Number}
+   */
+  RS.Utils.wrapAngle = function(angle) {
+    while(angle > 180.0) { angle -= 360.0; }
+    while(angle < -180.0) { angle += 360.0; }
+    return angle;
+  };
+
+  //============================================================================
+  // Array
+  //
+  //
+
+  /**
+   * Array.prototype.max
+   * @method max
+   * @return {Array}
+   */
+  Array.prototype.max = function() {
+    return this.slice(0).sort().reverse()[0];
+  };
+
+  /**
+   * Array.prototype.min
+   * @method min
+   * @return {Array}
+   */
+  Array.prototype.min = function() {
+    return this.slice(0).sort()[0];
+  };
+
+  //============================================================================
+  // Window_TitleCommand
+  //
+  //
+
+  /**
+   * 커맨드 리스트 생성
+   * @override
+   * @method makeCommandList
+   */
+  Window_TitleCommand.prototype.makeCommandList = function() {
+    this.addCommand(TextManager.newGame,   'newGame');
+    this.addCommand(TextManager.continue_, 'continue', this.isContinueEnabled());
+    this.addCommand(szExit,   'exit');
+  };
+
+  //============================================================================
+  // Scene_Title
+  //
+  //
 
   /**
    * 배경화면 생성
@@ -177,10 +202,14 @@ var RS = RS || {};
       wordWrap : true,
       // 텍스트 wrap 의 폭 (폭을 넘기면 글자 자동 개행)
       wordWrapWidth : 400,
+
       textBaseline: 'alphabetic',
+
     };
+
     // 텍스트 생성
     this._gameTitleSprite = new PIXI.Text($dataSystem.gameTitle, style);
+
     // 화면에 텍스트 추가
     this.addChild(this._gameTitleSprite);
 
@@ -241,35 +270,33 @@ var RS = RS || {};
    * @method createBackground
    */
   Scene_Title.prototype.createBackground = function() {
+
     // 타일링 스프라이트 생성
+    // Create TilingSprite.
     this._backSprite1 = new TilingSprite(ImageManager.loadParallax(parallaxImage));
     this._backSprite2 = new Sprite(ImageManager.loadTitle2($dataSystem.title2Name));
 
     // 영역 설정
+    // Set the rect.
     this._backSprite1.move(0,0,Graphics.boxWidth,Graphics.boxHeight);
 
     // 타일링 스프라이트 업데이트 함수 재정의
+    // override a function of TilingSprite called 'update'.
     var _backSprite1_update = this._backSprite1.update;
     this._backSprite1.update = function() {
       _backSprite1_update.call(this);
+
       // 매프레임마다 오른쪽으로 이동
+      // Move toward right on every frame.
       this.origin.x--;
+
     };
 
     // 게임 화면에 추가
+    // Adding on the title screen.
     this.addChild(this._backSprite1);
     this.addChild(this._backSprite2);
-  };
 
-  /**
-   * 커맨드 리스트 생성
-   * @override
-   * @method makeCommandList
-   */
-  Window_TitleCommand.prototype.makeCommandList = function() {
-    this.addCommand(TextManager.newGame,   'newGame');
-    this.addCommand(TextManager.continue_, 'continue', this.isContinueEnabled());
-    this.addCommand(szExit,   'exit');
   };
 
   /**
@@ -299,19 +326,13 @@ var RS = RS || {};
    * 타이틀 시작 처리
    * @alias start
    */
-  var _alias_start = Scene_Title.prototype.start;
+  var alias_Scene_Title_start = Scene_Title.prototype.start;
   Scene_Title.prototype.start = function() {
-    _alias_start.call(this);
-    // 매개변수 초기화
+    alias_Scene_Title_start.call(this);
     this.initSpriteParameter();
-    // 터치 매개변수 초기화
     this.initTouchParameter();
-    // 스프라이트 생성
     this.makeSprite();
-    // 세이브 파일 유무 확인
-    if(!DataManager.isAnySavefileExists()) {
-      this.text2.opacity = 128;
-    }
+    if(!DataManager.isAnySavefileExists()) this.text2.opacity = 128;
   };
 
   /**
