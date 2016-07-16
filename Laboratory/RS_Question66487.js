@@ -10,7 +10,7 @@
  */
 
 (function () {
-  Game_Actor.prototype.bareHandsAnimationId = function() {
+  Game_Actor.prototype.attackSkillId = function() {
     var c = $dataClasses[this._classId].meta;
     var id = Number(c.NormalAttackID) || 1;
     return id;
