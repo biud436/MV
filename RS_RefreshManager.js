@@ -27,7 +27,24 @@
  * @desc
  * @default /js/plugins.js
  *
+ * @param Korean handling
+ * @desc
+ * @default true
+ *
+ * @param Russian handling
+ * @desc
+ * @default true
+ *
+ * @param All Unicode handling
+ * @desc
+ * @default false
+ *
  * @help
+ *
+ * This plugin executes using File System functions that is built into a nw.js
+ * that uses in Windows or Mac. so it does not properly execute on the browsers
+ * or mobile platform which is not available them.
+ *
  * =============================================================================
  * Plugin Command
  * =============================================================================
@@ -42,6 +59,7 @@
  * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
  * window that could be able to show the json file.
  * 2016.07.12 (v1.1.0A) - Added two plugin parameters about File Path.
+ * 2016.07.20 (v1.1.0B) - Added hyphen(-) and three plugin parameters.
  */
 
 var Imported = Imported || {};
@@ -75,6 +93,10 @@ function Window_PluginDesc() {
   var _previewWindow = null;
 
   var isAutoReload =  Boolean(parameters['Auto Reload'] === 'true');
+
+  var isKorean = Boolean(parameters['Korean handling'] === 'true');
+  var isRussian = Boolean(parameters['Russian handling'] === 'true');
+  var isAllUnicode = Boolean(parameters['All Unicode handling'] === 'true');
 
   var fs = require('fs');
 
@@ -177,6 +199,7 @@ function Window_PluginDesc() {
     self._typ['*'.charCodeAt()] = type.Letter;
     self._typ['_'.charCodeAt()] = type.Letter;
     self._typ['.'.charCodeAt()] = type.Letter;
+    self._typ['-'.charCodeAt()] = type.Letter;
     self._typ['\r'.charCodeAt()] = type.Caret;
     self._typ['\n'.charCodeAt()] = type.LineBreak;
     self._typ['\\'.charCodeAt()] = type.Backslash;
@@ -195,14 +218,20 @@ function Window_PluginDesc() {
     self._typ[' '.charCodeAt()] = type.Space;
 
     // Hangul handling
-    for(var i=0x1100; i <= 0x11FF; i++) { self._typ[i] = type.Letter; }
-    for(var i=0xAC00; i <= 0xD7AF; i++) { self._typ[i] = type.Letter; }
+    if(isKorean) {
+      for(var i=0x1100; i <= 0x11FF; i++) { self._typ[i] = type.Letter; }
+      for(var i=0xAC00; i <= 0xD7AF; i++) { self._typ[i] = type.Letter; }
+    }
 
     // Cyrillic handling
-    // for(var i= 0x0400; i <= 0x052F; i++) { self._typ[i] = type.Letter; }
+    if(isRussian) {
+      for(var i= 0x0400; i <= 0x052F; i++) { self._typ[i] = type.Letter; }
+    }
 
     // All Unicode handling (Big Memory)
-    // for(var i=0x0100; i <= 0xFFFF; i++) { self._typ[i] = type.Letter; }
+    if(isAllUnicode) {
+      for(var i=0x0100; i <= 0xFFFF; i++) { self._typ[i] = type.Letter; }
+    }
 
   };
 
@@ -322,7 +351,7 @@ function Window_PluginDesc() {
     kind = this.getKeywordKind(text);
 
     if(kind === type.Others) {
-      throw new Error("You were used incorrect tokens." + text);
+      throw new Error("You were used incorrect tokens. : " + text);
     }
     return self.createToken(kind, text, 0);
   };
