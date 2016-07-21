@@ -27,18 +27,6 @@
  * @desc
  * @default /js/plugins.js
  *
- * @param Korean handling
- * @desc
- * @default true
- *
- * @param Russian handling
- * @desc
- * @default true
- *
- * @param All Unicode handling
- * @desc
- * @default false
- *
  * @help
  *
  * This plugin executes using File System functions that is built into a nw.js
@@ -60,6 +48,7 @@
  * window that could be able to show the json file.
  * 2016.07.12 (v1.1.0A) - Added two plugin parameters about File Path.
  * 2016.07.20 (v1.1.0B) - Added hyphen(-) and three plugin parameters.
+ * 2016.07.21 (v1.1.0C) - Fixed the bug that is separating wrong identifier.
  */
 
 var Imported = Imported || {};
@@ -93,10 +82,6 @@ function Window_PluginDesc() {
   var _previewWindow = null;
 
   var isAutoReload =  Boolean(parameters['Auto Reload'] === 'true');
-
-  var isKorean = Boolean(parameters['Korean handling'] === 'true');
-  var isRussian = Boolean(parameters['Russian handling'] === 'true');
-  var isAllUnicode = Boolean(parameters['All Unicode handling'] === 'true');
 
   var fs = require('fs');
 
@@ -193,17 +178,16 @@ function Window_PluginDesc() {
 
     for(var i= 0; i < 256; i++) { self._typ[i] = type.Others; }
     for(var i='0'.charCodeAt(); i <= '9'.charCodeAt(); i++) { self._typ[i] = type.Digit; }
+
+    // Sets Identifier
     for(var i='A'.charCodeAt(); i <= 'Z'.charCodeAt(); i++) { self._typ[i] = type.Letter; }
     for(var i='a'.charCodeAt(); i <= 'z'.charCodeAt(); i++) { self._typ[i] = type.Letter; }
-    self._typ['#'.charCodeAt()] = type.Letter;
-    self._typ['*'.charCodeAt()] = type.Letter;
     self._typ['_'.charCodeAt()] = type.Letter;
-    self._typ['.'.charCodeAt()] = type.Letter;
-    self._typ['-'.charCodeAt()] = type.Letter;
+    self._typ['$'.charCodeAt()] = type.Dollar;
+
     self._typ['\r'.charCodeAt()] = type.Caret;
     self._typ['\n'.charCodeAt()] = type.LineBreak;
     self._typ['\\'.charCodeAt()] = type.Backslash;
-    self._typ['$'.charCodeAt()] = type.Dollar;
     self._typ['\"'.charCodeAt()] = type.DblQ;
     self._typ[','.charCodeAt()] = type.Comma;
     self._typ[':'.charCodeAt()] = type.Colon;
@@ -216,22 +200,6 @@ function Window_PluginDesc() {
     self._typ['}'.charCodeAt()] = type.Rbrace;
     self._typ['	'.charCodeAt()] = type.Tap;
     self._typ[' '.charCodeAt()] = type.Space;
-
-    // Hangul handling
-    if(isKorean) {
-      for(var i=0x1100; i <= 0x11FF; i++) { self._typ[i] = type.Letter; }
-      for(var i=0xAC00; i <= 0xD7AF; i++) { self._typ[i] = type.Letter; }
-    }
-
-    // Cyrillic handling
-    if(isRussian) {
-      for(var i= 0x0400; i <= 0x052F; i++) { self._typ[i] = type.Letter; }
-    }
-
-    // All Unicode handling (Big Memory)
-    if(isAllUnicode) {
-      for(var i=0x0100; i <= 0xFFFF; i++) { self._typ[i] = type.Letter; }
-    }
 
   };
 
@@ -252,7 +220,6 @@ function Window_PluginDesc() {
       {'name':'var','kind': type.Var},
       {'name':'\\','kind': type.Backslash},
       {'name':'\"','kind': type.DblQ},
-      {'name':'/','kind': type.Comment},
       {'name':':','kind': type.Colon},
       {'name':';','kind': type.Semicolon},
       {'name': undefined,'kind': type.End}
@@ -312,19 +279,13 @@ function Window_PluginDesc() {
           self._ch = self.nextCharacter();
         }
         break;
-      // Integer handling
-      case type.Digit:
-        kind = type.Int;
-        for(numValue = 0; self._typ[self._ch] === type.Digit; self._ch = self.nextCharacter()) {
-          numValue = numValue * 10 + self._ch;
-        }
-        return self.createToken(type.Int, text, numValue);
+
      // String handling
       case type.DblQ:
         self._ch = this.nextCharacter();
-        while(self._ch !== 0 && self._ch!==34 ) {
+        while(self._ch !== 0 && self._ch !== '\"'.charCodeAt() ) {
           text += String.fromCharCode(self._ch);
-          self._ch = self.nextCharacter()
+          self._ch = self.nextCharacter();
         }
         if(self._ch === '\"'.charCodeAt()) {
           self._ch = this.nextCharacter();
@@ -334,17 +295,20 @@ function Window_PluginDesc() {
         }
         return self.createToken(type.Istring, text, 0);
       default:
+
       // Comment handling
-      if(self._ch === 47 && self.currentCharacter() === 47) {
+      if(self._ch === '/'.charCodeAt() && self.currentCharacter() === '/'.charCodeAt() ) {
         for(; self._ch !== '\r'.charCodeAt() || self._ch !== '\n'.charCodeAt(); self._ch = self.nextCharacter()) {
           text += String.fromCharCode(self._ch);
-          if(self._ch === '\n'.charCodeAt()) {
+          if(self._ch === '\n'.charCodeAt() ) {
             return self.createToken(type.Comment, text, 0);
           }
         }
       }
+
       text += String.fromCharCode(self._ch);
       self._ch = self.nextCharacter();
+
     }
 
     // Other handling
