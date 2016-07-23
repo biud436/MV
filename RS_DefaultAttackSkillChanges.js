@@ -1,5 +1,5 @@
 /*:
- * RS_Question66487.js
+ * RS_DefaultAttackSkillChanges.js
  * @plugindesc 기본 공격 스킬을 Class ID에 따라 변경합니다.
  * @author biud436
  *
@@ -8,6 +8,9 @@
  * <NormalAttackID:x>
  * x 는 스킬의 ID 입니다.
  */
+
+var Imported = Imported || {};
+Imported.RS_DefaultAttackSkillChanges = true;
 
 (function () {
   Game_Actor.prototype.attackSkillId = function() {
