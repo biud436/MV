@@ -1,6 +1,6 @@
 /*:
  * RS_TimedWeatherEffects.js
- * @plugindesc Timed Weather Effects
+ * @plugindesc This plugin allows you to set timed weather effects.
  * @author biud436
  *
  * @param default S Power
