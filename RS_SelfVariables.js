@@ -34,7 +34,7 @@
  * var key = RS.SelfVariables.setValue(1, 'Hi, guys');
  * var s = RS.SelfVariables.value(key);
  * $gameMessage.add(s);
- * 
+ *
  * -----------------------------------------------------------------------------
  * In case Of Battle Events
  * -----------------------------------------------------------------------------
@@ -200,7 +200,7 @@ function Game_SelfVariables() {
       switch (args[0]) {
       case 'set':
         var key = GSV.makeKey( Number(args[1] || 0) );
-        var value = Number(args[2] || 0);
+        var value = Number(args.slice(2).join(' ') || 0);
         GSV.setValue(key, value);
         break;
       case 'get':
