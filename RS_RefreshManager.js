@@ -49,7 +49,7 @@
  * 2016.07.12 (v1.1.0a) - Added two plugin parameters about File Path.
  * 2016.07.20 (v1.1.0b) - Added hyphen(-) and three plugin parameters.
  * 2016.07.21 (v1.1.0c) - Fixed the bug that is separating wrong identifier.
- * 2016.07.25 )v1.1.0d - Fixed default save file id.
+ * 2016.07.25 (v1.1.0d) - Fixed default save file id.
  */
 
 var Imported = Imported || {};
