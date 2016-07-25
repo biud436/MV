@@ -34,7 +34,7 @@
  * var key = RS.SelfVariables.setValue(1, 'Hi, guys');
  * var s = RS.SelfVariables.value(key);
  * $gameMessage.add(s);
- *
+ * 
  * -----------------------------------------------------------------------------
  * In case Of Battle Events
  * -----------------------------------------------------------------------------
