@@ -5,7 +5,7 @@
  *
  * @param Save File ID
  * @desc Auto Save
- * @default 1
+ * @default temp_quick
  *
  * @param Show Preview Window
  * @desc Indicate whether or not the preview window is visible.
@@ -46,9 +46,10 @@
  * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
  * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
  * window that could be able to show the json file.
- * 2016.07.12 (v1.1.0A) - Added two plugin parameters about File Path.
- * 2016.07.20 (v1.1.0B) - Added hyphen(-) and three plugin parameters.
- * 2016.07.21 (v1.1.0C) - Fixed the bug that is separating wrong identifier.
+ * 2016.07.12 (v1.1.0a) - Added two plugin parameters about File Path.
+ * 2016.07.20 (v1.1.0b) - Added hyphen(-) and three plugin parameters.
+ * 2016.07.21 (v1.1.0c) - Fixed the bug that is separating wrong identifier.
+ * 2016.07.25 )v1.1.0d - Fixed default save file id.
  */
 
 var Imported = Imported || {};
