@@ -1,7 +1,7 @@
 /*:
  * RS_HUD_4m.js
  * @plugindesc This plugin draws the HUD, which displays the hp and mp and exp
- * and level of each party members. (v1.0.9)
+ * and level of each party members. (v1.1.0)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -13,7 +13,7 @@
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.0.9
+ * @version 1.1.0
  *
  * @param Width
  * @desc Width
@@ -68,6 +68,114 @@
  * the values with commas every three digits.
  * @default false
  *
+ * @param --- Font
+ * @desc
+ * @default
+ *
+ * @param Chinese Font
+ * @desc
+ * @default SimHei, Heiti TC, sans-serif
+ *
+ * @param Korean Font
+ * @desc
+ * @default NanumGothic, Dotum, AppleGothic, sans-serif
+ *
+ * @param Standard Font
+ * @desc
+ * @default GameFont
+ *
+ * @param Level Text Size
+ * @desc
+ * @default 24
+ *
+ * @param HP Text Size
+ * @desc
+ * @default 12
+ *
+ * @param MP Text Size
+ * @desc
+ * @default 12
+ *
+ * @param EXP Text Size
+ * @desc
+ * @default 12
+ *
+ * @param --- Text Color
+ * @desc
+ * @default
+ *
+ * @param HP Color
+ * @desc
+ * @default #ffffff
+ *
+ * @param MP Color
+ * @desc
+ * @default #ffffff
+ *
+ * @param EXP Color
+ * @desc
+ * @default #ffffff
+ *
+ * @param Level Color
+ * @desc
+ * @default #ffffff
+ *
+ * @param --- Text Outline Color
+ * @desc
+ * @default
+ *
+ * @param HP Outline Color
+ * @desc
+ * @default rgba(0, 0, 0, 0.5)
+ *
+ * @param MP Outline Color
+ * @desc
+ * @default rgba(0, 0, 0, 0.5)
+ *
+ * @param EXP Outline Color
+ * @desc
+ * @default rgba(0, 0, 0, 0.5)
+ *
+ * @param Level Outline Color
+ * @desc
+ * @default rgba(0, 0, 0, 0.5)
+ *
+ * @param --- Text Outline Width
+ * @desc
+ * @default
+ *
+ * @param HP Outline Width
+ * @desc
+ * @default 4
+ *
+ * @param MP Outline Width
+ * @desc
+ * @default 4
+ *
+ * @param EXP Outline Width
+ * @desc
+ * @default 4
+ *
+ * @param Level Outline Width
+ * @desc
+ * @default 4
+ *
+ * @param --- Custom Font
+ * @desc
+ * @default
+ *
+ * @param Using Custom Font
+ * @desc
+ * @default false
+ *
+ * @param Custom Font Name
+ * @desc
+ * @default NanumBrush
+ *
+ * @param Custom Font Src
+ * @desc
+ * @default fonts/NanumBrush.ttf
+ *
  * @help
  * Download the resources and place them in your img/pictures folder.
  * All the resources can download in the following link.
@@ -109,6 +217,7 @@
  * the plugin in battle mode only.
  * 2016.05.21 (v1.0.8) - Fixed a bug of the opacity.
  * 2016.06.30 (v1.0.9) - Added the parameter that displays the values with commas every three digits.
+ * 2016.07.30 (v1.1.0) - Added the parameter for setting fonts.
  */
 
 var Imported = Imported || {};
@@ -134,6 +243,40 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.battleOnly = Boolean(parameters['Battle Only'] === "true");
   RS.HUD.param.showComma = Boolean(parameters['Show Comma'] === 'true');
 
+  // Font Settings
+  RS.HUD.param.chineseFont = String(parameters['Chinese Font'] || 'SimHei, Heiti TC, sans-serif');
+  RS.HUD.param.koreanFont = String(parameters['Korean Font'] || 'NanumGothic, Dotum, AppleGothic, sans-serif');
+  RS.HUD.param.standardFont = String(parameters['Standard Font'] || 'GameFont');
+
+  // Text Size
+  RS.HUD.param.levelTextSize = Number(parameters['Level Text Size'] || 12);
+  RS.HUD.param.hpTextSize = Number(parameters['HP Text Size'] || 12);
+  RS.HUD.param.mpTextSize = Number(parameters['MP Text Size'] || 12);
+  RS.HUD.param.expTextSize = Number(parameters['EXP Text Size'] || 12);
+
+  // Text Color
+  RS.HUD.param.szHpColor =  String(parameters['HP Color'] || '#ffffff');
+  RS.HUD.param.szMpColor = String(parameters['MP Color'] || '#ffffff');
+  RS.HUD.param.szExpColor = String(parameters['EXP Color'] || '#ffffff');
+  RS.HUD.param.szLevelColor = String(parameters['Level Color'] || '#ffffff');
+
+  // Text Outline Color
+  RS.HUD.param.szHpOutlineColor =  String(parameters['HP Outline Color'] || 'rgba(0, 0, 0, 0.5)');
+  RS.HUD.param.szMpOutlineColor = String(parameters['MP Outline Color'] || 'rgba(0, 0, 0, 0.5)');
+  RS.HUD.param.szExpOutlineColor = String(parameters['EXP Outline Color'] || 'rgba(0, 0, 0, 0.5)');
+  RS.HUD.param.szLevelOutlineColor = String(parameters['Level Outline Color'] || 'rgba(0, 0, 0, 0.5)');
+
+  // Text Outline Width
+  RS.HUD.param.szHpOutlineWidth =  Number(parameters['HP Outline Width'] || 4);
+  RS.HUD.param.szMpOutlineWidth = Number(parameters['MP Outline Width'] || 4);
+  RS.HUD.param.szExpOutlineWidth = Number(parameters['EXP Outline Width'] || 4);
+  RS.HUD.param.szLevelOutlineWidth = Number(parameters['Level Outline Width'] || 4);
+
+  // Custom Font
+  RS.HUD.param.bUseCustomFont = Boolean(parameters['Using Custom Font'] === 'true');
+  RS.HUD.param.szCustomFontName = String(parameters['Custom Font Name'] || 'GameFont' );
+  RS.HUD.param.szCustomFontSrc = String(parameters['Custom Font Src'] || 'fonts/mplus-1m-regular.ttf');
+
   //----------------------------------------------------------------------------
   // Game_System ($gameSystem)
   //
@@ -144,7 +287,88 @@ RS.HUD.param = RS.HUD.param || {};
     this._rs_hud = this._rs_hud || {};
     this._rs_hud.show = this._rs_hud.show || RS.HUD.param.bShow;
     this._rs_hud.opacity = this._rs_hud.opacity || RS.HUD.param.nOpacity;
+  };
+
+  //----------------------------------------------------------------------------
+  // TextData
+  //
+  //
+
+  function TextData() {
+      this.initialize.apply(this, arguments);
   }
+
+  TextData.prototype = Object.create(Sprite.prototype);
+  TextData.prototype.constructor = TextData;
+
+  TextData.prototype.initialize = function(bitmap, func, params) {
+    Sprite.prototype.initialize.call(this, bitmap);
+    this.setCallbackFunction(func);
+    this.updateTextLog();
+    this._params = params;
+  };
+
+  TextData.prototype.setCallbackFunction = function (cbFunc) {
+    this._callbackFunction = cbFunc;
+  };
+
+  TextData.prototype.updateTextLog = function () {
+    this._log = this._callbackFunction.call();
+  };
+
+  TextData.prototype.startCallbackFunction = function () {
+    this._callbackFunction.call(this);
+  };
+
+  TextData.prototype.getTextProperties = function (n) {
+    return this._params[n];
+  };
+
+  TextData.prototype.drawDisplayText = function () {
+    this.defaultFontSettings();
+    this.bitmap.drawText(this._callbackFunction(this), 0, 0, 120, this._params[0] + 8, 'center');
+  };
+
+  TextData.prototype.isRefresh = function () {
+    var currentText = this._callbackFunction();
+    return currentText.localeCompare(this._log) !== 0;
+  };
+
+  TextData.prototype.clearTextData = function () {
+    this.bitmap.clear();
+  };
+
+  TextData.prototype.update = function () {
+    Sprite.prototype.update.call(this);
+    if(this.isRefresh()) {
+      this.clearTextData();
+      this.drawDisplayText();
+      this.updateTextLog();
+    }
+  };
+
+  TextData.prototype.standardFontFace = function() {
+    if(RS.HUD.param.bUseCustomFont) {
+      return RS.HUD.param.szCustomFontName;
+    } else {
+      if (navigator.language.match(/^zh/)) {
+          return RS.HUD.param.chineseFont;
+      } else if (navigator.language.match(/^ko/)) {
+          return RS.HUD.param.koreanFont;
+      } else {
+          return RS.HUD.param.standardFont;
+      }
+    }
+  };
+
+  TextData.prototype.defaultFontSettings = function() {
+    var param = this._params;
+    this.bitmap.fontFace = this.standardFontFace();
+    this.bitmap.fontSize = param[0];
+    this.bitmap.textColor = param[1];
+    this.bitmap.outlineColor = param[2];
+    this.bitmap.outlineWidth = param[3];
+  };
 
   //----------------------------------------------------------------------------
   // HUD
@@ -364,11 +588,22 @@ RS.HUD.param = RS.HUD.param || {};
     this.addChild(this._exp);
   };
 
+  HUD.prototype.getTextParams = function(src) {
+    var param = RS.HUD.param;
+    var textProperties = {
+      'HP': [param.hpTextSize, param.szHpColor, param.szHpOutlineColor, param.szHpOutlineWidth],
+      'MP': [param.mpTextSize, param.szMpColor, param.szMpOutlineColor, param.szMpOutlineWidth],
+      'EXP': [param.expTextSize, param.szExpColor, param.szExpOutlineColor, param.szExpOutlineWidth],
+      'LEVEL': [param.levelTextSize, param.szLevelColor, param.szLevelOutlineColor, param.szLevelOutlineWidth]
+    };
+    return textProperties[src];
+  };
+
   HUD.prototype.createText = function() {
-    this._hpText = this.addText(this.getHp.bind(this));
-    this._mpText = this.addText(this.getMp.bind(this));
-    this._expText = this.addText(this.getExp.bind(this));
-    this._levelText = this.addText(this.getLevel.bind(this));
+    this._hpText = this.addText(this.getHp.bind(this), this.getTextParams('HP'));
+    this._mpText = this.addText(this.getMp.bind(this), this.getTextParams('MP'));
+    this._expText = this.addText(this.getExp.bind(this), this.getTextParams('EXP'));
+    this._levelText = this.addText(this.getLevel.bind(this), this.getTextParams('LEVEL'));
   };
 
   HUD.prototype.setPosition = function() {
@@ -376,30 +611,17 @@ RS.HUD.param = RS.HUD.param || {};
     this.setCoord(this._hp, 160, 43);
     this.setCoord(this._mp, 160, 69);
     this.setCoord(this._exp, 83, 91);
-    this.setCoord(this._hpText, 160, 43);
-    this.setCoord(this._mpText, 160, 69);
-    this.setCoord(this._levelText, 60, 71);
-    this.setCoord(this._expText, 120.5, 83);
+    this.setCoord(this._hpText, 160, 53);
+    this.setCoord(this._mpText, 160, 79);
+    this.setCoord(this._levelText, 60, 80);
+    this.setCoord(this._expText, 120.5, 93);
   };
 
-  HUD.prototype.addText = function(strFunc) {
-    var text = new Sprite(new Bitmap(120, 20));
-    text._tmp = strFunc;
-    text._log = strFunc.call(this);
-    text.update = function() {
-      if(this._tmp.call(this) !== this._log) {
-        this.bitmap.clear();
-        this.bitmap.fontSize = 12;
-        this.bitmap.drawText(this._tmp.call(this), 0, 0, 120, 20, 'center');
-        text._log = strFunc.call(this);
-      }
-    };
-
+  HUD.prototype.addText = function(strFunc, params) {
+    var bitmap = new Bitmap(120, params[0] + 8);
+    var text = new TextData(bitmap, strFunc, params);
     this.addChildAt(text, this.children.length);
-
-    text.bitmap.fontSize = 12;
-    text.bitmap.drawText(strFunc(), 0, 0, 120, 20, 'center');
-
+    text.drawDisplayText();
     return text;
   };
 
@@ -468,8 +690,9 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.setCoord = function(s,x,y) {
+    var oy = (s._callbackFunction instanceof Function) ? (s.bitmap.height / 2) : 0;
     s.x = this._hud.x + x;
-    s.y = this._hud.y + y;
+    s.y = this._hud.y + y - oy;
   };
 
   HUD.prototype.update = function() {
@@ -583,10 +806,13 @@ RS.HUD.param = RS.HUD.param || {};
   var _Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
   Scene_Boot.prototype.loadSystemImages = function() {
     _Scene_Boot_loadSystemImages.call(this);
+    if(RS.HUD.param.bUseCustomFont) {
+      Graphics.loadFont(RS.HUD.param.szCustomFontName, RS.HUD.param.szCustomFontSrc);
+    }
     RS.HUD.param.preloadImportantFaces.forEach(function(i) {
       ImageManager.loadFace(i);
     }, this);
-  }
+  };
 
   //----------------------------------------------------------------------------
   // Game_Interpreter

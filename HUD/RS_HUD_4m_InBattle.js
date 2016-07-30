@@ -111,8 +111,10 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.update = function() {
     try {
-      this.updateDeathEffect()
-      this.updateSelectEffect();
+      if(this.inBattle()) {
+        this.updateDeathEffect()
+        this.updateSelectEffect();
+      }
       this._hud.update();
       if(this._face) this._face.update();
       this.paramUpdate();
