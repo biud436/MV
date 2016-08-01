@@ -8,6 +8,11 @@
  * @desc Default Language
  * @default English
  *
+ * @param Enabled Switch ID
+ * @desc if its switch value is the same as status called 'ON',
+ * you could be able to load a map of being configure for each language.
+ * @default 11
+ *
  * @help
  * The following command calls Localization-Change-function using the plugin command function.
  * For example, If your game offers users the ability to change the language,
@@ -278,7 +283,8 @@
  * //---------------------------------------------------------------------------
  * 2016.02.20 (v1.0.0) - First Release
  * 2016.03.05 (v1.0.1) - Added new function.
- *
+ * 2016.08.01 (v1.0.2) - Added a function that could be able to load a map of
+ * being configure for each language.
  */
 
  var Imported = Imported || {};
@@ -291,7 +297,8 @@
  (function($){
 
   var parameters = PluginManager.parameters('RS_Localization');
-  var __defaultLang = parameters['Default Language'] || "English"
+  var __defaultLang = parameters['Default Language'] || "English";
+  var enabledSwitchID = Number(parameters['Enabled Switch ID'] || 11);
 
   $['afrikaans'] = 'af';
   $['afrikaans_south_africa'] = 'af_ZA';
@@ -584,6 +591,23 @@
   Game_System.prototype.isLangType = function(lang) {
       var lang = RS.Localization.findLanguage(new RegExp("^" + lang, "ig"));
       return $dataSystem.locale.match(RS.Localization.lang[lang]);
+  };
+
+  Game_System.prototype.isLangMap = function () {
+    return $gameSwitches.value(enabledSwitchID);
+  };
+
+  DataManager.loadMapData = function(mapId) {
+      if (mapId > 0) {
+          var filename = 'Map%1.json'.format(mapId.padZero(3));
+          if( $gameSystem.isLangMap() ) {
+              this.loadDataFile('$dataMap', '/' + $dataSystem.locale + '/' + filename);
+            } else {
+              this.loadDataFile('$dataMap', filename);
+          }
+      } else {
+          this.makeEmptyMap();
+      }
   };
 
  })(RS.Localization.lang);
