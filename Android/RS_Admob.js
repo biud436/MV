@@ -1,6 +1,6 @@
 /*:
  * RS_Admob.js
- * @plugindesc Admob
+ * @plugindesc 광고 삽입 플러그인입니다.
  * @author biud436
  *
  * @param --- Android ---
@@ -32,12 +32,13 @@
  * @default
  *
  * @param bannerAtTop
- * @desc 배너를 상단에 표시
+ * @desc 배너를 상단에 표시합니다.
  * true / false
  * @default false
  *
  * @param Testing
- * @desc
+ * @desc 테스트 광고를 표시합니다
+ * true / false
  * @default false
  *
  * @help
@@ -48,11 +49,14 @@
  * 배너광고 제거
  * 전면광고 표시
  * =============================================================================
- * Credit
+ * Cordova Plugin URL
  * =============================================================================
  * https://github.com/sunnycupertino/cordova-plugin-admob-simple
- * by Liming Xie
- * by Sunny Cupertino
+ * =============================================================================
+ * Credit
+ * =============================================================================
+ * Sunny Cupertino
+ * Liming Xie
  */
 
  var Imported = Imported || {};
