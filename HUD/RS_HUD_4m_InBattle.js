@@ -11,7 +11,7 @@
  * @requiredAssets img/pictures/hud_window_empty_inbattle
  *
  * @author biud436
- * @version 1.1.1
+ * @version 1.1.2
  *
  * @param Auto Windows Alignment
  * @desc
@@ -23,7 +23,7 @@
  * 2016.05.21 (v1.0.0) - First Release Date
  * 2016.05.28 (v1.1.0) - Added Active Turn Battle (require YEP_BattleEngineCoreand YEP_X_BattleSysATB)
  * 2016.06.30 (v1.1.1) - Added the parameter that displays the values with commas every three digits.
- * 2016.08.07 (v1.1.2) - Fixed the function called draw icon
+ * 2016.08.07 (v1.1.2) - Fixed the issue of the function for drawing status icon
  */
 
 var Imported = Imported || {};
