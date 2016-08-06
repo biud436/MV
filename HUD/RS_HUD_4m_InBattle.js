@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc This plugin draws the Battle HUD (Addon v1.1.1)
+ * @plugindesc This plugin draws the Battle HUD (Addon v1.1.2)
  *
  * @requiredAssets img/pictures/exr
  * @requiredAssets img/pictures/gauge
@@ -23,6 +23,7 @@
  * 2016.05.21 (v1.0.0) - First Release Date
  * 2016.05.28 (v1.1.0) - Added Active Turn Battle (require YEP_BattleEngineCoreand YEP_X_BattleSysATB)
  * 2016.06.30 (v1.1.1) - Added the parameter that displays the values with commas every three digits.
+ * 2016.08.07 (v1.1.2) - Fixed the function called draw icon
  */
 
 var Imported = Imported || {};
@@ -142,8 +143,8 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.drawIcon = function(iconIndex, x, y) {
     var bitmap = ImageManager.loadSystem('IconSet');
-    var pw = Window_Base._icoRS.HUD.param.nWidth;
-    var ph = Window_Base._icoRS.HUD.param.nHeight;
+    var pw = Window_Base._iconWidth;
+    var ph = Window_Base._iconHeight;
     var sx = iconIndex % 16 * pw;
     var sy = Math.floor(iconIndex / 16) * ph;
     this._Iconlayer.bitmap.blt(bitmap, sx, sy, pw, ph, x, y);
