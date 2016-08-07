@@ -50,6 +50,7 @@
  * 2016.07.20 (v1.1.0b) - Added hyphen(-) and three plugin parameters.
  * 2016.07.21 (v1.1.0c) - Fixed the bug that is separating wrong identifier.
  * 2016.07.25 (v1.1.0d) - Fixed default save file id.
+ * 2016.08.07 (v1.1.0e) - Fixed save bug.
  */
 
 var Imported = Imported || {};
@@ -722,7 +723,7 @@ function Window_PluginDesc() {
 
   Scene_PluginManager.prototype.onSavefileOk = function() {
     $gameSystem.onBeforeSave();
-    if (DataManager.saveGame(fastLoadFileId)) {
+    if (DataManager.saveRefreshGame(fastLoadFileId)) {
         this.onSaveSuccess();
         if(_previewWindow) {
 
@@ -758,7 +759,7 @@ function Window_PluginDesc() {
     SoundManager.playBuzzer();
   };
 
-  Scene_PluginManager.onLoadfileOk = function() {
+  Scene_PluginManager.onLoadfileOk = function(fastLoadFileId) {
     if (DataManager.loadGame(fastLoadFileId)) {
       this.onLoadSuccess();
     } else {
@@ -811,18 +812,59 @@ function Window_PluginDesc() {
   };
 
   //============================================================================
+  // Game_Temp
+  //
+  //
+
+  Game_Temp.prototype.setRefreshMode = function (b) {
+    this._refreshMode = b;
+  };
+
+  Game_Temp.prototype.isRefreshMode = function () {
+    return this._refreshMode;
+  };
+
+  //============================================================================
+  // DataManager
+  //
+  //
+
+  var alias_DataManager_makeSavefileInfo = DataManager.makeSavefileInfo;
+  DataManager.makeSavefileInfo = function() {
+      var info = alias_DataManager_makeSavefileInfo.call(this);
+      if($gameTemp.isRefreshMode()) info.refresh = true;
+      return info;
+  };
+
+  DataManager.saveRefreshGame = function (fastLoadFileId) {
+    $gameTemp.setRefreshMode(true);
+    return DataManager.saveGame(fastLoadFileId);
+  };
+
+  DataManager.existsRefreshVariable = function (saveFileId) {
+    var info = DataManager.loadSavefileInfo(saveFileId);
+    if(info && info.refresh) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  //============================================================================
   // Scene_Boot
   //
   //
 
   var alias_Scene_Boot_start = Scene_Boot.prototype.start;
   Scene_Boot.prototype.start = function() {
-    if(StorageManager.exists(fastLoadFileId)) {
+    if(DataManager.existsRefreshVariable(fastLoadFileId) &&
+      StorageManager.exists(fastLoadFileId)) {
       Scene_Base.prototype.start.call(this);
       SoundManager.preloadImportantSounds();
       this.checkPlayerLocation();
       DataManager.setupNewGame();
-      Scene_PluginManager.onLoadfileOk();
+      Scene_PluginManager.onLoadfileOk(fastLoadFileId);
       document.title = $dataSystem.gameTitle;
     } else {
       alias_Scene_Boot_start.call(this);
