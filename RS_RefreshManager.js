@@ -5,7 +5,7 @@
  *
  * @param Save File ID
  * @desc Auto Save
- * @default temp_quick
+ * @default 1
  *
  * @param Show Preview Window
  * @desc Indicate whether or not the preview window is visible.
@@ -668,6 +668,7 @@ function Window_PluginDesc() {
 
   Scene_PluginManager.prototype.create = function () {
     Scene_Base.prototype.create.call(this);
+    this.createBackground();
     this.createWindowLayer();
     this.createAllWindows();
   };
@@ -694,6 +695,12 @@ function Window_PluginDesc() {
     // RefreshManager.clear();
 
     this._windowPluginManager = null;
+  };
+
+  Scene_PluginManager.prototype.createBackground = function() {
+      this._backgroundSprite = new Sprite();
+      this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
+      this.addChild(this._backgroundSprite);
   };
 
   Scene_PluginManager.prototype.createAllWindows = function () {
