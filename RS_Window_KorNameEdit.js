@@ -81,6 +81,7 @@
  * 2016.04.05 (v1.5.0) - Fixed a bug that causes to delete the text automatically
  * when you can type Hangul text of length less than 2.
  * 2016.06.18 (v1.6.0) - Fixed the inheritance structure, and the parameter called 'askText'.
+ * 2016.08.09 (v1.6.1) - Fixed shouldPreventDefault function of Input class.
  */
 
 var Imported = Imported || {};
@@ -117,6 +118,22 @@ Imported.Window_KorNameEdit = true;
     'KoreanFonts': parameters['Korean Fonts'] || 'Dotum, AppleGothic, sans-serif',
     'DefaultFonts': parameters['Default Fonts'] || 'GameFont',
   };
+
+  var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
+  var dialog_Input_shouldPreventDefault = function(keyCode) {
+      switch (keyCode) {
+      case 33:    // pageup
+      case 34:    // pagedown
+      case 37:    // left arrow
+      case 38:    // up arrow
+      case 39:    // right arrow
+      case 40:    // down arrow
+          return true;
+      }
+      return false;
+  };
+
+
   //===========================================================================
   // TextBox Class
   //===========================================================================
@@ -130,6 +147,7 @@ Imported.Window_KorNameEdit = true;
     this._editWindow = _editWindow;
     this.createTextBox();
     this.getFocus();
+    this.startToConvertInput();
   };
 
   TextBox.prototype.createTextBox = function() {
@@ -159,12 +177,22 @@ Imported.Window_KorNameEdit = true;
     document.body.appendChild(this._textBox);
   };
 
+  TextBox.prototype.startToConvertInput = function () {
+    Input._shouldPreventDefault = dialog_Input_shouldPreventDefault;
+  };
+
+  TextBox.prototype.startToOriginalInput = function () {
+    Input._shouldPreventDefault = original_Input_shouldPreventDefault;
+  };
+
+
   TextBox.prototype.setEvent = function(func) {
     this._textBox.onchange = func;
   };
 
   TextBox.prototype.terminateTextBox = function() {
     document.body.removeChild(this._textBox);
+    this.startToOriginalInput();
   };
 
   TextBox.prototype.onKeyDown = function(e) {
