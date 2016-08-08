@@ -1,6 +1,6 @@
 /*:
  * RS_InputDialog.js
- * @plugindesc RS.InputDialog.js (plugin in development)
+ * @plugindesc This plugin allows you to display Text Edit Box on the screen.
  * @author biud436
  *
  * @param textBox Width
