@@ -1,36 +1,45 @@
 /*:
  * RS_InputDialog.js
- * @plugindesc This plugin allows you to display Text Edit Box on the screen.
+ * @plugindesc this plugin allows you to display Text Edit Box on the screen.
  * @author biud436
  *
  * @param textBox Width
- * @desc
+ * @desc Sets the width of Text Box.
  * @default 488
  *
  * @param textBox Height
- * @desc
+ * @desc Sets the height of Text Box.
  * @default 36
  *
  * @param variable ID
- * @desc
+ * @desc Sets an id of the game variables.
  * @default 3
  *
  * @param debug
- * @desc
+ * @desc whether this determines the alert window.
  * @default false
  *
  * @param Text
- * @desc
+ * @desc Sets the string that is the top of the text box.
  * @default Please enter the value...
  *
  * @help
  * =============================================================================
  * Plugin Commands
  * =============================================================================
+ * - Opens Input Dialog.
  * InputDialog open
+ *
+ * - Changes the width of Input Dialog.
  * InputDialog width 488
+ *
+ * - Changes the text of Input Dialog for representing the description.
  * InputDialog text Please enter the string...
+ *
+ * - Changes an id of the variable for saving the value.
  * InputDialog variableID 3
+ *
+ * - Displays a alert window of the browser when you are pressing the enter
  * InputDialog debug true
  * =============================================================================
  * Change Log
