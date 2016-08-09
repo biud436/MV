@@ -16,7 +16,7 @@
  * @default 3
  *
  * @param debug
- * @desc whether this determines the alert window.
+ * @desc Whether this determines the alert window.
  * @default false
  *
  * @param Text
