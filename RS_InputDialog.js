@@ -54,6 +54,7 @@
  * =============================================================================
  * 2016.08.09(v1.0.0) - First Release.
  * 2016.08.09(v1.0.1) - Added Background Color.
+ * 2016.08.10(v1.0.1A) - Added ID Variables.
  */
 
 var Imported = Imported || {};
@@ -75,6 +76,10 @@ function Scene_InputDialog() {
   var debug = Boolean(parameters['debug'] === 'true');
   var localText = String(parameters['Text'] || 'Test Message');
   var backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
+
+  var szTextBoxId = 'md_textBox';
+  var szFieldId = 'md_inputField';
+
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -100,9 +105,11 @@ function Scene_InputDialog() {
   TextBox.IS_NOT_CHAR = 32;
   TextBox.KEYS_ARRAY = 255;
 
-  TextBox.prototype.initialize = function()  {
-    this.prepareElement();
-    this.createTextBox();
+  TextBox.prototype.initialize = function(fieldID, textBoxID)  {
+    this._fieldId = fieldID;
+    this._textBoxID = textBoxID;
+    this.prepareElement(fieldID);
+    this.createTextBox(textBoxID);
     this.getFocus();
     this.setRect();
     this.startToConvertInput();
@@ -116,10 +123,13 @@ function Scene_InputDialog() {
     Input._shouldPreventDefault = original_Input_shouldPreventDefault;
   };
 
-  TextBox.prototype.createTextBox = function() {
+  TextBox.prototype.createTextBox = function(id) {
+
+    var self = this;
+
     this._textBox = document.createElement('input');
     this._textBox.type = "text";
-    this._textBox.id = "md_textBox";
+    this._textBox.id = id;
     this._textBox.style.opacity = 255;
     this._textBox.style.zIndex = 1000;
     this._textBox.autofocus = false;
@@ -139,7 +149,7 @@ function Scene_InputDialog() {
     this._textBox.onkeydown = this.onKeyDown.bind(this);
 
     // 화면에 에디트박스를 표시한다.
-    var field = document.getElementById('md_inputField');
+    var field = document.getElementById(this._fieldId);
     field.appendChild(this._textBox);
 
     // 에디트 박스를 캔버스 중앙에 정렬합니다.
@@ -147,8 +157,8 @@ function Scene_InputDialog() {
 
     window.onresize = function () {
       if(SceneManager._scene instanceof Scene_InputDialog) {
-        var field = document.getElementById('md_inputField');
-        var textBox = document.getElementById('md_textBox');
+        var field = document.getElementById(self._fieldId);
+        var textBox = document.getElementById(self._textBoxID);
         if(field && textBox) {
             Graphics._centerElement(field);
             Graphics._centerElement(textBox);
@@ -162,15 +172,15 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.setRect = function () {
-    var textBox = document.getElementById('md_textBox');
+    var textBox = document.getElementById(this._textBoxID);
     textBox.style.fontSize = (textBoxHeight - 4) + 'px';
     textBox.style.width = textBoxWidth + 'px';
     textBox.style.height = textBoxHeight + 'px';
   };
 
-  TextBox.prototype.prepareElement = function() {
+  TextBox.prototype.prepareElement = function(id) {
     var field = document.createElement('div');
-    field.id = 'md_inputField';
+    field.id = id;
     field.style.position = 'absolute';
     field.style.left = '0';
     field.style.top = '0';
@@ -185,14 +195,14 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.setEvent = function(func) {
-    var textBox = document.getElementById('md_textBox');
+    var textBox = document.getElementById(this._textBoxID);
     textBox.onchange = func;
     this._func = func;
   };
 
   TextBox.prototype.terminateTextBox = function() {
-    var field = document.getElementById('md_inputField');
-    var textBox = document.getElementById('md_textBox');
+    var field = document.getElementById(this._fieldId);
+    var textBox = document.getElementById(this._textBoxID);
     field.removeChild(textBox);
     document.body.removeChild(field);
     this.startToOriginalInput();
@@ -224,17 +234,17 @@ function Scene_InputDialog() {
   }
 
   TextBox.prototype.getTextLength = function() {
-    var textBox = document.getElementById('md_textBox');
+    var textBox = document.getElementById(this._textBoxID);
     return textBox.value.length;
   };
 
   TextBox.prototype.getFocus = function() {
-    var textBox = document.getElementById('md_textBox');
+    var textBox = document.getElementById(this._textBoxID);
     textBox.focus();
   };
 
   TextBox.prototype.getText = function () {
-    var textBox = document.getElementById('md_textBox');
+    var textBox = document.getElementById(this._textBoxID);
     return textBox.value;
   };
 
@@ -312,7 +322,7 @@ function Scene_InputDialog() {
   };
 
   Scene_InputDialog.prototype.createTextBox = function () {
-    this._textBox = new TextBox();
+    this._textBox = new TextBox(szFieldId, szTextBoxId);
     this._textBox.setEvent(this.okResult.bind(this));
   };
 
