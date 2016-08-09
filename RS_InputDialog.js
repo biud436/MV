@@ -23,6 +23,10 @@
  * @desc Sets the string that is the top of the text box.
  * @default Please enter the value...
  *
+ * @param Background Color
+ * @desc Sets a background color of the text box.
+ * @default rgba(255, 255, 255, 0.8)
+ *
  * @help
  * =============================================================================
  * Plugin Commands
@@ -41,10 +45,15 @@
  *
  * - Displays a alert window of the browser when you are pressing the enter
  * InputDialog debug true
+ *
+ * - Changes a background color of the text box.
+ * InputDialog backgroundColor rgba(255, 255, 255, 0.8)
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
  * 2016.08.09(v1.0.0) - First Release.
+ * 2016.08.09(v1.0.1) - Added Background Color.
  */
 
 var Imported = Imported || {};
@@ -65,6 +74,7 @@ function Scene_InputDialog() {
   var variableID = Number(parameters[''] || 3);
   var debug = Boolean(parameters['debug'] === 'true');
   var localText = String(parameters['Text'] || 'Test Message');
+  var backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -121,6 +131,7 @@ function Scene_InputDialog() {
     this._textBox.style.right = 0;
     this._textBox.style.bottom = 0;
     this._textBox.style.fontSize = (textBoxHeight - 4) + 'px';
+    this._textBox.style.backgroundColor = backgroundColor;
     this._textBox.style.width = textBoxWidth + 'px';
     this._textBox.style.height = textBoxHeight + 'px';
 
@@ -344,6 +355,9 @@ function Scene_InputDialog() {
             break;
           case 'debug':
             debug = Boolean(args[1] === 'true');
+            break;
+          case 'backgroundColor':
+            backgroundColor = args.slice(1, args.length).join('');
             break;
         }
       }
