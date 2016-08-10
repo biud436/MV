@@ -131,7 +131,7 @@ RS.WaveConfig = RS.WaveConfig || {};
 
      this.uniforms.waveHeight = 0.5;
      this.uniforms.waveFrequency = 0.02;
-     this.uniforms.waveTime = 0;
+     this.uniforms.waveTime = 0.0;
      this.uniforms.UVSpeed = 0.25;
      this.uniforms.wavePhase = 6.283185307179586;
 

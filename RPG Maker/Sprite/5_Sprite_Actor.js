@@ -207,7 +207,7 @@ Sprite_Actor.prototype.motionSpeed = function() {
 
 Sprite_Actor.prototype.refreshMotion = function() {
     var actor = this._actor;
-	var motionGuard = Sprite_Actor.MOTIONS['guard'];
+    var motionGuard = Sprite_Actor.MOTIONS['guard'];
     if (actor) {
         if (this._motion === motionGuard && !BattleManager.isInputting()) {
                 return;

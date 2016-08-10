@@ -15,6 +15,7 @@ Sprite_Animation._checker2 = {};
 
 Sprite_Animation.prototype.initialize = function() {
     Sprite.prototype.initialize.call(this);
+    this._reduceArtifacts = true;
     this.initMembers();
 };
 

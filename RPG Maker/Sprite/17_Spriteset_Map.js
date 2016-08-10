@@ -49,7 +49,11 @@ Spriteset_Map.prototype.createParallax = function() {
 };
 
 Spriteset_Map.prototype.createTilemap = function() {
-    this._tilemap = new Tilemap();
+    if (Graphics.isWebGL()) {
+        this._tilemap = new ShaderTilemap();
+    } else {
+        this._tilemap = new Tilemap();
+    }
     this._tilemap.tileWidth = $gameMap.tileWidth();
     this._tilemap.tileHeight = $gameMap.tileHeight();
     this._tilemap.setData($gameMap.width(), $gameMap.height(), $gameMap.data());
@@ -66,8 +70,13 @@ Spriteset_Map.prototype.loadTileset = function() {
         for (var i = 0; i < tilesetNames.length; i++) {
             this._tilemap.bitmaps[i] = ImageManager.loadTileset(tilesetNames[i]);
         }
-        this._tilemap.flags = $gameMap.tilesetFlags();
-        this._tilemap.refresh();
+        var newTilesetFlags = $gameMap.tilesetFlags();
+        this._tilemap.refreshTileset();
+        if (!this._tilemap.flags.equals(newTilesetFlags)) {
+            this._tilemap.refresh();
+        }
+        this._tilemap.flags = newTilesetFlags;
+
     }
 };
 

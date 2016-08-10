@@ -17,7 +17,8 @@ Bitmap.prototype.initialize = function(width, height) {
     this._canvas.width = Math.max(width || 0, 1);
     this._canvas.height = Math.max(height || 0, 1);
     this._baseTexture = new PIXI.BaseTexture(this._canvas);
-    this._baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+    this._baseTexture.mipmap = false;
+    this._baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
     this._image = null;
     this._url = '';
     this._paintOpacity = 255;
@@ -25,6 +26,12 @@ Bitmap.prototype.initialize = function(width, height) {
     this._loadListeners = [];
     this._isLoading = false;
     this._hasError = false;
+
+    /**
+     * Cache entry, for images. In all cases _url is the same as cacheEntry.key
+     * @type CacheEntry
+     */
+    this.cacheEntry = null;
 
     /**
      * The face name of the font.
@@ -86,11 +93,17 @@ Bitmap.prototype.initialize = function(width, height) {
 Bitmap.load = function(url) {
     var bitmap = new Bitmap();
     bitmap._image = new Image();
-    bitmap._image.src = url;
-    bitmap._image.onload = Bitmap.prototype._onLoad.bind(bitmap);
-    bitmap._image.onerror = Bitmap.prototype._onError.bind(bitmap);
     bitmap._url = url;
     bitmap._isLoading = true;
+
+    if(!Decrypter.checkImgIgnore(url) && Decrypter.hasEncryptedImages) {
+        Decrypter.decryptImg(url, bitmap);
+    } else {
+        bitmap._image.src = url;
+        bitmap._image.onload = Bitmap.prototype._onLoad.bind(bitmap);
+        bitmap._image.onerror = Bitmap.prototype._onError.bind(bitmap);
+    }
+
     return bitmap;
 };
 
@@ -107,22 +120,19 @@ Bitmap.snap = function(stage) {
     var height = Graphics.height;
     var bitmap = new Bitmap(width, height);
     var context = bitmap._context;
-    var renderTexture = new PIXI.RenderTexture(width, height);
+    var renderTexture = PIXI.RenderTexture.create(width, height);
     if (stage) {
-        renderTexture.render(stage);
+        Graphics._renderer.render(stage, renderTexture);
         stage.worldTransform.identity();
-    }
-    if (Graphics.isWebGL()) {
-        var gl =  renderTexture.renderer.gl;
-        var webGLPixels = new Uint8Array(4 * width * height);
-        gl.bindFramebuffer(gl.FRAMEBUFFER, renderTexture.textureBuffer.frameBuffer);
-        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, webGLPixels);
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        var canvasData = context.getImageData(0, 0, width, height);
-        canvasData.data.set(webGLPixels);
-        context.putImageData(canvasData, 0, 0);
+        var canvas = null;
+        if (Graphics.isWebGL()) {
+            canvas = Graphics._renderer.extract.canvas(renderTexture);
+        } else {
+            canvas = renderTexture.baseTexture._canvasRenderTarget.canvas;
+        }
+        context.drawImage(canvas, 0, 0);
     } else {
-        context.drawImage(renderTexture.textureBuffer.canvas, 0, 0);
+        //TODO: Ivan: what if stage is not present?
     }
     bitmap._setDirty();
     return bitmap;
@@ -146,6 +156,16 @@ Bitmap.prototype.isReady = function() {
  */
 Bitmap.prototype.isError = function() {
     return this._hasError;
+};
+
+/**
+ * touch the resource
+ * @method touch
+ */
+Bitmap.prototype.touch = function() {
+    if (this.cacheEntry) {
+        this.cacheEntry.touch();
+    }
 };
 
 /**
@@ -253,9 +273,9 @@ Object.defineProperty(Bitmap.prototype, 'smooth', {
         if (this._smooth !== value) {
             this._smooth = value;
             if (this._smooth) {
-                this._baseTexture.scaleMode = PIXI.scaleModes.LINEAR;
+                this._baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
             } else {
-                this._baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+                this._baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
             }
         }
     },
@@ -318,6 +338,31 @@ Bitmap.prototype.blt = function(source, sx, sy, sw, sh, dx, dy, dw, dh) {
             sx + sw <= source.width && sy + sh <= source.height) {
         this._context.globalCompositeOperation = 'source-over';
         this._context.drawImage(source._canvas, sx, sy, sw, sh, dx, dy, dw, dh);
+        this._setDirty();
+    }
+};
+
+/**
+ * Performs a block transfer, using assumption that original image was not modified (no hue)
+ *
+ * @method blt
+ * @param {Bitmap} source The bitmap to draw
+ * @param {Number} sx The x coordinate in the source
+ * @param {Number} sy The y coordinate in the source
+ * @param {Number} sw The width of the source image
+ * @param {Number} sh The height of the source image
+ * @param {Number} dx The x coordinate in the destination
+ * @param {Number} dy The y coordinate in the destination
+ * @param {Number} [dw=sw] The width to draw the image in the destination
+ * @param {Number} [dh=sh] The height to draw the image in the destination
+ */
+Bitmap.prototype.bltImage = function(source, sx, sy, sw, sh, dx, dy, dw, dh) {
+    dw = dw || sw;
+    dh = dh || sh;
+    if (sx >= 0 && sy >= 0 && sw > 0 && sh > 0 && dw > 0 && dh > 0 &&
+        sx + sw <= source.width && sy + sh <= source.height) {
+        this._context.globalCompositeOperation = 'source-over';
+        this._context.drawImage(source._image, sx, sy, sw, sh, dx, dy, dw, dh);
         this._setDirty();
     }
 };
@@ -695,6 +740,9 @@ Bitmap.prototype._drawTextBody = function(text, tx, ty, maxWidth) {
  * @private
  */
 Bitmap.prototype._onLoad = function() {
+    if(Decrypter.hasEncryptedImages) {
+        window.URL.revokeObjectURL(this._image.src);
+    }
     this._isLoading = false;
     this.resize(this._image.width, this._image.height);
     this._context.drawImage(this._image, 0, 0);
@@ -726,5 +774,16 @@ Bitmap.prototype._onError = function() {
  * @private
  */
 Bitmap.prototype._setDirty = function() {
-    this._baseTexture.dirty();
+    this._dirty = true;
+};
+
+/**
+ * updates texture is bitmap was dirty
+ * @method checkDirty
+ */
+Bitmap.prototype.checkDirty = function() {
+    if (this._dirty) {
+        this._baseTexture.update();
+        this._dirty = false;
+    }
 };

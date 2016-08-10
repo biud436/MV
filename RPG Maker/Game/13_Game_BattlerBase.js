@@ -548,7 +548,7 @@ Game_BattlerBase.prototype.mpRate = function() {
 };
 
 Game_BattlerBase.prototype.tpRate = function() {
-    return this.tp / 100;
+    return this.tp / this.maxTp();
 };
 
 Game_BattlerBase.prototype.hide = function() {
