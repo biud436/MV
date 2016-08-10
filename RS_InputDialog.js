@@ -55,6 +55,7 @@
  * 2016.08.09(v1.0.0) - First Release.
  * 2016.08.09(v1.0.1) - Added Background Color.
  * 2016.08.10(v1.0.1A) - Added ID Variables.
+ * 2016.08.10(v1.1.0) - Fixed Window_DialogHelp class into the plugin.
  */
 
 var Imported = Imported || {};
@@ -79,7 +80,6 @@ function Scene_InputDialog() {
 
   var szTextBoxId = 'md_textBox';
   var szFieldId = 'md_inputField';
-
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -271,7 +271,7 @@ function Scene_InputDialog() {
       return this.drawTextEx(text, 0, this.contents.height);
   };
 
-  Window_Help.prototype.refresh = function() {
+  Window_DialogHelp.prototype.refresh = function() {
     this.contents.clear();
     var w = this.textWidthEx(this._text);
     var x = this.width - w - (w / 2);
