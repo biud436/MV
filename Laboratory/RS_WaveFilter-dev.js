@@ -77,7 +77,7 @@ RS.WaveConfig = RS.WaveConfig || {};
 
 (function() {
 
-  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION === "1.3.0");
+  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION === "1.3.1");
 
   /**
   *
@@ -191,6 +191,11 @@ RS.WaveConfig = RS.WaveConfig || {};
     }
   });
 
+  //----------------------------------------------------------------------------
+  // Sprite
+  //
+  //
+
    var alias_Sprite_initialize = Sprite.prototype.initialize;
    Sprite.prototype.initialize = function(bitmap) {
      alias_Sprite_initialize.call(this, bitmap);
@@ -250,14 +255,6 @@ RS.WaveConfig = RS.WaveConfig || {};
        }
    });
 
-   //===========================================================================
-   // RPG Maker VX Ace Sprite Wave Properties
-   //===========================================================================
-   // wave_amp (default value is to 0 ~ 1)
-   // wave_length (default value is to 0 ~ maxHeight)
-   // wave_speed (default value is to 0.25)
-   // wave_phase (default value is to 360)
-   //===========================================================================
    Object.defineProperty(Sprite.prototype, 'wave_amp', {
        get: function() {
            return this._waveFrequency;
@@ -294,10 +291,6 @@ RS.WaveConfig = RS.WaveConfig || {};
        }
    });
 
-   /**
-    * @property Wave
-    * @type Number
-   */
    Object.defineProperty(Sprite.prototype, 'wave', {
        get: function() {
            return this._wave;
@@ -322,18 +315,19 @@ RS.WaveConfig = RS.WaveConfig || {};
 
 })();
 
-//===========================================================================
-// RS.WaveConfig
-//===========================================================================
-
 (function() {
+
+  //----------------------------------------------------------------------------
+  // RS.WaveConfig
+  //
+  //
 
   RS.WaveConfig.setTilemap = function(obj) {
     this._wTileMap = obj;
     if(this._config) {
       obj.setWaveConfig(this._config);
     }
-  }
+  };
 
   RS.WaveConfig.getTilemap = function() {
     return this._wTileMap;
@@ -344,11 +338,16 @@ RS.WaveConfig = RS.WaveConfig || {};
       var config = this.getTilemap().makeWaveConfig();
       return config;
     }
-  }
+  };
 
   RS.WaveConfig.setWaveConfig = function(config) {
     this._config = config;
-  }
+  };
+
+  //----------------------------------------------------------------------------
+  // DataManager
+  //
+  //
 
   var alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
   DataManager.makeSaveContents = function() {
@@ -363,28 +362,31 @@ RS.WaveConfig = RS.WaveConfig || {};
     RS.WaveConfig.setWaveConfig(contents.waveConfig);
   };
 
+  //----------------------------------------------------------------------------
+  // Tilemap
+  //
+  //
+
   var alias_Tilemap_initialize = Tilemap.prototype.initialize;
   Tilemap.prototype.initialize = function() {
     alias_Tilemap_initialize.call(this);
     RS.WaveConfig.setTilemap(this);
-  }
+  };
 
   var alias_Tilemap_update = Tilemap.prototype.update;
   Tilemap.prototype.update = function() {
     alias_Tilemap_update.call(this);
-
     if(this._wave) {
       this._waveFilter.waveTime = Date.now() % 10000 / 10000;
     }
-
-  }
+  };
 
   Tilemap.prototype.setWaveProperty = function(name, value) {
     if(this._wave && !!this._waveFilter[name]) {
         this._waveFilter[name] = value;
         RS.WaveConfig.setWaveConfig(this.makeWaveConfig());
     }
-  }
+  };
 
   Tilemap.prototype.makeWaveConfig = function() {
     var config = {};
@@ -396,7 +398,7 @@ RS.WaveConfig = RS.WaveConfig || {};
       config.UVSpeed = this._waveFilter['UVSpeed'];
     }
     return config;
-  }
+  };
 
   Tilemap.prototype.setWaveConfig = function(config) {
     if(config && config.wave) {
@@ -406,7 +408,7 @@ RS.WaveConfig = RS.WaveConfig || {};
       this.setWaveProperty('waveFrequency', config.waveFrequency);
       this.setWaveProperty('UVSpeed', config.UVSpeed);
     }
-  }
+  };
 
   Object.defineProperty(Tilemap.prototype, 'wave', {
      get: function() {
@@ -431,6 +433,25 @@ RS.WaveConfig = RS.WaveConfig || {};
          }
      }
   });
+
+  //----------------------------------------------------------------------------
+  // ShaderTilemap
+  //
+  //
+
+  var alias_PIXI_RectTileLayer_renderWebGL = PIXI.RectTileLayer.prototype.renderWebGL;
+  PIXI.RectTileLayer.prototype.renderWebGL = function(renderer, useSquare) {
+    alias_PIXI_RectTileLayer_renderWebGL.call(this, renderer, useSquare);
+    var gl = renderer.gl;
+    var textures = this.textures;
+    if (textures.length === 0) return;
+    var len = textures.length;
+    for (var i = 0; i < len; i++) {
+        if (!textures[i] || !textures[i].valid) return;
+        var texture = textures[i].baseTexture;
+    }
+
+  }
 
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
