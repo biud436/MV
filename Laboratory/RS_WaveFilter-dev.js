@@ -442,7 +442,9 @@ RS.WaveConfig = RS.WaveConfig || {};
   var alias_PIXI_RectTileLayer_renderWebGL = PIXI.RectTileLayer.prototype.renderWebGL;
   PIXI.RectTileLayer.prototype.renderWebGL = function(renderer, useSquare) {
     alias_PIXI_RectTileLayer_renderWebGL.call(this, renderer, useSquare);
-    // TODO: to add filter pipeline.
+    if(this.filters && this.filters[0] instanceof PIXI.Filter) {
+      // TODO: to add filter pipeline.
+    }
   }
 
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
