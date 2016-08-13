@@ -50,10 +50,14 @@ RS.ScreenShot = RS.ScreenShot || new function() {};
   $.previewScreenShot = function () {
     var renderer = Graphics._renderer;
     var renderTexture = PIXI.RenderTexture.create(renderer.width, renderer.height);
-    renderer.render(SceneManager._scene, renderTexture);
-    var canvas = renderer.extract.base64(renderTexture);
-    var win = window.open(canvas, '_blank');
-    win.alert('ScreenShot file is saved!');
+    var stage = SceneManager._scene;
+    if(stage) {
+      renderer.render(stage, renderTexture);
+      var canvas = renderer.extract.base64(renderTexture);
+      var win = window.open(canvas, '_blank');
+      console.log(win);
+      win.alert('ScreenShot file is saved!');
+    }
   };
 
   $.takeSnapshot = function() {

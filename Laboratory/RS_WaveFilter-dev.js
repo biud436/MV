@@ -77,7 +77,7 @@ RS.WaveConfig = RS.WaveConfig || {};
 
 (function() {
 
-  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION === "1.3.1");
+  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
 
   /**
   *
@@ -442,15 +442,14 @@ RS.WaveConfig = RS.WaveConfig || {};
   var alias_PIXI_RectTileLayer_renderWebGL = PIXI.RectTileLayer.prototype.renderWebGL;
   PIXI.RectTileLayer.prototype.renderWebGL = function(renderer, useSquare) {
     alias_PIXI_RectTileLayer_renderWebGL.call(this, renderer, useSquare);
-    var gl = renderer.gl;
-    var textures = this.textures;
-    if (textures.length === 0) return;
-    var len = textures.length;
-    for (var i = 0; i < len; i++) {
-        if (!textures[i] || !textures[i].valid) return;
-        var texture = textures[i].baseTexture;
-    }
-
+    // var gl = renderer.gl;
+    // var textures = this.textures;
+    // if (textures.length === 0) return;
+    // var len = textures.length;
+    // for (var i = 0; i < len; i++) {
+    //     if (!textures[i] || !textures[i].valid) return;
+    //     var texture = textures[i].baseTexture;
+    // }
   }
 
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
