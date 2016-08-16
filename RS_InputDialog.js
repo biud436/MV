@@ -46,17 +46,13 @@
  * InputDialog text Please enter the string...
  *
  * - Changes an id of the variable for saving the value.
- * InputDialog RS.InputDialog.Params.variableID 3
+ * InputDialog variableID 3
  *
  * - Displays a alert window of the browser when you are pressing the enter
- * InputDialog RS.InputDialog.Params.debug true
+ * InputDialog debug true
  *
  * - Changes a background color of the text box.
  * InputDialog backgroundColor rgba(255, 255, 255, 0.8)
- *
- * - Changes the direction of content flow of the text box.
- * ﻿InputDialog direction ltr
- * InputDialog direction rtl﻿
  *
  * =============================================================================
  * Change Log
@@ -92,6 +88,17 @@ function Scene_InputDialog() {
 
   RS.InputDialog.Params.szTextBoxId = 'md_textBox';
   RS.InputDialog.Params.szFieldId = 'md_inputField';
+
+  RS.InputDialog.setRect = function () {
+    var textBox = document.getElementById(this._textBoxID);
+    if(textBox) {
+      textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
+      textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
+      textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
+      textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
+      textBox.style.direction = RS.InputDialog.Params.inputDirection;
+    }
+  };
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -190,7 +197,7 @@ function Scene_InputDialog() {
     textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
     textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
     textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
-    textBox.style.direction = RS.InputDialog.Params.inputDirection;    
+    textBox.style.direction = RS.InputDialog.Params.inputDirection;
   };
 
   TextBox.prototype.prepareElement = function(id) {
@@ -371,6 +378,7 @@ function Scene_InputDialog() {
             break;
           case 'width':
             RS.InputDialog.Params.textBoxWidth = Number(args[1] || 488);
+            RS.InputDialog.setRect();
             break;
           case 'text':
             RS.InputDialog.Params.localText = args.slice(1, args.length).join('');
@@ -383,9 +391,7 @@ function Scene_InputDialog() {
             break;
           case 'backgroundColor':
             RS.InputDialog.Params.backgroundColor = args.slice(1, args.length).join('');
-            break;
-          case 'direction':
-            RS.InputDialog.Params.inputDirection = String(args[1] || 'ltr');
+            RS.InputDialog.setRect();
             break;
         }
       }
