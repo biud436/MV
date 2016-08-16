@@ -15,7 +15,7 @@
  * @desc Sets an id of the game variables.
  * @default 3
  *
- * @param debug
+ * @param RS.InputDialog.Params.debug
  * @desc Whether this determines the alert window.
  * @default false
  *
@@ -46,10 +46,10 @@
  * InputDialog text Please enter the string...
  *
  * - Changes an id of the variable for saving the value.
- * InputDialog variableID 3
+ * InputDialog RS.InputDialog.Params.variableID 3
  *
  * - Displays a alert window of the browser when you are pressing the enter
- * InputDialog debug true
+ * InputDialog RS.InputDialog.Params.debug true
  *
  * - Changes a background color of the text box.
  * InputDialog backgroundColor rgba(255, 255, 255, 0.8)
@@ -73,6 +73,7 @@ Imported.RS_InputDialog = true;
 
 var RS = RS || {};
 RS.InputDialog = RS.InputDialog || {};
+RS.InputDialog.Params = RS.InputDialog.Params || {};
 
 function Scene_InputDialog() {
   this.initialize.apply(this, arguments);
@@ -81,16 +82,16 @@ function Scene_InputDialog() {
 (function () {
 
   var parameters = PluginManager.parameters('RS_InputDialog');
-  var textBoxWidth = Number(parameters['textBox Width'] || 488);
-  var textBoxHeight = Number(parameters['textBox Height'] || 36);
-  var variableID = Number(parameters[''] || 3);
-  var debug = Boolean(parameters['debug'] === 'true');
-  var localText = String(parameters['Text'] || 'Test Message');
-  var backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
-  var inputDirection = String(parameters['direction'] || 'ltr');
+  RS.InputDialog.Params.textBoxWidth = Number(parameters['textBox Width'] || 488);
+  RS.InputDialog.Params.textBoxHeight = Number(parameters['textBox Height'] || 36);
+  RS.InputDialog.Params.variableID = Number(parameters[''] || 3);
+  RS.InputDialog.Params.debug = Boolean(parameters['debug'] === 'true');
+  RS.InputDialog.Params.localText = String(parameters['Text'] || 'Test Message');
+  RS.InputDialog.Params.backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
+  RS.InputDialog.Params.inputDirection = String(parameters['direction'] || 'ltr')
 
-  var szTextBoxId = 'md_textBox';
-  var szFieldId = 'md_inputField';
+  RS.InputDialog.Params.szTextBoxId = 'md_textBox';
+  RS.InputDialog.Params.szFieldId = 'md_inputField';
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -147,15 +148,15 @@ function Scene_InputDialog() {
     this._textBox.multiple = false;
     this._textBox.style.imeMode = 'active';
     this._textBox.style.position = 'absolute';
-    this._textBox.style.direction = inputDirection;
     this._textBox.style.top = 0;
     this._textBox.style.left = 0;
     this._textBox.style.right = 0;
     this._textBox.style.bottom = 0;
-    this._textBox.style.fontSize = (textBoxHeight - 4) + 'px';
-    this._textBox.style.backgroundColor = backgroundColor;
-    this._textBox.style.width = textBoxWidth + 'px';
-    this._textBox.style.height = textBoxHeight + 'px';
+    this._textBox.style.direction = RS.InputDialog.Params.inputDirection;
+    this._textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
+    this._textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
+    this._textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
+    this._textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
 
     // 키를 눌렀을 때의 처리
     this._textBox.onkeydown = this.onKeyDown.bind(this);
@@ -174,9 +175,9 @@ function Scene_InputDialog() {
         if(field && textBox) {
             Graphics._centerElement(field);
             Graphics._centerElement(textBox);
-            textBox.style.fontSize = (textBoxHeight - 4) + 'px';
-            textBox.style.width = textBoxWidth + 'px';
-            textBox.style.height = textBoxHeight + 'px';
+            textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
+            textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
+            textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
         }
       }
     };
@@ -185,9 +186,11 @@ function Scene_InputDialog() {
 
   TextBox.prototype.setRect = function () {
     var textBox = document.getElementById(this._textBoxID);
-    textBox.style.fontSize = (textBoxHeight - 4) + 'px';
-    textBox.style.width = textBoxWidth + 'px';
-    textBox.style.height = textBoxHeight + 'px';
+    textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
+    textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
+    textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
+    textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
+    textBox.style.direction = RS.InputDialog.Params.inputDirection;    
   };
 
   TextBox.prototype.prepareElement = function(id) {
@@ -326,23 +329,23 @@ function Scene_InputDialog() {
   Scene_InputDialog.prototype.createText = function () {
     this._text = new Window_DialogHelp(2);
     this._text.x = Graphics.boxHeight / 2 - this._text.width / 2;
-    this._text.y = Graphics.boxHeight / 2 - textBoxHeight - this._text.height;
-    this._text.setText(localText);
+    this._text.y = Graphics.boxHeight / 2 - RS.InputDialog.Params.textBoxHeight - this._text.height;
+    this._text.setText(RS.InputDialog.Params.localText);
     this._text.backOpacity = 0;
     this._text._windowFrameSprite.alpha = 0;
     this.addWindow(this._text);
   };
 
   Scene_InputDialog.prototype.createTextBox = function () {
-    this._textBox = new TextBox(szFieldId, szTextBoxId);
+    this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
     this._textBox.setEvent(this.okResult.bind(this));
   };
 
   Scene_InputDialog.prototype.okResult = function () {
     var text = this._textBox.getText() || '';
-    $gameVariables.setValue(variableID, text);
+    $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
 
-    if(debug) {
+    if(RS.InputDialog.Params.debug) {
       window.alert(text);
     }
 
@@ -367,22 +370,22 @@ function Scene_InputDialog() {
             SceneManager.push(Scene_InputDialog);
             break;
           case 'width':
-            textBoxWidth = Number(args[1] || 488);
+            RS.InputDialog.Params.textBoxWidth = Number(args[1] || 488);
             break;
           case 'text':
-            localText = args.slice(1, args.length).join('');
+            RS.InputDialog.Params.localText = args.slice(1, args.length).join('');
             break;
           case 'variableID':
-            variableID = Number(args[1] || 3);
+            RS.InputDialog.Params.variableID = Number(args[1] || 3);
             break;
           case 'debug':
-            debug = Boolean(args[1] === 'true');
+            RS.InputDialog.Params.debug = Boolean(args[1] === 'true');
             break;
           case 'backgroundColor':
-            backgroundColor = args.slice(1, args.length).join('');
+            RS.InputDialog.Params.backgroundColor = args.slice(1, args.length).join('');
             break;
           case 'direction':
-            inputDirection = String(args[1] || 'ltr');
+            RS.InputDialog.Params.inputDirection = String(args[1] || 'ltr');
             break;
         }
       }
