@@ -62,6 +62,7 @@
  * 2016.08.10 (v1.0.1A) - Added ID Variables.
  * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
  * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
+ * 2016.08.16 (v1.1.1A) - Fixed a whitespace bug.
  */
 
 var Imported = Imported || {};
@@ -381,7 +382,7 @@ function Scene_InputDialog() {
             RS.InputDialog.setRect();
             break;
           case 'text':
-            RS.InputDialog.Params.localText = args.slice(1, args.length).join('');
+            RS.InputDialog.Params.localText = args.slice(1, args.length).join(' ');
             break;
           case 'variableID':
             RS.InputDialog.Params.variableID = Number(args[1] || 3);
