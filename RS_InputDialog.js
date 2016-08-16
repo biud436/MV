@@ -378,7 +378,7 @@ function Scene_InputDialog() {
             backgroundColor = args.slice(1, args.length).join('');
             break;
           case 'direction':
-            inputDirection = String(args[1]);
+            inputDirection = String(args[1] || 'ltr');
             break;
         }
       }
