@@ -27,6 +27,11 @@
  * @desc Sets a background color of the text box.
  * @default rgba(255, 255, 255, 0.8)
  *
+ * @param direction
+ * @desc Sets the direction of content flow.
+ * ltr - Left to Right, rtl - Right to Left
+ * @default ltr
+ *
  * @help
  * =============================================================================
  * Plugin Commands
@@ -52,10 +57,11 @@
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.08.09(v1.0.0) - First Release.
- * 2016.08.09(v1.0.1) - Added Background Color.
- * 2016.08.10(v1.0.1A) - Added ID Variables.
- * 2016.08.10(v1.1.0) - Fixed Window_DialogHelp class into the plugin.
+ * 2016.08.09 (v1.0.0) - First Release.
+ * 2016.08.09 (v1.0.1) - Added Background Color.
+ * 2016.08.10 (v1.0.1A) - Added ID Variables.
+ * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
+ * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
  */
 
 var Imported = Imported || {};
@@ -77,6 +83,7 @@ function Scene_InputDialog() {
   var debug = Boolean(parameters['debug'] === 'true');
   var localText = String(parameters['Text'] || 'Test Message');
   var backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
+  var inputDirection = String(parameters['direction'] || 'ltr');
 
   var szTextBoxId = 'md_textBox';
   var szFieldId = 'md_inputField';
@@ -136,6 +143,7 @@ function Scene_InputDialog() {
     this._textBox.multiple = false;
     this._textBox.style.imeMode = 'active';
     this._textBox.style.position = 'absolute';
+    this._textBox.style.direction = inputDirection;
     this._textBox.style.top = 0;
     this._textBox.style.left = 0;
     this._textBox.style.right = 0;
@@ -368,6 +376,9 @@ function Scene_InputDialog() {
             break;
           case 'backgroundColor':
             backgroundColor = args.slice(1, args.length).join('');
+            break;
+          case 'direction':
+            inputDirection = String(args[1]);
             break;
         }
       }
