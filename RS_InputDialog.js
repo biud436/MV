@@ -54,6 +54,10 @@
  * - Changes a background color of the text box.
  * InputDialog backgroundColor rgba(255, 255, 255, 0.8)
  *
+ * - Changes the direction of content flow of the text box.
+ * ﻿InputDialog direction ltr
+ * InputDialog direction rtl﻿
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
