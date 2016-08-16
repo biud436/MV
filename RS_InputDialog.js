@@ -15,7 +15,7 @@
  * @desc Sets an id of the game variables.
  * @default 3
  *
- * @param RS.InputDialog.Params.debug
+ * @param debug
  * @desc Whether this determines the alert window.
  * @default false
  *
