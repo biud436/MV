@@ -44,6 +44,478 @@ RS.LightConfig = RS.LightConfig || {};
   var f_CoordMin = Number(parameters['coord normalize min'] || 0.4 );
   var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
 
+  //----------------------------------------------------------------------------
+  // gShaderGenerator
+  //
+  //
+
+  var gShaderGenerator = {
+    fillSamplers: function(shader, maxTextures) {
+        var sampleValues = [];
+        for (var i = 0; i < maxTextures; i++)
+        {
+            sampleValues[i] = i;
+        }
+        shader.bind();
+        shader.uniforms.uSamplers = sampleValues;
+
+        var samplerSize = [];
+        for (i = 0; i < maxTextures; i++) {
+            samplerSize.push(1.0 / 2048);
+            samplerSize.push(1.0 / 2048);
+        }
+        shader.uniforms.uSamplerSize = samplerSize;
+    },
+    generateFragmentSrc: function(maxTextures, fragmentSrc) {
+        return fragmentSrc.replace(/%count%/gi, maxTextures)
+            .replace(/%forloop%/gi, this.generateSampleSrc(maxTextures));
+    },
+    generateSampleSrc: function(maxTextures) {
+      var src = '';
+
+      src += '\n';
+      src += '\n';
+
+      src += 'if(vTextureId <= -1.0) {';
+      src += '\n\tcolor = shadowColor;';
+      src += '\n}';
+
+      for (var i = 0; i < maxTextures; i++)
+      {
+          src += '\nelse ';
+
+          if(i < maxTextures-1)
+          {
+              src += 'if(textureId == ' + i + '.0)';
+          }
+
+          src += '\n{';
+          src += '\n\tcolor = texture2D(uSamplers['+i+'], textureCoord * uSamplerSize['+i+']);';
+          src += '\n}';
+      }
+
+      src += '\n';
+      src += '\n';
+
+      return src;
+    }
+  };
+
+    //----------------------------------------------------------------------------
+    // PIXI.tilemap.RectTileShader
+    //
+    //
+
+    PIXI.tilemap.RectTileShader = function(gl, maxTextures) {
+
+      var vertexSrc = [
+      '#define GLSLIFY 1',
+      'attribute vec2 aVertexPosition;',
+
+      'attribute vec2 aTextureCoord;',
+
+      'attribute vec4 aFrame;',
+
+      'attribute vec2 aAnim;',
+
+      'attribute float aTextureId;',
+
+      'uniform mat3 projectionMatrix;',
+
+      'uniform vec2 animationFrame;',
+
+      'varying vec2 vTextureCoord;',
+
+      'varying float vTextureId;',
+
+      'varying vec4 vFrame;',
+
+      'void main(void){',
+
+         'gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
+
+         'vec2 anim = aAnim * animationFrame;',
+
+         'vTextureCoord = aTextureCoord + anim;',
+
+         'vFrame = aFrame + vec4(anim, anim);',
+
+         'vTextureId = aTextureId;',
+
+      '}'
+
+      ].join('\n');
+
+      var fragmentSrc = gShaderGenerator.generateFragmentSrc(maxTextures,  [
+        '#define GLSLIFY 1',
+        'varying vec2 vTextureCoord;',
+
+        'varying vec4 vFrame;',
+
+        'varying float vTextureId;',
+
+        'uniform vec4 shadowColor;',
+
+        'uniform sampler2D uSamplers[%count%];',
+
+        'uniform vec2 uSamplerSize[%count%];',
+
+        'void main(void) {',
+
+        'vec2 textureCoord = clamp(vTextureCoord, vFrame.xy, vFrame.zw);',
+
+        '  float textureId = floor(vTextureId + 0.5);',
+
+        '  vec4 color;',
+
+        '%forloop%',
+
+        '  gl_FragColor = color;',
+
+        '}'
+      ].join('\n'));
+
+      PIXI.Shader.call(this, gl, vertexSrc, fragmentSrc);
+
+      this.maxTextures = maxTextures;
+      this.vertSize = 11;
+      this.vertPerQuad = 4;
+      this.stride = this.vertSize * 4;
+      gShaderGenerator.fillSamplers(this, this.maxTextures);
+
+    };
+
+    PIXI.tilemap.RectTileShader.prototype = Object.create(PIXI.Shader.prototype);
+    PIXI.tilemap.RectTileShader.prototype.constructor = PIXI.tilemap.RectTileShader;
+    PIXI.tilemap.RectTileShader.prototype.createVao = function (renderer, vb) {
+      var gl = renderer.gl;
+      return renderer.createVao()
+          .addIndex(this.indexBuffer)
+          .addAttribute(vb, this.attributes.aVertexPosition, gl.FLOAT, false, this.stride, 0)
+          .addAttribute(vb, this.attributes.aTextureCoord, gl.FLOAT, false, this.stride, 2 * 4)
+          .addAttribute(vb, this.attributes.aFrame, gl.FLOAT, false, this.stride, 4 * 4)
+          .addAttribute(vb, this.attributes.aAnim, gl.FLOAT, false, this.stride, 8 * 4)
+          .addAttribute(vb, this.attributes.aTextureId, gl.FLOAT, false, this.stride, 10 * 4);
+    };
+
+    //----------------------------------------------------------------------------
+    // PIXI.tilemap.SquareTileShader
+    //
+    //
+
+    PIXI.tilemap.SquareTileShader = function (gl, maxTextures) {
+        var vertexSrc = [
+        '#define GLSLIFY 1',
+        'attribute vec2 aVertexPosition;',
+
+        'attribute vec2 aTextureCoord;',
+
+        'attribute vec2 aAnim;',
+
+        'attribute float aTextureId;',
+
+        'attribute float aSize;',
+
+        'uniform mat3 projectionMatrix;',
+
+        'uniform vec2 samplerSize;',
+
+        'uniform vec2 animationFrame;',
+
+        'uniform float projectionScale;',
+
+        'varying vec2 vTextureCoord;',
+
+        'varying float vSize;',
+
+        'varying float vTextureId;',
+
+        'void main(void){',
+
+           'gl_Position = vec4((projectionMatrix * vec3(aVertexPosition + aSize * 0.5, 1.0)).xy, 0.0, 1.0);',
+
+          ' gl_PointSize = aSize * projectionScale;',
+
+           'vTextureCoord = aTextureCoord + aAnim * animationFrame;',
+
+           'vTextureId = aTextureId;',
+
+          ' vSize = aSize;',
+
+        '}'
+        ].join('\n');
+        PIXI.Shader.call(this, gl,
+            vertexSrc,
+            gShaderGenerator.generateFragmentSrc(maxTextures, [
+              '#define GLSLIFY 1',
+              'varying vec2 vTextureCoord;',
+
+              'varying float vSize;',
+
+              'varying float vTextureId;',
+
+              'uniform vec4 shadowColor;',
+
+              'uniform sampler2D uSamplers[%count%];',
+
+              'uniform vec2 uSamplerSize[%count%];',
+
+              'uniform vec2 pointScale;',
+
+              'void main(void){',
+
+                'float margin = 1.0/vSize;',
+
+                'vec2 clamped = vec2(clamp(gl_PointCoord.x, margin, 1.0 - margin), clamp(gl_PointCoord.y, margin, 1.0 - margin));',
+                'vec2 textureCoord = ((clamped-0.5) * pointScale + 0.5) * vSize + vTextureCoord;',
+
+                'float textureId = vTextureId;',
+
+                'vec4 color;',
+
+                '%forloop%',
+
+                'gl_FragColor = color;',
+
+              '}  '
+            ].join('\n'))
+        );
+        this.maxTextures = maxTextures;
+        this.vertSize = 8;
+        this.vertPerQuad = 1;
+        this.stride = this.vertSize * 4;
+        gShaderGenerator.fillSamplers(this, this.maxTextures);
+
+    }
+
+    PIXI.tilemap.SquareTileShader.prototype = Object.create(PIXI.Shader.prototype);
+    PIXI.tilemap.SquareTileShader.prototype.constructor = PIXI.tilemap.SquareTileShader;
+    PIXI.tilemap.SquareTileShader.prototype.createVao = function (renderer, vb) {
+        var gl = renderer.gl;
+        return renderer.createVao()
+            .addIndex(this.indexBuffer)
+            .addAttribute(vb, this.attributes.aVertexPosition, gl.FLOAT, false, this.stride, 0)
+            .addAttribute(vb, this.attributes.aTextureCoord, gl.FLOAT, false, this.stride, 2 * 4)
+            .addAttribute(vb, this.attributes.aSize, gl.FLOAT, false, this.stride, 4 * 4)
+            .addAttribute(vb, this.attributes.aAnim, gl.FLOAT, false, this.stride, 5 * 4)
+            .addAttribute(vb, this.attributes.aTextureId, gl.FLOAT, false, this.stride, 7 * 4);
+    };
+
+    //----------------------------------------------------------------------------
+    // PIXI.tilemap.TileRenderer
+    //
+    //
+
+    PIXI.tilemap.TileRenderer.prototype.onContextChange = function () {
+        var gl = this.renderer.gl;
+        var maxTextures = this.maxTextures;
+        this.rectShader = new PIXI.tilemap.RectTileShader(gl, maxTextures);
+        this.squareShader = new PIXI.tilemap.SquareTileShader(gl, maxTextures);
+        this.indexBuffer = PIXI.glCore.GLBuffer.createIndexBuffer(gl, this.indices, gl.STATIC_DRAW);
+        this.checkIndexBuffer(2000);
+        this.rectShader.indexBuffer = this.indexBuffer;
+        this.squareShader.indexBuffer = this.indexBuffer;
+        this.vbs = {};
+        this.glTextures = [];
+        this.boundSprites = [];
+        this.initBounds();
+    };
+
+
+    PIXI.tilemap.TileRenderer.prototype.initBounds = function () {
+        var gl = this.renderer.gl;
+        var tempCanvas = document.createElement('canvas');
+        tempCanvas.width = 2048;
+        tempCanvas.height = 2048;
+        // tempCanvas.getContext('2d').clearRect(0, 0, 2048, 2048);
+        for (var i = 0; i < this.maxTextures; i++) {
+            var glt = new PIXI.glCore.GLTexture(gl, 2048, 2048);
+            glt.premultiplyAlpha = true;
+            glt.upload(tempCanvas);
+            glt.enableWrapClamp();
+
+            if (PIXI.tilemap.TileRenderer.SCALE_MODE === PIXI.SCALE_MODES.LINEAR) {
+                glt.enableLinearScaling();
+            } else {
+                glt.enableNearestScaling();
+            }
+
+            this.glTextures.push(glt);
+            var bs = [];
+            for (var j = 0; j < 4; j++) {
+                var spr = new PIXI.Sprite();
+                spr.position.x = 1024 * (j & 1);
+                spr.position.y = 1024 * (j >> 1);
+                bs.push(spr);
+            }
+            this.boundSprites.push(bs);
+        }
+    };
+
+    //----------------------------------------------------------------------------
+    // PIXI.tilemap.CompositeRectTileLayer
+    //
+    //
+
+    PIXI.tilemap.RectTileLayer.prototype.renderWebGL = function(renderer, useSquare) {
+
+        var points = this.pointsBuf;
+        if (points.length === 0) return;
+        var rectsCount = points.length / 9;
+        var tile = renderer.plugins.tile;
+        var gl = renderer.gl;
+        if (!useSquare) {
+            tile.checkIndexBuffer(rectsCount);
+        }
+
+        var shader = tile.getShader(useSquare);
+        var textures = this.textures;
+        if (textures.length === 0) return;
+        var len = textures.length;
+        if (this._tempTexSize < shader.maxTextures) {
+            this._tempTexSize = shader.maxTextures;
+            this._tempSize = new Float32Array(2*shader.maxTextures);
+        }
+        // var samplerSize = this._tempSize;
+        for (var i=0;i<len;i++) {
+            if (!textures[i] || !textures[i].valid) return;
+            var texture = textures[i].baseTexture;
+            // samplerSize[i * 2] = 1.0 / texture.width;
+            // samplerSize[i * 2 + 1] = 1.0 / texture.height;
+        }
+        tile.bindTextures(renderer, textures);
+        // shader.uniforms.uSamplerSize = samplerSize;
+        //lost context! recover!
+        var vb = tile.getVb(this.vbId);
+        if (!vb) {
+            vb = tile.createVb(useSquare);
+            this.vbId = vb.id;
+            this.vbBuffer = null;
+            this.modificationMarker = 0;
+        }
+
+        // SimpleLight Properties
+
+
+        var vao = vb.vao.bind();
+        vb = vb.vb;
+        //if layer was changed, re-upload vertices
+        vb.bind();
+        var vertices = rectsCount * shader.vertPerQuad;
+        if (vertices === 0) return;
+        if (this.modificationMarker != vertices) {
+            this.modificationMarker = vertices;
+            var vs = shader.stride * vertices;
+            if (!this.vbBuffer || this.vbBuffer.byteLength < vs) {
+                //!@#$ happens, need resize
+                var bk = shader.stride;
+                while (bk < vs) {
+                    bk *= 2;
+                }
+                this.vbBuffer = new ArrayBuffer(bk);
+                this.vbArray = new Float32Array(this.vbBuffer);
+                this.vbInts = new Uint32Array(this.vbBuffer);
+                vb.upload(this.vbBuffer, 0, true);
+            }
+
+            var arr = this.vbArray, ints = this.vbInts;
+            //upload vertices!
+            var sz = 0;
+            //var tint = 0xffffffff;
+            var textureId, shiftU, shiftV;
+            if (useSquare) {
+                for (i = 0; i < points.length; i += 9) {
+                    textureId = (points[i+8] >> 2);
+                    shiftU = 1024 * (points[i+8] & 1);
+                    shiftV = 1024 * ((points[i+8] >> 1) & 1);
+                    arr[sz++] = points[i + 2];
+                    arr[sz++] = points[i + 3];
+                    arr[sz++] = points[i + 0] + shiftU;
+                    arr[sz++] = points[i + 1] + shiftV;
+                    arr[sz++] = points[i + 4];
+                    arr[sz++] = points[i + 6];
+                    arr[sz++] = points[i + 7];
+                    arr[sz++] = textureId;
+                }
+            } else {
+                //var tint = 0xffffffff;
+                var tint = -1;
+                for (i = 0;i<points.length;i += 9) {
+                    var eps = 0.5;
+
+                    textureId = (points[i+8] >> 2);
+                    shiftU = 1024 * (points[i+8] & 1);
+                    shiftV = 1024 * ((points[i+8] >> 1) & 1);
+
+                    var x = points[i+2], y = points[i+3];
+
+                    var w = points[i+4], h = points[i+5];
+
+                    var u = points[i] + shiftU, v = points[i+1] + shiftV;
+
+                    var animX = points[i+6], animY = points[i+7];
+
+                    arr[sz++] = x;
+                    arr[sz++] = y;
+                    arr[sz++] = u;
+                    arr[sz++] = v;
+                    arr[sz++] = u + eps;
+                    arr[sz++] = v + eps;
+                    arr[sz++] = u + w - eps;
+                    arr[sz++] = v + h - eps;
+                    arr[sz++] = animX;
+                    arr[sz++] = animY;
+                    arr[sz++] = textureId;
+                    arr[sz++] = x + w;
+                    arr[sz++] = y;
+                    arr[sz++] = u + w;
+                    arr[sz++] = v;
+                    arr[sz++] = u + eps;
+                    arr[sz++] = v + eps;
+                    arr[sz++] = u + w - eps;
+                    arr[sz++] = v + h - eps;
+                    arr[sz++] = animX;
+                    arr[sz++] = animY;
+                    arr[sz++] = textureId;
+                    arr[sz++] = x + w;
+                    arr[sz++] = y + h;
+                    arr[sz++] = u + w;
+                    arr[sz++] = v + h;
+                    arr[sz++] = u + eps;
+                    arr[sz++] = v + eps;
+                    arr[sz++] = u + w - eps;
+                    arr[sz++] = v + h - eps;
+                    arr[sz++] = animX;
+                    arr[sz++] = animY;
+                    arr[sz++] = textureId;
+                    arr[sz++] = x;
+                    arr[sz++] = y + h;
+                    arr[sz++] = u;
+                    arr[sz++] = v + h;
+                    arr[sz++] = u + eps;
+                    arr[sz++] = v + eps;
+                    arr[sz++] = u + w - eps;
+                    arr[sz++] = v + h - eps;
+                    arr[sz++] = animX;
+                    arr[sz++] = animY;
+                    arr[sz++] = textureId;
+                }
+            }
+
+            // if (vs > this.vbArray.length/2 ) {
+            vb.upload(arr, 0, true);
+            // } else {
+            //     var view = arr.subarray(0, vs);
+            //     vb.upload(view, 0);
+            // }
+        }
+
+        if (useSquare)
+            gl.drawArrays(gl.POINTS, 0, vertices);
+        else
+            gl.drawElements(gl.TRIANGLES, rectsCount * 6, gl.UNSIGNED_SHORT, 0);
+    };
+
   //-----------------------------------------------------------------------------
   // SimpleLightFilter
   //
