@@ -1,5 +1,5 @@
 /*:
- * RS_WaveFilter-dev.js
+ * RS_WaveFilter.js
  * @plugindesc This plugin applies the wave effect to the all objects by using the Fragment Shader.
  * @date 2016.01.12
  * @version 1.4.0
@@ -32,7 +32,7 @@
  * 2016.02.16 (v1.3.0) - Fixed Bug (After the player came back to Menu, you had to set the wave effect again)
  * 2016.02.26 (v1.3.1) - Fixed the default padding value of the sprite. (default value is to 512)
  * 2016.03.03 (v1.3.2) - Added new Sprite Properties (wave_amp, wave_speed, wave_length, wave_phase)
- * 2016.08.17 (v1.4.0) - Supported for RPG Maker MV 1.3.0 (This filter does not support for the time being in tilemap.)
+ * 2016.08.17 (v1.4.0) - Fixed the issue that is not working in RMMV 1.3.0 (This filter does not support for the time being in Tile-map)
  *
  * - Terms of Use
  * Free for commercial and non-commercial use
