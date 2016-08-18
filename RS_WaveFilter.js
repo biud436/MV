@@ -58,7 +58,7 @@
  * 2016.02.26 (v1.3.1) - Fixed the default padding value of the sprite. (default value is to 512)
  * 2016.03.03 (v1.3.2) - Added new Sprite Properties (wave_amp, wave_speed, wave_length, wave_phase)
  * 2016.08.17 (v1.4.0) - Fixed the issue that is not working in RMMV 1.3.0 (This filter does not support for the time being in Tile-map)
- * 2016.08.18 (v1.5.0) - supports a wave filter in ShaderTilemap.
+ * 2016.08.18 (v1.5.0) - Supports a wave filter in ShaderTilemap.
  *
  * - Terms of Use
  * Free for commercial and non-commercial use
@@ -388,7 +388,6 @@ RS.WaveConfig = RS.WaveConfig || {};
        this._sprite.texture = this._renderTexture;
        this._sprite.x = startX;
        this._sprite.y = startY;
-       this._sprite.worldAlpha = 0.5;
        this._sprite.anchor.x = (tw) / this._frameWidth;
        this._sprite.anchor.y = (th) /  this._frameHeight;
        this._sprite.worldTransform = this.worldTransform;
