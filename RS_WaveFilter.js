@@ -331,7 +331,12 @@ RS.WaveConfig = RS.WaveConfig || {};
        this._waveFilter = null;
    };
 
+   var alias_CompositeRectTileLayer_renderWebGL = $.CompositeRectTileLayer.prototype.renderWebGL;
    $.CompositeRectTileLayer.prototype.renderWebGL = function (renderer) {
+       if($gameSystem && !!$gameSystem.getWaveEnabled && !$gameSystem.getWaveEnabled()) {
+         return alias_CompositeRectTileLayer_renderWebGL.call(this, renderer);
+       }
+
        var gl = renderer.gl;
        var shader = renderer.plugins.tile.getShader(this.useSquare);
 
