@@ -2,7 +2,7 @@
  * RS_WaveFilter.js
  * @plugindesc This plugin applies the wave effect to the all objects by using the Fragment Shader.
  * @date 2016.01.12
- * @version 1.4.0
+ * @version 1.5.0
  *
  * @author biud436
  *
@@ -12,8 +12,33 @@
  * The following code applies the wave effect to Sprite.
  * http://biud436.tistory.com/17
  *
- *  - Type 2 (Tilemap)
- * This filter does not support for the time being in tilemap.
+ * - Type 2 (Tilemap)
+ *
+ * The following plugin commands applies the wave effect to Tilemap.
+ * This plugin contains these six types the plugin commands.
+ *
+ * This plugin commands allows you to enable or disable the wave effect
+ *
+ * Tilemap_Wave Enable
+ * Tilemap_Wave Disable
+ *
+ * This plugin commands allows you to set the speed of the wave effect.
+ * the x is a floating-point number between 0 and 2.
+ * Default value is to 2.0. But the fragment shader does not use this value.
+ *
+ * Tilemap_Wave waveSpeed x
+ *
+ * This plugin commands allows you to set the amplitude of the wave effect.
+ * the x is a floating-point number between 0 and 1.
+ * Default value is to 0.02
+ *
+ * Tilemap_Wave waveFrequency x
+ *
+ * This plugin commands allows you to set the UV speed of the wave effect.
+ * the x is a floating-point number between 0 and 1.
+ * Default value is to 0.25
+ *
+ * Tilemap_Wave UVSpeed x
  *
  *=============================================================================
  * RPG Maker VX Ace Sprite Wave Properties
@@ -33,6 +58,7 @@
  * 2016.02.26 (v1.3.1) - Fixed the default padding value of the sprite. (default value is to 512)
  * 2016.03.03 (v1.3.2) - Added new Sprite Properties (wave_amp, wave_speed, wave_length, wave_phase)
  * 2016.08.17 (v1.4.0) - Fixed the issue that is not working in RMMV 1.3.0 (This filter does not support for the time being in Tile-map)
+ * 2016.08.18 (v1.5.0) - supports a wave filter in ShaderTilemap.
  *
  * - Terms of Use
  * Free for commercial and non-commercial use
@@ -45,7 +71,7 @@ Imported.RS_WaveFilter = true;
 var RS = RS || {};
 RS.WaveConfig = RS.WaveConfig || {};
 
-(function() {
+(function($) {
 
   var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
   var isWebGL = PIXI.utils.isWebGLSupported();
@@ -111,6 +137,7 @@ RS.WaveConfig = RS.WaveConfig || {};
      this.uniforms.wavePhase = 6.283185307179586;
 
      this.enabled = true;
+     this.resolution = 1;
 
   };
 
@@ -280,14 +307,184 @@ RS.WaveConfig = RS.WaveConfig || {};
            }
            this.filters = [this._waveFilter];
          } else {
-           this.filters = this.filters.filter(function(i) {
-             if(i.constructor.name === 'WaveFilter') {
-               return false;
-             }
-             return true;
-            });
+           this.filters = [new PIXI.filters.VoidFilter()];
          }
        }
    });
 
-})();
+   var alias_CompositeRectTileLayer_initialize = $.CompositeRectTileLayer.prototype.initialize;
+   $.CompositeRectTileLayer.prototype.initialize = function (zIndex, bitmaps, useSquare, texPerChild) {
+       alias_CompositeRectTileLayer_initialize.call(this, zIndex, bitmaps, useSquare, texPerChild);
+
+       var gl = Graphics._renderer.gl;
+
+       // Calculrate Screen
+       this._frameWidth = gl.drawingBufferWidth;
+       this._frameHeight = gl.drawingBufferHeight;
+       this._tilemapMargin = 48 + 20;
+
+       // Create RenderTexture
+       this._renderTexture = PIXI.RenderTexture.create(this._frameWidth + this._tilemapMargin,
+                                                       this._frameHeight + this._tilemapMargin,
+                                                       PIXI.SCALE_MODES.NEAREST);
+       this._sprite = null;
+       this._waveFilter = null;
+   };
+
+   $.CompositeRectTileLayer.prototype.renderWebGL = function (renderer) {
+       var gl = renderer.gl;
+       var shader = renderer.plugins.tile.getShader(this.useSquare);
+
+       renderer.setObjectRenderer(renderer.plugins.tile);
+       renderer.bindShader(shader);
+       //TODO: dont create new array, please
+       this._globalMat = this._globalMat || new PIXI.Matrix();
+       renderer._activeRenderTarget.projectionMatrix.copy(this._globalMat).append(this.worldTransform);
+       shader.uniforms.projectionMatrix = this._globalMat.toArray(true);
+       shader.uniforms.shadowColor = this.shadowColor;
+       if (this.useSquare) {
+           var tempScale = this._tempScale = (this._tempScale || [0, 0]);
+           tempScale[0] = this._globalMat.a >= 0 ? 1 : -1;
+           tempScale[1] = this._globalMat.d < 0 ? 1 : -1;
+           var ps = shader.uniforms.pointScale = tempScale;
+           shader.uniforms.projectionScale = Math.abs(this.worldTransform.a) * renderer.resolution;
+       }
+       var af = shader.uniforms.animationFrame = renderer.plugins.tile.tileAnim;
+
+       var currentRenderTarget = renderer._activeRenderTarget;
+       var target = this._renderTexture;
+
+       renderer.reset();
+
+       renderer.bindRenderTexture(target);
+
+       var layers = this.children;
+       for (var i = 0; i < layers.length; i++) {
+           renderer.render(layers[i], this._renderTexture);
+       }
+
+       renderer.bindRenderTarget(currentRenderTarget);
+
+       // Create the sprite
+       if(!this._sprite) {
+        this._sprite = new Sprite();
+        this._sprite.origin = new Point();
+        this._sprite.texture = this._renderTexture;
+        this._sprite.wave = false;
+       }
+
+       var tw = $gameMap.tileWidth();
+       var th = $gameMap.tileHeight();
+
+       this._sprite.origin.x = $gameMap.displayX() * tw;
+       this._sprite.origin.y = $gameMap.displayY() * th;
+
+       var ox = Math.floor(this._sprite.origin.x);
+       var oy = Math.floor(this._sprite.origin.y);
+       var startX = Math.floor((ox - 20) / tw);
+       var startY = Math.floor((oy - 20) / th);
+
+       // Update Sprite
+       this._sprite.texture = this._renderTexture;
+       this._sprite.x = startX;
+       this._sprite.y = startY;
+       this._sprite.worldAlpha = 0.5;
+       this._sprite.anchor.x = (tw) / this._frameWidth;
+       this._sprite.anchor.y = (th) /  this._frameHeight;
+       this._sprite.worldTransform = this.worldTransform;
+
+       if($gameSystem && $gameSystem.getWaveEnabled) {
+         this._sprite.wave = $gameSystem.getWaveEnabled() || false;
+         this._sprite.wave_amp = $gameSystem.getWaveFrequency() || 0.02;
+         this._sprite.wave_phase = $gameSystem.getWavePhase() || 360;
+         this._sprite.wave_speed = $gameSystem.getUVSpeed() || 0.25;
+       }
+
+       if(this._sprite.wave) {
+          this._sprite.waveUpdate();
+       }
+
+       renderer.render(this._sprite);
+
+   };
+
+   //----------------------------------------------------------------------------
+   // Game_System
+   //
+   //
+
+   var alias_Game_System_initialize = Game_System.prototype.initialize;
+   Game_System.prototype.initialize = function() {
+     alias_Game_System_initialize.call(this);
+     this.initWaveProperty();
+   };
+
+   Game_System.prototype.initWaveProperty = function () {
+     this._waveProp = {
+       'wave': false,
+       'waveHeight': Graphics.boxHeight,
+       'waveFrequency': 0.02,
+       'waveTime': 0.0,
+       'UVSpeed': 0.25,
+       'wavePhase': 360
+     };
+   };
+
+   Game_System.prototype.setWaveProperty = function (name, value) {
+     if(this._waveProp) {
+       this._waveProp[name] = value;
+       return this._waveProp[name];
+     }
+     return 0.0;
+   };
+
+   Game_System.prototype.getWaveEnabled = function () {
+     return this._waveProp.wave;
+   };
+
+   Game_System.prototype.getWaveHeight = function () {
+     return this._waveProp.waveHeight;
+   };
+
+   Game_System.prototype.getWaveFrequency = function () {
+     return this._waveProp.waveFrequency;
+   };
+
+   Game_System.prototype.getWaveTime = function () {
+     return this._waveProp.waveTime;
+   };
+
+   Game_System.prototype.getUVSpeed = function () {
+     return this._waveProp.UVSpeed;
+   };
+
+   Game_System.prototype.getWavePhase = function () {
+     return this._waveProp.wavePhase;
+   };
+
+   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+   Game_Interpreter.prototype.pluginCommand = function(command, args) {
+       alias_Game_Interpreter_pluginCommand.call(this, command, args);
+       if(command === "Tilemap_Wave") {
+         switch(args[0]) {
+           case 'Enable':
+             $gameSystem.setWaveProperty('wave', true);
+             break;
+           case 'Disable':
+             $gameSystem.setWaveProperty('wave', false);
+             break;
+           case 'waveSpeed':
+             $gameSystem.setWaveProperty('waveSpeed', Number(args[1]));
+             break;
+           case 'waveFrequency':
+             $gameSystem.setWaveProperty('waveFrequency', Number(args[1]));
+             break;
+           case 'UVSpeed':
+             $gameSystem.setWaveProperty('UVSpeed', Number(args[1]));
+             break;
+         }
+       }
+   };
+
+
+})(PIXI.tilemap);
