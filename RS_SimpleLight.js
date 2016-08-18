@@ -42,7 +42,7 @@ RS.LightConfig = RS.LightConfig || {};
 
   var parameters = PluginManager.parameters('RS_SimpleLight');
   var f_CoordMin = Number(parameters['coord normalize min'] || 0.4 );
-  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION === "1.3.0");
+  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
 
   //-----------------------------------------------------------------------------
   // SimpleLightFilter

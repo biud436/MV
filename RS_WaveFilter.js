@@ -324,8 +324,8 @@ RS.WaveConfig = RS.WaveConfig || {};
        this._tilemapMargin = 40;
 
        // Create RenderTexture
-       this._renderTexture = PIXI.RenderTexture.create(this._frameWidth + this._tilemapMargin,
-                                                       this._frameHeight + this._tilemapMargin,
+       this._renderTexture = PIXI.RenderTexture.create(this._frameWidth,
+                                                       this._frameHeight,
                                                        PIXI.SCALE_MODES.NEAREST);
        this._sprite = null;
        this._waveFilter = null;
@@ -393,8 +393,10 @@ RS.WaveConfig = RS.WaveConfig || {};
        this._sprite.texture = this._renderTexture;
        this._sprite.x = startX * tw - ox;
        this._sprite.y = startY * th - oy;
-       this._sprite.anchor.x = (20 + this._sprite.x) / this._frameWidth;
-       this._sprite.anchor.y = (20 + this._sprite.y) /  this._frameHeight;
+       this._sprite.scale.x = 1.0;
+       this._sprite.scale.y = 1.0;
+       this._sprite.anchor.x = (this._sprite.x) / this._frameWidth;
+       this._sprite.anchor.y = (this._sprite.y) /  this._frameHeight;
        this._sprite.worldTransform = this.worldTransform;
 
        if($gameSystem && $gameSystem.getWaveEnabled) {
