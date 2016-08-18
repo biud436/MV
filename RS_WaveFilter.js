@@ -321,7 +321,7 @@ RS.WaveConfig = RS.WaveConfig || {};
        // Calculrate Screen
        this._frameWidth = gl.drawingBufferWidth;
        this._frameHeight = gl.drawingBufferHeight;
-       this._tilemapMargin = 48 + 20;
+       this._tilemapMargin = 40;
 
        // Create RenderTexture
        this._renderTexture = PIXI.RenderTexture.create(this._frameWidth + this._tilemapMargin,
@@ -386,10 +386,10 @@ RS.WaveConfig = RS.WaveConfig || {};
 
        // Update Sprite
        this._sprite.texture = this._renderTexture;
-       this._sprite.x = startX;
-       this._sprite.y = startY;
-       this._sprite.anchor.x = (tw) / this._frameWidth;
-       this._sprite.anchor.y = (th) /  this._frameHeight;
+       this._sprite.x = startX * tw - ox;
+       this._sprite.y = startY * th - oy;
+       this._sprite.anchor.x = (20 + this._sprite.x) / this._frameWidth;
+       this._sprite.anchor.y = (20 + this._sprite.y) /  this._frameHeight;
        this._sprite.worldTransform = this.worldTransform;
 
        if($gameSystem && $gameSystem.getWaveEnabled) {
