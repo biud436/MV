@@ -1,29 +1,30 @@
 /*:
  * RS_EventName.js
  *
- * @version 1.3.5
+ * @version 1.3.6
  *
- * @plugindesc This plugin displays an event's name above a head (1.3.5)
+ * @plugindesc (v1.3.6) This plugin displays an event's name above a head.
  * @author biud436
  *
  * @param text Size
- * @desc text Size
+ * @desc Changes a text size
  * @default 16
  *
  * @param Show Player Text
- * @desc Show Player Text (true / false)
+ * @desc Shows player's name on its head
+ * (true / false)
  * @default true
  *
  * @param Boat
- * @desc Boat Name
+ * @desc Changes Boat Name
  * @default Boat
  *
  * @param Ship
- * @desc Ship Name
+ * @desc Changes Ship Name
  * @default Ship
  *
  * @param AirShip
- * @desc AirShip Name
+ * @desc Changes AirShip Name
  * @default AirShip
  *
  * @help
@@ -41,6 +42,7 @@
  * 2016.05.20 (v1.3.3) - Fixed issues that can cause an increase of opacity and the memory leak.
  * 2016.05.21 (v1.3.4) - Fixed issue that causes the memory leak.
  * 2016.05.28 (v1.3.5) - Fixed Color Bug.
+ * 2016.08.20 (v1.3.6) - Fixed the issue that was not working the name toggle function.
  */
 
 var Imported = Imported || {};
@@ -71,6 +73,11 @@ function Sprite_VehicleName() {
   var airshipName = String(parameters['AirShip'] || 'AirShip');
   var shipName = String(parameters['Ship'] || 'Ship');
   var boatName = String(parameters['Boat'] || 'Boat');
+
+  //----------------------------------------------------------------------------
+  // Vector2
+  //
+  //
 
   Vector2.prototype.constructor = Vector2;
 
@@ -206,6 +213,11 @@ function Sprite_VehicleName() {
       return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
   };
 
+  //----------------------------------------------------------------------------
+  // Sprite_Name
+  //
+  //
+
   Sprite_Name.prototype = Object.create(Sprite.prototype);
   Sprite_Name.prototype.constructor = Sprite_Name;
 
@@ -302,6 +314,11 @@ function Sprite_VehicleName() {
       this.updateRotation();
   };
 
+  //----------------------------------------------------------------------------
+  // TouchInput
+  //
+  //
+
   var alias_TouchInput_onMouseMove = TouchInput._onMouseMove;
   TouchInput._onMouseMove = function(event) {
     alias_TouchInput_onMouseMove.call(this, event);
@@ -311,6 +328,11 @@ function Sprite_VehicleName() {
       Sprite_Name.MOUSE_EVENT.set(x, y);
     }
   };
+
+  //----------------------------------------------------------------------------
+  // Sprite_PlayerName
+  //
+  //
 
   Sprite_PlayerName.prototype = Object.create(Sprite_Name.prototype);
   Sprite_PlayerName.prototype.constructor = Sprite_PlayerName;
@@ -331,7 +353,8 @@ function Sprite_VehicleName() {
   };
 
   Sprite_PlayerName.prototype.isReady = function() {
-      return ($gameParty.members().length > 0) && (!this.isTransparent());
+      return ( $gameParty.members().length > 0 ) &&
+              ( !this.isTransparent() ) && showPlayerText === 'true' ;
   };
 
   Sprite_PlayerName.prototype.drawName = function() {
@@ -343,11 +366,16 @@ function Sprite_VehicleName() {
       Sprite_Name.prototype.update.call(this);
   };
 
+  //----------------------------------------------------------------------------
+  // Sprite_VehicleName
+  //
+  //
+
   Sprite_VehicleName.prototype = Object.create(Sprite_Name.prototype);
   Sprite_VehicleName.prototype.constructor = Sprite_VehicleName;
 
   Sprite_VehicleName.prototype.initialize = function(data) {
-      this._name = data.name;
+      this._name = this.getName(data.name);
       Sprite_Name.prototype.initialize.call(this, data);
   };
 
@@ -356,7 +384,7 @@ function Sprite_VehicleName() {
   };
 
   Sprite_VehicleName.prototype.isReady = function() {
-      return true;
+      return showPlayerText === 'true';
   };
 
   Sprite_VehicleName.prototype.isErased = function() {
@@ -367,6 +395,27 @@ function Sprite_VehicleName() {
       var name = this._name || "Vehicle";
       this.bitmap.drawText(name, 0, 0, 120, 40, 'center');
   };
+
+  Sprite_VehicleName.prototype.getName = function (type) {
+    switch (type) {
+      case 'airship':
+        return airshipName;
+        break;
+      case 'ship':
+        return shipName;
+        break;
+      case 'boat':
+        return boatName;
+        break;
+      default:
+        return type;
+    }
+  };
+
+  //----------------------------------------------------------------------------
+  // Spriteset_Map
+  //
+  //
 
   var alias_Spriteset_Map_createCharacters = Spriteset_Map.prototype.createCharacters;
   Spriteset_Map.prototype.createCharacters = function() {
@@ -383,9 +432,9 @@ function Sprite_VehicleName() {
 
         var color = [];
         var character = i._character;
-        var constructor = character.constructor.name;
+        var _constructor = character.constructor.name;
 
-        switch(constructor) {
+        switch(_constructor) {
 
           case 'Game_Player':
             this._nameLayer.addChild(new Sprite_PlayerName({
@@ -435,6 +484,11 @@ function Sprite_VehicleName() {
 
       }, this);
   };
+
+  //----------------------------------------------------------------------------
+  // Scene_Map
+  //
+  //
 
   var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {

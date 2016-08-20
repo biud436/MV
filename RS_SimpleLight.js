@@ -1,6 +1,6 @@
 /*:
  * RS_SimpleLight.js
- * @plugindesc  * This plugin applies the lighting effect to the all objects
+ * @plugindesc This plugin applies the lighting effect to the all objects
  * by using the Fragment Shader, allows you to give a feeling to explore a dark terrain.
  * @author biud436
  *
@@ -38,405 +38,452 @@ Imported.RS_SimpleLight = true;
 var RS = RS || {};
 RS.LightConfig = RS.LightConfig || {};
 
-(function() {
+function LightSprite() {
+  this.initialize.apply(this, arguments);
+};
+
+(function($) {
+
+  // This is possible to set printing more details error.
+  'use strict';
 
   var parameters = PluginManager.parameters('RS_SimpleLight');
   var f_CoordMin = Number(parameters['coord normalize min'] || 0.4 );
   var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
+  var isWebGL = PIXI.utils.isWebGLSupported();
+  var isUseCanvas = Utils.isOptionValid('canvas');
+  if(isUseCanvas) {
+    console.error('This plugin does not support in Canvas Mode');
+    return;
+  }
+
+  function rs_parseFloat1(value) {
+    return parseFloat(value).toFixed(1);
+  }
 
   //-----------------------------------------------------------------------------
   // SimpleLightFilter
   //
   // This class creates a light by utilizing a Vertex Shader and Fragment Shader.
 
-if(!isFilterPIXI4) {
+  PIXI.SimpleLightFilter = function() {
 
-  PIXI.SimpleLightFilter = function()
-  {
-     PIXI.AbstractFilter.call( this );
+      var vertexSrc = [
+        '#define GLSLIFY 1',
 
-     this.passes = [this];
+        'attribute vec2 aVertexPosition;',
+        'attribute vec2 aTextureCoord;',
+        'uniform mat3 projectionMatrix;',
 
-     this.uniforms = {
-         u_LightPos: {type: '3f', value: {x: 1.0 , y: 1.0, z: 1.0}},
-         brightness: {type: '1f', value: 1.0},
-         tight: {type: '1f', value: 8.0},
-         offset: {type: '2f', value:{x:0.5, y:0.5}},
-         angle: {type: '1f', value:5},
-         radius: {type: '1f', value:0.3},
-         coordMin : {type: '1f', value: f_CoordMin},
-         v_tone: {type: '3fv', value: [1.0,1.0,1.0]}
-     };
+        'varying vec2 vTextureCoord;',
 
-     // The Fragment Shader can change each the Pixel's color.
-     this.fragmentSrc = [
-       'precision mediump float;',
+        'void main(void){',
+        '    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
+        '    vTextureCoord = aTextureCoord;',
+        '}'
+      ].join('\n');
 
-       'varying vec2 vTextureCoord;',
-       'varying vec4 vColor;',
+      var fragmentSrc = [
+        '#define GLSLIFY 1',
 
-       'uniform sampler2D uSampler;',
+        'precision mediump float;',
 
-       'uniform vec3 u_LightPos;',
-       'uniform float brightness;',
-       'uniform float tight;',
+        'uniform sampler2D uSampler;',
 
-       'uniform float radius;',
-       'uniform float angle;',
-       'uniform vec2 offset;',
+        'uniform vec3 u_LightPos;',
+        'uniform float brightness;',
+        'uniform float tight;',
+        'uniform float angle;',
+        'uniform vec2 offset;',
 
-       'uniform float coordMin;',
+        'uniform float coordMin;',
+        'uniform vec3 v_tone;',
 
-       'uniform vec3 v_tone;',
+        'varying vec2 vTextureCoord;',
 
-       'void main(void) {',
+        'void main(void) {',
 
-         '   vec2 test_coord = vTextureCoord - offset;',
-         '   float test_distance = length(test_coord);',
-         '   float diffuse = 1.0;',
-         '   vec2 test_offset = offset;',
+        '  vec2 vTestCoord = vTextureCoord - offset;',
+        '  float test_distance = length(vTestCoord);',
+        '  float diffuse = 1.0;',
+        '  vec2 vTestOffset = offset;',
 
-        //======================================================================
-        //
-        //======================================================================
-         '   vec3 coord = clamp(normalize(vec3(vTextureCoord.x, vTextureCoord.y, 1.0 )), coordMin, 1.0);',
-         '   float distance = distance(coord, u_LightPos);',
+        // Nomalize
+        '   vec3 coord = clamp(normalize(vec3(vTextureCoord.x, vTextureCoord.y, 1.0 )), coordMin, 1.0);',
+        '   float distance = distance(coord, u_LightPos);',
 
-         // 광원
-         '   vec3 view = normalize(vec3(test_coord, 1.0) - u_LightPos);',
-         '   vec3 lightVector = normalize(coord - u_LightPos);',
+        // Calculate Lighting
+        '   vec3 view = normalize(vec3(vTestCoord, 1.0) - u_LightPos);',
+        '   vec3 vLightVector = normalize(coord - u_LightPos);',
 
-         // 회전 행렬 (벡터)
-         '   float s = sin(angle);',
-         '   float c = cos(angle);',
-         '   coord.x = offset.x * c - offset.y * s;',
-         '   coord.y = offset.x * s + offset.y * c;',
+        // Rotate Matrix
+        '   float s = sin(angle);',
+        '   float c = cos(angle);',
+        '   coord.x = offset.x * c - offset.y * s;',
+        '   coord.y = offset.x * s + offset.y * c;',
 
-         // 입사광 벡터와 법선 벡터 사이의 각도
-         '   diffuse = clamp(dot(-view, coord), 0.5, brightness);',
+        // 입사광 벡터와 법선 벡터 사이의 각도
+        '   diffuse = clamp(dot(-view, coord), 0.5, brightness);',
 
-         // 거리 비율을 적용합니다 (비율 계산)
-         '   diffuse = diffuse * 1.0 / (1.0 + (0.1 * distance ));',
+        // 거리 비율을 적용합니다 (비율 계산)
+        '   diffuse = diffuse * 1.0 / (1.0 + (0.1 * distance ));',
 
-         // 밝기를 항상 30% 으로 설정합니다.
-         '   diffuse = diffuse + 0.3;',
+        // The brightness sets to 30 percent or more.
+        '   diffuse = diffuse + 0.3;',
 
-         // 0.0 이하면 오류가 날 수 있으므로 조건문 처리
-         '   if(diffuse > 0.0) {',
-         '     diffuse = pow(diffuse, tight);',
-         '   }',
+        // if diffuse value is 0.0 or less, it may occur the error.
+        '   if(diffuse > 0.0) {',
+        '     diffuse = pow(diffuse, tight);',
+        '   }',
 
-         //======================================================================
+        '   gl_FragColor = texture2D(uSampler, vTestCoord + vTestOffset) * diffuse;',
 
-       '   gl_FragColor = texture2D(uSampler, test_coord + test_offset) * diffuse;',
+        // Apply the tone
+        '   if (length(vLightVector) > 0.5) {',
+           '  gl_FragColor.rgb = gl_FragColor.rgb * v_tone.rgb;',
+        '   }',
 
-       // Tone 옵션
-       '   if (length(lightVector) > 0.5) {',
-      //  '     gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(gl_FragColor.r * 0.2126 + gl_FragColor.g * 0.7152 + gl_FragColor.b * 0.0722), 1.0);',
+        '}'
+      ].join('\n');
 
-          ' gl_FragColor.rgb = gl_FragColor.rgb * v_tone.rgb;',
-       '   }',
+      PIXI.Filter.call( this, vertexSrc, fragmentSrc);
 
-       '}'
-     ];
+      this.uniforms.u_LightPos = {x: 1.0, y: 1.0, z: 1.0};
+      this.uniforms.brightness = 1.0;
+      this.uniforms.tight = 8.0;
+      this.uniforms.offset = {x: 0.5, y: 0.5};
+      this.uniforms.angle = 5.0;
+      this.uniforms.coordMin = f_CoordMin;
+      this.uniforms.v_tone = {x: 1.0, y: 1.0, z: 1.0};
 
-  };
+      this.padding = 512;
 
-  PIXI.SimpleLightFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-  PIXI.SimpleLightFilter.prototype.constructor = PIXI.SimpleLightFilter;
+      this.enabled = true;
+      this.resolution = 1;
 
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'positionX', {
-      get: function() {
-          return this.uniforms.u_LightPos.value.x;
+    };
+
+    PIXI.SimpleLightFilter.prototype = Object.create( PIXI.Filter.prototype );
+    PIXI.SimpleLightFilter.prototype.constructor = PIXI.SimpleLightFilter;
+
+    Object.defineProperties(PIXI.SimpleLightFilter.prototype, {
+      positionX: {
+        get: function() {
+            return this.uniforms.u_LightPos.x;
+        },
+        set: function(value) {
+          this.uniforms.u_LightPos.x = value;
+        }
       },
-      set: function(value) {
-        this.dirty = true;
-        this.uniforms.u_LightPos.value.x = value * 1.0;
-      }
-  });
-
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'positionY', {
-      get: function() {
-          return this.uniforms.u_LightPos.value.y;
+      positionY: {
+        get: function() {
+            return this.uniforms.u_LightPos.y;
+        },
+        set: function(value) {
+          this.uniforms.u_LightPos.y = value;
+        }
       },
-      set: function(value) {
-        this.dirty = true;
-        this.uniforms.u_LightPos.value.y = value * 1.0;
-      }
-  });
-
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'positionZ', {
-      get: function() {
-          return this.uniforms.u_LightPos.value.z;
+      positionZ: {
+        get: function() {
+            return this.uniforms.u_LightPos.z;
+        },
+        set: function(value) {
+          this.uniforms.u_LightPos.z = value;
+        }
       },
-      set: function(value) {
-        this.dirty = true;
-        this.uniforms.u_LightPos.value.z = value * 1.0;
-      }
-  });
-
-  // The brightness of the light
-  // 기본값이 제일 적절한 값입니다.
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'brightness', {
-      get: function() {
-          return this.uniforms.brightness.value;
+      brightness: {
+        get: function() {
+            return this.uniforms.brightness;
+        },
+        set: function(value) {
+            this.uniforms.brightness = value;
+        }
       },
-      set: function(value) {
-          this.dirty = true;
-          this.uniforms.brightness.value = value * 1.0;
-      }
-  });
-
-  // Range of Light
-  // 값이 높을 수록 광도가 올라가지만 주변이 어두워지면서 잘 보이지 않게 됩니다.
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'tight', {
-      get: function() {
-          return this.uniforms.tight.value;
+      tight: {
+        get: function() {
+            return this.uniforms.tight;
+        },
+        set: function(value) {
+            this.uniforms.tight = value;
+        }
       },
-      set: function(value) {
-          this.dirty = true;
-          this.uniforms.tight.value = value * 1.0;
-      }
-  });
-
-  // Offset
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'offset', {
-      get: function() {
-          return this.uniforms.offset.value;
+      offset: {
+        get: function() {
+            return this.uniforms.offset;
+        },
+        set: function(value) {
+            this.uniforms.offset.x = value.x;
+            this.uniforms.offset.y = value.y;
+        }
       },
-      set: function(value) {
-          this.dirty = true;
-          this.uniforms.offset.value = value;
-      }
-  });
-
-  // Offset
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'angle', {
-      get: function() {
-          return this.uniforms.angle.value;
+      angle: {
+        get: function() {
+            return this.uniforms.angle;
+        },
+        set: function(value) {
+            this.uniforms.angle = value;
+        }
       },
-      set: function(value) {
-          this.dirty = true;
-          this.uniforms.angle.value = value;
-      }
-  });
-
-  // Tone
-  Object.defineProperty(PIXI.SimpleLightFilter.prototype, 'v_tone', {
-      get: function() {
-          return this.uniforms.v_tone.value;
-      },
-      set: function(value) {
-          this.dirty = true;
-          this.uniforms.v_tone.value = value;
-      }
-  });
-
-}
-
-  //-----------------------------------------------------------------------------
-  // RS.LightConfig
-  //
-  //
-
-  RS.LightConfig.setTilemap = function(obj) {
-    this._wTileMap = obj;
-    if(this._config) {
-      obj.setLightConfig(this._config);
-    }
-  }
-
-  RS.LightConfig.getTilemap = function() {
-    return this._wTileMap;
-  };
-
-  RS.LightConfig.makeLightConfig = function() {
-    if(this._wTileMap) {
-      var config = this.getTilemap().makeLightConfig();
-      return config;
-    }
-  }
-
-  RS.LightConfig.setLightConfig = function(config) {
-    this._config = config;
-  }
-
-  //-----------------------------------------------------------------------------
-  // DataManager
-  //
-  // 게임의 저장 및 로드
-
-  var alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
-  DataManager.makeSaveContents = function() {
-    var contents = alias_DataManager_makeSaveContents.call(this);
-    contents.lightConfig = RS.LightConfig.makeLightConfig();
-    return contents;
-  };
-
-  var DataManager_extractSaveContents = DataManager.extractSaveContents;
-  DataManager.extractSaveContents = function(contents) {
-    DataManager_extractSaveContents.call(this, contents);
-    RS.LightConfig.setLightConfig(contents.lightConfig);
-  };
-
-  //-----------------------------------------------------------------------------
-  // Tilemap
-  //
-  // 광원의 위치에 따라 명암을 차등 적용합니다.
-
-  var alias_Tilemap_initialize = Tilemap.prototype.initialize;
-  Tilemap.prototype.initialize = function() {
-    alias_Tilemap_initialize.call(this);
-    RS.LightConfig.setTilemap(this);
-  }
-
-  var alias_Tilemap_update = Tilemap.prototype.update;
-  Tilemap.prototype.update = function() {
-    alias_Tilemap_update.call(this);
-
-    // $gameMap.events().forEach(function(i) {
-    //     if(i.event().note.match(/Light/)) {
-    //       this.updateLightSystem(i);
-    //     }
-    // }.bind(this));
-
-    this.updateLightSystem($gamePlayer);
-  }
-
-  Tilemap.prototype.updateLightSystem = function(light_owner) {
-    if(this._simpleLightFilter && light_owner) {
-      this._simpleLightFilter.positionX = (light_owner.screenX() / Graphics.boxWidth) - 0.5;
-      this._simpleLightFilter.positionY = 1.0 - (light_owner.screenY() / Graphics.boxHeight) - 0.5;
-      this._simpleLightFilter.positionZ = 1.0;
-
-      switch(light_owner.direction()) {
-        case 2:
-          this._simpleLightFilter.angle = (Math.PI / 180) * (135.0 - 90.0);
-          break;
-        case 4:
-          this._simpleLightFilter.angle = (Math.PI / 180) * (135.0 - 180.0);
-          break;
-        case 6:
-          this._simpleLightFilter.angle =  (Math.PI / 180) * (135.0 - 0.0);
-          break;
-        case 8:
-          this._simpleLightFilter.angle = (Math.PI / 180) * (135.0 - 270.0);
-          break;
-      }
-
-    }
-  }
-
-  Tilemap.prototype.setLightProperty = function(name, value) {
-    if(this._light && !!this._simpleLightFilter[name]) {
-        this._simpleLightFilter[name] = value;
-        RS.LightConfig.setLightConfig(this.makeLightConfig());
-    }
-  }
-
-  Tilemap.prototype.makeLightConfig = function() {
-    var config = {};
-    if(this.light) {
-      config.light = this.light;
-      config.tight = this._simpleLightFilter['tight'];
-      config.offset = this._simpleLightFilter['offset'];
-      config.angle = this._simpleLightFilter['angle'];
-      config.radius = this._simpleLightFilter['radius'];
-      config.brightness = this._simpleLightFilter['brightness'];
-      config.positionX = this._simpleLightFilter['positionX'];
-      config.positionY = this._simpleLightFilter['positionY'];
-      config.positionZ = this._simpleLightFilter['positionZ'];
-      config.v_tone = this._simpleLightFilter['v_tone'];
-    }
-    return config;
-  }
-
-  Tilemap.prototype.setLightConfig = function(config) {
-    if(config && config.light) {
-      this.light = true;
-      this.setLightProperty('tight', config.tight);
-      this.setLightProperty('offset', config.offset);
-      this.setLightProperty('angle', config.angle);
-      this.setLightProperty('radius', config.radius);
-      this.setLightProperty('brightness', config.brightness);
-      this.setLightProperty('positionX', config.positionX);
-      this.setLightProperty('positionY', config.positionY);
-      this.setLightProperty('positionZ', config.positionZ);
-      this.setLightProperty('v_tone', config.v_tone);
-    }
-  }
-
-  Object.defineProperty(Tilemap.prototype, 'light', {
-     get: function() {
-         return this._light;
-     },
-     set: function(value) {
-         this._light = value;
-         if(this._light) {
-           if(!this._simpleLightFilter) {
-             this._simpleLightFilter = new PIXI.SimpleLightFilter();
-             this._simpleLightFilter.padding = Graphics.boxHeight;
-           }
-           this.filters = [this._simpleLightFilter];
-           RS.LightConfig.setLightConfig(this.makeLightConfig());
-         } else {
-           this.filters = this.filters.filter(function(i) {
-             if(i.constructor.name === 'SimpleLightFilter') {
-               return false;
-             }
-             return true;
-            });
-         }
-     }
-  });
-
-  //-----------------------------------------------------------------------------
-  // Spriteset_Map
-  //
-  // 화면 밝기에 생기는 문제를 해결하기 위해 추가되었습니다
-  Spriteset_Map.prototype.createDestination = function() {
-      this._destinationSprite = new Sprite_Destination();
-      this._destinationSprite.z = 9;
-      this._baseSprite.addChild(this._destinationSprite);
-  };
-
-  //-----------------------------------------------------------------------------
-  // Game_Interpreter
-  //
-  // 플러그인 커맨드
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_Game_Interpreter_pluginCommand.call(this, command, args);
-      if(command === "RS_SimpleLight") {
-        switch(args[0]) {
-          case 'Enable':
-            RS.LightConfig.getTilemap().light = true;
-            break;
-          case 'Disable':
-            if(!!RS.LightConfig.getTilemap().light) {
-                RS.LightConfig.getTilemap().light = false;
-                RS.LightConfig.getTilemap().filters = null;
-                RS.LightConfig._config = null;
-            }
-            break;
-          case 'Offset':
-            RS.LightConfig.getTilemap().setLightProperty('offset', {x: Number(args[1] || 1.0), y: Number(args[2] || 1.0)} );
-            break;
-          case 'Brightness':
-            RS.LightConfig.getTilemap().setLightProperty('brightness', Number(args[1] || 1.0) * 1.0);
-            break;
-          case 'Tight':
-            RS.LightConfig.getTilemap().setLightProperty('tight', Number(args[1] || 8.0) * 1.0);
-            break;
-          case 'Tone':
-            var r = Number(args[1] || 255) / 255;
-            var g = Number(args[2] || 255) / 255;
-            var b = Number(args[3] || 255) / 255;
-            RS.LightConfig.getTilemap().setLightProperty('v_tone', [r,g,b] );
-            break;
+      v_tone: {
+        get: function() {
+            return this.uniforms.v_tone;
+        },
+        set: function(value) {
+            this.uniforms.v_tone = value;
         }
       }
-  };
+    });
+
+    //--------------------------------------------------------------------------
+    // LightSprite
+    //
+    // This class inherits all of functions from Sprite class.
+
+    LightSprite.prototype = Object.create(Sprite.prototype);
+    LightSprite.prototype.constructor = LightSprite;
+
+    LightSprite.prototype.initialize = function (bitmap) {
+      Sprite.prototype.initialize.call(this, bitmap);
+    };
+
+    LightSprite.prototype.updateLight = function() {
+      if($gamePlayer) this.updateLightSystem($gamePlayer);
+      this.updateProperty();
+    };
+
+    LightSprite.prototype.setValue = function (key) {
+      // this is function for saving
+      if(this.light && this._simpleLightFilter && $gameSystem._lightProp[key]) {
+        this._simpleLightFilter[key] = $gameSystem._lightProp[key];
+      }
+    };
+
+    LightSprite.prototype.updateLightSystem = function(light_owner) {
+      if(this._simpleLightFilter && light_owner) {
+        $gameSystem._lightProp.positionX = (light_owner.screenX() / Graphics.boxWidth) - 0.5;
+        $gameSystem._lightProp.positionY = 1.0 - (light_owner.screenY() / Graphics.boxHeight) - 0.5;
+        $gameSystem._lightProp.positionZ = 1.0;
+
+        switch(light_owner.direction()) {
+          case 2:
+            $gameSystem._lightProp.angle = (Math.PI / 180.0) * (45.0);
+            break;
+          case 4:
+            $gameSystem._lightProp.angle = (Math.PI / 180.0) * (-45.0);
+            break;
+          case 6:
+            $gameSystem._lightProp.angle =  (Math.PI / 180.0) * (0.0);
+            break;
+          case 8:
+            $gameSystem._lightProp.angle = (Math.PI / 180.0) * (135.0);
+            break;
+        }
+
+      }
+    };
+
+    LightSprite.prototype.updateProperty = function () {
+        this.setValue('positionX');
+        this.setValue('positionY');
+        this.setValue('positionZ');
+        this.setValue('brightness');
+        this.setValue('tight');
+        this.setValue('offset');
+        this.setValue('angle');
+        this.setValue('v_tone');
+    };
+
+    Object.defineProperty(LightSprite.prototype, 'light', {
+       get: function() {
+           return this._light;
+       },
+       set: function(value) {
+           this._light = value;
+           if(this._light) {
+             if(!this._simpleLightFilter) {
+               this._simpleLightFilter = new PIXI.SimpleLightFilter();
+               this._simpleLightFilter.padding = Graphics.boxHeight || 624;
+             }
+             this.filters = [this._simpleLightFilter];
+           } else {
+             // if you are not set, it will happen the error.
+             this.filters = [new PIXI.filters.VoidFilter()];
+           }
+       }
+    });
+
+    //----------------------------------------------------------------------------
+    // PIXI.tilemap.CompositeRectTileLayer
+    //
+    // Draw a tilemap to texture by using RenderTexture
+
+    var alias_CompositeRectTileLayer_initialize = $.CompositeRectTileLayer.prototype.initialize;
+    $.CompositeRectTileLayer.prototype.initialize = function (zIndex, bitmaps, useSquare, texPerChild) {
+        alias_CompositeRectTileLayer_initialize.call(this, zIndex, bitmaps, useSquare, texPerChild);
+
+        var gl = Graphics._renderer.gl;
+
+        // Calculrate Screen
+        this._frameWidth = gl.drawingBufferWidth;
+        this._frameHeight = gl.drawingBufferHeight;
+
+        // Create RenderTexture
+        // If it should set PIXI.SCALE_MODES.NEAREST, it will create black lines to upper layer on screen.
+        this._renderTexture = PIXI.RenderTexture.create(this._frameWidth,
+                                                        this._frameHeight,
+                                                        PIXI.SCALE_MODES.NEAREST);
+        this._spriteLight = null;
+    };
+
+    var alias_CompositeRectTileLayer_renderWebGL = $.CompositeRectTileLayer.prototype.renderWebGL;
+    $.CompositeRectTileLayer.prototype.renderWebGL = function (renderer) {
+        if($gameSystem && !!$gameSystem.enabledLight && !$gameSystem.enabledLight()) {
+          return alias_CompositeRectTileLayer_renderWebGL.call(this, renderer);
+        }
+
+        var gl = renderer.gl;
+        var shader = renderer.plugins.tile.getShader(this.useSquare);
+
+        renderer.setObjectRenderer(renderer.plugins.tile);
+        renderer.bindShader(shader);
+        //TODO: dont create new array, please
+        this._globalMat = this._globalMat || new PIXI.Matrix();
+        renderer._activeRenderTarget.projectionMatrix.copy(this._globalMat).append(this.worldTransform);
+        shader.uniforms.projectionMatrix = this._globalMat.toArray(true);
+        shader.uniforms.shadowColor = this.shadowColor;
+        if (this.useSquare) {
+            var tempScale = this._tempScale = (this._tempScale || [0, 0]);
+            tempScale[0] = this._globalMat.a >= 0 ? 1 : -1;
+            tempScale[1] = this._globalMat.d < 0 ? 1 : -1;
+            var ps = shader.uniforms.pointScale = tempScale;
+            shader.uniforms.projectionScale = Math.abs(this.worldTransform.a) * renderer.resolution;
+        }
+        var af = shader.uniforms.animationFrame = renderer.plugins.tile.tileAnim;
+
+        var currentRenderTarget = renderer._activeRenderTarget;
+        var target = this._renderTexture;
+
+        renderer.reset();
+
+        renderer.bindRenderTexture(target);
+
+        var layers = this.children;
+        for (var i = 0; i < layers.length; i++) {
+            renderer.render(layers[i], this._renderTexture);
+        }
+
+        renderer.bindRenderTarget(currentRenderTarget);
+
+        // Create the sprite
+        if(!this._spriteLight) {
+         this._spriteLight = new LightSprite();
+         this._spriteLight.origin = new Point();
+         this._spriteLight.texture = this._renderTexture;
+         // Bind Filter
+         this._spriteLight.light = false;
+        }
+
+        var tw = $gameMap.tileWidth();
+        var th = $gameMap.tileHeight();
+
+        this._spriteLight.origin.x = $gameMap.displayX() * tw;
+        this._spriteLight.origin.y = $gameMap.displayY() * th;
+
+        var ox = Math.floor(this._spriteLight.origin.x);
+        var oy = Math.floor(this._spriteLight.origin.y);
+        var startX = Math.floor((ox - 20) / tw);
+        var startY = Math.floor((oy - 20) / th);
+
+        // Update Sprite
+        this._spriteLight.texture = this._renderTexture;
+        this._spriteLight.x = startX * tw - ox;
+        this._spriteLight.y = startY * th - oy;
+        this._spriteLight.scale.x = 1.0;
+        this._spriteLight.scale.y = 1.0;
+        this._spriteLight.anchor.x = (this._spriteLight.x) / this._frameWidth;
+        this._spriteLight.anchor.y = (this._spriteLight.y) /  this._frameHeight;
+
+        // Update Filter
+        if($gameSystem && $gameSystem.enabledLight()) {
+          this._spriteLight.light = $gameSystem.enabledLight();
+        }
+
+        if(this._spriteLight.light) {
+          this._spriteLight.updateLight();
+        }
+
+        renderer.render(this._spriteLight);
+
+    };
+
+    //----------------------------------------------------------------------------
+    // Game_System
+    //
+    //
+
+    var alias_Game_System_initialize = Game_System.prototype.initialize;
+    Game_System.prototype.initialize = function() {
+      alias_Game_System_initialize.call(this);
+      this.initLightProperty();
+    };
+
+    Game_System.prototype.initLightProperty = function () {
+      this._lightProp = {
+        'light': false,
+        'positionX': 1.0,
+        'positionY': 1.0,
+        'positionZ': 1.0,
+        'brightness': 1.0,
+        'tight': 8.0,
+        'offset': {x: 0.5, y: 0.5},
+        'angle': 5.0,
+        'v_tone': {x: 1.0, y: 1.0, z: 1.0}
+      };
+    };
+
+    Game_System.prototype.setLightProperty = function (name, value) {
+      if(this._lightProp) {
+        this._lightProp[name] = value;
+        return this._lightProp[name];
+      }
+      return 0.0;
+    };
+
+    Game_System.prototype.enabledLight = function () {
+      return this._lightProp['light'];
+    };
+
+    //-----------------------------------------------------------------------------
+    // Game_Interpreter
+    //
+    //
+
+    var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+    Game_Interpreter.prototype.pluginCommand = function(command, args) {
+        alias_Game_Interpreter_pluginCommand.call(this, command, args);
+        if(command === "RS_SimpleLight") {
+          switch(args[0]) {
+            case 'Enable':
+              $gameSystem.setLightProperty('light', true);
+              break;
+            case 'Disable':
+              $gameSystem.setLightProperty('light', false);
+              break;
+            case 'Offset':
+              $gameSystem.setLightProperty('offset', {x: Number(args[1]), y: Number(args[2])});
+              break;
+            case 'Brightness':
+              $gameSystem.setLightProperty('brightness', Number(args[1]));
+              break;
+            case 'Tight':
+              $gameSystem.setLightProperty('tight', Number(args[1]));
+              break;
+            case 'Tone':
+              $gameSystem.setLightProperty('v_tone',  {x: Number(args[1]), y: Number(args[2]), z: Number(args[3])} );
+              break;
+          }
+        }
+    };
 
 
-})();
+})(PIXI.tilemap);
