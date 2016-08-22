@@ -16,6 +16,24 @@
  * 2016.07.15 (v1.0.1) - Fixed the bug and then added plugin parameters
  */
 
+ /*:ko
+  * RS_SaveFileList.js
+  * @plugindesc 세이브 & 로드 스크린샷에 얼굴 그래픽을 설정합니다.
+  * @author biud436
+  *
+  * @param Project Title
+  * @desc 게임 제목을 화면에 그려야 할 지 여부
+  * @default false
+  *
+  * @param Play Time
+  * @desc 플레이 시간을 그려야 할 지 여부
+  * @default true
+  *
+  * @help
+  * 2015.12.21 (v1.0.0) - First Release
+  * 2016.07.15 (v1.0.1) - Fixed the bug and then added plugin parameters
+  */
+
 var Imported = Imported || {};
 Imported.RS_SaveFileList = true;
 

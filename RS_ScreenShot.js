@@ -27,6 +27,34 @@
  * 2016.08.13 (v1.0.2) - Added previewWindow.
  */
 
+ /*:ko
+  * RS_ScreenShot.js
+  * @plugindesc 이 플러그인은 스크린샷 파일을 만듭니다.
+  *
+  * @author biud436
+  * @version 1.0.2
+  * @date 2015.12.22
+  *
+  * @param key
+  * @desc 키 코드를 입력하세요
+  * @default 118
+  *
+  * @param Screenshot Preview Window
+  * @desc 스크린샷을 미리 볼 지 여부를 결정합니다.
+  * @default true
+  *
+  * @reference http://stackoverflow.com/questions/32613060/how-to-take-screenshot-with-node-webkit
+  *
+  * @help
+  * - Key Code Link
+  * https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
+  *
+  * - Change Log
+  * 2015.12.22 (v1.0.0) - First Release.
+  * 2016.03.20 (v1.0.1) - Added parameter called key.
+  * 2016.08.13 (v1.0.2) - Added previewWindow.
+  */
+
 var Imported = Imported || {};
 Imported.RS_ScreenShot = true;
 

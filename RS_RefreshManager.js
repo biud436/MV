@@ -52,6 +52,59 @@
  * 2016.07.25 (v1.1.0d) - Fixed default save file id.
  * 2016.08.07 (v1.1.0e) - Fixed save bug.
  */
+ 
+ /*:ko
+  * RS_RefreshManager.js
+  * @plugindesc 플러그인을 활성화 하거나 비활성화할 수 있는 플러그인입니다.
+  * @author biud436
+  *
+  * @param Save File ID
+  * @desc 세이브 파일의 ID 값을 지정하세요.
+  * @default 1
+  *
+  * @param Show Preview Window
+  * @desc 변경된 플러그인 설정 파일의 내용을 보여줍니다.
+  * @default false
+  *
+  * @param Auto Reload
+  * @desc 자동으로 새로 고침하려면 true, 아니면 false
+  * @default true
+  *
+  * @param Auto closing time
+  * @desc 미리보기 창이 자동으로 창이 닫힙니다. (시간은 Millisecond 단위)
+  * @default 2500
+  *
+  * @param Target Path
+  * @desc
+  * @default /js/plugins.js
+  *
+  * @param Save Path
+  * @desc 다른 곳에 저장을 하고 싶다면 경로를 바꾸세요.
+  * @default /js/plugins.js
+  *
+  * @help
+  * 이 플러그인은 nw.js의 파일 시스템을 사용하며 윈도우즈와 맥에서만 사용이 가능합니다.
+  * 브라우저나 모바일 플랫폼에서는 이용할 수 없습니다.
+  *
+  * =============================================================================
+  * 플러그인 커맨드
+  * =============================================================================
+  *
+  * RefreshManager open
+  *
+  * =============================================================================
+  * 버전 로그
+  * =============================================================================
+  * 2016.05.16 (v0.0.1) - Beta
+  * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
+  * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
+  * window that could be able to show the json file.
+  * 2016.07.12 (v1.1.0a) - Added two plugin parameters about File Path.
+  * 2016.07.20 (v1.1.0b) - Added hyphen(-) and three plugin parameters.
+  * 2016.07.21 (v1.1.0c) - Fixed the bug that is separating wrong identifier.
+  * 2016.07.25 (v1.1.0d) - Fixed default save file id.
+  * 2016.08.07 (v1.1.0e) - Fixed save bug.
+  */
 
 var Imported = Imported || {};
  Imported.RS_RefreshManager = true;

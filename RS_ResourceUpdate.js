@@ -12,7 +12,20 @@
  * @default 0.1.1
  *
  */
-
+ /*:ko
+  * RS_ResourceUpdate.js
+  * @plugindesc 인터넷을 통해 리소스를 다운로드 받을 수 있는 플러그인입니다.
+  * @author biud436
+  *
+  * @param URL_DB
+  * @desc 파일 목록이 있는 파일의 주소를 적어주시기 바랍니다.
+  * @default https://github.com/biud436/MV/raw/master/Laboratory/DBVersion.json
+  *
+  * @param Current Version
+  * @desc 현재 버전을 입력하세요.
+  * @default 0.1.1
+  *
+  */
 var Imported = Imported || {};
 Imported.RS_ResourceUpdate = true;
 
