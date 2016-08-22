@@ -1,6 +1,3 @@
-<div style="list-style: none; margin: 0px; padding: 0px;">
-
-<div style="text-align: left; list-style: none; margin: 0px; padding: 0px;" align="left">
 
 <span style="font-size: 14pt;">**메시지(Messages)**</span><br><br>
 
