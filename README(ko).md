@@ -1,5 +1,5 @@
 
-<span style="font-size: 14pt;">** 메시지(Messages) ** </span><br><br>
+<span style="font-size: 14pt;">**메시지(Messages)** </span><br><br>
 
 [한글 메시지 시스템](https://raw.githubusercontent.com/biud436/MV/master/RS_MessageSystem.js) - 이 플러그인은 영어 위주로 되어있는 기존 텍스트 코드들을 한국어로 사용할 수 있게 해주는 플러그인입니다. <br>
 
