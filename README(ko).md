@@ -1,5 +1,5 @@
 
-<span style="font-size: 14pt;">## 메시지(Messages) ## </span><br><br>
+<span style="font-size: 14pt;">** 메시지(Messages) ** </span><br><br>
 
 [한글 메시지 시스템](https://raw.githubusercontent.com/biud436/MV/master/RS_MessageSystem.js) - 이 플러그인은 영어 위주로 되어있는 기존 텍스트 코드들을 한국어로 사용할 수 있게 해주는 플러그인입니다. <br>
 
@@ -7,7 +7,7 @@
 
 [한글 메시지 시스템 일러스트 애드온](https://raw.githubusercontent.com/biud436/MV/master/RS_AnimatedFace.js) - 큰 일러스트 이미지에 애니메이션 이징을 적용합니다.<br><br>
 
-<span style="font-size: 14pt;">##이벤트(Events)##</span><br><br>
+<span style="font-size: 14pt;">**이벤트(Events)**</span><br><br>
 
 [이벤트 이름 표시 플러그인](https://raw.githubusercontent.com/biud436/MV/master/RS_EventName.js) - 이벤트의 이름을 머리 위에 표시하는 플러그인입니다.<br>
 
@@ -19,7 +19,7 @@
 
 [이벤트 터치](https://raw.githubusercontent.com/biud436/MV/master/RS_EventTouch.js) - 이벤트를 마우스 또는 손가락 터치를 통해 (플레이어의 접근 없이 바로) 실행할 수 있는 간단한 플러그인입니다. <br><br>
 
-<span style="font-size: 14pt;">##오디오(Audio)##</span><br>
+<span style="font-size: 14pt;">**오디오(Audio)**</span><br>
 
 [Only OGG](https://raw.githubusercontent.com/biud436/MV/master/RS_OnlyOGG.js) - <span style="line-height: 1.5;">M4A 파일을 요구하지 않고 오직 OGG 파일만 요구하게 만드는 플러그인입니다.</span><br>
 
@@ -27,7 +27,7 @@
 
 [WAV 파일 재생](https://raw.githubusercontent.com/biud436/MV/master/RS_WaveSupport.js) - 웨이브 파일을 재생할 수 있는 플러그인입니다.<br><br>
 
-<span style="font-size: 14pt;">##윈도우(Window)##</span><br><br>
+<span style="font-size: 14pt;">**윈도우(Window)**</span><br><br>
 
 [한글 이름 입력의 처리](https://raw.githubusercontent.com/biud436/MV/master/RS_Window_KorNameEdit.js) - 한글 이름 입력의 처리 플러그인입니다.<br>
 
@@ -43,7 +43,7 @@
 
 [선택지 위치 변경](https://raw.githubusercontent.com/biud436/MV/master/RS_Window_ChoiceListPosition.js) - 선택지의 위치를 마음대로 변경할 수 있는 플러그인입니다.<br><br>
 
-<span style="font-size: 14pt;">##그래픽(Graphics)##</span><br><br>
+<span style="font-size: 14pt;">**그래픽(Graphics)**</span><br><br>
 
 [하단에 버전 표시](https://raw.githubusercontent.com/biud436/MV/master/RS_VersionLayer.js) - 화면 하단에 버전을 표시하는 플러그인입니다.<br>
 
@@ -55,7 +55,7 @@
 
 [다중 게이지바 전투 애드온](https://raw.githubusercontent.com/biud436/MV/master/HUD/RS_HUD_4m_InBattle.js) - 다중 게이지바 플러그인을 턴제 배틀 시스템에서도 사용할 수 있게하는 확장 애드온입니다. Yanfly's Active Turn Battle 플러그인과 연동됩니다.<br><br>
 
-<span style="font-size: 14pt;">##모바일(Mobile)##</span><br><br>
+<span style="font-size: 14pt;">**모바일(Mobile)**</span><br><br>
 
 [안드로이드 취소 버튼 처리](https://raw.githubusercontent.com/biud436/MV/master/RS_ExitDialog.js) - 안드로이드에서 취소 버튼을 눌렀을 때 게임 종료 여부를 확인하는 대화 상자를 띄웁니다.<br>
 
@@ -63,7 +63,7 @@
 
 [광고 삽입 플러그인](https://raw.githubusercontent.com/biud436/MV/master/Android/RS_Admob.js) - 애드몹을 이용하여 게임 내에 광고를 삽입합니다.<br><br>
 
-<span style="font-size: 14pt;">##아이템(Items)##</span><br><br>
+<span style="font-size: 14pt;">**아이템(Items)**</span><br><br>
 
 [상점 아이템 물가 변동](https://raw.githubusercontent.com/biud436/MV/master/RS_ShopSale.js) - 할인율을 바꾸고자 할 때 사용할 수 있습니다.<br>
 
@@ -71,7 +71,7 @@
 
 [스테이터스 색상 값 변경](http://biud436.blog.me/220604842614) (YEP) - 플러그인 매니저에서 매개변수를 사용하여 스테이터스 영역의 색상을 바꿀 수 있습니다.<br><br>
 
-<span style="font-size: 14pt;">##도구(Utility)##</span><br><br>
+<span style="font-size: 14pt;">**도구(Utility)**</span><br><br>
 
 [스크린샷 파일 만들기](https://raw.githubusercontent.com/biud436/MV/master/RS_ScreenShot.js) - PC에서 스크린샷 파일을 만들 수 있는 플러그인입니다.<br>
 
@@ -111,14 +111,10 @@
 
 [다국어 텍스트 에디터](https://raw.githubusercontent.com/biud436/MV/master/RS_InputDialog.js) - 한국어와 중국어를 고려하지 않은 플러그인이 많은데 이 플러그인은 해당 언어를 포함하여 다양한 언어를 직접 입력할 수 있습니다.<br><br>
 
-<span style="font-size: 14pt;">##네트워킹(Networking)##</span><br><br>
+<span style="font-size: 14pt;">**네트워킹(Networking)**</span><br><br>
 
-<div style="">[Online Chat (Node.js + Socket.io)](https://github.com/biud436/MV/tree/master/Online) - 온라인에서 유저와 채팅을 나눌 수 있는 플러그인으로 소스는 공개되어있지만 아직 개발 중에 있습니다.</div><br>
+[Online Chat (Node.js + Socket.io)](https://github.com/biud436/MV/tree/master/Online) - 온라인에서 유저와 채팅을 나눌 수 있는 플러그인으로 소스는 공개되어있지만 아직 개발 중에 있습니다.<br>
 
-</div>
+<span style="font-size: 14pt;">**기타(Other)**</span><br><br>
 
-<div><span style="font-size: 14pt;">##기타(Other)##</span></div><br><br>
-
-<div>[배틀 로그 숨기기](https://raw.githubusercontent.com/biud436/MV/master/RS_HideBattleLog.js) - 배틀 로그를 숨기는 플러그인입니다.</div><br>
-
-</div>
+[배틀 로그 숨기기](https://raw.githubusercontent.com/biud436/MV/master/RS_HideBattleLog.js) - 배틀 로그를 숨기는 플러그인입니다.<br>
