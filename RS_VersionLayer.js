@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.1.0) This plugin shows the version on the screen.
+ * @plugindesc (v1.1.0) This plugin shows up the version anywhere.
  * @author biud436
  *
  * @param Version
