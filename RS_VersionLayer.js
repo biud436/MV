@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.1.0) This plugin shows up the version anywhere.
+ * @plugindesc (v1.1.1) This plugin shows up the version anywhere.
  * @author biud436
  *
  * @param Version
@@ -42,6 +42,14 @@
  * @desc
  * @default 255
  *
+ * @param -- Position
+ * @desc
+ * @default
+ *
+ * @param Position
+ * @desc Top, Bottom
+ * @default Bottom
+ *
  * @help
  * -----------------------------------------------------------------------------
  * Plugin Commands
@@ -53,7 +61,11 @@
  * -----------------------------------------------------------------------------
  * 2015.12.13 (v1.0.0) - First Release
  * 2016.08.23 (v1.1.0) - Fixed and Added Parameters.
+ * 2016.08.23 (v1.1.1) - Added position parameter
  */
+
+var Imported = Imported || {};
+Imported.RS_VersionLayer = true;
 
 (function () {
 
@@ -67,6 +79,7 @@
   var textAlign = String(parameters['textAlign'] || 'right');
   var visible = Boolean(parameters['visible'] === 'true');
   var opacity = Number(parameters['opaicty'] || 255);
+  var position = String(parameters['Position'] || 'Top');
   var bitmapRefresh = false;
 
   //----------------------------------------------------------------------------
@@ -125,7 +138,16 @@
   }
 
   Scene_Base.prototype.createVersionLayer = function () {
+    var pos = position.toLowerCase();
+    var padding = 1;
     this._versionLayer = new VersionLayer(new Bitmap(Graphics.boxWidth, fontSize + 2));
+    switch (pos) {
+      case 'bottom':
+        this._versionLayer.y = Graphics._renderer.height - fontSize - padding;
+        break;
+      default:
+        this._versionLayer.y = padding;
+    }
   };
 
   Scene_Base.prototype.addVersionLayer = function () {
