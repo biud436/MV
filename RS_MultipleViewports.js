@@ -1,6 +1,6 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc (v1.1.2) This plugin provides the multiple viewports (WebGL only)
+ * @plugindesc (v1.1.4) This plugin provides the multiple viewports (WebGL only)
  * @author biud436
  *
  * @help
