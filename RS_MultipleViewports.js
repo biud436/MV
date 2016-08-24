@@ -1,14 +1,22 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc This plugin provides Multiple Viewport (WebGL only)
+ * @plugindesc (v1.1.2) This plugin provides Multiple Viewport (WebGL only)
  * @author biud436
  *
  * @help
+ * -----------------------------------------------------------------------------
+ * Plugin Commands
+ * -----------------------------------------------------------------------------
+ * MultipleViewport Enable
+ * MultipleViewport Disable
+ * MultipleViewport StartShake shakePower
+ * MultipleViewport EndShake
  * -----------------------------------------------------------------------------
  * Changle Log
  * -----------------------------------------------------------------------------
  * 2016.06.13 (v1.0.0) - First Release.
  * 2016.08.24 (v1.1.0) - Now RPG Maker MV 1.3.0 or more is supported.
+ * 2016.08.24 (v1.1.2) - Added Plugin Commands
  */
 
 var Imported = Imported || {};
@@ -23,6 +31,10 @@ Imported.RS_MultipleViewports = true;
     console.error('This plugin does not support in Canvas Mode');
     return;
   }
+
+  var isMultipleViewport = false;
+  var isShake = 0;
+  var shakePower = 10;
 
   Graphics.getRenderPosition = function(width, height) {
     var positionType = [];
@@ -61,7 +73,6 @@ Imported.RS_MultipleViewports = true;
     self._renderTarget = new PIXI.RenderTarget(gl, self._frameWidth,
                                                     self._frameHeight,
                                                     PIXI.SCALE_MODES.NEAREST);
-
     // Create Sprite
     self._renderSprite = new Sprite();
 
@@ -73,8 +84,10 @@ Imported.RS_MultipleViewports = true;
   }
 
   Graphics.setRenderSprite = function (i) {
-    this._renderSprite.children[i].x = this._rect[i].x;
-    this._renderSprite.children[i].y = this._rect[i].y;
+    var sPower = shakePower * isShake;
+    var shake = (-0.5 + Math.random()) * sPower;
+    this._renderSprite.children[i].x = this._rect[i].x + shake;
+    this._renderSprite.children[i].y = this._rect[i].y + shake;
     this._renderSprite.children[i].texture = this._renderTexture;
     this._renderSprite.children[i].scale.x = 0.5;
     this._renderSprite.children[i].scale.y = 0.5;
@@ -84,12 +97,15 @@ Imported.RS_MultipleViewports = true;
     if (this._skipCount === 0) {
         var startTime = Date.now();
         if (stage) {
-          this._renderer.bindRenderTexture(this._renderTexture);
-          this._renderer.render(stage, this._renderTexture);
-          this._renderer.bindRenderTarget(this._renderTarget);
-          for(var i = 0; i < 4; i++) this.setRenderSprite(i);
-          this._renderer.render(this._renderSprite);
-
+          if(isMultipleViewport) {
+            this._renderer.bindRenderTexture(this._renderTexture);
+            this._renderer.render(stage, this._renderTexture);
+            this._renderer.bindRenderTarget(this._renderTarget);
+            for(var i = 0; i < 4; i++) this.setRenderSprite(i);
+            this._renderer.render(this._renderSprite);
+          } else {
+            this._renderer.render(stage);
+          }
         }
         var endTime = Date.now();
         var elapsed = endTime - startTime;
@@ -100,6 +116,28 @@ Imported.RS_MultipleViewports = true;
         this._rendered = false;
     }
     this.frameCount++;
+  };
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+      alias_Game_Interpreter_pluginCommand.call(this, command, args);
+      if(command === "MultipleViewport") {
+        switch(args[0]) {
+          case 'Enable':
+            isMultipleViewport = true;
+            break;
+          case 'Disable':
+            isMultipleViewport = false;
+            break;
+          case 'StartShake':
+            isShake = 1;
+            shakePower = Number(args[1] || 10);
+            break;
+          case 'EndShake':
+            isShake = 0;
+            break;
+        }
+      }
   };
 
 })();
