@@ -2,6 +2,13 @@
  * Imported.RS_MultipleViewports.js
  * @plugindesc This plugin provides Multiple Viewport (WebGL only)
  * @author biud436
+ *
+ * @help
+ * -----------------------------------------------------------------------------
+ * Changle Log
+ * -----------------------------------------------------------------------------
+ * 2016.06.13 (v1.0.0) - First Release.
+ * 2016.08.24 (v1.1.0) - Now RPG Maker MV 1.3.0 or more is supported.
  */
 
 var Imported = Imported || {};
@@ -9,82 +16,90 @@ Imported.RS_MultipleViewports = true;
 
 (function () {
 
-  if(PIXI.VERSION !== 'v2.2.9') return false;
+  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
+  var isWebGL = PIXI.utils.isWebGLSupported();
+  var isUseCanvas = Utils.isOptionValid('canvas');
+  if(isUseCanvas) {
+    console.error('This plugin does not support in Canvas Mode');
+    return;
+  }
 
-  /**
-   * Renders the stage to its webGL view
-   *
-   * @method render
-   * @param stage {Stage} the Stage element to be rendered
-   */
-  PIXI.WebGLRenderer.prototype.render = function(stage)
-  {
-      // no point rendering if our context has been blown up!
-      if(this.contextLost)return;
-
-      // if rendering a new stage clear the batches..
-      if(this.__stage !== stage)
-      {
-          if(stage.interactive)stage.interactionManager.removeEvents();
-
-          // TODO make this work
-          // dont think this is needed any more?
-          this.__stage = stage;
-      }
-
-      // update the scene graph
-      stage.updateTransform();
-
-      var gl = this.gl;
-
-      // interaction
-      if(stage._interactive)
-      {
-          //need to add some events!
-          if(!stage._interactiveEventsAdded)
-          {
-              stage._interactiveEventsAdded = true;
-              stage.interactionManager.setTarget(this);
-          }
-      }
-      else
-      {
-          if(stage._interactiveEventsAdded)
-          {
-              stage._interactiveEventsAdded = false;
-              stage.interactionManager.setTarget(this);
-          }
-      }
-
-      // make sure we are bound to the main frame buffer
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-      if (this.clearBeforeRender)
-          {
-          if(this.transparent)
-          {
-              gl.clearColor(0, 0, 0, 0);
-          }
-          else
-          {
-              gl.clearColor(stage.backgroundColorSplit[0],stage.backgroundColorSplit[1],stage.backgroundColorSplit[2], 1);
-          }
-
-          gl.clear (gl.COLOR_BUFFER_BIT);
-      }
-
-      gl.viewport(0, 0, this.width / 2, this.height / 2);
-      this.lastRender(stage);
-      gl.viewport(0, this.height / 2, this.width / 2, this.height / 2);
-      this.lastRender(stage);
-      gl.viewport(this.width / 2, 0, this.width / 2, this.height / 2);
-      this.lastRender(stage);
-      gl.viewport(this.width / 2, this.height / 2, this.width / 2, this.height / 2);
-      this.lastRender(stage);
+  Graphics.getRenderPosition = function(width, height) {
+    var positionType = [];
+    positionType[0] = new Rectangle(0, 0, width / 2, height / 2);
+    positionType[1] = new Rectangle(0, height / 2, width / 2, height / 2);
+    positionType[2] = new Rectangle(width / 2, 0, width / 2, height / 2);
+    positionType[3] = new Rectangle(width / 2, height / 2, width / 2, height / 2);
+    return positionType;
   };
 
-  PIXI.WebGLRenderer.prototype.lastRender = function(stage) {
-    this.renderDisplayObject( stage, this.projection );
+  var alias_Graphics__createRenderer = Graphics._createRenderer;
+  Graphics._createRenderer = function() {
+    alias_Graphics__createRenderer.call(this);
+    this._createRenderTexture();
+  };
+
+  Graphics._createRenderTexture = function () {
+    var sprite; var rect; var self = Graphics;
+    if(!self._renderer) { return; }
+    var gl = self._renderer.gl;
+    self._renderSprite = [];
+
+    // Calculrate Screen
+    self._frameWidth = gl.drawingBufferWidth || 816;
+    self._frameHeight = gl.drawingBufferHeight || 624;
+
+    // Create RenderTexture
+    self._renderTexture = PIXI.RenderTexture.create(self._frameWidth,
+                                                    self._frameHeight,
+                                                    PIXI.SCALE_MODES.NEAREST);
+
+    // Create Rect
+    self._rect = self.getRenderPosition(self._frameWidth, self._frameHeight);
+
+    // Create RenderTarget
+    self._renderTarget = new PIXI.RenderTarget(gl, self._frameWidth,
+                                                    self._frameHeight,
+                                                    PIXI.SCALE_MODES.NEAREST);
+
+    // Create Sprite
+    self._renderSprite = new Sprite();
+
+    // Add Child Sprite
+    for(var i = 0; i < 4; i++) {
+      self._renderSprite.addChild(new Sprite());
+    }
+
+  }
+
+  Graphics.setRenderSprite = function (i) {
+    this._renderSprite.children[i].x = this._rect[i].x;
+    this._renderSprite.children[i].y = this._rect[i].y;
+    this._renderSprite.children[i].texture = this._renderTexture;
+    this._renderSprite.children[i].scale.x = 0.5;
+    this._renderSprite.children[i].scale.y = 0.5;
+  };
+
+  Graphics.render = function(stage) {
+    if (this._skipCount === 0) {
+        var startTime = Date.now();
+        if (stage) {
+          this._renderer.bindRenderTexture(this._renderTexture);
+          this._renderer.render(stage, this._renderTexture);
+          this._renderer.bindRenderTarget(this._renderTarget);
+          for(var i = 0; i < 4; i++) this.setRenderSprite(i);
+          this._renderer.render(this._renderSprite);
+
+        }
+        var endTime = Date.now();
+        var elapsed = endTime - startTime;
+        this._skipCount = Math.min(Math.floor(elapsed / 15), this._maxSkip);
+        this._rendered = true;
+    } else {
+        this._skipCount--;
+        this._rendered = false;
+    }
+    this.frameCount++;
   };
 
 })();
