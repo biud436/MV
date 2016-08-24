@@ -22,12 +22,21 @@
  * This is the plugin command you can set the end of the viewport shake.
  * - MultipleViewport EndShake
  *
+ * This is the plugin command you can set an image of certain viewport
+ * (View ID is number between 1 and 4)
+ * - MultipleViewport Image ViewID ImageName
+ *
+ * This is the plugin command you can delete the image of certain viewport
+ * (View ID is number between 1 and 4)
+ * - MultipleViewport ClearImage ViewID
+ *
  * -----------------------------------------------------------------------------
  * Changle Log
  * -----------------------------------------------------------------------------
  * 2016.06.13 (v1.0.0) - First Release.
  * 2016.08.24 (v1.1.0) - Now RPG Maker MV 1.3.0 or more is supported.
  * 2016.08.24 (v1.1.2) - Added Plugin Commands
+ * 2016.08.25 (v1.1.4) - Added the functions that sets an image of certain viewport.
  */
 
 var Imported = Imported || {};
@@ -50,8 +59,8 @@ Imported.RS_MultipleViewports = true;
   Graphics.getRenderPosition = function(width, height) {
     var positionType = [];
     positionType[0] = new Rectangle(0, 0, width / 2, height / 2);
-    positionType[1] = new Rectangle(0, height / 2, width / 2, height / 2);
-    positionType[2] = new Rectangle(width / 2, 0, width / 2, height / 2);
+    positionType[1] = new Rectangle(width / 2, 0, width / 2, height / 2);
+    positionType[2] = new Rectangle(0, height / 2, width / 2, height / 2);
     positionType[3] = new Rectangle(width / 2, height / 2, width / 2, height / 2);
     return positionType;
   };
@@ -92,6 +101,10 @@ Imported.RS_MultipleViewports = true;
       self._renderSprite.addChild(new Sprite());
     }
 
+    self._viewImageCached = [];
+
+    self._renderBounds = new Rectangle(0, 0, self._frameWidth, self._frameHeight);
+
   }
 
   Graphics.setRenderSprite = function (i) {
@@ -99,9 +112,32 @@ Imported.RS_MultipleViewports = true;
     var shake = (-0.5 + Math.random()) * sPower;
     this._renderSprite.children[i].x = this._rect[i].x + shake;
     this._renderSprite.children[i].y = this._rect[i].y + shake;
-    this._renderSprite.children[i].texture = this._renderTexture;
+    if(Graphics.isCheckedViewImage(i)) {
+        this._renderSprite.children[i].texture = this._viewImageCached[i];
+    } else {
+        this._renderSprite.children[i].texture = this._renderTexture;
+    }
     this._renderSprite.children[i].scale.x = 0.5;
     this._renderSprite.children[i].scale.y = 0.5;
+  };
+
+  Graphics.setViewportImage = function (viewID, texture) {
+    this._viewImageCached[viewID - 1] = texture;
+  };
+
+  Graphics.isCheckedViewImage = function (viewID) {
+    var texture = this._viewImageCached[viewID];
+    if(texture instanceof PIXI.Texture) {
+      return !!texture.baseTexture && texture.baseTexture.hasLoaded;
+    } else {
+      return false;
+    }
+  };
+
+  Graphics.clearViewImage = function (viewID) {
+    if(this._viewImageCached[viewID - 1]) {
+        delete this._viewImageCached[viewID - 1];
+    }
   };
 
   Graphics.render = function(stage) {
@@ -146,6 +182,16 @@ Imported.RS_MultipleViewports = true;
             break;
           case 'EndShake':
             isShake = 0;
+            break;
+          case 'Image':
+            var viewID = Number(args[1] || 1);
+            var name = args.slice(2, args.length).join(' ');
+            var imageName = 'img/pictures/' + name + '.png';
+            var texture = PIXI.Texture.fromImage(imageName);
+            Graphics.setViewportImage(viewID.clamp(1, 4), texture);
+            break;
+          case 'ClearImage':
+            Graphics.clearViewImage(Number(args[1]));
             break;
         }
       }
