@@ -1,16 +1,27 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc (v1.1.2) This plugin provides Multiple Viewport (WebGL only)
+ * @plugindesc (v1.1.2) This plugin provides the multiple viewports (WebGL only)
  * @author biud436
  *
  * @help
  * -----------------------------------------------------------------------------
  * Plugin Commands
  * -----------------------------------------------------------------------------
- * MultipleViewport Enable
- * MultipleViewport Disable
- * MultipleViewport StartShake shakePower
- * MultipleViewport EndShake
+ *
+ * This is a plugin command that this can activate the multiple viewports.
+ * If you call this plugin command, You can be using the multiple viewports.
+ * - MultipleViewport Enable
+ *
+ * This can disable the multiple viewports.
+ * If you call this plugin command, You can be using original stage renderer.
+ * - MultipleViewport Disable
+ *
+ * This is the plugin command you can set the power of the viewport shake.
+ * - MultipleViewport StartShake shakePower
+ *
+ * This is the plugin command you can set the end of the viewport shake.
+ * - MultipleViewport EndShake
+ *
  * -----------------------------------------------------------------------------
  * Changle Log
  * -----------------------------------------------------------------------------
