@@ -9,8 +9,8 @@
  * -----------------------------------------------------------------------------
  * $gameSystem.setNoiseProperty('enabledNoise', true);
  * $gameSystem.setNoiseProperty('enabledNoise', false);
- * $gameSystem.setNoiseProperty('a', 0.2);
- * $gameSystem.setNoiseProperty('b', 0.65);
+ * $gameSystem.setNoiseProperty('a', 0.1);
+ * $gameSystem.setNoiseProperty('b', 0.2);
  * $gameSystem.setNoiseProperty('x', 12.9898);
  * $gameSystem.setNoiseProperty('y', 78.233);
  * $gameSystem.setNoiseProperty('minX', -3);
