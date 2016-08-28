@@ -57,10 +57,6 @@ function LightSprite() {
     return;
   }
 
-  function rs_parseFloat1(value) {
-    return parseFloat(value).toFixed(1);
-  }
-
   //-----------------------------------------------------------------------------
   // SimpleLightFilter
   //
@@ -103,6 +99,7 @@ function LightSprite() {
 
         'void main(void) {',
 
+        '  offset = clamp(offset, 0.0, 1.0);',
         '  vec2 vTestCoord = vTextureCoord - offset;',
         '  float test_distance = length(vTestCoord);',
         '  float diffuse = 1.0;',
@@ -212,8 +209,8 @@ function LightSprite() {
             return this.uniforms.offset;
         },
         set: function(value) {
-            this.uniforms.offset.x = value.x;
-            this.uniforms.offset.y = value.y;
+            this.uniforms.offset.x = value.x.clamp(0, 1);
+            this.uniforms.offset.y = value.y.clamp(0, 1);
         }
       },
       angle: {
