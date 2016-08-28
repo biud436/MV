@@ -1,20 +1,41 @@
 /*:
  * RS_NoiseFilters.js
- * @plugindesc (v1.0.1) This plugin applies the noise filter to the tilemap.
- * @author biud436, Vico
+ * @plugindesc (v1.0.2) This plugin applies the noise filter to the tilemap.
+ * @author biud436, Vico(Shader)
  *
  * @help
  * -----------------------------------------------------------------------------
- * Plugin Command
+ * Script Calls
  * -----------------------------------------------------------------------------
- * Tilemap_noise Enable a b
- * Tilemap_noise Enable 0.2 0.98
+ * $gameSystem.setNoiseProperty('enabledNoise', true);
+ * $gameSystem.setNoiseProperty('enabledNoise', false);
+ * $gameSystem.setNoiseProperty('a', 0.2);
+ * $gameSystem.setNoiseProperty('b', 0.65);
+ * $gameSystem.setNoiseProperty('x', 12.9898);
+ * $gameSystem.setNoiseProperty('y', 78.233);
+ * $gameSystem.setNoiseProperty('minX', -3);
+ * $gameSystem.setNoiseProperty('maxX', 3);
+ * $gameSystem.setNoiseProperty('minY', -2);
+ * $gameSystem.setNoiseProperty('maxY', 2);
+ * -----------------------------------------------------------------------------
+ * Plugin Commands
+ * -----------------------------------------------------------------------------
+ * Tilemap_noise Enable minNoiseAmount maxNoiseAmount
+ * Tilemap_noise Enable 0.1 0.2
+ *
+ * Tilemap_noise SetRandomX min max
+ * Tilemap_noise SetRandomX -3 3
+ *
+ * Tilemap_noise SetRandomY min max
+ * Tilemap_noise SetRandomY -2 2
+ *
  * Tilemap_noise Disable
  * -----------------------------------------------------------------------------
  * Change Log
  * -----------------------------------------------------------------------------
  * 2016.08.28 (v1.0.0) - First Release.
  * 2016.08.28 (v1.0.1) - Fixed noise issue.
+ * 2016.08.28 (v1.0.2) - Fixed render code and Added Script class and Plugin Commands.
  */
 
 var Imported = Imported || {};
@@ -23,7 +44,7 @@ Imported.RS_NoiseFilters = true;
 var RS = RS || {};
 RS.NoiseFilters = RS.NoiseFilters || {};
 
-(function () {
+(function ($) {
 
   var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
   var isWebGL = PIXI.utils.isWebGLSupported();
@@ -44,27 +65,6 @@ RS.NoiseFilters = RS.NoiseFilters || {};
   var defaultNoiseValue = 0.5;
 
   //----------------------------------------------------------------------------
-  // RS.NoiseFilters
-  //
-  //
-
-  RS.NoiseFilters.enabled = null;
-  RS.NoiseFilters.a = null;
-  RS.NoiseFilters.b = null;
-  RS.NoiseFilters.c = null;
-  RS.NoiseFilters.save = function (enabled, a, b, c) {
-    var self = RS.NoiseFilters;
-    self.enabled = enabled;
-    self.a = a || self.a;
-    self.b = b || self.b;
-    self.c = c || self.c;
-  };
-  RS.NoiseFilters.getData = function () {
-    var self = RS.NoiseFilters;
-    return [self.enabled, self.a, self.b, self.c];
-  }
-
-  //----------------------------------------------------------------------------
   // Math
   //
   //
@@ -80,31 +80,6 @@ RS.NoiseFilters = RS.NoiseFilters || {};
     var e = Math.lerpMotion(b, c);
     var result = Math.lerpMotion(d, e);
     return result;
-  };
-
-  //----------------------------------------------------------------------------
-  // DataManager
-  //
-  //
-
-  var alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
-  DataManager.makeSaveContents = function() {
-    var contents = alias_DataManager_makeSaveContents.call(this);
-    contents.noise = RS.NoiseFilters.getData();
-    return contents;
-  };
-
-  var alias_DataManager_extractSaveContents = DataManager.extractSaveContents;
-  DataManager.extractSaveContents = function(contents) {
-    alias_DataManager_extractSaveContents.call(this, contents);
-    if(contents.noise) {
-      RS.NoiseFilters.save(contents.noise[0], contents.noise[1],
-                           contents.noise[2], contents.noise[3]);
-      if(contents.noise[0]) {
-        isNoiseFilter = contents.noise[0];
-        Graphics.applyNoiseFilter(contents.noise[1], contents.noise[2], contents.noise[3]);
-      }
-    }
   };
 
   //----------------------------------------------------------------------------
@@ -191,98 +166,205 @@ RS.NoiseFilters = RS.NoiseFilters || {};
     }
   });
 
-  //----------------------------------------------------------------------------
-  // Graphics
+  //--------------------------------------------------------------------------
+  // NoiseSprite
   //
-  //
+  // This class inherits all of functions from Sprite class.
 
-  var alias_Graphics__createRenderer = Graphics._createRenderer;
-  Graphics._createRenderer = function() {
-    alias_Graphics__createRenderer.call(this);
-    this._createRenderTexture();
+  function NoiseSprite() {
+    this.initialize.apply(this, arguments);
   };
 
-  Graphics._createRenderTexture = function () {
-    var sprite; var rect; var self = Graphics;
-    if(!self._renderer) { return; }
-    var gl = self._renderer.gl;
+  NoiseSprite.prototype = Object.create(Sprite.prototype);
+  NoiseSprite.prototype.constructor = NoiseSprite;
 
-    // Calculrate Screen
-    self._frameWidth = gl.drawingBufferWidth || 816;
-    self._frameHeight = gl.drawingBufferHeight || 624;
-
-    // Create RenderTexture
-    self._renderTexture = PIXI.RenderTexture.create(self._frameWidth,
-                                                    self._frameHeight,
-                                                    PIXI.SCALE_MODES.NEAREST);
-
-    // Create RenderTarget
-    self._renderTarget = new PIXI.RenderTarget(gl, self._frameWidth,
-                                                    self._frameHeight,
-                                                    PIXI.SCALE_MODES.NEAREST);
-    // Create Sprite
-    self._renderSprite = new Sprite();
-    self._renderSprite.filters = [new PIXI.filters.VoidFilter()];
-
-  };
-
-  Graphics.checkNoiseFilter = function () {
-    var data = RS.NoiseFilters.getData();
-    if(data && !isNoiseFilter) {
-      isNoiseFilter = !!data[0];
-      Graphics.applyNoiseFilter(data[1], data[2], data[3]);
-    }
-  }
-
-  Graphics.applyNoiseFilter = function (a, b, c) {
-    if(!this._renderTexture) return;
-    if(this._noiseFilter) {
-        this._noiseFilter.noise = Math.quadraticMotion(a, b, c);
-        this._noiseFilter.x = 12.9898 + Math.floor(-3 + Math.random() * 3);
-        this._noiseFilter.y = 78.233 + Math.floor(-2 + Math.random() * 2);
-    } else {
-      this._noiseFilter = new PIXI.NoiseFilterConfig();
-      this._noiseFilter.noise = Math.quadraticMotion(a, b, c);
-      this._renderSprite.filters = [this._noiseFilter];
-      enabledNoiseFilter = true;
-    }
-    RS.NoiseFilters.save(enabledNoiseFilter, a, b, c);
-  };
-
-  Graphics.destroyNoiseFilter = function () {
-    if(!this._renderTexture) return;
-    this._renderTexture.filters = [new PIXI.filters.VoidFilter()];
+  NoiseSprite.prototype.initialize = function (bitmap) {
+    Sprite.prototype.initialize.call(this, bitmap);
     this._noiseFilter = null;
-    RS.NoiseFilters.save(enabledNoiseFilter);
+    this._noise = false;
   };
 
-  Graphics.isSceneMapOrBattle = function (stage) {
-    return (stage instanceof Scene_Map || stage instanceof Scene_Battle);
+  NoiseSprite.prototype.updateNoise = function() {
+    var x = $gameSystem.getNoiseProperty('x') || 12.9898;
+    var y = $gameSystem.getNoiseProperty('y') || 78.233;
+    var minX = $gameSystem.getNoiseProperty('minX') || -3;
+    var maxX = $gameSystem.getNoiseProperty('maxX') || 3;
+    var minY = $gameSystem.getNoiseProperty('minY') || -2;
+    var maxY = $gameSystem.getNoiseProperty('maxY') || 2;
+    if(this._noiseFilter) {
+        this._noiseFilter.noise = Math.quadraticMotion(
+          $gameSystem.getNoiseProperty('a') || 0.1,
+          $gameSystem.getNoiseProperty('b') || 0.2,
+          $gameSystem.getNoiseProperty('a') || 0.1);
+        this._noiseFilter.x = x + Math.floor(minX + Math.random() * maxX);
+        this._noiseFilter.y = y + Math.floor(minY + Math.random() * maxY);
+        $gameSystem.setNoiseProperty('noise', this._noiseFilter.noise);
+    }
+  };
+
+  Object.defineProperty(NoiseSprite.prototype, 'enabledNoise', {
+     get: function() {
+         return this._noise;
+     },
+     set: function(value) {
+         this._noise = value;
+         if(this._noise) {
+           if(!this._noiseFilter) {
+             this._noiseFilter = new PIXI.NoiseFilterConfig();
+           }
+           this.filters = [this._noiseFilter];
+         } else {
+           this.filters = [new PIXI.filters.VoidFilter()];
+         }
+     }
+  });
+
+  //----------------------------------------------------------------------------
+  // Game_System
+  //
+  //
+
+  var alias_Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function() {
+    alias_Game_System_initialize.call(this);
+    this.initNoiseProperty();
+  };
+
+  Game_System.prototype.initNoiseProperty = function () {
+    this._noiseProp = {
+      'enabledNoise': false,
+      'a': 0.1,
+      'b': 0.2,
+      'x': 12.9898,
+      'y': 78.233,
+      'minX': -3,
+      'maxX': 3,
+      'minY': -2,
+      'maxY': 2,
+      'noise': 0.5
+    };
+  };
+
+  Game_System.prototype.getNoiseProperty = function (name) {
+    if(!!this._noiseProp[name]) {
+      return this._noiseProp[name];
+    }
   }
 
-  Graphics.render = function(stage) {
-    if (this._skipCount === 0) {
-        var startTime = Date.now();
-        if (stage) {
-          if(isNoiseFilter && this.isSceneMapOrBattle(stage)) {
-            this._renderer.bindRenderTexture(this._renderTexture);
-            this._renderer.render(stage, this._renderTexture);
-            this._renderer.bindRenderTarget(this._renderTarget);
-            this._renderSprite.texture = this._renderTexture;
-            this._renderer.render(this._renderSprite);
-          } else {
-            this._renderer.render(stage);
-          }
-        }
-        var endTime = Date.now();
-        var elapsed = endTime - startTime;
-        this._skipCount = Math.min(Math.floor(elapsed / 15), this._maxSkip);
-        this._rendered = true;
-    } else {
-        this._skipCount--;
-        this._rendered = false;
+  Game_System.prototype.setNoiseProperty = function (name, value) {
+    if(this._noiseProp) {
+      this._noiseProp[name] = value;
+      return this._noiseProp[name];
     }
-    this.frameCount++;
+    return 0.0;
+  };
+
+  Game_System.prototype.enabledNoise = function () {
+    return this._noiseProp['enabledNoise'];
+  };
+
+  //----------------------------------------------------------------------------
+  // PIXI.tilemap.CompositeRectTileLayer
+  //
+  // Draw a tilemap to texture by using RenderTexture
+
+  var alias_CompositeRectTileLayer_initialize = $.CompositeRectTileLayer.prototype.initialize;
+  $.CompositeRectTileLayer.prototype.initialize = function (zIndex, bitmaps, useSquare, texPerChild) {
+      alias_CompositeRectTileLayer_initialize.call(this, zIndex, bitmaps, useSquare, texPerChild);
+
+      var gl = Graphics._renderer.gl;
+
+      // Calculrate Screen
+      this._frameWidth = gl.drawingBufferWidth;
+      this._frameHeight = gl.drawingBufferHeight;
+
+      // Create RenderTexture
+      // If it should set PIXI.SCALE_MODES.NEAREST, it will create black lines to upper layer on screen.
+      this._renderTexture = PIXI.RenderTexture.create(this._frameWidth,
+                                                      this._frameHeight,
+                                                      PIXI.SCALE_MODES.NEAREST);
+      this._spriteNoise = null;
+  };
+
+  var alias_CompositeRectTileLayer_renderWebGL = $.CompositeRectTileLayer.prototype.renderWebGL;
+  $.CompositeRectTileLayer.prototype.renderWebGL = function (renderer) {
+      if($gameSystem && !!$gameSystem.enabledLight && !$gameSystem.enabledLight()) {
+        return alias_CompositeRectTileLayer_renderWebGL.call(this, renderer);
+      }
+
+      var gl = renderer.gl;
+      var shader = renderer.plugins.tile.getShader(this.useSquare);
+
+      renderer.setObjectRenderer(renderer.plugins.tile);
+      renderer.bindShader(shader);
+      //TODO: dont create new array, please
+      this._globalMat = this._globalMat || new PIXI.Matrix();
+      renderer._activeRenderTarget.projectionMatrix.copy(this._globalMat).append(this.worldTransform);
+      shader.uniforms.projectionMatrix = this._globalMat.toArray(true);
+      shader.uniforms.shadowColor = this.shadowColor;
+      if (this.useSquare) {
+          var tempScale = this._tempScale = (this._tempScale || [0, 0]);
+          tempScale[0] = this._globalMat.a >= 0 ? 1 : -1;
+          tempScale[1] = this._globalMat.d < 0 ? 1 : -1;
+          var ps = shader.uniforms.pointScale = tempScale;
+          shader.uniforms.projectionScale = Math.abs(this.worldTransform.a) * renderer.resolution;
+      }
+      var af = shader.uniforms.animationFrame = renderer.plugins.tile.tileAnim;
+
+      var currentRenderTarget = renderer._activeRenderTarget;
+      var target = this._renderTexture;
+
+      renderer.reset();
+
+      renderer.bindRenderTexture(target);
+
+      var layers = this.children;
+      for (var i = 0; i < layers.length; i++) {
+          renderer.render(layers[i], this._renderTexture);
+      }
+
+      renderer.bindRenderTarget(currentRenderTarget);
+
+      // Create the sprite
+      if(!this._spriteNoise) {
+       this._spriteNoise = new NoiseSprite();
+       this._spriteNoise.origin = new Point();
+       this._spriteNoise.texture = this._renderTexture;
+       // Bind Filter
+       this._spriteNoise.enabledNoise = false;
+      }
+
+      var tw = $gameMap.tileWidth();
+      var th = $gameMap.tileHeight();
+
+      this._spriteNoise.origin.x = $gameMap.displayX() * tw;
+      this._spriteNoise.origin.y = $gameMap.displayY() * th;
+
+      var ox = Math.floor(this._spriteNoise.origin.x);
+      var oy = Math.floor(this._spriteNoise.origin.y);
+      var startX = Math.floor((ox - 20) / tw);
+      var startY = Math.floor((oy - 20) / th);
+
+      // Update Sprite
+      this._spriteNoise.texture = this._renderTexture;
+      this._spriteNoise.x = startX * tw - ox;
+      this._spriteNoise.y = startY * th - oy;
+      this._spriteNoise.scale.x = 1.0;
+      this._spriteNoise.scale.y = 1.0;
+      this._spriteNoise.anchor.x = (this._spriteNoise.x) / this._frameWidth;
+      this._spriteNoise.anchor.y = (this._spriteNoise.y) /  this._frameHeight;
+
+      // Update Filter
+      if($gameSystem && $gameSystem.enabledNoise) {
+        this._spriteNoise.enabledNoise = $gameSystem.enabledNoise();
+      }
+
+      if(this._spriteNoise.enabledNoise) {
+        this._spriteNoise.updateNoise();
+      }
+
+      renderer.render(this._spriteNoise);
+
   };
 
   //----------------------------------------------------------------------------
@@ -296,18 +378,23 @@ RS.NoiseFilters = RS.NoiseFilters || {};
       if(command === "Tilemap_noise") {
         switch(args[0]) {
           case 'Enable':
-            isNoiseFilter = true;
-            Graphics.applyNoiseFilter(Number(args[1] || 0.2),
-                                      Number(args[2] || 0.8),
-                                      Number(args[1] || 0.2));
+            $gameSystem.setNoiseProperty('enabledNoise', true);
+            $gameSystem.setNoiseProperty('a', Number(args[1]));
+            $gameSystem.setNoiseProperty('b', Number(args[2]));
             break;
           case 'Disable':
-            isNoiseFilter = false;
-            enabledNoiseFilter = false;
-            Graphics.destroyNoiseFilter();
+            $gameSystem.setNoiseProperty('enabledNoise', false);
+            break;
+          case 'SetRandomX':
+            $gameSystem.setNoiseProperty('minX', Number(args[1]));
+            $gameSystem.setNoiseProperty('maxX', Number(args[2]));
+            break;
+          case 'SetRandomY':
+            $gameSystem.setNoiseProperty('minY', Number(args[1]));
+            $gameSystem.setNoiseProperty('maxY', Number(args[2]));
             break;
         }
       }
   };
 
-})();
+})(PIXI.tilemap);
