@@ -1,7 +1,7 @@
 /*:
  * RS_NoiseFilters.js
- * @plugindesc (v1.0.0) This plugin applies the noise filter to the tilemap.
- * @author biud436
+ * @plugindesc (v1.0.1) This plugin applies the noise filter to the tilemap.
+ * @author biud436, Vico
  *
  * @help
  * -----------------------------------------------------------------------------
@@ -14,6 +14,7 @@
  * Change Log
  * -----------------------------------------------------------------------------
  * 2016.08.28 (v1.0.0) - First Release.
+ * 2016.08.28 (v1.0.1) - Fixed noise issue.
  */
 
 var Imported = Imported || {};
@@ -107,6 +108,90 @@ RS.NoiseFilters = RS.NoiseFilters || {};
   };
 
   //----------------------------------------------------------------------------
+  // NoiseFilter
+  //
+  //
+
+  /**
+   * @author Vico @vicocotea
+   * original filter: https://github.com/evanw/glfx.js/blob/master/src/filters/adjust/noise.js
+   */
+
+  PIXI.NoiseFilterConfig = function () {
+
+      PIXI.Filter.call(this,
+          // vertex shader
+          "#define GLSLIFY 1\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n    vTextureCoord = aTextureCoord;\n}",
+          // fragment shader
+          "precision highp float;\n#define GLSLIFY 1\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\n\n\n\nuniform float a;\n\n\nuniform float b;\n\n\nuniform float c;\n\nuniform vec2 offset;\n\nuniform float noise;\n\nuniform sampler2D uSampler;\n\nfloat rand(vec2 co)\n{\n    return fract(sin(dot(co.xy, vec2(a, b))) * c);\n}\n\nvoid main()\n{\n    vec4 color = texture2D(uSampler, vTextureCoord + offset);\n\n    float diff = (rand(gl_FragCoord.xy) - 0.5) * noise;\n\n    color.r += diff;\n    color.g += diff;\n    color.b += diff;\n\n    gl_FragColor = color;\n}\n"
+      );
+      this.noise = 0.5;
+      this.uniforms.offset = {x: 0.0, y: 0.0};
+      this.uniforms.a = 12.9898;
+      this.uniforms.b = 78.233;
+      this.uniforms.c = 43758.5453;
+  };
+
+  PIXI.NoiseFilterConfig.prototype = Object.create( PIXI.Filter.prototype );
+  PIXI.NoiseFilterConfig.constructor = PIXI.NoiseFilterConfig;
+
+  Object.defineProperties(PIXI.NoiseFilterConfig.prototype, {
+    /**
+     * The amount of noise to apply.
+     *
+     * @member {number}
+     * @memberof PIXI.filters.NoiseFilter#
+     * @default 0.5
+     */
+    noise: {
+        get: function ()
+        {
+            return this.uniforms.noise;
+        },
+        set: function (value)
+        {
+            this.uniforms.noise = value;
+        }
+    },
+    x: {
+        get: function ()
+        {
+            return this.uniforms.a;
+        },
+        set: function (value)
+        {
+            this.uniforms.a = value;
+        }
+    },
+    y: {
+        get: function ()
+        {
+            return this.uniforms.b;
+        },
+        set: function (value)
+        {
+            this.uniforms.b = value;
+        }
+    },
+    offsetX: {
+        get: function() {
+            return this.uniforms.offset.x;
+        },
+        set: function(value) {
+            this.uniforms.offset.x = value;
+        }
+    },
+    offsetY: {
+        get: function() {
+            return this.uniforms.offset.y;
+        },
+        set: function(value) {
+            this.uniforms.offset.y = value;
+        }
+    }
+  });
+
+  //----------------------------------------------------------------------------
   // Graphics
   //
   //
@@ -153,8 +238,10 @@ RS.NoiseFilters = RS.NoiseFilters || {};
     if(!this._renderTexture) return;
     if(this._noiseFilter) {
         this._noiseFilter.noise = Math.quadraticMotion(a, b, c);
+        this._noiseFilter.x = 12.9898 + Math.floor(-3 + Math.random() * 3);
+        this._noiseFilter.y = 78.233 + Math.floor(-2 + Math.random() * 2);
     } else {
-      this._noiseFilter = new PIXI.filters.NoiseFilter();
+      this._noiseFilter = new PIXI.NoiseFilterConfig();
       this._noiseFilter.noise = Math.quadraticMotion(a, b, c);
       this._renderSprite.filters = [this._noiseFilter];
       enabledNoiseFilter = true;
