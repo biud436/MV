@@ -1,5 +1,4 @@
 /*:
- * @plugin InvisibleDestination.js
  * @author biud436
  */
 

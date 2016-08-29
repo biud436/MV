@@ -33,7 +33,7 @@
  */
 (function() {
 
-  var parameters = PluginManager.parameters('Window_MessageParamManagers');
+  var parameters = PluginManager.parameters('RS_MessageParamManagers');
   var __backOpacity = Number(parameters['back Opacity'] || 192);
   var __translucentOpacity = Number(parameters['translucent Opacity'] || 160);
   var __defaultOpacity = Number(parameters['default Opacity'] || 255);
