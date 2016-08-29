@@ -1,5 +1,5 @@
 /*:
- * RS_Question66458.js
+ * RS_EquipNoStatus.js
  * @plugindesc http://cafe.naver.com/sonnysoft2004/66458
  * @author biud436
  *
@@ -14,11 +14,11 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_Question66458 = true;
+Imported.RS_EquipNoStatus = true;
 
 (function() {
 
-  var parameters = PluginManager.parameters('RS_Question66458');
+  var parameters = PluginManager.parameters('RS_EquipNoStatus');
   var width = Number(parameters['width'] || 0);
   var height = eval(parameters['height']);
 
