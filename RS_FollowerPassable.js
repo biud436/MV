@@ -41,6 +41,7 @@ Imported.RS_FollowerPassable = true;
  * =============================================================================
  * 2016.06.01 (v1.0.0) - First Release.
  * 2016.09.01 (v1.0.4) - Added Plugin Commands
+ * 2016.09.01 (v1.0.5) - Fixed the bug.
  */
 
 
@@ -50,16 +51,13 @@ Imported.RS_FollowerPassable = true;
   var passable = Boolean(parameters['Enabled'] === 'true');
   var isSeparate = Boolean(parameters['Separate Mode'] === 'true');
 
-  var localKit = Object.assign(Object.create(
-    {
+  var KIT = Object.assign(Object.create({
       fpSendMessage: function (index, func, args) {
-        var callFunc = $gamePlayer.followers().follower(index)[func];
-        callFunc.apply(null, args);
+        var callFunc = $gamePlayer.followers().follower(index);
+        callFunc[func].apply(callFunc, [args]);
       }
     }
   ));
-
-  var KIT = new localKit();
 
   //============================================================================
   // Game_Player
