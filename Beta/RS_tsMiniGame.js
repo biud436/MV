@@ -6,7 +6,6 @@ var Imported = Imported || {};
 Imported.RS_tsMiniGame = true;
 
 /*:
- * @plugindesc
  * @author biud436
  */
 

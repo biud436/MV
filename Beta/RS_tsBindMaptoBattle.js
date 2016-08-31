@@ -5,7 +5,6 @@
 
 /*:
  * @author biud436
- * @date 26.08.2016
  */
 
 var Imported = Imported || {};

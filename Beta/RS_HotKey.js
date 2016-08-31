@@ -6,15 +6,7 @@ var Imported = Imported || {};
 Imported.RS_HotKey = true;
 
 /*:
- * RS_HotKey.js
  * @author biud436
- * @help
- * =============================================================================
- * Change Log
- * =============================================================================
- * 2016.05.05 - I've been working this plugin.
- * 2016.05.06 - Fixed the bug.
- * 2016.06.11 - I've been re-writing this plugin.
  */
 
 var RS = RS || {};
