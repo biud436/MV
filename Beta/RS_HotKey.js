@@ -33,6 +33,8 @@ RS.HotKey = RS.HotKey || {};
   //
   //
 
+  function LocalTouchInput() {};
+  
   LocalTouchInput.prototype = Object.assign(Object.create({
     'constructor': LocalTouchInput,
     'initPosition': function () {
