@@ -1,6 +1,11 @@
+//==============================================================================
+// RS_tsBindMaptoBattle.js
+// This plugin has been created by requested.
+//==============================================================================
+
 /*:
- * @plugindesc RS_tsBindMaptoBattle
  * @author biud436
+ * @date 26.08.2016
  */
 
 var Imported = Imported || {};

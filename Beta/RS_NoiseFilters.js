@@ -1,3 +1,8 @@
+//==============================================================================
+// RS_NoiseFilters.js
+// This plugin has been created by requested.
+//==============================================================================
+
 /*:
  * RS_NoiseFilters.js
  * @plugindesc (v1.0.2) This plugin applies the noise filter to the tilemap.
