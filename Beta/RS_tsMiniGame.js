@@ -33,25 +33,28 @@ Imported.RS_tsMiniGame = true;
   // Default Frameworks
 
   MiniGame.prototype.initialize = function () {
-
+    Scene_Base.prototype.initialize.call(this);
   };
 
   MiniGame.prototype.create = function () {
+    Scene_Base.prototype.create.call(this);
     this.createBackground();
     this.createCamera();
     this.createPlayer();
   };
 
   MiniGame.prototype.start = function () {
+    Scene_Base.prototype.start.call(this);
     this.initPosition();
   };
 
   MiniGame.prototype.update = function () {
+    Scene_Base.prototype.update.call(this);
     this.updatePosition();
   };
 
   MiniGame.prototype.terminate = function () {
-
+    Scene_Base.prototype.terminate.call(this);
   };
 
   // Create Objects
@@ -101,6 +104,18 @@ Imported.RS_tsMiniGame = true;
     } else {
       this._player.t++;
     }
+  };
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+      alias_Game_Interpreter_pluginCommand.call(this, command, args);
+      if(command === "tsMiniGame") {
+        switch(args[0]) {
+          case 'Start':
+            SceneManager.push(MiniGame);
+            break;
+        }
+      }
   };
 
 })();
