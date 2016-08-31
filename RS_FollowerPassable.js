@@ -50,7 +50,7 @@ Imported.RS_FollowerPassable = true;
   var passable = Boolean(parameters['Enabled'] === 'true');
   var isSeparate = Boolean(parameters['Separate Mode'] === 'true');
 
-  var KIT = Object.assign(Object.create(
+  var localKit = Object.assign(Object.create(
     {
       fpSendMessage: function (index, func, args) {
         var callFunc = $gamePlayer.followers().follower(index)[func];
@@ -58,6 +58,8 @@ Imported.RS_FollowerPassable = true;
       }
     }
   ));
+
+  var KIT = new localKit();
 
   //============================================================================
   // Game_Player
