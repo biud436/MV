@@ -7,6 +7,15 @@ Imported.RS_tsMiniGame = true;
 
 /*:
  * @author biud436
+ * @help
+ * =============================================================================
+ * Note Tags
+ * =============================================================================
+ * <Minigame-Resolution : 320,480>
+ * =============================================================================
+ * Plugin Commands
+ * =============================================================================
+ * tsMiniGame Start
  */
 
 function MiniGame() {
@@ -31,13 +40,18 @@ function MiniGame() {
   var screenWidth = 320;
   var screenHeight = 480;
 
+  var resolutionRegex = /\<(?:MINIGAME-RESOLUTION)[ ]*\:[ ]*(\d+)\W+(\d+)[]*\>/i
+
+  var minigameOnSwitchID = 11;
+
   // Default Frameworks
 
   MiniGame.prototype.initialize = function () {
     Scene_Base.prototype.initialize.call(this);
     this._tempScreenResolution = new Point(window.innerWidth, window.innerHeight);
     this._newScreenResolution = new Point(screenWidth, screenHeight);
-    this.setScreenResize(this._newScreenResolution);
+    $gameSwitches.setValue(minigameOnSwitchID, true);
+    this._updateMap = false;
     this._bullet = null;
     this._viewport = new Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this._player = new Sprite();
@@ -53,16 +67,19 @@ function MiniGame() {
     this.createBackground();
     this.createPlayer();
     this.createScoreGUI();
+    this.createMessageWindow();
   };
 
   MiniGame.prototype.start = function () {
     Scene_Base.prototype.start.call(this);
+    this.startMessage();
   };
 
   MiniGame.prototype.update = function () {
     Scene_Base.prototype.update.call(this);
     this.updatePosition();
     this.updateCamera();
+    this.updateMessage();
     if(Input.isPressed('cancel')) {
       SceneManager._stack.length > 0 && this.popScene();
     }
@@ -70,7 +87,9 @@ function MiniGame() {
 
   MiniGame.prototype.terminate = function () {
     Scene_Base.prototype.terminate.call(this);
+    this._updateMap = false;
     this.setScreenResize(this._tempScreenResolution);
+    $gameSwitches.setValue(minigameOnSwitchID, false);
   };
 
   MiniGame.prototype.setScreenResize = function (newScr) {
@@ -88,9 +107,10 @@ function MiniGame() {
   MiniGame.prototype.createPlayer = function () {
     this._player.bitmap = new Bitmap(48, 48);
     this._player.bitmap.fillAll('white');
-    this._player.setFrame(0, 0, 48, 48);
     this._player.screenX = this._viewport.width / 2;
     this._player.x = this._viewport.width / 2;
+    this._player.y = this._viewport.height / 2;
+    this.addChild(this._player);
   };
 
   MiniGame.prototype.createBackground = function () {
@@ -138,7 +158,7 @@ function MiniGame() {
   MiniGame.prototype.updateCamera = function () {
     var screenSpeed = 12;
     var vpWidthMod2 = this._viewport.width / 2;
-    var bkWidth = this._background.width;
+    var bkWidth = this._background.width * 3;
     var playerWidth = this._player.bitmap.width;
     if(Input.isPressed('left')) {
       this._player.screenX -= screenSpeed;
@@ -150,12 +170,8 @@ function MiniGame() {
         this._player.screenX = bkWidth;
     }
     this._camera.x = this._player.screenX;
-    if(this._camera.x < vpWidthMod2)
-      this._camera.x = vpWidthMod2;
-
-    if(this._camera.x > bkWidth - vpWidthMod2)
-      this._camera.x = bkWidth - vpWidthMod2;
-
+    if(this._camera.x < vpWidthMod2) this._camera.x = vpWidthMod2;
+    if(this._camera.x > bkWidth - vpWidthMod2) this._camera.x = bkWidth - vpWidthMod2;
     this._player.x = this._player.screenX - this._camera.x + vpWidthMod2 - playerWidth / 2;
     this._background.x = vpWidthMod2 - this._camera.x;
   };
@@ -190,6 +206,40 @@ function MiniGame() {
           this._bullet.t++;
         }
       }, this);
+    }
+  };
+
+  // Event Handling
+  MiniGame.prototype.createMessageWindow = function () {
+    this.createWindowLayer();
+    this._messageWindow = new Window_Message();
+    this.addWindow(this._messageWindow);
+  };
+
+  MiniGame.prototype.startMessage = function () {
+    var self = this;
+    $gameMap._commonEvents.forEach(function (event) {
+      var mlist = event.list().map(function (list) {
+        var code = list.code;
+        var parameters = list.parameters[0];
+        if(code === 108 || code === 408) {
+          if(parameters.match(resolutionRegex)) {
+            var _screenWidth = Number(RegExp.$1);
+            var _screenHeight = Number(RegExp.$2);
+            this._newScreenResolution = new Point(_screenWidth || screenWidth,
+                                                  _screenHeight || screenHeight);
+            this.setScreenResize(this._newScreenResolution);
+            this._updateMap = true;
+            return true;
+          }
+        }
+      }, this);
+    }, this);
+  };
+
+  MiniGame.prototype.updateMessage = function () {
+    if(this._updateMap) {
+      $gameMap.update(true);
     }
   };
 
