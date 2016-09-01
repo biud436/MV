@@ -9,6 +9,10 @@ Imported.RS_tsMiniGame = true;
  * @author biud436
  */
 
+function MiniGame() {
+ this.initialize.apply(this, arguments);
+}
+
 (function () {
 
   // Private Variables.
@@ -18,91 +22,172 @@ Imported.RS_tsMiniGame = true;
   var vy = 2.5;
   var gr = 0.4;
 
-  var backgroundWidth = Graphics.boxWidth;
+  var backgroundWidth = Graphics.boxWidth * 3;
   var backgroundHeight = Graphics.boxHeight;
-
-  // Private Class.
-
-  function MiniGame() {
-    this.initialize.apply(this, arguments);
-  }
 
   MiniGame.prototype = Object.create(Scene_Base.prototype);
   MiniGame.prototype.constructor = MiniGame;
+
+  var screenWidth = 320;
+  var screenHeight = 480;
 
   // Default Frameworks
 
   MiniGame.prototype.initialize = function () {
     Scene_Base.prototype.initialize.call(this);
+    this._tempScreenResolution = new Point(window.innerWidth, window.innerHeight);
+    this._newScreenResolution = new Point(screenWidth, screenHeight);
+    this.setScreenResize(this._newScreenResolution);
+    this._viewport = new Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    this._bullet = null;
+    this._player = new Sprite();
+    this._camera = new Point(0, 0);
+    this._scoreBoard = new Sprite();
+    this._bulletLayer = new Sprite();
+    this._background = new Sprite();
   };
 
   MiniGame.prototype.create = function () {
     Scene_Base.prototype.create.call(this);
-    this.createBackground();
     this.createCamera();
+    this.createBackground();
     this.createPlayer();
+    this.createScoreGUI();
   };
 
   MiniGame.prototype.start = function () {
     Scene_Base.prototype.start.call(this);
-    this.initPosition();
   };
 
   MiniGame.prototype.update = function () {
     Scene_Base.prototype.update.call(this);
     this.updatePosition();
+    if(Input.isPressed('cancel')) {
+      SceneManager._stack.length > 0 && this.popScene();
+    }
   };
 
   MiniGame.prototype.terminate = function () {
     Scene_Base.prototype.terminate.call(this);
+    this.setScreenResize(this._tempScreenResolution);
+  };
+
+  MiniGame.prototype.setScreenResize = function (newScr) {
+    var cx = (window.screen.availWidth / 2) - (newScr.x / 2);
+    var cy = (window.screen.availHeight / 2) - (newScr.y / 2);
+    var xPadding = 16;
+    var yPadding = 39;
+    window.resizeTo(newScr.x + xPadding, newScr.y + yPadding);
+    window.moveTo(cx, cy);
+    Graphics._renderer.resize(newScr.x, newScr.y);
   };
 
   // Create Objects
 
+  MiniGame.prototype.createPlayer = function () {
+    this._player.bitmap = new Bitmap(48, 48);
+    this._player.bitmap.fillAll('white');
+    this._player.setFrame(0, 0, 48, 48);
+    this._player.screenX = this._viewport.width / 2;
+    this._player.x = this._viewport.width / 2;
+  };
+
   MiniGame.prototype.createBackground = function () {
-    this._background = new Sprite();
     this._background.bitmap = new Bitmap(backgroundWidth, backgroundHeight);
     this._background.bitmap.fillAll(Utils.rgbToCssColor(255, 255, 255));
+    this._background.x = (this._viewport.width / 2) - this._camera.x;
     this.addChild(this._background);
   };
 
-  MiniGame.prototype.cretePlayer = function () {
+  MiniGame.prototype.creteBulletContainer = function () {
     var w = $gameMap.tileWidth();
     var h = $gameMap.tileHeight();
-    this._player = new Sprite();
-    this._player.opacity = 200;
-    this._player.bitmap = new Bitmap(w, h);
-    this._player.bitmap.fillAll(Utils.rgbToCssColor(255, 0, 0));
-    this._player.t = 0;
-    this.addChild(this._player);
+    this._bulletLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    this.addChild(this._bulletLayer);
   };
 
+  MiniGame.prototype.creteBullet = function (x, y) {
+    var bullet;
+    var w = $gameMap.tileWidth();
+    var h = $gameMap.tileHeight();
+    bullet = new Sprite();
+    bullet.opacity = 200;
+    bullet.bitmap = new Bitmap(w, h);
+    bullet.bitmap.fillAll(Utils.rgbToCssColor(255, 0, 0));
+    bullet.t = 0;
+    this.initPosition(bullet);
+    bullet.x += x;
+    bullet.y += y;
+    this._bulletLayer.addChild(bullet);
+  };
+
+  MiniGame.prototype.createScoreGUI = function () {
+    var fontSize = 48;
+    var padding = 8 * 2;
+    this._scoreBoard.setFrame(0, 0, Graphics.boxWidth, fontSize + padding);
+    this.addChild(this._scoreBoard);
+  };
 
   // Camera
 
-  MiniGame.prototype.createCamera = function () { };
-  MiniGame.prototype.updateCamera = function () { };
+  MiniGame.prototype.createCamera = function () {
+    this._camera.x = this._viewport.width / 2;
+  };
+  MiniGame.prototype.updateCamera = function () {
+    var screenSpeed = 12;
+    var vpWidthMod2 = this._viewport.width / 2;
+    var bkWidth = this._background.width;
+    var playerWidth = this._player.bitmap.width;
+    if(Input.isPreesed('left')) {
+      this._player.screenX -= screenSpeed;
+      if(this._player.screenX <= 0) this._player.screenX = 0;
+    }
+    if(Input.isPreesed('right')) {
+      this._player.screenX += screenSpeed;
+      if(this._player.screenX > bkWidth)
+        this._player.screenX = bkWidth;
+    }
+    this._camera.x = this._player.screenX;
+    if(this._camera.x < vpWidthMod2)
+      this._camera.x = vpWidthMod2;
+
+    if(this._camera.x > bkWidth - vpWidthMod2)
+      this._camera.x = bkWidth - vpWidthMod2;
+
+    this._player.x = this._player.screenX - this._camera.x + vpWidthMod2 - playerWidth / 2;
+    this._background.x = vpWidthMod2 - this._camera.x;
+  };
 
   // Player Position
 
-  MiniGame.prototype.initPosition = function () {
-    this._player.x = startPosition.x
-    this._player.y = startPosition.y;
+  MiniGame.prototype.initPosition = function (bullet) {
+    if(!this._bullet) return false;
+    bullet.x = this._viewport.x + startPosition.x
+    bullet.y = this._viewport.y + startPosition.y;
   };
 
   MiniGame.prototype.resetPosition = function () {
-    this.initPosition();
-    this._player.t = 0;
+    this.initPosition(this._bullet);
+    this._bullet.t = 0;
+    this._bulletLayer.removeChild(this._bullet);
   };
 
   MiniGame.prototype.updatePosition = function () {
-    this._player.x = this._player.x * t;
-    this._player.y = this._player.y + (0.5 * gr * Math.pow(t, 2) + vy * t - 100.0);
-    if( (this._player.x < 0 || this._player.x > Graphics.boxWidth) ||
-        (this._player.y < 0 || this._player.y > Graphics.boxHeight) ) {
-      this.resetPosition();
-    } else {
-      this._player.t++;
+    // parabola trajectory
+    if(this._bulletLayer && this._bulletLayer.children) {
+      var child = this._bulletLayer.children;
+      var power = 100.0;
+      child.forEach(function (i) {
+        this._bullet = i;
+        this._bullet.x = this._bullet.x * t;
+        this._bullet.y = this._bullet.y + (0.5 * gr * Math.pow(t, 2) + vy * t - power);
+        if( (this._bullet.x < 0 || this._bullet.x > Graphics.boxWidth) ||
+            (this._bullet.y < 0 || this._bullet.y > Graphics.boxHeight) ) {
+          this.resetPosition();
+        } else {
+          this._bullet.t++;
+        }
+      }, this);
     }
   };
 
