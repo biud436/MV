@@ -38,8 +38,8 @@ function MiniGame() {
     this._tempScreenResolution = new Point(window.innerWidth, window.innerHeight);
     this._newScreenResolution = new Point(screenWidth, screenHeight);
     this.setScreenResize(this._newScreenResolution);
-    this._viewport = new Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this._bullet = null;
+    this._viewport = new Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this._player = new Sprite();
     this._camera = new Point(0, 0);
     this._scoreBoard = new Sprite();
@@ -62,6 +62,7 @@ function MiniGame() {
   MiniGame.prototype.update = function () {
     Scene_Base.prototype.update.call(this);
     this.updatePosition();
+    this.updateCamera();
     if(Input.isPressed('cancel')) {
       SceneManager._stack.length > 0 && this.popScene();
     }
@@ -133,16 +134,17 @@ function MiniGame() {
   MiniGame.prototype.createCamera = function () {
     this._camera.x = this._viewport.width / 2;
   };
+
   MiniGame.prototype.updateCamera = function () {
     var screenSpeed = 12;
     var vpWidthMod2 = this._viewport.width / 2;
     var bkWidth = this._background.width;
     var playerWidth = this._player.bitmap.width;
-    if(Input.isPreesed('left')) {
+    if(Input.isPressed('left')) {
       this._player.screenX -= screenSpeed;
       if(this._player.screenX <= 0) this._player.screenX = 0;
     }
-    if(Input.isPreesed('right')) {
+    if(Input.isPressed('right')) {
       this._player.screenX += screenSpeed;
       if(this._player.screenX > bkWidth)
         this._player.screenX = bkWidth;
