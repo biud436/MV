@@ -76,33 +76,42 @@ Imported.RS_ScreenManager = true;
   ];
 
 
+  //============================================================================
+  // Point
+  //============================================================================
+  Point.prototype.toString = function () {
+    return this.x + ' x ' +  this.y;
+  }
 
   //============================================================================
   // Graphics
   //============================================================================
 
-  Graphics.getAvailGraphicsArray = function (type) {
+  Graphics.getAvailGraphicsArray = function (returnType) {
     var data;
     var tw, th;
+    var pt;
     var gArray = [];
     var result = [];
     var maxSW = window.screen.availWidth, maxSH = window.screen.availHeight;
-    var type = (maxSW / maxSH) >= 1.0 ? 'landscape' : 'portrait';
+    var type = ((maxSW / maxSH) >= 1.0) ? 'landscape' : 'portrait';
     data = (Utils.isMobileDevice() === true) ? mobileGraphicsArray : pcGraphicsArray;
     data.forEach(function (i) {
       if(i.match(getTargetRegex)) {
-        if(type === 'landscape') {
-          tw = Number(RegExp.$1); th = Number(RegExp.$2);
-        } else {
-          tw = Number(RegExp.$2); th = Number(RegExp.$1);
+        tw = Number(RegExp.$1);
+        th = Number(RegExp.$2);
+        if(type === 'portrait') {
+          tw = th;
+          th = tw;
         }
         if(tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
-          gArray.push(new Point(tw, th));
-          result.push(i);
+          pt = new Point(tw, th);
+          gArray.push(pt);
+          result.push(pt.toString());
         }
       }
     }, this);
-    return (type === 'String')? result : gArray;
+    return (returnType === 'String')? result : gArray;
   };
 
   Graphics.setScreenResize = function (newScr) {
