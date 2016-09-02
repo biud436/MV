@@ -99,7 +99,8 @@ function MiniGame() {
     var yPadding = 39;
     window.resizeTo(newScr.x + xPadding, newScr.y + yPadding);
     window.moveTo(cx, cy);
-    Graphics._renderer.resize(newScr.x, newScr.y);
+    Graphics.width = Graphics.boxWidth = newScr.x;
+    Graphics.height = Graphics.boxHeight = newScr.y;
   };
 
   // Create Objects
