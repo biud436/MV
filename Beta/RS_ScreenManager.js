@@ -8,6 +8,7 @@ Imported.RS_ScreenManager = true;
 /*:
  * @plugindesc (v1.0.0)
  * @author biud436
+ *
  * @help
  * =============================================================================
  * Plugin Commands
@@ -26,6 +27,12 @@ Imported.RS_ScreenManager = true;
   var isGraphicsAutoScaling = false;
   var isMaintainingMinimumWidth = true;
   var isMaintainingMinimumHeight = true;
+
+  var imageName = 'Mountains3';
+
+  var panelTextName = "Display Resolutions";
+
+  var bitmap = ImageManager.loadParallax(imageName);
 
   var pcGraphicsArray = [
   "160 × 120",
@@ -74,7 +81,6 @@ Imported.RS_ScreenManager = true;
   "1600 x 2560",
   "2048 x 2732", // iPadPro
   ];
-
 
   //============================================================================
   // Point
@@ -172,6 +178,7 @@ Imported.RS_ScreenManager = true;
   Window_AvailGraphicsList.prototype.initialize = function (x, y, width, height) {
     Window_Selectable.prototype.initialize.call(this, x, y, width, height);
     this._itemToPoint = Graphics.getAvailGraphicsArray('Number');
+    this._windowFrameSprite.visible = false;
     this._item = [];
     this.refresh();
     this.activate();
@@ -201,6 +208,14 @@ Imported.RS_ScreenManager = true;
 
   Window_AvailGraphicsList.prototype.isEnabled = function(item) {
     return !!item;
+  };
+
+  Window_AvailGraphicsList.prototype.resetFontSettings = function() {
+      this.contents.fontFace = this.standardFontFace();
+      this.contents.fontSize = this.standardFontSize();
+      this.contents.outlineColor = Utils.rgbToCssColor(128, 0, 0);
+      this.contents.outlineWidth = 2;
+      this.resetTextColor();
   };
 
   Window_AvailGraphicsList.prototype.drawItem = function(index) {
@@ -238,7 +253,34 @@ Imported.RS_ScreenManager = true;
     Scene_Base.prototype.create.call(this);
     this.createWindowLayer();
     this.createAvailGraphicsList();
+    this.createBackground();
+    this.createPanel();
   };
+
+  ScreenManager.prototype.createBackground = function () {
+    var bitmap = ImageManager.loadParallax(imageName);
+    this._backgroundWindow = new Sprite(bitmap);
+    this._backgroundWindow.x = Graphics.boxWidth / 2 - this._backgroundWindow.bitmap.width / 2;
+    this._backgroundWindow.y = Graphics.boxHeight / 2 - this._backgroundWindow.bitmap.height / 2;
+    this._backgroundWindow.blendMode = 3;
+    this.addWindow(this._backgroundWindow);
+  };
+
+  ScreenManager.prototype.createPanel = function () {
+    var color1 = Window_Base.prototype.dimColor1();
+    var color2 = Window_Base.prototype.dimColor2();
+    var width = this._availGraphicsList.width;
+    var height = Window_Base.prototype.lineHeight();
+    var x = 0;
+    var y = 0;
+    this._panel = new Sprite(new Bitmap(width, height * 2));
+    this._panel.x = this._availGraphicsList.x;
+    this._panel.y = this._availGraphicsList.y - height - 10;
+    this._panel.bitmap.gradientFillRect(x, y, width / 2, height, color2, color1);
+    this._panel.bitmap.gradientFillRect(x + width / 2, y, width / 2, height, color1, color2);
+    this._panel.bitmap.drawText(panelTextName, x, y, width, height, 'center');
+    this.addChild(this._panel);
+  }
 
   ScreenManager.prototype.createAvailGraphicsList = function () {
     var width = 320;
