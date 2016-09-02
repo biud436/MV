@@ -23,7 +23,7 @@ Imported.RS_ScreenManager = true;
 
   var getTargetRegex = /(\d+)\W+(\d+)/i;
 
-  var isGraphicsAutoScaling = true;
+  var isGraphicsAutoScaling = false;
   var isMaintainingMinimumWidth = true;
   var isMaintainingMinimumHeight = true;
 
@@ -53,11 +53,10 @@ Imported.RS_ScreenManager = true;
   ];
 
   var mobileGraphicsArray = [
-  "160 × 120",
-  "240 × 160",
-  "320 × 240",
-  "400 × 240",
-  "480 × 320",
+  "120 × 160",
+  "160 × 240",
+  "240 × 320",
+  "240 × 400",
   "320 x 480",
   "480 x 800",
   "640 x 960",
@@ -76,6 +75,8 @@ Imported.RS_ScreenManager = true;
   "2048 x 2732", // iPadPro
   ];
 
+
+
   //============================================================================
   // Graphics
   //============================================================================
@@ -86,10 +87,15 @@ Imported.RS_ScreenManager = true;
     var gArray = [];
     var result = [];
     var maxSW = window.screen.availWidth, maxSH = window.screen.availHeight;
+    var type = (maxSW / maxSH) >= 1.0 ? 'landscape' : 'portrait';
     data = (Utils.isMobileDevice() === true) ? mobileGraphicsArray : pcGraphicsArray;
     data.forEach(function (i) {
       if(i.match(getTargetRegex)) {
-        tw = Number(RegExp.$1); th = Number(RegExp.$2);
+        if(type === 'landscape') {
+          tw = Number(RegExp.$1); th = Number(RegExp.$2);
+        } else {
+          tw = Number(RegExp.$2); th = Number(RegExp.$1);
+        }
         if(tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
           gArray.push(new Point(tw, th));
           result.push(i);
