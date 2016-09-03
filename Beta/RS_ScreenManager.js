@@ -107,9 +107,11 @@ Imported.RS_ScreenManager = true;
         tw = Number(RegExp.$1);
         th = Number(RegExp.$2);
         if(type === 'portrait') {
-          var temp = tw;
-          tw = th;
-          th = temp;
+          if(maxSW > maxSH) {
+            var temp = tw;
+            tw = th;
+            th = temp;
+          }
         }
         if(tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
           pt = new Point(tw, th);
