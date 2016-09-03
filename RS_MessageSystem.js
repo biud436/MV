@@ -1,23 +1,7 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc 한글 메시지 시스템 (v0.1.0, 2016.06.18)
+ * @plugindesc (v0.1.0) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
- *-------------------------------------------------------------------------------
- * 버전 로그(Version Log)
- *-------------------------------------------------------------------------------
- * 2016.06.18 (v0.1.0) - 이름 윈도우 후면에 스프라이트가 그려지지 않는 문제를 수정했습니다
- * 2016.03.21 (v0.0.9) - \t (탭), \r (캐리지 리턴) 추가
- * 2016.03.01 (v0.0.8) - 말풍선 모드에 페이스칩 표시, 플러그인 커맨드 및 버그 픽스
- * 2016.02.27 (v0.0.7) - 통화 서식 추가
- * 2016.02.15 (v0.0.6) - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
- * 2016.01.18 (v0.0.5) - 버그 픽스 (updateNameWindow, calcBalloonRect)
- * 2016.01.01 (v0.0.4) - 버그 픽스 (resizeMessageSystem)
- * 2015.12.03 (v0.0.3) - 말풍선 기능 추가
- * 2015.12.02 (v0.0.2) - 큰 페이스칩 기능 추가
- * 2015.12.01 (v0.0.1) - 최초 작성
- *-------------------------------------------------------------------------------
- * 플러그인 매개변수
- *-------------------------------------------------------------------------------
  *
  * @param 폰트 사이즈
  * @desc 텍스트 기본 크기
@@ -83,13 +67,10 @@
  * @desc 탭 크기
  * @default 4
  *
- *-------------------------------------------------------------------------------
- * 도움말
- *-------------------------------------------------------------------------------
  * @help
- *
- *
- * - 플러그인 커맨드
+ * =============================================================================
+ * 플러그인 커맨드
+ * =============================================================================
  * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
  *
  * 메시지 텍스트속도 number
@@ -107,10 +88,14 @@
  * 메시지 큰페이스칩Z number
  * 메시지 탭크기 number
  *
- * - 큰 페이스칩 설정
+ * =============================================================================
+ * 큰 페이스칩 설정
+ * =============================================================================
  * 페이스칩을 img/faces 에 넣고 페이스칩의 이름을 Big_ 으로 시작하게 합니다.
  *
- * - 텍스트 코드(명령어) 목록
+ * =============================================================================
+ * 텍스트 코드(Text Code)
+ * =============================================================================
  * \색[색상명]
  * \속도[값]
  * \테두리색[색상명]
@@ -136,7 +121,9 @@
  * \t : 탭의 크기는 8 입니다.
  * \r : X를 시작 위치로 되돌립니다.
  *
- * - 색상
+ * =============================================================================
+ * 색상(Colors)
+ * =============================================================================
  * 청록, 청록색, c_aqua
  * 검은색, 검정, c_black
  * 파란색, 파랑, c_blue
@@ -157,149 +144,20 @@
  * 흰색, 흰, c_white
  * 노란색, 노랑, c_yellow
  * 기본, 기본색, c_normal
- * AliceBlue 
- * AntiqueWhite 
- * Aqua 
- * Aquamarine 
- * Azure 
- * Beige 
- * Bisque 
- * Black 
- * BlanchedAlmond 
- * Blue 
- * BlueViolet 
- * Brown 
- * BurlyWood 
- * CadetBlue 
- * Chartreuse 
- * Chocolate 
- * Coral 
- * CornflowerBlue 
- * Cornsilk 
- * Crimson 
- * Cyan 
- * DarkBlue 
- * DarkCyan 
- * DarkGoldenRod 
- * DarkGray 
- * DarkGreen 
- * DarkKhaki 
- * DarkMagenta 
- * DarkOliveGreen 
- * DarkOrange 
- * DarkOrchid 
- * DarkRed 
- * DarkSalmon 
- * DarkSeaGreen 
- * DarkSlateBlue 
- * DarkSlateGray 
- * DarkTurquoise 
- * DarkViolet 
- * DeepPink 
- * DeepSkyBlue 
- * DimGray 
- * DodgerBlue 
- * FireBrick 
- * FloralWhite 
- * ForestGreen 
- * Fuchsia 
- * Gainsboro 
- * GhostWhite 
- * Gold 
- * GoldenRod 
- * Gray 
- * Green 
- * GreenYellow 
- * HoneyDew 
- * HotPink 
- * IndianRed  
- * Indigo  
- * Ivory 
- * Khaki 
- * Lavender 
- * LavenderBlush 
- * LawnGreen 
- * LemonChiffon 
- * LightBlue 
- * LightCoral 
- * LightCyan 
- * LightGoldenRodYellow 
- * LightGray 
- * LightGreen 
- * LightPink 
- * LightSalmon 
- * LightSeaGreen 
- * LightSkyBlue 
- * LightSlateGray 
- * LightSteelBlue 
- * LightYellow 
- * Lime 
- * LimeGreen 
- * Linen 
- * Magenta 
- * Maroon 
- * MediumAquaMarine 
- * MediumBlue 
- * MediumOrchid 
- * MediumPurple 
- * MediumSeaGreen 
- * MediumSlateBlue 
- * MediumSpringGreen 
- * MediumTurquoise 
- * MediumVioletRed 
- * MidnightBlue 
- * MintCream 
- * MistyRose 
- * Moccasin 
- * NavajoWhite 
- * Navy 
- * OldLace 
- * Olive 
- * OliveDrab 
- * Orange 
- * OrangeRed 
- * Orchid 
- * PaleGoldenRod 
- * PaleGreen 
- * PaleTurquoise 
- * PaleVioletRed 
- * PapayaWhip 
- * PeachPuff 
- * Peru 
- * Pink 
- * Plum 
- * PowderBlue 
- * Purple 
- * RebeccaPurple 
- * Red 
- * RosyBrown 
- * RoyalBlue 
- * SaddleBrown 
- * Salmon 
- * SandyBrown 
- * SeaGreen 
- * SeaShell 
- * Sienna 
- * Silver 
- * SkyBlue 
- * SlateBlue 
- * SlateGray 
- * Snow 
- * SpringGreen 
- * SteelBlue 
- * Tan 
- * Teal 
- * Thistle 
- * Tomato 
- * Turquoise 
- * Violet 
- * Wheat 
- * White 
- * WhiteSmoke 
- * Yellow 
- * YellowGreen
- * #RRGGBB (예를 들면, 빨강색은 \색[#FF0000] 입니다. )
  *
+ * =============================================================================
+ * 버전 로그(Version Log)
+ * =============================================================================
+ * 2016.06.18 (v0.1.0) - 이름 윈도우 후면에 스프라이트가 그려지지 않는 문제를 수정했습니다
+ * 2016.03.21 (v0.0.9) - \t (탭), \r (캐리지 리턴) 추가
+ * 2016.03.01 (v0.0.8) - 말풍선 모드에 페이스칩 표시, 플러그인 커맨드 및 버그 픽스
+ * 2016.02.27 (v0.0.7) - 통화 서식 추가
+ * 2016.02.15 (v0.0.6) - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
+ * 2016.01.18 (v0.0.5) - 버그 픽스 (updateNameWindow, calcBalloonRect)
+ * 2016.01.01 (v0.0.4) - 버그 픽스 (resizeMessageSystem)
+ * 2015.12.03 (v0.0.3) - 말풍선 기능 추가
+ * 2015.12.02 (v0.0.2) - 큰 페이스칩 기능 추가
+ * 2015.12.01 (v0.0.1) - 최초 작성
  */
 var Imported = Imported || {};
 Imported.RS_MessageSystem = true;
@@ -324,7 +182,11 @@ var Color = Color || {};
 
 (function () {
 
-  var parameters = PluginManager.parameters('RS_MessageSystem');
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_MessageSystem>');
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
 
   RS.__fontSize = Number(parameters['폰트 크기'] || 28);
   RS.__textSpeed = Number(parameters['텍스트 속도'] || 0);
