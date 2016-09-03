@@ -1,7 +1,7 @@
 /*:
  * RS_Window_KorNameEdit.js
- * @plugindesc This plugin provides a keyboard that allows
- * you to type in korean or other native language in the Name Input Proccessing
+ * @plugindesc This plugin allows you to type in korean in the Name Input Proccessing <RS_Window_KorNameEdit>
+ *
  * @author biud436
  * @since 2015.10.19
  * @version 1.6.0 (2016.06.18)
@@ -51,6 +51,8 @@
  * @default GameFont
  *
  * @help
+ * This plugin provides a keyboard that allows you to type in korean
+ * or other native language in the Name Input Proccessing.
  *
  * This plugin provides following the pluginCommand below.
  *
@@ -103,7 +105,11 @@ Imported.Window_KorNameEdit = true;
   // Private Members
   //===========================================================================
 
-  var parameters = PluginManager.parameters('RS_Window_KorNameEdit');
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_Window_KorNameEdit>');
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
 
   RSMatch.windowWidth = Number(parameters['windowWidth'] || 580);
   RSMatch.windowCenter = String(parameters['windowCenter'] || 'false');
