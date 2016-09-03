@@ -6,8 +6,44 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.0)
+ * @plugindesc (v1.0.0) <RS_ScreenManager>
  * @author biud436
+ *
+ * @param isMobileAutoFullScreen
+ * @desc
+ * @default true
+ *
+ * @param isLimitedInMaxRect
+ * @desc
+ * @default true
+ *
+ * @param isGraphicsRendererResize
+ * @desc
+ * @default false
+ *
+ * @param isGraphicsAutoScaling
+ * @desc
+ * @default false
+ *
+ * @param isMaintainingMinimumWidth
+ * @desc
+ * @default true
+ *
+ * @param isMaintainingMinimumHeight
+ * @desc
+ * @default true
+ *
+ * @param imageName
+ * @desc
+ * @default Mountains3
+ *
+ * @param panelTextName
+ * @desc
+ * @default Display Resolutions
+ *
+ * @param fullScreenButtonName
+ * @desc
+ * @default Full Screen
  *
  * @help
  * =============================================================================
@@ -18,21 +54,25 @@ Imported.RS_ScreenManager = true;
 
 (function () {
 
-  var isMobileAutoFullScreen = true;
-  var isLimitedInMaxRect = true;
-  var isGraphicsRendererResize = false;
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_ScreenManager>');
+  });
 
-  var getTargetRegex = /(\d+)\W+(\d+)/i;
+  parameters = (parameters.length > 0) && parameters[0].parameters;
 
-  var isGraphicsAutoScaling = false;
-  var isMaintainingMinimumWidth = true;
-  var isMaintainingMinimumHeight = true;
-
-  var imageName = 'Mountains3';
-
-  var panelTextName = "Display Resolutions";
+  var isMobileAutoFullScreen = Boolean(parameters['isMobileAutoFullScreen'] === 'true');
+  var isLimitedInMaxRect = Boolean(parameters['isLimitedInMaxRect'] === 'true');
+  var isGraphicsRendererResize = Boolean(parameters['isGraphicsRendererResize'] === 'true');
+  var isGraphicsAutoScaling = Boolean(parameters['isGraphicsAutoScaling'] === 'true');
+  var isMaintainingMinimumWidth = Boolean(parameters['isMaintainingMinimumWidth'] === 'true');
+  var isMaintainingMinimumHeight = Boolean(parameters['isMaintainingMinimumWidth'] === 'true');
+  var imageName = String(parameters['imageName'] || 'Mountains3');
+  var panelTextName = String(parameters["panelTextName"] || "Display Resolutions");
+  var fullScreenButtonName = String(parameters["fullScreenButtonName"] || 'Full Screen');
 
   var bitmap = ImageManager.loadParallax(imageName);
+
+  var getTargetRegex = /(\d+)\W+(\d+)/i;
 
   var pcGraphicsArray = [
   "160 × 120",
