@@ -4,6 +4,7 @@
  * @author biud436
  *
  * 2016.05.29 - Added Scalar Multiplication
+ * 2016.09.04 - Added isEqual function.
  */
 
 var RS = RS || {};
