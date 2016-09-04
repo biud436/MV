@@ -8,6 +8,12 @@
 
 (function () {
 
+  var alias_Sprite_StateIcon_initMembers = Sprite_StateIcon.prototype.initMembers;
+  Sprite_StateIcon.prototype.initMembers = function() {
+    alias_Sprite_StateIcon_initMembers.call(this);
+    this._prevIconIndex = -1;
+  };
+
   Sprite_StateIcon.prototype.loadBitmap = function() {
     var bitmap = ImageManager.loadSystem('IconSet');
     var pw = Sprite_StateIcon._iconWidth;
@@ -16,6 +22,8 @@
   };
 
   Sprite_StateIcon.prototype.updateFrame = function() {
+    if(this._prevIconIndex === this._iconIndex) return;
+    this._prevIconIndex = this._iconIndex;
     var bitmap = ImageManager.loadSystem('IconSet');
     var pw = Sprite_StateIcon._iconWidth;
     var ph = Sprite_StateIcon._iconHeight;
