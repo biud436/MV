@@ -2,16 +2,23 @@
  * RS_HUD_4m_InBattle.js
  * @plugindesc This plugin draws the Battle HUD (Addon v1.1.2)
  *
- * @requiredAssets img/pictures/exr
- * @requiredAssets img/pictures/gauge
- * @requiredAssets img/pictures/hp
- * @requiredAssets img/pictures/mp
- * @requiredAssets img/pictures/hud_window_empty
- * @requiredAssets img/pictures/masking
- * @requiredAssets img/pictures/hud_window_empty_inbattle
- *
  * @author biud436
  * @version 1.1.2
+ *
+ * @param --- Image Name
+ * @desc
+ * @default
+ *
+ * @param HUD Battle Background
+ * @desc
+ * @default hud_window_empty_inbattle
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @param --- Noraml
+ * @desc
+ * @default
  *
  * @param Auto Windows Alignment
  * @desc
@@ -24,6 +31,7 @@
  * 2016.05.28 (v1.1.0) - Added Active Turn Battle (require YEP_BattleEngineCoreand YEP_X_BattleSysATB)
  * 2016.06.30 (v1.1.1) - Added the parameter that displays the values with commas every three digits.
  * 2016.08.07 (v1.1.2) - Fixed the issue of the function for drawing status icon
+ * 2016.09.05 (v1.1.3) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
  */
 
 var Imported = Imported || {};
@@ -37,7 +45,8 @@ RS.HUD.param = RS.HUD.param || {};
 (function() {
 
   var parameters = PluginManager.parameters('RS_HUD_4m_InBattle');
-  var isWndsAlignment = Boolean(parameters['Auto Windows Alignment'] === 'true');
+  RS.HUD.param.isWndsAlignment = Boolean(parameters['Auto Windows Alignment'] === 'true');
+  RS.HUD.param.imgEmptyBattleHUD = String(parameters['HUD Battle Background'] || 'hud_window_empty_inbattle');
 
   var alias_HUD_initialize = HUD.prototype.initialize;
   HUD.prototype.initialize = function(config) {
@@ -81,7 +90,7 @@ RS.HUD.param = RS.HUD.param || {};
   }
 
   HUD.prototype.createHud = function() {
-    var name = ( this.inBattle() && $dataSystem.optDisplayTp ) ? 'hud_window_empty_inbattle' : 'hud_window_empty';
+    var name = ( this.inBattle() && $dataSystem.optDisplayTp ) ? RS.HUD.param.imgEmptyBattleHUD : RS.HUD.param.imgEmptyHUD;
     this._hud = new Sprite(ImageManager.loadPicture(name));
     this.addChild(this._hud);
   };
@@ -210,7 +219,7 @@ RS.HUD.param = RS.HUD.param || {};
   var Scene_Battle_createAllWindows = Scene_Battle.prototype.createAllWindows;
   Scene_Battle.prototype.createAllWindows = function() {
     Scene_Battle_createAllWindows.call(this);
-    if(isWndsAlignment) {
+    if(RS.HUD.param.isWndsAlignment) {
       this._windowLayer.children.forEach(function (i) {
         if( !(i === this._logWindow || i === this._helpWindow)) {
           i.y = Graphics.boxHeight / 2 - i.height / 2;

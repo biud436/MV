@@ -1,18 +1,61 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc This plugin draws the HUD, which displays the hp and mp and exp and level of each party members. (v1.1.0)
- *
- * @requiredAssets img/pictures/exr
- * @requiredAssets img/pictures/gauge
- * @requiredAssets img/pictures/hp
- * @requiredAssets img/pictures/mp
- * @requiredAssets img/pictures/hud_window_empty
- * @requiredAssets img/pictures/masking
+ * @plugindesc (v1.1.1) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.1.0
+ * @version 1.1.1
+ *
+ * @param --- Image Name
+ * @desc
+ * @default
+ *
+ * @param EXP Gauge
+ * @desc
+ * @default exr
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @param Empty Gauge
+ * @desc
+ * @default gauge
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @param HP Gauge
+ * @desc
+ * @default hp
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @param MP Gauge
+ * @desc
+ * @default mp
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @param HUD Background
+ * @desc
+ * @default hud_window_empty
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @param Masking
+ * @desc
+ * @default masking
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @param --- Noraml
+ * @desc
+ * @default
  *
  * @param Width
  * @desc Width
@@ -217,6 +260,7 @@
  * 2016.05.21 (v1.0.8) - Fixed a bug of the opacity.
  * 2016.06.30 (v1.0.9) - Added the parameter that displays the values with commas every three digits.
  * 2016.07.30 (v1.1.0) - Added the parameter for setting fonts.
+ * 2016.09.05 (v1.1.1) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
  */
 
 var Imported = Imported || {};
@@ -230,6 +274,16 @@ RS.HUD.param = RS.HUD.param || {};
 (function() {
 
   var parameters = PluginManager.parameters('RS_HUD_4m');
+
+  // Image Settings
+  RS.HUD.param.imgEXP = String(parameters['EXP Gauge'] || 'exr');
+  RS.HUD.param.imgEmptyGauge = String(parameters['Empty Gauge'] || 'gauge');
+  RS.HUD.param.imgHP = String(parameters['HP Gauge'] || 'hp');
+  RS.HUD.param.imgMP = String(parameters['MP Gauge'] || 'mp');
+  RS.HUD.param.imgEmptyHUD = String(parameters['HUD Background'] || 'hud_window_empty');
+  RS.HUD.param.imgMasking = String(parameters['Masking'] || 'masking');
+
+  // Normal Settings
   RS.HUD.param.nWidth = Number(parameters['Width'] || 317 );
   RS.HUD.param.nHeight = Number(parameters['Height'] || 101 );
   RS.HUD.param.nPD = Number(parameters['Margin'] || 0);
@@ -519,14 +573,14 @@ RS.HUD.param = RS.HUD.param || {};
   }
 
   HUD.prototype.createHud = function() {
-    this._hud = new Sprite(ImageManager.loadPicture('hud_window_empty'));
+    this._hud = new Sprite(ImageManager.loadPicture(RS.HUD.param.imgEmptyHUD));
     this.addChild(this._hud);
   };
 
   HUD.prototype.createFace = function() {
     var player = this.getPlayer();
     this._faceBitmap = ImageManager.loadFace(player.faceName());
-    this._maskBitmap = ImageManager.loadPicture("masking");
+    this._maskBitmap = ImageManager.loadPicture(RS.HUD.param.imgMasking);
     this._maskBitmap.addLoadListener(function() {
         this._faceBitmap.addLoadListener(this.circleClippingMask.bind(this, player.faceIndex()));
     }.bind(this));
@@ -573,17 +627,17 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.createHp = function() {
-    this._hp = new Sprite(ImageManager.loadPicture('hp'));
+    this._hp = new Sprite(ImageManager.loadPicture(RS.HUD.param.imgHP));
     this.addChild(this._hp);
   };
 
   HUD.prototype.createMp = function() {
-    this._mp = new Sprite(ImageManager.loadPicture('mp'));
+    this._mp = new Sprite(ImageManager.loadPicture(RS.HUD.param.imgMP));
     this.addChild(this._mp);
   };
 
   HUD.prototype.createExp = function() {
-    this._exp = new Sprite(ImageManager.loadPicture('exr'));
+    this._exp = new Sprite(ImageManager.loadPicture(RS.HUD.param.imgEXP));
     this.addChild(this._exp);
   };
 
