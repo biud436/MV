@@ -21,6 +21,7 @@
     var ph = Sprite_StateIcon._iconHeight;
     var sx = this._iconIndex % 16 * pw;
     var sy = Math.floor(this._iconIndex / 16) * ph;
+    this.bitmap.clear();
     this.bitmap.blt(bitmap, sx, sy, pw, ph, 0, 0);
   };
 
