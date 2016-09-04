@@ -2,7 +2,7 @@
 // RS_StateIconFixes.js
 //==============================================================================
 /*:
- * @pluindesc State Icon MAX_TEXTURE_SIZE Error fixed.
+ * @plugindesc State Icon MAX_TEXTURE_SIZE Error fixed.
  * @author biud436
  */
 
