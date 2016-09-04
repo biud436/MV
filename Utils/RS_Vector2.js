@@ -19,7 +19,7 @@ Vector2.prototype.constructor = Vector2;
 /**
  * 비어있는 벡터를 생성합니다
  * @memberof Vector2
- * @return val {Vector2}
+ * @return {Vector2} val
  */
 Vector2.empty = function() {
     return new Vector2(0.0, 0.0);
@@ -30,10 +30,10 @@ Vector2.empty = function() {
  * vec1 에서 vec2 로 직선 형태로 이동합니다.
  * @memberof Vector2
  * @function mix
- * @param vec1 {Vector2}
- * @param vec2 {Vector2}
- * @param t {Number} frameTime값. 0 ~ 1 사이의 실수
- * @return val {Number}
+ * @param {Vector2} vec1
+ * @param {Vector2} vec2
+ * @param {Number} t  frameTime값. 0 ~ 1 사이의 실수
+ * @return {Number} val
  * @static
  */
 Vector2.mix = function(vec1, vec2, t) {
@@ -47,7 +47,7 @@ Vector2.mix = function(vec1, vec2, t) {
  * 정규화된 상태인지 확인합니다
  * @memberof Vector2
  * @function isNormalize
- * @param vec {Vector2}
+ * @param {Vector2} vec
  * @static
  */
 Vector2.isNormalize = function(vec) {
@@ -63,11 +63,11 @@ Vector2.isNormalize = function(vec) {
  * vec1 에서 vec3 으로 곡선 형태로 이동합니다.
  * @memberof Vector2
  * @function quadraticBezier
- * @param vec1 {Vector2} 시작 지점
- * @param vec2 {Vector2} 중간 지점
- * @param vec3 {Vector2} 끝 지점
- * @param t {Number} frameTime값. 0 ~ 1 사이의 실수
- * @return p {Vector2}
+ * @param {Vector2} vec1  시작 지점
+ * @param {Vector2} vec2  중간 지점
+ * @param {Vector2} vec3  끝 지점
+ * @param {Number} t  frameTime값. 0 ~ 1 사이의 실수
+ * @return {Vector2} p
  * @static
  */
 Vector2.quadraticBezier = function(vec1, vec2, vec3, t) {
@@ -82,8 +82,8 @@ Vector2.quadraticBezier = function(vec1, vec2, vec3, t) {
  * 최대 각도, 최소 각도를 제한합니다 (성능을 위해)
  * @memberof Vector2
  * @function limitAngle
- * @param angle {Number}
- * @return angle {Number}
+ * @param {Number} angle
+ * @return {Number} angle
  * @static
  */
 Vector2.limitAngle = function(angle) {
@@ -96,9 +96,9 @@ Vector2.limitAngle = function(angle) {
  * 두 벡터 사이의 거리
  * @memberof Vector2
  * @function distance
- * @param vec1 {Vector2}
- * @param vec2 {Vector2}
- * @return dist {Number}
+ * @param {Vector2} vec1
+ * @param {Vector2} vec2
+ * @return {Number} dist
  * @static
  */
 Vector2.distance = function(vec1, vec2) {
@@ -110,8 +110,8 @@ Vector2.distance = function(vec1, vec2) {
 /**
  * @constructor
  * @memberof Vector2
- * @param x {Number}
- * @param y {Number}
+ * @param {Number} x
+ * @param {Number} y
  */
 Vector2.prototype.initialize = function(x, y) {
     this._x = x;
@@ -121,8 +121,8 @@ Vector2.prototype.initialize = function(x, y) {
 /**
  * 덧셈
  * @method add
- * @param vec {Vector2}
- * @return this {Vector2}
+ * @param {Vector2} vec
+ * @return {Vector2} this
  */
 Vector2.prototype.add = function (vec) {
   if(vec instanceof Number) {
@@ -140,8 +140,8 @@ Vector2.prototype.add = function (vec) {
 /**
  * 뺄셈
  * @method minus
- * @param vec {Vector2}
- * @return this {Vector2}
+ * @param {Vector2} vec
+ * @return {Vector2} this
  */
 Vector2.prototype.minus = function (vec) {
   if(vec instanceof Number) {
@@ -159,8 +159,8 @@ Vector2.prototype.minus = function (vec) {
 /**
  * 곱셈
  * @method div
- * @param vec {Vector2}
- * @return this {Vector2}
+ * @param {Vector2} vec
+ * @return {Vector2} this
  *
  */
 Vector2.prototype.mul = function (vec) {
@@ -179,8 +179,8 @@ Vector2.prototype.mul = function (vec) {
 /**
  * 나눗셈
  * @method div
- * @param vec {Vector2}
- * @return this {Vector2}
+ * @param {Vector2} vec
+ * @return {Vector2} this
  */
 Vector2.prototype.div = function (vec) {
   if(vec instanceof Number) {
@@ -239,7 +239,7 @@ Vector2.prototype.set = function(x, y) {
 /**
  * 벡터의 길이
  * @method getLength
- * @return angle {Number}
+ * @return {Number} angle
  */
 Vector2.prototype.getLength = function() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
@@ -248,8 +248,8 @@ Vector2.prototype.getLength = function() {
 /**
  * 두 벡터 사이의 각도
  * @method getAngle
- * @param vec {Vector2}
- * @return val {Number}
+ * @param {Vector2} vec
+ * @return {Number} val
  */
 Vector2.prototype.getAngle = function(vec) {
     if(Vector2.isNormalize(this) && Vector2.isNormalize(vec)) {
@@ -263,7 +263,7 @@ Vector2.prototype.getAngle = function(vec) {
 /**
  * 정규화
  * @method normalize
- * @return rel {Vector2}
+ * @return {Vector2} rel
  */
 Vector2.prototype.normalize = function() {
     var rel = Vector2.empty();
@@ -277,8 +277,8 @@ Vector2.prototype.normalize = function() {
 /**
  * 내적
  * @method dot
- * @param vec {Vector}
- * @return angle {Number}
+ * @param {Vector} vec
+ * @return {Number} angle
  */
 Vector2.prototype.dot = function(vec) {
     return this.x * vec.x + this.y * vec.y;
@@ -295,14 +295,27 @@ Vector2.prototype.rotate = function(angle) {
 };
 
 /**
- * 각도 변환(유도)
  * @method pointDirection
- * @param vec {Vector2} 목표 벡터
- * @param angle {Number} 각도
- * @return val {Number}
+ * @param {Vector2} vec 목표 벡터
+ * @param {Number} angle 각도
+ * @return {Number} val
  */
 Vector2.prototype.pointDirection = function(vec, angle) {
     return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
+};
+
+/**
+ * @method isEqual
+ * @param {Vector2} vec
+ * @return {Boolean} result
+ */
+Vector2.prototype.isEqual = function (vec) {
+  var eps = 0.001;
+  if( (this.x - vec.x) < eps &&
+      (this.y - vec.y) < eps ) {
+    return true;
+  }
+  return false;
 };
 
 //------------------------------------------------------------------------------
