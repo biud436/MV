@@ -1,4 +1,4 @@
-/*
+/*:
  * Nwjs_SavePatch.js
  * @plugindesc This plugin provides a function to solve the problem related to a path of Save.
  * @author biud436
@@ -12,11 +12,14 @@
 var Imported = Imported || {};
 Imported.Nwjs_SavePatch = true;
 
-if(Utils.isNwjs) {
-  StorageManager.localFileDirectoryPath = function() {
-      var s = process.execPath.split("\\"); s.pop();
-      s = s.join("\\");
-      var path = s + '\\save\\'
-      return decodeURIComponent(path);
-  };
-}
+(function () {
+  if(Utils.isNwjs) {
+    StorageManager.localFileDirectoryPath = function() {
+        var s = process.execPath.split("\\");
+        s.pop();
+        s = s.join("\\");
+        var path = s + '\\save\\'
+        return decodeURIComponent(path);
+    };
+  }
+})();

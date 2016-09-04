@@ -34,8 +34,11 @@ Imported.RS_ScreenManager = true;
  * @default true
  *
  * @param imageName
- * @desc
+ * @desc image Name
  * @default Mountains3
+ * @require 1
+ * @dir img/parallaxes/
+ * @type file
  *
  * @param panelTextName
  * @desc
