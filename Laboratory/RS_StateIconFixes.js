@@ -2,8 +2,11 @@
 // RS_StateIconFixes.js
 //==============================================================================
 /*:
- * @plugindesc State Icon MAX_TEXTURE_SIZE Error fixed.
+ * @plugindesc RMMV can occur the error related with MAX_TEXTURE_SIZE when using 16K texture.
  * @author biud436
+ * @help
+ * In battle, If you were used this plugin, you could use the texture bigger than 16K (2^14) size.
+ * But, It can be slow with the animation speed when using 2d context.
  */
 
 (function () {
