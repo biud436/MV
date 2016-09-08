@@ -65,18 +65,6 @@
  * KNE opacity number
  * KNE askText string
  *
- * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
- *
- * 한국어 명령어 (Korean)
- * KNE 폭 숫자
- * KNE 중앙정렬 true/false
- * KNE 테두리크기 숫자
- * KNE 테두리색상 문자열
- * KNE 폰트색상 문자열
- * KNE 폰트크기 숫자
- * KNE 투명도 숫자
- * KNE 텍스트 문자열
- *
  * - Change Log
  * 2016.03.05 (v1.3.3) - Fixed the class structure.
  * 2016.03.22 (v1.4.0) - Fixed a bug that causes a serious problem.
@@ -85,6 +73,80 @@
  * 2016.06.18 (v1.6.0) - Fixed the inheritance structure, and the parameter called 'askText'.
  * 2016.08.09 (v1.6.1) - Fixed shouldPreventDefault function of Input class.
  */
+ /*:ko
+  * RS_Window_KorNameEdit.js
+  * @plugindesc 한글 이름 입력 처리 플러그인입니다. <RS_Window_KorNameEdit>
+  * @author 러닝은빛(biud436)
+  *
+  * @since 2015.10.19
+  * @version 1.6.0 (2016.06.18)
+  *
+  * @param windowWidth
+  * @desc 숫자값을 입력하세요.
+  * @default 580
+  *
+  * @param windowCenter
+  * @desc true 또는 false를 입력하세요.
+  * @default false
+  *
+  * @param editWindow_Opacity
+  * @desc 이름 윈도우의 투명도 값으로 0 ~ 255 사이의 숫자 값을 입력하세요.
+  * @default 225
+  *
+  * @param askingText
+  * @desc 이름 윈도우의 내용
+  * @default 이름을 입력하세요.
+  *
+  * @param outlineWidth
+  * @desc 테두리 두께
+  * @default 1
+  *
+  * @param outlineColor
+  * @desc 테두리 색상
+  * @default black
+  *
+  * @param fontColor
+  * @desc 폰트 색상
+  * @default white
+  *
+  * @param standardFontSize
+  * @desc 기본 폰트 크기
+  * @default 28
+  *
+  * @param Chinese Fonts
+  * @desc 중국어 폰트
+  * @default SimHei, Heiti TC, sans-serif
+  *
+  * @param Korean Fonts
+  * @desc 한국어 폰트
+  * @default Dotum, AppleGothic, sans-serif
+  *
+  * @param Default Fonts
+  * @desc 기본 폰트
+  * @default GameFont
+  *
+  * @help
+  *
+  * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
+  *
+  * 한국어 명령어 (Korean)
+  * KNE 폭 숫자
+  * KNE 중앙정렬 true/false
+  * KNE 테두리크기 숫자
+  * KNE 테두리색상 문자열
+  * KNE 폰트색상 문자열
+  * KNE 폰트크기 숫자
+  * KNE 투명도 숫자
+  * KNE 텍스트 문자열
+  *
+  * - Change Log
+  * 2015.10.19 - 최초 작성일
+  * 2015.12.10 - 버그 픽스(화면 축소 버그 수정)
+  * 2016.02.15 - 플러그인 매개변수 및 플러그인 커맨드 추가
+  * 2016.03.22 - 플러그인 커맨드에서 문자열을 길게 쓸 수 있게 되었으며 백스페이스 버그를 수정했습니다.
+  * 2016.04.05 - 한글 입력 시, 두 글자 이상을 꼭 입력해야 하는 버그가 수정되었습니다.
+  * 2016.06.18 - 상속 구조 변경, 파라미터 기본 값 수정, 폰트 변경 기능 추가, 시스템 언어에 따라 글자 폭 자동 감지 기능 추가
+  */
 
 var Imported = Imported || {};
 Imported.Window_KorNameEdit = true;

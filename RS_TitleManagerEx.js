@@ -81,6 +81,86 @@
  * 1.0.3 (2016.03.07) - Fixed a bug that causes a serious problem when the parameters were set to English.
  *
  */
+ /*:ko
+  * RS_TitleManagerEx.js
+  *
+  * @plugindesc 특정 엔딩을 마친 후 타이틀과 BGM을 변경하는 플러그인입니다.
+  *
+  * @author 러닝은빛(biud436)
+  *
+  * @date 2015.12.21
+  * @version 1.0.3
+  *
+  * @param ending1
+  * @desc 엔딩1
+  * ["File name of title 1","File name of title 2","File name of BGM"]
+  * @default ["Book", "", "Theme1"]
+  *
+  * @param ending2
+  * @desc 엔딩2
+  * ["File name of title 1","File name of title 2","File name of BGM"]
+  * @default ["Devil", "", "Field2"]
+  *
+  * @param ending3
+  * @desc 엔딩3
+  * ["File name of title 1","File name of title 2","File name of BGM"]
+  * @default ["Book", "", "Theme1"]
+  *
+  * @param ending4
+  * @desc 엔딩4
+  * ["File name of title 1","File name of title 2","File name of BGM"]
+  * @default ["Book", "", "Theme1"]
+  *
+  * @param Map ID
+  * @desc 맵 ID (플레이어 초기 위치)
+  * @default 1
+  *
+  * @param Map X
+  * @desc 맵 X (플레이어 초기 위치)
+  * @default 0
+  *
+  * @param Map Y
+  * @desc 맵 Y (플레이어 초기 위치)
+  * @default 0
+  *
+  * @param specific command
+  * @desc 특별한 커맨드
+  * @default specific command
+  *
+  * @param show specific command
+  * @desc true로 설정하면, 특별한 커맨드가 표시됩니다.
+  * @default true
+  *
+  * @help
+  * 다음과 같은 플러그인 커맨드를 제공하고 있습니다.
+  *
+  * - 엔딩이 끝났고, 타이틀 화면을 변경하고 싶다면,
+  * 엔딩 설정 ending1
+  * 엔딩 설정 ending2
+  * 엔딩 설정 ending3
+  * 엔딩 설정 ending4
+  *
+  * - 지금까지의 봤던 모든 '엔딩' 기록을 삭제하고 게임을 처음 플레이 하는 것처럼 초기화 하려면,
+  * 엔딩 초기화
+  *
+  * - 특정 엔딩을 클리어했는지 확인하려면 아래와 같이 하세요.
+  * if($gameMap.isClearEnding("ending1")) {
+  *   // true
+  * } else {
+  *   // false
+  * }
+  *
+  * - 플레이어가 어떤 엔딩을 클리어했는지 확인하고 배열로 받아보려면 아래와 같이 하세요.
+  * $gameMap.getEnding();
+  *
+  * - 플레이어가 엔딩을 몇 번이나 확인했는지 갯수를 알고 싶다면 아래와 같이 하세요.
+  * $gameMap.getEnding().length;
+  *
+  * - 버전 로그
+  * 1.0.2 (2015.12.22) - Web Local Storage 에 대한 버그가 수정되었습니다.
+  * 1.0.3 (2016.03.07) - 영어 매개변수 사용 시에 발생하던 심각한 문제가 수정되었습니다.
+  *
+  */
 
 var Imported = Imported || {};
 Imported.RS_TitleManagerEx = true;
