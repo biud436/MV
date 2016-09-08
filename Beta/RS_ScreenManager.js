@@ -58,7 +58,7 @@ Imported.RS_ScreenManager = true;
 (function () {
 
   // NW Extension
-  // nw-gyp configure --target_arch=ia32 --target=0.12.3
+  // nw-gyp configure --target_arch=ia32 --target=0.12.3 && nw-gyp build
   // var enumDisplaySettings = require('winDisplaySettings');
 
   var parameters = $plugins.filter(function (i) {
