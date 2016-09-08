@@ -7,6 +7,15 @@
  * start playback. and you can stop the video by clicking around the YouTube video.
  * This plugin will automatically end the video playback if you watches
  * the video until the end.
+ *
+ * =============================================================================
+ * Script Calls
+ * =============================================================================
+ * Graphics.playYoutube("https://www.youtube.com/watch?v=C4ze-KCSxQY");
+ * if(YTPlayer.isPlaying()) YTPlayer.stopVideo();
+ * YTPlayer.isPaused();
+ * YTPlayer.isBuffering();
+ * YTPlayer.isEnded();
  * =============================================================================
  * Plugin Command
  * =============================================================================
@@ -28,7 +37,7 @@
  * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL.
  * 2016.07.04 (v1.0.3) - Fixed a few logic about the range were converted to Rectangular object.
  */
- 
+
 var Imported = Imported || {};
 Imported.RS_YoutubePlayer = true;
 
@@ -180,6 +189,7 @@ function onPlayerStateChange (event) {
     }
     this._iframe.style.opacity = '1';
     this._iframe.style.zIndex = '20000';
+
     if(!this._init) {
       this._firstScriptTag = document.getElementsByTagName('script')[0];
       this._firstScriptTag.parentNode.insertBefore(this._tag, this._firstScriptTag);
