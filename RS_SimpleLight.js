@@ -44,7 +44,6 @@ function LightSprite() {
 
 (function($) {
 
-  // This is possible to set printing more details error.
   'use strict';
 
   var parameters = PluginManager.parameters('RS_SimpleLight');
@@ -52,8 +51,9 @@ function LightSprite() {
   var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
   var isWebGL = PIXI.utils.isWebGLSupported();
   var isUseCanvas = Utils.isOptionValid('canvas');
-  if(isUseCanvas) {
-    console.error('This plugin does not support in Canvas Mode');
+
+  if(isUseCanvas || !isWebGL || !isFilterPIXI4) {
+    console.error('This plugin does not support in your project');
     return;
   }
 
@@ -113,7 +113,7 @@ function LightSprite() {
         '   vec3 view = normalize(vec3(vTestCoord, 1.0) - u_LightPos);',
         '   vec3 vLightVector = normalize(coord - u_LightPos);',
 
-        // Rotate Matrix
+        // Rotate Matrix (무거움)
         '   float s = sin(angle);',
         '   float c = cos(angle);',
         '   coord.x = offset.x * c - offset.y * s;',

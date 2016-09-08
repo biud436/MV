@@ -76,8 +76,9 @@ RS.WaveConfig = RS.WaveConfig || {};
   var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
   var isWebGL = PIXI.utils.isWebGLSupported();
   var isUseCanvas = Utils.isOptionValid('canvas');
-  if(isUseCanvas) {
-    console.error('This plugin does not support in Canvas Mode');
+
+  if(isUseCanvas || !isWebGL || !isFilterPIXI4) {
+    console.error('This plugin does not support in your project');
     return;
   }
 
