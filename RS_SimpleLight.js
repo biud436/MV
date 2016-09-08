@@ -1,7 +1,6 @@
 /*:
  * RS_SimpleLight.js
- * @plugindesc  * This plugin applies the lighting effect to the all objects
- * by using the Fragment Shader, allows you to give a feeling to explore a dark terrain.
+ * @plugindesc This plugin applies the lighting effect to the all objects by using the Fragment Shader, allows you to give a feeling to explore a dark terrain.
  * @author biud436
  *
  * @param coord normalize min
@@ -42,7 +41,7 @@ RS.LightConfig = RS.LightConfig || {};
 
   var parameters = PluginManager.parameters('RS_SimpleLight');
   var f_CoordMin = Number(parameters['coord normalize min'] || 0.4 );
-  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION === "1.3.0");
+  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
 
   //-----------------------------------------------------------------------------
   // SimpleLightFilter
@@ -96,9 +95,6 @@ if(!isFilterPIXI4) {
          '   float diffuse = 1.0;',
          '   vec2 test_offset = offset;',
 
-        //======================================================================
-        //
-        //======================================================================
          '   vec3 coord = clamp(normalize(vec3(vTextureCoord.x, vTextureCoord.y, 1.0 )), coordMin, 1.0);',
          '   float distance = distance(coord, u_LightPos);',
 
