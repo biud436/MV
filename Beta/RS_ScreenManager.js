@@ -85,8 +85,8 @@ Imported.RS_ScreenManager = true;
   if(Utils.isNwjs()) {
     if(process && process.platform && process.platform === 'win32') {
       var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
-      var displaySetting = new winDisplaySettingsLib.DisplaySettings();
       if(winDisplaySettingsLib) {
+        var displaySetting = new winDisplaySettingsLib.DisplaySettings();
         pcGraphicsArray = displaySetting.getList().split('\n').filter(function(i, idx, item) {
           return item.indexOf(i) === idx;
         });
