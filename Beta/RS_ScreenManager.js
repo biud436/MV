@@ -59,12 +59,12 @@ Imported.RS_ScreenManager = true;
 
   // NW Extension
   // nw-gyp configure --target_arch=ia32 --target=0.12.3 && nw-gyp build
-  // var enumDisplaySettings = require('winDisplaySettings');
-  // var pcGraphicsArray = enumDisplaySettings.GetDisplaySettings();
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_ScreenManager>');
   });
+
+  var pcGraphicsArray;
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
@@ -82,7 +82,17 @@ Imported.RS_ScreenManager = true;
 
   var getTargetRegex = /(\d+)\W+(\d+)/i;
 
-  var pcGraphicsArray = [
+  if(Utils.isNwJs()) {
+    var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
+    var displaySetting = new winDisplaySettingsLib.DisplaySettings();
+    if(winDisplaySettingsLib) {
+      pcGraphicsArray = displaySetting.getList().split('\n').filter(function(i, idx, item) {
+        return item.indexOf(i) === idx;
+      });
+    }
+  }
+  
+  pcGraphicsArray = pcGraphicsArray || [
   "160 × 120",
   "240 × 160",
   "320 × 240",
