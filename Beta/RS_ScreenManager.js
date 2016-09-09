@@ -82,7 +82,7 @@ Imported.RS_ScreenManager = true;
 
   var getTargetRegex = /(\d+)\W+(\d+)/i;
 
-  if(Utils.isNwJs()) {
+  if(Utils.isNwjs()) {
     var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
     var displaySetting = new winDisplaySettingsLib.DisplaySettings();
     if(winDisplaySettingsLib) {
@@ -91,7 +91,7 @@ Imported.RS_ScreenManager = true;
       });
     }
   }
-  
+
   pcGraphicsArray = pcGraphicsArray || [
   "160 × 120",
   "240 × 160",
