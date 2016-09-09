@@ -83,12 +83,14 @@ Imported.RS_ScreenManager = true;
   var getTargetRegex = /(\d+)\W+(\d+)/i;
 
   if(Utils.isNwjs()) {
-    var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
-    var displaySetting = new winDisplaySettingsLib.DisplaySettings();
-    if(winDisplaySettingsLib) {
-      pcGraphicsArray = displaySetting.getList().split('\n').filter(function(i, idx, item) {
-        return item.indexOf(i) === idx;
-      });
+    if(process && process.platform && process.platform === 'win32') {
+      var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
+      var displaySetting = new winDisplaySettingsLib.DisplaySettings();
+      if(winDisplaySettingsLib) {
+        pcGraphicsArray = displaySetting.getList().split('\n').filter(function(i, idx, item) {
+          return item.indexOf(i) === idx;
+        });
+      }
     }
   }
 
