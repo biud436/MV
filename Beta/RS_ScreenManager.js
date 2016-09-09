@@ -73,7 +73,7 @@ Imported.RS_ScreenManager = true;
   var isGraphicsRendererResize = Boolean(parameters['isGraphicsRendererResize'] === 'true');
   var isGraphicsAutoScaling = Boolean(parameters['isGraphicsAutoScaling'] === 'true');
   var isMaintainingMinimumWidth = Boolean(parameters['isMaintainingMinimumWidth'] === 'true');
-  var isMaintainingMinimumHeight = Boolean(parameters['isMaintainingMinimumWidth'] === 'true');
+  var isMaintainingMinimumHeight = Boolean(parameters['isMaintainingMinimumHeight'] === 'true');
   var imageName = String(parameters['imageName'] || 'Mountains3');
   var panelTextName = String(parameters["panelTextName"] || "Display Resolutions");
   var fullScreenButtonName = String(parameters["fullScreenButtonName"] || 'Full Screen');
