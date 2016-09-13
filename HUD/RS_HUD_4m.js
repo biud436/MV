@@ -1,11 +1,11 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.1) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.2) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.1.1
+ * @version 1.1.2
  *
  * @param --- Image Name
  * @desc
@@ -109,6 +109,10 @@
  * @desc Sets the value that indicates whether this parameter displays
  * the values with commas every three digits.
  * @default false
+ *
+ * @param Max Exp Text
+ * @desc
+ * @default ------/------
  *
  * @param --- Font
  * @desc
@@ -261,6 +265,7 @@
  * 2016.06.30 (v1.0.9) - Added the parameter that displays the values with commas every three digits.
  * 2016.07.30 (v1.1.0) - Added the parameter for setting fonts.
  * 2016.09.05 (v1.1.1) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
+ * 2016.09.13 (v1.1.2) - Added Max Exp Text and Fixed the exp rate.
  */
 
 var Imported = Imported || {};
@@ -295,6 +300,7 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
   RS.HUD.param.battleOnly = Boolean(parameters['Battle Only'] === "true");
   RS.HUD.param.showComma = Boolean(parameters['Show Comma'] === 'true');
+  RS.HUD.param.maxExpText = String(parameters['Max Exp Text'] || "------/------");
 
   // Font Settings
   RS.HUD.param.chineseFont = String(parameters['Chinese Font'] || 'SimHei, Heiti TC, sans-serif');
@@ -340,6 +346,27 @@ RS.HUD.param = RS.HUD.param || {};
     this._rs_hud = this._rs_hud || {};
     this._rs_hud.show = this._rs_hud.show || RS.HUD.param.bShow;
     this._rs_hud.opacity = this._rs_hud.opacity || RS.HUD.param.nOpacity;
+  };
+
+  //----------------------------------------------------------------------------
+  // Game_Actor
+  //
+  //
+
+  Game_Actor.prototype.relativeExp = function () {
+    if(this.isMaxLevel()) {
+       return this.expForLevel(this.maxLevel());
+    } else {
+      return this.currentExp() - this.currentLevelExp();
+    }
+  };
+
+  Game_Actor.prototype.relativeMaxExp = function () {
+    if(!this.isMaxLevel()) {
+      return this.nextLevelExp() - this.currentLevelExp();
+    } else {
+      return this.expForLevel(this.maxLevel());
+    }
   };
 
   //----------------------------------------------------------------------------
@@ -702,10 +729,11 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getExp = function() {
     var player = this.getPlayer();
+    if(player.isMaxLevel()) return RS.HUD.param.maxExpText;
     if(RS.HUD.param.showComma) {
-      return "%1 / %2".appendComma(player.currentExp(), player.nextLevelExp());
+      return "%1 / %2".appendComma(player.relativeExp(), player.relativeMaxExp());
     } else {
-      return "%1 / %2".format(player.currentExp(), player.nextLevelExp());
+      return "%1 / %2".format(player.relativeExp(), player.relativeMaxExp());
     }
   };
 
@@ -736,7 +764,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getExpRate = function() {
     try {
-      return this._exp.bitmap.width * (this.getPlayer().currentExp() / this.getPlayer().nextLevelExp());
+      return this._exp.bitmap.width * (this.getPlayer().relativeExp() / this.getPlayer().relativeMaxExp());
     } catch(e) {
       return 0;
     }
