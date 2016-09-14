@@ -1,83 +1,245 @@
 /*:
  * RS_WalkingStepSound
- * @plugindesc Whenever you are walking in your world, this plugin automatically
- * plays the walking footstep sound.
+ * @plugindesc Whenever you are walking in your world, this plugin automatically plays the walking footstep sound.
  *
  * @author biud436
  *
- * @requiredAssets audio/wav/stepdirt_1
- * @requiredAssets audio/wav/stepdirt_2
- * @requiredAssets audio/wav/stepdirt_3
- * @requiredAssets audio/wav/stepdirt_4
- * @requiredAssets audio/wav/stepdirt_5
- * @requiredAssets audio/wav/stepdirt_6
- * @requiredAssets audio/wav/stepdirt_7
- * @requiredAssets audio/wav/stepdirt_8
- * @requiredAssets audio/wav/stepsnow_1
- * @requiredAssets audio/wav/stepsnow_2
- * @requiredAssets audio/wav/stepstone_1
- * @requiredAssets audio/wav/stepstone_2
- * @requiredAssets audio/wav/stepstone_3
- * @requiredAssets audio/wav/stepstone_4
- * @requiredAssets audio/wav/stepstone_5
- * @requiredAssets audio/wav/stepstone_6
- * @requiredAssets audio/wav/stepstone_7
- * @requiredAssets audio/wav/stepstone_8
- * @requiredAssets audio/wav/stepwater_1
- * @requiredAssets audio/wav/stepwater_2
- * @requiredAssets audio/wav/stepwood_1
- * @requiredAssets audio/wav/stepwood_2
- *
- * @param Dirt Terrain Tag
- * @desc 흙 길
- * @default 1
- *
- * @param Snow Terrain Tag
- * @desc 눈 밭
- * @default 2
- *
- * @param Stone Terrain Tag
- * @desc 돌 길
- * @default 3
- *
- * @param Water Terrain Tag
- * @desc 물
- * @default 4
- *
- * @param Wood Terrain Tag
- * @desc 나무 판자, 나무
- * @default 5
+ * @param --- Sound Range
+ * @desc
+ * @default
  *
  * @param Dirt Sound Name
- * @desc 흙 길 사운드 명
+ * @desc Array
  * @default ['stepdirt_', 1, 8]
  *
  * @param Snow Sound Name
- * @desc 눈 밭 사운드 명
+ * @desc Array
  * @default ['stepsnow_', 1, 2]
  *
  * @param Stone Sound Name
- * @desc 돌 길 사운드 명
+ * @desc Array
  * @default ['stepstone_', 1, 8]
  *
  * @param Water Sound Name
- * @desc 물 사운드 명
+ * @desc Array
  * @default ['stepwater_', 1 , 2]
  *
  * @param Wood Sound Name
- * @desc 나무 판자, 나무 사운드 명
+ * @desc Array
  * @default ['stepwood_', 1, 2]
  *
+ * @param --- Dirt SE
+ * @desc
+ * @default
+ *
+ * @param Audio Assets 1
+ * @desc If you have an audio, you must edit this
+ * @default stepdirt_1
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 2
+ * @desc If you have an audio, you must edit this
+ * @default stepdirt_2
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 3
+ * @desc If you have an audio, you must edit this
+ * @default stepdirt_3
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 4
+ * @desc If you have an audio, you must edit this
+ * @default stepdirt_4
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 5
+ * @desc If you have an audio, you must edit this
+ * @default stepdirt_5
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 6
+ * @desc If you have an audio, you must edit this
+ * @default stepdirt_6
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 7
+ * @desc If you have an audio, you must edit this
+ * @default stepdirt_7
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 8
+ * @desc If you have an audio, you must edit this
+ * @default stepdirt_8
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param --- Snow SE
+ * @desc
+ * @default
+ *
+ * @param Audio Assets 9
+ * @desc If you have an audio, you must edit this
+ * @default stepsnow_1
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 10
+ * @desc If you have an audio, you must edit this
+ * @default stepsnow_2
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param --- Stone SE
+ * @desc
+ * @default
+ *
+ * @param Audio Assets 11
+ * @desc If you have an audio, you must edit this
+ * @default stepstone_1
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 12
+ * @desc If you have an audio, you must edit this
+ * @default stepstone_2
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 13
+ * @desc If you have an audio, you must edit this
+ * @default stepstone_3
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 14
+ * @desc If you have an audio, you must edit this
+ * @default stepstone_4
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 15
+ * @desc If you have an audio, you must edit this
+ * @default stepstone_5
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 16
+ * @desc If you have an audio, you must edit this
+ * @default stepstone_6
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 17
+ * @desc If you have an audio, you must edit this
+ * @default stepstone_7
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 18
+ * @desc If you have an audio, you must edit this
+ * @default stepstone_8
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param --- Water SE
+ * @desc
+ * @default
+ *
+ * @param Audio Assets 19
+ * @desc If you have an audio, you must edit this
+ * @default stepwater_1
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 20
+ * @desc If you have an audio, you must edit this
+ * @default stepwater_2
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param --- Wood SE
+ * @desc
+ * @default
+ *
+ * @param Audio Assets 21
+ * @desc If you have an audio, you must edit this
+ * @default stepwood_1
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param Audio Assets 22
+ * @desc If you have an audio, you must edit this
+ * @default stepwood_2
+ * @require 1
+ * @dir audio/wav/
+ * @type file
+ *
+ * @param --- Sound Tags
+ * @desc
+ * @default
+ *
+ * @param Dirt Terrain Tag
+ * @desc
+ * @default 1
+ *
+ * @param Snow Terrain Tag
+ * @desc
+ * @default 2
+ *
+ * @param Stone Terrain Tag
+ * @desc
+ * @default 3
+ *
+ * @param Water Terrain Tag
+ * @desc
+ * @default 4
+ *
+ * @param Wood Terrain Tag
+ * @desc
+ * @default 5
+ *
+ * @param --- Settings
+ * @desc
+ * @default
+ *
  * @param Step Interval
- * @desc 보행 간격
+ * @desc
  * @default 2
  *
  * @param Volume
- * @desc 볼륨
+ * @desc
  * @default 30
  *
  * @param Step Sound
- * @desc 옵션
+ * @desc This is a command name in the menu option.
  * @default Step Sound
  *
  * @help
@@ -109,7 +271,7 @@
  * 2016.03.04 (v1.0.1)- Added the comments for include used files.
  * 2016.03.05 (v1.0.2) - Fixed the class structure.
  * 2016.03.10 (v1.0.3) - Fixed the sound option.
- *
+ * 2016.09.14 (v1.0.4) - Fixed the issue that the step sound property is initialized to the false in ConfigManager.
  */
 
 var Imported = Imported || {};
@@ -160,7 +322,8 @@ Imported.RS_WalkingStepSound = true;
     var note = tileset.note.split(/[\r\n]/);
     note.forEach(function(i) {
       if(i.match(/<Step Sounds>/i)) {
-        RSMatch._init = true;
+        RSMatch._init = ConfigManager.stepSound = true;
+        ConfigManager.save();
       }
     }, this);
   }
@@ -239,9 +402,9 @@ Imported.RS_WalkingStepSound = true;
 
   var alias_makeData = ConfigManager.makeData;
   ConfigManager.makeData = function() {
-      var config = alias_makeData.call(this);
-      config.stepSound = this.stepSound;
-      return config;
+    var config = alias_makeData.call(this);
+    config.stepSound = ConfigManager.stepSound;
+    return config;
   };
 
   var alias_applyData = ConfigManager.applyData;
@@ -257,8 +420,8 @@ Imported.RS_WalkingStepSound = true;
 
   var alias_addVolumeOptions = Window_Options.prototype.addGeneralOptions;
   Window_Options.prototype.addGeneralOptions = function() {
-      alias_addVolumeOptions.call(this);
-      this.addCommand(RSMatch.params.symbolName, 'stepSound');
+    alias_addVolumeOptions.call(this);
+    this.addCommand(RSMatch.params.symbolName, 'stepSound');
   };
 
 })();
