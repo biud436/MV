@@ -1,6 +1,6 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.0) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.1) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 폰트 사이즈
@@ -148,6 +148,7 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2016.09.09 (v0.1.1) - 정렬자 기능 개선
  * 2016.06.18 (v0.1.0) - 이름 윈도우 후면에 스프라이트가 그려지지 않는 문제를 수정했습니다
  * 2016.03.21 (v0.0.9) - \t (탭), \r (캐리지 리턴) 추가
  * 2016.03.01 (v0.0.8) - 말풍선 모드에 페이스칩 표시, 플러그인 커맨드 및 버그 픽스
@@ -1768,12 +1769,7 @@ Window_Message.prototype.updatePlacement = function() {
        this.__textWidth = 0;
        var tempText = text;
 
-       tempText = tempText.split(/[\r\n]+/);
-
-       // 정렬을 하면 긴 문장을 찾게 됩니다
-       tempText = tempText.sort(function(a, b) {
-           return b.length - a.length;
-       }.bind(this));
+       tempText = tempText.split(/[\n]+/);
 
        // 폭이 계산됩니다
        this.getTextWidth(tempText[0]);
@@ -1851,7 +1847,6 @@ Window_Message.prototype.updatePlacement = function() {
         this.setAlignRight(this._textState);
         break;
       }
-
    }
 
    /**
@@ -1860,7 +1855,7 @@ Window_Message.prototype.updatePlacement = function() {
     * @param textState {Object}
     */
    Window_Message.prototype.setAlignCenter = function(textState) {
-     textState.tx = this.calcTextWidth(textState.text);
+     textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
      textState.x = ( this.newLineX() + this.contentsWidth() ) / 2 - textState.tx / 4;
      textState.left = textState.x;
    }
@@ -1871,7 +1866,7 @@ Window_Message.prototype.updatePlacement = function() {
     * @param textState {Object}
     */
    Window_Message.prototype.setAlignRight = function(textState) {
-     textState.tx = this.calcTextWidth(textState.text);
+     textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
      textState.x = ( this.contentsWidth() ) - textState.tx / 2;
      textState.left = textState.x;
    }

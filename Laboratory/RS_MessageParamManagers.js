@@ -1,5 +1,5 @@
 /*:
- * Window_MessageParamManagers.js
+ * RS_MessageParamManagers.js
  * @plugindesc Set the opacity of each element on a Message Box.
  * @author biud436
  *
@@ -31,6 +31,10 @@
  * This plugin does not provide plugin commands
  *
  */
+
+var Imported = Imported || {};
+Imported.RS_MessageParamManagers = '1.0.0';
+
 (function() {
 
   var parameters = PluginManager.parameters('RS_MessageParamManagers');
