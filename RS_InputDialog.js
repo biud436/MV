@@ -64,6 +64,72 @@
  * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
  * 2016.08.16 (v1.1.1A) - Fixed a whitespace bug.
  */
+ /*:ko
+  * RS_InputDialog.js
+  * @plugindesc 화면에 텍스트 박스를 띄울 수 있습니다.
+  * @author biud436
+  *
+  * @param textBox Width
+  * @desc 텍스트 박스의 폭
+  * @default 488
+  *
+  * @param textBox Height
+  * @desc 텍스트 박스의 높이
+  * @default 36
+  *
+  * @param variable ID
+  * @desc 게임 변수의 ID
+  * @default 3
+  *
+  * @param debug
+  * @desc Alert 창 표시 여부
+  * @default false
+  *
+  * @param Text
+  * @desc 상단 텍스트 설정
+  * @default Please enter the value...
+  *
+  * @param Background Color
+  * @desc 텍스트 박스의 배경 색상 설정
+  * @default rgba(255, 255, 255, 0.8)
+  *
+  * @param direction
+  * @desc 텍스트의 방향
+  * ltr - 왼쪽에서 오른쪽, rtl - 오른쪽에서 왼쪽
+  * @default ltr
+  *
+  * @help
+  * =============================================================================
+  * 플러그인 명령
+  * =============================================================================
+  * - 텍스트 박스를 화면에 표시합니다.
+  * InputDialog open
+  *
+  * - 텍스트 박스의 폭을 변경합니다.
+  * InputDialog width 488
+  *
+  * - 텍스트 박스의 문구를 변경합니다.
+  * InputDialog text Please enter the string...
+  *
+  * -텍스트가 저장될 변수의 ID값을 변경합니다.
+  * InputDialog variableID 3
+  *
+  * - Alert 윈도우 표시 여부를 설정합니다.
+  * InputDialog debug true
+  *
+  * - 텍스트 박스의 색상을 변경합니다.
+  * InputDialog backgroundColor rgba(255, 255, 255, 0.8)
+  *
+  * =============================================================================
+  * Change Log
+  * =============================================================================
+  * 2016.08.09 (v1.0.0) - First Release.
+  * 2016.08.09 (v1.0.1) - Added Background Color.
+  * 2016.08.10 (v1.0.1A) - Added ID Variables.
+  * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
+  * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
+  * 2016.08.16 (v1.1.1A) - Fixed a whitespace bug.
+  */
 
 var Imported = Imported || {};
 Imported.RS_InputDialog = true;
@@ -241,11 +307,6 @@ function Scene_InputDialog() {
 
       // 결정키를 눌렸는가?
       if(keyCode === TextBox.ENTER) {
-
-        // 텍스트가 없으면 결정키 눌림이 취소된다.
-        // if(this.getTextLength() <= 0) {
-        //   e.preventDefault();
-        // }
 
         // 버튼 입력 체크
         if(this._func instanceof Function) this._func();

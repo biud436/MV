@@ -78,21 +78,23 @@ Imported.RS_ScreenManager = true;
   var panelTextName = String(parameters["panelTextName"] || "Display Resolutions");
   var fullScreenButtonName = String(parameters["fullScreenButtonName"] || 'Full Screen');
 
+  var resolutionCommand = "Display Resolutions";
+
   var bitmap = ImageManager.loadParallax(imageName);
 
   var getTargetRegex = /(\d+)\W+(\d+)/i;
 
-  if(Utils.isNwjs()) {
-    if(process && process.platform && process.platform === 'win32') {
-      var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
-      if(winDisplaySettingsLib) {
-        var displaySetting = new winDisplaySettingsLib.DisplaySettings();
-        pcGraphicsArray = displaySetting.getList().split('\n').filter(function(i, idx, item) {
-          return item.indexOf(i) === idx;
-        });
-      }
-    }
-  }
+  // if(Utils.isNwjs()) {
+  //   if(process && process.platform && process.platform === 'win32') {
+  //     var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
+  //     if(winDisplaySettingsLib) {
+  //       var displaySetting = new winDisplaySettingsLib.DisplaySettings();
+  //       pcGraphicsArray = displaySetting.getList().split('\n').filter(function(i, idx, item) {
+  //         return item.indexOf(i) === idx;
+  //       });
+  //     }
+  //   }
+  // }
 
   pcGraphicsArray = pcGraphicsArray || [
   "160 × 120",

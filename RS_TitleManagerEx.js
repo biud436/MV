@@ -195,7 +195,7 @@ RS.EndingClearList = RS.EndingClearList || [];
   //
   var alias_Scene_Title_create = Scene_Title.prototype.create;
   Scene_Title.prototype.create = function() {
-      RS.Tool.RESOURCE['base title'] = [$dataSystem.title1Name, $dataSystem.title2Name, $dataSystem.titleBgm]
+      RS.Tool.RESOURCE['base title'] = [$dataSystem.title1Name, $dataSystem.title2Name, $dataSystem.titleBgm];
       alias_Scene_Title_create.call(this);
   };
 
