@@ -17,11 +17,6 @@
  * This text code is available to implement the left-to-right language.
  * \LTR<Hello, World!>
  * =============================================================================
- * Plugin Commands
- * =============================================================================
- * MessageMode Set Arabic
- * MessageMode Set Default
- * =============================================================================
  * Change Log
  * =============================================================================
  * 2016.09.19 (v1.0.0) - First Release.
@@ -56,7 +51,7 @@
       this._windowContentsSprite.addChild( this._arabicTexts );
     } else {
       this._windowContentsSprite.pivot.x = 0;
-      this._windowContentsSprite.scale.x = 1;      
+      this._windowContentsSprite.scale.x = 1;
     }
     alias_Window_Message_newPage.call(this, textState);
   };
@@ -132,7 +127,9 @@
 
       switch (code) {
       case 'LTR':
-          this.drawLeftToRightText( this.obtainLTRText(textState), textState );
+          if(messageMode === "arabic") {
+            this.drawLeftToRightText( this.obtainLTRText(textState), textState );
+          }
           break;
       default:
           alias_Window_Message_processEscapeCharacter.call(this, code, textState);
@@ -173,18 +170,6 @@
 
   String.prototype.reverse = function(){
       return this.toArray().reverse().join("");
-  };
-
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_Game_Interpreter_pluginCommand.call(this, command, args);
-      if(command === "MessageMode") {
-        switch(args[0]) {
-          case 'Set':
-            messageMode = String(args[1] || "arabic").toLowerCase();
-            break;
-        }
-      }
   };
 
 })();
