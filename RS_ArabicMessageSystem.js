@@ -142,7 +142,7 @@ Imported.RS_ArabicMessageSystem = '1.0.0';
   };
 
   /**
-   * @method obtainGradientText
+   * @method obtainLTRText
    * @param {Object} textState
    * @return {String} str
    */
