@@ -54,6 +54,9 @@
       this._arabicTexts = new Sprite();
       this._arabicTexts.visible = true;
       this._windowContentsSprite.addChild( this._arabicTexts );
+    } else {
+      this._windowContentsSprite.pivot.x = 0;
+      this._windowContentsSprite.scale.x = 1;      
     }
     alias_Window_Message_newPage.call(this, textState);
   };
