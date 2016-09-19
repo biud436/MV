@@ -23,6 +23,9 @@
  * 2016.09.19 (v1.0.0) - First Release.
  */
 
+var Imported = Imported || {};
+Imported.RS_ArabicMessageSystem = '1.0.0';
+
 (function () {
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_ArabicMessageSystem>');
