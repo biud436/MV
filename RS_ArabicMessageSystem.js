@@ -4,6 +4,7 @@
  *
  * @param Message Mode
  * @desc this parameter sets up the text direction.
+ * default : arabic
  * @default arabic
  *
  * @param Arabic Font
