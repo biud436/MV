@@ -21,10 +21,11 @@
  * Change Log
  * =============================================================================
  * 2016.09.19 (v1.0.0) - First Release.
+ * 2016.09.19 (v1.0.1) - Fixed DrawIcon, DrawFace function.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.0.0';
+Imported.RS_ArabicMessageSystem = '1.0.1';
 
 (function () {
   var parameters = $plugins.filter(function (i) {
@@ -166,6 +167,74 @@ Imported.RS_ArabicMessageSystem = '1.0.0';
     var w = this.textWidth(c);
     this.createArabicText(c, textState.x, textState.y, w * 2, textState.height);
     textState.x += w;
+  };
+
+  /**
+   * Performs a block transfer.
+   *
+   * @method RTLblt
+   * @param {Bitmap} source The bitmap to draw
+   * @param {Number} sx The x coordinate in the source
+   * @param {Number} sy The y coordinate in the source
+   * @param {Number} sw The width of the source image
+   * @param {Number} sh The height of the source image
+   * @param {Number} dx The x coordinate in the destination
+   * @param {Number} dy The y coordinate in the destination
+   * @param {Number} [dw=sw] The width to draw the image in the destination
+   * @param {Number} [dh=sh] The height to draw the image in the destination
+   */
+  Bitmap.prototype.RTLblt = function(source, sx, sy, sw, sh, dx, dy, dw, dh) {
+      dw = dw || sw;
+      dh = dh || sh;
+      if (sx >= 0 && sy >= 0 && sw > 0 && sh > 0 && dw > 0 && dh > 0 &&
+              sx + sw <= source.width && sy + sh <= source.height) {
+        this._context.setTransform(-1, 0, 0, 1, sw, 0);
+        this._context.globalCompositeOperation = 'source-over';
+        this._context.drawImage(source._canvas, sx, sy, sw, sh, dx, dy, dw, dh);
+        this._context.setTransform(1, 0, 0, 1, 0, 0);
+        this._setDirty();
+      }
+  };
+
+  var original_Window_Message_drawIcon = Window_Message.prototype.drawIcon;
+  Window_Message.prototype.drawIcon = function(iconIndex, x, y) {
+    if(messageMode === "arabic") {
+      var bitmap = ImageManager.loadSystem('IconSet');
+      var pw = Window_Base._iconWidth;
+      var ph = Window_Base._iconHeight;
+      var sx = iconIndex % 16 * pw;
+      var sy = Math.floor(iconIndex / 16) * ph;
+      var tempBitmap = new Bitmap(pw, ph);
+      var sprite = new Sprite(tempBitmap);
+      sprite.x = x;
+      sprite.y = y;
+      sprite.pivot.x = pw;
+      sprite.scale.x = -1;
+      tempBitmap.blt(bitmap, sx, sy, pw, ph, 0, 0);
+      this._arabicTexts.addChild(sprite);
+    } else {
+      original_Window_Message_drawIcon.call(this, iconIndex, x, y);
+    }
+  };
+
+  var original_Window_Message_drawFace = Window_Message.prototype.drawFace;
+  Window_Message.prototype.drawFace = function(faceName, faceIndex, x, y, width, height) {
+    if(messageMode === "arabic") {
+      width = width || Window_Base._faceWidth;
+      height = height || Window_Base._faceHeight;
+      var bitmap = ImageManager.loadFace(faceName);
+      var pw = Window_Base._faceWidth;
+      var ph = Window_Base._faceHeight;
+      var sw = Math.min(width, pw);
+      var sh = Math.min(height, ph);
+      var dx = Math.floor(x + Math.max(width - pw, 0) / 2);
+      var dy = Math.floor(y + Math.max(height - ph, 0) / 2);
+      var sx = faceIndex % 4 * pw + (pw - sw) / 2;
+      var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
+      this.contents.RTLblt(bitmap, sx, sy, sw, sh, dx, dy);
+    } else {
+      original_Window_Message_drawFace.call(this, faceName, faceIndex, x, y, width, height);
+    }
   };
 
   String.prototype.toArray = function(){
