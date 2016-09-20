@@ -22,6 +22,7 @@
  * =============================================================================
  * 2016.09.19 (v1.0.0) - First Release.
  * 2016.09.19 (v1.0.1) - Fixed DrawIcon, DrawFace function.
+ * 2016.09.20 (v1.1.0) - Fixed Arabic text sturcture.
  */
 
 var Imported = Imported || {};
@@ -51,6 +52,7 @@ Imported.RS_ArabicMessageSystem = '1.0.1';
       }
       this._windowContentsSprite.pivot.x = this.contentsWidth();
       this._windowContentsSprite.scale.x = -1;
+      document.querySelector('canvas').dir = 'rtl';
       this._arabicTexts = new Sprite();
       this._arabicTexts.visible = true;
       this._windowContentsSprite.addChild( this._arabicTexts );
@@ -82,6 +84,7 @@ Imported.RS_ArabicMessageSystem = '1.0.1';
 
     // Initialize
     var bitmap = new Bitmap(maxWidth, lineHeight);
+    bitmap._canvas.dir = "rtl";
     var sprite = new Sprite(bitmap);
 
     // Set the Text Properties
@@ -112,7 +115,25 @@ Imported.RS_ArabicMessageSystem = '1.0.1';
    * @param {Object} textState
    */
   Window_Message.prototype.processNormalCharacter = function(textState) {
-    var c = textState.text[textState.index++];
+    var szCompositionText = textState.text.slice(textState.index);
+    var szValidText = szCompositionText.split(/[\r\n]+/)[0];
+    var szResultText = '';
+    var szWhitespace = '';
+    if(szValidText.indexOf('\x1b') !== -1) {
+      szWhitespace = [szValidText.slice(0, szValidText.indexOf('\x1b') - 1)];
+    } else {
+      szWhitespace = szValidText.split(/[ ]+/);
+    }
+
+    if(szWhitespace) {
+      textState.index += szWhitespace[0].length + 1;
+      szResultText = szWhitespace[0] + ' ';
+    } else {
+      textState.index += szValidText.length + 1;
+      szResultText = szValidText;
+    }
+
+    var c = szResultText;
     var w = this.textWidth(c);
     if(messageMode === "arabic") {
       this.createArabicText(c, textState.x, textState.y, w * 2, textState.height);
