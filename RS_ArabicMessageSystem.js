@@ -26,7 +26,7 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.0.1';
+Imported.RS_ArabicMessageSystem = '1.1.0';
 
 (function () {
   var parameters = $plugins.filter(function (i) {
