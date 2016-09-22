@@ -23,10 +23,15 @@
  * 2016.09.19 (v1.0.0) - First Release.
  * 2016.09.19 (v1.0.1) - Fixed DrawIcon, DrawFace function.
  * 2016.09.20 (v1.1.0) - Fixed Arabic text sturcture.
+ * 2016.09.21 (v1.1.1) - Fixed processNormalCharacter function.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.0';
+Imported.RS_ArabicMessageSystem = '1.1.1';
+
+var RS = RS || {};
+RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
+RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
 (function () {
   var parameters = $plugins.filter(function (i) {
@@ -37,6 +42,128 @@ Imported.RS_ArabicMessageSystem = '1.1.0';
 
   var messageMode = String(parameters["Message Mode"] || "arabic");
   var arabicFont = String(parameters["Arabic Font"] || "Simplified Arabic, Times New Roman, Segoe UI");
+
+  //============================================================================
+  // Bitmap
+  //
+  // provides the mirror mode.
+
+  /**
+   * Performs a block transfer.
+   *
+   * @method RTLblt
+   * @param {Bitmap} source The bitmap to draw
+   * @param {Number} sx The x coordinate in the source
+   * @param {Number} sy The y coordinate in the source
+   * @param {Number} sw The width of the source image
+   * @param {Number} sh The height of the source image
+   * @param {Number} dx The x coordinate in the destination
+   * @param {Number} dy The y coordinate in the destination
+   * @param {Number} [dw=sw] The width to draw the image in the destination
+   * @param {Number} [dh=sh] The height to draw the image in the destination
+   */
+  Bitmap.prototype.RTLblt = function(source, sx, sy, sw, sh, dx, dy, dw, dh) {
+      dw = dw || sw;
+      dh = dh || sh;
+      if (sx >= 0 && sy >= 0 && sw > 0 && sh > 0 && dw > 0 && dh > 0 &&
+              sx + sw <= source.width && sy + sh <= source.height) {
+        this._context.setTransform(-1, 0, 0, 1, sw, 0);
+        this._context.globalCompositeOperation = 'source-over';
+        this._context.drawImage(source._canvas, sx, sy, sw, sh, dx, dy, dw, dh);
+        this._context.setTransform(1, 0, 0, 1, 0, 0);
+        this._setDirty();
+      }
+  };
+
+  //============================================================================
+  // RS.ArabicMessageSystem
+  //
+  // provides the mirror mode.
+
+  RS.ArabicMessageSystem.createArabicLayer = function () {
+    if(messageMode === "arabic" || navigator.language.match(/^ar/)) {
+      var canvas = document.querySelector('canvas');
+      if(canvas.dir !=='rtl') canvas.dir = 'rtl';
+      if(this._arabicTexts) {
+        this._windowContentsSprite.removeChild( this._arabicTexts );
+        this._arabicTexts = null;
+      }
+      this._arabicTexts = new Sprite();
+      this._arabicTexts.pivot.x = this.contentsWidth();
+      this._arabicTexts.scale.x = -1;
+      this._arabicTexts.visible = true;
+      this._windowContentsSprite.addChild( this._arabicTexts );
+    }
+  };
+
+  RS.ArabicMessageSystem.addArabicText = function (text) {
+    if(this._arabicLayer) {
+      this._arabicLayer.addChild(text);
+    }
+  };
+
+  RS.ArabicMessageSystem.removeArabicText = function (text) {
+    if(this._arabicLayer) {
+      this._arabicLayer.removeChild(text);
+    }
+  };
+
+  RS.ArabicMessageSystem.defineProtoype = function (className) {
+    className.prototype.processNormalCharacter = Window_Message.prototype.processNormalCharacter;
+    className.prototype.processEscapeCharacter = Window_Message.prototype.processEscapeCharacter;
+    className.prototype.drawIcon = Window_Message.prototype.drawIcon;
+    className.prototype.createArabicText = Window_Message.prototype.createArabicText;
+    className.prototype.obtainLTRText = Window_Message.prototype.obtainLTRText;
+    className.prototype.drawLeftToRightText = Window_Message.prototype.drawLeftToRightText;
+  };
+
+  RS.ArabicMessageSystem.defineInitialize = function (className) {
+    var aliasName = 'alias_%1_initialize'.format(className);
+    RS.ArabicMessageSystem.alias[aliasName] = className.prototype.initialize;
+    className.prototype.initialize = function() {
+      RS.ArabicMessageSystem.alias[aliasName].call(this);
+      RS.ArabicMessageSystem.createArabicLayer.call(this);
+    };
+    RS.ArabicMessageSystem.defineRefresh(className);
+    RS.ArabicMessageSystem.defineProtoype(className);
+  };
+
+  RS.ArabicMessageSystem.defineRefresh = function (className) {
+    var aliasRefresh = 'alias_%1_refresh'.format(className);
+    RS.ArabicMessageSystem.alias[aliasRefresh] = className.prototype.refresh;
+    className.prototype.refresh = function() {
+      RS.ArabicMessageSystem.createArabicLayer.call(this);
+      RS.ArabicMessageSystem.alias[aliasRefresh].call(this);
+    };
+  };
+
+  RS.ArabicMessageSystem.getRealX = function (rect, textWidth, textPadding, align) {
+    if(align !== 'center' && align !== 'right') {
+      var x = rect.x + rect.width - textWidth + textPadding;
+    } else {
+      var x = rect.x;
+    }
+    return x;
+  };
+
+  //============================================================================
+  // Window_Base
+  //
+  // This provides an escape arabic text.
+
+  var alias_Window_Message_standardFontFace = Window_Message.prototype.standardFontFace;
+  Window_Base.prototype.standardFontFace = function() {
+    if (messageMode === "arabic" || navigator.language.match(/^ar/)) {
+      return arabicFont;
+    } else {
+      return alias_Window_Message_standardFontFace.call(this);
+    }
+  };
+
+  //============================================================================
+  // Window_Message
+  //
+  // This provides an escape arabic text.
 
   /**
    * Alias
@@ -61,15 +188,6 @@ Imported.RS_ArabicMessageSystem = '1.1.0';
       this._windowContentsSprite.scale.x = 1;
     }
     alias_Window_Message_newPage.call(this, textState);
-  };
-
-  var alias_Window_Message_standardFontFace = Window_Message.prototype.standardFontFace;
-  Window_Message.prototype.standardFontFace = function() {
-    if (messageMode === "arabic" || navigator.language.match(/^ar/)) {
-      return arabicFont;
-    } else {
-      return alias_Window_Message_standardFontFace.call(this);
-    }
   };
 
   /**
@@ -115,16 +233,25 @@ Imported.RS_ArabicMessageSystem = '1.1.0';
    * @param {Object} textState
    */
   Window_Message.prototype.processNormalCharacter = function(textState) {
+
+    // Extracting to work a part of the text.
     var szCompositionText = textState.text.slice(textState.index);
-    var szValidText = szCompositionText.split(/[\r\n]+/)[0];
-    var szResultText = '';
-    var szWhitespace = '';
-    if(szValidText.indexOf('\x1b') !== -1) {
-      szWhitespace = [szValidText.slice(0, szValidText.indexOf('\x1b') - 1)];
-    } else {
-      szWhitespace = szValidText.split(/[ ]+/);
+    var szValidText = szCompositionText;
+    var szResultText = '', szWhitespace = '';
+
+    // Check the escase character and line break
+    for(var i = 0; i < szValidText.length; i++) {
+      if(szValidText[i + 1] === '\x1b') {
+        szWhitespace = [szValidText.slice(0, i)];
+        break;
+      }
+      if(szValidText[i + 1] === '\n') {
+        szWhitespace = [szValidText.slice(0, i)];
+        break;
+      }
     }
 
+    // Calculate text index
     if(szWhitespace) {
       textState.index += szWhitespace[0].length + 1;
       szResultText = szWhitespace[0] + ' ';
@@ -133,6 +260,7 @@ Imported.RS_ArabicMessageSystem = '1.1.0';
       szResultText = szValidText;
     }
 
+    // Draw Text
     var c = szResultText;
     var w = this.textWidth(c);
     if(messageMode === "arabic") {
@@ -141,6 +269,7 @@ Imported.RS_ArabicMessageSystem = '1.1.0';
       this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
     }
     textState.x += w;
+
   };
 
   /**
@@ -190,33 +319,6 @@ Imported.RS_ArabicMessageSystem = '1.1.0';
     textState.x += w;
   };
 
-  /**
-   * Performs a block transfer.
-   *
-   * @method RTLblt
-   * @param {Bitmap} source The bitmap to draw
-   * @param {Number} sx The x coordinate in the source
-   * @param {Number} sy The y coordinate in the source
-   * @param {Number} sw The width of the source image
-   * @param {Number} sh The height of the source image
-   * @param {Number} dx The x coordinate in the destination
-   * @param {Number} dy The y coordinate in the destination
-   * @param {Number} [dw=sw] The width to draw the image in the destination
-   * @param {Number} [dh=sh] The height to draw the image in the destination
-   */
-  Bitmap.prototype.RTLblt = function(source, sx, sy, sw, sh, dx, dy, dw, dh) {
-      dw = dw || sw;
-      dh = dh || sh;
-      if (sx >= 0 && sy >= 0 && sw > 0 && sh > 0 && dw > 0 && dh > 0 &&
-              sx + sw <= source.width && sy + sh <= source.height) {
-        this._context.setTransform(-1, 0, 0, 1, sw, 0);
-        this._context.globalCompositeOperation = 'source-over';
-        this._context.drawImage(source._canvas, sx, sy, sw, sh, dx, dy, dw, dh);
-        this._context.setTransform(1, 0, 0, 1, 0, 0);
-        this._setDirty();
-      }
-  };
-
   var original_Window_Message_drawIcon = Window_Message.prototype.drawIcon;
   Window_Message.prototype.drawIcon = function(iconIndex, x, y) {
     if(messageMode === "arabic") {
@@ -258,6 +360,11 @@ Imported.RS_ArabicMessageSystem = '1.1.0';
     }
   };
 
+  //============================================================================
+  // String
+  //
+  //
+
   String.prototype.toArray = function(){
       return this.split("");
   };
@@ -265,5 +372,35 @@ Imported.RS_ArabicMessageSystem = '1.1.0';
   String.prototype.reverse = function(){
       return this.toArray().reverse().join("");
   };
+
+  //============================================================================
+  // Window_Command
+  //
+  // This provides a normal arabic text.
+
+  var alias_Window_Command_drawItem = Window_Command.prototype.drawItem;
+  Window_Command.prototype.drawItem = function(index) {
+    if(messageMode !== "arabic") {
+      return alias_Window_Command_drawItem.call(this, index);
+    }
+    var rect = this.itemRectForText(index);
+    var align = this.itemTextAlign();
+    if(align !== 'center' && align !== 'right') {
+      var x = rect.x + rect.width - this.textWidth(this.commandName(index)) + this.textPadding();
+    } else {
+      var x = rect.x;
+    }
+    this.resetTextColor();
+    this.changePaintOpacity(this.isCommandEnabled(index));
+    this.drawText(this.commandName(index), x, rect.y, rect.width, align);
+  };
+
+  //============================================================================
+  // Define Classes
+  //
+  //
+
+  RS.ArabicMessageSystem.defineInitialize(Window_Help);
+  RS.ArabicMessageSystem.defineInitialize(Window_Status);
 
 })();
