@@ -24,10 +24,12 @@
  * 2016.09.19 (v1.0.1) - Fixed DrawIcon, DrawFace function.
  * 2016.09.20 (v1.1.0) - Fixed Arabic text sturcture.
  * 2016.09.21 (v1.1.1) - Fixed processNormalCharacter function.
+ * 2016.09.23 (v1.1.2) - Fixed the window classes that could be displaying
+ * the battle log and map name windows, which have used a drawTextEx function in Arabic.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.1';
+Imported.RS_ArabicMessageSystem = '1.1.2';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -402,5 +404,8 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
   RS.ArabicMessageSystem.defineInitialize(Window_Help);
   RS.ArabicMessageSystem.defineInitialize(Window_Status);
+  RS.ArabicMessageSystem.defineInitialize(Window_BattleLog);
+  RS.ArabicMessageSystem.defineInitialize(Window_MapName);
+
 
 })();
