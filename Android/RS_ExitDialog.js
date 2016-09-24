@@ -1,6 +1,6 @@
 /*:
  * RS_ExitDialog.js
- * @plugindesc RS_ExitDialog.js
+ * @plugindesc This plugin allows you to show up the exit dialog on Android.
  * @author biud436
  *
  * @param Dialog Name

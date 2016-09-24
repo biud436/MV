@@ -1,5 +1,5 @@
 /*:
- * @plugindesc RS_Window_ChoiceListPosition.js
+ * @plugindesc This plugin allows you to set up the position of choice list window.
  * @author biud436
  *
  * @param x
@@ -11,13 +11,12 @@
  * @default 0
  *
  * @help
- *
- * - Plugin Command
- *
+ * =============================================================================
+ * Plugin Command
+ * =============================================================================
  * Choice pos x y
  * Choice enable
  * Choice disable
- *
  */
 
 var Imported = Imported || {};
@@ -25,7 +24,7 @@ Imported.Window_ChoiceListPosition = true;
 
 (function() {
 
-  var parameters = PluginManager.parameters('RS_Window_ChoiceListPosition');
+  var parameters = PluginManager.parameters('RS_ChoicePosition');
   var mx = Number(parameters['x']);
   var my = Number(parameters['y']);
   var enabled = true;

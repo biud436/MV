@@ -1,6 +1,6 @@
  /*:
  * RS_SelfVariables.js
- * @plugindesc Self Variables
+ * @plugindesc This plugin allows you to set up the variable on event itself.
  * @author biud436
  *
  * @param Save notifying variable

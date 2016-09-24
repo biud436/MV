@@ -1,6 +1,6 @@
 /*:
  * RS_AnimatedFace.js
- * @plugindesc RS_AnimatedFace (Add-on)
+ * @plugindesc This plugin allows you to show up the animated face into the message window.
  * @author biud436
  *
  * @param isdeltaTime
@@ -37,11 +37,11 @@
  * Installation
  * =============================================================================
  * To run this plugin,
- * It requires plugins called "RS_MessageSystem.js" and "RS_Vector2.js"
+ * This requires plugins called "RS_MessageSystem.js" and "RS_Vector2.js"
  * =============================================================================
  * Plugin Command
  * =============================================================================
- * 
+ *
  * This plugin contains these three types the plugin commands.
  *
  * This plugin commands allows you to set the scroll-speed of the face
@@ -58,8 +58,7 @@
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.04.18 (v1.0.0) - First Release
- *
+ * 2016.04.18 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};

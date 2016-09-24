@@ -1,5 +1,65 @@
 /*:
  * RS_Admob.js
+ * @plugindesc This plugin allows you to show up the Ads by using Google AdMob.
+ * @author biud436
+ *
+ * @param --- Android ---
+ * @desc
+ * @default
+ *
+ * @param android Banner ID
+ * @desc Banner ID
+ * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
+ *
+ * @param android Interstitial Ad ID
+ * @desc Interstitial Ad ID
+ * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
+ *
+ * @param --- IOS ---
+ * @desc
+ * @default
+ *
+ * @param ios Banner ID
+ * @desc Banner ID
+ * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
+ *
+ * @param ios Interstitial Ad ID
+ * @desc Interstitial Ad ID
+ * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
+ *
+ * @param --- Settings ---
+ * @desc
+ * @default
+ *
+ * @param bannerAtTop
+ * @desc The banner shows up at the top of the screen.
+ * true / false
+ * @default false
+ *
+ * @param Testing
+ * @desc Show up the test ads.
+ * true / false
+ * @default false
+ *
+ * @help
+ * =============================================================================
+ * Plugin Commands
+ * =============================================================================
+ * Banner show
+ * Banner remove
+ * Interstitial show
+ * =============================================================================
+ * Cordova Plugin URL
+ * =============================================================================
+ * https://github.com/sunnycupertino/cordova-plugin-admob-simple
+ * =============================================================================
+ * Credit
+ * =============================================================================
+ * Sunny Cupertino
+ * Liming Xie
+ */
+/*:ko
+ * RS_Admob.js
  * @plugindesc 광고 삽입 플러그인입니다.
  * @author biud436
  *

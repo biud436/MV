@@ -1,6 +1,6 @@
 /*:
  * RS_TitleSkip.js
- * @plugindesc Title Skip
+ * @plugindesc This plugin allows you to skip the title screen.
  * @author biud436
  */
 
@@ -26,5 +26,5 @@ Imported.RS_TitleSkip = true;
       }
       this.updateDocumentTitle();
   };
-  
+
 })()
