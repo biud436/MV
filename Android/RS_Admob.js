@@ -51,6 +51,7 @@
  * =============================================================================
  * Cordova Plugin URL
  * =============================================================================
+ * If you want to use this plugin, You should add intel xdk plugin as follows.
  * https://github.com/sunnycupertino/cordova-plugin-admob-simple
  * =============================================================================
  * Credit

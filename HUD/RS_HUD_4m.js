@@ -1,11 +1,10 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.2) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.3) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
  * @date 2016.01.12
- * @version 1.1.2
  *
  * @param --- Image Name
  * @desc
@@ -53,17 +52,66 @@
  * @dir img/pictures/
  * @type file
  *
+ * @param --- Image Custom Position
+ * @desc
+ * @default
+ *
+ * @param Face Position
+ * @desc x, y, visible
+ * (default : 0, 0, true)
+ * @default 0, 0, true
+ *
+ * @param HP Position
+ * @desc x, y, visible
+ * (default : 160, 43, true)
+ * @default 160, 43, true
+ *
+ * @param MP Position
+ * @desc x, y, visible
+ * (default : 160, 69, true)
+ * @default 160, 69, true
+ *
+ * @param EXP Position
+ * @desc x, y, visible
+ * (default : 83, 91, true)
+ * @default 83, 91, true
+ *
+ * @param HP Text Position
+ * @desc x, y, visible
+ * (default : 160, 53, true)
+ * @default 160, 53, true
+ *
+ * @param MP Text Position
+ * @desc x, y, visible
+ * (default : 160, 79, true)
+ * @default 160, 79, true
+ *
+ * @param Level Text Position
+ * @desc x, y, visible
+ * (default : 60, 80, true)
+ * @default 60, 80, true
+ *
+ * @param EXP Text Position
+ * @desc x, y, visible
+ * (default : 120.5, 93, true)
+ * @default 120.5, 93, true
+ *
+ * @param Name Text Position
+ * @desc x, y, visible
+ * (default : 54, 53, false)
+ * @default 54, 53, false
+ *
  * @param --- Noraml
  * @desc
  * @default
  *
  * @param Width
- * @desc Width
+ * @desc Width (default : 317)
  * Do not change this when you are using the default sprite batch.
  * @default 317
  *
  * @param Height
- * @desc Height
+ * @desc Height (default : 101)
  * Do not change this when you are using the default sprite batch.
  * @default 101
  *
@@ -76,24 +124,20 @@
  * @default true
  *
  * @param Show
- * @desc Sets the visible status.
+ * @desc Sets the visible status. (default : true)
  * @default true
  *
  * @param Opacity
  * @desc Sets the opacity.
  * @default 255
  *
- * @param Anchor
- * @desc This parameter is used to be compatible with RS_HUD.js
- * @default LeftTop
- *
  * @param Arrangement
- * @desc Create an array to set the position of a sprite.
- * example : ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
+ * @desc Create an array to set the anchor of each HUD.
+ * ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
  * @default ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
  *
  * @param Anchor
- * @desc LeftTop, LeftBottom, RightTop, RightBottom
+ * @desc If anchor is not found, HUD would set to this anchor.
  * @default LeftTop
  *
  * @param preloadImportantFaces
@@ -102,7 +146,8 @@
  * @default ['Actor1', 'Actor2', 'Actor3']
  *
  * @param Battle Only
- * @desc
+ * @desc If you want to use the HUD only in battles.
+ * (default : false)
  * @default false
  *
  * @param Show Comma
@@ -146,6 +191,10 @@
  * @desc
  * @default 12
  *
+ * @param Name Text Size
+ * @desc
+ * @default 12
+ *
  * @param --- Text Color
  * @desc
  * @default
@@ -163,6 +212,10 @@
  * @default #ffffff
  *
  * @param Level Color
+ * @desc
+ * @default #ffffff
+ *
+ * @param Name Color
  * @desc
  * @default #ffffff
  *
@@ -186,6 +239,10 @@
  * @desc
  * @default rgba(0, 0, 0, 0.5)
  *
+ * @param Name Outline Color
+ * @desc
+ * @default rgba(0, 0, 0, 0.5)
+ *
  * @param --- Text Outline Width
  * @desc
  * @default
@@ -206,6 +263,10 @@
  * @desc
  * @default 4
  *
+ * @param Name Outline Width
+ * @desc
+ * @default 4
+ *
  * @param --- Custom Font
  * @desc
  * @default
@@ -221,6 +282,26 @@
  * @param Custom Font Src
  * @desc
  * @default fonts/NanumBrush.ttf
+ *
+ * @param --- Custom HUD Anchor
+ * @desc
+ * @default
+ *
+ * @param Custom Pos 1
+ * @desc
+ * @default 0, 0
+ *
+ * @param Custom Pos 2
+ * @desc
+ * @default 0, 110
+ *
+ * @param Custom Pos 3
+ * @desc
+ * @default 0, 220
+ *
+ * @param Custom Pos 4
+ * @desc
+ * @default 0, 330
  *
  * @help
  * Download the resources and place them in your img/pictures folder.
@@ -266,10 +347,13 @@
  * 2016.07.30 (v1.1.0) - Added the parameter for setting fonts.
  * 2016.09.05 (v1.1.1) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
  * 2016.09.13 (v1.1.2) - Added Max Exp Text and Fixed the exp rate.
+ * 2016.09.26 (v1.1.3) - Added glittering gauge-bar in lower HP or MP value.
+ * The opacity of the HUD will decrease if the player is colliding with HUD, or is dead.
+ * Now we can also see a glittering gauge-bar in lower HP or MP value.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = true;
+Imported.RS_HUD_4m = '1.1.3';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -288,6 +372,32 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.imgEmptyHUD = String(parameters['HUD Background'] || 'hud_window_empty');
   RS.HUD.param.imgMasking = String(parameters['Masking'] || 'masking');
 
+  // Image Position
+  RS.HUD.loadImagePosition = function (szRE) {
+    var target = szRE.match(/(.*),(.*),(.*)/i);
+    var x = parseFloat(RegExp.$1);
+    var y = parseFloat(RegExp.$2);
+    var visible = Boolean(String(RegExp.$3).includes('true'));
+    return {'x': x, 'y': y, 'visible': visible};
+  };
+
+  RS.HUD.loadCustomPosition = function (szRE) {
+    var target = szRE.match(/(.*),(.*)/i);
+    var x = parseFloat(RegExp.$1) || 0;
+    var y = parseFloat(RegExp.$2) || 0;
+    return new Point(x, y);
+  };
+
+  RS.HUD.param.ptFace = RS.HUD.loadImagePosition(parameters['Face Position'] || '0, 0, true');
+  RS.HUD.param.ptHP = RS.HUD.loadImagePosition(parameters['HP Position'] || '160, 43, true');
+  RS.HUD.param.ptMP = RS.HUD.loadImagePosition(parameters['MP Position'] || '160, 69, true');
+  RS.HUD.param.ptEXP = RS.HUD.loadImagePosition(parameters['EXP Position'] || '83, 91, true');
+  RS.HUD.param.ptHPText = RS.HUD.loadImagePosition(parameters['HP Text Position'] || '160, 53, true');
+  RS.HUD.param.ptMPText = RS.HUD.loadImagePosition(parameters['MP Text Position'] || '160, 79, true');
+  RS.HUD.param.ptLevelText = RS.HUD.loadImagePosition(parameters['Level Text Position'] || '60, 80, true');
+  RS.HUD.param.ptEXPText = RS.HUD.loadImagePosition(parameters['EXP Text Position'] || '120.5, 93, true');
+  RS.HUD.param.ptNameText = RS.HUD.loadImagePosition(parameters['Name Text Position'] || '54, 53, true');
+
   // Normal Settings
   RS.HUD.param.nWidth = Number(parameters['Width'] || 317 );
   RS.HUD.param.nHeight = Number(parameters['Height'] || 101 );
@@ -302,6 +412,16 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.showComma = Boolean(parameters['Show Comma'] === 'true');
   RS.HUD.param.maxExpText = String(parameters['Max Exp Text'] || "------/------");
 
+  RS.HUD.getDefaultHUDAnchor = function () {
+    var anchor = {
+    "LeftTop": {x: RS.HUD.param.nPD, y: RS.HUD.param.nPD},
+    "LeftBottom": {x: RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD},
+    "RightTop": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: RS.HUD.param.nPD},
+    "RightBottom": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD}
+    };
+    return anchor;
+  };
+
   // Font Settings
   RS.HUD.param.chineseFont = String(parameters['Chinese Font'] || 'SimHei, Heiti TC, sans-serif');
   RS.HUD.param.koreanFont = String(parameters['Korean Font'] || 'NanumGothic, Dotum, AppleGothic, sans-serif');
@@ -312,29 +432,344 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.hpTextSize = Number(parameters['HP Text Size'] || 12);
   RS.HUD.param.mpTextSize = Number(parameters['MP Text Size'] || 12);
   RS.HUD.param.expTextSize = Number(parameters['EXP Text Size'] || 12);
+  RS.HUD.param.nameTextSize = Number(parameters['Name Text Size'] || 12);
 
   // Text Color
   RS.HUD.param.szHpColor =  String(parameters['HP Color'] || '#ffffff');
   RS.HUD.param.szMpColor = String(parameters['MP Color'] || '#ffffff');
   RS.HUD.param.szExpColor = String(parameters['EXP Color'] || '#ffffff');
   RS.HUD.param.szLevelColor = String(parameters['Level Color'] || '#ffffff');
+  RS.HUD.param.szNameColor = String(parameters['Name Color'] || '#ffffff');
 
   // Text Outline Color
   RS.HUD.param.szHpOutlineColor =  String(parameters['HP Outline Color'] || 'rgba(0, 0, 0, 0.5)');
   RS.HUD.param.szMpOutlineColor = String(parameters['MP Outline Color'] || 'rgba(0, 0, 0, 0.5)');
   RS.HUD.param.szExpOutlineColor = String(parameters['EXP Outline Color'] || 'rgba(0, 0, 0, 0.5)');
   RS.HUD.param.szLevelOutlineColor = String(parameters['Level Outline Color'] || 'rgba(0, 0, 0, 0.5)');
+  RS.HUD.param.szNameOutlineColor = String(parameters['Name Outline Color'] || 'rgba(0, 0, 0, 0.5)');
 
   // Text Outline Width
   RS.HUD.param.szHpOutlineWidth =  Number(parameters['HP Outline Width'] || 4);
   RS.HUD.param.szMpOutlineWidth = Number(parameters['MP Outline Width'] || 4);
   RS.HUD.param.szExpOutlineWidth = Number(parameters['EXP Outline Width'] || 4);
   RS.HUD.param.szLevelOutlineWidth = Number(parameters['Level Outline Width'] || 4);
+  RS.HUD.param.szNameOutlineWidth = Number(parameters['Name Outline Width'] || 4);
 
   // Custom Font
   RS.HUD.param.bUseCustomFont = Boolean(parameters['Using Custom Font'] === 'true');
   RS.HUD.param.szCustomFontName = String(parameters['Custom Font Name'] || 'GameFont' );
   RS.HUD.param.szCustomFontSrc = String(parameters['Custom Font Src'] || 'fonts/mplus-1m-regular.ttf');
+
+  // Custom HUD Anchor
+  RS.HUD.param.ptCustormAnchor = [];
+
+  for(var i = 0; i < 4; i++) {
+    RS.HUD.param.ptCustormAnchor.push( RS.HUD.loadCustomPosition(parameters['Custom Pos ' + (i + 1)] || '0, 0') );
+  }
+
+  // Opacity and Tone  Glitter Settings
+  var nOpacityEps = 5;
+  var nOpacityMin = 64;
+  var nFaceDiameter = 96;
+  var nHPGlitter = 0.4;
+  var nMPGlitter = 0.4;
+  var nEXPGlitter = 0.7;
+
+  //----------------------------------------------------------------------------
+  // Vector2
+  //
+  //
+
+  function Vector2() {
+      this.initialize.apply(this, arguments);
+  };
+
+  Vector2.prototype.constructor = Vector2;
+
+  /**
+   * @memberof Vector2
+   * @return {Vector2} val
+   */
+  Vector2.empty = function() {
+      return new Vector2(0.0, 0.0);
+  };
+
+  /**
+   * @memberof Vector2
+   * @function mix
+   * @param {Vector2} vec1
+   * @param {Vector2} vec2
+   * @param {Number} t
+   * @return {Number} val
+   * @static
+   */
+  Vector2.mix = function(vec1, vec2, t) {
+      var vec = Vector2.empty();
+      vec.x = vec1.x + t * (vec2.x - vec1.x);
+      vec.y = vec1.x + t * (vec2.y - vec1.y);
+      return vec;
+  };
+
+  /**
+   * @memberof Vector2
+   * @function isNormalize
+   * @param {Vector2} vec
+   * @static
+   */
+  Vector2.isNormalize = function(vec) {
+      if( (vec.x >= 0.0 && vec.x <= 1.0) &&
+          (vec.y >= 0.0 && vec.y <= 1.0) ) {
+        return true;
+      }
+      return false;
+  };
+
+  /**
+   * @memberof Vector2
+   * @function quadraticBezier
+   * @param {Vector2} vec1  start vector
+   * @param {Vector2} vec2  middle vector
+   * @param {Vector2} vec3  end vector
+   * @param {Number} t  frameTime(float between 0 and 1)
+   * @return {Vector2} p
+   * @static
+   */
+  Vector2.quadraticBezier = function(vec1, vec2, vec3, t) {
+      var d, e, p;
+      d = Vector2.mix(vec1, vec2, t);
+      e = Vector2.mix(vec2, vec3, t);
+      p = Vector2.mix(d, e, t);
+      return p;
+  };
+
+  /**
+   * @memberof Vector2
+   * @function limitAngle
+   * @param {Number} angle
+   * @return {Number} angle
+   * @static
+   */
+  Vector2.limitAngle = function(angle) {
+      while(angle < -Math.PI) angle += Math.PI * 2;
+      while(angle >= Math.PI) angle -= Math.PI * 2;
+      return angle;
+  };
+
+  /**
+   * @memberof Vector2
+   * @function distance
+   * @param {Vector2} vec1
+   * @param {Vector2} vec2
+   * @return {Number} dist
+   * @static
+   */
+  Vector2.distance = function(vec1, vec2) {
+      var val;
+      val = Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2);
+      return Math.sqrt(val);
+  };
+
+  /**
+   * @constructor
+   * @memberof Vector2
+   * @param {Number} x
+   * @param {Number} y
+   */
+  Vector2.prototype.initialize = function(x, y) {
+      this._x = x;
+      this._y = y;
+  };
+
+  /**
+   * @method add
+   * @param {Vector2} vec
+   * @return {Vector2} this
+   */
+  Vector2.prototype.add = function (vec) {
+    if(vec instanceof Number) {
+      this.x = this.x + vec;
+      this.y = this.y + vec;
+      return this;
+    } else if(vec instanceof Vector2){
+      this.x = this.x + vec.x;
+      this.y = this.y + vec.y;
+      return this;
+    }
+    return Vector2.empty();
+  };
+
+  /**
+   * @method minus
+   * @param {Vector2} vec
+   * @return {Vector2} this
+   */
+  Vector2.prototype.minus = function (vec) {
+    if(vec instanceof Number) {
+      this.x = this.x - vec;
+      this.y = this.y - vec;
+      return this;
+    } else if(vec instanceof Vector2){
+      this.x = this.x - vec.x;
+      this.y = this.y - vec.y;
+      return this;
+    }
+    return Vector2.empty();
+  };
+
+  /**
+   * @method div
+   * @param {Vector2} vec
+   * @return {Vector2} this
+   *
+   */
+  Vector2.prototype.mul = function (vec) {
+      if(vec instanceof Number) {
+        this.x = this.x * vec;
+        this.y = this.y * vec;
+        return this;
+      } else if(vec instanceof Vector2){
+        this.x = this.x * vec.x;
+        this.y = this.y * vec.y;
+        return this;
+      }
+      return Vector2.empty();
+  };
+
+  /**
+   * @method div
+   * @param {Vector2} vec
+   * @return {Vector2} this
+   */
+  Vector2.prototype.div = function (vec) {
+    if(vec instanceof Number) {
+      this.x = this.x / vec;
+      this.y = this.y / vec;
+      return this;
+    } else if(vec instanceof Vector2){
+      this.x = this.x / vec.x;
+      this.y = this.y / vec.y;
+      return this;
+    }
+    return Vector2.empty();
+  };
+
+  /**
+   * @memberof Vector2
+   * @property x
+   */
+  Object.defineProperty(Vector2.prototype, 'x', {
+      get: function() {
+          return this._x;
+      },
+      set: function(value) {
+          this._x = value;
+      }
+  });
+
+  /**
+   * @memberof Vector2
+   * @property y
+   */
+  Object.defineProperty(Vector2.prototype, 'y', {
+      get: function() {
+          return this._y;
+      },
+      set: function(value) {
+          this._y = value;
+      }
+  });
+
+  /**
+   * @memberof Vector2
+   * @property length
+   */
+  Object.defineProperty(Vector2.prototype, 'length', {
+      get: function() {
+          return this.getLength();
+      }
+  });
+
+  Vector2.prototype.set = function(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  /**
+   * @method getLength
+   * @return {Number} angle
+   */
+  Vector2.prototype.getLength = function() {
+      return Math.sqrt(this.x * this.x + this.y * this.y);
+  };
+
+  /**
+   * @method getAngle
+   * @param {Vector2} vec
+   * @return {Number} val
+   */
+  Vector2.prototype.getAngle = function(vec) {
+      if(Vector2.isNormalize(this) && Vector2.isNormalize(vec)) {
+          var val = this.dot(vec);
+          return Math.acos(val);
+      } else {
+          console.error("This is not normalize vector");
+      }
+  };
+
+  /**
+   * @method normalize
+   * @return {Vector2} rel
+   */
+  Vector2.prototype.normalize = function() {
+      var rel = Vector2.empty();
+      if(this.length != 0) {
+        rel.x = this.x / this.length;
+        rel.y = this.y / this.length;
+      }
+      return rel;
+  };
+
+  /**
+   * @method dot
+   * @param {Vector} vec
+   * @return {Number} angle
+   */
+  Vector2.prototype.dot = function(vec) {
+      return this.x * vec.x + this.y * vec.y;
+  };
+
+  /**
+   * @method rotate
+   * @param angle {Number}
+   */
+  Vector2.prototype.rotate = function(angle) {
+      this.x = this.x * Math.cos(angle) - this.y * Math.sin(angle);
+      this.y = this.x * Math.sin(angle) + this.y * Math.cos(angle);
+  };
+
+  /**
+   * @method pointDirection
+   * @param {Vector2} vec targetVector
+   * @param {Number} angle angle
+   * @return {Number} val
+   */
+  Vector2.prototype.pointDirection = function(vec, angle) {
+      return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
+  };
+
+  /**
+   * @method isEqual
+   * @param {Vector2} vec
+   * @return {Boolean} result
+   */
+  Vector2.prototype.isEqual = function (vec) {
+    var eps = 0.001;
+    if( (this.x - vec.x) < eps &&
+        (this.y - vec.y) < eps ) {
+      return true;
+    }
+    return false;
+  };
 
   //----------------------------------------------------------------------------
   // Game_System ($gameSystem)
@@ -462,6 +897,7 @@ RS.HUD.param = RS.HUD.param || {};
   // RS_HudLayer
   //
   //
+
   function RS_HudLayer() {
     this.initialize.apply(this, arguments);
   };
@@ -555,11 +991,29 @@ RS.HUD.param = RS.HUD.param || {};
   });
 
   //----------------------------------------------------------------------------
+  // TouchInput
+  //
+  //
+
+  var alias_TouchInput_onMouseMove = TouchInput._onMouseMove;
+  TouchInput._onMouseMove = function(event) {
+    alias_TouchInput_onMouseMove.call(this, event);
+    var x = Graphics.pageToCanvasX(event.pageX);
+    var y = Graphics.pageToCanvasY(event.pageY);
+    if(HUD.MOUSE_EVENT instanceof Vector2) {
+      HUD.MOUSE_EVENT.set(x, y);
+    }
+  };
+
+  //----------------------------------------------------------------------------
   // HUD
   //
   //
+
   HUD.prototype = Object.create(Stage.prototype);
   HUD.prototype.constructor = HUD;
+
+  HUD.MOUSE_EVENT = new Vector2( Graphics.boxWidth / 2, Graphics.boxHeight / 2 );
 
   HUD.prototype.initialize = function(config) {
       Stage.prototype.initialize.call(this);
@@ -572,16 +1026,18 @@ RS.HUD.param = RS.HUD.param || {};
       this.createMp();
       this.createExp();
       this.createText();
+      this.createVector();
       this.setPosition();
   };
 
   HUD.prototype.getAnchor = function(magnet) {
-    var anchor = {
-    "LeftTop": {x: RS.HUD.param.nPD, y: RS.HUD.param.nPD},
-    "LeftBottom": {x: RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD},
-    "RightTop": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: RS.HUD.param.nPD},
-    "RightBottom": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD}
-    };
+    var anchor = RS.HUD.getDefaultHUDAnchor();
+
+    // Add Custom Anchor
+    for(var i = 0; i < 4; i++) {
+      anchor['Custom Pos ' + (i + 1)] = RS.HUD.param.ptCustormAnchor[i];
+    }
+
     return anchor[magnet];
   };
 
@@ -616,9 +1072,9 @@ RS.HUD.param = RS.HUD.param || {};
   Bitmap.prototype.drawClippingImage = function(bitmap, maskImage , _x, _y, _sx, _sy) {
     var context = this._context;
     context.save();
-    context.drawImage(maskImage._canvas, _x, _y, 96, 96);
+    context.drawImage(maskImage._canvas, _x, _y, nFaceDiameter, nFaceDiameter);
     context.globalCompositeOperation = 'source-atop';
-    context.drawImage(bitmap._canvas, _sx, _sy, 144, 144, 0, 0, 96, 96);
+    context.drawImage(bitmap._canvas, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
     context.restore();
     this._setDirty();
   };
@@ -629,7 +1085,7 @@ RS.HUD.param = RS.HUD.param || {};
     context.beginPath();
     context.arc(_x + 45, _y + 45 , 45, 0, Math.PI * 2, false);
     context.clip();
-    context.drawImage(bitmap._canvas, _sx, _sy, 144, 144, 0, 0, 96, 96);
+    context.drawImage(bitmap._canvas, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
     context.restore();
     this._setDirty();
   };
@@ -641,7 +1097,7 @@ RS.HUD.param = RS.HUD.param || {};
 
     sprite.x = this._hud.x;
     sprite.y = this._hud.y;
-    sprite.bitmap = new Bitmap(96, 96);
+    sprite.bitmap = new Bitmap(nFaceDiameter, nFaceDiameter);
 
     if (RS.HUD.param.blurProcessing) {
       sprite.bitmap.drawClippingImage(this._faceBitmap, this._maskBitmap, 0, 0, sx, sy);
@@ -674,7 +1130,8 @@ RS.HUD.param = RS.HUD.param || {};
       'HP': [param.hpTextSize, param.szHpColor, param.szHpOutlineColor, param.szHpOutlineWidth],
       'MP': [param.mpTextSize, param.szMpColor, param.szMpOutlineColor, param.szMpOutlineWidth],
       'EXP': [param.expTextSize, param.szExpColor, param.szExpOutlineColor, param.szExpOutlineWidth],
-      'LEVEL': [param.levelTextSize, param.szLevelColor, param.szLevelOutlineColor, param.szLevelOutlineWidth]
+      'LEVEL': [param.levelTextSize, param.szLevelColor, param.szLevelOutlineColor, param.szLevelOutlineWidth],
+      'NAME': [param.nameTextSize, param.szNameColor, param.szNameOutlineColor, param.szNameOutlineWidth]
     };
     return textProperties[src];
   };
@@ -684,17 +1141,25 @@ RS.HUD.param = RS.HUD.param || {};
     this._mpText = this.addText(this.getMp.bind(this), this.getTextParams('MP'));
     this._expText = this.addText(this.getExp.bind(this), this.getTextParams('EXP'));
     this._levelText = this.addText(this.getLevel.bind(this), this.getTextParams('LEVEL'));
+    this._nameText = this.addText(this.getName.bind(this), this.getTextParams('NAME'));
+  };
+
+  HUD.prototype.createVector = function () {
+    this._vtA = Vector2.empty();
+    this._vtB = new Vector2(nFaceDiameter, nFaceDiameter);
   };
 
   HUD.prototype.setPosition = function() {
-    if(this._face) { this.setCoord(this._face, 0, 0); }
-    this.setCoord(this._hp, 160, 43);
-    this.setCoord(this._mp, 160, 69);
-    this.setCoord(this._exp, 83, 91);
-    this.setCoord(this._hpText, 160, 53);
-    this.setCoord(this._mpText, 160, 79);
-    this.setCoord(this._levelText, 60, 80);
-    this.setCoord(this._expText, 120.5, 93);
+    var param = RS.HUD.param;
+    if(this._face) { this.setCoord(this._face, param.ptFace); }
+    this.setCoord(this._hp, param.ptHP);
+    this.setCoord(this._mp, param.ptMP);
+    this.setCoord(this._exp, param.ptEXP);
+    this.setCoord(this._hpText, param.ptHPText);
+    this.setCoord(this._mpText, param.ptMPText);
+    this.setCoord(this._levelText, param.ptLevelText);
+    this.setCoord(this._expText, param.ptEXPText);
+    this.setCoord(this._nameText, param.ptNameText);
   };
 
   HUD.prototype.addText = function(strFunc, params) {
@@ -746,6 +1211,12 @@ RS.HUD.param = RS.HUD.param || {};
     }
   };
 
+  HUD.prototype.getName = function() {
+    var player = this.getPlayer();
+    return player.name();
+  };
+
+
   HUD.prototype.getHpRate = function() {
     try {
       return this._hp.bitmap.width * (this.getPlayer().hp / this.getPlayer().mhp);
@@ -770,19 +1241,81 @@ RS.HUD.param = RS.HUD.param || {};
     }
   };
 
-  HUD.prototype.setCoord = function(s,x,y) {
+  HUD.prototype.setOpacityisNotGlobal = function(value) {
+    this.children.forEach( function(i) {
+      i.opacity = value.clamp(0, 255);
+    }, this);
+  }
+
+  HUD.prototype.getOpacityValue = function(dir) {
+    var value = this._hud.opacity;
+    if(dir) {
+      value -= nOpacityEps;
+      if(value < nOpacityMin ) value = nOpacityMin;
+    } else {
+      value += nOpacityEps;
+      if(value > RS.HUD.param.nOpacity) value = RS.HUD.param.nOpacity;
+    }
+    return value;
+  };
+
+  HUD.prototype.setCoord = function(s,obj) {
     var oy = (s._callbackFunction instanceof Function) ? (s.bitmap.height / 2) : 0;
-    s.x = this._hud.x + x;
-    s.y = this._hud.y + y - oy;
+    s.x = this._hud.x + obj.x;
+    s.y = this._hud.y + obj.y - oy;
+    s.visible = obj.visible;
   };
 
   HUD.prototype.update = function() {
     try {
       this._hud.update();
       if(this._face) { this._face.update(); }
+      this.updateOpacity();
+      this.updateToneForAll();
       this.paramUpdate();
     } catch(e) {
     }
+  };
+
+  HUD.prototype.updateOpacity = function() {
+    if(!this.checkHitToMouse(this._hud, nFaceDiameter) && this.checkHit() || this.getPlayer().isDead() ) {
+      this.setOpacityisNotGlobal( this.getOpacityValue(true) );
+    } else {
+      this.setOpacityisNotGlobal( this.getOpacityValue(false) );
+    }
+  };
+
+  HUD.prototype.checkHit = function() {
+    var x = $gamePlayer.screenX();
+    var y = $gamePlayer.screenY();
+    return (x >= this._hud.x) &&
+           (y >= this._hud.y) &&
+           (x < this._hud.x + this._hud.width) &&
+           y < this._hud.y + this._hud.height;
+  };
+
+  HUD.prototype.checkHitToMouse = function(object, n) {
+    var middle = Vector2.empty();
+    middle.x = object.width / 2 + object.x;
+    middle.y = object.height / 2 + object.y;
+    return Vector2.distance(middle, HUD.MOUSE_EVENT) < n;
+  };
+
+  HUD.prototype.checkForToneUpdate = function (obj, cond) {
+    if(obj instanceof Sprite && cond) {
+      var t = Date.now() % 1000 / 1000;
+      var vt = Vector2.quadraticBezier(this._vtA, this._vtB, this._vtA, t);
+      obj.setColorTone([vt.x, vt.x, vt.x, 0]);
+    } else {
+      obj.setColorTone([this._vtA.x, this._vtA.x, this._vtA.x, 0]);
+    }
+  }
+
+  HUD.prototype.updateToneForAll = function () {
+    var expRate = (this.getPlayer().relativeExp() / this.getPlayer().relativeMaxExp());
+    this.checkForToneUpdate( this._hp, this.getPlayer().hpRate() <= nHPGlitter );
+    this.checkForToneUpdate( this._mp, this.getPlayer().mpRate() <= nMPGlitter );
+    this.checkForToneUpdate( this._exp, expRate >= nEXPGlitter );
   };
 
   HUD.prototype.paramUpdate = function() {
@@ -810,6 +1343,9 @@ RS.HUD.param = RS.HUD.param || {};
             i.visible = value;
           }, this);
           $gameSystem._rs_hud.show = value;
+          if(value === true) {
+            this.setPosition();
+          }
       },
   });
 

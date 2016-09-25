@@ -1,9 +1,8 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc This plugin draws the Battle HUD (Addon v1.1.2)
+ * @plugindesc This plugin requires RS_HUD_4m.js
  *
  * @author biud436
- * @version 1.1.2
  *
  * @param --- Image Name
  * @desc
@@ -24,7 +23,33 @@
  * @desc
  * @default true
  *
+ * @param --- Custom HUD Anchor
+ * @desc
+ * @default
+ *
+ * @param Arrangement
+ * @desc Create an array to set the anchor of each HUD.
+ * @default ['Pos 1', 'Pos 2', 'Pos 3', 'Pos 4']
+ *
+ * @param Pos 1
+ * @desc (default : 102, 422)
+ * @default 102, 422
+ *
+ * @param Pos 2
+ * @desc (default : 0, 523)
+ * @default 0, 523
+ *
+ * @param Pos 3
+ * @desc (default : 499, 422)
+ * @default 499, 422
+ *
+ * @param Pos 4
+ * @desc (default : 397, 523)
+ * @default 397, 523
+ *
  * @help
+ *
+ * This plugin requires RS_HUD_4m.js
  *
  * - Change Log
  * 2016.05.21 (v1.0.0) - First Release Date
@@ -32,10 +57,11 @@
  * 2016.06.30 (v1.1.1) - Added the parameter that displays the values with commas every three digits.
  * 2016.08.07 (v1.1.2) - Fixed the issue of the function for drawing status icon
  * 2016.09.05 (v1.1.3) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
+ * 2016.09.26 (v1.1.4) - Added Custom Anchor.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = true;
+Imported.RS_HUD_4m_InBattle = '1.1.4';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -44,50 +70,82 @@ RS.HUD.param = RS.HUD.param || {};
 
 (function() {
 
+  if(!Imported.RS_HUD_4m || Imported.RS_HUD_4m < '1.1.3') {
+    throw new Error("HUD core's version is lower.");
+  }
+
   var parameters = PluginManager.parameters('RS_HUD_4m_InBattle');
   RS.HUD.param.isWndsAlignment = Boolean(parameters['Auto Windows Alignment'] === 'true');
   RS.HUD.param.imgEmptyBattleHUD = String(parameters['HUD Battle Background'] || 'hud_window_empty_inbattle');
+  RS.HUD.param.arrangementInBattle = eval(parameters['Arrangement']);
+
+  // Custom HUD Anchor
+  RS.HUD.param.ptCustormBattleAnchor = [];
+
+  for(var i = 0; i < 4; i++) {
+    RS.HUD.param.ptCustormBattleAnchor.push( RS.HUD.loadCustomPosition(parameters['Pos ' + (i + 1)] || '0, 0') );
+  }
+
+  //----------------------------------------------------------------------------
+  // RS_HudLayer
+  //
+  //
+
+  RS_HudLayer.prototype.drawAllHud = function() {
+    var allHud = this._items;
+    var items = [];
+    if(SceneManager._scene instanceof Scene_Battle ||
+            $gameParty.inBattle() ||
+            DataManager.isBattleTest()) {
+      items = RS.HUD.param.arrangementInBattle;
+    } else {
+      items = RS.HUD.param.arrangement;
+    }
+
+    if(allHud.children.length > 0) {
+      allHud.removeChildren(0, allHud.children.length);
+    }
+
+    items.forEach(function(item, index){
+      if(!!$gameParty.members()[index]) {
+        allHud.addChild(new HUD({szAnchor: item, nIndex: index}));
+      }
+    }, this);
+
+    this.sort();
+
+    this.show = $gameSystem._rs_hud.show;
+    this.opacity = $gameSystem._rs_hud.opacity;
+
+  };
+
+  //----------------------------------------------------------------------------
+  // HUD
+  //
+  //
 
   var alias_HUD_initialize = HUD.prototype.initialize;
   HUD.prototype.initialize = function(config) {
     alias_HUD_initialize.call(this, config);
     if( !this.inBattle() ) return;
     this.createAllIcon();
-    this.initSelectEffect();
-  };
-
-  HUD.prototype.initSelectEffect = function() {
-    if(this.inBattle()) {
-      this._selectionEffectCount = 0;
-      this._selectionEnabled = false;
-    }
   };
 
   HUD.prototype.updateDeathEffect = function() {
     if( !this.inBattle() ) return;
     if(this.getPlayer().isDead()) {
-      this.children.forEach(function (i) {
-        i.opacity = (this.getPlayer().isDead()) ? (RS.HUD.param.nOpacity - 100) : RS.HUD.param.nOpacity;
-      }, this);
+      this.setOpacityisNotGlobal( this.getOpacityValue(true) );
+    } else {
+      this.setOpacityisNotGlobal( this.getOpacityValue(false) );
     }
-  }
+  };
 
   HUD.prototype.updateSelectEffect = function () {
     if( !this.inBattle() ) return;
     var target = this._face;
-    if (BattleManager._actorIndex === this.getPlayer().index()) {
-        this._selectionEffectCount++;
-        if (this._selectionEffectCount % 30 < 15) {
-            target.setBlendColor([200, 200, 200, 64]);
-        } else {
-            target.setBlendColor([0, 0, 0, 0]);
-        }
-    } else if (this._selectionEffectCount > 0 || this._selectionEnabled) {
-        this._selectionEffectCount = 0;
-        target.setBlendColor([0, 0, 0, 0]);
-        this._selectionEnabled = false;
-    }
-  }
+    var cond = BattleManager._actorIndex === this.getPlayer().index();
+    this.checkForToneUpdate( target, cond);
+  };
 
   HUD.prototype.createHud = function() {
     var name = ( this.inBattle() && $dataSystem.optDisplayTp ) ? RS.HUD.param.imgEmptyBattleHUD : RS.HUD.param.imgEmptyHUD;
@@ -102,34 +160,43 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.getAnchor = function(magnet) {
-    var anchor = {
-    "LeftTop": {x: RS.HUD.param.nPD, y: RS.HUD.param.nPD},
-    "LeftBottom": {x: RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD},
-    "RightTop": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: RS.HUD.param.nPD},
-    "RightBottom": {x: Graphics.boxWidth - RS.HUD.param.nWidth - RS.HUD.param.nPD, y: Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD}
-    };
+    var anchor = RS.HUD.getDefaultHUDAnchor();
+
+    // Add Custom Anchor
+    for(var i = 0; i < 4; i++) {
+      anchor['Custom Pos ' + (i + 1)] = RS.HUD.param.ptCustormAnchor[i];
+    }
+
     if(this.inBattle()) {
+      // Set the offset
       anchor["LeftTop"].x += Graphics.boxWidth / 8;
       anchor["LeftTop"].y = Graphics.boxHeight - RS.HUD.param.nHeight * 2 - RS.HUD.param.nPD;
       anchor["RightBottom"].x -= Graphics.boxWidth / 8;
       anchor["LeftBottom"].y = Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD;
       anchor["RightTop"].y = Graphics.boxHeight - RS.HUD.param.nHeight * 2 - RS.HUD.param.nPD;
       anchor["RightBottom"].y = Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD;
+
+      // Add Custom Anchor
+      for(var i = 0; i < 4; i++) {
+        anchor['Pos ' + (i + 1)] = RS.HUD.param.ptCustormBattleAnchor[i];
+      }
+
     }
+
     return anchor[magnet];
   };
 
   HUD.prototype.update = function() {
     try {
       if(this.inBattle()) {
-        this.updateDeathEffect()
         this.updateSelectEffect();
       }
       this._hud.update();
       if(this._face) this._face.update();
+      this.updateOpacity();
+      this.updateToneForAll();
       this.paramUpdate();
     } catch(e) {
-      console.error(e);
     }
   };
 
@@ -166,17 +233,6 @@ RS.HUD.param = RS.HUD.param || {};
         return "%1 / %2".format(player.tp, player.maxTp());
     }
     return alias_HUD_getExp.call(this);
-  };
-
-  HUD.prototype.getExpRate = function() {
-    try {
-      if(this.inBattle() & $dataSystem.optDisplayTp) {
-        return this._exp.bitmap.width * this.getPlayer().tpRate();
-      }
-      return this._exp.bitmap.width * (this.getPlayer().currentExp() / this.getPlayer().nextLevelExp());
-    } catch(e) {
-      return 0;
-    }
   };
 
   HUD.prototype.inBattle = function() {
