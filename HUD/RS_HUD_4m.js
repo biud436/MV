@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.3) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.4) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
@@ -330,6 +330,8 @@
  *
  * RS_HUD Visible true
  * RS_HUD Visible false
+ * RS_HUD import
+ * RS_HUD export
  *
  * - Change Log
  * 2015.10.31 (v1.0.0) - First Release Date
@@ -353,10 +355,13 @@
  * - Added the function that can display the name.
  * - HUD's opacity will decrease if the player is colliding with HUD.
  * - the huds opacity will be decreased if the party member is dead.
+ * 2016.09.27 (v1.1.4) :
+ * - The visible setting sets as the false before calling the battle.
+ * - Added the function that allows all plugin parameters to import or export.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.1.3';
+Imported.RS_HUD_4m = '1.1.4';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -477,6 +482,63 @@ RS.HUD.param = RS.HUD.param || {};
   var nHPGlitter = 0.4;
   var nMPGlitter = 0.4;
   var nEXPGlitter = 0.7;
+
+  //----------------------------------------------------------------------------
+  // Data Imports & Exports
+  //
+  //
+
+  RS.HUD.localFilePath = function () {
+    if(!Utils.isNwjs()) return '';
+    var path, base;
+    path = require('path');
+    base = path.dirname(process.mainModule.filename);
+    return path.join(base, 'data/') + 'RS_HUD_4m.json';
+  };
+
+  RS.HUD.exportData = function () {
+    var fs, data, filePath;
+    if(!Utils.isNwjs()) return false;
+    if(!RS.HUD.param) return false;
+    fs = require('fs');
+    data = JSON.stringify(RS.HUD.param);
+    filePath = RS.HUD.localFilePath();
+    fs.writeFile(filePath, data, 'utf8', function (err) {
+      if (err) throw err;
+    });
+  };
+
+  RS.HUD.loadData = function (data) {
+    var params = Object.keys(RS.HUD.param);
+    data = JSON.parse(data);
+    params.forEach(function (name) {
+      RS.HUD.param[name] = data[name];
+    }, this);
+    setTimeout(function () {
+      if($gameHud) $gameHud.refresh();
+    }, 0);
+  };
+
+  RS.HUD.importData = function () {
+    if(!Utils.isNwjs()) return false;
+    var fs = require('fs');
+    var filePath = RS.HUD.localFilePath();
+    var data = fs.readFileSync(filePath, { encoding: 'utf8' });
+    RS.HUD.loadData(data);
+  };
+
+  RS.HUD.importDataWithAjax = function () {
+    var xhr = new XMLHttpRequest();
+    var self = RS.HUD;
+    var url = './data/RS_HUD_4m.json';
+    xhr.open('GET', url);
+    xhr.onload = function() {
+      if(xhr.status < 400) {
+        RS.HUD.loadData(xhr.responseText.slice(0));
+      }
+    }
+    xhr.send();
+  };
 
   //----------------------------------------------------------------------------
   // Vector2
@@ -1435,6 +1497,18 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   //----------------------------------------------------------------------------
+  // Scene_Map
+  //
+  //
+
+  var alias_Scene_Map_snapForBattleBackground = Scene_Map.prototype.snapForBattleBackground;
+  Scene_Map.prototype.snapForBattleBackground = function() {
+    if($gameHud && $gameHud.show) $gameHud.show = false;
+    alias_Scene_Map_snapForBattleBackground.call(this);
+    if($gameHud && !$gameHud.show) $gameHud.show = true;
+  };
+
+  //----------------------------------------------------------------------------
   // Game_Interpreter
   //
   //
@@ -1448,6 +1522,12 @@ RS.HUD.param = RS.HUD.param || {};
             break;
           case 'visible':
             $gameHud.show = Boolean(args[1] === "true");
+            break;
+          case 'import':
+            RS.HUD.importDataWithAjax();
+            break;
+          case 'export':
+            RS.HUD.exportData();
             break;
         }
       }
