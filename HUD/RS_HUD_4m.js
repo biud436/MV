@@ -347,9 +347,12 @@
  * 2016.07.30 (v1.1.0) - Added the parameter for setting fonts.
  * 2016.09.05 (v1.1.1) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
  * 2016.09.13 (v1.1.2) - Added Max Exp Text and Fixed the exp rate.
- * 2016.09.26 (v1.1.3) - Added glittering gauge-bar in lower HP or MP value.
- * The opacity of the HUD will decrease if the player is colliding with HUD, or is dead.
- * Now we can also see a glittering gauge-bar in lower HP or MP value.
+ * 2016.09.26 (v1.1.3) :
+ * - Added the function that could be repositioning with all the components,
+ * - Added the glittering gauge-bar effects in lower HP or MP value.
+ * - Added the function that can display the name.
+ * - HUD's opacity will decrease if the player is colliding with HUD.
+ * - the huds opacity will be decreased if the party member is dead.
  */
 
 var Imported = Imported || {};
