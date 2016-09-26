@@ -500,6 +500,7 @@ RS.HUD.param = RS.HUD.param || {};
   var nHPGlitter = 0.4;
   var nMPGlitter = 0.4;
   var nEXPGlitter = 0.7;
+  var defaultTemplate = 'RS_HUD_4m.json';
 
   //----------------------------------------------------------------------------
   // Data Imports & Exports
@@ -511,7 +512,7 @@ RS.HUD.param = RS.HUD.param || {};
     var path, base;
     path = require('path');
     base = path.dirname(process.mainModule.filename);
-    return path.join(base, 'data/') + 'RS_HUD_4m.json';
+    return path.join(base, 'data/') + defaultTemplate;
   };
 
   RS.HUD.exportData = function () {
@@ -548,7 +549,7 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.importDataWithAjax = function () {
     var xhr = new XMLHttpRequest();
     var self = RS.HUD;
-    var url = './data/RS_HUD_4m.json';
+    var url = './data/' + defaultTemplate;
     xhr.open('GET', url);
     xhr.onload = function() {
       if(xhr.status < 400) {
