@@ -441,4 +441,16 @@ RS.HUD.param = RS.HUD.param || {};
     }
   };
 
+  //----------------------------------------------------------------------------
+  // TouchUI.js ( KADOKAWA )
+  //
+  //
+
+  var touchUI = PluginManager.parameters('TouchUI');
+    if(touchUI.hasOwnProperty('Menu Command Text')) {
+      Window_BattleStatus.prototype.show = function() {
+      this.visible = false;
+    };
+  }
+
 })();
