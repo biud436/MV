@@ -304,6 +304,9 @@
  * @default 0, 330
  *
  * @help
+ * =============================================================================
+ * Installations
+ * =============================================================================
  * Download the resources and place them in your img/pictures folder.
  * All the resources can download in the following link.
  * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
@@ -314,6 +317,10 @@
  * Demo Link : https://www.dropbox.com/s/v6prurtempabqqv/hud.zip?dl=0
  * Github Link : https://github.com/biud436/MV/blob/master/HUD/RS_HUD_4m.js
  *
+ * =============================================================================
+ * Script Calls
+ * =============================================================================
+ *
  * - Sets the opacity
  * Sets the opacity of the HUD to x. That is a number between 0 and 255.
  * $gameHud.opacity = 0;
@@ -323,17 +330,28 @@
  * $gameHud.show = true;
  * $gameHud.show = false;
  *
- * - plugin commands
+ * =============================================================================
+ * Plugin Commands
+ * =============================================================================
  *
  * RS_HUD Opacity x
  * the x is number value between 0 and 255.
  *
  * RS_HUD Visible true
- * RS_HUD Visible false
- * RS_HUD import
- * RS_HUD export
+ * Setting the HUD's visible status to true
  *
- * - Change Log
+ * RS_HUD Visible false
+ * Setting the HUD's visible status to false.
+ *
+ * RS_HUD import
+ * Import the parameter data called 'RS_HUD_4m.json' from your data folder.
+ *
+ * RS_HUD export
+ * Export the parameter data called 'RS_HUD_4m.json' to your data folder.
+ *
+ * =============================================================================
+ * Change Log
+ * =============================================================================
  * 2015.10.31 (v1.0.0) - First Release Date
  * 2016.02.24 (v1.0.1) - Added the Plugin Command.
  * 2016.03.04 (v1.0.2) - Added the comments for include used files.
