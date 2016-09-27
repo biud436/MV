@@ -1,9 +1,7 @@
 /*:
  * RS_EventName.js
  *
- * @version 1.3.6
- *
- * @plugindesc (v1.3.6) This plugin displays an event's name above a head.
+ * @plugindesc (v1.3.7) This plugin displays an event's name above a head.
  * @author biud436
  *
  * @param text Size
@@ -43,6 +41,7 @@
  * 2016.05.21 (v1.3.4) - Fixed issue that causes the memory leak.
  * 2016.05.28 (v1.3.5) - Fixed Color Bug.
  * 2016.08.20 (v1.3.6) - Fixed the issue that was not working the name toggle function.
+ * 2016.09.27 (v1.3.7) - The visible setting sets as the false before calling the battle.
  */
 
 var Imported = Imported || {};
@@ -507,6 +506,17 @@ function Sprite_VehicleName() {
       this._spriteset._nameLayer = null;
     }
     alias_Scene_Map_terminate.call(this);
+  };
+
+  //----------------------------------------------------------------------------
+  // Scene_Map
+  //
+  //
+
+  var alias_Scene_Map_snapForBattleBackground = Scene_Map.prototype.snapForBattleBackground;
+  Scene_Map.prototype.snapForBattleBackground = function() {
+    if(this._spriteset._nameLayer) this._spriteset._nameLayer.visible = false;
+    alias_Scene_Map_snapForBattleBackground.call(this);
   };
 
 })();
