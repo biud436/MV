@@ -508,11 +508,6 @@ function Sprite_VehicleName() {
     alias_Scene_Map_terminate.call(this);
   };
 
-  //----------------------------------------------------------------------------
-  // Scene_Map
-  //
-  //
-
   var alias_Scene_Map_snapForBattleBackground = Scene_Map.prototype.snapForBattleBackground;
   Scene_Map.prototype.snapForBattleBackground = function() {
     if(this._spriteset._nameLayer) this._spriteset._nameLayer.visible = false;

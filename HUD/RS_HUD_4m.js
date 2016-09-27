@@ -343,10 +343,10 @@
  * RS_HUD Visible false
  * Setting the HUD's visible status to false.
  *
- * RS_HUD import
+ * RS_HUD import file_name
  * Import the parameter data called 'RS_HUD_4m.json' from your data folder.
  *
- * RS_HUD export
+ * RS_HUD export file_name
  * Export the parameter data called 'RS_HUD_4m.json' to your data folder.
  *
  * =============================================================================
@@ -500,28 +500,28 @@ RS.HUD.param = RS.HUD.param || {};
   var nHPGlitter = 0.4;
   var nMPGlitter = 0.4;
   var nEXPGlitter = 0.7;
-  var defaultTemplate = 'RS_HUD_4m.json';
+  var defaultTemplate = 'hud_default_template.json';
 
   //----------------------------------------------------------------------------
   // Data Imports & Exports
   //
   //
 
-  RS.HUD.localFilePath = function () {
+  RS.HUD.localFilePath = function (fileName) {
     if(!Utils.isNwjs()) return '';
     var path, base;
     path = require('path');
     base = path.dirname(process.mainModule.filename);
-    return path.join(base, 'data/') + defaultTemplate;
+    return path.join(base, 'data/') + (fileName || defaultTemplate);
   };
 
-  RS.HUD.exportData = function () {
+  RS.HUD.exportData = function (fileName) {
     var fs, data, filePath;
     if(!Utils.isNwjs()) return false;
     if(!RS.HUD.param) return false;
     fs = require('fs');
     data = JSON.stringify(RS.HUD.param);
-    filePath = RS.HUD.localFilePath();
+    filePath = RS.HUD.localFilePath(fileName);
     fs.writeFile(filePath, data, 'utf8', function (err) {
       if (err) throw err;
     });
@@ -538,18 +538,18 @@ RS.HUD.param = RS.HUD.param || {};
     }, 0);
   };
 
-  RS.HUD.importData = function () {
+  RS.HUD.importData = function (fileName) {
     if(!Utils.isNwjs()) return false;
     var fs = require('fs');
-    var filePath = RS.HUD.localFilePath();
+    var filePath = RS.HUD.localFilePath(fileName);
     var data = fs.readFileSync(filePath, { encoding: 'utf8' });
     RS.HUD.loadData(data);
   };
 
-  RS.HUD.importDataWithAjax = function () {
+  RS.HUD.importDataWithAjax = function (fileName) {
     var xhr = new XMLHttpRequest();
     var self = RS.HUD;
-    var url = './data/' + defaultTemplate;
+    var url = './data/' + (fileName || defaultTemplate);
     xhr.open('GET', url);
     xhr.onload = function() {
       if(xhr.status < 400) {
@@ -1543,10 +1543,10 @@ RS.HUD.param = RS.HUD.param || {};
             $gameHud.show = Boolean(args[1] === "true");
             break;
           case 'import':
-            RS.HUD.importDataWithAjax();
+            RS.HUD.importDataWithAjax(args[1] + '.json');
             break;
           case 'export':
-            RS.HUD.exportData();
+            RS.HUD.exportData(args[1] + '.json');
             break;
         }
       }
