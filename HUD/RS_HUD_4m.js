@@ -938,7 +938,6 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   TextData.prototype.update = function () {
-    Sprite.prototype.update.call(this);
     if(this.isRefresh()) {
       this.clearTextData();
       this.drawDisplayText();
@@ -998,10 +997,6 @@ RS.HUD.param = RS.HUD.param || {};
     this._items = new Sprite();
     this._items.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this.addChild(this._items);
-  };
-
-  RS_HudLayer.prototype.update = function() {
-    Sprite.prototype.update.call(this);
   };
 
   RS_HudLayer.prototype.drawAllHud = function() {
@@ -1297,30 +1292,37 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getName = function() {
     var player = this.getPlayer();
-    return player.name();
+    var name = player && player.name();
+    if(name) {
+      return name;
+    } else {
+      return ' ';
+    }
   };
 
-
   HUD.prototype.getHpRate = function() {
-    try {
-      return this._hp.bitmap.width * (this.getPlayer().hp / this.getPlayer().mhp);
-    } catch(e) {
+    var player = this.getPlayer();
+    if(player) {
+      return this._hp.bitmap.width * (player.hp / player.mhp);
+    } else {
       return 0;
     }
   };
 
   HUD.prototype.getMpRate = function() {
-    try {
-      return this._mp.bitmap.width * (this.getPlayer().mp / this.getPlayer().mmp);
-    } catch(e) {
+    var player = this.getPlayer();
+    if(player) {
+      return this._mp.bitmap.width * (player.mp / player.mmp);
+    } else {
       return 0;
     }
   };
 
   HUD.prototype.getExpRate = function() {
-    try {
+    var player = this.getPlayer();
+    if(player) {
       return this._exp.bitmap.width * (this.getPlayer().relativeExp() / this.getPlayer().relativeMaxExp());
-    } catch(e) {
+    } else {
       return 0;
     }
   };
@@ -1351,14 +1353,11 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
-    try {
-      this._hud.update();
-      if(this._face) { this._face.update(); }
-      this.updateOpacity();
-      this.updateToneForAll();
-      this.paramUpdate();
-    } catch(e) {
-    }
+    this._hud.update();
+    if(this._face) { this._face.update(); }
+    this.updateOpacity();
+    this.updateToneForAll();
+    this.paramUpdate();
   };
 
   HUD.prototype.updateOpacity = function() {
