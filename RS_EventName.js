@@ -42,6 +42,7 @@
  * 2016.05.28 (v1.3.5) - Fixed Color Bug.
  * 2016.08.20 (v1.3.6) - Fixed the issue that was not working the name toggle function.
  * 2016.09.27 (v1.3.7) - The visible setting sets as the false before calling the battle.
+ * 2016.09.28 (V1.3.8) - Fixed no player issue.
  */
 
 var Imported = Imported || {};
@@ -436,14 +437,16 @@ function Sprite_VehicleName() {
         switch(_constructor) {
 
           case 'Game_Player':
-            this._nameLayer.addChild(new Sprite_PlayerName({
-            'member': $gamePlayer,
-            'textSize': textSize,
-            'textColor': [255,255,255],
-            'outlineWidth': 2,
-            'anchor': new Point(0.5, 1.0),
-            'height': $gameMap.tileHeight.bind(this)
-          }));
+            if($gameParty.members()[0]) {
+              this._nameLayer.addChild(new Sprite_PlayerName({
+                'member': $gamePlayer,
+                'textSize': textSize,
+                'textColor': [255,255,255],
+                'outlineWidth': 2,
+                'anchor': new Point(0.5, 1.0),
+                'height': $gameMap.tileHeight.bind(this)
+              }));
+            }
           break;
 
           case 'Game_Event':
