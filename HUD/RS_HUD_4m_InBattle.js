@@ -187,17 +187,14 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
-    try {
-      if(this.inBattle()) {
-        this.updateSelectEffect();
-      }
-      this._hud.update();
-      if(this._face) this._face.update();
-      this.updateOpacity();
-      this.updateToneForAll();
-      this.paramUpdate();
-    } catch(e) {
+    if(this.inBattle()) {
+      this.updateSelectEffect();
     }
+    this._hud.update();
+    if(this._face) this._face.update();
+    this.updateOpacity();
+    this.updateToneForAll();
+    this.paramUpdate();
   };
 
   HUD.prototype.refreshIcon = function() {
@@ -440,17 +437,5 @@ RS.HUD.param = RS.HUD.param || {};
       }, this);
     }
   };
-
-  //----------------------------------------------------------------------------
-  // TouchUI.js ( KADOKAWA )
-  //
-  //
-
-  var touchUI = PluginManager.parameters('TouchUI');
-    if(touchUI.hasOwnProperty('Menu Command Text')) {
-      Window_BattleStatus.prototype.show = function() {
-      this.visible = false;
-    };
-  }
 
 })();

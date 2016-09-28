@@ -344,10 +344,10 @@
  * Setting the HUD's visible status to false.
  *
  * RS_HUD import file_name
- * Import the parameter the json file from your data folder.
+ * Import the parameter data called 'RS_HUD_4m.json' from your data folder.
  *
  * RS_HUD export file_name
- * Export the parameter the json file to your data folder.
+ * Export the parameter data called 'RS_HUD_4m.json' to your data folder.
  *
  * =============================================================================
  * Change Log
@@ -930,7 +930,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   TextData.prototype.isRefresh = function () {
     var currentText = this._callbackFunction();
-    return currentText.localeCompare(this._log) !== 0;
+    return this._callbackFunction().localeCompare(this._log) !== 0;
   };
 
   TextData.prototype.clearTextData = function () {
@@ -938,7 +938,6 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   TextData.prototype.update = function () {
-    Sprite.prototype.update.call(this);
     if(this.isRefresh()) {
       this.clearTextData();
       this.drawDisplayText();
@@ -998,10 +997,6 @@ RS.HUD.param = RS.HUD.param || {};
     this._items = new Sprite();
     this._items.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this.addChild(this._items);
-  };
-
-  RS_HudLayer.prototype.update = function() {
-    Sprite.prototype.update.call(this);
   };
 
   RS_HudLayer.prototype.drawAllHud = function() {
@@ -1255,11 +1250,15 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.getPlayer = function() {
-    return $gameParty.members()[this._memberIndex];
+    var self = this;
+    var index = self._memberIndex;
+    var player = $gameParty.members()[index];
+    return player;
   };
 
   HUD.prototype.getHp = function() {
-    var player = this.getPlayer();
+    var self = this;
+    var player = self.getPlayer();
     if(RS.HUD.param.showComma) {
       return "%1 / %2".appendComma(player.hp, player.mhp);
     } else {
@@ -1300,29 +1299,16 @@ RS.HUD.param = RS.HUD.param || {};
     return player.name();
   };
 
-
   HUD.prototype.getHpRate = function() {
-    try {
-      return this._hp.bitmap.width * (this.getPlayer().hp / this.getPlayer().mhp);
-    } catch(e) {
-      return 0;
-    }
+    return this._hp.bitmap.width * (this.getPlayer().hp / this.getPlayer().mhp);
   };
 
   HUD.prototype.getMpRate = function() {
-    try {
-      return this._mp.bitmap.width * (this.getPlayer().mp / this.getPlayer().mmp);
-    } catch(e) {
-      return 0;
-    }
+    return this._mp.bitmap.width * (this.getPlayer().mp / this.getPlayer().mmp);
   };
 
   HUD.prototype.getExpRate = function() {
-    try {
-      return this._exp.bitmap.width * (this.getPlayer().relativeExp() / this.getPlayer().relativeMaxExp());
-    } catch(e) {
-      return 0;
-    }
+    return this._exp.bitmap.width * (this.getPlayer().relativeExp() / this.getPlayer().relativeMaxExp());
   };
 
   HUD.prototype.setOpacityisNotGlobal = function(value) {
@@ -1351,14 +1337,11 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
-    try {
-      this._hud.update();
-      if(this._face) { this._face.update(); }
-      this.updateOpacity();
-      this.updateToneForAll();
-      this.paramUpdate();
-    } catch(e) {
-    }
+    this._hud.update();
+    if(this._face) { this._face.update(); }
+    this.updateOpacity();
+    this.updateToneForAll();
+    this.paramUpdate();
   };
 
   HUD.prototype.updateOpacity = function() {
@@ -1403,9 +1386,15 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.paramUpdate = function() {
-    this._hp.setFrame(0, 0, this.getHpRate(), this._hp.height );
-    this._mp.setFrame(0, 0, this.getMpRate(), this._mp.height );
-    this._exp.setFrame(0, 0, this.getExpRate(), this._exp.height );
+    var hpRate = this.getHpRate();
+    var mpRate = this.getMpRate();
+    var expRate = this.getExpRate();
+    var hpHeight = this._hp.height;
+    var mpHeight = this._mp.height;
+    var expHeight = this._exp.height;
+    this._hp.setFrame(0, 0, hpRate, hpHeight );
+    this._mp.setFrame(0, 0, mpRate, mpHeight );
+    this._exp.setFrame(0, 0, expRate, expHeight );
     this._hpText.update();
     this._mpText.update();
     this._expText.update();
