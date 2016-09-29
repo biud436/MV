@@ -8,7 +8,7 @@
  * Plugin Commands
  * -----------------------------------------------------------------------------
  *
- * This is a plugin command that this can activate the multiple viewports.
+ * This is a plugin command that can activate the multiple viewports.
  * If you call this plugin command, You can be using the multiple viewports.
  * - MultipleViewport Enable
  *
@@ -16,30 +16,45 @@
  * If you call this plugin command, You can be using original stage renderer.
  * - MultipleViewport Disable
  *
- * This is the plugin command you can set the power of the viewport shake.
+ * This is the plugin command that can set the power of the viewport shake.
  * - MultipleViewport StartShake shakePower
  *
- * This is the plugin command you can set the end of the viewport shake.
+ * This is the plugin command that can set the end of the viewport shake.
  * - MultipleViewport EndShake
  *
- * This is the plugin command you can set an image to certain viewport.
+ * This is the plugin command that can set an image to certain viewport.
  * (View ID is number between 1 and 4)
  * - MultipleViewport Image ViewID ImageName
  *
- * This is the plugin command you can delete the image to certain viewport.
+ * This is the plugin command that can delete the image to certain viewport.
  * (View ID is number between 1 and 4)
  * - MultipleViewport ClearImage ViewID
  *
- * This is the plugin command you can set the video to certain viewport.
- * Note that the file type should set WEBM(.webm)
- * (View ID is number between 1 and 4)
+ * This is the plugin command that can set the video to certain viewport.
+ * Note that the file type should set the WEBM(.webm)
+ * ViewID is the number between 1 and 4.
+ * szSrc Indicates an video name from the movies directory.
+ * loop allows you to set with the true or false.
+ * You can repeat the video via this value. (If you are omitted this loop value, its video will only play once.)
  *
  * - MultipleViewport Video viewID szSrc loop
+ *
+ * This command moves back x seconds from current video position.
  * - MultipleViewport MoveBackSeconds viewID second
+ *
+ * This command moves forward x seconds from current video position.
  * - MultipleViewport MoveForwardSeconds viewID second
+ *
+ * This is the plugin command can play the video to certain viewport.
  * - MultipleViewport PlayVideo viewID
+ *
+ * This is the plugin command can stop the video to certain viewport.
  * - MultipleViewport StopVideo viewID
+ *
+ * This is the plugin command can pause the video to certain viewport.
  * - MultipleViewport PauseVideo viewID
+ *
+ * This is the plugin command can remove the video to certain viewport.
  * - MultipleViewport ClearVideo viewID
  *
  * -----------------------------------------------------------------------------
