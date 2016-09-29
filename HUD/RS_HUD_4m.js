@@ -344,10 +344,10 @@
  * Setting the HUD's visible status to false.
  *
  * RS_HUD import file_name
- * Import the parameter the json file from your data folder.
+ * Import the parameter as the json file from your data folder.
  *
  * RS_HUD export file_name
- * Export the parameter the json file to your data folder.
+ * Export the parameter as the json file to your data folder.
  *
  * =============================================================================
  * Change Log
@@ -1009,7 +1009,7 @@ RS.HUD.param = RS.HUD.param || {};
 
     items.forEach(function(item, index){
       if(!!$gameParty.members()[index]) {
-        allHud.addChild(new HUD({szAnchor: item, nIndex: index}));
+        if(item !== null) allHud.addChild(new HUD({szAnchor: item, nIndex: index}));
       }
     }, this);
 

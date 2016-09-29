@@ -1,6 +1,6 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc (v1.1.4) This plugin provides the multiple viewports (WebGL only)
+ * @plugindesc (v1.1.5) This plugin provides the multiple viewports (WebGL only)
  * @author biud436
  *
  * @help
@@ -22,13 +22,25 @@
  * This is the plugin command you can set the end of the viewport shake.
  * - MultipleViewport EndShake
  *
- * This is the plugin command you can set an image of certain viewport
+ * This is the plugin command you can set an image to certain viewport.
  * (View ID is number between 1 and 4)
  * - MultipleViewport Image ViewID ImageName
  *
- * This is the plugin command you can delete the image of certain viewport
+ * This is the plugin command you can delete the image to certain viewport.
  * (View ID is number between 1 and 4)
  * - MultipleViewport ClearImage ViewID
+ *
+ * This is the plugin command you can set the video to certain viewport.
+ * Note that the file type should set WEBM(.webm)
+ * (View ID is number between 1 and 4)
+ *
+ * - MultipleViewport Video viewID szSrc loop
+ * - MultipleViewport MoveBackSeconds viewID second
+ * - MultipleViewport MoveForwardSeconds viewID second
+ * - MultipleViewport PlayVideo viewID
+ * - MultipleViewport StopVideo viewID
+ * - MultipleViewport PauseVideo viewID
+ * - MultipleViewport ClearVideo viewID
  *
  * -----------------------------------------------------------------------------
  * Changle Log
@@ -37,6 +49,7 @@
  * 2016.08.24 (v1.1.0) - Now RPG Maker MV 1.3.0 or more is supported.
  * 2016.08.24 (v1.1.2) - Added Plugin Commands
  * 2016.08.25 (v1.1.4) - Added the functions that sets an image of certain viewport.
+ * 2016.09.30 (v1.1.5) - Added the function that plays an video of certain viewport.
  */
 
 var Imported = Imported || {};
@@ -113,16 +126,73 @@ Imported.RS_MultipleViewports = true;
     this._renderSprite.children[i].x = this._rect[i].x + shake;
     this._renderSprite.children[i].y = this._rect[i].y + shake;
     if(Graphics.isCheckedViewImage(i)) {
-        this._renderSprite.children[i].texture = this._viewImageCached[i];
+      var texture = this._renderSprite.children[i].texture = this._viewImageCached[i];
+      this._renderSprite.children[i].scale.x = (Graphics.boxWidth / texture.width) * 0.5;
+      this._renderSprite.children[i].scale.y = (Graphics.boxHeight / texture.height) * 0.5;
     } else {
-        this._renderSprite.children[i].texture = this._renderTexture;
+      this._renderSprite.children[i].texture = this._renderTexture;
+      this._renderSprite.children[i].scale.x = 0.5;
+      this._renderSprite.children[i].scale.y = 0.5;
     }
-    this._renderSprite.children[i].scale.x = 0.5;
-    this._renderSprite.children[i].scale.y = 0.5;
   };
 
   Graphics.setViewportImage = function (viewID, texture) {
+    if(this._viewImageCached[viewID - 1]) {
+      this._viewImageCached[viewID - 1] = null;
+    }
     this._viewImageCached[viewID - 1] = texture;
+  };
+
+  Graphics.moveMoviesToCertainView = function (viewID, funcName, second) {
+    var texture = this._viewImageCached[viewID - 1];
+    if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
+      var video = texture.baseTexture.source;
+      switch (funcName) {
+        case 'Move Back':
+          video.currentTime -= second;
+          break;
+        case 'Move Forward':
+          video.currentTime += second;
+          break;
+      }
+    }
+  };
+
+  Graphics.playMoviesToCertainView = function (viewID) {
+    var texture = this._viewImageCached[viewID - 1];
+    if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
+      var video = texture.baseTexture.source;
+      video.play();
+    }
+  };
+
+  Graphics.pauseMoviesToCertainView = function (viewID) {
+    var texture = this._viewImageCached[viewID - 1];
+    if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
+      var video = texture.baseTexture.source;
+      video.pause();
+    }
+  };
+
+  Graphics.stopMoviesToCertainView = function (viewID) {
+    var texture = this._viewImageCached[viewID - 1];
+    if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
+      var video = texture.baseTexture.source;
+      video.pause();
+      video.currentTime = 0.0;
+    }
+  };
+
+  Graphics.pauseAllMovies = function () {
+    this._viewImageCached.forEach(function (i) {
+      if(i.baseTexture instanceof PIXI.VideoBaseTexture) i.baseTexture.source.pause();
+    })
+  };
+
+  Graphics.playAllMovies = function () {
+    this._viewImageCached.forEach(function (i) {
+      if(i.baseTexture instanceof PIXI.VideoBaseTexture) i.baseTexture.source.play();
+    })
   };
 
   Graphics.isCheckedViewImage = function (viewID) {
@@ -172,9 +242,11 @@ Imported.RS_MultipleViewports = true;
         switch(args[0]) {
           case 'Enable':
             isMultipleViewport = true;
+            Graphics.playAllMovies();
             break;
           case 'Disable':
             isMultipleViewport = false;
+            Graphics.pauseAllMovies();
             break;
           case 'StartShake':
             isShake = 1;
@@ -192,6 +264,42 @@ Imported.RS_MultipleViewports = true;
             break;
           case 'ClearImage':
             Graphics.clearViewImage(Number(args[1]));
+            break;
+          case 'Video':
+            var viewID = Number(args[1] || 1);
+            var name = args[2];
+            var looping = (args[3] === 'true');
+            var videoName = 'movies/' + name + '.webm';
+            var texture = PIXI.Texture.fromVideo(videoName);
+            texture.baseTexture.source.loop = looping;
+            Graphics.setViewportImage(viewID.clamp(1, 4), texture);
+            break;
+          case 'PlayVideo':
+            var viewID = Number(args[1] || 1);
+            Graphics.playMoviesToCertainView(viewID);
+            break;
+          case 'PauseVideo':
+            var viewID = Number(args[1] || 1);
+            Graphics.pauseMoviesToCertainView(viewID);
+            break;
+          case 'MoveBackSeconds':
+            var viewID = Number(args[1] || 1);
+            var sec = parseInt(args[2] || 0);
+            Graphics.moveMoviesToCertainView(viewID, 'Move Back', sec);
+            break;
+          case 'MoveForwardSeconds':
+            var viewID = Number(args[1] || 1);
+            var sec = parseInt(args[2] || 0);
+            Graphics.moveMoviesToCertainView(viewID, 'Move Forward', sec);
+            break;
+          case 'StopVideo':
+            var viewID = Number(args[1] || 1);
+            Graphics.stopMoviesToCertainView(viewID);
+            break;
+          case 'ClearVideo':
+            var viewID = Number(args[1] || 1);
+            Graphics.stopMoviesToCertainView(viewID);
+            Graphics.clearViewImage(viewID);
             break;
         }
       }
