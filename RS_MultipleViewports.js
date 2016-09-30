@@ -1,6 +1,6 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc (v1.1.5) This plugin provides the multiple viewports (WebGL only)
+ * @plugindesc (v1.1.6) This plugin provides the multiple viewports.
  * @author biud436
  *
  * @help
@@ -8,7 +8,7 @@
  * Plugin Commands
  * -----------------------------------------------------------------------------
  *
- * This is a plugin command that can activate the multiple viewports.
+ * This is a plugin command that this can activate the multiple viewports.
  * If you call this plugin command, You can be using the multiple viewports.
  * - MultipleViewport Enable
  *
@@ -16,17 +16,17 @@
  * If you call this plugin command, You can be using original stage renderer.
  * - MultipleViewport Disable
  *
- * This is the plugin command that can set the power of the viewport shake.
+ * This is the plugin command you can set the power of the viewport shake.
  * - MultipleViewport StartShake shakePower
  *
- * This is the plugin command that can set the end of the viewport shake.
+ * This is the plugin command you can set the end of the viewport shake.
  * - MultipleViewport EndShake
  *
- * This is the plugin command that can set an image to certain viewport.
+ * This is the plugin command you can set an image to certain viewport.
  * (View ID is number between 1 and 4)
  * - MultipleViewport Image ViewID ImageName
  *
- * This is the plugin command that can delete the image to certain viewport.
+ * This is the plugin command you can delete the image to certain viewport.
  * (View ID is number between 1 and 4)
  * - MultipleViewport ClearImage ViewID
  *
@@ -65,6 +65,7 @@
  * 2016.08.24 (v1.1.2) - Added Plugin Commands
  * 2016.08.25 (v1.1.4) - Added the functions that sets an image of certain viewport.
  * 2016.09.30 (v1.1.5) - Added the function that plays an video of certain viewport.
+ * 2016.10.01 (v1.1.6) - Added the rendering code that is compatible with the canvas mode.
  */
 
 var Imported = Imported || {};
@@ -73,12 +74,6 @@ Imported.RS_MultipleViewports = true;
 (function () {
 
   var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
-  var isWebGL = PIXI.utils.isWebGLSupported();
-  var isUseCanvas = Utils.isOptionValid('canvas');
-  if(isUseCanvas) {
-    console.error('This plugin does not support in Canvas Mode');
-    return;
-  }
 
   var isMultipleViewport = false;
   var isShake = 0;
@@ -102,12 +97,17 @@ Imported.RS_MultipleViewports = true;
   Graphics._createRenderTexture = function () {
     var sprite; var rect; var self = Graphics;
     if(!self._renderer) { return; }
-    var gl = self._renderer.gl;
+    if(this.isWebGL()) var gl = self._renderer.gl;
     self._renderSprite = [];
 
     // Calculrate Screen
-    self._frameWidth = gl.drawingBufferWidth || 816;
-    self._frameHeight = gl.drawingBufferHeight || 624;
+    if(this.isWebGL()) {
+      self._frameWidth = gl.drawingBufferWidth || 816;
+      self._frameHeight = gl.drawingBufferHeight || 624;
+    } else {
+      self._frameWidth = self._renderer.width || 816;
+      self._frameHeight = self._renderer.height || 816;
+    }
 
     // Create RenderTexture
     self._renderTexture = PIXI.RenderTexture.create(self._frameWidth,
@@ -118,9 +118,14 @@ Imported.RS_MultipleViewports = true;
     self._rect = self.getRenderPosition(self._frameWidth, self._frameHeight);
 
     // Create RenderTarget
-    self._renderTarget = new PIXI.RenderTarget(gl, self._frameWidth,
+    if(this.isWebGL()) {
+      self._renderTarget = new PIXI.RenderTarget(gl, self._frameWidth,
                                                     self._frameHeight,
                                                     PIXI.SCALE_MODES.NEAREST);
+    } else {
+      self._renderTarget = new PIXI.CanvasRenderTarget(self._frameWidth, self._frameHeight);
+    }
+
     // Create Sprite
     self._renderSprite = new Sprite();
 
@@ -230,9 +235,9 @@ Imported.RS_MultipleViewports = true;
         var startTime = Date.now();
         if (stage) {
           if(isMultipleViewport) {
-            this._renderer.bindRenderTexture(this._renderTexture);
+            if(this.isWebGL()) this._renderer.bindRenderTexture(this._renderTexture);
             this._renderer.render(stage, this._renderTexture);
-            this._renderer.bindRenderTarget(this._renderTarget);
+            if(this.isWebGL()) this._renderer.bindRenderTarget(this._renderTarget);
             for(var i = 0; i < 4; i++) this.setRenderSprite(i);
             this._renderer.render(this._renderSprite);
           } else {
