@@ -106,7 +106,7 @@ Imported.RS_MultipleViewports = true;
       self._frameHeight = gl.drawingBufferHeight || 624;
     } else {
       self._frameWidth = self._renderer.width || 816;
-      self._frameHeight = self._renderer.height || 816;
+      self._frameHeight = self._renderer.height || 624;
     }
 
     // Create RenderTexture
