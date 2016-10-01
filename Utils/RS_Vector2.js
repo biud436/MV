@@ -5,6 +5,7 @@
  *
  * 2016.05.29 - Added Scalar Multiplication
  * 2016.09.04 - Added isEqual function.
+ * 2016.10.01 - Added Math Classes
  */
 
 var RS = RS || {};
@@ -22,9 +23,7 @@ Vector2.prototype.constructor = Vector2;
  * @memberof Vector2
  * @return {Vector2} val
  */
-Vector2.empty = function() {
-    return new Vector2(0.0, 0.0);
-};
+Vector2.empty = function() { return new Vector2(0.0, 0.0); };
 
 /**
  * 선형 보간
@@ -257,7 +256,7 @@ Vector2.prototype.getAngle = function(vec) {
         var val = this.dot(vec);
         return Math.acos(val);
     } else {
-        console.error("정규화된 벡터가 아닙니다");
+        console.error("This is not normalize vector");
     }
 };
 
@@ -351,5 +350,30 @@ RS.Math.toRadian = function(angle) {
 };
 
 RS.Math.toDegree = function(angle) {
-  return angle * (Math.PI / 180.0);
+   return angle * (Math.PI / 180.0);
+};
+
+RS.Math.min = function(x, y) {
+   return (y < x) ? y : x;
+};
+
+RS.Math.max = function(x, y) {
+  return (x < y) ? y : x;
+};
+
+RS.Math.abs = function (x) {
+   return (x >= 0) x : -x;
+};
+
+RS.Math.clamp = function(x, min, max) {
+  var self = RS.Math; return self.min(self.max(x, min), max);
+};
+
+RS.Math.fract = function(x) {
+  return x - (x >> 0);
+};
+
+RS.Math.round = function (x) {
+  var self = RS.Math;
+  return (self.fract(x) >= 0.5) ? ( (x >> 0) + 1 ) : x >> 0;
 };

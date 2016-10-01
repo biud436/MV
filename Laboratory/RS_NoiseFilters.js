@@ -112,6 +112,8 @@ RS.NoiseFilters = RS.NoiseFilters || {};
       this.uniforms.c = 43758.5453;
   };
 
+
+
   PIXI.NoiseFilterConfig.prototype = Object.create( PIXI.Filter.prototype );
   PIXI.NoiseFilterConfig.constructor = PIXI.NoiseFilterConfig;
 
@@ -277,11 +279,8 @@ RS.NoiseFilters = RS.NoiseFilters || {};
   $.CompositeRectTileLayer.prototype.initialize = function (zIndex, bitmaps, useSquare, texPerChild) {
       alias_CompositeRectTileLayer_initialize.call(this, zIndex, bitmaps, useSquare, texPerChild);
 
-      var gl = Graphics._renderer.gl;
-
-      // Calculrate Screen
-      this._frameWidth = gl.drawingBufferWidth;
-      this._frameHeight = gl.drawingBufferHeight;
+      this._frameWidth = Graphics.boxWidth || 816;
+      this._frameHeight = Graphics.boxHeight || 624;
 
       // Create RenderTexture
       // If it should set PIXI.SCALE_MODES.NEAREST, it will create black lines to upper layer on screen.
@@ -293,7 +292,7 @@ RS.NoiseFilters = RS.NoiseFilters || {};
 
   var alias_CompositeRectTileLayer_renderWebGL = $.CompositeRectTileLayer.prototype.renderWebGL;
   $.CompositeRectTileLayer.prototype.renderWebGL = function (renderer) {
-      if($gameSystem && !!$gameSystem.enabledLight && !$gameSystem.enabledLight()) {
+      if($gameSystem && !!$gameSystem.enabledNoise && !$gameSystem.enabledNoise()) {
         return alias_CompositeRectTileLayer_renderWebGL.call(this, renderer);
       }
 
