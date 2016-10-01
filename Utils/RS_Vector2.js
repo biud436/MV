@@ -2,7 +2,7 @@
  * RS_Vector2.js
  * @plugindesc Vector2 class
  * @author biud436
- *
+ * @help
  * 2016.05.29 - Added Scalar Multiplication
  * 2016.09.04 - Added isEqual function.
  * 2016.10.01 - Added Math Classes
