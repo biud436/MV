@@ -266,11 +266,9 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
     // Calculate text index
     if(szWhitespace) {
-      console.log('1 : ' + szWhitespace[0], 'index : ' + textState.index);
       textState.index += szWhitespace[0].length + 1;
       szResultText = szWhitespace[0];
     } else {
-      console.log('2 : ' + szValidText, 'index : ' + textState.index);
       szResultText = szValidText;
       textState.index += szValidText.length;
     }
