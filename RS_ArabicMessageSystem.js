@@ -26,10 +26,11 @@
  * 2016.09.21 (v1.1.1) - Fixed processNormalCharacter function.
  * 2016.09.23 (v1.1.2) - Fixed the window classes that could be displaying
  * the battle log and map name windows, which have used a drawTextEx function in Arabic.
+ * 2016.10.02 (v1.1.3) - Fixed the Arabic compatibility issues with the name box for YEP Message Core.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.2';
+Imported.RS_ArabicMessageSystem = '1.1.3';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -139,6 +140,12 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     };
   };
 
+  RS.ArabicMessageSystem.defineAlias = function (className) {
+    var aliasRefresh = 'alias_%1_refresh'.format(className);
+    RS.ArabicMessageSystem.alias[aliasRefresh] = className.prototype.refresh;
+    return RS.ArabicMessageSystem.alias[aliasRefresh];
+  };
+
   RS.ArabicMessageSystem.getRealX = function (rect, textWidth, textPadding, align) {
     if(align !== 'center' && align !== 'right') {
       var x = rect.x + rect.width - textWidth + textPadding;
@@ -148,17 +155,21 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     return x;
   };
 
+  RS.ArabicMessageSystem.getMirrorX = function (width, sx) {
+    return Graphics.boxWidth - (Graphics.boxWidth - width - sx);
+  };
+
   //============================================================================
   // Window_Base
   //
   // This provides an escape arabic text.
 
-  var alias_Window_Message_standardFontFace = Window_Message.prototype.standardFontFace;
+  var alias_Window_Base_standardFontFace = Window_Base.prototype.standardFontFace;
   Window_Base.prototype.standardFontFace = function() {
     if (messageMode === "arabic" || navigator.language.match(/^ar/)) {
       return arabicFont;
     } else {
-      return alias_Window_Message_standardFontFace.call(this);
+      return alias_Window_Base_standardFontFace.call(this);
     }
   };
 
@@ -237,9 +248,9 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   Window_Message.prototype.processNormalCharacter = function(textState) {
 
     // Extracting to work a part of the text.
-    var szCompositionText = textState.text.slice(textState.index);
-    var szValidText = szCompositionText;
-    var szResultText = '', szWhitespace = '';
+    var szCompositionText = textState.text.slice(textState.index).split('\n');
+    var szValidText = szCompositionText[0];
+    var szResultText = '', szWhitespace = "";
 
     // Check the escase character and line break
     for(var i = 0; i < szValidText.length; i++) {
@@ -247,7 +258,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
         szWhitespace = [szValidText.slice(0, i)];
         break;
       }
-      if(szValidText[i + 1] === '\n') {
+      if(szValidText[i] === '\r' && szValidText[i + 1] === '\n') {
         szWhitespace = [szValidText.slice(0, i)];
         break;
       }
@@ -255,11 +266,13 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
     // Calculate text index
     if(szWhitespace) {
+      console.log('1 : ' + szWhitespace[0], 'index : ' + textState.index);
       textState.index += szWhitespace[0].length + 1;
-      szResultText = szWhitespace[0] + ' ';
+      szResultText = szWhitespace[0];
     } else {
-      textState.index += szValidText.length + 1;
+      console.log('2 : ' + szValidText, 'index : ' + textState.index);
       szResultText = szValidText;
+      textState.index += szValidText.length;
     }
 
     // Draw Text
@@ -407,5 +420,54 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   RS.ArabicMessageSystem.defineInitialize(Window_BattleLog);
   RS.ArabicMessageSystem.defineInitialize(Window_MapName);
 
+  //============================================================================
+  // YEP_MessageCore
+  //
+  //
+
+  if(Imported.YEP_MessageCore) {
+
+    Window_Message.prototype.standardFontFace = function () {
+      return Window_Base.prototype.standardFontFace.call(this);
+    };
+
+    var alias_Window_NameBox_initialize = Window_NameBox.prototype.initialize;
+    Window_NameBox.prototype.initialize = function(parentWindow) {
+      alias_Window_NameBox_initialize.call(this, parentWindow);
+      RS.ArabicMessageSystem.createArabicLayer.call(this);
+      RS.ArabicMessageSystem.defineProtoype(Window_NameBox);
+    };
+
+    Window_NameBox.prototype.standardFontFace = function() {
+      return Window_Base.prototype.standardFontFace.call(this);
+    };
+
+    Window_NameBox.prototype.standardFontSize = function() {
+      return Window_Base.prototype.standardFontSize.call(this);
+    };
+
+    Window_NameBox.prototype.refresh = function(text, position) {
+        this.show();
+        this._lastNameText = text;
+        this._text = Yanfly.Param.MSGNameBoxText + text;
+        this._position = position;
+        this.width = this.windowWidth();
+        this.createContents();
+        this.contents.clear();
+        RS.ArabicMessageSystem.createArabicLayer.call(this);
+        this.resetFontSettings();
+        this.changeTextColor(this.textColor(Yanfly.Param.MSGNameBoxColor));
+        var padding = eval(Yanfly.Param.MSGNameBoxPadding) / 2;
+        this.drawTextEx(this._text, padding, 0);
+        this._parentWindow.adjustWindowSettings();
+        this._parentWindow.updatePlacement();
+        this.adjustPositionX();
+        this.adjustPositionY();
+        this.open();
+        this.activate();
+        this._closeCounter = 4;
+        return '';
+    };
+  }
 
 })();
