@@ -50,15 +50,22 @@ Imported.RS_ScreenManager = true;
  *
  * @help
  * =============================================================================
+ * Installations
+ * =============================================================================
+ *
+ * =============================================================================
  * Plugin Commands
  * =============================================================================
  * ScreenManager Start
+ *
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2016.10.04 (v1.0.0) - First Release.
+ *
  */
 
 (function () {
-
-  // NW Extension
-  // nw-gyp configure --target_arch=ia32 --target=0.12.3 && nw-gyp build
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_ScreenManager>');
@@ -82,50 +89,28 @@ Imported.RS_ScreenManager = true;
 
   var bitmap = ImageManager.loadParallax(imageName);
 
-  var getTargetRegex = /(\d+)\W+(\d+)/i;
+  var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
 
-  // if(Utils.isNwjs()) {
-  //   if(process && process.platform && process.platform === 'win32') {
-  //     var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
-  //     if(winDisplaySettingsLib) {
-  //       var displaySetting = new winDisplaySettingsLib.DisplaySettings();
-  //       pcGraphicsArray = displaySetting.getList().split('\n').filter(function(i, idx, item) {
-  //         return item.indexOf(i) === idx;
-  //       });
-  //     }
-  //   }
-  // }
-
-  pcGraphicsArray = pcGraphicsArray || [
-  "160 × 120",
-  "240 × 160",
-  "320 × 240",
-  "400 × 240",
-  "480 × 320",
-  "640 × 360", // HD
-  "640 × 480",
-  "800 × 480",
-  "854 × 480",
-  "800 × 600",
-  "960 × 540", // HD
-  "960 × 640",
-  "1024 × 576",
-  "1024 x 600",
-  "1280 × 720", // HD
-  "1600 × 900",
-  "1920 × 1080",
-  "2560 × 1440",
-  "3200 × 1800",
-  "3840 × 2160",
-  "5120 × 2880",
-  "7680 × 4320",
-  ];
+  if(Utils.isNwjs()) {
+    if(process && process.platform && process.platform === 'win32') {
+      var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
+      if(winDisplaySettingsLib) {
+        var displaySetting = winDisplaySettingsLib.GetDisplaySettings();
+        pcGraphicsArray = displaySetting.split('\n').filter(function(i, idx, item) {
+          return item.indexOf(i) === idx;
+        });
+      }
+    } else {
+      console.error('This plugin is not supported in Mac OS')
+      return false;
+    }
+  }
 
   var mobileGraphicsArray = [
-  "120 × 160",
-  "160 × 240",
-  "240 × 320",
-  "240 × 400",
+  "120 x 160",
+  "160 x 240",
+  "240 x 320",
+  "240 x 400",
   "320 x 480",
   "480 x 800",
   "640 x 960",
