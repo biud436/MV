@@ -52,12 +52,11 @@ Imported.RS_ScreenManager = true;
  * =============================================================================
  * Installations
  * =============================================================================
- * 1. Download the plugin and library files.
- * 2. Deploy your project by Windows platform.
- * 3. Rename the Game.exe to nw.exe.
- * 4. Put winDisplaySettings.node file in your project www/js/libs folder.
- * 5. Open the Plugin Managers and then set up this plugin.
- *
+ * - Download the plugin and library files.
+ * - Put winDisplaySettings.node file in your project ./js/libs folder.
+ * - Open the Plugin Managers and then set up this plugin.
+ * - Deploy your project by Windows platform.
+ * - Rename the Game.exe to nw.exe.
  * =============================================================================
  * Plugin Commands
  * =============================================================================
