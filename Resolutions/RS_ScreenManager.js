@@ -10,7 +10,7 @@ Imported.RS_ScreenManager = true;
  * @author biud436
  *
  * @param isMobileAutoFullScreen
- * @desc
+ * @desc Set whether it automatically switches to the full screen in the mobile.
  * @default true
  *
  * @param isLimitedInMaxRect
@@ -52,11 +52,11 @@ Imported.RS_ScreenManager = true;
  * =============================================================================
  * Installations
  * =============================================================================
- * - Download the plugin and library files.
- * - Deploy your project by Windows platform.
- * - Rename the Game.exe to nw.exe.
- * - Put winDisplaySettings.node file in your project www/js/libs folder.
- * - Open the Plugin Managers and then set up this plugin.
+ * 1. Download the plugin and library files.
+ * 2. Deploy your project by Windows platform.
+ * 3. Rename the Game.exe to nw.exe.
+ * 4. Put winDisplaySettings.node file in your project www/js/libs folder.
+ * 5. Open the Plugin Managers and then set up this plugin.
  *
  * =============================================================================
  * Plugin Commands
@@ -67,7 +67,6 @@ Imported.RS_ScreenManager = true;
  * Change Log
  * =============================================================================
  * 2016.10.04 (v1.0.0) - First Release.
- *
  */
 
 (function () {
