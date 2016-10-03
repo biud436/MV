@@ -52,8 +52,11 @@ Imported.RS_ScreenManager = true;
  * =============================================================================
  * Installations
  * =============================================================================
- * -
- * - Replace file name Game.exe to NW.exe.
+ * - Download the plugin and library files.
+ * - Deploy your project by Windows platform.
+ * - Rename the Game.exe to nw.exe.
+ * - Put winDisplaySettings.node file in your project www/js/libs folder.
+ * - Open the Plugin Managers and then set up this plugin.
  *
  * =============================================================================
  * Plugin Commands
@@ -93,7 +96,7 @@ Imported.RS_ScreenManager = true;
 
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
 
-  if(Utils.isNwjs()) {
+  if( Utils.isNwjs() ) {
     if(process && process.platform && process.platform === 'win32') {
       var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
       if(winDisplaySettingsLib) {
@@ -103,7 +106,7 @@ Imported.RS_ScreenManager = true;
         });
       }
     } else {
-      console.error('This plugin is not supported in Mac OS')
+      console.error('This plugin is not supported in Mac OS');
       return false;
     }
   }
