@@ -45,14 +45,24 @@
  * =============================================================================
  * Plugin Commands
  * =============================================================================
+ * There are four functions here. you can use them. They could be created new Ads
+ * and could already be hidden the created Ads.
+ *
  * Banner show
  * Banner remove
  * Interstitial show
+ * CheckInternet url
+ * 
  * =============================================================================
  * Cordova Plugin URL
  * =============================================================================
- * If you want to use this plugin, You should add intel xdk plugin as follows.
+ * To use this plugin, you should add intel xdk cordova plugin as follows.
  * https://github.com/sunnycupertino/cordova-plugin-admob-simple
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2016.08.06 (v1.0.0) - First Release
+ * 2016.10.05 (v1.0.1) - Added the function that could be checking the internet.
  * =============================================================================
  * Credit
  * =============================================================================
@@ -109,10 +119,16 @@
  * 배너광고 표시
  * 배너광고 제거
  * 전면광고 표시
+ * 인터넷체크 주소
  * =============================================================================
  * Cordova Plugin URL
  * =============================================================================
  * https://github.com/sunnycupertino/cordova-plugin-admob-simple
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2016.08.06 (v1.0.0) - First Release.
+ * 2016.10.05 (v1.0.1) - 인터넷 접속 체크를 할 수 있는 기능을 추가했습니다.
  * =============================================================================
  * Credit
  * =============================================================================
@@ -203,6 +219,19 @@
      window.plugins.AdMob.requestInterstitialAd();
    };
 
+   Utils.checkInternet = function(url) {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', url);
+     xhr.onload = function() {
+       if (xhr.status < 400) {
+       }
+     }.bind(this);
+     xhr.onerror = function(err) {
+       SceneManager.exit();
+     }.bind(this);
+     xhr.send();
+   };
+
    var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
    Game_Interpreter.prototype.pluginCommand = function(command, args) {
      alias_Game_Interpreter_pluginCommand.call(this, command, args);
@@ -242,6 +271,10 @@
           break;
 
         }
+      }
+
+      if(command === "CheckInternet" || command === "인터넷체크") {
+        Utils.checkInternet(args[0]);
       }
 
    };
