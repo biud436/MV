@@ -1,6 +1,11 @@
 /*:
  * @plugindesc In the mode text box, This plugin can indicate with the default cursor that the cursor mode is not the text mode.
  * @author biud436
+ * @help
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2016.10.06 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
