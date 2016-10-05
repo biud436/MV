@@ -24,7 +24,8 @@
  * Script Calls
  * =============================================================================
  * Graphics.setCanvasFilter(filterName, amount, isMultipleFilters, target);
- * Graphics.setCanvasDropShadowFilter(hShadow, hShadow, blur, color, isMultipleFilters, target));
+ * Graphics.setClearCanvasFilter(target);
+ * Graphics.setCanvasDropShadowFilter(hShadow, hShadow, blur, color, isMultipleFilters, target);
  * Graphics.setCanvasInvert(activate, isMultipleFilters, target);
  * =============================================================================
  * Change Log
