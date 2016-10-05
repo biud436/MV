@@ -1,5 +1,5 @@
 /*:
- * @plugindesc In the mode text box, This plugin can indicate with the default cursor that the cursor mode is not the text mode.
+ * @plugindesc This plugin can prevent changing cursor in the mode box.
  * @author biud436
  * @help
  * =============================================================================
