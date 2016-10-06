@@ -36,6 +36,7 @@
  * 2016.05.09 (v1.0.1) - Added Error Handler
  * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL.
  * 2016.07.04 (v1.0.3) - Fixed a few logic about the range were converted to Rectangular object.
+ * 2016.10.06 (v1.0.4) - Added Canvas Filters.
  */
 
 var Imported = Imported || {};
@@ -188,7 +189,7 @@ function onPlayerStateChange (event) {
       this._iframe.src = 'https://www.youtube.com/embed/%1?enablejsapi=1&version=3'.format(v);
     }
     this._iframe.style.opacity = '1';
-    this._iframe.style.zIndex = '20000';
+    this._iframe.style.zIndex = '2400';
 
     if(!this._init) {
       this._firstScriptTag = document.getElementsByTagName('script')[0];
@@ -202,7 +203,12 @@ function onPlayerStateChange (event) {
   YTPlayer.playVideo = function(src) {
     if(!this._iframe) this.createIframe();
     this.preVideo(src);
-    Graphics._canvas.style.opacity = '0.5';
+    if(Imported.RS_SimpleCanvasFilter) {
+      Graphics.setCanvasFilter('blur', 1.5, false, null);
+      Graphics.setCanvasFilter('contrast', 150.0, true, null);
+    } else {
+      Graphics._canvas.style.opacity = '0.5';
+    }
     if($gamePlayer) $gamePlayer.lock();
   };
 
@@ -210,7 +216,11 @@ function onPlayerStateChange (event) {
     if(!this._iframe) this.createIframe();
     this._iframe.style.opacity = '0';
     this._iframe.style.zIndex = '0';
-    Graphics._canvas.style.opacity = '1.0';
+    if(Imported.RS_SimpleCanvasFilter) {
+      Graphics.setClearCanvasFilter(null);
+    } else {
+      Graphics._canvas.style.opacity = '1.0';
+    }
     this.callPlayer("stopVideo");
     if($gamePlayer) $gamePlayer.unlock();
   };
