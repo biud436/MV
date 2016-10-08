@@ -15,6 +15,13 @@
  * @dir img/pictures/
  * @type file
  *
+ * @param TP Gauge
+ * @desc
+ * @default exr
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
  * @param --- Noraml
  * @desc
  * @default
@@ -22,6 +29,31 @@
  * @param Auto Windows Alignment
  * @desc
  * @default true
+ *
+ * @param --- Text Settings
+ * @desc
+ * @default
+ *
+ * @param TP Position
+ * @desc x, y, visible
+ * (default : 83, 91, true)
+ * @default 83, 91, true
+ *
+ * @param TP Text Size
+ * @desc
+ * @default 12
+ *
+ * @param TP Color
+ * @desc
+ * @default #ffffff
+ *
+ * @param TP Outline Color
+ * @desc
+ * @default rgba(0, 0, 0, 0.5)
+ *
+ * @param TP Outline Width
+ * @desc
+ * @default 4
  *
  * @param --- Custom HUD Anchor
  * @desc
@@ -48,20 +80,38 @@
  * @default 397, 523
  *
  * @help
+ * =============================================================================
+ * How to setup
+ * =============================================================================
+ * To use this add-on, You must have RS_HUD_4m 1.1.3, or later versions.
+ * An add-on plugin also requires a new image. Click the following link,
+ * and then Right-Click the image and Select the button called Save image as.
  *
- * This plugin requires RS_HUD_4m.js
+ * Image Link : https://github.com/biud436/MV/blob/master/HUD/hud_window_empty_inbattle.png
  *
- * - Change Log
+ * After that, Copy the image called 'hud_window_empty_inBattle.png' to img/pictures folder.
+ * The following demo game shows the example.
+ * (For information about the add-on, see RS_HUD_4m_InBattle plugin on the demo game.)
+ *
+ * Demo Game : https://www.dropbox.com/s/v6prurtempabqqv/hud.zip?dl=0
+ *
+ * =============================================================================
+ * Change Log
+ * =============================================================================
  * 2016.05.21 (v1.0.0) - First Release Date
  * 2016.05.28 (v1.1.0) - Added Active Turn Battle (require YEP_BattleEngineCoreand YEP_X_BattleSysATB)
  * 2016.06.30 (v1.1.1) - Added the parameter that displays the values with commas every three digits.
  * 2016.08.07 (v1.1.2) - Fixed the issue of the function for drawing status icon
  * 2016.09.05 (v1.1.3) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
  * 2016.09.26 (v1.1.4) - Added Custom Anchor.
+ * 2016.10.08 (v1.1.5) :
+ * - Added the plugin parameter that could be configuable the property of TP text.
+ * - Fixed the bug that the opacity is not returned as a previous opacity when certain party member is revived.
+ * - Fixed the bug that the technical point gauge does not display.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.1.4';
+Imported.RS_HUD_4m_InBattle = '1.1.5';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -78,6 +128,14 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.isWndsAlignment = Boolean(parameters['Auto Windows Alignment'] === 'true');
   RS.HUD.param.imgEmptyBattleHUD = String(parameters['HUD Battle Background'] || 'hud_window_empty_inbattle');
   RS.HUD.param.arrangementInBattle = eval(parameters['Arrangement']);
+
+  // Add TP Settings
+  RS.HUD.param.imgTP = String(parameters['TP Gauge'] || 'exr');
+  RS.HUD.param.ptTP = RS.HUD.loadImagePosition(parameters['TP Position'] || '83, 91, true');
+  RS.HUD.param.tpTextSize = Number(parameters['TP Text Size']) || 12;
+  RS.HUD.param.szTpColor = String(parameters['TP Color'] || '#ffffff');
+  RS.HUD.param.szTpOutlineColor = String(parameters['TP Outline Color'] || 'rgba(0, 0, 0, 0.5)');
+  RS.HUD.param.szTpOutlineWidth = Number(parameters['EXP Outline Width']) || 4;
 
   // Custom HUD Anchor
   RS.HUD.param.ptCustormBattleAnchor = [];
@@ -153,6 +211,34 @@ RS.HUD.param = RS.HUD.param || {};
     this.addChild(this._hud);
   };
 
+  HUD.prototype.createExp = function() {
+    var name = ( this.inBattle() && $dataSystem.optDisplayTp ) ? RS.HUD.param.imgTP : RS.HUD.param.imgEXP;
+    this._exp = new Sprite(ImageManager.loadPicture(name));
+    this.addChild(this._exp);
+  };
+
+  HUD.prototype.getTextParams = function(src) {
+    var param = RS.HUD.param;
+    var textProperties = {
+      'HP': [param.hpTextSize, param.szHpColor, param.szHpOutlineColor, param.szHpOutlineWidth],
+      'MP': [param.mpTextSize, param.szMpColor, param.szMpOutlineColor, param.szMpOutlineWidth],
+      'EXP': [param.expTextSize, param.szExpColor, param.szExpOutlineColor, param.szExpOutlineWidth],
+      'TP': [param.tpTextSize, param.szTpColor, param.szTpOutlineColor, param.szTpOutlineWidth],
+      'LEVEL': [param.levelTextSize, param.szLevelColor, param.szLevelOutlineColor, param.szLevelOutlineWidth],
+      'NAME': [param.nameTextSize, param.szNameColor, param.szNameOutlineColor, param.szNameOutlineWidth]
+    };
+    return textProperties[src];
+  };
+
+  HUD.prototype.createText = function() {
+    var param = ( this.inBattle() && $dataSystem.optDisplayTp ) ? 'TP' : 'EXP';
+    this._hpText = this.addText(this.getHp.bind(this), this.getTextParams('HP'));
+    this._mpText = this.addText(this.getMp.bind(this), this.getTextParams('MP'));
+    this._expText = this.addText(this.getExp.bind(this), this.getTextParams(param));
+    this._levelText = this.addText(this.getLevel.bind(this), this.getTextParams('LEVEL'));
+    this._nameText = this.addText(this.getName.bind(this), this.getTextParams('NAME'));
+  };
+
   HUD.prototype.createAllIcon = function() {
     this._Iconlayer = new Sprite(new Bitmap(Graphics.boxWidth, Graphics.boxHeight));
     this._Iconlayer.x = (this._levelText.x - this._hud.x) + 32;
@@ -187,26 +273,25 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
-    if(this.inBattle()) {
-      this.updateSelectEffect();
-    }
+    if(this.inBattle()) this.updateSelectEffect();
     this._hud.update();
     if(this._face) this._face.update();
-    this.updateOpacity();
+    if(this.inBattle()) {
+      this.updateDeathEffect();
+    } else {
+      this.updateOpacity();
+    }
     this.updateToneForAll();
     this.paramUpdate();
   };
 
   HUD.prototype.refreshIcon = function() {
-    var x = 0;
-    var y = 0;
+    var x = 0, y = 0;
     this.drawActorIcons(this.getPlayer(), x, y);
-  }
+  };
 
   HUD.prototype.drawActorIcons = function(actor, x, y, width) {
-    if(this._Iconlayer) {
-      this._Iconlayer.bitmap.clear();
-    }
+    if(this._Iconlayer) this._Iconlayer.bitmap.clear();
     width = width || 144;
     var icons = actor.allIcons().slice(0, Math.floor(width / 32));
     for (var i = 0; i < icons.length; i++) {
@@ -226,17 +311,20 @@ RS.HUD.param = RS.HUD.param || {};
   var alias_HUD_getExp = HUD.prototype.getExp;
   HUD.prototype.getExp = function() {
     var player = this.getPlayer();
-    if(this.inBattle() & $dataSystem.optDisplayTp) {
+    if(this.inBattle() && $dataSystem.optDisplayTp) {
         return "%1 / %2".format(player.tp, player.maxTp());
     }
     return alias_HUD_getExp.call(this);
   };
 
-  HUD.prototype.inBattle = function() {
-    return (SceneManager._scene instanceof Scene_Battle ||
-            $gameParty.inBattle() ||
-            DataManager.isBattleTest());
-  }
+  HUD.prototype.getExpRate = function() {
+    var player = this.getPlayer();
+    if(this.inBattle() && $dataSystem.optDisplayTp) {
+      return this._exp.bitmap.width * (player.tp / player.maxTp());
+    } else {
+      return this._exp.bitmap.width * (player.relativeExp() / player.relativeMaxExp());
+    }
+  };
 
   //----------------------------------------------------------------------------
   // Scene_Battle

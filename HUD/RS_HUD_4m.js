@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.4) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.5) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
@@ -376,10 +376,11 @@
  * 2016.09.27 (v1.1.4) :
  * - The visible setting sets as the false before calling the battle.
  * - Added the function that allows all plugin parameters to import or export.
+ * 2016.10.08 (v1.1.5) - Fixed a bug that happens in battle.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.1.4';
+Imported.RS_HUD_4m = '1.1.5';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -425,12 +426,12 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.ptNameText = RS.HUD.loadImagePosition(parameters['Name Text Position'] || '54, 53, true');
 
   // Normal Settings
-  RS.HUD.param.nWidth = Number(parameters['Width'] || 317 );
-  RS.HUD.param.nHeight = Number(parameters['Height'] || 101 );
-  RS.HUD.param.nPD = Number(parameters['Margin'] || 0);
+  RS.HUD.param.nWidth = Number(parameters['Width']) || 317;
+  RS.HUD.param.nHeight = Number(parameters['Height']) || 101 ;
+  RS.HUD.param.nPD = Number(parameters['Margin']) || 0 ;
   RS.HUD.param.blurProcessing = Boolean(parameters['Gaussian Blur'] === "true");
   RS.HUD.param.bShow = Boolean(parameters['Show'] ==="true");
-  RS.HUD.param.nOpacity = Number(parameters['Opacity'] || 255 );
+  RS.HUD.param.nOpacity = Number(parameters['Opacity']) || 255 ;
   RS.HUD.param.szAnchor = String(parameters['Anchor'] || "LeftTop");
   RS.HUD.param.arrangement = eval(parameters['Arrangement']);
   RS.HUD.param.preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
@@ -454,8 +455,8 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.standardFont = String(parameters['Standard Font'] || 'GameFont');
 
   // Text Size
-  RS.HUD.param.levelTextSize = Number(parameters['Level Text Size'] || 12);
-  RS.HUD.param.hpTextSize = Number(parameters['HP Text Size'] || 12);
+  RS.HUD.param.levelTextSize = Number(parameters['Level Text Size']) || 12;
+  RS.HUD.param.hpTextSize = Number(parameters['HP Text Size']) || 12;
   RS.HUD.param.mpTextSize = Number(parameters['MP Text Size'] || 12);
   RS.HUD.param.expTextSize = Number(parameters['EXP Text Size'] || 12);
   RS.HUD.param.nameTextSize = Number(parameters['Name Text Size'] || 12);
@@ -475,11 +476,11 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.szNameOutlineColor = String(parameters['Name Outline Color'] || 'rgba(0, 0, 0, 0.5)');
 
   // Text Outline Width
-  RS.HUD.param.szHpOutlineWidth =  Number(parameters['HP Outline Width'] || 4);
-  RS.HUD.param.szMpOutlineWidth = Number(parameters['MP Outline Width'] || 4);
-  RS.HUD.param.szExpOutlineWidth = Number(parameters['EXP Outline Width'] || 4);
-  RS.HUD.param.szLevelOutlineWidth = Number(parameters['Level Outline Width'] || 4);
-  RS.HUD.param.szNameOutlineWidth = Number(parameters['Name Outline Width'] || 4);
+  RS.HUD.param.szHpOutlineWidth =  Number(parameters['HP Outline Width']) || 4;
+  RS.HUD.param.szMpOutlineWidth = Number(parameters['MP Outline Width']) || 4;
+  RS.HUD.param.szExpOutlineWidth = Number(parameters['EXP Outline Width']) || 4;
+  RS.HUD.param.szLevelOutlineWidth = Number(parameters['Level Outline Width']) || 4;
+  RS.HUD.param.szNameOutlineWidth = Number(parameters['Name Outline Width']) || 4;
 
   // Custom Font
   RS.HUD.param.bUseCustomFont = Boolean(parameters['Using Custom Font'] === 'true');
@@ -1321,9 +1322,18 @@ RS.HUD.param = RS.HUD.param || {};
   HUD.prototype.getExpRate = function() {
     var player = this.getPlayer();
     if(player) {
-      return this._exp.bitmap.width * (this.getPlayer().relativeExp() / this.getPlayer().relativeMaxExp());
+      return this._exp.bitmap.width * (player.relativeExp() / player.relativeMaxExp());
     } else {
       return 0;
+    }
+  };
+
+  HUD.prototype.getRealExpRate = function () {
+    var player = this.getPlayer();
+    if(this.inBattle() && $dataSystem.optDisplayTp) {
+      return ( player.tp / player.maxTp() );
+    } else {
+      return ( player.relativeExp() / player.relativeMaxExp() );
     }
   };
 
@@ -1395,10 +1405,9 @@ RS.HUD.param = RS.HUD.param || {};
   }
 
   HUD.prototype.updateToneForAll = function () {
-    var expRate = (this.getPlayer().relativeExp() / this.getPlayer().relativeMaxExp());
     this.checkForToneUpdate( this._hp, this.getPlayer().hpRate() <= nHPGlitter );
     this.checkForToneUpdate( this._mp, this.getPlayer().mpRate() <= nMPGlitter );
-    this.checkForToneUpdate( this._exp, expRate >= nEXPGlitter );
+    this.checkForToneUpdate( this._exp, this.getRealExpRate() >= nEXPGlitter );
   };
 
   HUD.prototype.paramUpdate = function() {
@@ -1415,6 +1424,12 @@ RS.HUD.param = RS.HUD.param || {};
       this.createFace();
     }
 
+  };
+
+  HUD.prototype.inBattle = function() {
+    return (SceneManager._scene instanceof Scene_Battle ||
+            $gameParty.inBattle() ||
+            DataManager.isBattleTest());
   };
 
   Object.defineProperty(HUD.prototype, 'show', {
