@@ -105,7 +105,7 @@
  * 2016.09.05 (v1.1.3) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
  * 2016.09.26 (v1.1.4) - Added Custom Anchor.
  * 2016.10.08 (v1.1.5) :
- * - Added the plugin parameter that could be configuable the property of TP text.
+ * - Added the plugin parameter that could be configurable the property of TP text.
  * - Fixed the bug that the opacity is not returned as a previous opacity when certain party member is revived.
  * - Fixed the bug that the technical point gauge does not display.
  */
