@@ -108,10 +108,11 @@
  * - Added the plugin parameter that could be configurable the property of TP text.
  * - Fixed the bug that the opacity is not returned as a previous opacity when certain party member is revived.
  * - Fixed the bug that the technical point gauge does not display.
+ * 2016.10.11 (v1.1.6) - Fixed the bug that happens when certain party member is removed.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.1.5';
+Imported.RS_HUD_4m_InBattle = '1.1.6';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -311,6 +312,7 @@ RS.HUD.param = RS.HUD.param || {};
   var alias_HUD_getExp = HUD.prototype.getExp;
   HUD.prototype.getExp = function() {
     var player = this.getPlayer();
+    if(!player) return "0 / 0";
     if(this.inBattle() && $dataSystem.optDisplayTp) {
         return "%1 / %2".format(player.tp, player.maxTp());
     }
@@ -319,6 +321,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getExpRate = function() {
     var player = this.getPlayer();
+    if(!player) return 0.0;
     if(this.inBattle() && $dataSystem.optDisplayTp) {
       return this._exp.bitmap.width * (player.tp / player.maxTp());
     } else {

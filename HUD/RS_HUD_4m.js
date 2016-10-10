@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.5) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.6) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
@@ -377,10 +377,13 @@
  * - The visible setting sets as the false before calling the battle.
  * - Added the function that allows all plugin parameters to import or export.
  * 2016.10.08 (v1.1.5) - Fixed a bug that happens in battle.
+ * 2016.10.11 (v1.1.6) :
+ * - Fixed the bug that happens when certain party member is removed.
+ * - Fixed the bug about global opacity variable.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.1.5';
+Imported.RS_HUD_4m = '1.1.6';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -1021,6 +1024,15 @@ RS.HUD.param = RS.HUD.param || {};
 
   };
 
+  RS_HudLayer.prototype.update = function () {
+    var members = $gameParty.members();
+    this.children.forEach(function(child, idx) {
+        if (child.update && members[idx]) {
+            child.update();
+        }
+    });
+  };
+
   RS_HudLayer.prototype.sort = function() {
     var allHud = this._items;
     var array = allHud.children;
@@ -1256,6 +1268,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getHp = function() {
     var player = this.getPlayer();
+    if(!player) return "0 / 0";
     if(RS.HUD.param.showComma) {
       return "%1 / %2".appendComma(player.hp, player.mhp);
     } else {
@@ -1265,6 +1278,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getMp = function() {
     var player = this.getPlayer();
+    if(!player) return "0 / 0";
     if(RS.HUD.param.showComma) {
       return "%1 / %2".appendComma(player.mp, player.mmp);
     } else {
@@ -1274,6 +1288,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getExp = function() {
     var player = this.getPlayer();
+    if(!player) return "0 / 0";
     if(player.isMaxLevel()) return RS.HUD.param.maxExpText;
     if(RS.HUD.param.showComma) {
       return "%1 / %2".appendComma(player.relativeExp(), player.relativeMaxExp());
@@ -1284,6 +1299,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getLevel = function() {
     var player = this.getPlayer();
+    if(!player) return "0";
     if(RS.HUD.param.showComma) {
       return "%1".appendComma(player.level);
     } else {
@@ -1293,6 +1309,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getName = function() {
     var player = this.getPlayer();
+    if(!player) return "";
     var name = player && player.name();
     if(name) {
       return name;
@@ -1303,33 +1320,25 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.getHpRate = function() {
     var player = this.getPlayer();
-    if(player) {
-      return this._hp.bitmap.width * (player.hp / player.mhp);
-    } else {
-      return 0;
-    }
+    if(!player) return 0;
+    return this._hp.bitmap.width * (player.hp / player.mhp);
   };
 
   HUD.prototype.getMpRate = function() {
     var player = this.getPlayer();
-    if(player) {
-      return this._mp.bitmap.width * (player.mp / player.mmp);
-    } else {
-      return 0;
-    }
+    if(!player) return 0;
+    return this._mp.bitmap.width * (player.mp / player.mmp);
   };
 
   HUD.prototype.getExpRate = function() {
     var player = this.getPlayer();
-    if(player) {
-      return this._exp.bitmap.width * (player.relativeExp() / player.relativeMaxExp());
-    } else {
-      return 0;
-    }
+    if(!player) return 0;
+    return this._exp.bitmap.width * (player.relativeExp() / player.relativeMaxExp());
   };
 
   HUD.prototype.getRealExpRate = function () {
     var player = this.getPlayer();
+    if(!player) return 0;
     if(this.inBattle() && $dataSystem.optDisplayTp) {
       return ( player.tp / player.maxTp() );
     } else {
@@ -1341,16 +1350,19 @@ RS.HUD.param = RS.HUD.param || {};
     this.children.forEach( function(i) {
       i.opacity = value.clamp(0, 255);
     }, this);
+    // $gameSystem._rs_hud.opacity = value.clamp(0, 255);
   }
 
   HUD.prototype.getOpacityValue = function(dir) {
     var value = this._hud.opacity;
+    var maxOpaicty = $gameSystem._rs_hud.opacity;
+    if(maxOpaicty <= 0) return 0;
     if(dir) {
       value -= nOpacityEps;
       if(value < nOpacityMin ) value = nOpacityMin;
     } else {
       value += nOpacityEps;
-      if(value > RS.HUD.param.nOpacity) value = RS.HUD.param.nOpacity;
+      if(value > maxOpaicty) value = maxOpaicty;
     }
     return value;
   };
@@ -1371,7 +1383,8 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.updateOpacity = function() {
-    if(!this.checkHitToMouse(this._hud, nFaceDiameter) && this.checkHit() || this.getPlayer().isDead() ) {
+    var player = this.getPlayer();
+    if(!this.checkHitToMouse(this._hud, nFaceDiameter) && this.checkHit() || player && player.isDead() ) {
       this.setOpacityisNotGlobal( this.getOpacityValue(true) );
     } else {
       this.setOpacityisNotGlobal( this.getOpacityValue(false) );
@@ -1405,6 +1418,7 @@ RS.HUD.param = RS.HUD.param || {};
   }
 
   HUD.prototype.updateToneForAll = function () {
+    if(!this.getPlayer()) return false;
     this.checkForToneUpdate( this._hp, this.getPlayer().hpRate() <= nHPGlitter );
     this.checkForToneUpdate( this._mp, this.getPlayer().mpRate() <= nMPGlitter );
     this.checkForToneUpdate( this._exp, this.getRealExpRate() >= nEXPGlitter );
