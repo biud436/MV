@@ -6,14 +6,22 @@
  * Note Tags
  * =============================================================================
  * This note tag requires YEP_BattleEngineCore.
- * <finish action>
+ *
  * LIGHTNING EFFECT: target, (FRAME)
- * </finish action>
  * If the 'FRAME' is omitted, it will set the duration of the LIGHTNING EFFECT to 15 frames.
+ *
+ * CHARACTER SCALE: target, (SCALE)
+ * If the 'SCALE' is omitted, it will set the scale of the target to 1.
+ *
  * ----------------------------------------------
  * <finish action>
  * LIGHTNING EFFECT: targets, 30
  * </finish action>
+ *
+ * <finish action>
+ * CHARACTER SCALE: targets, 0.5
+ * </finish action>
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -309,6 +317,9 @@ var RS = RS || {};
       if(actionName === 'LIGHTNING EFFECT') {
         return this.actionActionLightningEffect(actionArgs);
       }
+      if(actionName === 'CHARACTER SCALE') {
+        return this.actionActionCharacterScale(actionArgs);
+      }
       return alias_BE_processActionSequence.call(this, actionName, actionArgs);
     };
 
@@ -320,6 +331,18 @@ var RS = RS || {};
       if (actionArgs[1]) frame = parseInt(actionArgs[1]);
       targets.forEach(function(target) {
         target.setFilterLightning(true, frame);
+      }, this);
+      return true;
+    };
+
+    // CHARACTER SCALE : target, (scale)
+    BattleManager.actionActionCharacterScale = function(actionArgs) {
+      var targets = this.makeActionTargets(actionArgs[0]);
+      if (targets.length < 1) return false;
+      var scale = 1;
+      if (actionArgs[1]) scale = parseFloat(actionArgs[1]);
+      targets.forEach(function(target) {
+        target.setFilterScale(scale);
       }, this);
       return true;
     };
