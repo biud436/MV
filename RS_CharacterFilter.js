@@ -120,7 +120,7 @@ var RS = RS || {};
       '}      '
     ].join('\n');
     PIXI.Filter.call( this, defaultVertexSrc, fragmentSrc );
-    this.uniforms.dir = 1;
+    this.uniforms.dir = 0;
     this.uniforms.scale = [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
     this.uniforms.offset = {x: 0.0, y: 0.0};
     this.enabled = true;
