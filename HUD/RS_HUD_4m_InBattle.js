@@ -108,7 +108,9 @@
  * - Added the plugin parameter that could be configurable the property of TP text.
  * - Fixed the bug that the opacity is not returned as a previous opacity when certain party member is revived.
  * - Fixed the bug that the technical point gauge does not display.
- * 2016.10.11 (v1.1.6) - Fixed the bug that happens when certain party member is removed.
+ * 2016.10.11 (v1.1.6) :
+ * - Fixed the bug that happens when certain party member is removed.
+ * - Fixed the bug that is not controlled the opacity of HUD.
  */
 
 var Imported = Imported || {};

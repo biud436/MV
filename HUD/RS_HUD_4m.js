@@ -379,7 +379,7 @@
  * 2016.10.08 (v1.1.5) - Fixed a bug that happens in battle.
  * 2016.10.11 (v1.1.6) :
  * - Fixed the bug that happens when certain party member is removed.
- * - Fixed the bug about global opacity variable.
+ * - Fixed the bug that is not controlled the opacity of HUD.
  */
 
 var Imported = Imported || {};
