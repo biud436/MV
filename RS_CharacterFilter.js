@@ -13,6 +13,10 @@
  * CHARACTER SCALE: target, (SCALE)
  * If the 'SCALE' is omitted, it will set the scale of the target to 1.
  *
+ * CHARACTER OFFSET : target, (offsetX), (offsetY)
+ * If the 'offsetX' is omitted, it will set the scale of the target to 0.
+ * If the 'offsetY' is omitted, it will set the scale of the target to 0.
+ *
  * ----------------------------------------------
  * <finish action>
  * LIGHTNING EFFECT: targets, 30
@@ -343,6 +347,20 @@ var RS = RS || {};
       if (actionArgs[1]) scale = parseFloat(actionArgs[1]);
       targets.forEach(function(target) {
         target.setFilterScale(scale);
+      }, this);
+      return true;
+    };
+
+    // CHARACTER OFFSET : target, (offsetX), (offsetY)
+    BattleManager.actionActionCharacterScale = function(actionArgs) {
+      var targets = this.makeActionTargets(actionArgs[0]);
+      if (targets.length < 1) return false;
+      var x = 0, y = 0;
+      if (actionArgs[1]) x = parseFloat(actionArgs[1]);
+      if (actionArgs[2]) y = parseFloat(actionArgs[2]);
+      targets.forEach(function(target) {
+        var offset = new Point(x, y);
+        target.setFilterOffset(offset);
       }, this);
       return true;
     };
