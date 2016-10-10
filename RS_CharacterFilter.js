@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.1) Character Filter
+ * @plugindesc (v1.0.0) Character Filter
  * @author biud436
  * @help
  * =============================================================================
@@ -17,7 +17,9 @@
  * If the 'offsetX' is omitted, it will set the scale of the target to 0.
  * If the 'offsetY' is omitted, it will set the scale of the target to 0.
  *
- * ----------------------------------------------
+ * -----------------------------------------------------------------------------
+ * Note Tags Example
+ *
  * <finish action>
  * LIGHTNING EFFECT: targets, 30
  * </finish action>
@@ -27,10 +29,44 @@
  * </finish action>
  *
  * =============================================================================
+ * Script Calls
+ * =============================================================================
+ *
+ * This code is possible to use in Script Command or Set Movement Route.
+ *
+ * -----------------------------------------------------------------------------
+ * Script Command, It looks like this
+ * -----------------------------------------------------------------------------
+ *
+ * --- Apply the Mirror Image to certain character
+ * var target = this.character(0);
+ * target.setFilterDir(2);
+ *
+ * --- Apply the Flip Image to certain character
+ * var target = this.character(0);
+ * target.setFilterDir(1);
+ *
+ * --- Apply the Lightning Effect to certain character
+ * var target = this.character(0);
+ * target.setFilterLightning(true, 15);
+ *
+ * -----------------------------------------------------------------------------
+ * For Set Movement Route, It looks like this.
+ * -----------------------------------------------------------------------------
+ *
+ * --- Apply the Mirror Image to certain character
+ * this.setFilterDir(2);
+ *
+ * --- Apply the Flip Image to certain character
+ * this.setFilterDir(1);
+ *
+ * --- Apply the Lightning Effect to certain character
+ * this.setFilterLightning(true, 15);
+ *
+ * =============================================================================
  * Change Log
  * =============================================================================
  * 2016.10.10 (v1.0.0) - First Release.
- * 2016.10.10 (v1.0.1) - Added the character filter that can use in YEP_BattleEngineCore.
  */
 
 var Imported = Imported || {};
@@ -324,6 +360,9 @@ var RS = RS || {};
       if(actionName === 'CHARACTER SCALE') {
         return this.actionActionCharacterScale(actionArgs);
       }
+      if(actionName === 'CHARACTER OFFSET') {
+        return this.actionActionCharacterOffset(actionArgs);
+      }
       return alias_BE_processActionSequence.call(this, actionName, actionArgs);
     };
 
@@ -352,7 +391,7 @@ var RS = RS || {};
     };
 
     // CHARACTER OFFSET : target, (offsetX), (offsetY)
-    BattleManager.actionActionCharacterScale = function(actionArgs) {
+    BattleManager.actionActionCharacterOffset = function(actionArgs) {
       var targets = this.makeActionTargets(actionArgs[0]);
       if (targets.length < 1) return false;
       var x = 0, y = 0;
