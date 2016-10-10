@@ -306,7 +306,7 @@ var RS = RS || {};
     if( !Graphics.isWebGL() ) return false;
     this._characterFilter = new RS.CharacterFilter();
     if(this.filters && this.filters.length >= 1) {
-      this.filters = this.filters.concat(this._characterFilter);
+      this.filters = this.filters.push(this._characterFilter);
     } else {
       this.filters = (useFilterFilter) ? [ this._characterFilter ] : [Sprite.voidFilter];
     }
@@ -314,7 +314,7 @@ var RS = RS || {};
 
   var alias_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
   Sprite_Character.prototype.updateCharacterFrame = function() {
-      if( !Graphics.isWebGL() || !$gameParty.inBattle() ) return alias_updateCharacterFrame.call(this);
+      if( !Graphics.isWebGL() ) return alias_updateCharacterFrame.call(this);
       this._characterFilter.direction = this._character.getFilterDir();
       this._characterFilter.offset = this._character.getFilterOffset();
       this._characterFilter.scale = this._character.getFilterScale();
