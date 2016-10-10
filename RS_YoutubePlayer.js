@@ -189,7 +189,7 @@ function onPlayerStateChange (event) {
       this._iframe.src = 'https://www.youtube.com/embed/%1?enablejsapi=1&version=3'.format(v);
     }
     this._iframe.style.opacity = '1';
-    this._iframe.style.zIndex = '2400';
+    this._iframe.style.zIndex = '60';
 
     if(!this._init) {
       this._firstScriptTag = document.getElementsByTagName('script')[0];

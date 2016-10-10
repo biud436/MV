@@ -1,11 +1,24 @@
 /*:
- * @plugindesc (v1.0.0) Character Filter
+ * @plugindesc (v1.0.1) Character Filter
  * @author biud436
  * @help
+ * =============================================================================
+ * Note Tags
+ * =============================================================================
+ * This note tag requires YEP_BattleEngineCore.
+ * <finish action>
+ * LIGHTNING EFFECT: target, (FRAME)
+ * </finish action>
+ * If the 'FRAME' is omitted, it will set the duration of the LIGHTNING EFFECT to 15 frames.
+ * ----------------------------------------------
+ * <finish action>
+ * LIGHTNING EFFECT: targets, 30
+ * </finish action>
  * =============================================================================
  * Change Log
  * =============================================================================
  * 2016.10.10 (v1.0.0) - First Release.
+ * 2016.10.10 (v1.0.1) - Added the character filter that can use in YEP_BattleEngineCore.
  */
 
 var Imported = Imported || {};
@@ -119,6 +132,7 @@ var RS = RS || {};
     this._filterScale = 1.0;
     this._filterDir = 0;
     this._filterLightning = 0;
+    this._filterLightningTime = 0;
   };
 
   // Set
@@ -137,7 +151,8 @@ var RS = RS || {};
     this._filterScale = value;
   };
 
-  Game_CharacterBase.prototype.setFilterLightning = function (useShake) {
+  Game_CharacterBase.prototype.setFilterLightning = function (useShake, count) {
+    this._filterLightningTime = count;
     this._filterLightning = (useShake) ? 1.0 : 0.0;
   };
 
@@ -156,7 +171,74 @@ var RS = RS || {};
   };
 
   Game_CharacterBase.prototype.getFilterLightning = function () {
-    var sPower = 1.0 * this._filterLightning;
+    if(this._filterLightningTime <= 0) {
+      this._filterLightning = 0;
+      this._filterLightningTime = 0;
+      return 0;
+    }
+    this._filterLightningTime--;
+    var sPower = 0.3 * this._filterLightning;
+    var lightningValue = (-0.5 + Math.random()) * sPower;
+    return lightningValue;
+  };
+
+  //============================================================================
+  // Game_Battler
+  //
+  //
+
+  var alias_Game_Battler_initMembers = Game_Battler.prototype.initMembers;
+  Game_Battler.prototype.initMembers = function() {
+    alias_Game_Battler_initMembers.call(this);
+    this._filterOffset = new Point( 0, 0 );
+    this._filterScale = 1.0;
+    this._filterDir = 0;
+    this._filterLightning = 0;
+    this._filterLightningTime = 0;
+  };
+
+  // Set
+
+  Game_Battler.prototype.setFilterDir = function (value) {
+    this._filterDir = value;
+  };
+
+  Game_Battler.prototype.setFilterOffset = function (value) {
+    if(typeof(offset) === 'object' && offset instanceof Point) {
+      this._filterOffset = offset;
+    }
+  };
+
+  Game_Battler.prototype.setFilterScale = function (value) {
+    this._filterScale = value;
+  };
+
+  Game_Battler.prototype.setFilterLightning = function (useShake, count) {
+    this._filterLightningTime = count;
+    this._filterLightning = (useShake) ? 1.0 : 0.0;
+  };
+
+  // Get
+
+  Game_Battler.prototype.getFilterDir = function () {
+    return this._filterDir;
+  };
+
+  Game_Battler.prototype.getFilterOffset = function () {
+    return this._filterOffset;
+  };
+
+  Game_Battler.prototype.getFilterScale = function () {
+    return this._filterScale;
+  };
+
+  Game_Battler.prototype.getFilterLightning = function () {
+    if(this._filterLightningTime <= 0) {
+      this._filterLightningTime = 0;
+      return 0;
+    }
+    this._filterLightningTime--;
+    var sPower = 0.3 * this._filterLightning;
     var lightningValue = (-0.5 + Math.random()) * sPower;
     return lightningValue;
   };
@@ -180,12 +262,68 @@ var RS = RS || {};
 
   var alias_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
   Sprite_Character.prototype.updateCharacterFrame = function() {
-      if( !Graphics.isWebGL() ) return alias_updateCharacterFrame.call(this);;
+      if( !Graphics.isWebGL() || !$gameParty.inBattle() ) return alias_updateCharacterFrame.call(this);
       this._characterFilter.direction = this._character.getFilterDir();
       this._characterFilter.offset = this._character.getFilterOffset();
       this._characterFilter.scale = this._character.getFilterScale();
       this._characterFilter.lightning = this._character.getFilterLightning();
       alias_updateCharacterFrame.call(this);
   };
+
+  //============================================================================
+  // Sprite_Battler
+  //
+  //
+
+  var alias_Sprite_Battler_initialize = Sprite_Battler.prototype.initialize;
+  Sprite_Battler.prototype.initialize = function(battler) {
+    alias_Sprite_Battler_initialize.call(this, battler);
+    this.createBattlerFilter();
+  };
+
+  Sprite_Battler.prototype.createBattlerFilter = function () {
+    if( !Graphics.isWebGL() ) return false;
+    this._battlerFilter = new RS.CharacterFilter();
+    this.filters = (useFilterFilter) ? [ this._battlerFilter ] : [Sprite.voidFilter];
+  };
+
+  var alias_Sprite_Battler_update = Sprite_Battler.prototype.update;
+  Sprite_Battler.prototype.update = function() {
+    alias_Sprite_Battler_update.call(this);
+    if(this._battler && Graphics.isWebGL() && $gameParty.inBattle() ) {
+      this._battlerFilter.direction = this._battler.getFilterDir();
+      this._battlerFilter.offset = this._battler.getFilterOffset();
+      this._battlerFilter.scale = this._battler.getFilterScale();
+      this._battlerFilter.lightning = this._battler.getFilterLightning();
+    }
+  };
+
+  //============================================================================
+  // YEP_BattleEngineCore - Action Sequence Pack
+  //
+  //
+  if(Imported.YEP_BattleEngineCore) {
+
+    var alias_BE_processActionSequence = BattleManager.processActionSequence;
+    BattleManager.processActionSequence = function(actionName, actionArgs) {
+      if(actionName === 'LIGHTNING EFFECT') {
+        return this.actionActionLightningEffect(actionArgs);
+      }
+      return alias_BE_processActionSequence.call(this, actionName, actionArgs);
+    };
+
+    // LIGHTNING EFFECT : target, (sec)
+    BattleManager.actionActionLightningEffect = function(actionArgs) {
+      var targets = this.makeActionTargets(actionArgs[0]);
+      if (targets.length < 1) return false;
+      var frame = 15;
+      if (actionArgs[1]) frame = parseInt(actionArgs[1]);
+      targets.forEach(function(target) {
+        target.setFilterLightning(true, frame);
+      }, this);
+      return true;
+    };
+
+  }
 
 })();
