@@ -14,8 +14,8 @@
  * If the 'SCALE' is omitted, it will set the scale of the target to 1.
  *
  * CHARACTER OFFSET : target, (offsetX), (offsetY)
- * If the 'offsetX' is omitted, it will set the scale of the target to 0.
- * If the 'offsetY' is omitted, it will set the scale of the target to 0.
+ * If the 'offsetX' is omitted, it will set the offset of the target to 0.
+ * If the 'offsetY' is omitted, it will set the offset of the target to 0.
  *
  * -----------------------------------------------------------------------------
  * Note Tags Example
@@ -305,7 +305,11 @@ var RS = RS || {};
   Sprite_Character.prototype.createCharacterFilter = function () {
     if( !Graphics.isWebGL() ) return false;
     this._characterFilter = new RS.CharacterFilter();
-    this.filters = (useFilterFilter) ? [ this._characterFilter ] : [Sprite.voidFilter];
+    if(this.filters && this.filters.length >= 1) {
+      this.filters = this.filters.concat(this._characterFilter);
+    } else {
+      this.filters = (useFilterFilter) ? [ this._characterFilter ] : [Sprite.voidFilter];
+    }
   };
 
   var alias_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
