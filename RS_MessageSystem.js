@@ -1,6 +1,6 @@
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.1) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.2) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 폰트 사이즈
@@ -148,6 +148,7 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2016.10.12 (v0.1.2) - 규격에 맞지 않는 캐릭터도 이제 말풍선이 제대로 표시됩니다.
  * 2016.09.19 (v0.1.1) - 정렬자 기능 개선
  * 2016.06.18 (v0.1.0) - 이름 윈도우 후면에 스프라이트가 그려지지 않는 문제를 수정했습니다
  * 2016.03.21 (v0.0.9) - \t (탭), \r (캐리지 리턴) 추가
@@ -160,25 +161,16 @@
  * 2015.12.02 (v0.0.2) - 큰 페이스칩 기능 추가
  * 2015.12.01 (v0.0.1) - 최초 작성
  */
+
 var Imported = Imported || {};
 Imported.RS_MessageSystem = true;
 
-/**
- * @namespace RS
- */
 var RS = RS || {};
 
-/**
- * @class RS.Window_Name
- * @constructor
- */
 RS.Window_Name = function() {
     this.initialize.apply(this, arguments);
 };
 
-/**
- * @namespace Color
- */
 var Color = Color || {};
 
 (function () {
@@ -193,155 +185,34 @@ var Color = Color || {};
   RS.__textSpeed = Number(parameters['텍스트 속도'] || 0);
   RS.__minFontSize = Number(parameters['폰트 최소 크기'] || 24);
   RS.__maxFontSize = Number(parameters['폰트 최대 크기'] || 96);
-
-  /**
-   * 텍스트 시작 X
-   * @memberOf RS
-   * @property __textStartX
-   * @type Number
-   */
   RS.__textStartX = Number(parameters['텍스트 시작 X'] || 192);
-
-  /**
-   * 페이스칩이 설정되어있을 때 텍스트의 시작 지점
-   * @memberOf RS
-   * @property __faceStartOriginX
-   * @type Number
-   */
   RS.__faceStartOriginX = 168;
-
-  /**
-   * 표시 할 라인의 수
-   * @memberOf RS
-   * @property __numVisibleRows
-   * @type Number
-   */
   RS.__numVisibleRows  = Number(parameters['numVisibleRows'] || 4);
-
-  /**
-   * 그레디언트 텍스트 시작 색상
-   * @memberOf RS
-   * @property __gradientColor1
-   * @type String
-   */
   RS.__gradientColor1 = String(parameters['gradientColor1'] || '#FFFFFF');
-
-  /**
-   * 그레디언트 텍스트 중간 색상
-   * @memberOf RS
-   * @property __gradientColor1
-   * @type String
-   */
   RS.__gradientColor2 = String(parameters['gradientColor2'] || '#F29661');
-
-  /**
-   * 그레디언트 텍스트 끝 색상
-   * @memberOf RS
-   * @property __gradientColor1
-   * @type String
-   */
   RS.__gradientColor3 = String(parameters['gradientColor3'] || '#CC3D3D');
-
-  /**
-   * 이름 윈도우 X
-   * @memberOf RS
-   * @property __nameWindowX
-   * @type Number
-   */
   RS.__nameWindowX = Number(parameters['이름 윈도우 X'] || 0);
-
-  /**
-   * 이름 윈도우 Y
-   * @private
-   * @memberOf RS
-   * @property __nameWindowX
-   * @type Number
-   */
   RS.__nameWindowY = Number(parameters['이름 윈도우 Y'] || 0);
-
-  /**
-   * 이름 윈도우 안쪽 여백
-   * @private
-   * @memberOf RS
-   * @property __nameWindowStdPadding
-   * @type Number
-   */
   RS.__nameWindowStdPadding = Number(parameters['이름 윈도우 안쪽 여백'] || 18);
-
-  /**
-   * 큰 페이스칩 OX
-   * @private
-   * @memberOf RS
-   * @property __faceOX
-   * @type Number
-   */
   RS.__faceOX = Number(parameters['큰 페이스칩 OX'] || 0);
-
-  /**
-   * 큰 페이스칩 OY
-   * @private
-   * @memberOf RS
-   * @property __faceOY
-   * @type Number
-   */
   RS.__faceOY = Number(parameters['큰 페이스칩 OY'] || 0);
-
-  /**
-   * 큰 페이스칩 사이드에 표시
-   * @private
-   * @memberOf RS
-   * @property __faceSide
-   * @type Boolean
-   */
   RS.__faceSide = Boolean(parameters['큰 페이스칩 뒷면 표시'] === 'true'|| false);
-
-  /**
-   * 말풍선의 폰트사이즈
-   * @memberOf RS
-   * @property __FONT_SIZE
-   * @type Number
-   */
   RS.__FONT_SIZE = 28;
-
-  /**
-   * 말풍선의 안쪽 여백
-   * @memberOf RS
-   * @property __STD_PADDING
-   * @type Number
-   */
   RS.__STD_PADDING = 18;
-
-  /**
-   * 말풍선의 폭
-   * @memberOf RS
-   * @property __WIDTH
-   * @type Number
-   */
   RS.__WIDTH = (RS.__FONT_SIZE * 6) + RS.__STD_PADDING;
-
-  /**
-   * 말풍선의 높이
-   * @memberOf RS
-   * @property __HEIGHT
-   * @type Number
-   */
   RS.__HEIGHT = RS.__FONT_SIZE + (RS.__STD_PADDING / 2);
-
-  /**
-   * 탭 크기
-   * @memberOf RS
-   * @property __TabSize
-   * @type Number
-   */
   RS.__TabSize = Number(parameters['탭 크기'] || 4);
+
+ //=============================================================================
+ // Color
+ //=============================================================================
 
   /**
    * int 형 정수값에서 CSS 색상 코드를 취득합니다
    * @static
-   * @memberOf Color
    * @method getColor
-   * @param n {Number} 정수값
-   * @returns {Number}
+   * @param {Number} n 정수값
+   * @returns {Number} n
    */
   Color.getColor = function(n) {
       var r = (n) & 255;
@@ -349,35 +220,14 @@ var Color = Color || {};
       var b = (n >> 16) & 255;
       var result = 'rgba(%1,%2,%3,1)'.format(r,g,b);
       return result;
-  }
+  };
 
-  /**
-   * @static
-   * @memberOf Color
-   * @property baseColor
-   * @type String
-   */
   Color.baseColor = Color.getColor(16777215);
 
-  /**
-   * 기본 색상을 취득합니다.
-   * @static
-   * @memberOf Color
-   * @method getBaseColor
-   * @returns {Color.baseColor}
-   */
   Color.getBaseColor = function() {
       return Color.baseColor;
-  }
+  };
 
-  /**
-   * 색상값을 int에서 javascript color로
-   * @static
-   * @memberOf Color
-   * @method gmColor
-   * @param string {String}
-   * @returns {Color.getColor|String}
-   */
   Color.gmColor = function(string) {
       switch(string) {
       case '청록': case '청록색': case 'c_aqua':
@@ -423,19 +273,12 @@ var Color = Color || {};
       default:
         return string;
       }
-  }
+  };
 
-  /**
-   * @class Window_Base
-   */
+  //============================================================================
+  // Window_Base
+  //============================================================================
 
-  /**
-   * 이스케이프 코드를 취득합니다
-   * @memberOf Window_Base
-   * @method obtainEscapeCode
-   * @param textState {textState} 텍스트 상태
-   * @returns {String}
-   */
   Window_Base.prototype.obtainEscapeCode = function(textState) {
       textState.index++;
       var regExp = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[가-핳]+[!]*/i;
@@ -448,13 +291,6 @@ var Color = Color || {};
       }
   };
 
-  /**
-   * 텍스트 코드 추출( 글자 색상 변경 )
-   * @memberOf Window_Base
-   * @method obtainNameColor
-   * @param textState {textState} 텍스트 상태
-   * @returns {Color.gmColor|String}
-   */
   Window_Base.prototype.obtainNameColor = function(textState) {
       var arr = /\[(.+?)\]/gi.exec(textState.text.slice(textState.index));
       if (arr) {
@@ -465,13 +301,6 @@ var Color = Color || {};
       }
   };
 
-  /**
-   * 이스케이프 코드값을 읽고 관련 명령 처리
-   * @memberOf Window_Base
-   * @method processEscapeCharacter
-   * @param code {Number} 텍스트 코드
-   * @param textState {textState} 텍스트 상태
-   */
   Window_Base.prototype.processEscapeCharacter = function(code, textState) {
       switch (code) {
       case 'C':
@@ -508,32 +337,18 @@ var Color = Color || {};
       }.bind(this));
   };
 
-  /**
-   * @memberOf Window_Base
-   * @method makeFontSmaller
-   */
   Window_Base.prototype.makeFontSmaller = function() {
       if (this.contents.fontSize >= RS.__minFontSize) {
           this.contents.fontSize -= 12;
       }
   };
 
-  /**
-   * @memberOf Window_Base
-   * @method makeFontBigger
-   */
   Window_Base.prototype.makeFontBigger = function() {
       if (this.contents.fontSize <= RS.__maxFontSize) {
           this.contents.fontSize += 12;
       }
   };
 
-   /**
-   * @memberOf Window_Base
-   * @method convertEscapeCharacters
-   * @param text {String}
-   * @return text {String}
-   */
   var alias_Window_Base_convertEscapeCharacters = Window_Base.prototype.convertEscapeCharacters;
   Window_Base.prototype.convertEscapeCharacters = function(text) {
       text = alias_Window_Base_convertEscapeCharacters.call(this, text);
@@ -556,31 +371,31 @@ var Color = Color || {};
       return text;
   };
 
-  /**
-   * @class Bitmap.prototype
-   */
+  //============================================================================
+   // Bitmap
+  //============================================================================
 
   /**
    * 윈도우 스킨 로딩이 완료되면 기본 색상 설정
    * @constructs Bitmap
-   * @param width {Number}  폭
-   * @param height {Number} 높이
+   * @param {Number} width 폭
+   * @param {Number} height 높이
    */
   var alias_Bitmap_initialize = Bitmap.prototype.initialize;
   Bitmap.prototype.initialize = function(width, height) {
       alias_Bitmap_initialize.call(this, width, height);
       this.fontBold = false;
       this.fontGradient = false;
-  }
+  };
+
   /**
    * 그레디언트 설정
-   * @memberOf Bitmap
    * @method setGradient
-   * @param tWidth {Number} 텍스트의 폭을 지정하세요
-   * @param color1 {String} 시작 색상
-   * @param color2 {String} 중간 색상
-   * @param color3 {String} 끝 색상
-   * @return fillStyle {Object} 선형 그레디언트 객체를 반환합니다
+   * @param {Number} tWidth 텍스트의 폭을 지정하세요
+   * @param {String} color1 시작 색상
+   * @param {String} color2 중간 색상
+   * @param {String} color3 끝 색상
+   * @return {Object} fillStyle 선형 그레디언트 객체를 반환합니다
    */
   Bitmap.prototype.setGradient = function(tWidth, color1, color2, color3) {
       var context = this._context;
@@ -593,10 +408,8 @@ var Color = Color || {};
 
   /**
    * 폰트 정보 설정
-   * @private
-   * @memberOf Bitmap
    * @method _makeFontNameText
-   * @return {String}
+   * @return {String} fontName
    */
   Bitmap.prototype._makeFontNameText = function() {
       return (this.fontItalic ? 'Italic ' : '') + (this.fontBold ? 'bold ' : '') +
@@ -605,13 +418,11 @@ var Color = Color || {};
 
   /**
    * 텍스트 묘화
-   * @private
-   * @memberOf Bitmap
    * @method _drawTextBody
-   * @param text {String} 텍스트
-   * @param tx {Number} 텍스트의 x좌표
-   * @param ty {Number} 텍스트의 y좌표
-   * @param maxWidth {Number} 최대 폭
+   * @param {String} text 텍스트
+   * @param {Number} tx 텍스트의 x좌표
+   * @param {Number} ty 텍스트의 y좌표
+   * @param {Number} maxWidth 최대 폭
    */
   Bitmap.prototype._drawTextBody = function(text, tx, ty, maxWidth) {
       var context = this._context;
@@ -628,15 +439,10 @@ var Color = Color || {};
       context.fillStyle = this.textColor;
   };
 
-  /**
-   * @class Game_Message
-   */
+  //============================================================================
+   // Game_Message
+  //============================================================================
 
-  /**
-   * 게임 메시지 초기화
-   * @memberOf Game_Message
-   * @method clear
-   */
   var alias_Game_Message_clear = Game_Message.prototype.clear;
   Game_Message.prototype.clear = function() {
       alias_Game_Message_clear.call(this);
@@ -644,12 +450,13 @@ var Color = Color || {};
       this._gradientText = '';
       this._balloon = -2;
       this._align = 0;
-  }
+      this._balloonPatternHeight = 0;
+  };
 
   /**
    * 대기 설정
-   * @memberOf Game_Message
    * @method setWaitTime
+   * @param {Number} time 대기 시간을 프레임 단위로 설정합니다.
    */
   Game_Message.prototype.setWaitTime = function(time) {
     this._waitTime = time;
@@ -657,9 +464,8 @@ var Color = Color || {};
 
   /**
    * 그레디언트 텍스트 설정 함수입니다.
-   * @memberOf Game_Message
    * @method setGradientText
-   * @param text {String} 그레디언트로 그릴 텍스트를 설정합니다.
+   * @param {String} text 그레디언트로 그릴 텍스트를 설정합니다.
    */
   Game_Message.prototype.setGradientText = function(text) {
       this._gradientText = text;
@@ -667,89 +473,97 @@ var Color = Color || {};
 
   /**
    * 대기 시간을 반환합니다.
-   * @memberOf Game_Message
    * @method getWaitTime
-   * @return {Number}
+   * @return {Number} _waitTime
    */
   Game_Message.prototype.getWaitTime = function() {
       return this._waitTime || 0;
   };
 
-  /**
-   * 그레디언트 텍스트를 반환합니다.
-   * @memberOf Game_Message
-   * @method getWaitTime
-   * @return {String}
-   */
   Game_Message.prototype.getGradientText = function() {
       return this._gradientText;
   };
 
-  /**
-   * @memberOf Game_Message
-   * @method getMaxLine
-   * @return {Number}
-   */
   Game_Message.prototype.getMaxLine = function() {
       return this._maxLine;
   };
 
-  /**
-   * @memberOf Game_Message
-   * @method setMaxLine
-   * @param n {Number}
-   */
   Game_Message.prototype.setMaxLine = function(n) {
       this._maxLine = RS.__numVisibleRows = n;
   };
 
-  /**
-   * @memberOf Game_Message
-   * @method setBalloon
-   * @param n {Number}
-   */
   Game_Message.prototype.setBalloon = function(n) {
       this._balloon = n;
   };
 
-  /**
-   * @memberOf Game_Message
-   * @method setBalloon
-   * @param n {Number}
-   */
   Game_Message.prototype.getBalloon = function(n) {
       return this._balloon;
   };
 
-  /**
-   * @memberOf Game_Message
-   * @method setAlign
-   * @param n {Number}
-   */
   Game_Message.prototype.setAlign = function(n) {
      this._align = n;
-  }
+  };
 
-  /**
-   * @memberOf Game_Message
-   * @method getAlign
-   * @param n {Number}
-   */
   Game_Message.prototype.getAlign = function(n) {
      return this._align;
-  }
+  };
 
-  /**
-   * @class Window_Message
-   */
+  Game_Message.prototype.getSpriteCharacter = function(owner) {
+    var target, spriteItem = [];
+    var scene = SceneManager._scene;
+    if( (scene instanceof Scene_Map) ) {
+      target = scene._spriteset;
+      spriteItem = target._characterSprites.filter(function(i) {
+        return i._character === owner;
+      }, this);
+    }
+    return spriteItem[0];
+  };
 
-  /**
-   * 텍스트 코드 추출( 글자 색상 변경 )
-   * @memberOf Window_Message
-   * @method obtainTextSpeed
-   * @param textState {textState}
-   * @return {Number}
-   */
+  Game_Message.prototype.getBattleEnemySprite = function (id) {
+    var target, spriteItem = [];
+    var scene = SceneManager._scene;
+    if( (scene instanceof Scene_Battle) ) {
+      target = scene._spriteset;
+      spriteItem = target._enemySprites;
+    }
+    if(spriteItem[id]) return spriteItem[id];
+  };
+
+  Game_Message.prototype.getBattleActorSprite = function (id) {
+    var target, spriteItem = [];
+    var scene = SceneManager._scene;
+    if( (scene instanceof Scene_Battle) ) {
+      target = scene._spriteset;
+      spriteItem = target._actorSprites;
+    }
+    if(spriteItem[id]) return spriteItem[id];
+  };
+
+  Game_Message.prototype.setBalloonPatternHeight = function (value) {
+    this._balloonPatternHeight = value;
+  };
+
+  Game_Message.prototype.getBalloonPatternHeight = function () {
+    return this._balloonPatternHeight;
+  };
+
+  //============================================================================
+   // Sprite_Battler
+  //============================================================================
+
+  Sprite_Battler.prototype.screenX = function() {
+    return this.x || 0;
+  };
+
+  Sprite_Battler.prototype.screenY = function() {
+    return this.y || 0;
+  };
+
+  //============================================================================
+   // Window_Message
+  //============================================================================
+
   Window_Message.prototype.obtainTextSpeed = function(textState) {
       var arr = /\[(\d+)\]/.exec(textState.text.slice(textState.index));
       if (arr) {
@@ -761,14 +575,6 @@ var Color = Color || {};
       }
   };
 
-
-  /**
-   * 텍스트 추출( 그레디언트 설정 )
-   * @memberOf Window_Message
-   * @method obtainGradientText
-   * @param textState {textState}
-   * @return {String}
-   */
   Window_Message.prototype.obtainGradientText = function(textState) {
       var arr = /^<(.+)>/.exec(textState.text.slice(textState.index));
       if (arr) {
@@ -779,13 +585,6 @@ var Color = Color || {};
       }
   };
 
-  /**
-   * 이스케이프 코드 추가 정의
-   * @memberOf Window_Message
-   * @method processEscapeCharacter
-   * @param code {Number} 텍스트 코드
-   * @param textState {textState} 텍스트 상태
-   */
   var alias_Window_Message_processEscapeCharacter = Window_Message.prototype.processEscapeCharacter;
   Window_Message.prototype.processEscapeCharacter = function(code, textState) {
 
@@ -828,10 +627,9 @@ var Color = Color || {};
 
    /**
    * 데이터베이스 항목의 이름을 반환합니다.
-   * @memberOf Window_Message
    * @method getDBData
-   * @param ev {Array}
-   * @return text {String}
+   * @param {Array} ev
+   * @return {String} text
    */
   Window_Message.prototype.getDBData = function(ev) {
     try {
@@ -841,66 +639,35 @@ var Color = Color || {};
     }
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method setTextItalic
-   * @param value {Boolean}
-   */
   Window_Message.prototype.setTextItalic = function() {
       this.contents.fontItalic = arguments[0];
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method setTextBold
-   * @param value {Boolean}
-   */
   Window_Message.prototype.setTextBold = function() {
       this.contents.fontBold = arguments[0];
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method setTextSize
-   * @param value {Number}
-   */
   Window_Message.prototype.setTextSize = function() {
       this.contents.fontSize = arguments[0];
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method setStrokeWidth
-   * @param value {Number}
-   */
   Window_Message.prototype.setStrokeWidth = function() {
       this.contents.outlineWidth = arguments[0];
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method setStrokeColor
-   * @param value {String}
-   */
   Window_Message.prototype.setStrokeColor = function() {
       this.contents.outlineColor = arguments[0];
   };
 
   /**
-   * @memberOf Window_Message
+   * 들여쓰기
    * @method setTextIndent
-   * @param value {Number}
+   * @param {Number} value
    */
   Window_Message.prototype.setTextIndent = function(textState) {
       textState.x += this.obtainEscapeParam(textState);
   };
 
-  /**
-   * 텍스트를 그레디언트로 채색합니다.
-   * @memberOf Window_Message
-   * @method setGradientText
-   * @param textState {textState} 텍스트 상태
-   */
   Window_Message.prototype.setTextGradient = function(textState) {
       this.contents.fontGradient = true;
       $gameMessage.setGradientText(this.obtainGradientText(textState));
@@ -911,11 +678,6 @@ var Color = Color || {};
       this.contents.fontGradient = false;
   };
 
-  /**
-   * 폰트를 초기화합니다
-   * @memberOf Window_Message
-   * @method resetFontSettings
-   */
   Window_Message.prototype.resetFontSettings = function() {
       Window_Base.prototype.resetFontSettings.call(this);
       this.contents.fontBold = false;
@@ -926,41 +688,19 @@ var Color = Color || {};
       $gameMessage.setWaitTime(RS.__textSpeed);
   };
 
-  /**
-   * 기본 폰트 크기를 반환합니다.
-   * @memberOf Window_Message
-   * @method standardFontSize
-   * @return {Number}
-   */
   Window_Message.prototype.standardFontSize = function() {
       return RS.__fontSize;
   };
 
-  /**
-   * 메시지 시스템의 최대 라인 수를 반환합니다.
-   * @memberOf Window_Message
-   * @method numVisibleRows
-   * @return {Number}
-   */
   Window_Message.prototype.numVisibleRows = function() {
       return RS.__numVisibleRows;
   };
 
-  /**
-   * 기본 폰트 크기를 반환합니다.
-   * @memberOf Window_Message
-   * @method processNormalCharacter
-   * @param textState {textState} 텍스트 상태
-   */
   Window_Message.prototype.processNormalCharacter = function(textState) {
       Window_Base.prototype.processNormalCharacter.call(this, textState);
       !this._showFast && this.startWait($gameMessage.getWaitTime() || 0);
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method createSubWindows
-   */
   var alias_Window_Message_createSubWindows = Window_Message.prototype.createSubWindows;
   Window_Message.prototype.createSubWindows = function() {
       alias_Window_Message_createSubWindows.call(this);
@@ -968,29 +708,21 @@ var Color = Color || {};
       this.updateNameWindow();
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method subWindows
-   */
   Window_Message.prototype.subWindows = function() {
     return [this._goldWindow, this._choiceWindow,
             this._numberWindow, this._itemWindow, this._nameWindow];
   };
 
-Window_Message.prototype.updatePlacement = function() {
-    this._positionType = $gameMessage.positionType();
-    if($gameMessage.getBalloon() === -2) {
-      this.y = this._positionType * (Graphics.boxHeight - this.height) / 2;
-    } else {
-      this.updateBalloonPosition();
-    }
-    this._goldWindow.y = this.y > 0 ? 0 : Graphics.boxHeight - this._goldWindow.height;
-};
+  Window_Message.prototype.updatePlacement = function() {
+      this._positionType = $gameMessage.positionType();
+      if($gameMessage.getBalloon() === -2) {
+        this.y = this._positionType * (Graphics.boxHeight - this.height) / 2;
+      } else {
+        this.updateBalloonPosition();
+      }
+      this._goldWindow.y = this.y > 0 ? 0 : Graphics.boxHeight - this._goldWindow.height;
+  };
 
-  /**
-   * @memberOf Window_Message
-   * @method updatePlacement
-   */
   var alias_Window_Message_updatePlacement = Window_Message.prototype.updatePlacement;
   Window_Message.prototype.updatePlacement = function() {
       alias_Window_Message_updatePlacement.call(this);
@@ -999,12 +731,6 @@ Window_Message.prototype.updatePlacement = function() {
       }
   };
 
-   /**
-   * @memberOf Window_Message
-   * @method convertEscapeCharacters
-   * @param text {String}
-   * @return text {String}
-   */
   var alias_Window_Message_convertEscapeCharacters = Window_Message.prototype.convertEscapeCharacters;
   Window_Message.prototype.convertEscapeCharacters = function(text) {
       text = alias_Window_Message_convertEscapeCharacters.call(this, text);
@@ -1023,21 +749,12 @@ Window_Message.prototype.updatePlacement = function() {
       return text;
   };
 
-   /**
-   * @memberOf Window_Message
-   * @method terminateMessage
-   */
   var alias_Window_Message_terminateMessage = Window_Message.prototype.terminateMessage;
   Window_Message.prototype.terminateMessage = function() {
       this._nameWindow.close();
       alias_Window_Message_terminateMessage.call(this);
   };
 
-   /**
-   * @memberOf Window_Message
-   * @method setHeight
-   * @param n {Number}
-   */
   Window_Message.prototype.setHeight = function(n) {
     this.contents.clear();
     $gameMessage.setMaxLine(n);
@@ -1047,10 +764,6 @@ Window_Message.prototype.updatePlacement = function() {
     this.updateNameWindow();
   };
 
-   /**
-   * @memberOf Window_Message
-   * @methods updateNameWindow
-   */
   Window_Message.prototype.updateNameWindow = function() {
       var self = this;
       this._nameWindow.x = this.x + this.newLineX() + RS.__nameWindowX;
@@ -1062,10 +775,6 @@ Window_Message.prototype.updatePlacement = function() {
       }
   };
 
-   /**
-   * @memberOf Window_Message
-   * @constructor Window_Message
-   */
   var alias_Window_Message_initialize = Window_Message.prototype.initialize;
   Window_Message.prototype.initialize = function() {
     alias_Window_Message_initialize.call(this);
@@ -1074,21 +783,10 @@ Window_Message.prototype.updatePlacement = function() {
     this.createNewContents();
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method needsNewPage
-   * @param textState {textState}
-   */
   Window_Message.prototype.needsNewPage = function(textState) {
-      return (!this.isEndOfText(textState) &&
-              textState.y + textState.height > this.contentsHeight());
+      return (!this.isEndOfText(textState) && textState.y + textState.height > this.contentsHeight());
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method createNewContents
-   * @return sprite {Sprite}
-   */
   Window_Message.prototype.createNewContents = function() {
     this._newContents = new Sprite();
     this._newContents.x = 0;
@@ -1097,21 +795,10 @@ Window_Message.prototype.updatePlacement = function() {
     return this._newContents;
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method removeNewContents
-   */
   Window_Message.prototype.removeNewContents = function() {
-    if(this._newContents) {
-      this.removeChild(this._newContents);
-    }
+    if(this._newContents) this.removeChild(this._newContents);
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method newLineX
-   * @return {Number}
-   */
   Window_Message.prototype.newLineX = function() {
       if(/^Big_/i.exec( $gameMessage.faceName() ) ) {
         return ($gameMessage.faceIndex() > 0) ? 0 : RS.__textStartX;
@@ -1120,11 +807,6 @@ Window_Message.prototype.updatePlacement = function() {
       }
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method setBigFace
-   * @param faceName {String}
-   */
   Window_Message.prototype.drawBigFace = function(faceName) {
       this._newContents.bitmap = ImageManager.loadFace(faceName);
       this._newContents.y = (Graphics.boxHeight - this._faceBitmap.height) - this.y + RS.__faceOY;
@@ -1137,10 +819,6 @@ Window_Message.prototype.updatePlacement = function() {
 
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method drawMessageFace
-   */
   Window_Message.prototype.drawMessageFace = function() {
       if(/^Big_/i.exec( $gameMessage.faceName() ) ) {
         this.drawBigFace($gameMessage.faceName());
@@ -1149,27 +827,17 @@ Window_Message.prototype.updatePlacement = function() {
       }
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method newPage
-   * @param textState {textState}
-   */
   var alias_Window_Message_newPage = Window_Message.prototype.newPage;
   Window_Message.prototype.newPage = function(textState) {
 
-      if(this.parent && RS.__faceSide) {
-        this.setChildIndex(this._newContents, 0);
-      }
-
-      if(this._newContents.bitmap) { this._newContents.bitmap = null; }
-      this.openBalloon($gameMessage.getBalloon());
-      alias_Window_Message_newPage.call(this, textState);
+      // 부모 오브젝트가 있고, 설정이 참이라면, 큰 페이스칩을 뒷면에 표시한다.
+      if(this.parent && RS.__faceSide) this.setChildIndex( this._newContents, 0 );
+      // 큰 페이스칩이 이미 설정되어있으면 메모리에서 제거한다.
+      if(this._newContents.bitmap) this._newContents.bitmap = null;
+      this.openBalloon( $gameMessage.getBalloon() );
+      alias_Window_Message_newPage.call( this, textState );
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method startMessage
-   */
   Window_Message.prototype.startMessage = function() {
       this._textState = {};
       this._textState.index = 0;
@@ -1189,11 +857,6 @@ Window_Message.prototype.updatePlacement = function() {
     this.startWait(1);
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method openBalloon
-   * @param sign {Number}
-   */
   Window_Message.prototype.openBalloon = function(sign) {
 
     if(sign === -2) {
@@ -1203,12 +866,9 @@ Window_Message.prototype.updatePlacement = function() {
 
     this.setupOwner(sign);
     this.updateBalloonPosition();
+
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method resizeMessageSystem
-   */
   Window_Message.prototype.resizeMessageSystem = function() {
 
       var n = $gameMessage.positionType();
@@ -1222,11 +882,6 @@ Window_Message.prototype.updatePlacement = function() {
 
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method textProcessing
-   * @param text {String}
-   */
   Window_Message.prototype.textProcessing = function(text) {
     text = text.replace(/\\/g, '\x1b');
     text = text.replace(/\x1b\x1b/g, '\\');
@@ -1272,12 +927,6 @@ Window_Message.prototype.updatePlacement = function() {
     return text;
   };
 
-  /**
-   * @memberOf Window_Message
-   * 2016.03.01 - 말풍선 모드 페이스칩 대응
-   * @method calcBalloonRect
-   * @param text {String}
-   */
   Window_Message.prototype.calcBalloonRect = function(text) {
       var temp = text;
       var tempText = this.textProcessing(temp);
@@ -1295,10 +944,6 @@ Window_Message.prototype.updatePlacement = function() {
       this._bHeight = height;
   };
 
-  /**
-   * @memberOf Window_Message
-   * @method updateBalloonPosition
-   */
   Window_Message.prototype.updateBalloonPosition = function() {
 
       // -2 라면 이 함수를 처리하지 않습니다.
@@ -1316,9 +961,9 @@ Window_Message.prototype.updatePlacement = function() {
       // this._bWidth = this._bWidth.clamp(RS.__WIDTH, Graphics.boxWidth - RS.__WIDTH);
       // this._bHeight = this._bHeight.clamp(RS.__HEIGHT, Graphics.boxHeight - RS.__HEIGHT);
 
+      tileHeight = $gameMessage.getBalloonPatternHeight();
       dx =  mx - (this._bWidth / 2);
-      dy =  my - this._bHeight - $gameMap.tileHeight();
-      tileHeight = $gameMap.tileHeight();
+      dy =  my - this._bHeight - tileHeight;
 
       if(mx - (this._bWidth / 2) <= 0) {
         dx = 0;
@@ -1385,6 +1030,7 @@ Window_Message.prototype.updatePlacement = function() {
       }
       sprite.setFrame(sx+x*p, sy+y*p, p, p);
       sprite.visible = this.isOpen();
+
   };
 
    /**
@@ -1407,15 +1053,10 @@ Window_Message.prototype.updatePlacement = function() {
 
   };
 
-  /**
-   * @class Game_Interpreter
-   */
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
 
-  /**
-   * Show Text
-   * @memberOf Game_Interpreter
-   * @method command101
-   */
   Game_Interpreter.prototype.command101 = function() {
       if (!$gameMessage.isBusy()) {
           $gameMap.setMsgEvent(this.character((this._eventId > 0) ? 0 : -1));
@@ -1452,10 +1093,6 @@ Window_Message.prototype.updatePlacement = function() {
       return false;
   };
 
-  /**
-   * @memberOf Game_Interpreter
-   * @method multiLineAddMessage
-   */
   Game_Interpreter.prototype.multiLineAddMessage = function() {
 
       this.initLineHeight();
@@ -1472,26 +1109,14 @@ Window_Message.prototype.updatePlacement = function() {
         }
   };
 
-  /**
-   * @memberOf Game_Interpreter
-   * @method initLineHeight
-   */
   Game_Interpreter.prototype.initLineHeight = function() {
       this._lineHeight = 0;
   };
 
-  /**
-   * @memberOf Game_Interpreter
-   * @method isMultiLine
-   */
   Game_Interpreter.prototype.isMultiLine = function() {
       return $gameMessage.getMaxLine() > 4;
   };
 
-  /**
-   * @memberOf Game_Interpreter
-   * @method addLineHeight
-   */
   Game_Interpreter.prototype.addLineHeight = function() {
       this._lineHeight++;
       if(this.nextEventCode() === 101) {
@@ -1499,18 +1124,13 @@ Window_Message.prototype.updatePlacement = function() {
       }
   };
 
+  //============================================================================
+  // RS.Window_Name
+  //============================================================================
 
-  /**
-   * @class RS.Window_Name
-   * @constructor
-   */
   RS.Window_Name.prototype = Object.create(Window_Base.prototype);
   RS.Window_Name.prototype.constructor = RS.Window_Name;
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method initialize
-   */
   RS.Window_Name.prototype.initialize = function() {
       var width = this.windowWidth();
       var height = this.windowHeight();
@@ -1522,38 +1142,22 @@ Window_Message.prototype.updatePlacement = function() {
 
   };
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method windowWidth
-   * @return {Number}
-   */
   RS.Window_Name.prototype.windowWidth = function() {
       return 140;
   };
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method windowHeight
-   * @return {Number}
-   */
   RS.Window_Name.prototype.windowHeight = function() {
       return this.fittingHeight(1);
   };
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method standardPadding
-   * @return {Number}
-   */
   RS.Window_Name.prototype.standardPadding = function() {
     return 18;
   };
 
   /**
    * 정확한 폭을 계산합니다
-   * @memberOf RS.Window_Name
    * @method getWidth
-   * @param text {String}
+   * @param {String} text
    */
   RS.Window_Name.prototype.getWidth = function(text) {
       try {
@@ -1568,12 +1172,6 @@ Window_Message.prototype.updatePlacement = function() {
       }
   };
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method textProcessing
-   * @param text {String}
-   * @return {String}
-   */
   RS.Window_Name.prototype.textProcessing = function(text) {
     text = text.replace(/\\/g, '\x1b');
     text = text.replace(/\x1b\x1b/g, '\\');
@@ -1616,10 +1214,6 @@ Window_Message.prototype.updatePlacement = function() {
     return text;
   };
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method refresh
-   */
   RS.Window_Name.prototype.refresh = function() {
     this.contents.clear();
     this.createContents();
@@ -1629,10 +1223,6 @@ Window_Message.prototype.updatePlacement = function() {
     this.drawText(this.text, 0, 0, this.width, 'left');
   };
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method drawName
-   */
   RS.Window_Name.prototype.drawName = function(text) {
     this.text = text;
     this.width = this.windowWidth();
@@ -1641,54 +1231,40 @@ Window_Message.prototype.updatePlacement = function() {
     this.open();
   };
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method open
-   */
   RS.Window_Name.prototype.open = function() {
     this.refresh();
     Window_Base.prototype.open.call(this);
   };
 
-  /**
-   * @memberOf RS.Window_Name
-   * @method close
-   */
   RS.Window_Name.prototype.close = function() {
     Window_Base.prototype.close.call(this);
     this.changeTextColor(this.textColor(0));
   };
 
-  /**
-   * @class Game_Temp
-   */
+  //============================================================================
+  // Game_Temp
+  //============================================================================
 
   /**
-   * @memberOf Game_Temp
    * @method setMSHeightFunc
-   * @param func {Function}
+   * @param {Function} func
    */
   Game_Temp.prototype.setMSHeightFunc = function(func) {
-     this._callMSHeightFunc = func;
+    this._callMSHeightFunc = func;
   };
 
   /**
-   * @memberOf Game_Temp
    * @method setMaxLine
-   * @param n {Number}
+   * @param {Number} n
    */
   Game_Temp.prototype.setMaxLine = function(n) {
     this._callMSHeightFunc(n);
-  }
+  };
 
-  /**
-   * @class Game_Map
-   */
+  //============================================================================
+  // Game_Map
+  //============================================================================
 
-  /**
-   * @memberOf Game_Map
-   * @method initialize
-   */
   var alias_Game_Map_initialize = Game_Map.prototype.initialize;
   Game_Map.prototype.initialize = function() {
     alias_Game_Map_initialize.call(this);
@@ -1697,7 +1273,6 @@ Window_Message.prototype.updatePlacement = function() {
   };
 
   /**
-   * @memberOf Game_Map
    * @method getMsgOwner
    * @return {Game_Event | Game_Player}
    */
@@ -1706,16 +1281,17 @@ Window_Message.prototype.updatePlacement = function() {
   };
 
   /**
-   * @memberOf Game_Map
    * @method setMsgOwner
    * @param o {Game_Event | Game_Player}
    */
   Game_Map.prototype.setMsgOwner = function(o) {
       this._msgOwner = o;
+      var sprite = $gameMessage.getSpriteCharacter(o);
+      var n = (sprite) ? sprite.patternHeight() : this.tileHeight();
+      $gameMessage.setBalloonPatternHeight(n);
   };
 
   /**
-   * @memberOf Game_Map
    * @method getMsgEvent
    * @return {Game_Event}
    */
@@ -1724,7 +1300,6 @@ Window_Message.prototype.updatePlacement = function() {
   };
 
   /**
-   * @memberOf Game_Map
    * @method setMsgEvent
    * @param ev {Game_Event}
    */
@@ -1732,13 +1307,10 @@ Window_Message.prototype.updatePlacement = function() {
       this._msgEvent = ev;
   };
 
-//===============================================================================
-// 정렬을 위한 추가 함수들입니다.
-//===============================================================================
-
-  /**
-   * @class Window_Message
-   */
+  //============================================================================
+  // Window_Message
+  // 정렬을 위한 추가 함수들입니다.
+  //============================================================================
 
    /**
     * 가운데 정렬 여부를 체크합니다.
@@ -1762,8 +1334,8 @@ Window_Message.prototype.updatePlacement = function() {
 
    /**
     * @method calcBalloonRect
-    * @param text {String}
-    * @return this._textWidth {Number}
+    * @param {String} text
+    * @return {Number} _textWidth
     */
    Window_Message.prototype.calcTextWidth = function(text) {
        this.__textWidth = 0;
@@ -1779,10 +1351,9 @@ Window_Message.prototype.updatePlacement = function() {
 
    /**
     * 이 함수는 모든 텍스트 코드를 제외한 텍스트의 실질적인 폭을 계산합니다.
-    * @memberOf Window_Message
     * @method getTextWidth
-    * @param text {String}
-    * @return text {String}
+    * @param {String} text
+    * @return {String} text
     */
    Window_Message.prototype.getTextWidth = function(text) {
      text = text.replace(/\\/g, '\x1b');
@@ -1830,11 +1401,6 @@ Window_Message.prototype.updatePlacement = function() {
      return text;
    };
 
-   /**
-    *
-    * @method processNewLine
-    * @param textState {Object}
-    */
    Window_Message.prototype.processNewLine = function(textState) {
       Window_Base.prototype.processNewLine.call(this, textState);
 
@@ -1847,65 +1413,58 @@ Window_Message.prototype.updatePlacement = function() {
         this.setAlignRight(this._textState);
         break;
       }
-   }
+   };
 
    /**
     * 텍스트를 가운데로 정렬하는 함수입니다.
     * @method setAlignCenter
-    * @param textState {Object}
+    * @param {Object} textState
     */
    Window_Message.prototype.setAlignCenter = function(textState) {
      textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
      textState.x = ( this.newLineX() + this.contentsWidth() ) / 2 - textState.tx / 4;
      textState.left = textState.x;
-   }
+   };
 
    /**
     * 텍스트를 오른쪽으로 정렬하는 함수입니다.
     * @method setAlignRight
-    * @param textState {Object}
+    * @param {Object} textState
     */
    Window_Message.prototype.setAlignRight = function(textState) {
      textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
      textState.x = ( this.contentsWidth() ) - textState.tx / 2;
      textState.left = textState.x;
-   }
+   };
 
-   /**
-    * String.prototype.toArray
-    */
-   String.prototype.toArray = function(){
+   //===========================================================================
+   // String
+   //===========================================================================
+
+   String.prototype.toArray = function() {
        return this.split("");
-   }
+   };
 
-   /**
-    * String.prototype.reverse
-    */
-   String.prototype.reverse = function(){
+   String.prototype.reverse = function() {
        return this.toArray().reverse().join("");
-   }
+   };
 
-   /**
-    * String.prototype.reversed (mozilla)
-    */
    String.prototype.reversed = function() {
        var r = "";
        for (var i = this.length - 1; i >= 0; i--) {
            r += this[i];
        }
        return r;
-   }
+   };
 
-   /**
-    * String.prototype.to_comma
-    */
    String.prototype.toComma = function(){
        return this.reverse().match(/.{1,3}/g).join(",").reverse();
-   }
+   };
 
-   //===============================================================================
-   // 플러그인 커맨드
-   //===============================================================================
+   //===========================================================================
+   // Game_Interpreter
+   //===========================================================================
+
    var alias_pluginCommand = Game_Interpreter.prototype.pluginCommand;
    Game_Interpreter.prototype.pluginCommand = function(command, args) {
        alias_pluginCommand.call(this, command, args);
