@@ -149,7 +149,7 @@ function Scene_InputDialog() {
   var parameters = PluginManager.parameters('RS_InputDialog');
   RS.InputDialog.Params.textBoxWidth = Number(parameters['textBox Width'] || 488);
   RS.InputDialog.Params.textBoxHeight = Number(parameters['textBox Height'] || 36);
-  RS.InputDialog.Params.variableID = Number(parameters[''] || 3);
+  RS.InputDialog.Params.variableID = Number(parameters['variable ID'] || 3);
   RS.InputDialog.Params.debug = Boolean(parameters['debug'] === 'true');
   RS.InputDialog.Params.localText = String(parameters['Text'] || 'Test Message');
   RS.InputDialog.Params.backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
@@ -498,6 +498,8 @@ function Scene_InputDialog() {
   };
 
   Scene_Battle.prototype.showTextBox = function () {
+    this._tempPhase = BattleManager._phase;
+    BattleManager._phase = 'OnTextBox';    
     RS.InputDialog.startBattleBlur(Graphics._canvas, 3);
     this._textBox.show();
   };
@@ -506,6 +508,7 @@ function Scene_InputDialog() {
     RS.InputDialog.startBattleBlur(Graphics._canvas, 0);
     Input.clear();
     this._textBox.hide();
+    BattleManager._phase = this._tempPhase;
   };
 
   Scene_Battle.prototype.okResult = function () {
