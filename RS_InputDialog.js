@@ -64,74 +64,10 @@
  * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
  * 2016.08.16 (v1.1.1A) - Fixed a whitespace bug.
  * 2016.10.14 (v1.1.2) - Fixed the issue that is not working in Battle.
+ * 2016.10.14 (v1.1.3) :
+ * - Fixed the bug that does not change the background color.
+ * - Fixed the bug that does not change the variable ID.
  */
- /*:ko
-  * RS_InputDialog.js
-  * @plugindesc 화면에 텍스트 박스를 띄울 수 있습니다.
-  * @author biud436
-  *
-  * @param textBox Width
-  * @desc 텍스트 박스의 폭
-  * @default 488
-  *
-  * @param textBox Height
-  * @desc 텍스트 박스의 높이
-  * @default 36
-  *
-  * @param variable ID
-  * @desc 게임 변수의 ID
-  * @default 3
-  *
-  * @param debug
-  * @desc Alert 창 표시 여부
-  * @default false
-  *
-  * @param Text
-  * @desc 상단 텍스트 설정
-  * @default Please enter the value...
-  *
-  * @param Background Color
-  * @desc 텍스트 박스의 배경 색상 설정
-  * @default rgba(255, 255, 255, 0.8)
-  *
-  * @param direction
-  * @desc 텍스트의 방향
-  * ltr - 왼쪽에서 오른쪽, rtl - 오른쪽에서 왼쪽
-  * @default ltr
-  *
-  * @help
-  * =============================================================================
-  * 플러그인 명령
-  * =============================================================================
-  * - 텍스트 박스를 화면에 표시합니다.
-  * InputDialog open
-  *
-  * - 텍스트 박스의 폭을 변경합니다.
-  * InputDialog width 488
-  *
-  * - 텍스트 박스의 문구를 변경합니다.
-  * InputDialog text Please enter the string...
-  *
-  * -텍스트가 저장될 변수의 ID값을 변경합니다.
-  * InputDialog variableID 3
-  *
-  * - Alert 윈도우 표시 여부를 설정합니다.
-  * InputDialog debug true
-  *
-  * - 텍스트 박스의 색상을 변경합니다.
-  * InputDialog backgroundColor rgba(255, 255, 255, 0.8)
-  *
-  * =============================================================================
-  * Change Log
-  * =============================================================================
-  * 2016.08.09 (v1.0.0) - First Release.
-  * 2016.08.09 (v1.0.1) - Added Background Color.
-  * 2016.08.10 (v1.0.1A) - Added ID Variables.
-  * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
-  * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
-  * 2016.08.16 (v1.1.1A) - Fixed a whitespace bug.
-  * 2016.10.14 (v1.1.2) - Fixed the issue that is not working in Battle.
-  */
 
 var Imported = Imported || {};
 Imported.RS_InputDialog = true;
@@ -168,7 +104,7 @@ function Scene_InputDialog() {
   };
 
   RS.InputDialog.setRect = function () {
-    var textBox = document.getElementById(this._textBoxID);
+    var textBox = document.getElementById(RS.InputDialog.Params.szTextBoxId);
     if(textBox) {
       textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
       textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
@@ -499,7 +435,7 @@ function Scene_InputDialog() {
 
   Scene_Battle.prototype.showTextBox = function () {
     this._tempPhase = BattleManager._phase;
-    BattleManager._phase = 'OnTextBox';    
+    BattleManager._phase = 'OnTextBox';
     RS.InputDialog.startBattleBlur(Graphics._canvas, 3);
     this._textBox.show();
   };
