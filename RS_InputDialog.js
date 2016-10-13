@@ -63,6 +63,7 @@
  * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
  * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
  * 2016.08.16 (v1.1.1A) - Fixed a whitespace bug.
+ * 2016.10.14 (v1.1.2) - Fixed the issue that is not working in Battle.
  */
  /*:ko
   * RS_InputDialog.js
@@ -129,6 +130,7 @@
   * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
   * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
   * 2016.08.16 (v1.1.1A) - Fixed a whitespace bug.
+  * 2016.10.14 (v1.1.2) - Fixed the issue that is not working in Battle.
   */
 
 var Imported = Imported || {};
@@ -156,6 +158,15 @@ function Scene_InputDialog() {
   RS.InputDialog.Params.szTextBoxId = 'md_textBox';
   RS.InputDialog.Params.szFieldId = 'md_inputField';
 
+  RS.InputDialog.createInstance = function() {
+    var scene = SceneManager._scene;
+    if(scene instanceof Scene_Battle) {
+      scene.showTextBox();
+    } else {
+      SceneManager.push(Scene_InputDialog);
+    }
+  };
+
   RS.InputDialog.setRect = function () {
     var textBox = document.getElementById(this._textBoxID);
     if(textBox) {
@@ -165,6 +176,12 @@ function Scene_InputDialog() {
       textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
       textBox.style.direction = RS.InputDialog.Params.inputDirection;
     }
+  };
+
+  RS.InputDialog.startBattleBlur = function(target, value) {
+    var blur = "blur(%1px)".format(value);
+    target.style.webkitFilter = blur;
+    target.style.filter = blur;
   };
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
@@ -277,7 +294,7 @@ function Scene_InputDialog() {
     field.style.bottom = '0';
     field.style.width = Graphics.boxWidth + 'px';
     field.style.height = Graphics.boxHeight + 'px';
-    field.style.zIndex = "1000";
+    field.style.zIndex = "0";
     document.body.appendChild(field);
     Graphics._centerElement(field);
     return field;
@@ -327,9 +344,29 @@ function Scene_InputDialog() {
     textBox.focus();
   };
 
+  TextBox.prototype.setText = function (text) {
+    var textBox = document.getElementById(this._textBoxID);
+    textBox.value = text || '';
+  };
+
   TextBox.prototype.getText = function () {
     var textBox = document.getElementById(this._textBoxID);
     return textBox.value;
+  };
+
+  TextBox.prototype.hide = function () {
+    var field = document.getElementById(this._fieldId);
+    field.style.zIndex = 0;
+  };
+
+  TextBox.prototype.show = function () {
+    var field = document.getElementById(this._fieldId);
+    field.style.zIndex = 1000;
+  };
+
+  TextBox.prototype.isBusy = function () {
+    var field = document.getElementById(this._fieldId);
+    return field.style.zIndex > 0;
   };
 
   TextBox.prototype.terminate =  function() {
@@ -408,6 +445,7 @@ function Scene_InputDialog() {
   Scene_InputDialog.prototype.createTextBox = function () {
     this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
     this._textBox.setEvent(this.okResult.bind(this));
+    this._textBox.show();
   };
 
   Scene_InputDialog.prototype.okResult = function () {
@@ -426,6 +464,60 @@ function Scene_InputDialog() {
   };
 
   //============================================================================
+  // Scene_Battle
+  //
+  //
+
+  var alias_Scene_Battle_initialize = Scene_Battle.prototype.initialize;
+  Scene_Battle.prototype.initialize = function () {
+    alias_Scene_Battle_initialize.call(this);
+    this.createTextBox();
+  };
+
+  var alias_Scene_Battle_terminate = Scene_Battle.prototype.terminate;
+  Scene_Battle.prototype.terminate = function () {
+    alias_Scene_Battle_terminate.call(this);
+    if(this._textBox) {
+      this._textBox.terminate();
+      this._textBox = null;
+    }
+  };
+
+  Scene_Battle.prototype.createTextBox = function () {
+    this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
+    this._textBox.setEvent(this.okResult.bind(this));
+  };
+
+  var SceneBattle_render_update = Scene_Battle.prototype.update;
+  Scene_Battle.prototype.update = function() {
+    if(!this.textBoxIsBusy()) SceneBattle_render_update.call(this);
+  };
+
+  Scene_Battle.prototype.textBoxIsBusy = function () {
+    return this._textBox.isBusy();
+  };
+
+  Scene_Battle.prototype.showTextBox = function () {
+    RS.InputDialog.startBattleBlur(Graphics._canvas, 3);
+    this._textBox.show();
+  };
+
+  Scene_Battle.prototype.hideTextBox = function () {
+    RS.InputDialog.startBattleBlur(Graphics._canvas, 0);
+    Input.clear();
+    this._textBox.hide();
+  };
+
+  Scene_Battle.prototype.okResult = function () {
+    if(!this._textBox) return '';
+    var text = this._textBox.getText() || '';
+    $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
+    if(RS.InputDialog.Params.debug) window.alert(text);
+    this._textBox.setText('');
+    this.hideTextBox();
+  };
+
+  //============================================================================
   // Game_Interpreter
   //
   //
@@ -436,7 +528,7 @@ function Scene_InputDialog() {
       if(command === "InputDialog") {
         switch(args[0]) {
           case 'open':
-            SceneManager.push(Scene_InputDialog);
+            RS.InputDialog.createInstance();
             break;
           case 'width':
             RS.InputDialog.Params.textBoxWidth = Number(args[1] || 488);
