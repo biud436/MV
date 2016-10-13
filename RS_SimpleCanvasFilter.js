@@ -24,8 +24,7 @@
  * Script Calls
  * =============================================================================
  * Graphics.setCanvasFilter(filterName, amount, isMultipleFilters, target);
- * Graphics.setClearCanvasFilter(target);
- * Graphics.setCanvasDropShadowFilter(hShadow, hShadow, blur, color, isMultipleFilters, target);
+ * Graphics.setCanvasDropShadowFilter(hShadow, hShadow, blur, color, isMultipleFilters, target));
  * Graphics.setCanvasInvert(activate, isMultipleFilters, target);
  * =============================================================================
  * Change Log
@@ -44,6 +43,10 @@ var RS = RS || {};
 
   RS.SimpleCanvasFilter = RS.SimpleCanvasFilter || {};
 
+  //===========================================================================
+  // Filter Settings
+  //===========================================================================
+
   var canvasFilter = {
     'blur': "blur(%1px)",
     'brightness': "brightness(%1)",
@@ -56,6 +59,50 @@ var RS = RS || {};
     'saturate': "saturate(%1%)",
     'sepia': "sepia(%1%)"
   };
+
+  var waveVertexSrc = [
+    'precision mediump float;',
+
+    'attribute vec3 a_position;',
+    'attribute vec2 a_texCoord;',
+
+    'uniform mat4 u_projectionMatrix;',
+
+    'varying vec2 v_texCoord;',
+
+    'void main() {',
+      'v_texCoord = a_texCoord;',
+      'vec4 position = a_position;',
+      'gl_Position = u_projectionMatrix * position;',
+    '}    '
+  ].join('\n');
+
+  var waveFragmentSrc = [
+    'precision mediump float;',
+
+    'uniform float waveHeight;',
+    'uniform float waveFrequency;',
+    'uniform float waveTime;',
+    'uniform float wavePhase;',
+    'uniform float UVSpeed;',
+
+    'varying vec2 v_texCoord;',
+
+    'void main()',
+    '{',
+      'float time = waveFrequency * sin(wavePhase * (mod(waveTime - v_texCoord.y, waveHeight)));',
+    	'vec2 vCoord = vec2(v_texCoord.x + time * UVSpeed, v_texCoord.y);',
+    	'css_ColorMatrix = mat4(1.0, 0.0, 0.0, 0.0,',
+    						 '0.0, 1.0, 0.0, 0.0,',
+    						 '0.0, 0.0, 1.0, 0.0,',
+    						 '0.0, 0.0, 0.0, 1.0);',
+    	'css_MixColor = vec4(vCoord, 0.0, 0.0);',
+    '}'
+  ].join('\n');
+
+  //===========================================================================
+  // Private Functions
+  //===========================================================================
 
   /**
    * @method calculateValue
@@ -99,6 +146,13 @@ var RS = RS || {};
     } else {
      singleFilter(target, value);
     }
+  }
+
+  function loadCustomFilter(target, vsPath, fsPath, uniformObject) {
+    var path = ['./data/', vertexShader, fragmentShader];
+    var customFilter = "custom(url(%1) mix(url(%2) normal source-atop)".format( vsPath, fsPath );
+    target.style.webkitFilter = customFilter;
+    target.style.filter = customFilter;
   }
 
   /**
@@ -171,6 +225,12 @@ var RS = RS || {};
   //===========================================================================
   // RS.SimpleCanvasFilter
   //===========================================================================
+
+  RS.SimpleCanvasFilter.createCustomShader = function (text) {
+    var blob = new Blob( [texts], {type: 'text/plane'} );
+    var url = URL.createObjectURL(blob);
+    return url;
+  };
 
   RS.SimpleCanvasFilter.canvasFilterPluginCommand = function (args, target) {
     switch(args[0]) {
