@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.6) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.7) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
@@ -380,6 +380,7 @@
  * 2016.10.11 (v1.1.6) :
  * - Fixed the bug that happens when certain party member is removed.
  * - Fixed the bug that is not controlled the opacity of HUD.
+ * 2016.10.14 (v1.1.7) - Fixed the bug called 'undefined bitmap' when you are adding certain party member.
  */
 
 var Imported = Imported || {};
@@ -1433,11 +1434,10 @@ RS.HUD.param = RS.HUD.param || {};
     this._expText.update();
     this._levelText.update();
 
-    if(this._face.bitmap._image === (null || undefined)) {
+    if(this._face && this._face.bitmap._image === (null || undefined)) {
       this.removeChild(this._face);
       this.createFace();
     }
-
   };
 
   HUD.prototype.inBattle = function() {
