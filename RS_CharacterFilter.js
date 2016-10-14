@@ -204,8 +204,6 @@ var RS = RS || {};
     this._filterLightning = (useShake) ? 1.0 : 0.0;
   };
 
-  // Get
-
   Game_CharacterBase.prototype.getFilterDir = function () {
     return this._filterDir;
   };
@@ -312,6 +310,25 @@ var RS = RS || {};
     }
   };
 
+  Sprite_Character.prototype.getSpriteScale = function () {
+    return new Float32Array(this.scale);
+  };
+
+  Sprite_Character.prototype.getSpriteCenter = function () {
+    var x = this.x;
+    var y = this.y;
+    var pw = this.patternWidth();
+    var ph = this.patternHeight();
+    var scaleX = this.scale.x;
+    var scaleY = this.scale.y;
+    var center = new Point(x, y);
+    var anchorX = 0.5;
+    var anchorY = 0.5;
+    center.x = (x + (pw * anchorX)) * scaleX;
+    center.y = (y + (ph * anchorY)) * scaleY;
+    return center;
+  };
+
   var alias_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
   Sprite_Character.prototype.updateCharacterFrame = function() {
       if( !Graphics.isWebGL() ) return alias_updateCharacterFrame.call(this);
@@ -339,6 +356,10 @@ var RS = RS || {};
     this.filters = (useFilterFilter) ? [ this._battlerFilter ] : [Sprite.voidFilter];
   };
 
+  Sprite_Battler.prototype.getSpriteScale = function () {
+    return new Float32Array(this.scale);
+  };
+
   var alias_Sprite_Battler_update = Sprite_Battler.prototype.update;
   Sprite_Battler.prototype.update = function() {
     alias_Sprite_Battler_update.call(this);
@@ -348,6 +369,48 @@ var RS = RS || {};
       this._battlerFilter.scale = this._battler.getFilterScale();
       this._battlerFilter.lightning = this._battler.getFilterLightning();
     }
+  };
+
+  //============================================================================
+  // Sprite_Actor
+  //
+  //
+
+  Sprite_Actor.prototype.getSpriteCenter = function () {
+    var x = this.x;
+    var y = this.y;
+    var frame = this._mainSprite._frame;
+    var pw = frame.width;
+    var ph = frame.height;
+    var scaleX = this.scale.x;
+    var scaleY = this.scale.y;
+    var center = new Point(x, y);
+    var anchorX = 0.5;
+    var anchorY = 0.5;
+    center.x = (x + (pw * anchorX)) * scaleX;
+    center.y = (y + (ph * anchorY)) * scaleY;
+    return center;
+  };
+
+  //============================================================================
+  // Sprite_Enemy
+  //
+  //
+
+  Sprite_Enemy.prototype.getSpriteCenter = function () {
+    var x = this.x;
+    var y = this.y;
+    var frame = this._frame;
+    var pw = frame.width;
+    var ph = frame.height;
+    var scaleX = this.scale.x;
+    var scaleY = this.scale.y;
+    var center = new Point(x, y);
+    var anchorX = 0.5;
+    var anchorY = 0.5;
+    center.x = (x + (pw * anchorX)) * scaleX;
+    center.y = (y + (ph * anchorY)) * scaleY;
+    return center;
   };
 
   //============================================================================

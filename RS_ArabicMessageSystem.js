@@ -159,6 +159,22 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     return Graphics.boxWidth - (Graphics.boxWidth - width - sx);
   };
 
+  // Flip Horizontal
+  RS.ArabicMessageSystem.setFlipHorizontal = function (target, b) {
+    if(b) {
+      target.scale.x *= -1;
+      target.x += target.width * target.scale;
+    }
+  };
+
+  // Flip Vertical
+  RS.ArabicMessageSystem.setFlipHorizontal = function (target, b) {
+    if(b) {
+      target.scale.y *= -1;
+      target.y += target.height * target.scale;
+    }
+  };
+
   //============================================================================
   // Window_Base
   //
