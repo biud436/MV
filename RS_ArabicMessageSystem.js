@@ -168,7 +168,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   };
 
   // Flip Vertical
-  RS.ArabicMessageSystem.setFlipHorizontal = function (target, b) {
+  RS.ArabicMessageSystem.setFlipVertical = function (target, b) {
     if(b) {
       target.scale.y *= -1;
       target.y += target.height * target.scale;
