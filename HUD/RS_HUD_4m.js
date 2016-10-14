@@ -380,7 +380,8 @@
  * 2016.10.11 (v1.1.6) :
  * - Fixed the bug that happens when certain party member is removed.
  * - Fixed the bug that is not controlled the opacity of HUD.
- * 2016.10.14 (v1.1.7) - Fixed the bug called 'undefined bitmap' when you are adding certain party member.
+ * 2016.10.14 (v1.1.7) - Fixed the bug that causes the error called 'undefined
+ * bitmap' when you are adding certain party member.
  */
 
 var Imported = Imported || {};
