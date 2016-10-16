@@ -32,108 +32,36 @@ Imported.RS_EventCreate = true;
 
 var RS = RS || {};
 
-Object.defineProperty(Array.prototype, "first", {
-  get: function() {
-    return this[0];
-  }
-});
-
-Object.defineProperty(Array.prototype, "last", {
-  get: function() {
-    var idx = this.length - 1;
-    return this[idx];
-  }
-});
-
-Array.prototype.delete = function(deleteItem) {
-  var tmp = this.filter(
-    function(findValue) {
-      return findValue != deleteItem;
-    }
-  );
-  return tmp;
-};
-
 (function() {
+
+  Object.defineProperty(Array.prototype, "first", {
+    get: function() {
+      return this[0];
+    }
+  });
+
+  Object.defineProperty(Array.prototype, "last", {
+    get: function() {
+      var idx = this.length - 1;
+      return this[idx];
+    }
+  });
+
+  Array.prototype.delete = function(deleteItem) {
+    var tmp = this.filter(
+      function(findValue) {
+        return findValue != deleteItem;
+      }
+    );
+    return tmp;
+  };
 
   RS.instanceCreate = function(x, y, charName, charIdx) {
     var eventID = $gameMap.events().length + 1;
     var eventName = "EV" + String(eventID).padZero(3);
-
-    var event = {
-      "id": eventID,
-      "name": eventName,
-      "note": "",
-      "pages": [{
-        "conditions": {
-          "actorId": 1,
-          "actorValid": false,
-          "itemId": 1,
-          "itemValid": false,
-          "selfSwitchCh": "A",
-          "selfSwitchValid": false,
-          "switch1Id": 1,
-          "switch1Valid": false,
-          "switch2Id": 1,
-          "switch2Valid": false,
-          "variableId": 1,
-          "variableValid": false,
-          "variableValue": 0
-        },
-        "directionFix": false,
-        "image": {
-          "tileId": 0,
-          "characterName": charName,
-          "direction": 2,
-          "pattern": 1,
-          "characterIndex": charIdx
-        },
-        "list": [{
-          "code": 101,
-          "indent": 0,
-          "parameters": [charName, charIdx, 0, 2]
-        },
-        {
-          "code": 401,
-          "indent": 0,
-          "parameters": ["\\c[4]-TEST-\\c[0]"]
-        },
-        {
-          "code": 401,
-          "indent": 0,
-          "parameters": ["TEST"]
-        },
-        {
-          "code": 0,
-          "indent": 0,
-          "parameters": []
-        }],
-        "moveFrequency": 3,
-        "moveRoute": {
-          "list": [{
-            "code": 0,
-            "parameters": []
-          }],
-          "repeat": true,
-          "skippable": false,
-          "wait": false
-        },
-        "moveSpeed": 3,
-        "moveType": 0,
-        "priorityType": 1,
-        "stepAnime": false,
-        "through": false,
-        "trigger": 0,
-        "walkAnime": true
-      }],
-      "x": x,
-      "y": y
-    };
-
+    var event = { "id": eventID, "name": eventName, "note": "", "pages": [{ "conditions": { "actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": false, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0 }, "directionFix": false, "image": { "tileId": 0, "characterName": charName, "direction": 2, "pattern": 1, "characterIndex": charIdx }, "list": [{ "code": 101, "indent": 0, "parameters": [charName, charIdx, 0, 2] }, { "code": 401, "indent": 0, "parameters": ["\\c[4]-TEST-\\c[0]"] }, { "code": 401, "indent": 0, "parameters": ["TEST"] }, { "code": 0, "indent": 0, "parameters": [] }], "moveFrequency": 3, "moveRoute": { "list": [{ "code": 0, "parameters": [] }], "repeat": true, "skippable": false, "wait": false }, "moveSpeed": 3, "moveType": 0, "priorityType": 1, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true }], "x": x, "y": y };
     $dataMap.events[event.id] = event;
-
     return RS.instanceCopy(x, y, $gameMap.mapId(), eventID, event);
-
   };
 
   RS.instanceCopy = function(x, y, mapID, eventID ) {
