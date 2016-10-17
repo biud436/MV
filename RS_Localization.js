@@ -17,6 +17,10 @@
  * you could be able to load a map of being configure for each language.
  * @default 11
  *
+ * @param Supported Languages
+ * @desc en, ko, br, ja, zn, de
+ * @default en
+ *
  * @param Load Database
  * @desc
  * @default true
@@ -293,7 +297,8 @@
  * 2016.03.05 (v1.0.1) - Added new function.
  * 2016.08.01 (v1.0.2) - Added a function that could be able to load a map of
  * being configure for each language.
- * 2016.10.17 (v1.0.3) - Added the function that loads the database for your system language
+ * 2016.10.17 (v1.0.3) - Added the function that loads the database for your system language.
+ * 2016.10.17 (v1.0.4) - Added the function that could check the supported languages.
  */
 
  var Imported = Imported || {};
@@ -310,6 +315,11 @@
   var enabledSwitchID = Number(parameters['Enabled Switch ID'] || 11);
   var isAutomaticallyLoaded = Boolean(parameters['Auto'] === 'true');
   var isloadedDatabase = Boolean(parameters['Load Database'] === 'true');
+
+  // All Supported Languages
+  var supportedLanguages = (function () {
+    return parameters['Supported Languages'].split(/\W+/) || ['en'];
+  })();
 
   $['afrikaans'] = 'af';
   $['afrikaans_south_africa'] = 'af_ZA';
@@ -609,6 +619,10 @@
       return $dataSystem.locale.match(RS.Localization.lang[lang]);
   };
 
+  Game_System.prototype.isSupportedLanguage = function (locale) {
+    return supportedLanguages.indexOf(locale) !== -1;
+  }
+
   Game_System.prototype.isLangMap = function () {
     return $gameSwitches.value(enabledSwitchID);
   };
@@ -621,8 +635,9 @@
   DataManager.loadMapData = function(mapId) {
       if (mapId > 0) {
           var filename = 'Map%1.json'.format(mapId.padZero(3));
-          if( $gameSystem.isLangMap() ) {
-              this.loadDataFile('$dataMap', '/' + $dataSystem.locale + '/' + filename);
+          var locale = $dataSystem.locale;
+          if( $gameSystem.isLangMap() && supportedLanguages.indexOf(locale) !== -1 ) {
+              this.loadDataFile('$dataMap', '/' + locale + '/' + filename);
             } else {
               this.loadDataFile('$dataMap', filename);
           }
@@ -639,8 +654,10 @@
       if(isAutomaticallyLoaded) {
         locale = navigator.language;
       }
-      if(!src.contains('Test_') && !locale.contains('en') && isloadedDatabase ) {
-        url = 'data/' + locale + '/' + src;
+      if(supportedLanguages.indexOf(locale) !== -1) {
+        if(!src.contains('Test_') && !locale.contains('en') && isloadedDatabase ) {
+          url = 'data/' + locale + '/' + src;
+        }
       }
       xhr.open('GET', url);
       xhr.overrideMimeType('application/json');
