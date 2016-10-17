@@ -19,7 +19,7 @@
  * @default 225
  *
  * @param askingText
- * @desc
+ * @desc This is a text hint
  * @default Please enter the name
  *
  * @param outlineWidth
@@ -94,7 +94,7 @@
   * @default 225
   *
   * @param askingText
-  * @desc 이름 윈도우의 내용
+  * @desc 텍스트 힌트
   * @default 이름을 입력하세요.
   *
   * @param outlineWidth

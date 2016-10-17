@@ -19,7 +19,7 @@
  * @desc Whether this determines the alert window.
  * @default false
  *
- * @param Text
+ * @param Text Hint
  * @desc Sets the string that is the top of the text box.
  * @default Please enter the value...
  *
@@ -87,7 +87,7 @@ function Scene_InputDialog() {
   RS.InputDialog.Params.textBoxHeight = Number(parameters['textBox Height'] || 36);
   RS.InputDialog.Params.variableID = Number(parameters['variable ID'] || 3);
   RS.InputDialog.Params.debug = Boolean(parameters['debug'] === 'true');
-  RS.InputDialog.Params.localText = String(parameters['Text'] || 'Test Message');
+  RS.InputDialog.Params.localText = String(parameters['Text Hint'] || 'Test Message');
   RS.InputDialog.Params.backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
   RS.InputDialog.Params.inputDirection = String(parameters['direction'] || 'ltr')
 
