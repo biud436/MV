@@ -326,6 +326,8 @@ var RS = RS || {};
     var anchorY = 0.5;
     center.x = (x + (pw * anchorX)) * scaleX;
     center.y = (y + (ph * anchorY)) * scaleY;
+    center.x = 1 / center.x;
+    center.y = 1 / center.y;
     return center;
   };
 

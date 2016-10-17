@@ -5,11 +5,11 @@
  * @date 2016.02.23
  *
  * @param Min
- * @desc Min
+ * @desc Sets the minimum values of all game variables
  * @default 0
  *
  * @param Max
- * @desc Max
+ * @desc Sets the maximum values of all game variables
  * @default 999
  *
  * @help
@@ -39,7 +39,7 @@ RS.Game_Variables = RS.Game_Variables || {};
 
   Game_Variables.prototype.setValue = function(variableId, value) {
      if (variableId > 0 && variableId < $dataSystem.variables.length) {
-         if (typeof value === 'number') {
+         if (typeof(value) === 'number') {
              value = Math.floor(value.clamp(RS.Game_Variables._min, RS.Game_Variables._max));
          }
          this._data[variableId] = value;

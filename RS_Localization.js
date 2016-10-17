@@ -5,13 +5,21 @@
  * @date 2016.02.20
  *
  * @param Default Language
- * @desc Default Language
+ * @desc (default : English)
  * @default English
+ *
+ * @param Auto
+ * @desc Automatically Load through your system language.
+ * @default true
  *
  * @param Enabled Switch ID
  * @desc if its switch value is the same as status called 'ON',
  * you could be able to load a map of being configure for each language.
  * @default 11
+ *
+ * @param Load Database
+ * @desc
+ * @default true
  *
  * @help
  * The following command calls Localization-Change-function using the plugin command function.
@@ -285,6 +293,7 @@
  * 2016.03.05 (v1.0.1) - Added new function.
  * 2016.08.01 (v1.0.2) - Added a function that could be able to load a map of
  * being configure for each language.
+ * 2016.10.17 (v1.0.3) - Added the function that loads the database for your system language
  */
 
  var Imported = Imported || {};
@@ -299,6 +308,8 @@
   var parameters = PluginManager.parameters('RS_Localization');
   var __defaultLang = parameters['Default Language'] || "English";
   var enabledSwitchID = Number(parameters['Enabled Switch ID'] || 11);
+  var isAutomaticallyLoaded = Boolean(parameters['Auto'] === 'true');
+  var isloadedDatabase = Boolean(parameters['Load Database'] === 'true');
 
   $['afrikaans'] = 'af';
   $['afrikaans_south_africa'] = 'af_ZA';
@@ -540,6 +551,21 @@
   $['zulu'] = 'zu';
   $['zulu_south_africa'] = 'zu_ZA';
 
+  //============================================================================
+  // RS.Localization
+  //
+  //
+
+  RS.Localization.createSwapLangList = function () {
+    var typeArray = Object.keys(this.lang);
+    var temp = [];
+    typeArray.forEach(function (key) {
+      var value = $[i];
+      temp[ value ] = key;
+    }, this);
+    return temp;
+  };
+
   RS.Localization.hasOwnLanguage = function(langType) {
     return this.lang.hasOwnProperty(langType.toLowerCase());
   };
@@ -563,20 +589,10 @@
     this.setSL(RS.Localization.lang[lang]);
   };
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    alias_Game_Interpreter_pluginCommand.call(this, command, args);
-    if(command === "Localization" || command === "언어설정") {
-      switch (args[0].toLowerCase()) {
-        case 'change':
-        case '변경':
-          RS.Localization.changeSystemLanguage(args[1]);
-          break;
-        default:
-          RS.Localization.changeSystemLanguage(args[1]);
-      }
-    }
-  };
+  //============================================================================
+  // Game_System
+  //
+  //
 
   var alias_Game_System_initialize = Game_System.prototype.initialize;
   Game_System.prototype.initialize = function() {
@@ -597,6 +613,11 @@
     return $gameSwitches.value(enabledSwitchID);
   };
 
+  //============================================================================
+  // DataManager
+  //
+  //
+
   DataManager.loadMapData = function(mapId) {
       if (mapId > 0) {
           var filename = 'Map%1.json'.format(mapId.padZero(3));
@@ -609,5 +630,52 @@
           this.makeEmptyMap();
       }
   };
+
+  DataManager.loadDataFile = function(name, src) {
+      var xhr = new XMLHttpRequest();
+      var url = 'data/' + src;
+      var defaultLang = __defaultLang.toLowerCase();
+      var locale = $[__defaultLang.toLowerCase()] || 'en';
+      if(isAutomaticallyLoaded) {
+        locale = navigator.language;
+      }
+      if(!src.contains('Test_') && !locale.contains('en') && isloadedDatabase ) {
+        url = 'data/' + locale + '/' + src;
+      }
+      xhr.open('GET', url);
+      xhr.overrideMimeType('application/json');
+      xhr.onload = function() {
+          if (xhr.status < 400) {
+              window[name] = JSON.parse(xhr.responseText);
+              DataManager.onLoad(window[name]);
+          }
+      };
+      xhr.onerror = function() {
+          DataManager._errorUrl = DataManager._errorUrl || url;
+      };
+      window[name] = null;
+      xhr.send();
+  };
+
+  //============================================================================
+  // Game_Interpreter
+  //
+  //
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if(command === "Localization" || command === "언어설정") {
+      switch (args[0].toLowerCase()) {
+        case 'change':
+        case '변경':
+          RS.Localization.changeSystemLanguage(args[1]);
+          break;
+        default:
+          RS.Localization.changeSystemLanguage(args[1]);
+      }
+    }
+  };
+
 
  })(RS.Localization.lang);
