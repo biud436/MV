@@ -67,6 +67,7 @@
  * 2016.10.14 (v1.1.3) :
  * - Fixed the bug that does not change the background color.
  * - Fixed the bug that does not change the variable ID.
+ * 2016.10.17 (v1.1.4) - Fixed the frame works of input dialog in battle.
  */
 
 var Imported = Imported || {};
@@ -410,6 +411,18 @@ function Scene_InputDialog() {
     this.createTextBox();
   };
 
+  var alias_Scene_Battle_create = Scene_Battle.prototype.create;
+  Scene_Battle.prototype.create = function () {
+    alias_Scene_Battle_create.call(this);
+    this.createTextBoxHelp();
+  };
+
+  var alias_Scene_Battle_update = Scene_Battle.prototype.update;
+  Scene_Battle.prototype.update = function () {
+    alias_Scene_Battle_update.call(this);
+    if(!this.textBoxIsBusy()) alias_Scene_Battle_update.call(this);
+  };
+
   var alias_Scene_Battle_terminate = Scene_Battle.prototype.terminate;
   Scene_Battle.prototype.terminate = function () {
     alias_Scene_Battle_terminate.call(this);
@@ -419,14 +432,20 @@ function Scene_InputDialog() {
     }
   };
 
+  Scene_Battle.prototype.createTextBoxHelp = function () {
+    this._tbHelp = new Window_DialogHelp(2);
+    this._tbHelp.hide();
+    this._tbHelp.x = Graphics.boxHeight - Graphics.boxHeight / 2 - this._tbHelp.width / 2;
+    this._tbHelp.y = Graphics.boxHeight / 2 - RS.InputDialog.Params.textBoxHeight - this._tbHelp.height;
+    this._tbHelp.setText(RS.InputDialog.Params.localText);
+    this._tbHelp.backOpacity = 0;
+    this._tbHelp._windowFrameSprite.alpha = 0;
+    this.addChild(this._tbHelp);
+  };
+
   Scene_Battle.prototype.createTextBox = function () {
     this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
     this._textBox.setEvent(this.okResult.bind(this));
-  };
-
-  var SceneBattle_render_update = Scene_Battle.prototype.update;
-  Scene_Battle.prototype.update = function() {
-    if(!this.textBoxIsBusy()) SceneBattle_render_update.call(this);
   };
 
   Scene_Battle.prototype.textBoxIsBusy = function () {
@@ -435,16 +454,17 @@ function Scene_InputDialog() {
 
   Scene_Battle.prototype.showTextBox = function () {
     this._tempPhase = BattleManager._phase;
-    BattleManager._phase = 'OnTextBox';
-    RS.InputDialog.startBattleBlur(Graphics._canvas, 3);
+    this._tbHelp.show();
     this._textBox.show();
+    SceneManager._stopped = true;
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
-    RS.InputDialog.startBattleBlur(Graphics._canvas, 0);
     Input.clear();
     this._textBox.hide();
-    BattleManager._phase = this._tempPhase;
+    this._tbHelp.hide();
+    SceneManager._stopped = false;
+    SceneManager.requestUpdate();
   };
 
   Scene_Battle.prototype.okResult = function () {
