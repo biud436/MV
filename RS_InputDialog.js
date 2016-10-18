@@ -68,6 +68,7 @@
  * - Fixed the bug that does not change the background color.
  * - Fixed the bug that does not change the variable ID.
  * 2016.10.17 (v1.1.4) - Fixed the frame works of input dialog in battle.
+ * 2016.10.18 (V1.1.5) - Fixed an issue that battler's movement is too fast.
  */
 
 var Imported = Imported || {};
@@ -419,7 +420,6 @@ function Scene_InputDialog() {
 
   var alias_Scene_Battle_update = Scene_Battle.prototype.update;
   Scene_Battle.prototype.update = function () {
-    alias_Scene_Battle_update.call(this);
     if(!this.textBoxIsBusy()) alias_Scene_Battle_update.call(this);
   };
 
