@@ -461,6 +461,7 @@ function Scene_InputDialog() {
     this._tbHelp.show();
     this._textBox.show();
     SceneManager._stopped = true;
+    this._textBox.getFocus();
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
