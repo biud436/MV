@@ -420,7 +420,12 @@ function Scene_InputDialog() {
 
   var alias_Scene_Battle_update = Scene_Battle.prototype.update;
   Scene_Battle.prototype.update = function () {
-    if(!this.textBoxIsBusy()) alias_Scene_Battle_update.call(this);
+    if(!this.textBoxIsBusy()) {
+      alias_Scene_Battle_update.call(this);
+    } else {
+      Input.clear();
+      TouchInput.clear();
+    }
   };
 
   var alias_Scene_Battle_terminate = Scene_Battle.prototype.terminate;
@@ -453,18 +458,17 @@ function Scene_InputDialog() {
   };
 
   Scene_Battle.prototype.showTextBox = function () {
-    this._tempPhase = BattleManager._phase;
     this._tbHelp.show();
     this._textBox.show();
     SceneManager._stopped = true;
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
-    Input.clear();
     this._textBox.hide();
     this._tbHelp.hide();
     SceneManager._stopped = false;
     SceneManager.requestUpdate();
+    Input.clear();
   };
 
   Scene_Battle.prototype.okResult = function () {
