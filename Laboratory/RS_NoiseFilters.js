@@ -41,6 +41,7 @@
  * 2016.08.28 (v1.0.0) - First Release.
  * 2016.08.28 (v1.0.1) - Fixed noise issue.
  * 2016.08.28 (v1.0.2) - Fixed render code and Added Script class and Plugin Commands.
+ * 2016.10.20 (v1.0.3) - Fixed the issue that is not working in RMMV 1.3.2
  */
 
 var Imported = Imported || {};
@@ -51,7 +52,7 @@ RS.NoiseFilters = RS.NoiseFilters || {};
 
 (function ($) {
 
-  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
+  var isFilterPIXI4 = (PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
   var isWebGL = PIXI.utils.isWebGLSupported();
   var isUseCanvas = Utils.isOptionValid('canvas');
 

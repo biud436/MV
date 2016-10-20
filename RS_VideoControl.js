@@ -23,7 +23,8 @@
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.05.07 - First Release
+ * 2016.05.07 (v1.0.0) - First Release
+ * 2016.10.21 (v1.0.1) - Fixed some funtions (RMMV 1.3.2)
  */
 
 var Imported = Imported || {};
@@ -86,11 +87,20 @@ RS.VideoControl = RS.VideoControl || {};
       this._video.play();
       this._updateVisibility(true);
       $gamePlayer.lock();
+      if (Utils.isMobileSafari()) {
+          waitForLoading = false;
+      }
   };
 
   Graphics._onVideoEnd = function() {
       this._updateVisibility(false);
       $gamePlayer.unlock();
+      if (Utils.isMobileSafari()) {
+          if (register) {
+              document.removeEventListener('touchstart', handleiOSTouch);
+              register = false;
+          }
+      }
   };
 
   //----------------------------------------------------------------------------

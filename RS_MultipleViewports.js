@@ -66,6 +66,7 @@
  * 2016.08.25 (v1.1.4) - Added the functions that sets an image of certain viewport.
  * 2016.09.30 (v1.1.5) - Added the function that plays an video of certain viewport.
  * 2016.10.01 (v1.1.6) - Added the rendering code that is compatible with the canvas mode.
+ * 2016.10.20 (v1.1.7) - Fixed the issue that is not working in RMMV 1.3.2
  */
 
 var Imported = Imported || {};
@@ -73,7 +74,7 @@ Imported.RS_MultipleViewports = true;
 
 (function () {
 
-  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
+  var isFilterPIXI4 = (PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
 
   var isMultipleViewport = false;
   var isShake = 0;

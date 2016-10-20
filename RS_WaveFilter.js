@@ -59,6 +59,7 @@
  * 2016.03.03 (v1.3.2) - Added new Sprite Properties (wave_amp, wave_speed, wave_length, wave_phase)
  * 2016.08.17 (v1.4.0) - Fixed the issue that is not working in RMMV 1.3.0 (This filter does not support for the time being in Tile-map)
  * 2016.08.18 (v1.5.0) - Supports a wave filter in ShaderTilemap.
+ * 2016.10.20 (v1.5.1) - Fixed the issue that is not working in RMMV 1.3.2
  *
  * - Terms of Use
  * Free for commercial and non-commercial use
@@ -73,7 +74,7 @@ RS.WaveConfig = RS.WaveConfig || {};
 
 (function($) {
 
-  var isFilterPIXI4 = (PIXI.VERSION === "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
+  var isFilterPIXI4 = (PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
   var isWebGL = PIXI.utils.isWebGLSupported();
   var isUseCanvas = Utils.isOptionValid('canvas');
 
