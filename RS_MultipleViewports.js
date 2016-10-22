@@ -82,7 +82,7 @@ Imported.RS_MultipleViewports = true;
   var shakePower = 10;
 
   //============================================================================
-  // PIXI v4.0.3 Bug Fixes
+  // PIXI.VideoBaseTexture (PIXI v4.0.3 Bug)
   //============================================================================
 
   var ticker = PIXI.ticker;
