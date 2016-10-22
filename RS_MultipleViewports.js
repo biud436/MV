@@ -1,6 +1,6 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc (v1.1.6) This plugin provides the multiple viewports.
+ * @plugindesc (v1.1.8) This plugin provides the multiple viewports.
  * @author biud436
  *
  * @help
@@ -67,6 +67,7 @@
  * 2016.09.30 (v1.1.5) - Added the function that plays an video of certain viewport.
  * 2016.10.01 (v1.1.6) - Added the rendering code that is compatible with the canvas mode.
  * 2016.10.20 (v1.1.7) - Fixed the issue that is not working in RMMV 1.3.2
+ * 2016.10.23 (v1.1.8) - Fixed PIXI.VideoBaseTexture update issue in PIXI 4.0.3
  */
 
 var Imported = Imported || {};
@@ -79,6 +80,31 @@ Imported.RS_MultipleViewports = true;
   var isMultipleViewport = false;
   var isShake = 0;
   var shakePower = 10;
+
+  //============================================================================
+  // PIXI v4.0.3 Bug Fixes
+  //============================================================================
+
+  var ticker = PIXI.ticker;
+
+  PIXI.VideoBaseTexture.prototype._onPlayStart = function _onPlayStart() {
+      // Just in case the video has not recieved its can play even yet..
+      if (!this.hasLoaded) {
+          this._onCanPlay();
+      }
+
+      if (!this._isAutoUpdating && this.autoUpdate) {
+          ticker.shared.add(this.update, this);
+          ticker.shared.stop();
+          ticker.shared.start();
+          this._isAutoUpdating = true;
+
+      }
+  };
+
+  //============================================================================
+  // Graphics
+  //============================================================================
 
   Graphics.getRenderPosition = function(width, height) {
     var positionType = [];
@@ -255,6 +281,10 @@ Imported.RS_MultipleViewports = true;
     }
     this.frameCount++;
   };
+
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
 
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
