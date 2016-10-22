@@ -212,7 +212,7 @@ Imported.RS_MultipleViewports = true;
       if(video) {
         video.play();
       } else {
-        texture._onCanPlay();
+        if(texture.baseTexture._onCanPlay) texture.baseTexture._onCanPlay();
       }
     }
   };
