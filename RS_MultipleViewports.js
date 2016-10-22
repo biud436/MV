@@ -67,7 +67,7 @@
  * 2016.09.30 (v1.1.5) - Added the function that plays an video of certain viewport.
  * 2016.10.01 (v1.1.6) - Added the rendering code that is compatible with the canvas mode.
  * 2016.10.20 (v1.1.7) - Fixed the issue that is not working in RMMV 1.3.2
- * 2016.10.23 (v1.1.8) - Fixed PIXI.VideoBaseTexture update issue in PIXI 4.0.3
+ * 2016.10.23 (v1.1.8) - Fixed the issue that the video frame is not updated in PIXI 4.0.3
  */
 
 var Imported = Imported || {};
