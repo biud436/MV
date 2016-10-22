@@ -196,10 +196,10 @@ Imported.RS_MultipleViewports = true;
       var video = texture.baseTexture.source;
       switch (funcName) {
         case 'Move Back':
-          video.currentTime -= second;
+          if(video) video.currentTime -= second;
           break;
         case 'Move Forward':
-          video.currentTime += second;
+          if(video) video.currentTime += second;
           break;
       }
     }
@@ -209,7 +209,11 @@ Imported.RS_MultipleViewports = true;
     var texture = this._viewImageCached[viewID - 1];
     if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
       var video = texture.baseTexture.source;
-      video.play();
+      if(video) {
+        video.play();
+      } else {
+        texture._onCanPlay();
+      }
     }
   };
 
@@ -217,7 +221,7 @@ Imported.RS_MultipleViewports = true;
     var texture = this._viewImageCached[viewID - 1];
     if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
       var video = texture.baseTexture.source;
-      video.pause();
+      if(video) video.pause();
     }
   };
 
@@ -225,8 +229,10 @@ Imported.RS_MultipleViewports = true;
     var texture = this._viewImageCached[viewID - 1];
     if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
       var video = texture.baseTexture.source;
-      video.pause();
-      video.currentTime = 0.0;
+      if(video) {
+        video.pause();
+        video.currentTime = 0.0;
+      }
     }
   };
 
