@@ -694,13 +694,6 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     // Create Sprite
     self._renderSprite = new Sprite();
 
-    if( !Graphics.isWebGL() ) {
-      if(this.parent instanceof WindowLayer) {
-        var windowLayer = this.parent;
-        if(windowLayer) windowLayer.prepareRenderTexture();
-      }
-    }
-
   };
 
   var alias_Window_ScrollText_standardFontFace = Window_ScrollText.prototype.standardFontFace;
