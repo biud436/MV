@@ -27,10 +27,13 @@
  * 2016.09.23 (v1.1.2) - Fixed the window classes that could be displaying
  * the battle log and map name windows, which have used a drawTextEx function in Arabic.
  * 2016.10.02 (v1.1.3) - Fixed the Arabic compatibility issues with the name box for YEP Message Core.
+ * 2016.10.23 (v1.1.4) : Fixed the bug that is not working in RMMV 1.3.2 or more.
+ * - Fixed the issue that the scrolling text is not working.
+ * - Fixed the issue that YEP Message Core is not working.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.3';
+Imported.RS_ArabicMessageSystem = '1.1.4';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -46,25 +49,13 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   var messageMode = String(parameters["Message Mode"] || "arabic");
   var arabicFont = String(parameters["Arabic Font"] || "Simplified Arabic, Times New Roman, Segoe UI");
 
+  var useFilters = false;
+
   //============================================================================
   // Bitmap
   //
   // provides the mirror mode.
 
-  /**
-   * Performs a block transfer.
-   *
-   * @method RTLblt
-   * @param {Bitmap} source The bitmap to draw
-   * @param {Number} sx The x coordinate in the source
-   * @param {Number} sy The y coordinate in the source
-   * @param {Number} sw The width of the source image
-   * @param {Number} sh The height of the source image
-   * @param {Number} dx The x coordinate in the destination
-   * @param {Number} dy The y coordinate in the destination
-   * @param {Number} [dw=sw] The width to draw the image in the destination
-   * @param {Number} [dh=sh] The height to draw the image in the destination
-   */
   Bitmap.prototype.RTLblt = function(source, sx, sy, sw, sh, dx, dy, dw, dh) {
       dw = dw || sw;
       dh = dh || sh;
@@ -79,9 +70,203 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   };
 
   //============================================================================
+  // RS.ArabicFlipFilter
+  //
+  //
+
+  RS.ArabicFlipFilter = function () {
+
+    var defaultVertexSrc = [
+      'attribute vec2 aVertexPosition;',
+      'attribute vec2 aTextureCoord;',
+
+      'uniform mat3 projectionMatrix;',
+
+      'varying vec2 vTextureCoord;',
+
+      'void main(void)',
+      '{',
+          'gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
+          'vTextureCoord = aTextureCoord;',
+      '}      '
+    ].join('\n');
+
+    var fragmentSrc = [
+      'uniform mediump float;',
+      'varying vec2 vTextureCoord;',
+      'uniform sampler2D uSampler;',
+      'uniform vec2 offset;',
+      'uniform float dir;',
+
+      'void main(void)',
+      '{',
+      '  vec2 flip = vec4(vTextureCoord, 0.0, 0.0).xy;',
+      '  if(dir == 1.0) {',
+      '    flip.y = 1.0 - flip.y;',
+      '  } else if(dir == 2.0) {',
+      '    flip.x = 1.0 - flip.x;',
+      '  }',
+      '  gl_FragColor = texture2D(uSampler, flip + offset);',
+      '}      '
+    ].join('\n');
+    PIXI.Filter.call( this, defaultVertexSrc, fragmentSrc );
+    this.uniforms.dir = 2;
+    this.uniforms.offset = {'x': 0.0, 'y': 0.0};
+  };
+
+  RS.ArabicFlipFilter.prototype = Object.create( PIXI.Filter.prototype );
+  RS.ArabicFlipFilter.prototype.constructor = RS.ArabicFlipFilter;
+
+  Object.defineProperties(RS.ArabicFlipFilter.prototype, {
+      direction: {
+        get: function() {
+            return this.uniforms.dir;
+        },
+        set: function(value) {
+            this.uniforms.dir = value;
+        }
+      },
+      offsetX: {
+        get: function() {
+            return this.uniforms.offset.x;
+        },
+        set: function(value) {
+            this.uniforms.offset.x = 1 / value;;
+        }
+      }
+    });
+
+  //============================================================================
+  // ArabicFlipSprite
+  //
+  //
+
+  function ArabicFlipSprite() {
+    this.initialize.apply(this, arguments);
+  }
+
+  ArabicFlipSprite.prototype = Object.create(Sprite.prototype);
+  ArabicFlipSprite.prototype.constructor = ArabicFlipSprite;
+
+  ArabicFlipSprite.prototype.initialize = function (bitmap) {
+    this._offset = new Point();
+    Sprite.prototype.initialize.call(this, bitmap);
+    this._isMessageAracbic = false;
+    this.filters = [Sprite.voidFilter];
+  };
+
+  ArabicFlipSprite.prototype.createAracbicFilter = function () {
+    if(Graphics.isWebGL()) {
+      this._arabicFlipFilter = new RS.ArabicFlipFilter();
+      this._arabicFlipFilter.dir = 2;
+      this.filters = [this._arabicFlipFilter];
+      this.filterArea = new PIXI.Rectangle(this.x, this.y, Graphics.boxWidth, Graphics.boxHeight);
+    }
+  };
+
+  ArabicFlipSprite.prototype._refresh = function() {
+      var frameX = Math.floor(this._frame.x);
+      var frameY = Math.floor(this._frame.y);
+      var frameW = Math.floor(this._frame.width);
+      var frameH = Math.floor(this._frame.height);
+      var bitmapW = this._bitmap ? this._bitmap.width : 0;
+      var bitmapH = this._bitmap ? this._bitmap.height : 0;
+      var realX = frameX.clamp(0, bitmapW);
+      var realY = frameY.clamp(0, bitmapH);
+      var realW = (frameW - realX + frameX).clamp(0, bitmapW - realX);
+      var realH = (frameH - realY + frameY).clamp(0, bitmapH - realY);
+
+      this._realFrame.x = realX;
+      this._realFrame.y = realY;
+      this._realFrame.width = realW;
+      this._realFrame.height = realH;
+      if(this._isMessageAracbic) {
+        this.pivot.x = frameW - frameX - realX;
+      } else {
+        this.pivot.x = frameX - realX;
+      }
+      this.pivot.y = frameY - realY;
+
+      if (realW > 0 && realH > 0) {
+          if (this._needsTint()) {
+              this._createTinter(realW, realH);
+              this._executeTint(realX, realY, realW, realH);
+              this._tintTexture.update();
+              this.texture.baseTexture = this._tintTexture;
+              this.texture.frame = new Rectangle(0, 0, realW, realH);
+          } else {
+              if (this._bitmap) {
+                  this.texture.baseTexture = this._bitmap.baseTexture;
+              }
+              this.texture.frame = this._realFrame;
+          }
+      } else if (this._bitmap) {
+          this.texture.frame = Rectangle.emptyRectangle;
+      } else {
+          //TODO: remove this
+          this.texture.baseTexture.width = Math.max(this.texture.baseTexture.width, this._frame.x + this._frame.width);
+          this.texture.baseTexture.height = Math.max(this.texture.baseTexture.height, this._frame.y + this._frame.height);
+          this.texture.frame = this._frame;
+      }
+      this.texture._updateID++;
+  };
+
+  Object.defineProperties(ArabicFlipSprite.prototype, {
+    'offsetX': {
+     get: function () {
+       if(this._arabicFlipFilter) {
+         return this._arabicFlipFilter.offsetX;
+       }
+     },
+     set: function (value) {
+       if(this._arabicFlipFilter) {
+         this._arabicFlipFilter.offsetX = value;
+       }
+     }
+   }
+  });
+
+  //============================================================================
+  // Window_ArabicView
+  //
+  //
+
+  function Window_ArabicView() {
+    this.initialize.apply(this, arguments);
+  }
+
+  Window_ArabicView.prototype = Object.create(Window.prototype);
+  Window_ArabicView.prototype.constructor = Window_ArabicView;
+
+  Window_ArabicView.prototype.initialize = function() {
+    Window.prototype.initialize.call(this);
+  };
+
+  Window_ArabicView.prototype._createAllParts = function() {
+    this._windowSpriteContainer = new PIXI.Container();
+    this._windowBackSprite = new Sprite();
+    this._windowCursorSprite = new Sprite();
+    this._windowFrameSprite = new Sprite();
+    this._windowContentsSprite = new ArabicFlipSprite();
+    this._downArrowSprite = new Sprite();
+    this._upArrowSprite = new Sprite();
+    this._windowPauseSignSprite = new Sprite();
+    this._windowBackSprite.bitmap = new Bitmap(1, 1);
+    this._windowBackSprite.alpha = 192 / 255;
+    this.addChild(this._windowSpriteContainer);
+    this._windowSpriteContainer.addChild(this._windowBackSprite);
+    this._windowSpriteContainer.addChild(this._windowFrameSprite);
+    this.addChild(this._windowCursorSprite);
+    this.addChild(this._windowContentsSprite);
+    this.addChild(this._downArrowSprite);
+    this.addChild(this._upArrowSprite);
+    this.addChild(this._windowPauseSignSprite);
+  };
+
+  //============================================================================
   // RS.ArabicMessageSystem
   //
-  // provides the mirror mode.
+  //
 
   RS.ArabicMessageSystem.createArabicLayer = function () {
     if(messageMode === "arabic" || navigator.language.match(/^ar/)) {
@@ -91,11 +276,14 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
         this._windowContentsSprite.removeChild( this._arabicTexts );
         this._arabicTexts = null;
       }
-      this._arabicTexts = new Sprite();
+      this._arabicTexts = new ArabicFlipSprite();
+      this._arabicTexts._isMessageAracbic = true;
       this._arabicTexts.pivot.x = this.contentsWidth();
       this._arabicTexts.scale.x = -1;
       this._arabicTexts.visible = true;
-      this._windowContentsSprite.addChild( this._arabicTexts );
+      if(!(this instanceof Window_ScrollText)) {
+          this._windowContentsSprite.addChild( this._arabicTexts );
+      }
     }
   };
 
@@ -194,11 +382,27 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   //
   // This provides an escape arabic text.
 
-  /**
-   * Alias
-   * @method newPage
-   * @param {Object} textState
-   */
+  Window_Message.prototype._createAllParts = function() {
+    this._windowSpriteContainer = new PIXI.Container();
+    this._windowBackSprite = new Sprite();
+    this._windowCursorSprite = new Sprite();
+    this._windowFrameSprite = new Sprite();
+    this._windowContentsSprite = new ArabicFlipSprite();
+    this._downArrowSprite = new Sprite();
+    this._upArrowSprite = new Sprite();
+    this._windowPauseSignSprite = new Sprite();
+    this._windowBackSprite.bitmap = new Bitmap(1, 1);
+    this._windowBackSprite.alpha = 192 / 255;
+    this.addChild(this._windowSpriteContainer);
+    this._windowSpriteContainer.addChild(this._windowBackSprite);
+    this._windowSpriteContainer.addChild(this._windowFrameSprite);
+    this.addChild(this._windowCursorSprite);
+    this.addChild(this._windowContentsSprite);
+    this.addChild(this._downArrowSprite);
+    this.addChild(this._upArrowSprite);
+    this.addChild(this._windowPauseSignSprite);
+  };
+
   var alias_Window_Message_newPage = Window_Message.prototype.newPage;
   Window_Message.prototype.newPage = function(textState) {
     if(messageMode === "arabic" || navigator.language.match(/^ar/)) {
@@ -208,6 +412,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
       }
       this._windowContentsSprite.pivot.x = this.contentsWidth();
       this._windowContentsSprite.scale.x = -1;
+      this._windowContentsSprite._isMessageAracbic = true;
       document.querySelector('canvas').dir = 'rtl';
       this._arabicTexts = new Sprite();
       this._arabicTexts.visible = true;
@@ -219,14 +424,6 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     alias_Window_Message_newPage.call(this, textState);
   };
 
-  /**
-   * @method createArabicText
-   * @param {String} text
-   * @param {Number} x
-   * @param {Number} maxWidth
-   * @param {lineHeight} lineHeight
-   * @param {String} align
-   */
   Window_Message.prototype.createArabicText = function (text, x, y, maxWidth, lineHeight, align) {
 
     // Initialize
@@ -256,11 +453,6 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
   };
 
-  /**
-   * Override
-   * @method processNormalCharacter
-   * @param {Object} textState
-   */
   Window_Message.prototype.processNormalCharacter = function(textState) {
 
     // Extracting to work a part of the text.
@@ -301,11 +493,6 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
   };
 
-  /**
-   * @method processEscapeCharacter
-   * @param {Number} code
-   * @param {textState} textState
-   */
   var alias_Window_Message_processEscapeCharacter = Window_Message.prototype.processEscapeCharacter;
   Window_Message.prototype.processEscapeCharacter = function(code, textState) {
 
@@ -321,11 +508,6 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
   };
 
-  /**
-   * @method obtainLTRText
-   * @param {Object} textState
-   * @return {String} str
-   */
   Window_Message.prototype.obtainLTRText = function(textState) {
       var arr = /^<(.+)>/.exec(textState.text.slice(textState.index));
       if (arr) {
@@ -336,11 +518,6 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
       }
   };
 
-  /**
-   * @method drawLeftToRightText
-   * @param {String} text
-   * @param {Object} textState
-   */
   Window_Message.prototype.drawLeftToRightText = function (text, textState) {
     var c = text;
     var w = this.textWidth(c);
@@ -482,6 +659,94 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
         this._closeCounter = 4;
         return '';
     };
+  };
+
+  //============================================================================
+  // Window_ScrollText
+  //
+  //
+
+  RS.ArabicMessageSystem.defineInitialize(Window_ScrollText);
+
+  var alias_Window_ScrollText_initialize = Window_ScrollText.prototype.initialize;
+  Window_ScrollText.prototype.initialize = function() {
+    alias_Window_ScrollText_initialize.call(this);
+
+    var self = this;
+    var gl = Graphics._renderer.gl;
+
+    // Create RenderTexture
+    self._renderTexture = PIXI.RenderTexture.create(self.width,
+                                                    self.height,
+                                                    PIXI.SCALE_MODES.NEAREST);
+
+    // Create RenderTarget
+    if(Graphics.isWebGL()) {
+      self._renderTarget = new PIXI.RenderTarget(gl, self.width,
+                                                    self.height,
+                                                    PIXI.SCALE_MODES.NEAREST);
+    } else {
+      self._renderTarget = new PIXI.CanvasRenderTarget(self.width, self.height);
+    }
+
+    // Create Sprite
+    self._renderSprite = new Sprite();
+
+  };
+
+  var alias_Window_ScrollText_standardFontFace = Window_ScrollText.prototype.standardFontFace;
+  Window_ScrollText.prototype.standardFontFace = function() {
+    if (messageMode === "arabic" || navigator.language.match(/^ar/)) {
+      return arabicFont;
+    } else {
+      return alias_Window_Base_standardFontFace.call(this);
+    }
+  };
+
+  var alias_Window_ScrollText_update = Window_ScrollText.prototype.update;
+  Window_ScrollText.prototype.update = function () {
+    alias_Window_ScrollText_update.call(this);
+    if(this._arabicTexts && this._arabicTexts.visible) {
+      this._arabicTexts.pivot.y = this.origin.y;
+    }
   }
+
+  Window_ScrollText.prototype.renderCanvas = function (renderer) {
+    if(!this.visible || !this.renderable) {
+      return;
+    }
+
+    for(var i = 0; i < this.children.length; ++i) {
+        if(i.visible) renderer.render(i, this._renderTexture);
+    }
+
+    if(this._arabicTexts.visible) renderer.render(this._arabicTexts, this._renderTexture);
+
+    if(this._arabicTexts.visible) {
+      this._renderSprite.texture = this._renderTexture;
+    }
+
+  };
+
+  Window_ScrollText.prototype.renderWebGL = function (renderer) {
+    if(!this.visible || !this.renderable) {
+      return;
+    }
+
+    renderer.bindRenderTexture(this._renderTexture);
+
+    for(var i = 0; i < this.children.length; ++i) {
+        if(i.visible) renderer.render(i, this._renderTexture);
+    }
+
+    if(this._arabicTexts.visible) renderer.render(this._arabicTexts, this._renderTexture);
+
+    renderer.bindRenderTarget(this._renderTarget);
+
+    if(this._arabicTexts.visible) {
+      this._renderSprite.texture = this._renderTexture;
+    }
+
+  };
 
 })();
