@@ -30,6 +30,7 @@
  * 2016.10.23 (v1.1.4) : Fixed the bug that is not working in RMMV 1.3.2 or more.
  * - Fixed the issue that the scrolling text is not working.
  * - Fixed the issue that YEP Message Core is not working.
+ * 2016.10.24 (v1.1.5) - Fixed the renderCanvas function in Scroll Text
  */
 
 var Imported = Imported || {};
@@ -724,8 +725,14 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     for (var i = 0; i < layers.length; i++)
         layers[i].renderCanvas(renderer);
 
+    if(this._arabicTexts && this._arabicTexts.parent !== this) {
+      this._arabicTexts.setParent(this);
+    }
 
-    this._arabicTexts.renderCanvas(renderer);
+    for (var i = 0; i <this._arabicTexts.children.length; i++ ) {
+      var child = this._arabicTexts.children[i];
+      if(child) renderer.plugins.sprite.render(child);
+    }
 
   };
 
