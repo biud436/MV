@@ -18,6 +18,12 @@
  * This text code is available to implement the left-to-right language.
  * \LTR<Hello, World!>
  * =============================================================================
+ * Arabic Message System with YEP_MessageCore
+ * =============================================================================
+ * YEP_MessageCore.js - v1.15
+ * YEP_X_ExtMesPack1.js - v1.10
+ * YEP_StatusMenuCore.js - v1.01a
+ * =============================================================================
  * Change Log
  * =============================================================================
  * 2016.09.19 (v1.0.0) - First Release.
@@ -34,7 +40,7 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.4';
+Imported.RS_ArabicMessageSystem = '1.1.5';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
