@@ -152,7 +152,9 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     this._offset = new Point();
     Sprite.prototype.initialize.call(this, bitmap);
     this._isMessageAracbic = false;
-    this.filters = [Sprite.voidFilter];
+    if(Graphics.isWebGL()) {
+      this.filters = [Sprite.voidFilter];
+    }
   };
 
   ArabicFlipSprite.prototype.createAracbicFilter = function () {
@@ -692,6 +694,13 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     // Create Sprite
     self._renderSprite = new Sprite();
 
+    if( !Graphics.isWebGL() ) {
+      if(this.parent instanceof WindowLayer) {
+        var windowLayer = this.parent;
+        if(windowLayer) windowLayer.prepareRenderTexture();
+      }
+    }
+
   };
 
   var alias_Window_ScrollText_standardFontFace = Window_ScrollText.prototype.standardFontFace;
@@ -709,22 +718,21 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     if(this._arabicTexts && this._arabicTexts.visible) {
       this._arabicTexts.pivot.y = this.origin.y;
     }
-  }
+  };
 
+  var alias_Window_ScrollText_renderCanvas = Window_ScrollText.prototype.renderCanvas;
   Window_ScrollText.prototype.renderCanvas = function (renderer) {
-    if(!this.visible || !this.renderable) {
-      return;
+
+    if (!this.visible || !this.renderable) {
+        return;
     }
 
-    for(var i = 0; i < this.children.length; ++i) {
-        if(i.visible) renderer.render(i, this._renderTexture);
-    }
+    var layers = this.children;
+    for (var i = 0; i < layers.length; i++)
+        layers[i].renderCanvas(renderer);
 
-    if(this._arabicTexts.visible) renderer.render(this._arabicTexts, this._renderTexture);
 
-    if(this._arabicTexts.visible) {
-      this._renderSprite.texture = this._renderTexture;
-    }
+    this._arabicTexts.renderCanvas(renderer);
 
   };
 
@@ -736,7 +744,8 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     renderer.bindRenderTexture(this._renderTexture);
 
     for(var i = 0; i < this.children.length; ++i) {
-        if(i.visible) renderer.render(i, this._renderTexture);
+        var child = this.children[i];
+        if(child.visible) renderer.render(child, this._renderTexture);
     }
 
     if(this._arabicTexts.visible) renderer.render(this._arabicTexts, this._renderTexture);
