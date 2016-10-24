@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.0) <RS_ScreenManager>
+ * @plugindesc (v1.0.1) <RS_ScreenManager>
  * @author biud436
  *
  * @param isMobileAutoFullScreen
@@ -66,6 +66,7 @@ Imported.RS_ScreenManager = true;
  * Change Log
  * =============================================================================
  * 2016.10.04 (v1.0.0) - First Release.
+ * 2016.10.24 (v1.0.1) - Added Resolution Button in Option.
  */
 
 (function () {
@@ -251,7 +252,7 @@ Imported.RS_ScreenManager = true;
 
   Window_AvailGraphicsList.prototype.makeItemList = function() {
     this._data = Graphics.getAvailGraphicsArray('String');
-    this._data.push('Full Screen');
+    this._data.push(fullScreenButtonName);
   };
 
   Window_AvailGraphicsList.prototype.isCurrentItemEnabled = function() {
@@ -274,7 +275,7 @@ Imported.RS_ScreenManager = true;
     var rect = this.itemRectForText(index);
     var text = this._data[index];
     this.resetTextColor();
-    if(text === "Full Screen" && !Graphics._isFullScreen()) {
+    if(text === fullScreenButtonName && !Graphics._isFullScreen()) {
         this.changeTextColor(this.deathColor());
     }
     this.drawText(text, rect.x, rect.y, rect.width, 'center');
@@ -284,6 +285,72 @@ Imported.RS_ScreenManager = true;
     this.makeItemList();
     this.createContents();
     this.drawAllItems();
+  };
+
+  //============================================================================
+  // Window_Options
+  //============================================================================
+
+  var alias_Window_Options_initialize = Window_Options.prototype.initialize;
+  Window_Options.prototype.initialize = function() {
+    alias_Window_Options_initialize.call(this);
+    this._lastIndex = $gameSystem._lastScreenManagerItem || 0;
+  };
+
+  Window_Options.prototype.isResolution = function (symbol) {
+    return symbol.contains('Resolutions');
+  }
+
+  Window_Options.prototype.processOk = function() {
+    var index = this.index();
+    var symbol = this.commandSymbol(index);
+    var value = this.getConfigValue(symbol);
+    if (this.isVolumeSymbol(symbol)) {
+        value += this.volumeOffset();
+        if (value > 100) {
+            value = 0;
+        }
+        value = value.clamp(0, 100);
+        this.changeValue(symbol, value);
+    } else {
+        if(this.isResolution( symbol ) ) {
+          SceneManager.push( ScreenManager );
+        } else {
+          this.changeValue(symbol, !value);
+        }
+    }
+  };
+
+  Window_Options.prototype.statusText = function(index) {
+    var symbol = this.commandSymbol(index);
+    var value = this.getConfigValue(symbol);
+    if (this.isVolumeSymbol(symbol)) {
+        return this.volumeStatusText(value);
+    } else {
+      if(this.isResolution( symbol ) ) {
+        idx = this._lastIndex;
+        var item = Graphics.getAvailGraphicsArray('String');
+        item.push(fullScreenButtonName);
+        if(!idx) {
+          return String(Graphics.boxWidth + " x " + Graphics.boxHeight);
+        } else {
+          if(!Graphics._isFullScreen()) {
+            return fullScreenButtonName;
+          } else {
+            this._lastIndex = idx;
+            return item[idx || 0];
+          }
+        }
+      } else {
+        return this.booleanStatusText(value);
+      }
+    }
+  };
+
+  var alias_Window_Options_addVolumeOptions = Window_Options.prototype.addVolumeOptions;
+  Window_Options.prototype.addVolumeOptions = function() {
+    alias_Window_Options_addVolumeOptions.call(this);
+    this.addCommand('Resolutions', 'Resolutions');
   };
 
   //============================================================================
@@ -347,7 +414,7 @@ Imported.RS_ScreenManager = true;
 
   ScreenManager.prototype.convertScreenSize = function () {
     if(!Utils.isMobileDevice() &&
-      this._availGraphicsList.item() === 'Full Screen') {
+      this._availGraphicsList.item() === fullScreenButtonName) {
       Graphics._switchFullScreen();
     } else {
       var scr = this._availGraphicsList.getCurrentItemToPoint();
