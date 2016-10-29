@@ -1,6 +1,6 @@
 /*:
  * RS_EventCreate.js
- * @plugindesc (v1.0.3) It is possible to create or copy or delete an event via the plugin commands.
+ * @plugindesc (v1.0.4) It is possible to create or copy or delete an event via the plugin commands.
  *
  * @author biud436
  * @since 2015.10.16
