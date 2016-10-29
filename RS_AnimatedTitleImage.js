@@ -24,7 +24,7 @@
  * 2016.07.16 (v1.0.1) - Added the plugin parameter that could be decided
  * whether it will be preloading title images.
  * 2016.10.30 (v1.0.2) :
- * - Fixed the incorrect plugin file name.
+ * - Fixed the name of the incorrect file.
  * - Fixed the bug that occurs when the main program lost focus.
  */
 
