@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_MouseWheelZoomInOut = '1.0.0';
 
 /*:
- * @plugindesc (TEST) RS_MouseWheelZoomInOut.js
+ * @plugindesc This plugin allows you to zoom in or zoom out in the current map via mouse wheel button.
  * @author biud436
  */
 
