@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_MapTransition = true;
 
 /*:
- * @plugindesc
+ * @plugindesc This plugin allows you to have the transition effects when you transfers a new map.
  * @author biud436
  */
 

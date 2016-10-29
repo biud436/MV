@@ -4,6 +4,7 @@
 //==============================================================================
 
 /*:
+ * @plugindesc This plugin allows you to create a normal map field in battle.
  * @author biud436
  */
 

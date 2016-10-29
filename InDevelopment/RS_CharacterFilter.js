@@ -1,3 +1,10 @@
+//==============================================================================
+// RS_CharacterFilter.js
+//==============================================================================
+
+var Imported = Imported || {};
+Imported.RS_CharacterFilter = true;
+
 /*:
  * @plugindesc (v1.0.0) Character Filter
  * @author biud436
@@ -69,8 +76,6 @@
  * 2016.10.10 (v1.0.0) - First Release.
  */
 
-var Imported = Imported || {};
-Imported.RS_CharacterFilter = true;
 var RS = RS || {};
 
 (function () {
