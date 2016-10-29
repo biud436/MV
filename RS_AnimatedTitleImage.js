@@ -23,6 +23,9 @@
  * 2015.11.09 (v1.0.0) - First Release.
  * 2016.07.16 (v1.0.1) - Added the plugin parameter that could be decided
  * whether it will be preloading title images.
+ * 2016.10.30 (v1.0.2) :
+ * - Fixed the incorrect plugin file name.
+ * - Fixed the bug that occurs when the main program lost focus.
  */
 
 var Imported = Imported || {};
@@ -30,42 +33,36 @@ Imported.AnimatedTitleImage = true;
 
 (function() {
 
-  var parameters = PluginManager.parameters('AnimatedTitleImage');
+  var parameters = PluginManager.parameters('RS_AnimatedTitleImage');
   var titleFile = (function() {
     return parameters['files'].split(/[^\w]/gi);
   })();
   var titleTime = Number(parameters['time intervals'] || 2);
   var isPreload = Boolean(parameters['preload'] === 'true');
 
-  var _Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
+  var saveTime = Date.now();
+
+  var alias_Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
   Scene_Boot.prototype.loadSystemImages = function() {
-    _Scene_Boot_loadSystemImages.call(this);
+    alias_Scene_Boot_loadSystemImages.call(this);
     if(!isPreload) return;
     titleFile.forEach(function(i) {
       ImageManager.loadTitle1(i);
     }, this);
   };
 
-  var _Scene_Title_update = Scene_Title.prototype.update;
+  var alias_Scene_Title_update = Scene_Title.prototype.update;
   Scene_Title.prototype.update = function() {
-    _Scene_Title_update.call(this);
+    alias_Scene_Title_update.call(this);
     this.chooseIndex();
   };
 
-  if(!!Graphics) {
-    Graphics.frameRate = function() {
-      return Graphics._fpsMeter.fps || 60;
-    }
-  }
-
-  Scene_Title.prototype.getTime = function() {
-    return ((Graphics.frameCount / Graphics.frameRate() ) | 0);
-  };
-
   Scene_Title.prototype.chooseIndex = function() {
-    if(this.getTime() % titleTime > 0) return;
-    this._spriteIndex = (this.getTime() % titleFile.length) || 0;
-    this._backSprite1.bitmap = ImageManager.loadTitle1(titleFile[this._spriteIndex]);
+    if( Date.now() - saveTime >= (titleTime * 1000) ) {
+      this._spriteIndex = (saveTime % titleFile.length) || 0;
+      this._backSprite1.bitmap = ImageManager.loadTitle1(titleFile[this._spriteIndex]);
+      saveTime = Date.now();
+    }
   };
 
 })();
