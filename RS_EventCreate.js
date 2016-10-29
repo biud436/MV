@@ -11,11 +11,9 @@
  * =============================================================================
  * This plugin command is copying an event.
  * MapID : if the value is zero or - 1, the mapId will set up an id of currently map.
- * Note : Using this function, the memory will be increased so even the performance may be reduced.
  * Event Copy X Y MapID EventID
  *
  * This plugin command deletes a previously created event on currently map.
- * Note : Using this function, the performance will be reduced.
  * Event Delete EventID
  *
  * This plugin command creates a new event on currently map.
@@ -27,7 +25,6 @@
  * RS.Event.instanceCopy(x, y, mapID, eventID, customData);
  * customData : if its value sets to null, it will use existing event data.
  *
- * Note : Using this function, the performance will be reduced.
  * RS.Event.instanceDestroy($gameMap.events().last);
  * =============================================================================
  * Change Log
@@ -37,6 +34,7 @@
  * 2016.02.23 (v1.0.2) - Fixed a bug.
  * 2016.02.24 (v1.0.3) - Fixed a bug that is initialized to the default value when the parameters were set to zero.
  * 2016.10.30 (v1.0.4) - Optimized.
+ * 2016.10.30 (v1.0.5) - Optimized.
  */
 
 var Imported = Imported || {};
@@ -114,14 +112,16 @@ RS.Event = RS.Event || {};
       // Set up the event page.
       eventData.refresh();
 
-      // Pushed its event.
+      // Added the event to event elements.
       $gameMap._events.push(eventData);
 
       // Check whether the user is on the map.
       scene = SceneManager._scene;
       if(scene instanceof Scene_Map) {
-        // TODO: Using this function, the memory will be increased so even the performance may be reduced.
-        scene._spriteset.createCharacters();
+        // Add the child of Sprite_Character
+        var spriteset = scene._spriteset;
+        spriteset._characterSprites.push(new Sprite_Character(eventData));
+        spriteset._tilemap.addChild(spriteset._characterSprites.last);
       }
 
       return $gameMap._events.last;
@@ -170,21 +170,33 @@ RS.Event = RS.Event || {};
 
   $.instanceDestroy = function(_event) {
     if(_event instanceof Game_Event) {
-      $gameMap._events.forEach( function(event) {
-        if(event.eventId() === _event.eventId()) {
-          // Delete an map event data.
-          $gameMap._events = $gameMap._events.delete(_event);
-          delete $dataMap.events[_event.eventId()];
-        }
-      });
-
-      // Check whether the user is on the map.
-      var scene = SceneManager._scene;
-      if(scene instanceof Scene_Map) {
-        // TODO: Using this function, the performance will be reduced.
-        scene._spriteset.createLowerLayer();
+      var mapId = $gameMap.mapId();
+      var eventId = _event.eventId();
+      if($gameMap._events[eventId]) {
+        delete $gameMap._events[eventId];
+        $.deleteSpriteCharacter(_event);
+        $gameSelfSwitches.setValue([mapId, eventId, 'A'], false);
+        $gameSelfSwitches.setValue([mapId, eventId, 'B'], false);
+        $gameSelfSwitches.setValue([mapId, eventId, 'C'], false);
+        $gameSelfSwitches.setValue([mapId, eventId, 'D'], false);
       }
+    }
+  };
 
+  $.deleteSpriteCharacter = function(owner) {
+    var target, spriteItem = [];
+    var scene = SceneManager._scene;
+    var index = -1;
+    if( (scene instanceof Scene_Map) ) {
+      target = scene._spriteset;
+      spriteItem = target._characterSprites.forEach(function(e, idx, a) {
+        if(e._character === owner) {
+          index = idx;
+        };
+      }, this);
+      if(index !== -1) {
+        target._tilemap.removeChild(target._characterSprites[index]);
+      }
     }
   };
 
