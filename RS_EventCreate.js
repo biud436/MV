@@ -11,6 +11,7 @@
  * =============================================================================
  * This plugin command is copying an event.
  * MapID : if the value is zero or - 1, the mapId will set up an id of currently map.
+ * Note : Using this function, the memory will be increased so even the performance may be reduced.
  * Event Copy X Y MapID EventID
  *
  * This plugin command deletes a previously created event on currently map.
@@ -119,7 +120,7 @@ RS.Event = RS.Event || {};
       // Check whether the user is on the map.
       scene = SceneManager._scene;
       if(scene instanceof Scene_Map) {
-        // TODO: Using this function, the performance will be reduced.
+        // TODO: Using this function, the memory will be increased so even the performance may be reduced.
         scene._spriteset.createCharacters();
       }
 
