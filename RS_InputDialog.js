@@ -32,6 +32,10 @@
  * ltr - Left to Right, rtl - Right to Left
  * @default ltr
  *
+ * @param Max Length
+ * @desc Specifies the maximum number of character for an input field
+ * @default 255
+ *
  * @help
  * =============================================================================
  * Plugin Commands
@@ -54,6 +58,9 @@
  * - Changes a background color of the text box.
  * InputDialog backgroundColor rgba(255, 255, 255, 0.8)
  *
+ * - Specifies the maximum number of character for an input field
+ * InputDialog maxLength 10
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -68,7 +75,8 @@
  * - Fixed the bug that does not change the background color.
  * - Fixed the bug that does not change the variable ID.
  * 2016.10.17 (v1.1.4) - Fixed the frame works of input dialog in battle.
- * 2016.10.18 (V1.1.5) - Fixed an issue that battler's movement is too fast.
+ * 2016.10.18 (v1.1.5) - Fixed an issue that battler's movement is too fast.
+ * 2016.10.29 (v1.1.6) - Added the function that allows you to specify the maximum number of character for an input field.
  */
 
 var Imported = Imported || {};
@@ -91,7 +99,8 @@ function Scene_InputDialog() {
   RS.InputDialog.Params.debug = Boolean(parameters['debug'] === 'true');
   RS.InputDialog.Params.localText = String(parameters['Text Hint'] || 'Test Message');
   RS.InputDialog.Params.backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
-  RS.InputDialog.Params.inputDirection = String(parameters['direction'] || 'ltr')
+  RS.InputDialog.Params.inputDirection = String(parameters['direction'] || 'ltr');
+  RS.InputDialog.Params.nMaxLength = parseInt(parameters['Max Length'] || '6');
 
   RS.InputDialog.Params.szTextBoxId = 'md_textBox';
   RS.InputDialog.Params.szFieldId = 'md_inputField';
@@ -113,6 +122,8 @@ function Scene_InputDialog() {
       textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
       textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
       textBox.style.direction = RS.InputDialog.Params.inputDirection;
+      textBox.maxLength = RS.InputDialog.Params.nMaxLength;
+      textBox.max = RS.InputDialog.Params.nMaxLength;
     }
   };
 
@@ -186,6 +197,8 @@ function Scene_InputDialog() {
     this._textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
     this._textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
     this._textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
+    this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
+    this._textBox.max = RS.InputDialog.Params.nMaxLength;
 
     // 키를 눌렀을 때의 처리
     this._textBox.onkeydown = this.onKeyDown.bind(this);
@@ -510,6 +523,9 @@ function Scene_InputDialog() {
           case 'backgroundColor':
             RS.InputDialog.Params.backgroundColor = args.slice(1, args.length).join('');
             RS.InputDialog.setRect();
+            break;
+          case 'maxLength':
+            RS.InputDialog.Params.nMaxLength  = Number(args[1] || 255);
             break;
         }
       }
