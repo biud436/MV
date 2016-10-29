@@ -526,6 +526,7 @@ function Scene_InputDialog() {
             break;
           case 'maxLength':
             RS.InputDialog.Params.nMaxLength  = Number(args[1] || 255);
+            RS.InputDialog.setRect();
             break;
         }
       }
