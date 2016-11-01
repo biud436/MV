@@ -259,6 +259,24 @@ RS.MapTransition = function () {
   // RS.MapTransition
   //============================================================================
 
+  $.sharedBitmap = undefined;
+
+  $.createInstanceForSharedBitmap = (function () {
+    if($.sharedBitmap) return $.sharedBitmap;
+    var canvas, scale, width, height, bitmap;
+    canvas = document.querySelector('canvas');
+    if($gameMap && $gameMap.zoomScale) {
+      scale = $gameMap.zoomScale();
+    } else {
+      scale = 1.0;
+    }
+    if(typeof(scale) !== 'number') scale = 1.0;
+    width = Math.floor(parseInt(canvas.style.width || canvas.width) * scale);
+    height = Math.floor(parseInt(canvas.style.height || canvas.height) * scale);
+    bitmap = new Bitmap(width, height);
+    return bitmap;
+  })();
+
   $.prototype.constructor = $;
   $.prototype.initialize = function (stage) {
     this._stage = stage;
@@ -377,12 +395,21 @@ RS.MapTransition = function () {
   $.Circle.prototype = Object.create($.prototype);
   $.Circle.prototype.constructor = $.Circle;
 
+  $.Circle.Status = {
+    'zoom_in_setup': 0,
+    'zoom_in': 1,
+    'zoom_out_setup': 2,
+    'zoom_out': 3
+  };
+
+  $.Circle.Params = [0.5, -0.02, 2, 2, 0.2];
+
   $.Circle.prototype.initialize = function (stage, x, y, radius) {
     $.prototype.initialize.call(this, stage);
     this.x = x || 0;
     this.y = y || 0;
     this._radius = radius;
-    this._state = 'zoom_in_setup';
+    this._state = $.Circle.Status['zoom_in_setup'];
   };
 
   $.Circle.prototype.drawShape = function () {
@@ -394,27 +421,27 @@ RS.MapTransition = function () {
   };
 
   $.Circle.prototype.updateScale = function () {
-    if(this._state === 'zoom_in_setup') {
-      this._fadeSpeed = 0.5;
-      this._fadeAccel = -0.02;
+    if(this._state === $.Circle.Status['zoom_in_setup']) {
+      this._fadeSpeed = $.Circle.Params[0];
+      this._fadeAccel = $.Circle.Params[1];
       this._fade = this._fadeSpeed;
     }
-    if(this._state === 'zoom_in') {
-      if(this.scale.x >= 2) this.scale.x = 2;
-      if(this.scale.y >= 2) this.scale.y = 2;
+    if(this._state === $.Circle.Status['zoom_in']) {
+      if(this.scale.x >= $.Circle.Params[3]) this.scale.x = $.Circle.Params[3];
+      if(this.scale.y >= $.Circle.Params[4]) this.scale.y = $.Circle.Params[4];
       this._fade += this._fadeAccel;
-      this.scale.x = this.scale.y = 0.2 + this._fade;
+      this.scale.x = this.scale.y = $.Circle.Params[4] + this._fade;
     }
-    if(this._state === 'zoom_out_setup') {
-      this._fadeSpeed = -0.5;
-      this._fadeAccel = 0.02;
+    if(this._state === $.Circle.Status['zoom_out_setup']) {
+      this._fadeSpeed = -$.Circle.Params[0];
+      this._fadeAccel = -$.Circle.Params[1];
       this._fade = this._fadeSpeed;
     }
-    if(this._state === 'zoom_out') {
-      if(this.scale.x <= 0.5) this.scale.x = 0.5;
-      if(this.scale.y >= 2) this.scale.y = 2;
+    if(this._state === $.Circle.Status['zoom_out']) {
+      if(this.scale.x <= $.Circle.Params[0]) this.scale.x = $.Circle.Params[0];
+      if(this.scale.y >= $.Circle.Params[3]) this.scale.y = $.Circle.Params[3];
       this._fade += this._fadeAccel;
-      this.scale.x = this.scale.y = 0.2 + this._fade;
+      this.scale.x = this.scale.y = $.Circle.Params[4] + this._fade;
     }
     $.prototype.updateScale.call(this);
   };
