@@ -44,13 +44,14 @@ public class WakeLock extends CordovaPlugin {
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		if (action.equals("init")) {
-			this.acquireLock( callbackContext );
+			this.acquireLock();
 		}
 		callbackContext.success();
 		return true;
 	}
 
-	public void acquireLock(Context context) {
+	public void acquireLock() {
+		Context context = webView.getContext();
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "RMMV GAME LOCK");
 		mWakeLock.acquire();
