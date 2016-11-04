@@ -54,7 +54,7 @@ public class WakeLock extends CordovaPlugin {
 	public void acquireLock() {
 		Context context = webView.getContext();
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, DEFAULT_RMMV_LOCK_TAG);
+		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, WakeLock.DEFAULT_RMMV_LOCK_TAG);
 		mWakeLock.acquire();
 	}
 
