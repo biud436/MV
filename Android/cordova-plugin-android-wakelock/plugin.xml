@@ -33,7 +33,7 @@
       <source-file src="src/android/Wakelock.java" target-dir="src/org/apache/cordova/wakelock" />
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Wakelock">
-                <param name="android-package" value="org.apache.cordova.wakelock.Wakelock"/>
+                <param name="android-package" value="org.apache.cordova.Wakelock"/>
             </feature>
         </config-file>
         <config-file target="AndroidManifest.xml" parent="/manifest">
