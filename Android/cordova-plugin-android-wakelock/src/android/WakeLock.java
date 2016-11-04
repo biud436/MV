@@ -37,10 +37,10 @@ public class WakeLock extends CordovaPlugin {
 
 	public WakeLock() {}
 
-  public void onDestroy() {
+	public void onDestroy() {
 		super.onDestroy();
-    this.releaseLock();
-  }
+	  this.releaseLock();
+	}
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		if (action.equals("init")) {
