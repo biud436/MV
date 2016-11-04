@@ -39,7 +39,7 @@ public class WakeLock extends CordovaPlugin {
 
 	public void onDestroy() {
 		super.onDestroy();
-	  this.releaseLock();
+		this.releaseLock();
 	}
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -51,9 +51,9 @@ public class WakeLock extends CordovaPlugin {
 	}
 
 	public void acquireLock(Context context) {
-	   PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-	   mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "RMMV GAME LOCK");
-	   mWakeLock.acquire();
+		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "RMMV GAME LOCK");
+		mWakeLock.acquire();
 	}
 
 	public void releaseLock() {
