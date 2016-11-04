@@ -33,6 +33,7 @@ import android.os.PowerManager.WakeLock;
 
 public class WakeLock extends CordovaPlugin {
 
+	public static final String DEFAULT_RMMV_LOCK_TAG = "RMMV_GAME_LOCK";
 	private PowerManager.WakeLock mWakeLock;
 
 	public WakeLock() {}
@@ -53,7 +54,7 @@ public class WakeLock extends CordovaPlugin {
 	public void acquireLock() {
 		Context context = webView.getContext();
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "RMMV GAME LOCK");
+		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, DEFAULT_RMMV_LOCK_TAG);
 		mWakeLock.acquire();
 	}
 
