@@ -18,24 +18,28 @@
   under the License.
 -->
 
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-rstoast" version="1.0.0">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-android-worklock" version="1.0.0">
 
-    <name>Toast</name>
-    <description>Toast Plugin</description>
+    <name>WakeLock</name>
+    <description>This can resume the game canvas on mobile</description>
     <license>Apache 2.0</license>
 
-    <js-module src="www/rstoast.js" name="rstoast">
-		<clobbers target="window.Toast"/>
+    <js-module src="www/worklock.js" name="wakeklock">
+		<clobbers target="window.Wakelock"/>
     </js-module>
 
     <!-- android -->
     <platform name="android">
+      <source-file src="src/android/Wakelock.java" target-dir="src/org/apache/cordova/wakelock" />
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="RSToast">
-                <param name="android-package" value="org.apache.cordova.rstoast.RSToast"/>
+            <feature name="Wakelock">
+                <param name="android-package" value="org.apache.cordova.wakelock.Wakelock"/>
             </feature>
         </config-file>
-        <source-file src="src/android/RSToast.java" target-dir="src/org/apache/cordova/rstoast" />
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.WAKE_LOCK"/>
+        </config-file>
     </platform>
 
 </plugin>
