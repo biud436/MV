@@ -1,5 +1,5 @@
 /*:
- * @plugindesc The screen will not turn off until the end of the game.
+ * @plugindesc This plugin provides a function that would not turn off the screen during the game on Android
  * @author biud436
  */
 
