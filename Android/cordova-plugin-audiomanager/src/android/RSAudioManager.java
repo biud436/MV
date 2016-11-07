@@ -206,23 +206,23 @@ public class RSAudioManager extends CordovaPlugin {
 		return soundPool.load(assetFileDescriptor, 1);
 	}
 
-  public void playSoundEffect(String fileName) {
-    int waitLimit = 1000;
-    int waitCounter = 0;
-    int throttle = 10;
+	public void playSoundEffect(String fileName) {
+	  int waitLimit = 1000;
+	  int waitCounter = 0;
+	  int throttle = 10;
 
-    try {
-      fdLastSoundFile = loadSoundEffectFile(fileName);
-    } catch(Exception exAsset) {
+	  try {
+	    fdLastSoundFile = loadSoundEffectFile(fileName);
+	  } catch(Exception exAsset) {
 			cordova.LOG.e(exAsset);
-    }
+	  }
 
-    while( (streamId = soundPool.play(fdLastSoundFile, 1.0f, 1.0f, 0, 0, 1.0f)) == 0 && waitCounter < waitLimit  ) {
-      waitCounter++;
-      SystemClock.sleep(throttle);
-    }
+	  while( (streamId = soundPool.play(fdLastSoundFile, 1.0f, 1.0f, 0, 0, 1.0f)) == 0 && waitCounter < waitLimit  ) {
+	    waitCounter++;
+	    SystemClock.sleep(throttle);
+	  }
 
-  }
+	}
 
 	public void stopSoundEffect(int id) {
 	  try {
