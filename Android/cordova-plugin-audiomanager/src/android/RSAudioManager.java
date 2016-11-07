@@ -42,9 +42,9 @@ public class RSAudioManager extends CordovaPlugin {
 	//========================================================================================================
 
 	// File Descripter
-  private int fdLastSoundFile;
-  private int streamId;
-  private String selectedSoundFile = "Cursor1.ogg";
+	private int fdLastSoundFile;
+	private int streamId;
+	private String selectedSoundFile = "Cursor1.ogg";
 
 	//========================================================================================================
 	// Constructor
@@ -224,14 +224,14 @@ public class RSAudioManager extends CordovaPlugin {
 
   }
 
-  public void stopSoundEffect(int id) {
-    try {
+	public void stopSoundEffect(int id) {
+	  try {
 			id = streamId;
-      soundPool.stop(id); // last stream id
-    } catch(Exception e) {
+	    soundPool.stop(id); // last stream id
+	  } catch(Exception e) {
 			cordova.LOG.e(e);
-    }
-  }
+	  }
+	}
 
 	public int setSoundEffectVolume(int vol) {
 		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, AudioManager.FLAG_SHOW_UI);
