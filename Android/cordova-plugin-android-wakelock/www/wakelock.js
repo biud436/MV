@@ -21,10 +21,34 @@
 
 var exec = require('cordova/exec');
 
-var WakeLock = {
-    init:function() {
-        exec(null, null, "WakeLock", "init", [null]);
-    },
+function WakeLock() {
+  throw new Error("This is static class.");
+}
+
+WakeLock.prototype.constructor = WakeLock;
+
+WakeLock.init = function () {
+  exec(null, null, "WakeLock", "init", [null]);
+};
+
+WakeLock.errorCallback = function (error) {
+  console.error(error);
+};
+
+WakeLock.setDataToPointer = function (params, pointer) {
+  pointer = params;
+};
+
+WakeLock.getScreenWidth = function (pointer) {
+  exec(WakeLock.setDataToPointer(winParams, pointer), WakeLock.errorCallback, "WakeLock", "getScreenWidth", [null]);
+};
+
+WakeLock.getScreenHeight = function (pointer) {
+  exec(WakeLock.setDataToPointer(winParams, pointer), WakeLock.errorCallback, "WakeLock", "getScreenHeight", [null]);
+};
+
+WakeLock.getScreenDestiny = function (pointer) {
+  exec(WakeLock.setDataToPointer(winParams, pointer), WakeLock.errorCallback, "WakeLock", "getScreenDestiny", [null]);
 };
 
 module.exports = WakeLock;
