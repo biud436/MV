@@ -25,8 +25,6 @@ function WakeLock() {
   throw new Error("This is static class.");
 }
 
-WakeLock.prototype.constructor = WakeLock;
-
 WakeLock.init = function () {
   exec(null, null, "WakeLock", "init", [null]);
 };
