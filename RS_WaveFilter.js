@@ -73,16 +73,19 @@ var RS = RS || {};
 RS.WaveConfig = RS.WaveConfig || {};
 
 (function($) {
-
   var isFilterPIXI4 = (PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
+  if(!isFilterPIXI4) {
+    console.error('This version does not work on your project');
+    console.error('Please download the compatible version from the following link : ');
+    console.error('https://github.com/biud436/MV/raw/MV/RS_WaveFilter.js');
+    return;
+  }
   var isWebGL = PIXI.utils.isWebGLSupported();
   var isUseCanvas = Utils.isOptionValid('canvas');
-
-  if(isUseCanvas || !isWebGL || !isFilterPIXI4) {
+  if(isUseCanvas || !isWebGL) {
     console.error('This plugin does not support in your project');
     return;
   }
-
   //----------------------------------------------------------------------------
   // PIXI.WaveFilter < PIXI v4 >
   //
