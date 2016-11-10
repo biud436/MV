@@ -59,7 +59,7 @@
  * 2016.08.17 (v1.4.0) - Fixed the issue that is not working in RMMV 1.3.0 (This filter does not support for the time being in Tile-map)
  * 2016.08.18 (v1.5.0) - Supports a wave filter in ShaderTilemap.
  * 2016.10.20 (v1.5.1) - Fixed the issue that is not working in RMMV 1.3.2
- * 2016.11.10 (v1.5.2) - Fixed the issue that is not working in Orange Overlay plugin
+ * 2016.11.10 (v1.5.2) - Fixed the issue that is not working in Orange Overlay plugin.
  *
  * - Terms of Use
  * Free for commercial and non-commercial use
@@ -506,7 +506,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     var alias_Spriteset_Map_update = Spriteset_Map.prototype.update;
     Spriteset_Map.prototype.update = function() {
       alias_Spriteset_Map_update.call(this);
-      if(this._waveFilter) {
+      if(this._waveFilter && Graphics.isWebGL()) {
         this.wave = $gameSystem.getWaveEnabled();
         this.waveFrequency = $gameSystem.getWaveFrequency();
         this.waveSpeed = $gameSystem.getUVSpeed();
