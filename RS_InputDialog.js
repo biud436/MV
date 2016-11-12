@@ -478,6 +478,7 @@ function Scene_InputDialog() {
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
+    if(!this.textBoxIsBusy()) return false;
     this._textBox.hide();
     this._tbHelp.hide();
     SceneManager._stopped = false;
