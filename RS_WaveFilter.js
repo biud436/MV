@@ -502,7 +502,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   //
   //
 
-  if(!!Imported.OrangeOverlay) {
+  if(Imported.OrangeOverlay) {
     var alias_Spriteset_Map_update = Spriteset_Map.prototype.update;
     Spriteset_Map.prototype.update = function() {
       alias_Spriteset_Map_update.call(this);
