@@ -77,7 +77,7 @@
  * 2016.10.17 (v1.1.4) - Fixed the frame works of input dialog in battle.
  * 2016.10.18 (v1.1.5) - Fixed an issue that battler's movement is too fast.
  * 2016.10.29 (v1.1.6) - Added the function that allows you to specify the maximum number of character for an input field.
- * 2016.11.13 (v1.1.61) - Removed a calling requestUpdate function.
+ * 2016.11.13 (v1.1.61) - Fixed the issue that is directly calling the requestUpdate function of SceneManager.
  */
 
 var Imported = Imported || {};
