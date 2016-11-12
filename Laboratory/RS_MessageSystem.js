@@ -67,6 +67,46 @@
 * @desc 탭 크기
 * @default 4
 *
+* @param back Opacity
+* @desc
+* @default 192
+*
+* @param default Opacity
+* @desc
+* @default 255
+*
+* @param contents Opacity
+* @desc
+* @default 255
+*
+* @param translucent Opacity
+* @desc
+* @default 160
+*
+* @param default outline width
+* @desc
+* @default 2
+*
+* @param default outline Color
+* @desc
+* @default rgba(0, 0, 0, 1.0)
+*
+* @param --- Custom Font
+* @desc
+* @default
+*
+* @param Using Custom Font
+* @desc
+* @default false
+*
+* @param Custom Font Name
+* @desc
+* @default NanumBrush
+*
+* @param Custom Font Src
+* @desc
+* @default fonts/NanumBrush.ttf
+*
 * @help
 * =============================================================================
 * 플러그인 커맨드
@@ -87,6 +127,8 @@
 * 메시지 큰페이스칩Y number
 * 메시지 큰페이스칩Z number
 * 메시지 탭크기 number
+* 메시지 배경투명도 number
+* 메시지 컨텐츠투명도 number
 *
 * =============================================================================
 * 큰 페이스칩 설정
@@ -149,7 +191,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
-* 2016.11.12 (v0.1.3) - 업데이트
+* 2016.11.12 (v0.1.3) - 사용자 정의 폰트, 배경 투명도 변경 기능 추가
 * 2016.10.12 (v0.1.2) - 규격에 맞지 않는 캐릭터도 이제 말풍선이 제대로 표시됩니다.
 * 2016.09.19 (v0.1.1) - 정렬자 기능 개선
 * 2016.06.18 (v0.1.0) - 이름 윈도우 후면에 스프라이트가 그려지지 않는 문제를 수정했습니다
@@ -231,6 +273,47 @@
 * @desc Tab Size
 * @default 4
 *
+*
+* @param back Opacity
+* @desc
+* @default 192
+*
+* @param default Opacity
+* @desc
+* @default 255
+*
+* @param contents Opacity
+* @desc
+* @default 255
+*
+* @param translucent Opacity
+* @desc
+* @default 160
+*
+* @param default outline width
+* @desc
+* @default 2
+*
+* @param default outline Color
+* @desc
+* @default rgba(0, 0, 0, 1.0)
+*
+* @param --- Custom Font
+* @desc
+* @default
+*
+* @param Using Custom Font
+* @desc
+* @default false
+*
+* @param Custom Font Name
+* @desc
+* @default NanumBrush
+*
+* @param Custom Font Src
+* @desc
+* @default fonts/NanumBrush.ttf
+*
 *-------------------------------------------------------------------------------
 * Help
 *-------------------------------------------------------------------------------
@@ -253,6 +336,9 @@
 * RSM faceOX number
 * RSM faceOY number
 * RSM faceZ number
+* RSM TabSize number
+* RSM backOpacity number
+* RSM contentsOpacity number
 *
 * - Text Code
 * These text codes are available in the message window.
@@ -356,6 +442,17 @@ var Color = Color || {};
   RS.MessageSystem.Params.WIDTH = (RS.MessageSystem.Params.FONT_SIZE * 6) + RS.MessageSystem.Params.STD_PADDING;
   RS.MessageSystem.Params.HEIGHT = RS.MessageSystem.Params.FONT_SIZE + (RS.MessageSystem.Params.STD_PADDING / 2);
   RS.MessageSystem.Params.TabSize = Number(parameters['Tab Size'] || 4);
+
+  RS.MessageSystem.Params.backOpacity = Number(parameters['back Opacity'] || 192);
+  RS.MessageSystem.Params.translucentOpacity = Number(parameters['translucent Opacity'] || 160);
+  RS.MessageSystem.Params.defaultOpacity = Number(parameters['default Opacity'] || 255);
+  RS.MessageSystem.Params.contentsOpacity = Number(parameters['contents Opacity'] || 255);
+  RS.MessageSystem.Params.defaultOutlineWidth = Number(parameters['default outline width'] || 2);
+  RS.MessageSystem.Params.defaultOutlineColor = parameters['default outline Color'] || 'white';
+
+  RS.MessageSystem.Params.customFont = Boolean(parameters['Using Custom Font'] === 'true');
+  RS.MessageSystem.Params.customFontName = String(parameters['Custom Font Name'] || 'GameFont' );
+  RS.MessageSystem.Params.customFontSrc = String(parameters['Custom Font Src'] || 'fonts/mplus-1m-regular.ttf');
 
   //============================================================================
   // Multiple Language supports
@@ -959,8 +1056,8 @@ var Color = Color || {};
     Window_Base.prototype.resetFontSettings.call(this);
     this.contents.fontBold = false;
     this.contents.fontItalic = false;
-    this.contents.outlineWidth = 4;
-    this.contents.outlineColor = 'rgba(0, 0, 0, 0.5)';
+    this.contents.outlineWidth = RS.MessageSystem.Params.defaultOutlineWidth;
+    this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
     this.contents.fontGradient = false;
     $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
   };
@@ -1329,7 +1426,38 @@ var Color = Color || {};
         $gameMap.setMsgOwner($gameMap.event(sign));
         break;
       }
+    };
 
+    var alias_Window_Message_standardFontFace = Window_Message.prototype.standardFontFace
+    Window_Message.prototype.standardFontFace = function() {
+      if(RS.MessageSystem.Params.customFont) {
+        return RS.MessageSystem.Params.customFontName;
+      } else {
+        return alias_Window_Message_standardFontFace.call(this);
+      }
+    };
+
+    Window_Message.prototype.standardBackOpacity = function() {
+      return RS.MessageSystem.Params.backOpacity;
+    };
+
+    Window_Message.prototype.translucentOpacity = function() {
+      return RS.MessageSystem.Params.translucentOpacity;
+    };
+
+    Window_Message.prototype.updateDefaultOpacity = function() {
+      this.opacity = RS.MessageSystem.Params.defaultOpacity;
+    };
+
+    Window_Message.prototype.updateContentsOpacity = function() {
+      this.contentsOpacity = RS.MessageSystem.Params.contentsOpacity;
+    };
+
+    var alias_Window_Message_update = Window_Message.prototype.update;
+    Window_Message.prototype.update = function() {
+      alias_Window_Message_update.call(this);
+      this.updateDefaultOpacity();
+      this.updateContentsOpacity();
     };
 
     //============================================================================
@@ -1690,6 +1818,19 @@ var Color = Color || {};
       return this.reverse().match(/.{1,3}/g).join(",").reverse();
     };
 
+
+    //===========================================================================
+    // Scene_Boot
+    //===========================================================================
+
+    var alias_Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
+    Scene_Boot.prototype.loadSystemImages = function() {
+      alias_Scene_Boot_loadSystemImages.call(this);
+      if(RS.MessageSystem.Params.customFont) {
+        Graphics.loadFont(RS.MessageSystem.Params.customFontName, RS.MessageSystem.Params.customFontSrc);
+      }
+    };
+
     //===========================================================================
     // Game_Interpreter
     //===========================================================================
@@ -1764,6 +1905,12 @@ var Color = Color || {};
           //-------------------------------------------------------------------------
           case 'setTabSize': case '탭크기':
           RS.MessageSystem.Params.TabSize = Number(args[1] || 4);
+          break;
+          case 'backgroundOpacity': case '배경투명도':
+          RS.MessageSystem.Params.defaultOpacity = Number(args[1] || 255);
+          break;
+          case 'contentsOpacity': case '컨텐츠투명도':
+          RS.MessageSystem.Params.contentsOpacity = Number(args[1] || 255);
           break;
           // End main switch
         }
