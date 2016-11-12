@@ -326,22 +326,22 @@
 * You are available plugin commands as follows.
 * These plugin commands may be very useful to user.
 *
-* RSM textSpeed number
-* RSM fontSize number
-* RSM minFontSize number
-* RSM maxFontSize number
-* RSM gradient color1 color2 color3
-* RSM line number
-* RSM textStartX number
-* RSM name x number
-* RSM name y number
-* RSM name padding number
-* RSM faceOX number
-* RSM faceOY number
-* RSM faceZ number
-* RSM TabSize number
-* RSM backOpacity number
-* RSM contentsOpacity number
+* Message textSpeed number
+* Message fontSize number
+* Message minFontSize number
+* Message maxFontSize number
+* Message gradient color1 color2 color3
+* Message line number
+* Message textStartX number
+* Message name x number
+* Message name y number
+* Message name padding number
+* Message faceOX number
+* Message faceOY number
+* Message faceZ number
+* Message TabSize number
+* Message backOpacity number
+* Message contentsOpacity number
 *
 * - Text Code
 * These text codes are available in the message window.
@@ -1842,7 +1842,7 @@ var Color = Color || {};
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
       alias_pluginCommand.call(this, command, args);
 
-      if(command === "RSM" || command === "메시지") {
+      if(command === "Message" || command === "메시지") {
         switch (args[0]) {
           //-------------------------------------------------------------------------
           case 'textSpeed': case '텍스트속도':
