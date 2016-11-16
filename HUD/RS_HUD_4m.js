@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.7) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.8) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
@@ -382,10 +382,11 @@
  * - Fixed the bug that is not controlled the opacity of HUD.
  * 2016.10.14 (v1.1.7) - Fixed the bug that causes the error called 'undefined
  * bitmap' when you are adding certain party member.
+ * 2016.11.16 (v1.1.8) - Fixed a bug with the Battle Background.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.1.7';
+Imported.RS_HUD_4m = '1.1.8';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -420,6 +421,16 @@ RS.HUD.param = RS.HUD.param || {};
     return new Point(x, y);
   };
 
+  RS.HUD.loadRealNumber = function (paramName, val) {
+    var value = Number(parameters[paramName]);
+    switch (typeof(value)) {
+      case 'object': case 'undefined':
+        value = val;
+        break;
+    }
+    return value;
+  };
+
   RS.HUD.param.ptFace = RS.HUD.loadImagePosition(parameters['Face Position'] || '0, 0, true');
   RS.HUD.param.ptHP = RS.HUD.loadImagePosition(parameters['HP Position'] || '160, 43, true');
   RS.HUD.param.ptMP = RS.HUD.loadImagePosition(parameters['MP Position'] || '160, 69, true');
@@ -431,12 +442,13 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.ptNameText = RS.HUD.loadImagePosition(parameters['Name Text Position'] || '54, 53, true');
 
   // Normal Settings
-  RS.HUD.param.nWidth = Number(parameters['Width']) || 317;
-  RS.HUD.param.nHeight = Number(parameters['Height']) || 101 ;
-  RS.HUD.param.nPD = Number(parameters['Margin']) || 0 ;
+  RS.HUD.param.nWidth = RS.HUD.loadRealNumber('Width', 317);
+  RS.HUD.param.nHeight = RS.HUD.loadRealNumber('Height', 101);
+  RS.HUD.param.nPD = RS.HUD.loadRealNumber('Margin', 0);
   RS.HUD.param.blurProcessing = Boolean(parameters['Gaussian Blur'] === "true");
   RS.HUD.param.bShow = Boolean(parameters['Show'] ==="true");
-  RS.HUD.param.nOpacity = Number(parameters['Opacity']) || 255 ;
+  RS.HUD.param.nOpacity = RS.HUD.loadRealNumber('Opacity', 255);
+
   RS.HUD.param.szAnchor = String(parameters['Anchor'] || "LeftTop");
   RS.HUD.param.arrangement = eval(parameters['Arrangement']);
   RS.HUD.param.preloadImportantFaces = eval(parameters['preloadImportantFaces'] || 'Actor1');
@@ -460,11 +472,11 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.standardFont = String(parameters['Standard Font'] || 'GameFont');
 
   // Text Size
-  RS.HUD.param.levelTextSize = Number(parameters['Level Text Size']) || 12;
-  RS.HUD.param.hpTextSize = Number(parameters['HP Text Size']) || 12;
-  RS.HUD.param.mpTextSize = Number(parameters['MP Text Size'] || 12);
-  RS.HUD.param.expTextSize = Number(parameters['EXP Text Size'] || 12);
-  RS.HUD.param.nameTextSize = Number(parameters['Name Text Size'] || 12);
+  RS.HUD.param.levelTextSize = RS.HUD.loadRealNumber('Level Text Size', 12);
+  RS.HUD.param.hpTextSize = RS.HUD.loadRealNumber('HP Text Size', 12);
+  RS.HUD.param.mpTextSize = RS.HUD.loadRealNumber('MP Text Size', 12);
+  RS.HUD.param.expTextSize = RS.HUD.loadRealNumber('EXP Text Size', 12);
+  RS.HUD.param.nameTextSize = RS.HUD.loadRealNumber('Name Text Size', 12);
 
   // Text Color
   RS.HUD.param.szHpColor =  String(parameters['HP Color'] || '#ffffff');
@@ -481,11 +493,11 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.szNameOutlineColor = String(parameters['Name Outline Color'] || 'rgba(0, 0, 0, 0.5)');
 
   // Text Outline Width
-  RS.HUD.param.szHpOutlineWidth =  Number(parameters['HP Outline Width']) || 4;
-  RS.HUD.param.szMpOutlineWidth = Number(parameters['MP Outline Width']) || 4;
-  RS.HUD.param.szExpOutlineWidth = Number(parameters['EXP Outline Width']) || 4;
-  RS.HUD.param.szLevelOutlineWidth = Number(parameters['Level Outline Width']) || 4;
-  RS.HUD.param.szNameOutlineWidth = Number(parameters['Name Outline Width']) || 4;
+  RS.HUD.param.szHpOutlineWidth = RS.HUD.loadRealNumber('HP Outline Width', 4);
+  RS.HUD.param.szMpOutlineWidth = RS.HUD.loadRealNumber('MP Outline Width', 4);
+  RS.HUD.param.szExpOutlineWidth = RS.HUD.loadRealNumber('EXP Outline Width', 4);
+  RS.HUD.param.szLevelOutlineWidth = RS.HUD.loadRealNumber('Level Outline Width', 4);
+  RS.HUD.param.szNameOutlineWidth = RS.HUD.loadRealNumber('Name Outline Width', 4);
 
   // Custom Font
   RS.HUD.param.bUseCustomFont = Boolean(parameters['Using Custom Font'] === 'true');
@@ -498,6 +510,9 @@ RS.HUD.param = RS.HUD.param || {};
   for(var i = 0; i < 4; i++) {
     RS.HUD.param.ptCustormAnchor.push( RS.HUD.loadCustomPosition(parameters['Custom Pos ' + (i + 1)] || '0, 0') );
   }
+
+  RS.HUD.param.isCurrentBattleShowUp = false;
+  RS.HUD.param.isPreviousShowUp = false;
 
   // Opacity and Tone  Glitter Settings
   var nOpacityEps = 5;
@@ -996,6 +1011,8 @@ RS.HUD.param = RS.HUD.param || {};
 
   RS_HudLayer.prototype.initialize = function(bitmap) {
     Sprite.prototype.initialize.call(this, bitmap);
+    // This variable sets transparency to zero.
+    this.alpha = 0;
     this.createItemLayer();
   };
 
@@ -1009,16 +1026,19 @@ RS.HUD.param = RS.HUD.param || {};
     var allHud = this._items;
     var items = RS.HUD.param.arrangement;
 
+    // This removes any drawing objects that have already been created.
     if(allHud.children.length > 0) {
       allHud.removeChildren(0, allHud.children.length);
     }
 
     items.forEach(function(item, index){
+      // This code runs only when there is a party member at a specific index.
       if(!!$gameParty.members()[index]) {
         if(item !== null) allHud.addChild(new HUD({szAnchor: item, nIndex: index}));
       }
     }, this);
 
+    // It sorts objects by party number.
     this.sort();
 
     this.show = $gameSystem._rs_hud.show;
@@ -1062,24 +1082,28 @@ RS.HUD.param = RS.HUD.param || {};
 
   Object.defineProperty(RS_HudLayer.prototype, 'show', {
       get: function() {
-          return this._items.children[0].show;
+          // return this._items.children[0].show;
+          return this.visible;
       },
       set: function(value) {
-          this._items.children.forEach( function(i) {
-            i.visible = value;
-          }, this);
+          // this._items.children.forEach( function(i) {
+          //   i.visible = value;
+          // }, this);
+          this.visible = value;
           $gameSystem._rs_hud.show = value;
       },
   });
 
   Object.defineProperty(RS_HudLayer.prototype, 'opacity', {
       get: function() {
-          return this._items.children[0].opacity;
+          // return this._items.children[0].opacity;
+          return Math.floor(this.alpha * 255);
       },
       set: function(value) {
-          this._items.children.forEach( function(i) {
-            i.opacity = value.clamp(0, 255);
-          }, this);
+          // this._items.children.forEach( function(i) {
+          //   i.opacity = value.clamp(0, 255);
+          // }, this);
+          this.alpha = value * 0.00392156862745098;
           $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
   });
@@ -1111,7 +1135,6 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.initialize = function(config) {
       Stage.prototype.initialize.call(this);
-      this.visible = false;
       this.createHud();
       this.setAnchor(config.szAnchor || "LeftBottom");
       this.setMemberIndex(parseInt(config.nIndex) || 0);
@@ -1551,10 +1574,33 @@ RS.HUD.param = RS.HUD.param || {};
 
   var alias_Scene_Map_snapForBattleBackground = Scene_Map.prototype.snapForBattleBackground;
   Scene_Map.prototype.snapForBattleBackground = function() {
+    var temp = $gameHud.show;
     if($gameHud && $gameHud.show) $gameHud.show = false;
     alias_Scene_Map_snapForBattleBackground.call(this);
-    if($gameHud && !$gameHud.show) $gameHud.show = true;
+    if($gameHud && !$gameHud.show) {
+      RS.HUD.param.isPreviousShowUp = temp;
+      $gameHud.show = temp;
+    }
+
   };
+
+  var alias_Scene_Map_updateFade = Scene_Map.prototype.updateFade;
+  Scene_Map.prototype.updateFade = function() {
+    alias_Scene_Map_updateFade.call(this);
+    if(this._fadeDuration == 0 && RS.HUD.param.isCurrentBattleShowUp) {
+      $gameHud.show = RS.HUD.param.isPreviousShowUp;
+      RS.HUD.param.isCurrentBattleShowUp = false;
+    }
+  }
+
+  var alias_Scene_Battle_updateFade = Scene_Battle.prototype.updateFade;
+  Scene_Battle.prototype.updateFade = function() {
+    alias_Scene_Battle_updateFade.call(this);
+    if(this._fadeDuration == 0 && !RS.HUD.param.isCurrentBattleShowUp) {
+      $gameHud.show = true;
+      RS.HUD.param.isCurrentBattleShowUp = true;
+    }
+  }
 
   //----------------------------------------------------------------------------
   // Game_Interpreter
