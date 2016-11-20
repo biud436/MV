@@ -60,6 +60,7 @@
  * 2016.08.18 (v1.5.0) - Supports a wave filter in ShaderTilemap.
  * 2016.10.20 (v1.5.1) - Fixed the issue that is not working in RMMV 1.3.2
  * 2016.11.10 (v1.5.2) - Fixed the issue that is not working in Orange Overlay plugin.
+ * 2016.11.18 (v1.5.3) - Fixed an issue where the original tilemap is rendered when using Orange Overlay plugin.
  *
  * - Terms of Use
  * Free for commercial and non-commercial use
@@ -317,6 +318,11 @@ RS.WaveConfig = RS.WaveConfig || {};
        }
    });
 
+   //----------------------------------------------------------------------------
+   // PIXI.tilemap
+   //
+   // Wave filter applies only to the original tilemap except for the character layer.
+
    var alias_CompositeRectTileLayer_initialize = $.CompositeRectTileLayer.prototype.initialize;
    $.CompositeRectTileLayer.prototype.initialize = function (zIndex, bitmaps, useSquare, texPerChild) {
        alias_CompositeRectTileLayer_initialize.call(this, zIndex, bitmaps, useSquare, texPerChild);
@@ -338,7 +344,9 @@ RS.WaveConfig = RS.WaveConfig || {};
 
    var alias_CompositeRectTileLayer_renderWebGL = $.CompositeRectTileLayer.prototype.renderWebGL;
    $.CompositeRectTileLayer.prototype.renderWebGL = function (renderer) {
-       if($gameSystem && !!$gameSystem.getWaveEnabled && !$gameSystem.getWaveEnabled()) {
+       if($gameSystem &&
+         !!$gameSystem.getWaveEnabled && !$gameSystem.getWaveEnabled() ||
+         !!Imported.OrangeOverlay) {
          return alias_CompositeRectTileLayer_renderWebGL.call(this, renderer);
        }
 
@@ -368,6 +376,7 @@ RS.WaveConfig = RS.WaveConfig || {};
 
        renderer.bindRenderTexture(target);
 
+       // It is rendering on textures, but it does not appear on the screen.
        var layers = this.children;
        for (var i = 0; i < layers.length; i++) {
            renderer.render(layers[i], this._renderTexture);
@@ -500,13 +509,13 @@ RS.WaveConfig = RS.WaveConfig || {};
   //----------------------------------------------------------------------------
   // Orange Overlay
   //
-  //
+  // Apply the wave filter to all layers (by including character layers)
 
   if(Imported.OrangeOverlay) {
     var alias_Spriteset_Map_update = Spriteset_Map.prototype.update;
     Spriteset_Map.prototype.update = function() {
       alias_Spriteset_Map_update.call(this);
-      if(this._waveFilter && Graphics.isWebGL()) {
+      if(this._waveFilter && Graphics.isWebGL() ) {
         this.wave = $gameSystem.getWaveEnabled();
         this.waveFrequency = $gameSystem.getWaveFrequency();
         this.waveSpeed = $gameSystem.getUVSpeed();
