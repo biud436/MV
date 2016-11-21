@@ -1518,10 +1518,10 @@ RS.HUD.param = RS.HUD.param || {};
 
   var _Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    if(!RS.HUD.param.battleOnly) {
+    // if(!RS.HUD.param.battleOnly) {
       this.removeChild(this._hudLayer);
       $gameHud = null;
-    }
+    // }
     _Scene_Map_terminate.call(this);
   };
 
