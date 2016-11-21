@@ -8,5 +8,5 @@ These plugins have not yet been developed. So they can not expect normal executi
 - RS_tsBindMaptoBattle.js - This plugin allows you to create a normal map field in battle.
 - RS_tsMiniGame.js - This plugin is a simple mini game.
 - RS_ParallaxTitleEx.js (v1.03 Updated) - Added new features.
- - Replaced the text with PIXI.Text.
+ - Removed the error when using objects for older versions.
  - Correctly created the contents of the default sprite button by reading the elements in the command window and bound them.
