@@ -1,8 +1,7 @@
 
 ### Installation ###
-<span> Download the plugin and place it in the folder called
-<b><span style="color:red;">your_project_directory/js/plugins.</span></b>
-And then In Plugin Manager, Select the RS_*.js plugin and add it.</span>
+Download the plugin and place it in the folder called <b><span style="color:red;">your_project_directory/js/plugins.</span></b>
+And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 
 ![HowtoDownloadPlugin](http://i.imgur.com/BCG99Dm.png)
 
