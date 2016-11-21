@@ -6,8 +6,9 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 ![HowtoDownloadPlugin](http://i.imgur.com/BCG99Dm.png)
 
 ### To send feedback ###
-If you have feedback to send me, please write your feedback on my blog.
-- [http://biud436.tistory.com/notice/21](http://biud436.tistory.com/notice/21)
+If you have feedback to send me, please write your feedback at the following site.
+- [My Blog](http://biud436.tistory.com/notice/21)
+- [Issues](https://github.com/biud436/MV/issues)
 
 ### Credit and Thanks ###
 Biud436
