@@ -31,21 +31,13 @@
  * @desc Specify Text outline Color.
  * @default #6799FF
  *
- * @param Text Tone
- * @desc Specify Text Tone
- * @default  0xD9FF80
+ * @param Selected Color
+ * @desc Specifies the color of the text when the button is selected.
+ * @default #6799FF
  *
- * @param Game Start
- * @desc Write the appropriate text for this button.
- * @default  Game Start
- *
- * @param Game Load
- * @desc  Write the appropriate text for this button.
- * @default  Game Load
- *
- * @param Game Exit
- * @desc  Write the appropriate text for this button.
- * @default  Game Exit
+ * @param Unselected Color
+ * @desc Specifies the color of the text when the button is unselected.
+ * @default #888888
  *
  * @param ---------
  * @desc
@@ -54,6 +46,10 @@
  * @param Subtext
  * @desc Sets the content of the subtext of the game title text.
  * @default v1.0.0
+ *
+ * @param Font Family
+ * @desc Specify a font.
+ * @default Arial
  *
  * @help
  * =============================================================================
@@ -68,6 +64,10 @@
  * =============================================================================
  * 2016.03.04 (v1.0.1) - Added the comments for include used files.
  * 2016.11.21 (v1.0.2) - Fixed the bugs.
+ * 2016.11.21 (v1.0.3) : Added new features.
+ * - Replaced the text with PIXI.Text.
+ * - Correctly created the contents of the default sprite button
+ * by reading the elements in the command window and bound them.
  */
 
 var Imported = Imported || {};
@@ -81,24 +81,22 @@ RS.Utils = RS.Utils || {};
 (function($) {
 
   var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
-  var parallaxImage = $.parallaxImage = (parameters['parallaxImage'] || 'BlueSky');
-  var textType = $.textType = parameters['TextAnimation'] || 'Push';
-  var szExit = $.szExit = String(parameters['Game Exit'] || "Game Exit");
-  var _x = $._x = null;
-  var _y = $.parall_yaxImage = null;
-  var _dist = $._dist = Number(parameters['Interval'] || 80);
-  var _menuSize = $._menuSize = Number(parameters['Menu Size'] || 3);
-  var _maxAngle = $._maxAngle =  360.0 / _menuSize;
-  var _angleSpeed = $._angleSpeed = parseFloat(parameters['Angle Speed'] || 120.0);
-  var _pi = $._pi = Math.PI;
-  var _outLineColor = $._outLineColor = String(parameters['Text outline Color'] || '#6799FF');
-  var _tintColor = $._tintColor = parseInt(parameters['Text Tone'] || 0xD9FF80);
-  var _gameStart = $._gameStart = String(parameters['Game Start'] || "Game Start");
-  var _gameContinue = $._gameContinue = String(parameters['Game Load'] || "Game Load");
-  var _gameOptions = $._gameOptions = String(parameters['Game Exit'] || "Game Exit");
+  $.parallaxImage = (parameters['parallaxImage'] || 'BlueSky');
+  $.textType = parameters['TextAnimation'] || 'Push';
+  $._x = null;
+  $._y = null;
+  $._dist = Number(parameters['Interval'] || 80);
+  $._menuSize = Number(parameters['Menu Size'] || 3);
+  $._maxAngle =  360.0 / $._menuSize;
+  $._angleSpeed = parseFloat(parameters['Angle Speed'] || 120.0);
+  $._outLineColor = String(parameters['Text outline Color'] || '#6799FF');
+  $.selectedColor = parameters['Selected Color'] || '#6799FF';
+  $.unselectedColor = parameters['Unselected Color'] || '#888888';
+
+  $.fontFamily = parameters['Font Family'] || 'Arial';
 
   $.defaultTextStyle = {
-    fontFamily: 'Arial',
+    fontFamily: $.fontFamily,
     fontStyle: 'normal',
     align: 'center',
     fontSize : 72,
@@ -125,17 +123,11 @@ RS.Utils = RS.Utils || {};
     text: parameters['Subtext'] || 'v1.0.0',
     fontSize: 24,
     dropShadow: true,
-    fill: ['#888888','#FFFFFF'],
+    fill: [$.unselectedColor,'#FFFFFF'],
     align: 'right'
   };
 
   $.touchPoint = new PIXI.Point();
-
-  $.ENUM = {
-    'GAME_START': 0,
-    'GAME_LOAD': 1,
-    'GAME_EXIT': 2
-  };
 
   //============================================================================
   // RS.Utils
@@ -174,17 +166,6 @@ RS.Utils = RS.Utils || {};
   };
 
   //============================================================================
-  // Window_TitleCommand
-  //
-  //
-
-  Window_TitleCommand.prototype.makeCommandList = function() {
-    this.addCommand(TextManager.newGame,   'newGame');
-    this.addCommand(TextManager.continue_, 'continue', this.isContinueEnabled());
-    this.addCommand(szExit,   'exit');
-  };
-
-  //============================================================================
   // Scene_Title
   //
   //
@@ -194,8 +175,7 @@ RS.Utils = RS.Utils || {};
     alias_Scene_Title_start.call(this);
     this.initSpriteParameter();
     this.initTouchParameter();
-    this.makeSprite();
-    if(!DataManager.isAnySavefileExists()) this.text2.opacity = 128;
+    if(!DataManager.isAnySavefileExists()) this._texts[1].opacity = 128;
   };
 
   var alias_Scene_Title_update = Scene_Title.prototype.update;
@@ -261,7 +241,7 @@ RS.Utils = RS.Utils || {};
 
       // Distort the text by distortion type such as 'Push' and 'Split' types.
       this.scale.x = Math.sin(power);
-      this.scale.y = (textType === "Push") ? Math.sin(power) : Math.cos(power);
+      this.scale.y = ($.textType === "Push") ? Math.sin(power) : Math.cos(power);
 
       // Rotate the text.
       if(this.rotation <= Math.PI * 2) this.rotation += (2 * Math.PI ) / 90;
@@ -284,7 +264,7 @@ RS.Utils = RS.Utils || {};
     this._backSprite2 = new Sprite(ImageManager.loadTitle2($dataSystem.title2Name));
 
     // Sets the x, y, width, and height all at once in tiling sprite.
-    this._backSprite1.move(0,0,Graphics.boxWidth,Graphics.boxHeight);
+    this._backSprite1.move(0, 0, Graphics.boxWidth,Graphics.boxHeight);
 
     // Override the TilingSprite update function.
     var _backSprite1_update = this._backSprite1.update;
@@ -300,14 +280,6 @@ RS.Utils = RS.Utils || {};
     this.addChild(this._backSprite1);
     this.addChild(this._backSprite2);
 
-  };
-
-  Scene_Title.prototype.createCommandWindow = function() {
-    this._commandWindow = new Window_TitleCommand();
-    this._commandWindow.setHandler('newGame',  this.commandNewGame.bind(this));
-    this._commandWindow.setHandler('continue', this.commandContinue.bind(this));
-    this._commandWindow.setHandler('exit',  this.commandExit.bind(this));
-    this.addWindow(this._commandWindow);
   };
 
   Scene_Title.prototype.commandExit = function() {
@@ -411,7 +383,9 @@ RS.Utils = RS.Utils || {};
   var _alias_startFadeOut = Scene_Title.prototype.startFadeOut;
   Scene_Title.prototype.startFadeOut = function (duration, white) {
     _alias_startFadeOut.apply(this, arguments);
-    this.text1.opacity = this.text2.opacity = this.text3.opacity = 0;
+    this._texts.forEach(function (e) {
+      e.opacity = 0;
+    });
   };
 
   Scene_Title.prototype.updateScale = function() {
@@ -433,13 +407,13 @@ RS.Utils = RS.Utils || {};
 
         // Increase size.
         i.scale.set(p, p);
-        if(i.children[0]) i.children[0].style.fill = ['#6799FF','#FFFFFF'];
+        if(i.children[0]) i.children[0].style.fill = [$.selectedColor,'#FFFFFF'];
 
       } else {
 
         // Set the original size.
         i.scale.set(1.0, 1.0);
-        if(i.children[0]) i.children[0].style.fill = ['#888888','#FFFFFF'];
+        if(i.children[0]) i.children[0].style.fill = [$.unselectedColor,'#FFFFFF'];
 
       }
     }, this);
@@ -447,8 +421,8 @@ RS.Utils = RS.Utils || {};
   };
 
   Scene_Title.prototype.getTopItem = function() {
-    var list = [this.text1, this.text2, this.text3];
-    list.sort(function(a, b) { return a.y - b.y } );
+    var list = this._texts.slice(0);
+    list.sort(function(a, b) { return a.y - b.y });
     return list;
   };
 
@@ -459,25 +433,25 @@ RS.Utils = RS.Utils || {};
 
     // Return menu index.
     var i = this.menuIndex();
-    var result = null;
 
-    // Plays the OK sound.
-    SoundManager.playOk();
+    var self = this._commandWindow;
 
-    result = [];
-    result[$.ENUM.GAME_START] = function() {
-        this.commandNewGame();
-        this._isGameStarted = true;
-    };
-    result[$.ENUM.GAME_LOAD] = function() {
-        if(DataManager.isAnySavefileExists()) {
-          this.commandContinue();
-        }
-    };
-    result[$.ENUM.GAME_EXIT] = function() {
-        this.commandExit();
-    };
-    result[i].call(this);
+    var symbol = self.commandSymbol(i);
+    if(symbol !== 'continue') {
+      if(self._handlers[symbol]) {
+        // Plays the OK sound.
+        SoundManager.playOk();
+        self._handlers[symbol]();
+      }
+    } else {
+      if(self.isContinueEnabled()) {
+        // Plays the OK sound.
+        SoundManager.playOk();
+        if(self._handlers[symbol]) self._handlers[symbol]();
+      } else {
+        SoundManager.playBuzzer();
+      }
+    }
   };
 
   Scene_Title.prototype.left= function(wrap) {
@@ -518,37 +492,52 @@ RS.Utils = RS.Utils || {};
   };
 
   Scene_Title.prototype.moveMenu = function() {
-    this.move(this.text1, this._r + $._dist, this._angle + 180);
-    this.move(this.text2, this._r + $._dist, this._angle);
-    this.move(this.text3, this._r + $._dist, this._angle + 90);
+    // Returns the angle of the command window.
+    var gRate = Math.atan2(this._commandWindow.y, this._commandWindow.x) * (180 / Math.PI);
+    var angle = 0;
+    for (var i = 0; i < this._listLength; i++) {
+      angle = Math.cos( (Math.PI / 2) * i );
+      if(Math.abs(angle) === 1) {
+        angle *= 90;
+      } else {
+        angle = 0;
+      }
+      this.move(this._texts[i], this._r + $._dist, this._angle + RS.Utils.convertToRadian(gRate * angle));
+    }
   };
 
   Scene_Title.prototype.menuIndex = function() {
     // If the element is not found, it returns the minimum value of the array.
     // TODO: Is it better to use the sort function?
     var n = this.spriteDistance();
-    return n.indexOf(n.min());
+    return this._texts.indexOf(n.min());
   };
 
   Scene_Title.prototype.spriteDistance = function() {
-    var a = this.text1.y;
-    var b = this.text2.y;
-    var c = this.text3.y;
-    var result = [a,b,c];
-    return result;
+    var list = this._texts.slice(0);
+    list.sort(function (a, b) {
+      return a.y - b.y;
+    });
+    return list;
   };
 
   Scene_Title.prototype.move = function(sprite, r, angle) {
+    if(!sprite) return;
     var x = ( this._originPosition[0] )+ r * Math.sin(angle) - sprite.width / 2;
     var y = ( this._originPosition[1] ) + r * Math.sin(angle) - sprite.height / 2;
-    sprite.position.x = x;
-    sprite.position.y = y;
+    sprite.x = x;
+    sprite.y = y;
   };
 
-  Scene_Title.prototype.makeSprite = function() {
-    this.text1 = this.makeText($._gameStart);
-    this.text2 = this.makeText($._gameContinue);
-    this.text3 = this.makeText($._gameOptions);
+  Scene_Title.prototype.makeSprite = function(list) {
+    this._texts = [];
+    this._listLength = parseInt(list.length);
+    this._lists = list;
+    $._menuSize = this._listLength;
+    $._maxAngle =  360.0 / $._menuSize;
+    list.forEach(function (e, i, a) {
+      this._texts.push(this.makeText(list[i].name));
+    }, this);
 
     // This flag indicates that the text was successfully created.
     this._textCreated = true;
@@ -584,6 +573,7 @@ RS.Utils = RS.Utils || {};
     this._commandWindow.opacity = 0;
     this._commandWindow.contentsOpacity = 0;
     this._commandWindow.active = false;
+    this.makeSprite(JsonEx.makeDeepCopy(this._commandWindow._list));
   };
 
 })(RS.ParallaxTitleEx.Params);
