@@ -65,7 +65,7 @@
  * 2016.03.04 (v1.0.1) - Added the comments for include used files.
  * 2016.11.21 (v1.0.2) - Fixed the bugs.
  * 2016.11.21 (v1.0.3) : Added new features.
- * - Removed the error when using objects for older versions.
+ * - Removed the error that causes when using objects for older versions.
  * - Correctly created the contents of the default sprite button
  * by reading the elements in the command window and bound them.
  */
