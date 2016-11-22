@@ -437,7 +437,7 @@ RS.Utils = RS.Utils || {};
     this.right(Input.isTriggered("right") || (TouchInput.wheelY - this._wheelBegin) > 0 );
 
     // When the decision key is pressed
-    if( Input.isTriggered("ok") || TouchInput.isPressed() ) {
+    if( Input.isTriggered("ok") || TouchInput.isTriggered() ) {
       this.selectMenu();
     }
 
