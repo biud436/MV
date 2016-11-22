@@ -417,12 +417,6 @@ RS.Utils = RS.Utils || {};
 
   };
 
-  Scene_Title.prototype.commandExit = function() {
-    this._commandWindow.close();
-    this.fadeOutAll();
-    window.close();
-  };
-
   Scene_Title.prototype.initSpriteParameter = function() {
     $._x = Graphics.width / 2 + eval($.xPadding);
     $._y = Graphics.height / 2 + $._dist;
