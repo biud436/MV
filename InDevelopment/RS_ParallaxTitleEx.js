@@ -31,6 +31,13 @@
  * @dir img/parallaxes
  * @type file
  *
+ * @param parallaxImage5
+ * @desc parallax Image
+ * @default
+ * @require 1
+ * @dir img/parallaxes
+ * @type file
+ *
  * @param TextAnimation
  * @desc Please fill out one of these styles.
  * (Push, Split)
@@ -85,29 +92,62 @@
  * @default
  *
  * @param Parallax Position1
- * @desc
- * @default [0, 0]
+ * @desc [x, y, blend_mode]
+ * @default [0, 0, 0]
  *
  * @param Parallax Position2
- * @desc
- * @default [0, 0]
+ * @desc [x, y, blend_mode]
+ * @default [0, 0, 3]
  *
  * @param Parallax Position3
- * @desc
- * @default [0, 0]
+ * @desc [x, y, blend_mode]
+ * @default [0, 0, 0]
  *
  * @param Parallax Position4
- * @desc
- * @default [0, 0]
+ * @desc [x, y, blend_mode]
+ * @default [0, 0, 0]
+ *
+ * @param Parallax Position5
+ * @desc [x, y, blend_mode]
+ * @default [0, 0, 0]
  *
  * @help
+ * =============================================================================
+ * Installation
+ * =============================================================================
+ * Place a custom parallax image in img/parallax folder into your project folder.
+ * and then you can specify its image in your Plugin Managers.
  * =============================================================================
  * Text Animation
  * =============================================================================
  * The main game text has two text annimations as follows.
- * 'Push' animation that text becomes smaller and larger.
- * 'Split' animation that the text grows in the horizontal direction and becomes smaller.
+ * - 'Push' animation that text becomes smaller and larger.
+ * - 'Split' animation that the text grows in the horizontal direction and becomes smaller.
  * The default animation of them is same as 'Push' animation.
+ * =============================================================================
+ * Blend Modes (base on Pixi4)
+ * =============================================================================
+ * You can find the 'Parallax Position' parameter in your Plugin Manager
+ * and then notice that you properly set up the blend mode in 'Parallax Position' parameter
+ * and it should be set as an javascript array literal.
+ *
+ * NORMAL: 0,
+ * ADD: 1,
+ * MULTIPLY: 2,
+ * SCREEN: 3,
+ * OVERLAY: 4,
+ * DARKEN: 5,
+ * LIGHTEN: 6,
+ * COLOR_DODGE: 7,
+ * COLOR_BURN: 8,
+ * HARD_LIGHT: 9,
+ * SOFT_LIGHT: 10,
+ * DIFFERENCE: 11,
+ * EXCLUSION: 12,
+ * HUE: 13,
+ * SATURATION: 14,
+ * COLOR: 15,
+ * LUMINOSITY: 16
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -118,6 +158,7 @@
  * - Correctly created the contents of the default sprite button
  * by reading the elements in the command window and bound them.
  * 2016.11.22 (v1.0.4) - Added backgrounds that have applied a parallax scrolling.
+ * 2016.11.22 (v1.0.5) - Optimized some code.
  */
 
 var Imported = Imported || {};
@@ -131,10 +172,13 @@ RS.Utils = RS.Utils || {};
 (function($) {
 
   var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
-  $.parallaxImage = parameters['parallaxImage'] || undefined;
-  $.parallaxImage2 = parameters['parallaxImage2'] || undefined;
-  $.parallaxImage3 = parameters['parallaxImage3'] || undefined;
-  $.parallaxImage4 = parameters['parallaxImage4'] || undefined;
+  $.parallaxImage = [
+    parameters['parallaxImage'] || undefined,
+    parameters['parallaxImage2'] || undefined,
+    parameters['parallaxImage3'] || undefined,
+    parameters['parallaxImage4'] || undefined,
+    parameters['parallaxImage5'] || undefined
+  ];
   $.textType = parameters['TextAnimation'] || 'Push';
   $._x = null;
   $._y = null;
@@ -185,10 +229,13 @@ RS.Utils = RS.Utils || {};
   $.isCircularRotation = Boolean(parameters['Circular Rotation'] === 'true');
   $.xPadding = parameters['X Offset'] || 'this._commandWindow.width / 4';
 
-  $.parallaxPos1 = [0, 0];
-  $.parallaxPos2 = [0, 0];
-  $.parallaxPos3 = [0, 0];
-  $.parallaxPos4 = [0, 0];
+  $.parallaxPos = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+  ];
 
   //============================================================================
   // RS.Utils
@@ -252,10 +299,9 @@ RS.Utils = RS.Utils || {};
   Scene_Title.prototype.terminate = function () {
     if(alias_Scene_Title_terminate) alias_Scene_Title_terminate.call(this);
     // When there is already a title scene in the scene stack, this will remove the TilingSprite.
-    if(this._parallax1) this.removeChild(this._parallax1);
-    if(this._parallax2) this.removeChild(this._parallax2);
-    if(this._parallax3) this.removeChild(this._parallax3);
-    if(this._parallax4) this.removeChild(this._parallax4);
+    for (var i = 0; i < this._parallax.length; i++) {
+      if(this._parallax[i]) this.removeChild(this._parallax[i]);
+    }
   };
 
   Scene_Title.prototype.createForeground = function() {
@@ -324,13 +370,14 @@ RS.Utils = RS.Utils || {};
 
   Scene_Title.prototype.createBackground = function() {
 
+    this._parallax = [];
+
     // Create tiling sprite
     this._backSprite1 = new Sprite(ImageManager.loadTitle1($dataSystem.title1Name));
 
-    $.parallaxPos1 = eval(parameters['Parallax Position1'] || '[0, 0]');
-    $.parallaxPos2 = eval(parameters['Parallax Position2'] || '[0, 0]');
-    $.parallaxPos3 = eval(parameters['Parallax Position3'] || '[0, 0]');
-    $.parallaxPos4 = eval(parameters['Parallax Position4'] || '[0, 0]');
+    for (var i = 0; i < 5; i++) {
+      $.parallaxPos[i] = eval(parameters[String('Parallax Position' + parseInt(i + 1))] || '[0, 0, 0]');
+    }
 
     // It is a fixed window frame.
     this._backSprite2 = new Sprite(ImageManager.loadTitle2($dataSystem.title2Name));
@@ -339,28 +386,11 @@ RS.Utils = RS.Utils || {};
     this.addChild(this._backSprite1);
     this.addChild(this._backSprite2);
 
-    if($.parallaxImage) {
-      this._parallax1 = new TilingSprite(ImageManager.loadParallax($.parallaxImage));
-      this._parallax1.move($.parallaxPos1[0], $.parallaxPos1[1], Graphics.boxWidth, Graphics.boxHeight);
-      this.addChild(this._parallax1);
-    }
-
-    if($.parallaxImage && $.parallaxImage2) {
-      this._parallax2 = new TilingSprite(ImageManager.loadParallax($.parallaxImage2));
-      this._parallax2.move($.parallaxPos2[0], $.parallaxPos2[1], Graphics.boxWidth, Graphics.boxHeight);
-      this.addChild(this._parallax2);
-    }
-
-    if($.parallaxImage && $.parallaxImage2 && $.parallaxImage3) {
-      this._parallax3 = new TilingSprite(ImageManager.loadParallax($.parallaxImage3));
-      this._parallax3.move($.parallaxPos3[0], $.parallaxPos3[1], Graphics.boxWidth, Graphics.boxHeight);
-      this.addChild(this._parallax3);
-    }
-
-    if($.parallaxImage && $.parallaxImage2 && $.parallaxImage3 && $.parallaxImage4) {
-      this._parallax4 = new TilingSprite(ImageManager.loadParallax($.parallaxImage4));
-      this._parallax4.move($.parallaxPos4[0], $.parallaxPos4[1], Graphics.boxWidth, Graphics.boxHeight);
-      this.addChild(this._parallax4);
+    for (var i = 0; i < 5; i++) {
+      this._parallax[i] = new TilingSprite(ImageManager.loadParallax($.parallaxImage[i]));
+      this._parallax[i].move($.parallaxPos[i][0], $.parallaxPos[i][1], Graphics.boxWidth, Graphics.boxHeight);
+      this._parallax[i].blendMode = $.parallaxPos[i][2] || PIXI.BLEND_MODES.NORMAL;
+      this.addChild(this._parallax[i]);
     }
 
   };
@@ -370,25 +400,21 @@ RS.Utils = RS.Utils || {};
   };
 
   Scene_Title.prototype.updateParallaxBackground = function () {
-    var speed1, speed2, speed3, speed4;
+    var speed = [];
+    var i = 0;
     if(Math.abs(this._parallaxSpeed) > 10000) this._parallaxSpeed = 0;
     this._parallaxSpeed -= 1.5;
-    if($.parallaxImage) {
-      speed1 = this._parallaxSpeed * this.getParallaxSpeed(2);
-      this._parallax1.origin.x = speed1;
+
+    for (var i = 0; i < 5; i++) {
+      if(i === 0) {
+        speed[0] = this._parallaxSpeed * this.getParallaxSpeed(2);
+        this._parallax[0].origin.x = speed[0];
+      } else {
+        speed[i] = this._parallax[i - 1].origin.x * this.getParallaxSpeed(i + 2);
+        this._parallax[i].origin.x = speed[i];
+      }
     }
-    if($.parallaxImage && $.parallaxImage2) {
-      speed2 = this._parallax1.origin.x * this.getParallaxSpeed(3);
-      this._parallax2.origin.x = speed2;
-    }
-    if($.parallaxImage && $.parallaxImage2 && $.parallaxImage3) {
-      speed3 = this._parallax2.origin.x * this.getParallaxSpeed(4);
-      this._parallax3.origin.x = speed3;
-    }
-    if($.parallaxImage && $.parallaxImage2 && $.parallaxImage3 && $.parallaxImage4) {
-      speed4 = this._parallax3.origin.x * this.getParallaxSpeed(5);
-      this._parallax4.origin.x = speed4;
-    }
+
   };
 
   Scene_Title.prototype.commandExit = function() {
@@ -398,7 +424,7 @@ RS.Utils = RS.Utils || {};
   };
 
   Scene_Title.prototype.initSpriteParameter = function() {
-    $._x = Graphics.width / 2 - eval($.xPadding);
+    $._x = Graphics.width / 2 + eval($.xPadding);
     $._y = Graphics.height / 2 + $._dist;
     this._max = 1;
     this._rotateLeft = false;
@@ -437,7 +463,8 @@ RS.Utils = RS.Utils || {};
     this.right(Input.isTriggered("right") || (TouchInput.wheelY - this._wheelBegin) > 0 );
 
     // When the decision key is pressed
-    if( Input.isTriggered("ok") || TouchInput.isTriggered() ) {
+    // if( Input.isTriggered("ok") || TouchInput.isTriggered() ) {
+    if( Input.isTriggered("ok") ) {
       this.selectMenu();
     }
 
@@ -651,7 +678,7 @@ RS.Utils = RS.Utils || {};
     $._menuSize = this._listLength;
     $._maxAngle =  360.0 / $._menuSize;
     list.forEach(function (e, i, a) {
-      this._texts.push(this.makeText(list[i].name));
+      this._texts.push(this.makeText(list[i]));
     }, this);
 
     // This flag indicates that the text was successfully created.
@@ -669,9 +696,31 @@ RS.Utils = RS.Utils || {};
     textStyle.stroke = $._outLineColor;
     textStyle.fill = ['#888888','#FFFFFF'];
 
-    var bmt = new PIXI.Text(str, textStyle);
+    var bmt = new PIXI.Text(str.name, textStyle);
+    var self = this._commandWindow;
 
-    text.setClickHandler(this.selectMenu.bind(this));
+    text.setColdFrame(0, 0, bmt.width, bmt.height);
+    text.setHotFrame(0, 0, bmt.width, bmt.height);
+    text.setClickHandler(function () {
+
+      var symbol = str.symbol;
+      if(symbol !== 'continue') {
+        if(self._handlers[symbol]) {
+          // Plays the OK sound.
+          SoundManager.playOk();
+          self._handlers[symbol]();
+        }
+      } else {
+        if(self.isContinueEnabled()) {
+          // Plays the OK sound.
+          SoundManager.playOk();
+          if(self._handlers[symbol]) self._handlers[symbol]();
+        } else {
+          SoundManager.playBuzzer();
+        }
+      }
+
+    });
 
     // Add text to the screen
     text.addChild(bmt);
@@ -679,6 +728,7 @@ RS.Utils = RS.Utils || {};
 
     // Return a text object.
     return text;
+
   };
 
   var _alias_createCommandWindow = Scene_Title.prototype.createCommandWindow;
