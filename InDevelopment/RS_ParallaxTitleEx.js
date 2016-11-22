@@ -5,7 +5,28 @@
  *
  * @param parallaxImage
  * @desc parallax Image
- * @default BlueSky
+ * @default
+ * @require 1
+ * @dir img/parallaxes
+ * @type file
+ *
+ * @param parallaxImage2
+ * @desc parallax Image
+ * @default
+ * @require 1
+ * @dir img/parallaxes
+ * @type file
+ *
+ * @param parallaxImage3
+ * @desc parallax Image
+ * @default
+ * @require 1
+ * @dir img/parallaxes
+ * @type file
+ *
+ * @param parallaxImage4
+ * @desc parallax Image
+ * @default
  * @require 1
  * @dir img/parallaxes
  * @type file
@@ -39,6 +60,14 @@
  * @desc Specifies the color of the text when the button is unselected.
  * @default #888888
  *
+ * @param Circular Rotation
+ * @desc Specifies whether the menu rotates in a circle.
+ * @default false
+ *
+ * @param X Offset
+ * @desc Please write JavaScript code.
+ * @default this._commandWindow.width / 4
+ *
  * @param ---------
  * @desc
  * @default
@@ -50,6 +79,26 @@
  * @param Font Family
  * @desc Specify a font.
  * @default Arial
+ *
+ * @param Position ---
+ * @desc
+ * @default
+ *
+ * @param Parallax Position1
+ * @desc
+ * @default [0, 0]
+ *
+ * @param Parallax Position2
+ * @desc
+ * @default [0, 0]
+ *
+ * @param Parallax Position3
+ * @desc
+ * @default [0, 0]
+ *
+ * @param Parallax Position4
+ * @desc
+ * @default [0, 0]
  *
  * @help
  * =============================================================================
@@ -68,6 +117,7 @@
  * - Removed the error that causes when using objects for older versions.
  * - Correctly created the contents of the default sprite button
  * by reading the elements in the command window and bound them.
+ * 2016.11.22 (v1.0.4) - Added backgrounds that have applied parallax scrolling.
  */
 
 var Imported = Imported || {};
@@ -81,7 +131,10 @@ RS.Utils = RS.Utils || {};
 (function($) {
 
   var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
-  $.parallaxImage = (parameters['parallaxImage'] || 'BlueSky');
+  $.parallaxImage = parameters['parallaxImage'] || undefined;
+  $.parallaxImage2 = parameters['parallaxImage2'] || undefined;
+  $.parallaxImage3 = parameters['parallaxImage3'] || undefined;
+  $.parallaxImage4 = parameters['parallaxImage4'] || undefined;
   $.textType = parameters['TextAnimation'] || 'Push';
   $._x = null;
   $._y = null;
@@ -129,6 +182,14 @@ RS.Utils = RS.Utils || {};
 
   $.touchPoint = new PIXI.Point();
 
+  $.isCircularRotation = Boolean(parameters['Circular Rotation'] === 'true');
+  $.xPadding = parameters['X Offset'] || 'this._commandWindow.width / 4';
+
+  $.parallaxPos1 = [0, 0];
+  $.parallaxPos2 = [0, 0];
+  $.parallaxPos3 = [0, 0];
+  $.parallaxPos4 = [0, 0];
+
   //============================================================================
   // RS.Utils
   //
@@ -166,6 +227,41 @@ RS.Utils = RS.Utils || {};
   };
 
   //============================================================================
+  // TitleHolder
+  //
+  //
+
+  function TitleHolder() {
+    this.initialize.apply(this, arguments);
+  }
+
+  TitleHolder.prototype.constructor = TitleHolder;
+
+  TitleHolder.prototype.initialize = function () {
+
+  };
+
+  TitleHolder.prototype.initSpriteParameter = function () {
+
+  };
+
+  TitleHolder.prototype.initTouchParameter = function () {
+
+  };
+
+  TitleHolder.prototype.updateSprite = function () {
+
+  };
+
+  TitleHolder.prototype.updateTouchInput = function () {
+
+  };
+
+  TitleHolder.prototype.updateKeyboardCheck = function () {
+
+  };
+
+  //============================================================================
   // Scene_Title
   //
   //
@@ -183,6 +279,7 @@ RS.Utils = RS.Utils || {};
     this.updateSprite();
     this.updateTouchInput();
     this.updateKeyboardCheck();
+    this.updateParallaxBackground();
     alias_Scene_Title_update.call(this);
   };
 
@@ -190,7 +287,10 @@ RS.Utils = RS.Utils || {};
   Scene_Title.prototype.terminate = function () {
     if(alias_Scene_Title_terminate) alias_Scene_Title_terminate.call(this);
     // When there is already a title scene in the scene stack, this will remove the TilingSprite.
-    this.removeChild(this._gameTitleSprite);
+    if(this._parallax1) this.removeChild(this._parallax1);
+    if(this._parallax2) this.removeChild(this._parallax2);
+    if(this._parallax3) this.removeChild(this._parallax3);
+    if(this._parallax4) this.removeChild(this._parallax4);
   };
 
   Scene_Title.prototype.createForeground = function() {
@@ -260,26 +360,70 @@ RS.Utils = RS.Utils || {};
   Scene_Title.prototype.createBackground = function() {
 
     // Create tiling sprite
-    this._backSprite1 = new TilingSprite(ImageManager.loadParallax($.parallaxImage));
+    this._backSprite1 = new Sprite(ImageManager.loadTitle1($dataSystem.title1Name));
+
+    $.parallaxPos1 = eval(parameters['Parallax Position1'] || '[0, 0]');
+    $.parallaxPos2 = eval(parameters['Parallax Position2'] || '[0, 0]');
+    $.parallaxPos3 = eval(parameters['Parallax Position3'] || '[0, 0]');
+    $.parallaxPos4 = eval(parameters['Parallax Position4'] || '[0, 0]');
+
+    // It is a fixed window frame.
     this._backSprite2 = new Sprite(ImageManager.loadTitle2($dataSystem.title2Name));
-
-    // Sets the x, y, width, and height all at once in tiling sprite.
-    this._backSprite1.move(0, 0, Graphics.boxWidth,Graphics.boxHeight);
-
-    // Override the TilingSprite update function.
-    var _backSprite1_update = this._backSprite1.update;
-    this._backSprite1.update = function() {
-      _backSprite1_update.call(this);
-
-      // Move right every frame (...0, -1, -2, -3)
-      this.origin.x--;
-
-    };
 
     // Add to game screen.
     this.addChild(this._backSprite1);
     this.addChild(this._backSprite2);
 
+    if($.parallaxImage) {
+      this._parallax1 = new TilingSprite(ImageManager.loadParallax($.parallaxImage));
+      this._parallax1.move($.parallaxPos1[0], $.parallaxPos1[1], Graphics.boxWidth, Graphics.boxHeight);
+      this.addChild(this._parallax1);
+    }
+
+    if($.parallaxImage && $.parallaxImage2) {
+      this._parallax2 = new TilingSprite(ImageManager.loadParallax($.parallaxImage2));
+      this._parallax2.move($.parallaxPos2[0], $.parallaxPos2[1], Graphics.boxWidth, Graphics.boxHeight);
+      this.addChild(this._parallax2);
+    }
+
+    if($.parallaxImage && $.parallaxImage2 && $.parallaxImage3) {
+      this._parallax3 = new TilingSprite(ImageManager.loadParallax($.parallaxImage3));
+      this._parallax3.move($.parallaxPos3[0], $.parallaxPos3[1], Graphics.boxWidth, Graphics.boxHeight);
+      this.addChild(this._parallax3);
+    }
+
+    if($.parallaxImage && $.parallaxImage2 && $.parallaxImage3 && $.parallaxImage4) {
+      this._parallax4 = new TilingSprite(ImageManager.loadParallax($.parallaxImage4));
+      this._parallax4.move($.parallaxPos4[0], $.parallaxPos4[1], Graphics.boxWidth, Graphics.boxHeight);
+      this.addChild(this._parallax4);
+    }
+
+  };
+
+  Scene_Title.prototype.getParallaxSpeed = function (idx) {
+    return ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
+  };
+
+  Scene_Title.prototype.updateParallaxBackground = function () {
+    var speed1, speed2, speed3, speed4;
+    if(Math.abs(this._parallaxSpeed) > 10000) this._parallaxSpeed = 0;
+    this._parallaxSpeed -= 1.5;
+    if($.parallaxImage) {
+      speed1 = this._parallaxSpeed * this.getParallaxSpeed(2);
+      this._parallax1.origin.x = speed1;
+    }
+    if($.parallaxImage && $.parallaxImage2) {
+      speed2 = this._parallax1.origin.x * this.getParallaxSpeed(3);
+      this._parallax2.origin.x = speed2;
+    }
+    if($.parallaxImage && $.parallaxImage2 && $.parallaxImage3) {
+      speed3 = this._parallax2.origin.x * this.getParallaxSpeed(4);
+      this._parallax3.origin.x = speed3;
+    }
+    if($.parallaxImage && $.parallaxImage2 && $.parallaxImage3 && $.parallaxImage4) {
+      speed4 = this._parallax3.origin.x * this.getParallaxSpeed(5);
+      this._parallax4.origin.x = speed4;
+    }
   };
 
   Scene_Title.prototype.commandExit = function() {
@@ -289,7 +433,7 @@ RS.Utils = RS.Utils || {};
   };
 
   Scene_Title.prototype.initSpriteParameter = function() {
-    $._x = Graphics.width / 2;
+    $._x = Graphics.width / 2 - eval($.xPadding);
     $._y = Graphics.height / 2 + $._dist;
     this._max = 1;
     this._rotateLeft = false;
@@ -298,6 +442,7 @@ RS.Utils = RS.Utils || {};
     this._originPosition = [$._x, $._y];
     this._r = 3;
     this._angle = 0.0;
+    this._parallaxSpeed = 0;
   };
 
   Scene_Title.prototype.initTouchParameter = function() {
@@ -327,7 +472,7 @@ RS.Utils = RS.Utils || {};
     this.right(Input.isTriggered("right") || (TouchInput.wheelY - this._wheelBegin) > 0 );
 
     // When the decision key is pressed
-    if( Input.isTriggered("ok") || TouchInput.isCancelled() ) {
+    if( Input.isTriggered("ok") || TouchInput.isPressed() ) {
       this.selectMenu();
     }
 
@@ -492,8 +637,8 @@ RS.Utils = RS.Utils || {};
   };
 
   Scene_Title.prototype.moveMenu = function() {
-    // Returns the angle of the command window.
-    var gRate = Math.atan2(this._commandWindow.y, this._commandWindow.x) * (180 / Math.PI);
+    // Returns the angle of the command window (parent)
+    var parentRate = Math.atan2(this._commandWindow.y, this._commandWindow.x) * (180 / Math.PI);
     var angle = 0;
     for (var i = 0; i < this._listLength; i++) {
       angle = Math.cos( (Math.PI / 2) * i );
@@ -502,7 +647,10 @@ RS.Utils = RS.Utils || {};
       } else {
         angle = 0;
       }
-      this.move(this._texts[i], this._r + $._dist, this._angle + RS.Utils.convertToRadian(gRate * angle));
+      this.move(this._texts[i], // sprite
+        this._r + $._dist, // r
+        this._angle + RS.Utils.convertToRadian(parentRate * angle) // angle
+      );
     }
   };
 
@@ -523,7 +671,9 @@ RS.Utils = RS.Utils || {};
 
   Scene_Title.prototype.move = function(sprite, r, angle) {
     if(!sprite) return;
-    var x = ( this._originPosition[0] )+ r * Math.sin(angle) - sprite.width / 2;
+    var xDirAngle = Math.sin(angle);
+    if($.isCircularRotation) xDirAngle = Math.cos(angle);
+    var x = ( this._originPosition[0] ) + r * xDirAngle - sprite.width / 2;
     var y = ( this._originPosition[1] ) + r * Math.sin(angle) - sprite.height / 2;
     sprite.x = x;
     sprite.y = y;
