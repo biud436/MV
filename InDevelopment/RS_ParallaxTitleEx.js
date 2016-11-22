@@ -3,7 +3,7 @@
  * @plugindesc This plugin adds various text animations to the title screen.
  * @author biud436
  *
- * @param parallaxImage
+ * @param parallaxImage1
  * @desc parallax Image
  * @default
  * @require 1
@@ -172,13 +172,14 @@ RS.Utils = RS.Utils || {};
 (function($) {
 
   var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
-  $.parallaxImage = [
-    parameters['parallaxImage'] || undefined,
-    parameters['parallaxImage2'] || undefined,
-    parameters['parallaxImage3'] || undefined,
-    parameters['parallaxImage4'] || undefined,
-    parameters['parallaxImage5'] || undefined
-  ];
+  $.maxParallaxImages = 5;
+
+  // Find the resources.
+  $.parallaxImage = [];
+  for (var i = 0; i < $.maxParallaxImages; i++) {
+    $.parallaxImage[i] = parameters['parallaxImage' + parseInt(i+1)] || undefined;
+  }
+
   $.textType = parameters['TextAnimation'] || 'Push';
   $._x = null;
   $._y = null;
@@ -229,13 +230,13 @@ RS.Utils = RS.Utils || {};
   $.isCircularRotation = Boolean(parameters['Circular Rotation'] === 'true');
   $.xPadding = parameters['X Offset'] || 'this._commandWindow.width / 4';
 
-  $.parallaxPos = [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ];
+  // Find the position with parallax.
+
+  $.parallaxPos = [];
+
+  for (var i = 0; i < $.maxParallaxImages; i++) {
+    $.parallaxPos.push([0, 0, 0]);
+  }
 
   //============================================================================
   // RS.Utils
@@ -299,7 +300,7 @@ RS.Utils = RS.Utils || {};
   Scene_Title.prototype.terminate = function () {
     if(alias_Scene_Title_terminate) alias_Scene_Title_terminate.call(this);
     // When there is already a title scene in the scene stack, this will remove the TilingSprite.
-    for (var i = 0; i < this._parallax.length; i++) {
+    for (var i = 0; i < $.maxParallaxImages; i++) {
       if(this._parallax[i]) this.removeChild(this._parallax[i]);
     }
   };
@@ -375,7 +376,7 @@ RS.Utils = RS.Utils || {};
     // Create tiling sprite
     this._backSprite1 = new Sprite(ImageManager.loadTitle1($dataSystem.title1Name));
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < $.maxParallaxImages; i++) {
       $.parallaxPos[i] = eval(parameters[String('Parallax Position' + parseInt(i + 1))] || '[0, 0, 0]');
     }
 
@@ -386,7 +387,7 @@ RS.Utils = RS.Utils || {};
     this.addChild(this._backSprite1);
     this.addChild(this._backSprite2);
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < $.maxParallaxImages; i++) {
       this._parallax[i] = new TilingSprite(ImageManager.loadParallax($.parallaxImage[i]));
       this._parallax[i].move($.parallaxPos[i][0], $.parallaxPos[i][1], Graphics.boxWidth, Graphics.boxHeight);
       this._parallax[i].blendMode = $.parallaxPos[i][2] || PIXI.BLEND_MODES.NORMAL;
@@ -401,11 +402,10 @@ RS.Utils = RS.Utils || {};
 
   Scene_Title.prototype.updateParallaxBackground = function () {
     var speed = [];
-    var i = 0;
     if(Math.abs(this._parallaxSpeed) > 10000) this._parallaxSpeed = 0;
     this._parallaxSpeed -= 1.5;
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < $.maxParallaxImages; i++) {
       if(i === 0) {
         speed[0] = this._parallaxSpeed * this.getParallaxSpeed(2);
         this._parallax[0].origin.x = speed[0];
