@@ -117,7 +117,7 @@
  * - Removed the error that causes when using objects for older versions.
  * - Correctly created the contents of the default sprite button
  * by reading the elements in the command window and bound them.
- * 2016.11.22 (v1.0.4) - Added backgrounds that have applied parallax scrolling.
+ * 2016.11.22 (v1.0.4) - Added backgrounds that have applied a parallax scrolling.
  */
 
 var Imported = Imported || {};
@@ -224,41 +224,6 @@ RS.Utils = RS.Utils || {};
 
   Array.prototype.min = function() {
     return this.slice(0).sort()[0];
-  };
-
-  //============================================================================
-  // TitleHolder
-  //
-  //
-
-  function TitleHolder() {
-    this.initialize.apply(this, arguments);
-  }
-
-  TitleHolder.prototype.constructor = TitleHolder;
-
-  TitleHolder.prototype.initialize = function () {
-
-  };
-
-  TitleHolder.prototype.initSpriteParameter = function () {
-
-  };
-
-  TitleHolder.prototype.initTouchParameter = function () {
-
-  };
-
-  TitleHolder.prototype.updateSprite = function () {
-
-  };
-
-  TitleHolder.prototype.updateTouchInput = function () {
-
-  };
-
-  TitleHolder.prototype.updateKeyboardCheck = function () {
-
   };
 
   //============================================================================
