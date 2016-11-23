@@ -1,7 +1,15 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc (v1.1.8) This plugin provides the multiple viewports.
+ * @plugindesc (v1.1.9) This plugin provides the multiple viewports.
  * @author biud436
+ *
+ * @param Maximum viewport
+ * @desc Sets the number of viewports to display on the screen.
+ * @default 4
+ *
+ * @param Viewport orientation
+ * @desc Sets the viewport to portrait orientation.
+ * @default true
  *
  * @help
  * -----------------------------------------------------------------------------
@@ -68,10 +76,14 @@
  * 2016.10.01 (v1.1.6) - Added the rendering code that is compatible with the canvas mode.
  * 2016.10.20 (v1.1.7) - Fixed the issue that is not working in RMMV 1.3.2
  * 2016.10.23 (v1.1.8) - Fixed the issue that the video frame is not updated in PIXI 4.0.3
+ * 2016.11.24 (v1.1.9) - Now this can change the viewport orientation such as portrait, landscape and can also set the number of viewports.
  */
 
 var Imported = Imported || {};
 Imported.RS_MultipleViewports = true;
+
+var RS = RS || {};
+RS.MultipleViewports = RS.MultipleViewports || {};
 
 (function () {
 
@@ -81,8 +93,15 @@ Imported.RS_MultipleViewports = true;
   var isShake = 0;
   var shakePower = 10;
 
+  var isStoppingMainScene = false;
+
+  var parameters = PluginManager.parameters('RS_MultipleViewports');
+  var maxDisplayCounts = Number(parameters['Maximum viewport'] || 4);
+
+  RS.MultipleViewports.isVertical = Boolean(parameters['Viewport orientation'] === 'false');
+
   //============================================================================
-  // PIXI.VideoBaseTexture (PIXI v4.0.3 Bug)
+  // Fixed bug in library that can not play the texture video in PIXI 4.0.3 version.
   //============================================================================
 
   var ticker = PIXI.ticker;
@@ -108,10 +127,43 @@ Imported.RS_MultipleViewports = true;
 
   Graphics.getRenderPosition = function(width, height) {
     var positionType = [];
-    positionType[0] = new Rectangle(0, 0, width / 2, height / 2);
-    positionType[1] = new Rectangle(width / 2, 0, width / 2, height / 2);
-    positionType[2] = new Rectangle(0, height / 2, width / 2, height / 2);
-    positionType[3] = new Rectangle(width / 2, height / 2, width / 2, height / 2);
+    var w, h;
+    switch (maxDisplayCounts) {
+      case 2: case 3:
+        var size = maxDisplayCounts;
+        if(RS.MultipleViewports.isVertical) {
+          w = width / size;
+          h = height;
+          this._mtHorizontalScale = 1 / maxDisplayCounts;
+          this._mtVerticalScale = 1.0;
+        } else {
+          w = width;
+          h = height / size;
+          this._mtHorizontalScale = 1.0;
+          this._mtVerticalScale = (1 / maxDisplayCounts);
+        }
+        for(var i = vx = vy = 0; i < maxDisplayCounts; i++) {
+          vx = (i % maxDisplayCounts);
+          vy = (i / maxDisplayCounts);
+          if(RS.MultipleViewports.isVertical) {
+            positionType[i] = new Rectangle(w * vx, 0, w, h);
+          } else {
+            positionType[i] = new Rectangle(0, h * i, w, h);
+          }
+        }
+        break;
+      case 4: // Grid
+        w = width / 2;
+        h = height / 2;
+        this._mtHorizontalScale = 1 / 2;
+        this._mtVerticalScale = 1 / 2;
+        for(var i = vx = vy = 0; i < maxDisplayCounts; i++) {
+          vx = (i % 2);
+          vy = Math.floor(i / 2);
+          positionType[i] = new Rectangle(w * vx, h * vy, w, h);
+        }
+        break;
+    }
     return positionType;
   };
 
@@ -157,7 +209,7 @@ Imported.RS_MultipleViewports = true;
     self._renderSprite = new Sprite();
 
     // Add Child Sprite
-    for(var i = 0; i < 4; i++) {
+    for(var i = 0; i < maxDisplayCounts; i++) {
       self._renderSprite.addChild(new Sprite());
     }
 
@@ -168,25 +220,36 @@ Imported.RS_MultipleViewports = true;
   }
 
   Graphics.setRenderSprite = function (i) {
+
     var sPower = shakePower * isShake;
     var shake = (-0.5 + Math.random()) * sPower;
-    this._renderSprite.children[i].x = this._rect[i].x + shake;
-    this._renderSprite.children[i].y = this._rect[i].y + shake;
-    if(Graphics.isCheckedViewImage(i)) {
-      var texture = this._renderSprite.children[i].texture = this._viewImageCached[i];
-      this._renderSprite.children[i].scale.x = (Graphics.boxWidth / texture.width) * 0.5;
-      this._renderSprite.children[i].scale.y = (Graphics.boxHeight / texture.height) * 0.5;
-    } else {
-      this._renderSprite.children[i].texture = this._renderTexture;
-      this._renderSprite.children[i].scale.x = 0.5;
-      this._renderSprite.children[i].scale.y = 0.5;
-    }
+    var child = this._renderSprite.getChildAt(i);
+    var otherStage = RS.MultipleViewports.stage;
+
+    child.x = this._rect[i].x + shake;
+    child.y = this._rect[i].y + shake;
+
+      if(Graphics.isCheckedViewImage(i)) {
+
+        var texture = child.texture = this._viewImageCached[i];
+        child.scale.x = (Graphics.boxWidth / texture.width) * this._mtHorizontalScale;
+        child.scale.y = (Graphics.boxHeight / texture.height) * this._mtVerticalScale;
+
+      } else {
+
+        child.texture = this._renderTexture;
+        child.scale.x = this._mtHorizontalScale;
+        child.scale.y = this._mtVerticalScale;
+
+      }
+
   };
 
   Graphics.setViewportImage = function (viewID, texture) {
     if(this._viewImageCached[viewID - 1]) {
       this._viewImageCached[viewID - 1] = null;
     }
+    this._viewImageCached.splice(viewID - 1, texture);
     this._viewImageCached[viewID - 1] = texture;
   };
 
@@ -271,7 +334,7 @@ Imported.RS_MultipleViewports = true;
             if(this.isWebGL()) this._renderer.bindRenderTexture(this._renderTexture);
             this._renderer.render(stage, this._renderTexture);
             if(this.isWebGL()) this._renderer.bindRenderTarget(this._renderTarget);
-            for(var i = 0; i < 4; i++) this.setRenderSprite(i);
+            for(var i = 0; i < maxDisplayCounts; i++) this.setRenderSprite(i);
             this._renderer.render(this._renderSprite);
           } else {
             this._renderer.render(stage);
@@ -327,7 +390,7 @@ Imported.RS_MultipleViewports = true;
             var name = args[2];
             var looping = (args[3] === 'true');
             var videoName = 'movies/' + name + '.webm';
-            var texture = PIXI.Texture.fromVideo(videoName);
+            var texture = PIXI.Texture.fromVideoUrl(videoName);
             texture.baseTexture.source.loop = looping;
             Graphics.setViewportImage(viewID.clamp(1, 4), texture);
             break;
