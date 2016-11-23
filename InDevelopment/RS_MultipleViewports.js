@@ -77,6 +77,7 @@
  * 2016.08.25 (v1.1.4) - Added the functions that sets an image of certain viewport.
  * 2016.09.30 (v1.1.5) - Added the function that plays an video of certain viewport.
  * 2016.10.01 (v1.1.6) - Added the rendering code that is compatible with the canvas mode.
+ * 2016.11.20 (v1.1.7) - Now this can change the viewport orientation such as portrait, landscape and can also set the number of viewports.
  */
 
 var Imported = Imported || {};
@@ -122,163 +123,6 @@ RS.MultipleViewports = RS.MultipleViewports || {};
   };
 
   //============================================================================
-  // Multiple Viewport Stage
-  //============================================================================
-
-  // RS.ViewportStage = function () {
-  //   this.initialize.apply(this, arguments);
-  // }
-  //
-  // RS.ViewportStage.prototype = Object.create(Stage.prototype);
-  // RS.ViewportStage.prototype.constructor = RS.ViewportStage;
-  //
-  // RS.ViewportStage.prototype.initialize = function () {
-  //   Stage.prototype.initialize.call(this);
-  //   this.initMembers();
-  //   this.createRenderTexture();
-  // };
-  //
-  // RS.ViewportStage.prototype.initMembers = function () {
-  //   this._viewports = [];
-  //   this._currentViewportId = -1;
-  //   this._renderTexture = [];
-  // };
-  //
-  // RS.ViewportStage.prototype.createRenderTexture = function () {
-  //   [1,2,3,4].forEach(function (e, i) {
-  //     this._renderTexture[i] = PIXI.RenderTexture.create(Graphics.boxWidth,
-  //                                                        Graphics.boxHeight,
-  //                                                        PIXI.SCALE_MODES.NEAREST);
-  //   }, this);
-  // };
-  //
-  // RS.ViewportStage.prototype.getRenderTexture = function (i) {
-  //   var texture = this._renderTexture[i];
-  //   if(texture) return texture;
-  // };
-  //
-  // RS.ViewportStage.prototype.update = function () {
-  //   this.children.forEach(function (child, viewId) {
-  //     if(child.update && this._currentViewportId !== viewId) {
-  //       child.update();
-  //       this.renderStage(child, viewId);
-  //     }
-  //   }, this);
-  // };
-  //
-  // RS.ViewportStage.prototype.renderStage = function (currentStage, viewId) {
-  //   var renderer = Graphics._renderer;
-  //   var renderTexture = this._renderTexture[viewId - 1];
-  //   if(renderer && renderTexture) {
-  //     if(Graphics.isWebGL()) renderer.bindRenderTexture(renderTexture);
-  //     renderer.render(currentStage, renderTexture);
-  //     // if(Graphics.isWebGL() && Graphics._renderTarget) renderer.bindRenderTarget(Graphics._renderTarget);
-  //   }
-  // };
-  //
-  // RS.ViewportStage.prototype.hasChildScene = function (i) {
-  //   return !!this.children[i] && this._viewports[i];
-  // };
-  //
-  // RS.ViewportStage.prototype.addRealScene = function (viewId, SceneClass) {
-  //   var currentScene = this.children[viewId - 1];
-  //   var started = false;
-  //   if(currentScene) {
-  //     currentScene.stop();
-  //     currentScene.terminate();
-  //   }
-  //   if(SceneClass) {
-  //     currentScene = new SceneClass();
-  //     if(currentScene.create) {
-  //       currentScene.create();
-  //     }
-  //     SceneManager.onSceneCreate();
-  //     while(!started) {
-  //       if(!started) {
-  //         currentScene.start();
-  //         SceneManager.onSceneStart();
-  //         started = true;
-  //       }
-  //         SceneManager.onSceneLoading();
-  //     }
-  //     this.addChild(viewId, currentScene);
-  //   }
-  // };
-  //
-  // RS.ViewportStage.prototype.addChild = function (viewId, child) {
-  //   var idx = viewId - 1;
-  //   if( this._viewports.contains(viewId) ) {
-  //     if(this._viewports[idx]) {
-  //       this._viewports[idx] = viewId;
-  //       this.addChildAt(idx, child);
-  //     }
-  //   } else {
-  //     this._viewports[idx] = viewId;
-  //     Stage.prototype.addChild.call(this, child);
-  //   }
-  //
-  // };
-  //
-  // RS.ViewportStage.prototype.removeChild = function (viewId, child) {
-  //   var idx = viewId - 1;
-  //   if(this.childred[idx]) {
-  //     // @1: if its scene has been existed and has already been started, it will be terminated.
-  //     // @1: 해당 씬이 있고 이미 시작되었다면 해당 씬이 파괴됩니다.
-  //     currentScene.stop();
-  //     currentScene.terminate();
-  //   }
-  //   if( this._viewports.contains(viewId) ) {
-  //     delete this._viewports[idx];
-  //     this.removeChildAt(idx);
-  //   }
-  // };
-  //
-  // RS.ViewportStage.prototype.autoRemoveChild = function (child) {
-  //   var idx = this.children.indexOf(child);
-  //   var viewId = idx + 1;
-  //   if(idx !== -1) {
-  //     this.removeChild(viewId, child);
-  //   }
-  // };
-  //
-  // RS.ViewportStage.isTriggerIn = function (viewId) {
-  //   if(maxDisplayCounts < 4) return false;
-  //   var tx, ty, cx, cy, mscale, xscale, yscale, result, id;
-  //   mscale = 1.0;
-  //   tx = TouchInput.x;
-  //   ty = TouchInput.y;
-  //   cx = (Graphics.boxWidth / 2) * mscale;
-  //   cy = (Graphics.boxHeight / 2) * mscale;
-  //   xscale = Graphics.boxWidth / cx;
-  //   yscale = Graphics.boxHeight / cy;
-  //   result = [];
-  //   id = 0;
-  //   if(tx < cx && ty > cy) result.push(id++);
-  //   if(tx > cx && ty < cy) result.push(id++);
-  //   if(tx < cx && ty > cy) result.push(id++);
-  //   if(tx > cx && ty > cy)  result.push(id);
-  //   return result.contains(viewId - 1);
-  // };
-
-  //============================================================================
-  // Scene_Base
-  //============================================================================
-
-//   RS.MultipleViewports.stage = new RS.ViewportStage();
-//
-//   var alias_Scene_Base_update = Scene_Base.prototype.update;
-//   Scene_Base.prototype.update = function () {
-//     alias_Scene_Base_update.call(this);
-//     RS.MultipleViewports.stage.update();
-//   };
-// ``
-//   var alias_Scene_Base_terminate = Scene_Base.prototype.terminate;
-//   Scene_Base.prototype.terminate = function () {
-//     alias_Scene_Base_terminate.call(this);
-//     RS.MultipleViewports.stage.autoRemoveChild(this);
-//   };
-
-  //============================================================================
   // Graphics
   //============================================================================
 
@@ -319,10 +163,6 @@ RS.MultipleViewports = RS.MultipleViewports || {};
           vy = Math.floor(i / 2);
           positionType[i] = new Rectangle(w * vx, h * vy, w, h);
         }
-        // positionType[0] = new Rectangle(0, 0, width / 2, height / 2);
-        // positionType[1] = new Rectangle(width / 2, 0, width / 2, height / 2);
-        // positionType[2] = new Rectangle(0, height / 2, width / 2, height / 2);
-        // positionType[3] = new Rectangle(width / 2, height / 2, width / 2, height / 2);
         break;
     }
     return positionType;
@@ -390,14 +230,6 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     child.x = this._rect[i].x + shake;
     child.y = this._rect[i].y + shake;
 
-    // if(otherStage.hasChildScene(i)) {
-    //
-    //   child.texture = otherStage.getRenderTexture(i);
-    //   child.scale.x = this._mtHorizontalScale;
-    //   child.scale.y = this._mtVerticalScale;
-    //
-    // } else {
-
       if(Graphics.isCheckedViewImage(i)) {
 
         var texture = child.texture = this._viewImageCached[i];
@@ -411,8 +243,6 @@ RS.MultipleViewports = RS.MultipleViewports || {};
         child.scale.y = this._mtVerticalScale;
 
       }
-    
-    // }
 
   };
 
@@ -594,15 +424,6 @@ RS.MultipleViewports = RS.MultipleViewports || {};
             break;
         }
       }
-      // if(command === 'ChildScene') {
-      //   var childSceneManager = RS.MultipleViewports.stage;
-      //   var args0 = args[0].toLowerCase();
-      //   var viewId = Number(args[1]);
-      //   var scene = eval(args[2]);
-      //   if(args0 === 'push') {
-      //     childSceneManager.addRealScene(viewId, scene);
-      //   }
-      // }
   };
 
 })();
