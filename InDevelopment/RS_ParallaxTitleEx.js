@@ -97,7 +97,7 @@
  *
  * @param Parallax Position2
  * @desc [x, y, blend_mode]
- * @default [0, 0, 3]
+ * @default [0, 0, 0]
  *
  * @param Parallax Position3
  * @desc [x, y, blend_mode]
@@ -213,7 +213,7 @@ RS.Utils = RS.Utils || {};
     // Text wrap
     wordWrap : true,
     // width of the text wrap (wrapping the width automatically)
-    wordWrapWidth : 400,
+    wordWrapWidth : 576,
     textBaseline: 'alphabetic'
   };
 
