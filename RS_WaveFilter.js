@@ -61,6 +61,7 @@
  * 2016.10.20 (v1.5.1) - Fixed the issue that is not working in RMMV 1.3.2
  * 2016.11.10 (v1.5.2) - Fixed the issue that is not working in Orange Overlay plugin.
  * 2016.11.18 (v1.5.3) - Fixed an issue where the original tilemap is rendered when using Orange Overlay plugin.
+ * 2016.11.26 (v1.5.4) - Added certain code to remove the texture from memory.
  *
  * - Terms of Use
  * Free for commercial and non-commercial use
@@ -339,8 +340,16 @@ RS.WaveConfig = RS.WaveConfig || {};
                                                        this._frameHeight,
                                                        PIXI.SCALE_MODES.NEAREST);
        this._sprite = null;
-       this._waveFilter = null;
    };
+
+   var alias_CompositeRectTileLayer_destroy = $.CompositeRectTileLayer.prototype.destroy;
+   $.CompositeRectTileLayer.prototype.destroy = function (options) {
+       alias_CompositeRectTileLayer_destroy.call(this, options);
+       if(this._renderTexture) this._renderTexture.destroy({ destroyBase: true });
+       if(this._sprite) this._sprite.destroy({ children: true });
+       this._renderTexture = null;
+       this._sprite = null;
+   }
 
    var alias_CompositeRectTileLayer_renderWebGL = $.CompositeRectTileLayer.prototype.renderWebGL;
    $.CompositeRectTileLayer.prototype.renderWebGL = function (renderer) {

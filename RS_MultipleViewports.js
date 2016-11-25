@@ -1,6 +1,6 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc (v1.1.9) This plugin provides the multiple viewports.
+ * @plugindesc (v1.2.0) This plugin provides the multiple viewports.
  * @author biud436
  *
  * @param Maximum viewport
@@ -21,6 +21,8 @@
  * - MultipleViewport Enable
  *
  * This can disable the multiple viewports.
+ * Note that any drawing object of previous viewport is not removed in memory.
+ * So if you will need it, you try to call the MultipleViewport ClearImage plugin command.
  * If you call this plugin command, You can be using original stage renderer.
  * - MultipleViewport Disable
  *
@@ -77,6 +79,7 @@
  * 2016.10.20 (v1.1.7) - Fixed the issue that is not working in RMMV 1.3.2
  * 2016.10.23 (v1.1.8) - Fixed the issue that the video frame is not updated in PIXI 4.0.3
  * 2016.11.24 (v1.1.9) - Now this can change the viewport orientation such as portrait, landscape and can also set the number of viewports.
+ * 2016.11.26 (v1.2.0) - Added certain code to remove the texture from memory.
  */
 
 var Imported = Imported || {};
@@ -322,6 +325,8 @@ RS.MultipleViewports = RS.MultipleViewports || {};
 
   Graphics.clearViewImage = function (viewID) {
     if(this._viewImageCached[viewID - 1]) {
+        var texture = this._viewImageCached[viewID - 1];
+        texture.destroy({ destroyBase: true });
         delete this._viewImageCached[viewID - 1];
     }
   };
