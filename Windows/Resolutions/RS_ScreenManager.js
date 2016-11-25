@@ -108,6 +108,33 @@ Imported.RS_ScreenManager = true;
 
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
 
+  var pcGraphicsTempArray = [
+  "640 x 480",
+  "800 x 600",
+  "1024 x 768",
+  "1152 x 864",
+  "1280 x 720",
+  "1280 x 720",
+  "1280 x 800",
+  "1280 x 960",
+  "1280 x 960",
+  "1360 x 768",
+  "1360 x 768",
+  "1366 x 768",
+  "1366 x 768",
+  "1400 x 1050",
+  "1440 x 900",
+  "1440 x 900",
+  "1600 x 900",
+  "1600 x 1200",
+  "1680 x 1050",
+  "1920 x 1080",
+  "1920 x 1200",
+  "2048 x 1152",
+  "2560 x 1440",
+  "2560 x 1600"
+  ];
+
   var mobileGraphicsArray = [
   "120 x 160",
   "160 x 240",
@@ -146,11 +173,11 @@ Imported.RS_ScreenManager = true;
         });
       } else {
         // in case of that the lib file has not found...
-        pcGraphicsArray = mobileGraphicsArray;
+        pcGraphicsArray = pcGraphicsTempArray;
       }
     } else {
       // in case of Mac OS
-      pcGraphicsArray = mobileGraphicsArray;
+      pcGraphicsArray = pcGraphicsTempArray;
     }
   }
 
