@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.1) <RS_ScreenManager>
+ * @plugindesc (v1.0.2) <RS_ScreenManager>
  * @author biud436
  *
  * @param isMobileAutoFullScreen
@@ -48,6 +48,14 @@ Imported.RS_ScreenManager = true;
  * @desc
  * @default Full Screen
  *
+ * @param Recreate Scene
+ * @desc
+ * @default true
+ *
+ * @param Use All Resolutions
+ * @desc Sets whether resolution gets even if the resolution of your device is not supported.
+ * @default false
+ *
  * @help
  * =============================================================================
  * Installations
@@ -67,6 +75,7 @@ Imported.RS_ScreenManager = true;
  * =============================================================================
  * 2016.10.04 (v1.0.0) - First Release.
  * 2016.10.24 (v1.0.1) - Added Resolution Button in Option.
+ * 2016.11.26 (v1.0.2) - Added the function that recreates the scene.
  */
 
 (function () {
@@ -89,26 +98,15 @@ Imported.RS_ScreenManager = true;
   var panelTextName = String(parameters["panelTextName"] || "Display Resolutions");
   var fullScreenButtonName = String(parameters["fullScreenButtonName"] || 'Full Screen');
 
+  var isRecreateScene = Boolean(parameters['Recreate Scene'] === 'true');
+
   var resolutionCommand = "Display Resolutions";
+
+  var isUseAllResolutions = Boolean(parameters['Use All Resolutions'] === 'true');
 
   var bitmap = ImageManager.loadParallax(imageName);
 
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
-
-  if( Utils.isNwjs() ) {
-    if(process && process.platform && process.platform === 'win32') {
-      var winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
-      if(winDisplaySettingsLib) {
-        var displaySetting = winDisplaySettingsLib.GetDisplaySettings();
-        pcGraphicsArray = displaySetting.split('\n').filter(function(i, idx, item) {
-          return item.indexOf(i) === idx;
-        });
-      }
-    } else {
-      console.error('This plugin is not supported in Mac OS');
-      return false;
-    }
-  }
 
   var mobileGraphicsArray = [
   "120 x 160",
@@ -132,6 +130,29 @@ Imported.RS_ScreenManager = true;
   "1600 x 2560",
   "2048 x 2732", // iPadPro
   ];
+
+  if( Utils.isNwjs() ) {
+    if(process && process.platform && process.platform === 'win32') {
+      var winDisplaySettingsLib = undefined;
+      try {
+        winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
+      } catch(e) {
+        winDisplaySettingsLib = null;
+      }
+      if(winDisplaySettingsLib) {
+        var displaySetting = winDisplaySettingsLib.GetDisplaySettings();
+        pcGraphicsArray = displaySetting.split('\n').filter(function(i, idx, item) {
+          return item.indexOf(i) === idx;
+        });
+      } else {
+        // in case of that the lib file has not found...
+        pcGraphicsArray = mobileGraphicsArray;
+      }
+    } else {
+      // in case of Mac OS
+      pcGraphicsArray = mobileGraphicsArray;
+    }
+  }
 
   //============================================================================
   // Point
@@ -168,6 +189,12 @@ Imported.RS_ScreenManager = true;
           pt = new Point(tw, th);
           gArray.push(pt);
           result.push(pt.toString());
+        } else {
+          if(isUseAllResolutions) {
+            pt = new Point(tw, th);
+            gArray.push(pt);
+            result.push(pt.toString());
+          }
         }
       }
     }, this);
@@ -199,6 +226,9 @@ Imported.RS_ScreenManager = true;
     }
     if(isGraphicsRendererResize) {
         Graphics._renderer.resize(newScr.x, newScr.y);
+    }
+    if(isRecreateScene) {
+      if(SceneManager._scene) SceneManager.push(SceneManager._scene.constructor);
     }
   };
 
