@@ -5,7 +5,7 @@
 
 /*:
  * RS_NoiseFilters.js
- * @plugindesc (v1.0.2) This plugin applies the noise filter to the tilemap.
+ * @plugindesc (v1.0.4) This plugin applies the noise filter to the tilemap.
  * @author biud436, Vico(Shader)
  *
  * @help
@@ -42,6 +42,7 @@
  * 2016.08.28 (v1.0.1) - Fixed noise issue.
  * 2016.08.28 (v1.0.2) - Fixed render code and Added Script class and Plugin Commands.
  * 2016.10.20 (v1.0.3) - Fixed the issue that is not working in RMMV 1.3.2
+ * 2016.11.26 (v1.0.4) - Added certain code to remove the texture from memory.
  */
 
 var Imported = Imported || {};
@@ -290,6 +291,15 @@ RS.NoiseFilters = RS.NoiseFilters || {};
                                                       PIXI.SCALE_MODES.NEAREST);
       this._spriteNoise = null;
   };
+
+  var alias_CompositeRectTileLayer_destroy = $.CompositeRectTileLayer.prototype.destroy;
+  $.CompositeRectTileLayer.prototype.destroy = function (options) {
+      alias_CompositeRectTileLayer_destroy.call(this, options);
+      if(this._renderTexture) this._renderTexture.destroy({ destroyBase: true });
+      if(this._spriteNoise) this._spriteNoise.destroy({ children: true });
+      this._renderTexture = null;
+      this._spriteNoise = null;
+  }
 
   var alias_CompositeRectTileLayer_renderWebGL = $.CompositeRectTileLayer.prototype.renderWebGL;
   $.CompositeRectTileLayer.prototype.renderWebGL = function (renderer) {
