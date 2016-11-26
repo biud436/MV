@@ -37,10 +37,11 @@
  * - Fixed the issue that the scrolling text is not working.
  * - Fixed the issue that YEP Message Core is not working.
  * 2016.10.24 (v1.1.5) - Fixed the renderCanvas function in Scroll Text
+ * 2016.11.26 (v1.1.6) - Added certain code to remove the texture from memory.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.5';
+Imported.RS_ArabicMessageSystem = '1.1.6';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -718,6 +719,17 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     if(this._arabicTexts && this._arabicTexts.visible) {
       this._arabicTexts.pivot.y = this.origin.y;
     }
+  };
+
+  var alias_Window_ScrollText_destroy = Window_ScrollText.prototype.destroy;
+  Window_ScrollText.prototype.destroy = function (options) {
+    if(alias_Window_ScrollText_destroy) alias_Window_ScrollText_destroy.call(this, options);
+    if( this._renderTexture ) this._renderTexture.destroy({ destroyBase: true });
+    if( this._renderSprite ) this._renderSprite.destroy({ children: true });
+    if( this._renderTarget ) this._renderTarget.destroy();
+    this._renderTexture = null;
+    this._renderSprite = null;
+    this._renderTarget = null;
   };
 
   var alias_Window_ScrollText_renderCanvas = Window_ScrollText.prototype.renderCanvas;
