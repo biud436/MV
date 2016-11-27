@@ -1,6 +1,6 @@
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.3) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.4) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param Font Size
@@ -191,6 +191,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2016.11.27 (v0.1.4) : 플러그인 커맨드에서 '0'값을 설정할 수 없는 오류를 수정했습니다.
 * 2016.11.12 (v0.1.3) :
 * - 사용자 정의 폰트, 배경 투명도 변경 기능 추가
 * - 탭 및 캐리지 리턴 기능 동작하지 않는 버그가 있습니다.
@@ -209,7 +210,7 @@
 * 2015.12.01 (v0.0.1) - 최초 작성
 */
 /*:zh
-* @plugindesc (v0.1.3) Chinese Message System <RS_MessageSystem>
+* @plugindesc (v0.1.4) Chinese Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -275,7 +276,6 @@
 * @param Tab Size
 * @desc Tab Size
 * @default 4
-*
 *
 * @param back Opacity
 * @desc
@@ -393,6 +393,10 @@
 * 白色
 * 黄色
 * 通常
+* =============================================================================
+* Version Log
+* =============================================================================
+* 2016.11.27 (v0.1.4) : Fixed the issue that did not get the zero value in plugin commands.
 */
 
 var Imported = Imported || {};
@@ -1846,15 +1850,15 @@ var Color = Color || {};
         switch (args[0]) {
           //-------------------------------------------------------------------------
           case 'textSpeed': case '텍스트속도':
-          RS.MessageSystem.Params.textSpeed = Number(args[1] || 0);
+          RS.MessageSystem.Params.textSpeed = Number(args[1]);
           break;
           //-------------------------------------------------------------------------
           case 'fontSize': case '폰트크기':
-          RS.MessageSystem.Params.fontSize = Number(args[1] || 28);
+          RS.MessageSystem.Params.fontSize = Number(args[1]);
           break;
           //-------------------------------------------------------------------------
           case 'minFontSize': case '폰트최소크기':
-          RS.MessageSystem.Params.minFontSize = Number(args[1] || 24);
+          RS.MessageSystem.Params.minFontSize = Number(args[1]);
           break;
           //-------------------------------------------------------------------------
           case 'maxFontSize':  case '폰트최대크기':
@@ -1872,30 +1876,30 @@ var Color = Color || {};
           break;
           //-------------------------------------------------------------------------
           case 'textStartX': case '시작위치':
-          RS.MessageSystem.Params.textStartX = Number(args[1] || 192);
+          RS.MessageSystem.Params.textStartX = Number(args[1]);
           break;
           //-------------------------------------------------------------------------
           case 'name': case '이름윈도우':
           switch (args[1].toLowerCase()) {
             case 'x':
-            RS.MessageSystem.Params.nameWindowX = Number(args[2] || 0);
+            RS.MessageSystem.Params.nameWindowX = Number(args[2]);
             break;
             case 'y':
-            RS.MessageSystem.Params.nameWindowX = Number(args[2] || 0);
+            RS.MessageSystem.Params.nameWindowX = Number(args[2]);
             break;
             case 'padding':
-            RS.MessageSystem.Params.nameWindowStdPadding = Number(args[2] || 18);
+            RS.MessageSystem.Params.nameWindowStdPadding = Number(args[2]);
             break;
             default:
           }
           break;
           //-------------------------------------------------------------------------
           case 'faceOX': case '큰페이스칩X':
-          RS.MessageSystem.Params.faceOX = Number(args[1] || 0);
+          RS.MessageSystem.Params.faceOX = Number(args[1]);
           break;
           //-------------------------------------------------------------------------
           case 'faceOY': case '큰페이스칩Y':
-          RS.MessageSystem.Params.faceOY = Number(args[1] || 0);
+          RS.MessageSystem.Params.faceOY = Number(args[1]);
           break;
           //-------------------------------------------------------------------------
           case 'faceZ': case '큰페이스칩Z':
@@ -1907,13 +1911,13 @@ var Color = Color || {};
           break;
           //-------------------------------------------------------------------------
           case 'setTabSize': case '탭크기':
-          RS.MessageSystem.Params.TabSize = Number(args[1] || 4);
+          RS.MessageSystem.Params.TabSize = Number(args[1]);
           break;
           case 'backgroundOpacity': case '배경투명도':
-          RS.MessageSystem.Params.defaultOpacity = Number(args[1] || 255);
+          RS.MessageSystem.Params.defaultOpacity = Number(args[1]);
           break;
           case 'contentsOpacity': case '컨텐츠투명도':
-          RS.MessageSystem.Params.contentsOpacity = Number(args[1] || 255);
+          RS.MessageSystem.Params.contentsOpacity = Number(args[1]);
           break;
           // End main switch
         }
