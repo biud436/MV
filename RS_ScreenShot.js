@@ -22,7 +22,7 @@
  * @default Save
  * @require 1
  * @dir audio/se/
- * @type file 
+ * @type file
  *
  * @reference http://stackoverflow.com/questions/32613060/how-to-take-screenshot-with-node-webkit
  *
@@ -125,7 +125,7 @@ RS.ScreenShot = RS.ScreenShot || {};
         '   word-wrap: break-word;',
         '}',
         '  </style>',
-        '  <title>ScreenShots Preivew</title>',
+        '  <title>ScreenShots Preview</title>',
         '  </head>',
         '<div class="preview">%1.png</div>'.format(fileName),
         '<body>',
