@@ -61,6 +61,9 @@
 * @param Se Name
 * @desc audio/se 폴더에 있는 사운드 파일을 지정하세요.
 * @default Save
+* @require 1
+* @dir audio/se/
+* @type file
 *
 * @reference http://stackoverflow.com/questions/32613060/how-to-take-screenshot-with-node-webkit
 *
