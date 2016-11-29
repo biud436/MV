@@ -1,11 +1,24 @@
 /*:
- * @plugindesc Wav File Encrypter
+ * @plugindesc (v1.0.0) Wav File Encrypter
  * @author biud436
  *
  * @param key
- * @desc
+ * @desc Encryption Key
  * @default myKey
  *
+ * @help
+ * 1. Make new directory to js/libs folder
+ * 2. Installing the library called CryptoJS and place them in js/libs/CryptoJS folder
+ * https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js
+ * https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js
+ * 3. Sets up this plugin and your secret key in Plugin Manager.
+ * 4. Start Game and then run code as follows.
+ * Encrypter.startBuild();
+ * 5. Copy them to your release project after completed build.
+ * -----------------------------------------------------------------------------
+ * Change Log
+ * -----------------------------------------------------------------------------
+ * 2016.11.30 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
