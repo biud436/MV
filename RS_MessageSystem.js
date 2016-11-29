@@ -68,27 +68,27 @@
 * @default 4
 *
 * @param back Opacity
-* @desc
+* @desc 배경 그림의 투명도
 * @default 192
 *
 * @param default Opacity
-* @desc
+* @desc 기본 투명도
 * @default 255
 *
 * @param contents Opacity
-* @desc
+* @desc 내용의 투명도
 * @default 255
 *
 * @param translucent Opacity
-* @desc
+* @desc 반투명도
 * @default 160
 *
 * @param default outline width
-* @desc
+* @desc 테두리의 크기를 지정하세요
 * @default 2
 *
 * @param default outline Color
-* @desc
+* @desc 테두리 색상을 지정하세요
 * @default rgba(0, 0, 0, 1.0)
 *
 * @param --- Custom Font
@@ -96,15 +96,16 @@
 * @default
 *
 * @param Using Custom Font
-* @desc
+* @desc 사용자 지정 폰트를 사용하시겠습니까?
+* 예 - true   아니오 - false
 * @default false
 *
 * @param Custom Font Name
-* @desc
+* @desc Font의 이름을 작성하세요
 * @default NanumBrush
 *
 * @param Custom Font Src
-* @desc
+* @desc 사용자 지정 Font의 경로를 지정하세요
 * @default fonts/NanumBrush.ttf
 *
 * @help
@@ -113,13 +114,21 @@
 * =============================================================================
 * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
 *
+* - 텍스트의 속도는 0에서 가장 빠르고, 프레임 단위로 지정할 수 있습니다.
 * 메시지 텍스트속도 number
+*
 * 메시지 폰트크기 number
 * 메시지 폰트최소크기 number
 * 메시지 폰트최대크기 number
+*
+* - 그레디언트 텍스트로 색상을 변경할 수 있습니다.
 * 메시지 그레디언트 color1 color2 color3
+*
+* - 라인 수를 바꿀 수 있는 플러그인 명령입니다.
 * 메시지 라인 number
 * 메시지 시작위치 number
+*
+* 이름 윈도우의 좌표를 조절
 * 메시지 이름윈도우 x number
 * 메시지 이름윈도우 y number
 * 메시지 이름윈도우 padding number
@@ -154,9 +163,9 @@
 * \확대
 * \축소
 * \골드
-*  \말풍선[이벤트의 ID]
-*  \말풍선[0]
-*  \말풍선[-1]
+* \말풍선[이벤트의 ID]
+* \말풍선[0]
+* \말풍선[-1]
 * \정렬자[1]
 * \정렬자[2]
 * \숫자[숫자]
@@ -476,14 +485,15 @@ var Color = Color || {};
       "아이콘", "확대", "축소", "골드",  // 16
       '말풍선', "정렬자", "숫자", '크기', // 20
       't', 'r'], // 22
-      'Chinese': [
-        undefined, "色", "速度", "轮廓颜色", "轮廓宽度", // 4
-        "缩进", "加粗!", "倾斜!", "名字", // 8
-        "渐变颜色", "队伍成员", "角色", "变量", // 12
-        "图标", "增大", "减少", "金币", // 16
-        "对话框", "对齐", "数", "大小", // 20
-        't', 'r']
+    'Chinese': [
+      undefined, "色", "速度", "轮廓颜色", "轮廓宽度", // 4
+      "缩进", "加粗!", "倾斜!", "名字", // 8
+      "渐变颜色", "队伍成员", "角色", "变量", // 12
+      "图标", "增大", "减少", "金币", // 16
+      "对话框", "对齐", "数", "大小", // 20
+      't', 'r']
   };
+  
   RS.MessageSystem.TextCodes.Main = [];
 
   RS.MessageSystem.TextCodes.ENUM = {
