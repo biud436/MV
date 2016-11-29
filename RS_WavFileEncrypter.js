@@ -7,7 +7,7 @@
  * @default myKey
  *
  * @help
- * 1. Make new directory to js/libs folder
+ * 1. Make new directory called 'CryptoJS' to js/libs folder
  * 2. Installing the library called CryptoJS and place them in js/libs/CryptoJS folder
  * https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js
  * https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js
