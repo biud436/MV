@@ -1,6 +1,6 @@
 /*:
  * RS_InputDialog.js
- * @plugindesc this plugin allows you to display Text Edit Box on the screen.
+ * @plugindesc This plugin allows you to display Text Edit Box on the screen.
  * @author biud436
  *
  * @param textBox Width
@@ -23,10 +23,6 @@
  * @desc Sets the string that is the top of the text box.
  * @default Please enter the value...
  *
- * @param Background Color
- * @desc Sets a background color of the text box.
- * @default rgba(255, 255, 255, 0.8)
- *
  * @param direction
  * @desc Sets the direction of content flow.
  * ltr - Left to Right, rtl - Right to Left
@@ -35,6 +31,39 @@
  * @param Max Length
  * @desc Specifies the maximum number of character for an input field
  * @default 255
+ *
+ * @param Style ----
+ * @desc
+ * @default
+ *
+ * @param Background Color
+ * @desc Specifies a background color of the text box.
+ * @default #cff09e
+ *
+ * @param Border
+ * @desc Specifies a border color of the text box.
+ * @default 2px solid #3b8686
+ *
+ * @param Border Radius
+ * @desc Specifies a border radius of the text box.
+ * @default 10px
+ *
+ * @param Text Shadow
+ * @desc Specifies a text shadow of the text box.
+ * @default 0px 1px 3px #a8dba8
+ *
+ * @param Font Family
+ * @desc Specifies a font family of the text box.
+ * @default arial
+ *
+ * @param Color
+ * @desc Specifies a font color of the text box.
+ * @default #79bd9a
+ *
+ * @param Opacity
+ * @desc Specifies a opacity of the text box.
+ * (value range : 0.0 ~ 1.0)
+ * @default 0.8
  *
  * @help
  * =============================================================================
@@ -78,6 +107,11 @@
  * 2016.10.18 (v1.1.5) - Fixed an issue that battler's movement is too fast.
  * 2016.10.29 (v1.1.6) - Added the function that allows you to specify the maximum number of character for an input field.
  * 2016.11.13 (v1.1.61) - Fixed the issue that is directly calling the requestUpdate function of SceneManager.
+ * 2016.12.02 (v1.1.65) :
+ * - Added some style codes such as a text shadow and an outline into the text box.
+ * - Fixed the way that can temporarily stop attack and skill actions with an enemy when the text box is activated in the battle.
+ * - It will not process the text input when the text box is not shown in the battle.
+ * - In the debug mode, It adds the result value to a log window after the text input is done.
  */
 
 var Imported = Imported || {};
@@ -99,9 +133,16 @@ function Scene_InputDialog() {
   RS.InputDialog.Params.variableID = Number(parameters['variable ID'] || 3);
   RS.InputDialog.Params.debug = Boolean(parameters['debug'] === 'true');
   RS.InputDialog.Params.localText = String(parameters['Text Hint'] || 'Test Message');
-  RS.InputDialog.Params.backgroundColor = String(parameters['Background Color'] || 'rgba(255,255,255,0.8)');
+  RS.InputDialog.Params.backgroundColor = String(parameters['Background Color'] || '#cff09e');
   RS.InputDialog.Params.inputDirection = String(parameters['direction'] || 'ltr');
   RS.InputDialog.Params.nMaxLength = parseInt(parameters['Max Length'] || '6');
+
+  RS.InputDialog.Params.border = parameters['Border'] || "2px solid #3b8686";
+  RS.InputDialog.Params.borderRadius = parameters['Border Radius'] || '10px';
+  RS.InputDialog.Params.textShadow = parameters['Text Shadow'] || "0px 1px 3px #a8dba8";
+  RS.InputDialog.Params.fontFamily = parameters['Font Family'] || 'arial';
+  RS.InputDialog.Params.color = parameters['Color'] || "#79bd9a";
+  RS.InputDialog.Params.opacity = parameters['Opacity'] || "0.8";
 
   RS.InputDialog.Params.szTextBoxId = 'md_textBox';
   RS.InputDialog.Params.szFieldId = 'md_inputField';
@@ -120,6 +161,11 @@ function Scene_InputDialog() {
     if(textBox) {
       textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
       textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
+      textBox.style.border = RS.InputDialog.Params.border;
+      textBox.style.borderRadius = RS.InputDialog.Params.borderRadius;
+      textBox.style.textShadow = RS.InputDialog.Params.textShadow;
+      textBox.style.fontFamily = RS.InputDialog.Params.fontFamily;
+      textBox.style.color = RS.InputDialog.Params.color;
       textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
       textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
       textBox.style.direction = RS.InputDialog.Params.inputDirection;
@@ -183,7 +229,7 @@ function Scene_InputDialog() {
     this._textBox = document.createElement('input');
     this._textBox.type = "text";
     this._textBox.id = id;
-    this._textBox.style.opacity = 255;
+    this._textBox.style.opacity = RS.InputDialog.Params.opacity;
     this._textBox.style.zIndex = 1000;
     this._textBox.autofocus = false;
     this._textBox.multiple = false;
@@ -196,19 +242,22 @@ function Scene_InputDialog() {
     this._textBox.style.direction = RS.InputDialog.Params.inputDirection;
     this._textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
     this._textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
+    this._textBox.style.border = RS.InputDialog.Params.border;
+    this._textBox.style.borderRadius = RS.InputDialog.Params.borderRadius;
+    this._textBox.style.textShadow = RS.InputDialog.Params.textShadow;
+    this._textBox.style.fontFamily = RS.InputDialog.Params.fontFamily;
+    this._textBox.style.color = RS.InputDialog.Params.color;
+    this._textBox.style.outline = 'none';
     this._textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
     this._textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
     this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
     this._textBox.max = RS.InputDialog.Params.nMaxLength;
 
-    // 키를 눌렀을 때의 처리
     this._textBox.onkeydown = this.onKeyDown.bind(this);
 
-    // 화면에 에디트박스를 표시한다.
     var field = document.getElementById(this._fieldId);
     field.appendChild(this._textBox);
 
-    // 에디트 박스를 캔버스 중앙에 정렬합니다.
     Graphics._centerElement(this._textBox);
 
     window.onresize = function () {
@@ -270,14 +319,10 @@ function Scene_InputDialog() {
 
     var keyCode = e.which;
 
-    // this.getFocus();
-
     if (keyCode < TextBox.IS_NOT_CHAR) {
 
-      // 결정키를 눌렸는가?
       if(keyCode === TextBox.ENTER) {
 
-        // 버튼 입력 체크
         if(this._func instanceof Function) this._func();
 
       }
@@ -385,6 +430,7 @@ function Scene_InputDialog() {
   };
 
   Scene_InputDialog.prototype.createText = function () {
+    var wt = this.worldTransform;
     this._text = new Window_DialogHelp(2);
     this._text.x = Graphics.boxHeight / 2 - this._text.width / 2;
     this._text.y = Graphics.boxHeight / 2 - RS.InputDialog.Params.textBoxHeight - this._text.height;
@@ -416,6 +462,33 @@ function Scene_InputDialog() {
   };
 
   //============================================================================
+  // Game_Troop
+  //
+  //
+
+  Game_Troop.prototype.showInputDialog = function () {
+    this._interpreter._waitMode = 'IME Mode';
+  };
+
+  Game_Troop.prototype.hideInputDialog = function () {
+    this._interpreter._waitMode = '';
+  };
+
+  //============================================================================
+  // Game_Interpreter
+  //
+  //
+
+  var alias_Game_Interpreter_updateWaitMode = Game_Interpreter.prototype.updateWaitMode;
+  Game_Interpreter.prototype.updateWaitMode = function() {
+    if(this._waitMode === 'IME Mode') {
+      return true;
+    } else {
+      return alias_Game_Interpreter_updateWaitMode.call(this);
+    }
+  };
+
+  //============================================================================
   // Scene_Battle
   //
   //
@@ -430,16 +503,6 @@ function Scene_InputDialog() {
   Scene_Battle.prototype.create = function () {
     alias_Scene_Battle_create.call(this);
     this.createTextBoxHelp();
-  };
-
-  var alias_Scene_Battle_update = Scene_Battle.prototype.update;
-  Scene_Battle.prototype.update = function () {
-    if(!this.textBoxIsBusy()) {
-      alias_Scene_Battle_update.call(this);
-    } else {
-      Input.clear();
-      TouchInput.clear();
-    }
   };
 
   var alias_Scene_Battle_terminate = Scene_Battle.prototype.terminate;
@@ -472,28 +535,33 @@ function Scene_InputDialog() {
   };
 
   Scene_Battle.prototype.showTextBox = function () {
+    this._textBox.setText('');
     this._tbHelp.show();
     this._textBox.show();
-    // SceneManager._stopped = true;
     this._textBox.getFocus();
+    $gameTroop.showInputDialog();
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
     if(!this.textBoxIsBusy()) return false;
     this._textBox.hide();
     this._tbHelp.hide();
-    // SceneManager._stopped = false;
-    // SceneManager.requestUpdate();
     Input.clear();
+    $gameTroop.hideInputDialog();
   };
 
   Scene_Battle.prototype.okResult = function () {
     if(!this._textBox) return '';
-    var text = this._textBox.getText() || '';
-    $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
-    if(RS.InputDialog.Params.debug) window.alert(text);
-    this._textBox.setText('');
-    this.hideTextBox();
+    if( this.textBoxIsBusy() ) {
+      var text = this._textBox.getText() || '';
+      $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
+      this._textBox.setText('');
+      if(RS.InputDialog.Params.debug) {
+        var dmsg = 'You typed the text is same as '.concat($gameVariables.value(RS.InputDialog.Params.variableID) + '' || 'NONE');
+        this._logWindow.push('addText', dmsg);
+      }
+      this.hideTextBox();
+    }
   };
 
   //============================================================================
@@ -533,6 +601,5 @@ function Scene_InputDialog() {
         }
       }
   };
-
 
 })();
