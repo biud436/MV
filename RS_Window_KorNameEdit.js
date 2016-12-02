@@ -346,6 +346,8 @@ Imported.Window_KorNameEdit = true;
         text = '\u4E00';
     } else if (navigator.language.match(/^ko/)) { // isKorean
         text = '\uAC00';
+    } else if (navigator.language.match(/^ja/)) { // isJapanese
+        text = '\u3042';
     }
     return this.textWidth(text);
   };
