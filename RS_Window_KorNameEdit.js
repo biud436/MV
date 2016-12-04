@@ -40,11 +40,11 @@
  *
  * @param Chinese Fonts
  * @desc
- * @default SimHei, Heiti TC, sans-serif
+ * @default SimHei, Heiti TC, sans-serif, Noto Sans
  *
  * @param Korean Fonts
  * @desc
- * @default Dotum, AppleGothic, sans-serif
+ * @default Noto Sans, Dotum, AppleGothic, sans-serif
  *
  * @param Default Fonts
  * @desc
@@ -119,7 +119,7 @@
   *
   * @param Korean Fonts
   * @desc 한국어 폰트
-  * @default Dotum, AppleGothic, sans-serif
+  * @default Noto Sans, Dotum, AppleGothic, sans-serif
   *
   * @param Default Fonts
   * @desc 기본 폰트
@@ -138,6 +138,9 @@
   * KNE 폰트크기 숫자
   * KNE 투명도 숫자
   * KNE 텍스트 문자열
+  *
+  * - 폰트 (본고딕)
+  * http://www.google.com/get/noto/#/family/noto-sans-kore
   *
   * - Change Log
   * 2015.10.19 - 최초 작성일

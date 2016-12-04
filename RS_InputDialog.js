@@ -466,11 +466,11 @@ function Scene_InputDialog() {
   //
   //
 
-  Game_Troop.prototype.showInputDialog = function () {
+  Game_Troop.prototype.battleInterpreterTaskLock = function () {
     this._interpreter._waitMode = 'IME Mode';
   };
 
-  Game_Troop.prototype.hideInputDialog = function () {
+  Game_Troop.prototype.battleInterpreterTaskUnlock = function () {
     this._interpreter._waitMode = '';
   };
 
@@ -539,7 +539,7 @@ function Scene_InputDialog() {
     this._tbHelp.show();
     this._textBox.show();
     this._textBox.getFocus();
-    $gameTroop.showInputDialog();
+    $gameTroop.battleInterpreterTaskLock();
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
@@ -547,7 +547,7 @@ function Scene_InputDialog() {
     this._textBox.hide();
     this._tbHelp.hide();
     Input.clear();
-    $gameTroop.hideInputDialog();
+    $gameTroop.battleInterpreterTaskUnlock();
   };
 
   Scene_Battle.prototype.okResult = function () {
