@@ -272,6 +272,7 @@
  * 2016.03.05 (v1.0.2) - Fixed the class structure.
  * 2016.03.10 (v1.0.3) - Fixed the sound option.
  * 2016.09.14 (v1.0.4) - Fixed the issue that the step sound property is initialized to the false in ConfigManager.
+ * 2016.12.05 (v1.0.5) - Fixed the value of ConfigManager.stepSound
  */
 
 var Imported = Imported || {};
@@ -322,7 +323,7 @@ Imported.RS_WalkingStepSound = true;
     var note = tileset.note.split(/[\r\n]/);
     note.forEach(function(i) {
       if(i.match(/<Step Sounds>/i)) {
-        RSMatch._init = ConfigManager.stepSound = true;
+        RSMatch._init = true;
         ConfigManager.save();
       }
     }, this);

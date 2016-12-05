@@ -243,16 +243,8 @@
  * @default Step Sound
  *
  * @help
- *
- * Before you start downloading this plugin, should know that this plugin will require some sound effects.
- * That file type of sound effects is the .wav file. But, Wav types does not supported by RPG Maker MV.
- * However, You can solve it by adding a wav plugin. wav plugin can download via this link.
- *
- * 1. First step is to add sound effect files on the audio/wav folder.
- * Sound effects files of YouTube video can download via this link.
- *
+ * 1. First step is to add sound effect files on the audio/se folder.
  * 2. Second step is to add this plugin file on the js/plugin folder.
- *
  * 3. Third step is to set the following note tag on the database-tileset-note.
  *
  * <Step Sounds>
