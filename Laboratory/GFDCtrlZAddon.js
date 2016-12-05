@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin adds undo functionality to the Grid Free Doodads plugin <GFDCtrlZAddon>
+ * @plugindesc This plugin adds undo functionality to Yanfly Grid Free Doodads plugin <GFDCtrlZAddon>
  * @author biud436
  *
  * @param maxCounts
