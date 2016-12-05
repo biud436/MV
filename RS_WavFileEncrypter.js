@@ -7,6 +7,9 @@
  * @default myKey
  *
  * @help
+ * -----------------------------------------------------------------------------
+ * How to install
+ * -----------------------------------------------------------------------------
  * 1. Make new directory called 'CryptoJS' to js/libs folder
  * 2. Installing the library called CryptoJS and place them in js/libs/CryptoJS folder
  * https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js
@@ -16,9 +19,18 @@
  * Encrypter.startBuild();
  * 5. Copy them to your release project after completed build.
  * -----------------------------------------------------------------------------
+ * Plugin Command
+ * -----------------------------------------------------------------------------
+ * You can be available this command in your event editor.
+ *
+ * Encryption startBuild
+ *
+ * It quickly creates files in same folder after all files build.
+ * -----------------------------------------------------------------------------
  * Change Log
  * -----------------------------------------------------------------------------
  * 2016.11.30 (v1.0.0) - First Release.
+ * 2016.12.05 (v1.0.1) - Added new plugin command.
  */
 
 var Imported = Imported || {};
@@ -44,13 +56,17 @@ function Encrypter() {
   Encrypter._encryptionKey = ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];
 
   Encrypter.loadScript = function(name) {
-    var url = Encrypter.getCurrentPath() + this._path + name;
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
-    script.async = false;
-    script._url = url;
-    document.body.appendChild(script);
+    try {
+      var url = Encrypter.getCurrentPath() + this._path + name;
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = url;
+      script.async = false;
+      script._url = url;
+      document.body.appendChild(script);
+    } catch (e) {
+      Encrypter.getMd5Lib();
+    }
   };
 
   Encrypter.getWaveFiles = function() {
@@ -192,10 +208,7 @@ function Encrypter() {
     });
   };
 
-  // https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js
   Encrypter.loadScript('core-min.js');
-
-  // https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js
   Encrypter.loadScript('md5.js');
 
   Decrypter.extToEncryptExt = function(url) {
@@ -210,5 +223,48 @@ function Encrypter() {
 
       return url.slice(0, url.lastIndexOf(ext) - 1) + encryptedExt;
   };
+
+  Encrypter.downloadData = function (url, path) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', new URL(url), true);
+    xhr.overrideMimeType('text/javascript');
+    xhr.onload = function() {
+      if(xhr.status < 400) {
+        var fileName = url.match(/^.+:\/\/.+\/(.*)$/g);
+        var writeStream = fs.createWriteStream( path + fileName,  {flags: 'w+'});
+        var bin = xhr.response;
+        writeStream.write( bin );
+        writeStream.end();
+        writeStream.on('finish', function() {
+        	console.log('Finished to download at ' + path);
+        });
+      }
+    }
+    xhr.send();
+  };
+
+  Encrypter.getMd5Lib = function () {
+    setTimeout(function () {
+      var libraryPath = Encrypter.getCurrentPath() + 'js/libs/';
+      Encrypter.downloadData('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js', libraryPath);
+      Encrypter.downloadData('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js', libraryPath);
+    }, 0);
+  };
+
+  //===========================================================================
+  // Game_Interpreter
+  //===========================================================================
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if(command === "Encryption" && args[0] === 'startBuild') {
+      Encrypter.startBuild();
+    }
+    // if(command === "MD5" && args[0] === 'download') {
+    //   Encrypter.getMd5Lib();
+    // }
+  };
+
 
 })();
