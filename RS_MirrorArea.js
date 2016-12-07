@@ -6,13 +6,10 @@
  * @desc [width, height, xOffset, yOffset]
  * @default [28, 42, 10, 25]
  *
- * @param Dresser
- * @desc [width, height, xOffset, yOffset]
- * @default [34, 15, 10, 30]
- *
  * @param Blur
- * @desc number
- * @default 0.6
+ * @desc Blurring is very poor performance.
+ * 0 = blur off / 0.1 or more = blur on
+ * @default 0.0
  *
  * @help
  * =============================================================================
@@ -55,9 +52,27 @@ function Sprite_Mirror() {
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
   $.oMirror = JSON.parse(parameters['Mirror'] || '[28, 42, 10, 26]');
-  $.oDresser = JSON.parse(parameters['Dresser'] || '[34, 15, 10, 30]');
+  $.oDresser = JSON.parse('[34, 15, 10, 30]');
   $.fBlur = parseFloat(parameters['Blur'] || 0.0);
   $.allImagesVisible = true;
+
+  //============================================================================
+  // Game_System
+  //============================================================================
+
+  var alias_Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function() {
+      alias_Game_System_initialize.call(this);
+      this._restoreMirrors = null;
+  };
+
+  Game_System.prototype.saveMirrors = function (obj) {
+      this._restoreMirrors = JsonEx.stringify(obj);
+  };
+
+  Game_System.prototype.restoreMirrors = function (raw) {
+      return JsonEx.parse(this._restoreMirrors);
+  };
 
   //============================================================================
   // Sprite_Mirror
@@ -69,19 +84,29 @@ function Sprite_Mirror() {
   Sprite_Mirror.prototype.initialize = function (character) {
       Sprite_Character.prototype.initialize.call(this, character);
       this._offset = [0, 0, 0, 0];
-      if(Graphics.isWebGL()) {
+
+
+      // TODO: Blurring is very poor performance.
+
+      if(Graphics.isWebGL() && ($.fBlur > 0.0)) {
         this._blurFilter = new PIXI.filters.BlurFilter();
         this._blurFilter.blur = $.fBlur;
         this.filters = [this._blurFilter];
+        this._initBlur = true;
       }
+
   };
 
   Sprite_Mirror.prototype.updateVisibility = function () {
       Sprite_Character.prototype.updateVisibility.call(this);
       this.visible = this.mask && $.allImagesVisible;
-      if(Graphics.isWebGL() && this._blurFilter) {
+
+      // TODO: Blurring is very poor performance.
+
+      if(this._initBlur && this._blurFilter) {
         this._blurFilter.blur = $.fBlur;
       }
+
   };
 
   Sprite_Mirror.prototype.updatePosition = function() {
@@ -91,7 +116,7 @@ function Sprite_Mirror() {
       var maskY = this._offset[1];
       this.x = this._character.screenX();
       this.y = (targetY - this._offset[1]) + (this._character.screenY() % maskY);
-      this.z = this._character.screenZ();
+      this.z = this._character.screenZ() + 4;
       this.updateMask();
   };
 
@@ -177,9 +202,15 @@ function Sprite_Mirror() {
 
       var mirrorCharacter = new Sprite_Mirror( $gamePlayer );
       mirrorCharacter.setProperties( graphics, event, offset );
-
       this._mirrorCharacters.push( mirrorCharacter );
       this._tilemap.addChild( mirrorCharacter );
+
+      $gamePlayer._followers.forEach(function (e, i, a) {
+        mirrorCharacter = new Sprite_Mirror( e );
+        mirrorCharacter.setProperties( graphics, event, offset );
+        this._mirrorCharacters.push( mirrorCharacter );
+        this._tilemap.addChild( mirrorCharacter );
+      }, this);
 
   };
 
