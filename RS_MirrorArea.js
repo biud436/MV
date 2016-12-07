@@ -78,7 +78,7 @@ function Sprite_Mirror() {
 
   Sprite_Mirror.prototype.updateVisibility = function () {
       Sprite_Character.prototype.updateVisibility.call(this);
-      this.visible = this.mask && ;
+      this.visible = this.mask && $.allImagesVisible;
       if(Graphics.isWebGL() && this._blurFilter) {
         this._blurFilter.blur = $.fBlur;
       }
@@ -129,7 +129,7 @@ function Sprite_Mirror() {
   // Spriteset_Map
   //============================================================================
 
-  var alias_Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer;
+  var alias_Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer
   Spriteset_Map.prototype.createLowerLayer = function() {
       alias_Spriteset_Map_createLowerLayer.call(this);
       this.initMirrorMembers();
