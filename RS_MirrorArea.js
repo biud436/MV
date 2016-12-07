@@ -129,7 +129,7 @@ function Sprite_Mirror() {
   // Spriteset_Map
   //============================================================================
 
-  var alias_Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer
+  var alias_Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer;
   Spriteset_Map.prototype.createLowerLayer = function() {
       alias_Spriteset_Map_createLowerLayer.call(this);
       this.initMirrorMembers();
