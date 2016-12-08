@@ -42,6 +42,7 @@
  * - Added a dresser for a decoration.
  * - Added a toggle functionality in blur filter.
  * - Changed the name of the plugin command.
+ * 2016.12.08 (v0.0.5) - Fixed an error that could not find a list of events when there was an erased event.
  */
 
 var Imported = Imported || {};
@@ -184,6 +185,7 @@ function Sprite_Mirror() {
 
   Spriteset_Map.prototype.initMirrorMembers = function () {
       this._mirrorCharacters = [];
+      this._mirrorInitialized = false;
   };
 
   var alias_Spriteset_Map_hideCharacters = Spriteset_Map.prototype.hideCharacters;
@@ -241,8 +243,8 @@ function Sprite_Mirror() {
   Spriteset_Map.prototype.findAllTypeMirrors = function() {
       var self = this;
       var id = -1;
-      $gameMap.events().forEach(function (event) {
-        var eventList = event.findProperPageIndex() > -1 && event.list();
+      $gameMap.events().forEach(function (event, idx) {
+        var eventList = event && !event._erased && event.findProperPageIndex() > -1 && event.list();
         eventList && eventList.forEach(function (list, i ,a) {
           if(list.code === 108 || list.code === 408) {
             if(list.parameters[0].match(/<(?:MIRROR_NORMAL).W*\:.\W*(.+?)>/gi)) {
@@ -254,6 +256,7 @@ function Sprite_Mirror() {
             }
           }
         });
+
       }, this);
   };
 
