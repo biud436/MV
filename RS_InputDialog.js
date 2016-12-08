@@ -377,32 +377,6 @@ function Scene_InputDialog() {
   };
 
   //============================================================================
-  //
-  //
-  //
-  function Window_DialogHelp() {
-      this.initialize.apply(this, arguments);
-  }
-
-  Window_DialogHelp.prototype = Object.create(Window_Help.prototype);
-  Window_DialogHelp.prototype.constructor = Window_DialogHelp;
-
-  Window_DialogHelp.prototype.initialize = function(numLines) {
-    Window_Help.prototype.initialize.call(this, numLines);
-  };
-
-  Window_DialogHelp.prototype.textWidthEx = function(text) {
-      return this.drawTextEx(text, 0, this.contents.height);
-  };
-
-  Window_DialogHelp.prototype.refresh = function() {
-    this.contents.clear();
-    var w = this.textWidthEx(this._text);
-    var x = this.width - w - (w / 2);
-    this.drawTextEx(this._text, x + this.textPadding(), 0);
-  };
-
-  //============================================================================
   // Scene_InputDialog
   //
   //
