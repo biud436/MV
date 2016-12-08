@@ -1,0 +1,6 @@
+{
+  "name": "Mv",
+  "tagline": "",
+  "body": "\r\n### Installation ###\r\nDownload the plugin and place it in the folder called <b><span style=\"color:red;\">your_project_directory/js/plugins.</span></b>\r\nAnd then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.\r\n\r\n![HowtoDownloadPlugin](http://i.imgur.com/BCG99Dm.png)\r\n\r\n### To send feedback ###\r\nIf you have feedback to send me, please write your feedback at the following site.\r\n- [My Blog](http://biud436.tistory.com/notice/21)\r\n- [Issues](https://github.com/biud436/MV/issues)\r\n\r\n### Credit and Thanks ###\r\nBiud436\r\n\r\n### Terms of Use ###\r\nFree for commercial and non-commercial use.\r\n\r\n### License ###\r\nThe MIT License (MIT)",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
