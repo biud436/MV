@@ -16,8 +16,13 @@
  * How to Use
  * =============================================================================
  * You can set up the comment in your mirror event and change an image as mirror.
- *   Try to set up this comment :
- *       <MIRROR_NORMAL : PLAYER>
+ *
+ *   Try to set up this comment to player and player's followers :
+ *       <MIRROR_NORMAL : 0>
+ *
+ *   Try to set up this comment to certain event :
+ *       <MIRROR_NORMAL : EVENT_ID>
+ *
  * =============================================================================
  * Plugin Commands
  * =============================================================================
@@ -176,9 +181,11 @@ function Sprite_Mirror() {
       }
   };
 
-  Spriteset_Map.prototype.createMirrorImage = function (event, type) {
+  Spriteset_Map.prototype.createMirrorImage = function (event, type, id) {
 
       var offset = [0, 0, 0, 0];
+      var target = (id <= 0) ? $gamePlayer : $gameMap.events()[id];
+      console.log(target);
 
       if(type === 'mirror') offset = $.oMirror;
       if(type === 'dresser') offset = $.oDresser;
@@ -200,34 +207,37 @@ function Sprite_Mirror() {
       // TODO: If it creates the sprites for every mirror event, it will call many functions that do not need.
       // So I'll fix them later.
 
-      var mirrorCharacter = new Sprite_Mirror( $gamePlayer );
+      var mirrorCharacter = new Sprite_Mirror( target );
       mirrorCharacter.setProperties( graphics, event, offset );
       this._mirrorCharacters.push( mirrorCharacter );
       this._tilemap.addChild( mirrorCharacter );
 
-      $gamePlayer._followers.forEach(function (e, i, a) {
-        mirrorCharacter = new Sprite_Mirror( e );
-        mirrorCharacter.setProperties( graphics, event, offset );
-        this._mirrorCharacters.push( mirrorCharacter );
-        this._tilemap.addChild( mirrorCharacter );
-      }, this);
+      if(target instanceof Game_Player) {
+        $gamePlayer._followers.forEach(function (e, i, a) {
+          mirrorCharacter = new Sprite_Mirror( e );
+          mirrorCharacter.setProperties( graphics, event, offset );
+          this._mirrorCharacters.push( mirrorCharacter );
+          this._tilemap.addChild( mirrorCharacter );
+        }, this);
+      }
 
   };
 
   Spriteset_Map.prototype.findAllTypeMirrors = function() {
       var self = this;
-      var events = $gameMap.events().filter(function (event) {
-        var s = false;
+      var id = -1;
+      $gameMap.events().forEach(function (event) {
         event.list().forEach(function (list, i ,a) {
           if(list.code === 108 || list.code === 408) {
-            if(list.parameters[0].match(/<(?:MIRROR_NORMAL).W*\:.\W*(?:PLAYER)>/gi)) {
-              self.createMirrorImage(event, 'mirror');
-            } else if(list.parameters[0].match(/<(?:MIRROR_DRESSER).W*\:.\W*(?:PLAYER)>/gi)) {
-              self.createMirrorImage(event, 'dresser');
+            if(list.parameters[0].match(/<(?:MIRROR_NORMAL).W*\:.\W*(.+?)>/gi)) {
+              id = parseInt(RegExp.$1);
+              self.createMirrorImage(event, 'mirror', id);
+            } else if(list.parameters[0].match(/<(?:MIRROR_DRESSER).W*\:.\W*(.+?)>/gi)) {
+              id = parseInt(RegExp.$1);
+              self.createMirrorImage(event, 'dresser', id);
             }
           }
         });
-        return s;
       }, this);
   };
 

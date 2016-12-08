@@ -112,6 +112,7 @@
  * - Fixed the way that can temporarily stop attack and skill actions with an enemy when the text box is activated in the battle.
  * - It will not process the text input when the text box is not shown in the battle.
  * - In the debug mode, It adds the result value to a log window after the text input is done.
+ * 2016.12.08 (v1.1.68) - Removed the text hint window.
  */
 
 var Imported = Imported || {};
@@ -344,6 +345,7 @@ function Scene_InputDialog() {
   TextBox.prototype.setText = function (text) {
     var textBox = document.getElementById(this._textBoxID);
     textBox.value = text || '';
+    return textBox;
   };
 
   TextBox.prototype.getText = function () {
@@ -359,6 +361,10 @@ function Scene_InputDialog() {
   TextBox.prototype.show = function () {
     var field = document.getElementById(this._fieldId);
     field.style.zIndex = 1000;
+  };
+
+  TextBox.prototype.setTextHint = function () {
+    this.setText(RS.InputDialog.Params.localText).select();
   };
 
   TextBox.prototype.isBusy = function () {
@@ -411,8 +417,6 @@ function Scene_InputDialog() {
   Scene_InputDialog.prototype.create = function () {
     Scene_Base.prototype.create.call(this);
     this.createBackground();
-    this.createWindowLayer();
-    this.createText();
     this.createTextBox();
   };
 
@@ -429,30 +433,16 @@ function Scene_InputDialog() {
     this.addChild(this._backgroundSprite);
   };
 
-  Scene_InputDialog.prototype.createText = function () {
-    var wt = this.worldTransform;
-    this._text = new Window_DialogHelp(2);
-    this._text.x = Graphics.boxHeight / 2 - this._text.width / 2;
-    this._text.y = Graphics.boxHeight / 2 - RS.InputDialog.Params.textBoxHeight - this._text.height;
-    this._text.setText(RS.InputDialog.Params.localText);
-    this._text.backOpacity = 0;
-    this._text._windowFrameSprite.alpha = 0;
-    this.addWindow(this._text);
-  };
-
   Scene_InputDialog.prototype.createTextBox = function () {
     this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
     this._textBox.setEvent(this.okResult.bind(this));
     this._textBox.show();
+    this._textBox.setTextHint();
   };
 
   Scene_InputDialog.prototype.okResult = function () {
     var text = this._textBox.getText() || '';
     $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
-
-    if(RS.InputDialog.Params.debug) {
-      window.alert(text);
-    }
 
     if(SceneManager._stack.length > 0) {
       Input.clear();
@@ -502,7 +492,6 @@ function Scene_InputDialog() {
   var alias_Scene_Battle_create = Scene_Battle.prototype.create;
   Scene_Battle.prototype.create = function () {
     alias_Scene_Battle_create.call(this);
-    this.createTextBoxHelp();
   };
 
   var alias_Scene_Battle_terminate = Scene_Battle.prototype.terminate;
@@ -512,17 +501,9 @@ function Scene_InputDialog() {
       this._textBox.terminate();
       this._textBox = null;
     }
-  };
-
-  Scene_Battle.prototype.createTextBoxHelp = function () {
-    this._tbHelp = new Window_DialogHelp(2);
-    this._tbHelp.hide();
-    this._tbHelp.x = Graphics.boxHeight - Graphics.boxHeight / 2 - this._tbHelp.width / 2;
-    this._tbHelp.y = Graphics.boxHeight / 2 - RS.InputDialog.Params.textBoxHeight - this._tbHelp.height;
-    this._tbHelp.setText(RS.InputDialog.Params.localText);
-    this._tbHelp.backOpacity = 0;
-    this._tbHelp._windowFrameSprite.alpha = 0;
-    this.addChild(this._tbHelp);
+    if($gameTemp.isCommonEventReserved()) {
+      $gameTemp.clearCommonEvent();
+    }
   };
 
   Scene_Battle.prototype.createTextBox = function () {
@@ -536,16 +517,15 @@ function Scene_InputDialog() {
 
   Scene_Battle.prototype.showTextBox = function () {
     this._textBox.setText('');
-    this._tbHelp.show();
     this._textBox.show();
     this._textBox.getFocus();
+    this._textBox.setTextHint();
     $gameTroop.battleInterpreterTaskLock();
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
     if(!this.textBoxIsBusy()) return false;
     this._textBox.hide();
-    this._tbHelp.hide();
     Input.clear();
     $gameTroop.battleInterpreterTaskUnlock();
   };

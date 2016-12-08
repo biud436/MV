@@ -195,8 +195,10 @@ Imported.RS_ScreenManager = true;
     var gArray = [];
     var result = [];
     var maxSW = window.screen.availWidth, maxSH = window.screen.availHeight;
-    var type = ((maxSW / maxSH) >= 1.0) ? 'landscape' : 'portrait';
+    // var type = ((maxSW / maxSH) >= 1.0) ? 'landscape' : 'portrait';
+    var type = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
     data = (Utils.isMobileDevice() === true) ? mobileGraphicsArray : pcGraphicsArray;
+
     data.forEach(function (i) {
       if(i.match(getTargetRegex)) {
         tw = Number(RegExp.$1);

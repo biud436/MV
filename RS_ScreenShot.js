@@ -79,6 +79,7 @@
 * 2016.11.27 (v1.0.4) : Fixed preview window in the html format instead of an image.
 * - Displays the name of the screen shot file in the preview window.
 * - Plays the sound when you are taking a screenshot.
+* 2016.12.08 (v1.0.42) - Added code to remove references to URL objects.
 */
 
 var Imported = Imported || {};
@@ -141,6 +142,10 @@ RS.ScreenShot = RS.ScreenShot || {};
       var win = window.open(url, '_blank');
     }
     if(renderTexture) renderTexture.destroy( { destroyBase: true } );
+
+    // Call this method when it doesn't need to keep the reference to URL object any longer.
+    URL.revokeObjectURL(url);
+
   };
 
   $.takeSnapshot = function() {

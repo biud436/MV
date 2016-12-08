@@ -46,13 +46,14 @@
  * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
  * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
  * window that could be able to show the json file.
- * 2016.07.12 (v1.1.0a) - Added two plugin parameters about File Path.
- * 2016.07.20 (v1.1.0b) - Added hyphen(-) and three plugin parameters.
- * 2016.07.21 (v1.1.0c) - Fixed the bug that is separating wrong identifier.
- * 2016.07.25 (v1.1.0d) - Fixed default save file id.
- * 2016.08.07 (v1.1.0e) - Fixed save bug.
+ * 2016.07.12 (v1.1.01) - Added two plugin parameters about File Path.
+ * 2016.07.20 (v1.1.02) - Added hyphen(-) and three plugin parameters.
+ * 2016.07.21 (v1.1.03) - Fixed the bug that is separating wrong identifier.
+ * 2016.07.25 (v1.1.04) - Fixed default save file id.
+ * 2016.08.07 (v1.1.05) - Fixed save bug.
+ * 2016.12.08 (v1.1.08) - Added code to remove references to URL objects.
  */
- 
+
  /*:ko
   * RS_RefreshManager.js
   * @plugindesc 플러그인을 활성화 하거나 비활성화할 수 있는 플러그인입니다.
@@ -99,11 +100,12 @@
   * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
   * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
   * window that could be able to show the json file.
-  * 2016.07.12 (v1.1.0a) - Added two plugin parameters about File Path.
-  * 2016.07.20 (v1.1.0b) - Added hyphen(-) and three plugin parameters.
-  * 2016.07.21 (v1.1.0c) - Fixed the bug that is separating wrong identifier.
-  * 2016.07.25 (v1.1.0d) - Fixed default save file id.
-  * 2016.08.07 (v1.1.0e) - Fixed save bug.
+  * 2016.07.12 (v1.1.01) - Added two plugin parameters about File Path.
+  * 2016.07.20 (v1.1.02) - Added hyphen(-) and three plugin parameters.
+  * 2016.07.21 (v1.1.03) - Fixed the bug that is separating wrong identifier.
+  * 2016.07.25 (v1.1.04) - Fixed default save file id.
+  * 2016.08.07 (v1.1.05) - Fixed save bug.
+  * 2016.12.08 (v1.1.08) - Added code to remove references to URL objects.
   */
 
 var Imported = Imported || {};
@@ -439,6 +441,10 @@ function Window_PluginDesc() {
       var url = URL.createObjectURL(blob);
       if(isPreviewWindow) {
           _previewWindow = window.open(url, '_blank');
+
+          // Call this method when it doesn't need to keep the reference to URL object any longer.
+          URL.revokeObjectURL(url);
+
       }
       RefreshManager._changed = true;
     });
