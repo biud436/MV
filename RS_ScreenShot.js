@@ -38,6 +38,7 @@
  * 2016.11.27 (v1.0.4) : Fixed preview window in the html format instead of an image.
  * - Displays the name of the screen shot file in the preview window.
  * - Plays the sound when you are taking a screenshot.
+ * 2016.12.08 (v1.0.42) - Added code to remove references to URL objects.
  */
 /*:ko
 * RS_ScreenShot.js
