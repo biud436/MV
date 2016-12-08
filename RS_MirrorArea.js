@@ -33,6 +33,7 @@
  * Change Log
  * =============================================================================
  * 2016.12.07 (v1.0.0) - First Release.
+ * 2016.12.08 (v1.0.1) - Fixed an issue that events are not displayed in the mirror.
  */
 
 var Imported = Imported || {};
@@ -115,12 +116,10 @@ function Sprite_Mirror() {
   };
 
   Sprite_Mirror.prototype.updatePosition = function() {
-      // TODO: I'll must change this to local coordinates.
-      var targetY = this.patternHeight() * 6 - this._offset[3] / 2;
       //  graphics's height.
       var maskY = this._offset[1];
       this.x = this._character.screenX();
-      this.y = (targetY - this._offset[1]) + (this._character.screenY() % maskY);
+      this.y = this._character.screenY() - maskY - this._offset[3] / 2;
       this.z = this._character.screenZ() + 4;
       this.updateMask();
   };
@@ -184,8 +183,7 @@ function Sprite_Mirror() {
   Spriteset_Map.prototype.createMirrorImage = function (event, type, id) {
 
       var offset = [0, 0, 0, 0];
-      var target = (id <= 0) ? $gamePlayer : $gameMap.events()[id];
-      console.log(target);
+      var target = (id <= 0) ? $gamePlayer : $gameMap.events()[id - 1];
 
       if(type === 'mirror') offset = $.oMirror;
       if(type === 'dresser') offset = $.oDresser;
