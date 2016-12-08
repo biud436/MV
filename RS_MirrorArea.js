@@ -30,16 +30,18 @@
  * =============================================================================
  * Plugin Commands
  * =============================================================================
- * Mirror Enable
- * Mirror Diable
+ * Mirror Show
+ * Mirror Hide
  * Mirror Blur x
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.12.07 (v1.0.0) - First Release.
- * 2016.12.08 (v1.0.1) :
+ * 2016.12.07 (v0.0.1) - Beta.
+ * 2016.12.08 (v0.0.4) :
  * - Fixed an issue that events are not displayed in the mirror.
  * - Added a dresser for a decoration.
+ * - Added a toggle functionality in blur filter.
+ * - Changed the name of the plugin command.
  */
 
 var Imported = Imported || {};
@@ -99,14 +101,17 @@ function Sprite_Mirror() {
 
 
       // TODO: Blurring is very poor performance.
+      this.applyBlurFilter()
 
-      if(Graphics.isWebGL() && ($.fBlur > 0.0)) {
-        this._blurFilter = new PIXI.filters.BlurFilter();
-        this._blurFilter.blur = $.fBlur;
-        this.filters = [this._blurFilter];
-        this._initBlur = true;
-      }
+  };
 
+  Sprite_Mirror.prototype.applyBlurFilter = function () {
+    if(Graphics.isWebGL() && ($.fBlur > 0.0) && !this._initBlur) {
+      if(!this._blurFilter) this._blurFilter = new PIXI.filters.BlurFilter();
+      this._blurFilter.blur = $.fBlur;
+      this.filters = [this._blurFilter];
+      this._initBlur = true;
+    }
   };
 
   Sprite_Mirror.prototype.updateVisibility = function () {
@@ -114,9 +119,15 @@ function Sprite_Mirror() {
       this.visible = this.mask && $.allImagesVisible;
 
       // TODO: Blurring is very poor performance.
-
-      if(this._initBlur && this._blurFilter) {
-        this._blurFilter.blur = $.fBlur;
+      if(this._initBlur) {
+        if($.fBlur <= 0) {
+          this.filters = [Sprite.voidFilter];
+          this._initBlur = false;
+        } else {
+          this._blurFilter.blur = $.fBlur;
+        }
+      } else {
+        this.applyBlurFilter();
       }
 
   };
@@ -125,7 +136,6 @@ function Sprite_Mirror() {
       //  graphics's height.
       var maskY = this._offset[1];
       this.x = this._character.screenX();
-      // this.y = this._character.screenY() - maskY - this._offset[3] / 2;
       this.y = this._character.screenY() - maskY - this._offset[5] / 2;
       this.z = this._character.screenZ() + 4;
       this.updateMask();
@@ -256,10 +266,10 @@ function Sprite_Mirror() {
       alias_Game_Interpreter_pluginCommand.call(this, command, args);
       if(command === "Mirror") {
         switch(args[0]) {
-          case 'Enable':
+          case 'Show':
             $.allImagesVisible = true;
           break;
-          case 'Disable':
+          case 'Hide':
             $.allImagesVisible = false;
           break;
           case 'Blur':
