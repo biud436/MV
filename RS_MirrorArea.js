@@ -225,7 +225,8 @@ function Sprite_Mirror() {
       var self = this;
       var id = -1;
       $gameMap.events().forEach(function (event) {
-        event.list().forEach(function (list, i ,a) {
+        var eventList = event.findProperPageIndex() > -1 && event.list();
+        eventList && eventList.forEach(function (list, i ,a) {
           if(list.code === 108 || list.code === 408) {
             if(list.parameters[0].match(/<(?:MIRROR_NORMAL).W*\:.\W*(.+?)>/gi)) {
               id = parseInt(RegExp.$1);
