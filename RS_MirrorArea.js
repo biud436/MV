@@ -3,8 +3,12 @@
  * @author biud436
  *
  * @param Mirror
- * @desc [width, height, xOffset, yOffset]
- * @default [28, 42, 10, 25]
+ * @desc [w, h, mask_ox, mask_oy, char_ox, char_oy]
+ * @default [28, 42, 10, 25, 10, 25]
+ *
+ * @param Dresser
+ * @desc [w, h, mask_ox, mask_oy, char_ox, char_oy]
+ * @default [34, 15, 10, -5, 10, 70]
  *
  * @param Blur
  * @desc Blurring is very poor performance.
@@ -33,7 +37,9 @@
  * Change Log
  * =============================================================================
  * 2016.12.07 (v1.0.0) - First Release.
- * 2016.12.08 (v1.0.1) - Fixed an issue that events are not displayed in the mirror.
+ * 2016.12.08 (v1.0.1) :
+ * - Fixed an issue that events are not displayed in the mirror.
+ * - Added a dresser for a decoration.
  */
 
 var Imported = Imported || {};
@@ -57,8 +63,8 @@ function Sprite_Mirror() {
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
-  $.oMirror = JSON.parse(parameters['Mirror'] || '[28, 42, 10, 26]');
-  $.oDresser = JSON.parse('[34, 15, 10, 30]');
+  $.oMirror = JSON.parse(parameters['Mirror'] || '[28, 42, 10, 25, 10, 25]');
+  $.oDresser = JSON.parse(parameters['Dresser'] || '[34, 15, 10, -5, 10, 70]');
   $.fBlur = parseFloat(parameters['Blur'] || 0.0);
   $.allImagesVisible = true;
 
@@ -119,7 +125,8 @@ function Sprite_Mirror() {
       //  graphics's height.
       var maskY = this._offset[1];
       this.x = this._character.screenX();
-      this.y = this._character.screenY() - maskY - this._offset[3] / 2;
+      // this.y = this._character.screenY() - maskY - this._offset[3] / 2;
+      this.y = this._character.screenY() - maskY - this._offset[5] / 2;
       this.z = this._character.screenZ() + 4;
       this.updateMask();
   };
