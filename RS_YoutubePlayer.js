@@ -1,12 +1,33 @@
 /*:
  * RS_YoutubePlayer.js
- * @plugindesc This plugin allows you to start playback of the YouTube video.
+ * @plugindesc This plugin allows you to start playback of the YouTube video <RS_YoutubePlayer>
  * @author biud436
+ *
+ * @param Video Quality
+ * @desc highres, hd1080, hd720, large, medium, small
+ * default : hd720
+ * @default hd720
+ *
  * @help
  * In general, In Android Chrome and Mobile Safari, It doesn't automatically
  * start playback. and you can stop the video by clicking around the YouTube video.
  * This plugin will automatically end the video playback if you watches
  * the video until the end.
+ *
+ * =============================================================================
+ * Plugin Command
+ * =============================================================================
+ * - This plugin command will start playback of the YouTube video. Please enter
+ * the URL as follows. If the Internet had not connected, It could have caused
+ * the error.
+ *
+ * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
+ * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
+ * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
+ *
+ * - Stop playback of the YouTube Video.
+ *
+ * YTPlayer stop
  *
  * =============================================================================
  * Script Calls
@@ -16,18 +37,6 @@
  * YTPlayer.isPaused();
  * YTPlayer.isBuffering();
  * YTPlayer.isEnded();
- * =============================================================================
- * Plugin Command
- * =============================================================================
- * - This plugin command will start playback of the YouTube video. Please enter
- * the URL as follows. If the Internet had not connected, It could have caused
- * the error.
- *
- * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
- *
- * - Stop playback of the YouTube Video.
- *
- * YTPlayer stop
  *
  * =============================================================================
  * Change Log
@@ -37,6 +46,9 @@
  * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL.
  * 2016.07.04 (v1.0.3) - Fixed a few logic about the range were converted to Rectangular object.
  * 2016.10.06 (v1.0.4) - Added Canvas Filters.
+ * 2016.12.10 (v1.0.5) :
+ * - Added a plugin parameter about video quality settings.
+ * - Added the ability to play YouTube videos from a specified time.
  */
 
 var Imported = Imported || {};
@@ -112,6 +124,7 @@ function onPlayerError(event) {
   YTPlayer.stopVideo();
   window.alert(errorLog);
 }
+
 function onPlayerStateChange (event) {
   switch(event.data) {
       case YT.PlayerState.ENDED: // 종료됨
@@ -143,9 +156,15 @@ function onPlayerStateChange (event) {
 
 (function() {
 
-  var re = /(?:http|https)+(?:\:\/\/youtu.be\/)+(.*)/gi;
-
   YTPlayer._boundRect = new Rectangle(0, 0, 1, 1);
+
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_YoutubePlayer>');
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
+  var quality = parameters['Video Quality'] || 'hd720';
 
   //----------------------------------------------------------------------------
   // YTPlayer
@@ -178,19 +197,11 @@ function onPlayerStateChange (event) {
   };
 
   YTPlayer.preVideo = function(src) {
-    var v;
     if(src) {
-      if(re.test(src)) {
-          // v = src.split(re)[1];
-          v = RegExp.$1;
-      } else {
-          v = src.replace('https://www.youtube.com/watch?v=','').replace('&feature=youtu.be','');
-      }
-      this._iframe.src = 'https://www.youtube.com/embed/%1?enablejsapi=1&version=3'.format(v);
+      this._iframe.src = 'https://www.youtube.com/embed/%1?enablejsapi=1&version=3'.format(src);
     }
     this._iframe.style.opacity = '1';
     this._iframe.style.zIndex = '60';
-
     if(!this._init) {
       this._firstScriptTag = document.getElementsByTagName('script')[0];
       this._firstScriptTag.parentNode.insertBefore(this._tag, this._firstScriptTag);
@@ -303,6 +314,24 @@ function onPlayerStateChange (event) {
     return rect.contains(x, y);
   };
 
+  YTPlayer.urlUtils = function (src) {
+
+    var url = new URL(src);
+    var urlParams = {};
+    url.search.substring(1)
+    .split('&')
+    .map(function(i) { return i.split('=') })
+    .forEach(function (e, i, a) {
+      urlParams[e[0]] = e[1];
+    });
+
+    if(src.match(/(?:http|https)+(?:\:\/\/youtu.be\/)+(.*)/gi)) {
+      urlParams['v'] = String(RegExp.$1);
+    }
+
+    return urlParams;
+  };
+
   //----------------------------------------------------------------------------
   // Graphics
   //
@@ -315,9 +344,14 @@ function onPlayerStateChange (event) {
 
   Graphics.playYoutube = function(src) {
     var lastStep;
-    YTPlayer.playVideo(src);
+    var params = YTPlayer.urlUtils(src);
+    var url = params["v"] || 'BIbpYySZ-2Q';
+    var startSecond = Number(params["t"]) || 0;
+    YTPlayer.playVideo(url);
     lastStep = setInterval(function() {
       YTPlayer.callPlayer('playVideo');
+      YTPlayer.callPlayer('setPlaybackQuality', [quality]);
+      YTPlayer.callPlayer('seekTo', [startSecond, true]);
       if(YTPlayer.isOnPlayer()) {
           clearInterval(lastStep);
       }
