@@ -27,6 +27,11 @@
  *   Try to set up this comment to certain event :
  *       <MIRROR_NORMAL : EVENT_ID>
  *
+ *   Try to set up this comment to player and player's followers :
+ *       <MIRROR_DRESSER : 0>
+ *
+ *   Try to set up this comment to certain event :
+ *       <MIRROR_DRESSER : EVENT_ID>
  * =============================================================================
  * Plugin Commands
  * =============================================================================
