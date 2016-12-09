@@ -43,6 +43,7 @@
  * - Added a toggle functionality in blur filter.
  * - Changed the name of the plugin command.
  * 2016.12.08 (v0.0.5) - Fixed an error that could not find a list of events when there was an erased event.
+ * 2016.12.09 (v0.0.6) - Fixed an error that could not find deleted events in the event list.
  */
 
 var Imported = Imported || {};
@@ -90,6 +91,35 @@ function Sprite_Mirror() {
   };
 
   //============================================================================
+  // Game_Map
+  //============================================================================
+
+  Game_Map.prototype.findEventInMap = function (eventId) {
+      var events = [];
+      if(eventId === 0) return $gamePlayer;
+      events = this._events.filter(function (e, i, a) {
+        if(e.eventId() === eventId) return true;
+        return false;
+      });
+      return events[0];
+  };
+
+  Game_Map.prototype.getRealEvents = function () {
+      var events = this._events;
+      var last = events.slice(-1);
+      var maxId = (last[0] || 0) && last[0].eventId();
+      var result = [];
+      for (var i = 0; i <= maxId; i++) {
+        if(events[i]) {
+          result.push(events[i]);
+        } else {
+          result.push(null);
+        }
+      }
+      return result;
+  };
+
+  //============================================================================
   // Sprite_Mirror
   //============================================================================
 
@@ -99,8 +129,6 @@ function Sprite_Mirror() {
   Sprite_Mirror.prototype.initialize = function (character) {
       Sprite_Character.prototype.initialize.call(this, character);
       this._offset = [0, 0, 0, 0];
-
-
       // TODO: Blurring is very poor performance.
       this.applyBlurFilter()
 
@@ -117,6 +145,7 @@ function Sprite_Mirror() {
 
   Sprite_Mirror.prototype.updateVisibility = function () {
       Sprite_Character.prototype.updateVisibility.call(this);
+
       this.visible = this.mask && $.allImagesVisible;
 
       // TODO: Blurring is very poor performance.
@@ -202,7 +231,7 @@ function Sprite_Mirror() {
   Spriteset_Map.prototype.createMirrorImage = function (event, type, id) {
 
       var offset = [0, 0, 0, 0];
-      var target = (id <= 0) ? $gamePlayer : $gameMap.events()[id - 1];
+      var target = $gameMap.findEventInMap(id);
 
       if(type === 'mirror') offset = $.oMirror;
       if(type === 'dresser') offset = $.oDresser;
@@ -243,21 +272,34 @@ function Sprite_Mirror() {
   Spriteset_Map.prototype.findAllTypeMirrors = function() {
       var self = this;
       var id = -1;
-      $gameMap.events().forEach(function (event, idx) {
-        var eventList = event && !event._erased && event.findProperPageIndex() > -1 && event.list();
-        eventList && eventList.forEach(function (list, i ,a) {
+
+      $gameMap.getRealEvents().forEach(function (event) {
+        if(event === null || event === undefined) return false;
+        if(event._erased) return false;
+        if(!(event.findProperPageIndex() > -1)) return false;
+        var eventlist = event.list();
+        if(!eventlist) return false;
+        eventlist.forEach(function (list, i ,a) {
+
           if(list.code === 108 || list.code === 408) {
+
             if(list.parameters[0].match(/<(?:MIRROR_NORMAL).W*\:.\W*(.+?)>/gi)) {
+
               id = parseInt(RegExp.$1);
-              self.createMirrorImage(event, 'mirror', id);
+              if(id >= 0) self.createMirrorImage(event, 'mirror', id);
+
             } else if(list.parameters[0].match(/<(?:MIRROR_DRESSER).W*\:.\W*(.+?)>/gi)) {
+
               id = parseInt(RegExp.$1);
-              self.createMirrorImage(event, 'dresser', id);
+              if(id >= 0) self.createMirrorImage(event, 'dresser', id);
+
             }
           }
+
         });
 
       }, this);
+
   };
 
   //============================================================================
