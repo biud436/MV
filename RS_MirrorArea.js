@@ -49,6 +49,7 @@
  * - Changed the name of the plugin command.
  * 2016.12.08 (v0.0.5) - Fixed an error that could not find a list of events when there was an erased event.
  * 2016.12.09 (v0.0.6) - Fixed an error that could not find deleted events in the event list.
+ * 2016.12.10 (v0.0.7) - Fixed the problem that could not find event ID of an event when you loaded saved file.
  */
 
 var Imported = Imported || {};
@@ -103,7 +104,7 @@ function Sprite_Mirror() {
       var events = [];
       if(eventId === 0) return $gamePlayer;
       events = this._events.filter(function (e, i, a) {
-        if(e.eventId() === eventId) return true;
+        if(e && e.eventId() === eventId) return true;
         return false;
       });
       return events[0];
