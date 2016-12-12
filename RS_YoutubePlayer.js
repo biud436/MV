@@ -372,6 +372,7 @@ function onPlayerStateChange (event) {
             setTimeout(function() {
               Graphics.playYoutube(src);
             }, 1);
+            this.setWaitMode('video');
             break;
           case 'stop':
             if(YTPlayer.isPlaying()) YTPlayer.stopVideo();
@@ -412,7 +413,7 @@ function onPlayerStateChange (event) {
     return alias_Game_Player_canMove.call(this);
   };
 
-  // ----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
   // Scene_Map
   //
   //
@@ -428,6 +429,17 @@ function onPlayerStateChange (event) {
          YTPlayer.stopVideo();
       }
     }
+  };
+
+  //----------------------------------------------------------------------------
+  // Graphics
+  //
+  //
+
+  var alias_Graphics_isVideoVisible = Graphics._isVideoVisible;
+  Graphics._isVideoVisible = function() {
+    var youtubePlayer = document.getElementById('ytplayer-iframe');
+    return alias_Graphics_isVideoVisible.call(this) || youtubePlayer.style.opacity > 0;
   };
 
 })();
