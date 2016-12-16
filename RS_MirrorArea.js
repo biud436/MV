@@ -50,6 +50,7 @@
  * 2016.12.08 (v0.0.5) - Fixed an error that could not find a list of events when there was an erased event.
  * 2016.12.09 (v0.0.6) - Fixed an error that could not find deleted events in the event list.
  * 2016.12.10 (v0.0.7) - Fixed the problem that could not find event ID of an event when you loaded saved file.
+ * 2016.12.16 (v0.0.8) - Fixed a scale and the scale mode in the mirror sprite.
  */
 
 var Imported = Imported || {};
@@ -77,6 +78,7 @@ function Sprite_Mirror() {
   $.oDresser = JSON.parse(parameters['Dresser'] || '[34, 15, 10, -5, 10, 70]');
   $.fBlur = parseFloat(parameters['Blur'] || 0.0);
   $.allImagesVisible = true;
+  $.allScale = new PIXI.Point(0.8, 0.8);
 
   //============================================================================
   // Game_System
@@ -137,7 +139,13 @@ function Sprite_Mirror() {
       this._offset = [0, 0, 0, 0];
       // TODO: Blurring is very poor performance.
       this.applyBlurFilter()
+      this.scale = $.allScale;
+  };
 
+  Sprite_Mirror.prototype.setCharacterBitmap = function() {
+      var smooth = true;
+      this.bitmap = ImageManager.loadBitmap('img/characters/', this._characterName, null, smooth);
+      this._isBigCharacter = ImageManager.isBigCharacter(this._characterName);
   };
 
   Sprite_Mirror.prototype.applyBlurFilter = function () {
@@ -148,6 +156,7 @@ function Sprite_Mirror() {
       this._initBlur = true;
     }
   };
+
 
   Sprite_Mirror.prototype.updateVisibility = function () {
       Sprite_Character.prototype.updateVisibility.call(this);
