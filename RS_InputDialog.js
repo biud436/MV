@@ -255,7 +255,7 @@ function Scene_InputDialog() {
     this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
     this._textBox.max = RS.InputDialog.Params.nMaxLength;
 
-    this._textBox.onkeydown = this.onKeyDown.bind(this);
+    this._textBox.addEventListener('keydown', this.onKeyDown.bind(this));
 
     var field = document.getElementById(this._fieldId);
     field.appendChild(this._textBox);
