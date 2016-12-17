@@ -113,6 +113,7 @@
  * - It will not process the text input when the text box is not shown in the battle.
  * - In the debug mode, It adds the result value to a log window after the text input is done.
  * 2016.12.08 (v1.1.68) - Removed the text hint window.
+ * 2016.12.17 (v1.1.69) - Fixed an issue that an integer value could not be checked due to the text type issue.
  */
 
 var Imported = Imported || {};
@@ -261,7 +262,7 @@ function Scene_InputDialog() {
 
     Graphics._centerElement(this._textBox);
 
-    window.onresize = function () {
+    window.addEventListener('resize', function () {
       if(SceneManager._scene instanceof Scene_InputDialog) {
         var field = document.getElementById(self._fieldId);
         var textBox = document.getElementById(self._textBoxID);
@@ -273,7 +274,7 @@ function Scene_InputDialog() {
             textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
         }
       }
-    };
+    }, false);
 
   };
 
@@ -416,13 +417,12 @@ function Scene_InputDialog() {
 
   Scene_InputDialog.prototype.okResult = function () {
     var text = this._textBox.getText() || '';
+    if(text.match(/^([\d]+)/g)) text = Number(RegExp.$1);
     $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
-
     if(SceneManager._stack.length > 0) {
       Input.clear();
       this.popScene();
     };
-
   };
 
   //============================================================================
@@ -508,6 +508,7 @@ function Scene_InputDialog() {
     if(!this._textBox) return '';
     if( this.textBoxIsBusy() ) {
       var text = this._textBox.getText() || '';
+      if(text.match(/^([\d]+)/g)) text = Number(RegExp.$1);
       $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
       this._textBox.setText('');
       if(RS.InputDialog.Params.debug) {
