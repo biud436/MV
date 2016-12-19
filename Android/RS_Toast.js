@@ -36,10 +36,20 @@
  * 2016.03.21 - Fixed the method called pluginCommand.
  */
 
- var Imported = Imported || {};
- Imported.Toast = true;
+var Imported = Imported || {};
+Imported.Toast = true;
 
 (function() {
+
+  if((!!window.Toast) === false) {
+    function NwjsInterface_Toast() {
+      throw new Error("This is a static class");
+    }
+    NwjsInterface_Toast.makeText = function (text, duration) {
+      console.warn('Toast object is not defined.');
+    }
+    window.Toast = NwjsInterface_Toast;
+  };
 
   var alias_gameInterpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {

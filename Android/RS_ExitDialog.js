@@ -4,16 +4,16 @@
  * @author biud436
  *
  * @param Dialog Name
- * @desc Information Dialog
+ * @desc Sets up the title of the dialog
  * @default Information Dialog
  *
  * @param Show Custom Dialog Name
- * @desc Show Custom Dialog Name
+ * @desc Sets up whether show as the title of the dialog you specify yourself
  * @default false
  *
  * @param Exit Message
- * @desc Exit Message
- * @default Do you want to exit the game?
+ * @desc Sets up the message to be displayed on the dialog.
+ * @default Are you sure you want to quit the game?
  *
  * @param OK Button
  * @desc OK Button's Name
@@ -24,63 +24,101 @@
  * @default Cancel
  *
  * @help
+ * =============================================================================
+ * How to add a Cordova notification plugin
+ * =============================================================================
  *
- * =============================================================================
- * Plugin Commands
- * =============================================================================
- * This plugin does not provide plugin commands
+ * 1. Add a Cordova Notification plugin using Intel XDK HTML5 Development tools.
  *
- * =============================================================================
- * Setup
- * =============================================================================
- * 1. Add the Notification plugin(cordova-plugin-dialogs) on Intel XDK.
- * 2. Edit an index.html file in your Game Directory using Text Editor such as Notepad++
- * You have to contain Cordova Script into <body> statement, It looks like this.
+ * 2. Add a tag from index.html file in your game project directory.
+ * First up, you can use a text editor such as Notepad++, Atom, default Intel XDK text editor
+ * and have to contain Cordova Script file into <body> statement, It looks like this :
  *       ...
  *     <body style="background-color: black">
  *       <script type="text/javascript" src="cordova.js"></script>
  *       <script type="text/javascript" src="js/libs/pixi.js"></script>
  *       ...
  *     </body>
+ *
+ * If it has already been added, you do not need to add it again.
+ *
+ * =============================================================================
+ * How to change a default behavior
+ * =============================================================================
+ * Scene_Map.prototype.onExit = function () {
+ *   // your code add here.
+ * };
+ * Scene_Battle.prototype.onExit = function () {
+ *   // your code add here.
+ * };
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.05.29 - The incorrect character fixed.
+ * 2016.12.19 - Removed a functionality that shows up the dialog only in the title scene.
  */
 
-(function() {
+var Imported = Imported || {};
+Imported.RS_ExitDialog = true;
+
+var RS = RS || {};
+RS.ExitDialog = RS.ExitDialog || {};
+
+(function($) {
 
   var parameters = PluginManager.parameters('RS_ExitDialog');
-  var message = String(parameters['Exit Message'] || "Do you want to exit the game?" );
-  var okBtn = String(parameters['OK Button'] || "OK" );
-  var cancelBtn = String(parameters['Cancel Button'] || "Cancel" );
-  var dialogName = String(parameters['Dialog Name'] || "Information Dialog" );
-  var isCustomDialog = Boolean(parameters['Show Custom Dialog Name'] === 'true')
+
+  $.Params = {
+
+    'message': parameters['Exit Message'] || "Are you sure you want to quit the game?" ,
+    'title': parameters['Dialog Name'] || "Information Dialog",
+
+    // Button
+    'okBtn': parameters['OK Button'] || "OK" ,
+    'cancelBtn': parameters['Cancel Button'] || "Cancel" ,
+
+    // Check properties
+    'isCustomTitleName': Boolean(parameters['Show Custom Dialog Name'] === 'true')
+
+  };
+
+  //============================================================================
+  // bind cordova
+  //============================================================================
 
   document.addEventListener("deviceready", onDeviceReady, false);
 
   function onDeviceReady() {
-      document.addEventListener("backbutton", SceneManager.detectScene, false);
+      document.addEventListener("backbutton", SceneManager.onExit, false);
   }
 
-  function onBackKeyDown() {
-      if(!Utils.isMobileDevice) return false;
-      if(!isCustomDialog) dialogName = $dataSystem.gameTitle || "Information Dialog";
-      navigator.notification.confirm(message, function(index) {
-          if(index === 1) {
+  SceneManager.onExit = function() {
+      if(SceneManager._scene.onExit) SceneManager._scene.onExit();
+  };
+
+  Scene_Base.prototype.onExit = function () {
+      var title = $dataSystem.gameTitle || document.title;
+      var okButtonId = 1;
+      if(!$.Params.isCustomTitleName) title = $.Params.title;
+
+      // The index number starts from 1 (1,2,3...)
+      navigator.notification.confirm($.Params.message, function(idx) {
+          if(idx === okButtonId) {
               SceneManager.exit();
           }
-      }, dialogName, [okBtn, cancelBtn]);
-  }
+      }, title, [$.Params.okBtn, $.Params.cancelBtn]);
 
-  SceneManager.detectScene = function() {
-      if(SceneManager._scene instanceof Scene_Map) {
-        SceneManager.goto(Scene_Title);
-      } else if(SceneManager._scene instanceof Scene_Title) {
-        onBackKeyDown();
-      } else {
-        SceneManager._scene.popScene();
-      }
-  }
+  };
 
-})();
+  //============================================================================
+  // Additional Code
+  //============================================================================
+
+  // Scene_Map.prototype.onExit = function () {
+  //   // your code add here.
+  // };
+  //
+  // Scene_Battle.prototype.onExit = function () {
+  //   // your code add here.
+  // };
+
+})(RS.ExitDialog);
