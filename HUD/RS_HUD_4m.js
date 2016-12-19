@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.8) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.8b) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
@@ -383,6 +383,7 @@
  * 2016.10.14 (v1.1.7) - Fixed the bug that causes the error called 'undefined
  * bitmap' when you are adding certain party member.
  * 2016.11.16 (v1.1.8) - Fixed a bug with the Battle Background.
+ * 2016.12.19 (v1.1.8b) - Fixed a bug that is not set up the coordinates of the face image.
  */
 
 var Imported = Imported || {};
@@ -1208,22 +1209,25 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.circleClippingMask = function(faceIndex) {
-    var sprite = new Sprite()
-        , fw = Window_Base._faceWidth, fh = Window_Base._faceHeight
-        , sx = (faceIndex % 4) * fw, sy = Math.floor(faceIndex / 4) * fh;
 
-    sprite.x = this._hud.x;
-    sprite.y = this._hud.y;
-    sprite.bitmap = new Bitmap(nFaceDiameter, nFaceDiameter);
+    this._face = new Sprite();
+
+    var fw = Window_Base._faceWidth;
+    var fh = Window_Base._faceHeight;
+    var sx = (faceIndex % 4) * fw;
+    var sy = Math.floor(faceIndex / 4) * fh;
+
+    this._face.bitmap = new Bitmap(nFaceDiameter, nFaceDiameter);
 
     if (RS.HUD.param.blurProcessing) {
-      sprite.bitmap.drawClippingImage(this._faceBitmap, this._maskBitmap, 0, 0, sx, sy);
+      this._face.bitmap.drawClippingImage(this._faceBitmap, this._maskBitmap, 0, 0, sx, sy);
     } else {
-      sprite.bitmap.drawClippingImageNonBlur(this._faceBitmap, 0, 0, sx, sy);
+      this._face.bitmap.drawClippingImageNonBlur(this._faceBitmap, 0, 0, sx, sy);
     }
 
-    this._face = sprite;
     this.addChild(this._face);
+    this.setCoord(this._face, RS.HUD.param.ptFace);
+
   };
 
   HUD.prototype.createHp = function() {
@@ -1268,7 +1272,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.setPosition = function() {
     var param = RS.HUD.param;
-    if(this._face) { this.setCoord(this._face, param.ptFace); }
+    if(this._face) this.setCoord(this._face, param.ptFace);
     this.setCoord(this._hp, param.ptHP);
     this.setCoord(this._mp, param.ptMP);
     this.setCoord(this._exp, param.ptEXP);
@@ -1376,7 +1380,7 @@ RS.HUD.param = RS.HUD.param || {};
       i.opacity = value.clamp(0, 255);
     }, this);
     // $gameSystem._rs_hud.opacity = value.clamp(0, 255);
-  }
+  };
 
   HUD.prototype.getOpacityValue = function(dir) {
     var value = this._hud.opacity;
@@ -1462,6 +1466,7 @@ RS.HUD.param = RS.HUD.param || {};
       this.removeChild(this._face);
       this.createFace();
     }
+
   };
 
   HUD.prototype.inBattle = function() {
