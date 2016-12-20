@@ -50,6 +50,10 @@
  * @desc
  * @default GameFont
  *
+ * @param Default CharWidth
+ * @desc This plugin calculates the text width using this text when the system language is English.
+ * @default A
+ *
  * @help
  * This plugin provides a keyboard that allows you to type in korean
  * or other native language in the Name Input Proccessing.
@@ -72,6 +76,10 @@
  * when you can type Hangul text of length less than 2.
  * 2016.06.18 (v1.6.0) - Fixed the inheritance structure, and the parameter called 'askText'.
  * 2016.08.09 (v1.6.1) - Fixed shouldPreventDefault function of Input class.
+ * 2016.12.20 (v1.6.2) : Added Default CharWidth parameter.
+ * That is because this plugin has a bug that 'navigator.language' has always returned
+ * 'en-US' due to a bug of crosswalk-10.39.235.16 xwalk library. So I added this
+ * to solve the problem of returning the wrong character width.
  */
  /*:ko
   * RS_Window_KorNameEdit.js
@@ -125,6 +133,10 @@
   * @desc 기본 폰트
   * @default GameFont
   *
+  * @param Default CharWidth
+  * @desc 시스템 언어가 영어인 경우, 여기 설정된 텍스트를 사용하여 폭을 계산합니다.
+  * @default A
+  *
   * @help
   *
   * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
@@ -149,6 +161,9 @@
   * 2016.03.22 - 플러그인 커맨드에서 문자열을 길게 쓸 수 있게 되었으며 백스페이스 버그를 수정했습니다.
   * 2016.04.05 - 한글 입력 시, 두 글자 이상을 꼭 입력해야 하는 버그가 수정되었습니다.
   * 2016.06.18 - 상속 구조 변경, 파라미터 기본 값 수정, 폰트 변경 기능 추가, 시스템 언어에 따라 글자 폭 자동 감지 기능 추가
+  * 2016.12.20 (v1.6.2) : Default CharWidth 라는 플러그인 매개변수를 추가했습니다.
+  * 안드로이드에서 crosswalk-10.39.235.16를 사용하여 빌드했을 때 폭이 제대로 계산되지 않는 버그가 있습니다.
+  * (시스템 언어가 항상 'en-US'로 고정되는 라이브러리 상의 버그가 있었습니다)
   */
 
 var Imported = Imported || {};
@@ -189,6 +204,7 @@ Imported.Window_KorNameEdit = true;
     'KoreanFonts': parameters['Korean Fonts'] || 'Dotum, AppleGothic, sans-serif',
     'DefaultFonts': parameters['Default Fonts'] || 'GameFont',
   };
+  RSMatch.defaultCharWidth = parameters['Default CharWidth'] || 'A';
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -344,7 +360,9 @@ Imported.Window_KorNameEdit = true;
   };
 
   Window_KorNameEdit.prototype.charWidth = function () {
-    var text = 'A';
+    // TODO: This code has a bug that 'navigator.language' has always returned
+    // 'en-US' due to a bug of crosswalk-10.39.235.16 xwalk library.
+    var text = RSMatch.defaultCharWidth;
     if (navigator.language.match(/^zh/)) { // isChinese
         text = '\u4E00';
     } else if (navigator.language.match(/^ko/)) { // isKorean
