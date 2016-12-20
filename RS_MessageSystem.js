@@ -108,6 +108,14 @@
 * @desc 사용자 지정 Font의 경로를 지정하세요
 * @default fonts/NanumBrush.ttf
 *
+* @param ---
+* @desc
+* @default
+*
+* @param Prefix Options
+* @desc
+* @default
+*
 * @help
 * =============================================================================
 * 플러그인 커맨드
@@ -326,6 +334,14 @@
 * @desc
 * @default fonts/NanumBrush.ttf
 *
+* @param ---
+* @desc
+* @default
+*
+* @param Prefix Options
+* @desc
+* @default
+*
 *-------------------------------------------------------------------------------
 * Help
 *-------------------------------------------------------------------------------
@@ -470,6 +486,8 @@ var Color = Color || {};
   RS.MessageSystem.Params.customFontName = String(parameters['Custom Font Name'] || 'GameFont' );
   RS.MessageSystem.Params.customFontSrc = String(parameters['Custom Font Src'] || 'fonts/mplus-1m-regular.ttf');
 
+  RS.MessageSystem.Params.prefixOptions = String(parameters['Prefix Options']);
+
   //============================================================================
   // Multiple Language supports
   //============================================================================
@@ -493,7 +511,7 @@ var Color = Color || {};
       "对话框", "对齐", "数", "大小", // 20
       't', 'r']
   };
-  
+
   RS.MessageSystem.TextCodes.Main = [];
 
   RS.MessageSystem.TextCodes.ENUM = {
@@ -869,6 +887,11 @@ var Color = Color || {};
     this._balloon = -2;
     this._align = 0;
     this._balloonPatternHeight = 0;
+  };
+
+  Game_Message.prototype.add = function(text) {
+    var prefix = RS.MessageSystem.Params.prefixOptions;
+    this._texts.push(prefix + text);
   };
 
   Game_Message.prototype.setWaitTime = function(time) {
