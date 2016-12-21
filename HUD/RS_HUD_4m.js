@@ -935,7 +935,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   TextData.prototype.addEventListener = function (type) {
-    document.addEventListener(type, this.requestUpdate.bind(this), false);
+    document.body.addEventListener(type, this.requestUpdate.bind(this), false);
   };
 
   var alias_TextData_destroy = TextData.prototype.destroy;
@@ -1183,6 +1183,21 @@ RS.HUD.param = RS.HUD.param || {};
       this.createText();
       this.createVector();
       this.setPosition();
+      this.addEventListener('broadcast.rs.hud');
+  };
+
+  HUD.prototype.addEventListener = function (type) {
+    document.body.addEventListener(type, this.paramUpdate.bind(this), false);
+  };
+
+  HUD.prototype.removeEventListener = function (type) {
+    document.body.removeEventListener(type, this.paramUpdate.bind(this), false);
+  };
+
+  var alias_HUD_destroy = HUD.prototype.destroy;
+  HUD.prototype.destroy = function () {
+    if(alias_HUD_destroy) alias_HUD_destroy.call(this);
+    this.removeEventListener('broadcast.rs.hud');
   };
 
   HUD.prototype.getAnchor = function(magnet) {
@@ -1442,7 +1457,6 @@ RS.HUD.param = RS.HUD.param || {};
   HUD.prototype.update = function() {
     this.updateOpacity();
     this.updateToneForAll();
-    this.paramUpdate();
   };
 
   HUD.prototype.updateOpacity = function() {
@@ -1493,10 +1507,6 @@ RS.HUD.param = RS.HUD.param || {};
     this._hp.setFrame(0, 0, this.getHpRate(), this._hp.height );
     this._mp.setFrame(0, 0, this.getMpRate(), this._mp.height );
     this._exp.setFrame(0, 0, this.getExpRate(), this._exp.height );
-    if(this._face && this._face.bitmap._image === (null || undefined)) {
-      this.removeChild(this._face);
-      this.createFace();
-    }
   };
 
   HUD.prototype.inBattle = function() {
