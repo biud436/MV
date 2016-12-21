@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.8b) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.1.9) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  * @since 2015.10.31
@@ -384,10 +384,14 @@
  * bitmap' when you are adding certain party member.
  * 2016.11.16 (v1.1.8) - Fixed a bug with the Battle Background.
  * 2016.12.19 (v1.1.8b) - Fixed a bug that is not set up the coordinates of the face image.
+ * 2016.12.22 (v1.1.9) :
+ * - Now this plugin does not perform a changing opacity and tone in mobile devices, because of poor performance.
+ * - Optimizes text updates.
+ * - Fixed image location parsing error.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.1.8';
+Imported.RS_HUD_4m = '1.1.9';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -411,7 +415,7 @@ RS.HUD.param = RS.HUD.param || {};
     var target = szRE.match(/(.*),(.*),(.*)/i);
     var x = parseFloat(RegExp.$1);
     var y = parseFloat(RegExp.$2);
-    var visible = Boolean(String(RegExp.$3).includes('true'));
+    var visible = Boolean(String(RegExp.$3).contains('true'));
     return {'x': x, 'y': y, 'visible': visible};
   };
 
@@ -927,6 +931,17 @@ RS.HUD.param = RS.HUD.param || {};
     this.setCallbackFunction(func);
     this.updateTextLog();
     this._params = params;
+    this.addEventListener('broadcast.rs.hud');
+  };
+
+  TextData.prototype.addEventListener = function (type) {
+    document.addEventListener(type, this.requestUpdate.bind(this), false);
+  };
+
+  var alias_TextData_destroy = TextData.prototype.destroy;
+  TextData.prototype.destroy = function () {
+    if(alias_TextData_destroy) alias_TextData_destroy.call(this);
+    document.body.removeEventListener('broadcast.rs.hud', this.requestUpdate.bind(this), false);
   };
 
   TextData.prototype.setCallbackFunction = function (cbFunc) {
@@ -959,12 +974,10 @@ RS.HUD.param = RS.HUD.param || {};
     this.bitmap.clear();
   };
 
-  TextData.prototype.update = function () {
-    if(this.isRefresh()) {
-      this.clearTextData();
-      this.drawDisplayText();
-      this.updateTextLog();
-    }
+  TextData.prototype.requestUpdate = function () {
+    this.clearTextData();
+    this.drawDisplayText();
+    this.updateTextLog();
   };
 
   TextData.prototype.standardFontFace = function() {
@@ -988,6 +1001,40 @@ RS.HUD.param = RS.HUD.param || {};
     this.bitmap.textColor = param[1];
     this.bitmap.outlineColor = param[2];
     this.bitmap.outlineWidth = param[3];
+  };
+
+  //----------------------------------------------------------------------------
+
+  var alias_Game_Battler_initMembers = Game_Battler.prototype.initMembers
+  Game_Battler.prototype.initMembers = function() {
+    alias_Game_Battler_initMembers.call(this);
+    this.createHudMessage();
+  };
+
+  Game_Battler.prototype.createHudMessage = function () {
+    this._hudEvents = [0, 0, 0];
+    this._hudEventsBeginTime = Date.now();
+    for (var i = 0; i < this._hudEvents.length; i++) {
+      this._hudEvents[i] = document.createEvent('Event');
+      this._hudEvents[i].initEvent('broadcast.rs.hud', true, true);
+    }
+  };
+
+  Game_Battler.prototype.sendHudMessage = function() {
+    var elm = document.body;
+    var eps = 100;
+    if(Date.now() - this._hudEventsBeginTime >= eps) {
+      for (var i = 0; i < this._hudEvents.length; i++) {
+        elm.dispatchEvent(this._hudEvents[i]);
+      }
+      this._hudEventsBeginTime = Date.now();
+    }
+  };
+
+  var alias_Game_Battler_refresh = Game_Battler.prototype.refresh;
+  Game_Battler.prototype.refresh = function() {
+    alias_Game_Battler_refresh.call(this);
+    this.sendHudMessage();
   };
 
   //----------------------------------------------------------------------------
@@ -1379,7 +1426,6 @@ RS.HUD.param = RS.HUD.param || {};
     this.children.forEach( function(i) {
       i.opacity = value.clamp(0, 255);
     }, this);
-    // $gameSystem._rs_hud.opacity = value.clamp(0, 255);
   };
 
   HUD.prototype.getOpacityValue = function(dir) {
@@ -1404,14 +1450,13 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
-    this._hud.update();
-    if(this._face) { this._face.update(); }
     this.updateOpacity();
     this.updateToneForAll();
     this.paramUpdate();
   };
 
   HUD.prototype.updateOpacity = function() {
+    if(!Graphics.isWebGL()) return false;
     var player = this.getPlayer();
     if(!this.checkHitToMouse(this._hud, nFaceDiameter) && this.checkHit() || player && player.isDead() ) {
       this.setOpacityisNotGlobal( this.getOpacityValue(true) );
@@ -1448,6 +1493,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.updateToneForAll = function () {
     if(!this.getPlayer()) return false;
+    if(!Graphics.isWebGL()) return false;
     this.checkForToneUpdate( this._hp, this.getPlayer().hpRate() <= nHPGlitter );
     this.checkForToneUpdate( this._mp, this.getPlayer().mpRate() <= nMPGlitter );
     this.checkForToneUpdate( this._exp, this.getRealExpRate() >= nEXPGlitter );
@@ -1457,16 +1503,10 @@ RS.HUD.param = RS.HUD.param || {};
     this._hp.setFrame(0, 0, this.getHpRate(), this._hp.height );
     this._mp.setFrame(0, 0, this.getMpRate(), this._mp.height );
     this._exp.setFrame(0, 0, this.getExpRate(), this._exp.height );
-    this._hpText.update();
-    this._mpText.update();
-    this._expText.update();
-    this._levelText.update();
-
     if(this._face && this._face.bitmap._image === (null || undefined)) {
       this.removeChild(this._face);
       this.createFace();
     }
-
   };
 
   HUD.prototype.inBattle = function() {

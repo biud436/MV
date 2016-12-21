@@ -112,10 +112,6 @@
 * @desc
 * @default
 *
-* @param Prefix Options
-* @desc
-* @default
-*
 * @help
 * =============================================================================
 * 플러그인 커맨드
@@ -486,7 +482,7 @@ var Color = Color || {};
   RS.MessageSystem.Params.customFontName = String(parameters['Custom Font Name'] || 'GameFont' );
   RS.MessageSystem.Params.customFontSrc = String(parameters['Custom Font Src'] || 'fonts/mplus-1m-regular.ttf');
 
-  RS.MessageSystem.Params.prefixOptions = String(parameters['Prefix Options']);
+  // RS.MessageSystem.Params.prefixOptions = String(parameters['Prefix Options']);
 
   //============================================================================
   // Multiple Language supports
@@ -889,10 +885,10 @@ var Color = Color || {};
     this._balloonPatternHeight = 0;
   };
 
-  Game_Message.prototype.add = function(text) {
-    var prefix = RS.MessageSystem.Params.prefixOptions;
-    this._texts.push(prefix + text);
-  };
+  // Game_Message.prototype.add = function(text) {
+  //   var prefix = RS.MessageSystem.Params.prefixOptions;
+  //   this._texts.push(prefix + text);
+  // };
 
   Game_Message.prototype.setWaitTime = function(time) {
     this._waitTime = time;

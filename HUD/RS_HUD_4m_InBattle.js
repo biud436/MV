@@ -111,10 +111,14 @@
  * 2016.10.11 (v1.1.6) :
  * - Fixed the bug that happens when certain party member is removed.
  * - Fixed the bug that is not controlled the opacity of HUD.
+ * 2016.12.22 (v1.1.7) :
+ * - Now this plugin does not perform a changing opacity and tone in mobile devices, because of poor performance.
+ * - Optimizes text updates.
+ * - Fixed image location parsing error.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.1.6';
+Imported.RS_HUD_4m_InBattle = '1.1.7';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -276,10 +280,8 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
-    if(this.inBattle()) this.updateSelectEffect();
-    this._hud.update();
-    if(this._face) this._face.update();
     if(this.inBattle()) {
+      this.updateSelectEffect();
       this.updateDeathEffect();
     } else {
       this.updateOpacity();
