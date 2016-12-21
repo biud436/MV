@@ -113,8 +113,8 @@
  * - Fixed the bug that is not controlled the opacity of HUD.
  * 2016.12.22 (v1.1.7) :
  * - Now this plugin does not perform a changing opacity and tone in mobile devices, because of poor performance.
- * - Optimizes text updates.
- * - Fixed image location parsing error.
+ * - Fixed to update the texts through event handlers.
+ * - Fixed an issue that plugins did not work due to image position data parsing errors in crosswalk.
  */
 
 var Imported = Imported || {};
