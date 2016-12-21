@@ -1012,23 +1012,13 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   Game_Battler.prototype.createHudMessage = function () {
-    this._hudEvents = [0, 0, 0];
-    this._hudEventsBeginTime = Date.now();
-    for (var i = 0; i < this._hudEvents.length; i++) {
-      this._hudEvents[i] = document.createEvent('Event');
-      this._hudEvents[i].initEvent('broadcast.rs.hud', true, true);
-    }
+    this._hudEvents = document.createEvent('Event');
+    this._hudEvents.initEvent('broadcast.rs.hud', true, true);
   };
 
   Game_Battler.prototype.sendHudMessage = function() {
     var elm = document.body;
-    var eps = 100;
-    if(Date.now() - this._hudEventsBeginTime >= eps) {
-      for (var i = 0; i < this._hudEvents.length; i++) {
-        elm.dispatchEvent(this._hudEvents[i]);
-      }
-      this._hudEventsBeginTime = Date.now();
-    }
+    elm.dispatchEvent(this._hudEvents);
   };
 
   var alias_Game_Battler_refresh = Game_Battler.prototype.refresh;
