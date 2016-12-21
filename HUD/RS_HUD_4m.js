@@ -388,6 +388,7 @@
  * - Now this plugin does not perform a changing opacity and tone in mobile devices, because of poor performance.
  * - Fixed to update the texts through event handlers.
  * - Fixed an issue that plugins did not work due to image position data parsing errors in crosswalk.
+ * - Fixed an issue that can not be saved due to this update.
  */
 
 var Imported = Imported || {};
@@ -1005,18 +1006,18 @@ RS.HUD.param = RS.HUD.param || {};
 
   //----------------------------------------------------------------------------
 
-  var alias_Game_Battler_initMembers = Game_Battler.prototype.initMembers
-  Game_Battler.prototype.initMembers = function() {
-    alias_Game_Battler_initMembers.call(this);
+  var alias_Game_Temp_initialize = Game_Temp.prototype.initialize;
+  Game_Temp.prototype.initialize = function() {
+    alias_Game_Temp_initialize.call(this);
     this.createHudMessage();
   };
 
-  Game_Battler.prototype.createHudMessage = function () {
+  Game_Temp.prototype.createHudMessage = function () {
     this._hudEvents = document.createEvent('Event');
     this._hudEvents.initEvent('broadcast.rs.hud', true, true);
   };
 
-  Game_Battler.prototype.sendHudMessage = function() {
+  Game_Temp.prototype.sendHudMessage = function() {
     var elm = document.body;
     elm.dispatchEvent(this._hudEvents);
   };
@@ -1024,7 +1025,7 @@ RS.HUD.param = RS.HUD.param || {};
   var alias_Game_Battler_refresh = Game_Battler.prototype.refresh;
   Game_Battler.prototype.refresh = function() {
     alias_Game_Battler_refresh.call(this);
-    this.sendHudMessage();
+    $gameTemp.sendHudMessage();
   };
 
   //----------------------------------------------------------------------------
