@@ -385,8 +385,8 @@
  * 2016.11.16 (v1.1.8) - Fixed a bug with the Battle Background.
  * 2016.12.19 (v1.1.8b) - Fixed a bug that is not set up the coordinates of the face image.
  * 2016.12.22 (v1.1.9) :
- * - Now this plugin does not perform a changing opacity and tone in mobile devices, because of poor performance.
- * - Fixed to update the texts through event handlers.
+ * - Now this plugin does not provide the functionality to automatically adjust transparency and tone changes due to poor performance in canvas mode of mobile device.
+ * - The text elements perform an update through the event handler.
  * - Fixed an issue that plugins did not work due to image position data parsing errors in crosswalk.
  * - Fixed an issue that can not be saved due to this update.
  */
