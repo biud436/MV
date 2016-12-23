@@ -111,9 +111,22 @@ SET /p KS_ALIAS_PASSCODE=키스토어 비밀번호를 다시 한 번 입력하세요(6자리이상):
 :MAKE_APK
 SET ARCH=arm
 SET MODE=embedded
-SET XCL='--ignore-gpu-blacklist'
 
-%XWALK_PATH% --package=%PACKAGE% --manifest=%MANIFEST% --keystore-path=%KS_PATH% --keystore-alias=%KS_ALIAS% --keystore-passcode=%KS_PASSCODE% --keystore-alias-passcode=%KS_ALIAS_PASSCODE% --keep-screen-on --fullscreen --orientation=landscape --arch=%ARCH% --mode=%MODE% --xwalk-command-line=%XCL% --enable-remote-debugging
+CHOICE /C YN -M "FPS를 게임 내에서 확인합니까?"
+IF %ERRORLEVEL%==1 (
+SET XCL='--show-fps-counter'
+) ELSE (
+SET XCL='--ignore-gpu-blacklist'
+)
+
+SET XWALK_ARGS=%XWALK_PATH% --package=%PACKAGE% --manifest=%MANIFEST% --keystore-path=%KS_PATH% --keystore-alias=%KS_ALIAS% --keystore-passcode=%KS_PASSCODE% --keystore-alias-passcode=%KS_ALIAS_PASSCODE% --keep-screen-on --fullscreen --orientation=landscape --arch=%ARCH% --mode=%MODE% --xwalk-command-line=%XCL%
+
+CHOICE /C YN -M "원격 디버깅 모드를 켜겠습니까?"
+IF %ERRORLEVEL%==1 (
+%XWALK_ARGS% --enable-remote-debugging
+) ELSE (
+%XWALK_ARGS%
+)
 
 @ENDLOCAL
 GOTO :EOF
