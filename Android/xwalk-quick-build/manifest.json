@@ -4,10 +4,6 @@
   "start_url": "index.html",
   "display": "fullscreen",
   "orientation": "landscape",
-  "xwalk_command_line": [
-  "--ignore-gpu-blacklist", 
-  "--show-fps-counter"
-  ],
   "xwalk_android_animatable_view": false,
   "xwalk_android_keep_screen_on": true,  
   "background_color": "#000000",  
