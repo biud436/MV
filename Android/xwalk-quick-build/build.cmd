@@ -111,7 +111,7 @@ SET /p KS_ALIAS_PASSCODE=키스토어 비밀번호를 다시 한 번 입력하세요(6자리이상):
 :MAKE_APK
 SET ARCH=arm
 SET MODE=embedded
-SET XCL='--ignore-gpu-blacklist:--show-fps-counter'
+SET XCL='--ignore-gpu-blacklist'
 
 %XWALK_PATH% --package=%PACKAGE% --manifest=%MANIFEST% --keystore-path=%KS_PATH% --keystore-alias=%KS_ALIAS% --keystore-passcode=%KS_PASSCODE% --keystore-alias-passcode=%KS_ALIAS_PASSCODE% --keep-screen-on --fullscreen --orientation=landscape --arch=%ARCH% --mode=%MODE% --xwalk-command-line=%XCL% --enable-remote-debugging
 
