@@ -81,7 +81,7 @@ IF %ERRORLEVEL%==1 (
 where keytool.exe>nul 2>nul
 IF NOT %errorlevel%==0 (
 	SET ERRORMSG=keytool이 없으므로 키스토어 파일을 생성할 수 없습니다.
-	GOTO ERR
+	GOTO :ERR
 )
 SET /p KS_PATH=키저장소의 경로를 입력하세요(확장자는 keystore):
 SET /p KS_ALIAS=키스토어의 별칭을 입력하세요:
