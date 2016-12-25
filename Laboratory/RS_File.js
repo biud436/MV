@@ -4,8 +4,11 @@
  */
 
 var Imported = Imported || {};
-var FileIO = FileIO || {};
 Imported.RS_File = true;
+
+function FileUtils() {
+    throw new Error("This is a static class");
+}
 
 (function() {
 
@@ -13,16 +16,16 @@ Imported.RS_File = true;
   // Empty Interface
   //============================================================================
 
-  FileIO.getAllFiles = function () {};
-  FileIO.getFilePath = function () {};
-  FileIO.isDirectory = function () {};
-  FileIO.isFile = function () {};
-  FileIO.getFileSize = function () {};
-  FileIO.getDirname = function () {};
-  FileIO.atime = function () {};
-  FileIO.ctime = function () {};
-  FileIO.mtime = function () {};
-  FileIO.join = function () {};
+  FileUtils.getAllFiles = function () {};
+  FileUtils.getFilePath = function () {};
+  FileUtils.isDirectory = function () {};
+  FileUtils.isFile = function () {};
+  FileUtils.getFileSize = function () {};
+  FileUtils.getDirname = function () {};
+  FileUtils.atime = function () {};
+  FileUtils.ctime = function () {};
+  FileUtils.mtime = function () {};
+  FileUtils.join = function () {};
 
   //============================================================================
   // Bind nw.js
@@ -35,7 +38,9 @@ Imported.RS_File = true;
     }
 
     /**
-     * @return {Array}
+     * 현재 경로에 있는 모든 파일을 구합니다.
+     * @method getFiles
+     * @return {Array} 파일명이 포함됩니다.
      */
     NwjsInterface_File.getFiles = function() {
         if(!!process === false) return;
@@ -53,6 +58,9 @@ Imported.RS_File = true;
     };
 
     /**
+     * 데이터 폴더에 있는 파일의 전체 경로를 반환합니다.
+     * @method localFilePath
+     * @param {String} fileName 파일명
      * @return {String}
      */
     NwjsInterface_File.localFilePath = function (fileName) {
@@ -64,6 +72,9 @@ Imported.RS_File = true;
     };
 
     /**
+     * 폴더 인지 확인
+     * @method isDirectory
+     * @param {String} path 파일 경로
      * @return {Boolean}
      */
     NwjsInterface_File.isDirectory = function (path) {
@@ -72,6 +83,9 @@ Imported.RS_File = true;
     };
 
     /**
+     * 파일 인지 확인
+     * @method isFile
+     * @param {String} path 파일 경로
      * @return {Boolean}
      */
     NwjsInterface_File.isFile = function (path) {
@@ -80,6 +94,9 @@ Imported.RS_File = true;
     };
 
     /**
+     * 파일 존재 여부 확인
+     * @method isExist
+     * @param {Stirng} path 파일 경로
      * @return {Boolean}
      */
     NwjsInterface_File.isExist = function (path) {
@@ -88,6 +105,9 @@ Imported.RS_File = true;
     };
 
     /**
+     * 파일 사이즈
+     * @method getFileSize
+     * @param {Stirng} path 파일 경로
      * @return {Number}
      */
     NwjsInterface_File.getFileSize = function (path) {
@@ -98,6 +118,9 @@ Imported.RS_File = true;
     };
 
     /**
+     * 액세스한 날짜
+     * @method atime
+     * @param {Stirng} path 파일 경로
      * @return {Date}
      */
     NwjsInterface_File.atime = function (path) {
@@ -106,6 +129,9 @@ Imported.RS_File = true;
     };
 
     /**
+     * 만든 날짜
+     * @method ctime
+     * @param {Stirng} path 파일 경로
      * @return {Date}
      */
     NwjsInterface_File.ctime = function (path) {
@@ -114,6 +140,9 @@ Imported.RS_File = true;
     };
 
    /**
+    * 수정한 날짜
+    * @method mtime
+    * @param {Stirng} path 파일 경로
     * @return {Date}
     */
     NwjsInterface_File.mtime = function (path) {
@@ -122,6 +151,9 @@ Imported.RS_File = true;
     };
 
   /**
+   * 폴더 이름 반환
+   * @method getDirname
+   * @param {Stirng} path 파일 경로
    * @return {String}
    */
     NwjsInterface_File.getDirname = function (filePath) {
@@ -130,6 +162,9 @@ Imported.RS_File = true;
     };
 
     /**
+     * 파일 경로를 결합합니다.
+     * @method join
+     * @param {Arguments} arguments
      * @return {String}
      */
     NwjsInterface_File.join = function () {
@@ -137,16 +172,16 @@ Imported.RS_File = true;
        return path.join.apply(path, arguments);
     };
 
-    FileIO.getAllFiles = NwjsInterface_File.getFiles;
-    FileIO.getFilePath = NwjsInterface_File.localFilePath;
-    FileIO.isDirectory = NwjsInterface_File.isDirectory;
-    FileIO.isFile = NwjsInterface_File.isFile;
-    FileIO.getFileSize = NwjsInterface_File.getFileSize;
-    FileIO.getDirname = NwjsInterface_File.getDirname;
-    FileIO.atime = NwjsInterface_File.atime;
-    FileIO.ctime = NwjsInterface_File.ctime;
-    FileIO.mtime = NwjsInterface_File.mtime;
-    FileIO.join = NwjsInterface_File.join;
+    FileUtils.getAllFiles = NwjsInterface_File.getFiles;
+    FileUtils.getFilePath = NwjsInterface_File.localFilePath;
+    FileUtils.isDirectory = NwjsInterface_File.isDirectory;
+    FileUtils.isFile = NwjsInterface_File.isFile;
+    FileUtils.getFileSize = NwjsInterface_File.getFileSize;
+    FileUtils.getDirname = NwjsInterface_File.getDirname;
+    FileUtils.atime = NwjsInterface_File.atime;
+    FileUtils.ctime = NwjsInterface_File.ctime;
+    FileUtils.mtime = NwjsInterface_File.mtime;
+    FileUtils.join = NwjsInterface_File.join;
 
   }
 
@@ -176,6 +211,9 @@ Imported.RS_File = true;
       CordovaInterface_File.externalDataRoot = null;
       CordovaInterface_File._init = false;
 
+      /**
+       * @method init
+       */
       CordovaInterface_File.init = function () {
 
         var onError = function (e) {
@@ -215,6 +253,14 @@ Imported.RS_File = true;
         }, onError);
       };
 
+      /**
+       * 문자열을 파일에 작성합니다.
+       * @method writeFromString
+       * @param {String} filePath
+       * @param {pathType} pathType
+       * @param {String} string
+       * @param {requestCallback} callback
+       */
       CordovaInterface_File.writeFromString = function (filePath, pathType, string, callback) {
 
           var root = CordovaInterface_File.getPathType(pathType);
@@ -241,6 +287,12 @@ Imported.RS_File = true;
 
       };
 
+      /**
+       * 캔버스 url을 base64 형식의 문자열로 잘라냅니다.
+       * @method toBase64
+       * @param {String} url
+       * @return {String} base64
+       */
       CordovaInterface_File.toBase64 = function (url) {
           var token = ';base64,';
           var idx = url.indexOf(token) + token.length;
@@ -249,9 +301,11 @@ Imported.RS_File = true;
       };
 
       /**
+       * 캔버스에서 Blob 객체로 변환합니다.
        * @method canvasToBlob
        * @author PAEz
        * @see http://jsfiddle.net/PAEz/XfDUS/
+       * @return {Uint8Array} bufferArray
        */
       CordovaInterface_File.canvasToBlob = function () {
           var canvas = Bitmap.snap(SceneManager._scene);
@@ -265,6 +319,12 @@ Imported.RS_File = true;
           return bufferArray;
       };
 
+      /**
+       * 모바일 기기에서 게임의 스크린샷을 촬영합니다.
+       * @method takeScreenshotInCache
+       * @param {String} filename
+       * @param {requestCallback} callback
+       */
       CordovaInterface_File.takeScreenshotInCache = function (filename, callback) {
           var bufferArray = CordovaInterface_File.canvasToBlob();
           var blob = new Blob([bufferArray.buffer], {type: 'image/png'});
@@ -298,6 +358,9 @@ Imported.RS_File = true;
       /**
        * deletes specified file or directory
        * @see https://github.com/apache/cordova-plugin-file/blob/master/tests/tests.js#L131
+       * @param {String} name
+       * @param {Function} success
+       * @param {Function} error
        */
       CordovaInterface_File.deleteEntry = function (name, success, error) {
           // deletes entry, if it exists
@@ -320,6 +383,8 @@ Imported.RS_File = true;
       /**
        * deletes file, if it exists, then invokes callback
        * @see https://github.com/apache/cordova-plugin-file/blob/master/tests/tests.js#L146
+       * @param {String} fileName
+       * @param {requestCallback} callback
        */
       CordovaInterface_File.deleteFile = function (fileName, callback) {
           // entry.remove success callback is required: http://www.w3.org/TR/2011/WD-file-system-api-20110419/#the-entry-interface
@@ -337,6 +402,10 @@ Imported.RS_File = true;
       /**
        * deletes and re-creates the specified file
        * @see https://github.com/apache/cordova-plugin-file/blob/master/tests/tests.js#L159
+       * @method createFile
+       * @param {String} name
+       * @param {Function} success
+       * @param {Function} error
        */
       CordovaInterface_File.createFile = function (fileName, success, error) {
           var root = CordovaInterface_File.getPathType('cache');
@@ -350,6 +419,10 @@ Imported.RS_File = true;
       /**
        * deletes and re-creates the specified directory
        * @see https://github.com/apache/cordova-plugin-file/blob/master/tests/tests.js#L167
+       * @method createDirectory
+       * @param {String} dirName
+       * @param {Function} success
+       * @param {Function} error
        */
       CordovaInterface_File.createDirectory = function (dirName, success, error) {
           var root = CordovaInterface_File.getPathType('cache');
@@ -360,6 +433,13 @@ Imported.RS_File = true;
           }, error);
        };
 
+      /**
+       * 텍스트 파일을 읽습니다.
+       * @method readFromString
+       * @param {String} filepath
+       * @param {String} pathType
+       * @param {Function} callback
+       */
       CordovaInterface_File.readFromString = function (filePath, pathType, callback) {
 
           var root = CordovaInterface_File.getPathType(pathType);
@@ -381,6 +461,12 @@ Imported.RS_File = true;
           CordovaInterface_File.errorCallback.bind(null, filePath));
       };
 
+      /**
+       * 바이너리 파일을 읽습니다.
+       * @method readFromBinary
+       * @param {String} filepath
+       * @param {Function} callback
+       */
       CordovaInterface_File.readFromBinary = function (filePath, callback) {
           var path = CordovaInterface_File.getPathType(pathType) + filePath;
           window.resolveLocalFileSystemURL(path, function (fileEntry) {
@@ -399,6 +485,12 @@ Imported.RS_File = true;
           CordovaInterface_File.errorCallback.bind(null, filePath));
       };
 
+      /**
+       * 버퍼를 읽습니다.
+       * @method readFromArrayBuffer
+       * @param {String} filepath
+       * @param {Function} callback
+       */
       CordovaInterface_File.readFromArrayBuffer = function (filePath, callback) {
           var path = CordovaInterface_File.getPathType(pathType) + filePath;
           var error = CordovaInterface_File.errorCallback.bind(null, filePath);
@@ -417,6 +509,11 @@ Imported.RS_File = true;
           }, error);
       };
 
+      /**
+       * @method errorCallback
+       * @param {String} filepath
+       * @param {ErrorEvent} e
+       */
       CordovaInterface_File.errorCallback = function (filePath, e) {
 
           switch (e.code) {
@@ -466,6 +563,10 @@ Imported.RS_File = true;
 
       };
 
+      /**
+       * MB로 반환합니다.
+       * @method convertMegaByte
+       */
       CordovaInterface_File.convertMegaByte = function (n) {
           return n * 1024 * 1024;
       };
@@ -492,6 +593,7 @@ Imported.RS_File = true;
       };
 
       /**
+       * @method getFiles
        * @param {String} filePath
        * @param {String} rootType
        * @param {Boolean} isFullpath if you set true, it will return full path of which file in certain directory.
@@ -526,6 +628,7 @@ Imported.RS_File = true;
       };
 
       /**
+       * @method isFile
        * @param {String} filePath filename
        * @param {String} rootType
        * @param {requestCallback} callback
@@ -539,6 +642,7 @@ Imported.RS_File = true;
       };
 
       /**
+       * @method isDirectory
        * @param {String} filePath filename
        * @param {String} rootType
        * @param {requestCallback} callback
@@ -552,6 +656,7 @@ Imported.RS_File = true;
       };
 
       /**
+       * @method ctime
        * @param {String} filePath filename
        * @param {String} rootType
        * @param {requestCallback} callback
@@ -565,6 +670,7 @@ Imported.RS_File = true;
       };
 
       /**
+       * @method getFileSize
        * @param {String} filePath filename
        * @param {String} rootType
        * @param {requestCallback} callback
@@ -578,8 +684,10 @@ Imported.RS_File = true;
       };
 
       /**
+       * @method join
        * @see https://github.com/nodejs/node/blob/master/lib/path.js#L1205
        * @license https://github.com/nodejs/node/blob/master/LICENSE
+       * @param {Arguments} arguments
        */
       CordovaInterface_File.join = function () {
           if (arguments.length === 0)
@@ -663,20 +771,27 @@ Imported.RS_File = true;
             })(joined, false);
       };
 
-      FileIO.getAllFiles = CordovaInterface_File.getFiles;
-      // FileIO.getFilePath = CordovaInterface_File.localFilePath;
-      FileIO.isDirectory = CordovaInterface_File.isDirectory;
-      FileIO.isFile = CordovaInterface_File.isFile;
-      FileIO.getFileSize = CordovaInterface_File.getFileSize;
-      // FileIO.getDirname = CordovaInterface_File.getDirname;
-      FileIO.atime = CordovaInterface_File.ctime;
-      FileIO.ctime = CordovaInterface_File.ctime;
-      FileIO.mtime = CordovaInterface_File.ctime;
-      FileIO.join = CordovaInterface_File.join;
+      // FileUtils.getDirname = CordovaInterface_File.getDirname;
+      // import android.os.Environment;
+      // import android.os.FileUtils;
+      // File pathFile = Environment.getStorageDirectory();
+      // String dir = pathFile.getParent();
+      // return dir;      
+
+      FileUtils.getAllFiles = CordovaInterface_File.getFiles;
+      // FileUtils.getFilePath = CordovaInterface_File.localFilePath;
+      FileUtils.isDirectory = CordovaInterface_File.isDirectory;
+      FileUtils.isFile = CordovaInterface_File.isFile;
+      FileUtils.getFileSize = CordovaInterface_File.getFileSize;
+
+      FileUtils.atime = CordovaInterface_File.ctime;
+      FileUtils.ctime = CordovaInterface_File.ctime;
+      FileUtils.mtime = CordovaInterface_File.ctime;
+      FileUtils.join = CordovaInterface_File.join;
 
     }
-
-
   }
+
+
 
 })();
