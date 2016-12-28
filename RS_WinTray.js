@@ -39,7 +39,7 @@
  * Change Log
  * =============================================================================
  * 2016.01.21 (v1.0.0) - First Release.
- * 2016.12.28 (v1.0.1) - Fixed a bug that the tray will remain after closing the window.
+ * 2016.12.28 (v1.0.1) - Fixed a bug that a previous tray will remain after reloading the window.
  */
 
 var Imported = Imported || {};
