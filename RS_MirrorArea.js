@@ -10,11 +10,6 @@
  * @desc [w, h, mask_ox, mask_oy, char_ox, char_oy]
  * @default [34, 15, 10, -5, 10, 70]
  *
- * @param Blur
- * @desc Blurring is very poor performance.
- * 0 = blur off / 0.1 or more = blur on
- * @default 0.0
- *
  * @help
  * =============================================================================
  * How to Use
@@ -37,7 +32,6 @@
  * =============================================================================
  * Mirror Show
  * Mirror Hide
- * Mirror Blur x
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -81,24 +75,6 @@ function Sprite_Mirror() {
   $.allScale = new PIXI.Point(0.8, 0.8);
 
   //============================================================================
-  // Game_System
-  //============================================================================
-
-  var alias_Game_System_initialize = Game_System.prototype.initialize;
-  Game_System.prototype.initialize = function() {
-      alias_Game_System_initialize.call(this);
-      this._restoreMirrors = null;
-  };
-
-  Game_System.prototype.saveMirrors = function (obj) {
-      this._restoreMirrors = JsonEx.stringify(obj);
-  };
-
-  Game_System.prototype.restoreMirrors = function (raw) {
-      return JsonEx.parse(this._restoreMirrors);
-  };
-
-  //============================================================================
   // Game_Map
   //============================================================================
 
@@ -137,8 +113,6 @@ function Sprite_Mirror() {
   Sprite_Mirror.prototype.initialize = function (character) {
       Sprite_Character.prototype.initialize.call(this, character);
       this._offset = [0, 0, 0, 0];
-      // TODO: Blurring is very poor performance.
-      this.applyBlurFilter()
       this.scale = $.allScale;
   };
 
@@ -148,33 +122,9 @@ function Sprite_Mirror() {
       this._isBigCharacter = ImageManager.isBigCharacter(this._characterName);
   };
 
-  Sprite_Mirror.prototype.applyBlurFilter = function () {
-    if(Graphics.isWebGL() && ($.fBlur > 0.0) && !this._initBlur) {
-      if(!this._blurFilter) this._blurFilter = new PIXI.filters.BlurFilter();
-      this._blurFilter.blur = $.fBlur;
-      this.filters = [this._blurFilter];
-      this._initBlur = true;
-    }
-  };
-
-
   Sprite_Mirror.prototype.updateVisibility = function () {
       Sprite_Character.prototype.updateVisibility.call(this);
-
       this.visible = this.mask && $.allImagesVisible;
-
-      // TODO: Blurring is very poor performance.
-      if(this._initBlur) {
-        if($.fBlur <= 0) {
-          this.filters = [Sprite.voidFilter];
-          this._initBlur = false;
-        } else {
-          this._blurFilter.blur = $.fBlur;
-        }
-      } else {
-        this.applyBlurFilter();
-      }
-
   };
 
   Sprite_Mirror.prototype.updatePosition = function() {
@@ -331,9 +281,6 @@ function Sprite_Mirror() {
           break;
           case 'Hide':
             $.allImagesVisible = false;
-          break;
-          case 'Blur':
-            $.fBlur = parseFloat(args[1] || 0.0);
           break;
         }
       }
