@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_KeyboardEvent = true;
 
 /*:
- * @plugindesc <RS_KeyboardEvent>
+ * @plugindesc This plugin allows you to send keyboard input events manually.
  * @author biud436
  * @help
  * =============================================================================
