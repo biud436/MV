@@ -401,7 +401,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   RS.ArabicMessageSystem.findWindowClasses = function () {
     var allWindowObjects = Object.keys(window);
     var resultWindowClasses = allWindowObjects.filter(function(i) {
-      return i.includes("Window_")
+      return i.includes("Window_");
     });
     return resultWindowClasses;
   };
