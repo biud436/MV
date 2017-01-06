@@ -38,10 +38,14 @@
  * - Fixed the issue that YEP Message Core is not working.
  * 2016.10.24 (v1.1.5) - Fixed the renderCanvas function in Scroll Text
  * 2016.11.26 (v1.1.6) - Added certain code to remove the texture from memory.
+ * 2017.01.06 (v1.1.7) :
+ * - Supported YEP_GabWindow plugin
+ * - Supported YEP_EventMiniLabel plugin
+ * - Fixed the processNormalCharacter method.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.6';
+Imported.RS_ArabicMessageSystem = '1.1.7';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -373,6 +377,22 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     }
   };
 
+  /**
+   * @param {Object} this
+   * @param {Function} function
+   * @param {args} args1, args2, args...
+   */
+  RS.ArabicMessageSystem.sandboxExec = function () {
+    messageMode = 'normal';
+    var self = arguments[0];
+    if(typeof arguments[1] === 'function') {
+      var func = arguments[1];
+      var args = arguments.slice(2);
+      func.apply(self, args);
+    }
+    messageMode = 'arabic';
+  };
+
   //============================================================================
   // Window_Base
   //
@@ -473,7 +493,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     // Check the escase character and line break
     for(var i = 0; i < szValidText.length; i++) {
       if(szValidText[i + 1] === '\x1b') {
-        szWhitespace = [szValidText.slice(0, i)];
+        szWhitespace = [szValidText.slice(0, i + 1)];
         break;
       }
       if(szValidText[i] === '\r' && szValidText[i + 1] === '\n') {
@@ -484,8 +504,8 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
     // Calculate text index
     if(szWhitespace) {
-      textState.index += szWhitespace[0].length + 1;
-      szResultText = szWhitespace[0];
+      textState.index += szWhitespace[0].length;
+      szResultText = szWhitespace[0].substr(0);
     } else {
       szResultText = szValidText;
       textState.index += szValidText.length;
@@ -643,10 +663,6 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
       return Window_Base.prototype.standardFontFace.call(this);
     };
 
-    Window_NameBox.prototype.standardFontSize = function() {
-      return Window_Base.prototype.standardFontSize.call(this);
-    };
-
     Window_NameBox.prototype.refresh = function(text, position) {
         this.show();
         this._lastNameText = text;
@@ -670,6 +686,50 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
         return '';
     };
   };
+
+  //============================================================================
+  // YEP_EventMiniLabel
+  //
+  //
+
+  if(Imported.YEP_EventMiniLabel) {
+    RS.ArabicMessageSystem.defineInitialize(Window_EventMiniLabel);
+    Window_EventMiniLabel.prototype.textWidthEx = function(text) {
+      messageMode = 'normal';
+      var result = Window_Base.prototype.drawTextEx.call(this, text, 0, this.contents.height);
+      messageMode = 'arabic';
+      return result;
+    };
+    Window_EventMiniLabel.prototype.refresh = function() {
+      if (Imported.YEP_SelfSwVar) {
+        $gameTemp.setSelfSwVarEvent(this._character._mapId, this._character._eventId);
+      }
+      this.contents.clear();
+      var txWidth = this.textWidthEx(this._text);
+      txWidth += this.textPadding() * 2;
+      var width = txWidth;
+      this.width = Math.max(width, Yanfly.Param.EMWMinWidth);
+      this.width += this.standardPadding() * 2;
+      this.height = this.windowHeight();
+      this.createContents();
+      var wx = (this.contents.width - txWidth) / 2;
+      var wy = 0;
+      this.drawTextEx(this._text, wx + this.textPadding(), wy);
+      if (Imported.YEP_SelfSwVar) $gameTemp.clearSelfSwVarEvent();
+    };
+  }
+
+  //============================================================================
+  // YEP_GabWindow
+  //
+  //
+
+  if(Imported.YEP_GabWindow) {
+    RS.ArabicMessageSystem.defineInitialize(Window_Gab);
+    Window_Gab.prototype.standardFontFace = function() {
+      return Window_Base.prototype.standardFontFace.call(this);
+    };
+  }
 
   //============================================================================
   // Window_ScrollText
