@@ -378,6 +378,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   };
 
   /**
+   * @method sandboxExec
    * @param {Object} this
    * @param {Function} function
    * @param {args} args1, args2, args...
@@ -391,6 +392,18 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
       func.apply(self, args);
     }
     messageMode = 'arabic';
+  };
+
+  /**
+   * @method findWindowClasses
+   * @return {Array} resultWindowClasses
+   */
+  RS.ArabicMessageSystem.findWindowClasses = function () {
+    var allWindowObjects = Object.keys(window);
+    var resultWindowClasses = allWindowObjects.filter(function(i) {
+      return i.includes("Window_")
+    });
+    return resultWindowClasses;
   };
 
   //============================================================================
