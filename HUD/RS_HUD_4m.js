@@ -1,10 +1,8 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.1.9) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.0) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
- * @since 2015.10.31
- * @date 2016.01.12
  *
  * @param --- Image Name
  * @desc
@@ -389,10 +387,14 @@
  * - The text elements perform an update through the event handler.
  * - Fixed an issue that plugins did not work due to image position data parsing errors in crosswalk.
  * - Fixed an issue that can not be saved due to this update.
+ * 2017.01.06 (v1.2.0) :
+ * - Fixed to redraw the Hud when using the $gameParty.swapOrder method.
+ * - Fixed the hud to process the refresh when the event lisnter listens a refresh request.
+ *   $gameHud.refresh() -> $gameTemp.notifyHudRefresh();
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.1.9';
+Imported.RS_HUD_4m = '1.2.0';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -561,7 +563,7 @@ RS.HUD.param = RS.HUD.param || {};
       RS.HUD.param[name] = data[name];
     }, this);
     setTimeout(function () {
-      if($gameHud) $gameHud.refresh();
+      $gameTemp.notifyHudRefresh();
     }, 0);
   };
 
@@ -883,6 +885,38 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   //----------------------------------------------------------------------------
+  // Game_Temp
+  //
+  //
+
+  var alias_Game_Temp_initialize = Game_Temp.prototype.initialize;
+  Game_Temp.prototype.initialize = function() {
+    alias_Game_Temp_initialize.call(this);
+    this.initHudEvent();
+    this.initHudTextEvent();
+  };
+
+  Game_Temp.prototype.initHudEvent = function () {
+    this._hudEvents = document.createEvent('Event');
+    this._hudEvents.initEvent('broadcast.rs.hud', true, true);
+  };
+
+  Game_Temp.prototype.initHudTextEvent = function () {
+    this._hudRefreshEvent = document.createEvent('Event');
+    this._hudRefreshEvent.initEvent('refresh.rs.hud', true, true);
+  };
+
+  Game_Temp.prototype.notifyHudTextRefresh = function() {
+    var elm = document.body;
+    elm.dispatchEvent(this._hudEvents);
+  };
+
+  Game_Temp.prototype.notifyHudRefresh = function() {
+    var elm = document.body;
+    elm.dispatchEvent(this._hudRefreshEvent);
+  };
+
+  //----------------------------------------------------------------------------
   // Game_System ($gameSystem)
   //
   //
@@ -892,6 +926,17 @@ RS.HUD.param = RS.HUD.param || {};
     this._rs_hud = this._rs_hud || {};
     this._rs_hud.show = this._rs_hud.show || RS.HUD.param.bShow;
     this._rs_hud.opacity = this._rs_hud.opacity || RS.HUD.param.nOpacity;
+  };
+
+  //----------------------------------------------------------------------------
+  // Game_Battler
+  //
+  //
+
+  var alias_Game_Battler_refresh = Game_Battler.prototype.refresh;
+  Game_Battler.prototype.refresh = function() {
+    alias_Game_Battler_refresh.call(this);
+    $gameTemp.notifyHudTextRefresh();
   };
 
   //----------------------------------------------------------------------------
@@ -913,6 +958,17 @@ RS.HUD.param = RS.HUD.param || {};
     } else {
       return this.expForLevel(this.maxLevel());
     }
+  };
+
+  //----------------------------------------------------------------------------
+  // Game_Party
+  //
+  //
+
+  var alias_Game_Party_swapOrder = Game_Party.prototype.swapOrder;
+  Game_Party.prototype.swapOrder = function(index1, index2) {
+    alias_Game_Party_swapOrder.call(this, index1, index2);
+    $gameTemp.notifyHudRefresh();
   };
 
   //----------------------------------------------------------------------------
@@ -1005,33 +1061,10 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   //----------------------------------------------------------------------------
-
-  var alias_Game_Temp_initialize = Game_Temp.prototype.initialize;
-  Game_Temp.prototype.initialize = function() {
-    alias_Game_Temp_initialize.call(this);
-    this.createHudMessage();
-  };
-
-  Game_Temp.prototype.createHudMessage = function () {
-    this._hudEvents = document.createEvent('Event');
-    this._hudEvents.initEvent('broadcast.rs.hud', true, true);
-  };
-
-  Game_Temp.prototype.sendHudMessage = function() {
-    var elm = document.body;
-    elm.dispatchEvent(this._hudEvents);
-  };
-
-  var alias_Game_Battler_refresh = Game_Battler.prototype.refresh;
-  Game_Battler.prototype.refresh = function() {
-    alias_Game_Battler_refresh.call(this);
-    $gameTemp.sendHudMessage();
-  };
-
-  //----------------------------------------------------------------------------
   // HUD
   //
   //
+
   function HUD() {
     this.initialize.apply(this, arguments);
   };
@@ -1050,9 +1083,19 @@ RS.HUD.param = RS.HUD.param || {};
 
   RS_HudLayer.prototype.initialize = function(bitmap) {
     Sprite.prototype.initialize.call(this, bitmap);
-    // This variable sets transparency to zero.
     this.alpha = 0;
     this.createItemLayer();
+    this.addEventListener('refresh.rs.hud');
+  };
+
+  RS_HudLayer.prototype.addEventListener = function (type) {
+    document.body.addEventListener(type, this.refresh.bind(this), false);
+  };
+
+  var alias_RS_HudLayer_destroy = RS_HudLayer.prototype.destroy;
+  RS_HudLayer.prototype.destroy = function () {
+    if(alias_RS_HudLayer_destroy) alias_RS_HudLayer_destroy.call(this);
+    document.body.removeEventListener('refresh.rs.hud', this.refresh.bind(this), false);
   };
 
   RS_HudLayer.prototype.createItemLayer = function () {
@@ -1112,22 +1155,19 @@ RS.HUD.param = RS.HUD.param || {};
   }
 
   RS_HudLayer.prototype.remove = function(index) {
+    var self = this;
     setTimeout(function() {
-      while($gameParty.size() !== this._items.children.length) {
-        this.drawAllHud();
+      while($gameParty.size() !== self._items.children.length) {
+        self.drawAllHud();
       }
-    }.bind(this), 0);
+    }, 0);
   };
 
   Object.defineProperty(RS_HudLayer.prototype, 'show', {
       get: function() {
-          // return this._items.children[0].show;
           return this.visible;
       },
       set: function(value) {
-          // this._items.children.forEach( function(i) {
-          //   i.visible = value;
-          // }, this);
           this.visible = value;
           $gameSystem._rs_hud.show = value;
       },
@@ -1135,13 +1175,9 @@ RS.HUD.param = RS.HUD.param || {};
 
   Object.defineProperty(RS_HudLayer.prototype, 'opacity', {
       get: function() {
-          // return this._items.children[0].opacity;
           return Math.floor(this.alpha * 255);
       },
       set: function(value) {
-          // this._items.children.forEach( function(i) {
-          //   i.opacity = value.clamp(0, 255);
-          // }, this);
           this.alpha = value * 0.00392156862745098;
           $gameSystem._rs_hud.opacity = value.clamp(0, 255);
       },
@@ -1575,27 +1611,17 @@ RS.HUD.param = RS.HUD.param || {};
   // Game_Party
   //
   //
-  var _Game_Party_addActor = Game_Party.prototype.addActor;
+
+  var alias_Game_Party_addActor = Game_Party.prototype.addActor;
   Game_Party.prototype.addActor = function(actorId) {
-    _Game_Party_addActor.call(this, actorId);
-    try {
-      if(!!$gameHud.refresh) {
-        $gameHud.refresh();
-      }
-    } catch(e) {
-
-    }
-
+    alias_Game_Party_addActor.call(this, actorId);
+    $gameTemp.notifyHudRefresh();
   };
 
-  var _Game_Party_removeActor = Game_Party.prototype.removeActor;
+  var alias_Game_Party_removeActor = Game_Party.prototype.removeActor;
   Game_Party.prototype.removeActor = function(actorId) {
-    try {
-        $gameHud.remove(actorId);
-        _Game_Party_removeActor.call(this, actorId);
-    } catch(e) {
-
-    }
+    alias_Game_Party_removeActor.call(this, actorId);
+    $gameTemp.notifyHudRefresh();
   };
 
   //----------------------------------------------------------------------------
