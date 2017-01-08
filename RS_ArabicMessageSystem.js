@@ -713,7 +713,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
       messageMode = 'arabic';
       return result;
     };
-    Window_EventMiniLabel.prototype.refresh = function() {
+    Window_EventMiniL abel.prototype.refresh = function() {
       if (Imported.YEP_SelfSwVar) {
         $gameTemp.setSelfSwVarEvent(this._character._mapId, this._character._eventId);
       }
