@@ -43,337 +43,331 @@
  * =============================================================================
  * Basic Functions
  * =============================================================================
- * RS.Net.userCount() - Get the number of connected users on the server.
- * RS.Net.getTime() - Get the time of the server.
- * RS.Net.loadScript(ScriptName) - Download specific script from the server.
- * RS.UI.prepareLoginElement() - Indicate the Login page.
+ * NetworkHelper.userCount() - Get the number of connected users on the server.
+ * NetworkHelper.getTime() - Get the time of the server.
+ * NetworkHelper.loadScript(ScriptName) - Download specific script from the server.
+ * UICreator.prepareLoginElement() - Indicate the Login page.
  *
  */
 
-// Server URL
-
-var RS = RS || {};
-
-RS.UI = RS.UI || {};
-RS.Net = RS.Net || {};
-
-RS.Net.SERVER_IP = undefined;
-RS.Net.Socket = undefined;
-
-
-function ChatBox() {
-  this.initialize.apply(this, arguments);
-};
+"use strict";
+var Imported = Imported || {};
+Imported.RS_NetModule = true;
 
 (function () {
 
-  // Get the parameters of itself from the scripts.
-  RS.Net.Params = $plugins.filter(function(i) {
-      if(i.name === 'RS_Net_Module') {
-          return true;
-      }
-  })[0].parameters;
-
-  // Create Server Url String
-  RS.Net.createServerURL = function() {
-    var self = this;
-    var param = self.Params;
-    var url = "http://" + param.SERVER_IP + ":" + param.PORT;
-    return url;
-  };
-
-  // Set the Global Variable that is stored URL of the Server.
-  RS.Net.SERVER_IP = RS.Net.SERVER_IP || RS.Net.createServerURL();
-
-  // Set the Global Variable that is stored the Socket.io Object.
-  RS.Net.Socket = RS.Net.Socket || io.connect(RS.Net.SERVER_IP);
-
-  // This is regular expression of the command that can change your nickname.
-  RS.Net.nickCommand = eval(RS.Net.Params.REG1);
-
-  // Users
-  RS.Net.Users = {};
-
-  // Custom Parameters
-  RS.Net.Params.connectedUsersMSG1 = "현재 접속 인원은 ";
-  RS.Net.Params.connectedUsersMSG2 = " 명 입니다";
-  RS.Net.Params.noticeMSG = "\\c[4][공지]";
-
   //------------------------------------------------------------------------------
-  // Game_Interpreter
+  // NetworkHelper
   //
   //
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    alias_Game_Interpreter_pluginCommand.call(this, command, args);
-    if(command === "Chat") {
-      switch (args[0].toLowerCase()) {
-        case 'connect':
-          // Create a new user(event) on the map.
+  class NetworkHelper {
 
-          break;
-        case 'disconnect':
-          // Delete the event on the map.
-
-          break;
-      }
+    static initialize() {
+        this.loadParameter();
+        this.initMembers();
+        this.loadScript('JsonFormatter.js');
     }
-  };
 
-  //------------------------------------------------------------------------------
-  // RS.Net
-  //
-  //
+    static initMembers() {
+        this.initialized = false;
+        this.count = 0;
+        this.cryptText = "";
+        this.cryptKey = "";
+        this.SERVER_IP = this.createServerURL();
+        this.SOCKET = io.connect(this.SERVER_IP);
+        this.nickCommand = eval(this.Params.REG1);
+        this.Users = {};
+    }
 
-  // Download the script from the server.
-  RS.Net.loadScript = function(name) {
-      var url = "%1/%2".format(RS.Net.SERVER_IP, name);
-      var script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = url;
-      script.async = false;
-      script._url = url;
-      document.body.appendChild(script);
-  };
+    static loadParameter() {
+        this.Param = PluginManager.parameters('RS_Net_Module');
+        this.Params['connectedUsersMSG1'] = "현재 접속 인원은 ";
+        this.Params['connectedUsersMSG2'] = " 명 입니다";
+        this.Params['noticeMSG'] = "\\c[4][Notice]";
+    }
 
-  // Download the script called 'JsonFormatter.js' from the server.
-  RS.Net.loadScript('JsonFormatter.js');
+    static createServerURL() {
+        const self = this;
+        const param = self.Params;
+        const url = `http://${param.SERVER_IP}:${param.PORT}`;
+        return url;
+    }
 
-  // Get the number of connected users on the server.
-  RS.Net.userCount = function() {
-    RS.Net.Socket.on('user count',function(msg) {
-      console.log(msg);
-    });
-  };
+    static loadScript(name) {
+        const url = "%1/%2".format(NetworkHelper.SERVER_IP, name);
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+        script.async = false;
+        script._url = url;
+        document.body.appendChild(script);
+    }
 
-  // Get the number of connected users on the server.
-  RS.Net.update = function() {
-    RS.Net.Socket.emit('user count', '');
-  };
+    static userCount() {
+        this.SOCKET.on('user count',function(msg) {
+          console.log(msg);
+        });
+    }
 
-  RS.Net.count = 0;
-  RS.Net.cryptText = "";
-  RS.Net.cryptKey = "";
+    static update() {
+        this.SOCKET.emit('user count', '');
+    }
 
-  // Get the time of the server.
-  RS.Net.getTime = function() {
-    RS.Net.Socket.emit('get time','');
-    RS.Net.Socket.on('get time',function(msg) {
-      console.log(msg);
-    });
-  };
+    static getTime() {
+        this.SOCKET.emit('get time','');
+        this.SOCKET.on('get time',function(msg) {
+          console.log(msg);
+        });
+    }
 
-  // Set the cipher key
-  RS.Net.setCryptKey = function() {
-    RS.Net.Socket.emit('get key', '');
+    static setCryptKey() {
+        this.SOCKET.emit('get key', '');
+    }
+
+    static setEncryption(msg) {
+        this.SOCKET.emit('crypt', msg);
+    }
+
+    static getCryptObject() {
+        return JSON.parse(this.cryptText);
+    }
+
+    static obtainMessage() {
+        if(this.count === 0) {
+            // Send Chat Message to the server.
+            this.SOCKET.on('chat message', function(msg) {
+              $gameMessage.addChat(msg);
+            });
+            // Get Current connected Users to the server.
+            this.SOCKET.on('current user', function(msg) {
+              const param = NetworkHelper.Params;
+              const newMessage = `${param.connectedUsersMSG1}${msg}${param.connectedUsersMSG2}`;
+              $gameMessage.addNotice(newMessage);
+            });
+            this.setCryptKey();
+            // Get the key of a cryptolect.
+            this.SOCKET.on('get key', function(key) {
+              NetworkHelper.cryptKey = key;
+            });
+            // Get the text of a cryptolect.
+            this.SOCKET.on('crypt', function(encrypted) {
+              NetworkHelper.cryptText = encrypted;
+            });
+            // play the youtube on the map.
+            this.SOCKET.on('playYoutube', function(msg) {
+              eval(msg);
+            });
+           this.count++;
+        }
+    }
+
+    static registerEventListeners() {
+      let inputBox = document.getElementById('defaultInputBox');
+      inputBox.addEventListener('change', function() {
+          const msg = {
+            'id' : NetworkHelper.SOCKET.io.engine.id,
+            'name': $gameParty.members()[0].name(),
+            'msg': inputBox.value
+          };
+          NetworkHelper.SOCKET.emit('chat message', JSON.stringify(msg));
+          currentScene._inputBox.value = "";
+      });
+      inputBox.addEventListener('focus', function () {
+          $gameTemp.chatFocus = true;
+      });
+      inputBox.addEventListener('blur', function () {
+          $gameTemp.chatFocus = false;
+      });
+    }
+
   }
 
-  // Request the cipher key.
-  RS.Net.setEncryption = function(msg) {
-    RS.Net.Socket.emit('crypt', msg);
-  };
-
-  // Get the coded message.
-  RS.Net.getCryptObject = function(msg) {
-     return JSON.parse(this.cryptText);
-  };
-
-//------------------------------------------------------------------------------
-// RS.UI
-//
-//
-
-  // Prepare Element
-  RS.UI.prepareElement = function() {
-    var divc = document.createElement('div');
-    divc.id = 'inputField';
-    divc.style.position = 'absolute';
-    divc.style.margin = 'auto';
-    divc.style.left = '0';
-    divc.style.top = '0';
-    divc.style.right = '0';
-    divc.style.bottom = '0';
-    divc.style.width = Graphics.boxWidth + 'px';
-    divc.style.height = Graphics.boxHeight + 'px';
-    divc.style.zIndex = "1000";
-    document.body.appendChild(divc);
-    return divc;
-  };
-
-  RS.UI.createInputField = function(x, y, width, height) {
-    var element = document.createElement('input');
-    element.id = 'input1';
-    element.type = 'text';
-    element.style.position = 'absolute';
-    element.style.margin = 'auto';
-    element.style.left = x + 'px';
-    element.style.top = y + '0';
-    element.style.width = width + 'px';
-    element.style.height = height + 'px';
-    var div = document.getElementById('inputField');
-    div.appendChild(element);
-  };
-
-  // Prepare Login Element
-  RS.UI.prepareLoginElement = function() {
-    var divc = document.createElement('div');
-    divc.id = 'loginField';
-    divc.style.zIndex = "1010";
-    divc.style.width = Graphics.boxWidth + 'px';
-    divc.style.height = Graphics.boxHeight + 'px';
-    Graphics._centerElement(divc);
-    document.body.appendChild(divc);
-
-    var iframe = document.createElement('iframe');
-    iframe.id = 'loginField';
-    iframe.src = RS.Net.SERVER_IP + '/login.html';
-    iframe.style.left = '0px';
-    iframe.style.top = '0px';
-    // iframe.style.width = 300 + 'px';
-    // iframe.style.height = 300 + 'px';
-    iframe.style.zIndex = "1001";
-    iframe.style.borderWidth = '0px';
-    divc.appendChild(iframe)
-    return divc;
-  };
-
-  // Remove Login Element
-  RS.UI.removeLoginElement = function() {
-    var divc = document.getElementById('loginField');
-    document.body.removeChild(divc);
-  };
-
-  // Create <input> tag
-  RS.UI.addTextBox = function(yPosition) {
-    var rect, inp;
-    rect = ChatBox.getEditBoxRect(yPosition);
-    inp =document.getElementById('input1');
-    inp.style.position = 'absolute'
-    inp.style.backgroundColor =  'rgba(0,0,0,0.6)';
-    inp.style.left = rect.x + 'px'
-    inp.style.top = rect.y + 'px';
-    inp.style.width= rect.width + "px";
-    inp.style.height = rect.height + 'px';
-    inp.style.borderColor = inp.style.backgroundColor;
-    return inp;
-  };
-
-  // Orientation
-  RS.UI.getHeight = function() {
-    var vv = (window.innerHeight - Graphics.boxHeight), top;
-    top = vv > 0 ? (vv / 2) : vv;
-    return top;
-  };
-
-  // When you are resizing the window object, This function automatically starts.
-  RS.UI.resizeTextBox = function(yPosition) {
-
-    var inp, left;
-    inp = document.getElementById('input1');
-    left = (window.innerWidth - Graphics.boxWidth) / 2;
-
-    var rect = ChatBox.getEditBoxRect(yPosition);
-
-    inp.style.position = 'absolute';
-    inp.style.left = rect.x + 'px';
-    inp.style.top = rect.y + 'px';
-    inp.style.width= (rect.width / Graphics._realScale ) + "px";
-    inp.style.height = rect.height + 'px';
-
-  };
-
-//------------------------------------------------------------------------------
-// ChatBox
-//
-//
-
-  ChatBox.prototype = Object.create(Window_Base.prototype);
-  ChatBox.prototype.constructor = ChatBox;
-
-   // Initialize the ChatBox
-  ChatBox.prototype.initialize = function() {
-    Window_Base.prototype.initialize.apply(this, arguments);
-    this.opacity = 0;
-  };
-
-  // Set standard Padding
-  ChatBox.prototype.standardPadding = function() {
-      return 0;
-  };
-
-  // Get standard Font Size
-  ChatBox.prototype.standardFontSize = function() {
-      return 12;
-  };
-
-  // Reset the font settings
-  ChatBox.prototype.resetFontSettings = function() {
-      this.contents.fontFace = this.standardFontFace();
-      this.contents.fontSize = this.standardFontSize();
-      this.resetTextColor();
-  };
-
-  // Get x-position of the chat box.
-  ChatBox.getX = function(clientX, w) {
-
-    // Finding the game canvas
-    var gc = document.querySelector('canvas');
-
-    // Get the Client Rect for inputField object.
-    var bound = document.getElementById('inputField').getBoundingClientRect();
-
-    return (window.innerWidth - Graphics.width) / 2 + (clientX - bound.left) * (gc.width / bound.width);
-  };
-
-  // Get y-position of the chat box.
-  ChatBox.getY = function(clientY, h) {
-
-    // Finding the game canvas
-    var gc = document.querySelector('canvas');
-
-    // Get the Client Rect for inputField object.
-    var bound = document.getElementById('inputField').getBoundingClientRect();
-
-    return (window.innerHeight - Graphics.height) / 2 + (clientY - bound.top) * (gc.height / bound.height);
-  };
-
-  // Get the rect of the chat box
-  ChatBox.getEditBoxRect = function(yPosition) {
-    var rect = new Rectangle();
-    rect.width = Graphics.boxWidth / 2;
-    rect.height = 20;
-    rect.x = ChatBox.getX(10, rect.width);
-    rect.y = ChatBox.getY(yPosition, rect.height);
-    return rect;
-  };
-
-  //------------------------------------------------------------------------------
-  // Scene_Map
+  //----------------------------------------------------------------------------
+  // UICreator
   //
   //
 
-  // Creates the EditBox
-  Scene_Map.prototype.createEditBox = function(yPosition) {
-    var inp, divc;
-    divc = RS.UI.prepareElement();
-    inp = RS.UI.addTextBox(yPosition);
-    window.onresize = RS.UI.resizeTextBox(yPosition);
-    return inp;
-  };
+  class UICreator {
 
-  // Creates Chat Box
-  var _Scene_Map_createDisplayObjects =
-    Scene_Map.prototype.createDisplayObjects;
+    static prepareElement() {
+        let divc = document.createElement('div');
+        divc.id = 'defaultPanel';
+        divc.style.position = 'absolute';
+        divc.style.margin = 'auto';
+        divc.style.left = '0';
+        divc.style.top = '0';
+        divc.style.right = '0';
+        divc.style.bottom = '0';
+        divc.style.width = `${Graphics.boxWidth}px`;
+        divc.style.height = `${Graphics.boxHeight}px`;
+        divc.style.zIndex = "1000";
+        document.body.appendChild(divc);
+        return divc;
+    }
 
-  Scene_Map.prototype.createDisplayObjects = function() {
-    _Scene_Map_createDisplayObjects.call(this);
+    static createInputField(x, y, width, height) {
+        let element = document.createElement('input');
+        let div = document.getElementById('defaultPanel');
+        element.id = 'defaultInputBox';
+        element.type = 'text';
+        element.style.position = 'absolute';
+        element.style.margin = 'auto';
+        element.style.left = x + 'px';
+        element.style.top = y + '0';
+        element.style.width = width + 'px';
+        element.style.height = height + 'px';
+        div.appendChild(element);
+    }
 
-    // You should always connected the internet
-    // because this function creates the chat box on the field at all times.
-    this.createChatBox();
+    static prepareLoginElement() {
 
-  };
+        let divc = document.createElement('div');
+        let iframe = document.createElement('iframe');
+
+        divc.id = 'loginField';
+        divc.style.zIndex = "1010";
+        divc.style.width = Graphics.boxWidth + 'px';
+        divc.style.height = Graphics.boxHeight + 'px';
+        Graphics._centerElement(divc);
+        document.body.appendChild(divc);
+
+        iframe.id = 'loginField';
+        iframe.src = `${NetworkHelper.SERVER_IP}/login.html`;
+        iframe.style.left = '0px';
+        iframe.style.top = '0px';
+        iframe.style.zIndex = "1001";
+        iframe.style.borderWidth = '0px';
+        divc.appendChild(iframe);
+        return divc;
+    }
+
+    static removeLoginElement() {
+        let divc = document.getElementById('loginField');
+        document.body.removeChild(divc);
+    }
+
+    static addTextBox(newPosition) {
+        let rect, inp;
+        rect = ChatBox.getEditBoxRect(newPosition);
+        inp =document.getElementById('defaultInputBox');
+        inp.style.position = 'absolute'
+        inp.style.backgroundColor =  'rgba(0,0,0,0.6)';
+        inp.style.left = rect.x + 'px'
+        inp.style.top = rect.y + 'px';
+        inp.style.width= rect.width + "px";
+        inp.style.height = rect.height + 'px';
+        inp.style.borderColor = inp.style.backgroundColor;
+        return inp;
+    }
+
+    static getHeight() {
+        let vv = (window.innerHeight - Graphics.boxHeight), top;
+        top = vv > 0 ? (vv / 2) : vv;
+        return top;
+    }
+
+    static resizeTextBox(newPosition) {
+        let inp, left, rect;
+        inp = document.getElementById('defaultInputBox');
+        left = (window.innerWidth - Graphics.boxWidth) / 2;
+        rect = ChatBox.getEditBoxRect(newPosition);
+        inp.style.position = 'absolute';
+        inp.style.left = rect.x + 'px';
+        inp.style.top = rect.y + 'px';
+        inp.style.width= (rect.width / Graphics._realScale ) + "px";
+        inp.style.height = rect.height + 'px';
+    }
+
+    static resizeWindowFrame() {
+        if(!Utils.isNwjs()) return;
+        const gui = require('nw.gui');
+        const win = gui.Window.get();
+        const w = Graphics.boxWidth;
+        const h = Graphics.boxHeight;
+        win.setMinimumSize(w,h);
+        win.setMaximumSize(w,h);
+        win.setPosition('center');
+    }
+
+  }
+
+  //----------------------------------------------------------------------------
+  // ChatBox
+  //
+  //
+
+  class ChatBox extends Window_Base {
+
+    constructor() {
+        super();
+        this.opacity = 0;
+    }
+
+    standardPadding() {
+        return 0;
+    }
+
+    standardFontSize() {
+        return 12;
+    }
+
+    resetFontSettings() {
+        this.contents.fontFace = standardFontFace();
+        this.contents.fontSize = standardFontSize();
+        resetTextColor();
+    }
+
+    fillColor(color = 'rgba(0, 0, 0, 0.6)') {
+        this.contents.fillAll(color);
+    }
+
+    setPosition(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    update() {
+        super.update();
+
+        if($gameMessage._textList && $gameMessage._textList instanceof Array) {
+
+            // Clear Bitmap.
+            this.contents.clear();
+
+            // Fill the contents to the default color
+            this.fillColor('rgba(0, 0, 0, 0.6)')
+
+            // Adding the Text on TextList
+            $gameMessage._textList.forEach( function(nowText, index, array) {
+              this.drawTextEx(nowText, 0, (index) * 20);
+            }.bind(this));
+
+        }
+    }
+
+    static getX(clientX, w) {
+        const gc = document.querySelector('canvas');
+        const bound = document.getElementById('defaultPanel').getBoundingClientRect();
+        return (window.innerWidth - Graphics.width) / 2 + (clientX - bound.left) * (gc.width / bound.width);
+    }
+
+    static getY(clientY, h) {
+        const gc = document.querySelector('canvas');
+        const bound = document.getElementById('defaultPanel').getBoundingClientRect();
+        return (window.innerHeight - Graphics.height) / 2 + (clientY - bound.top) * (gc.height / bound.height);
+    }
+
+    static getEditBoxRect(newPosition) {
+        let rect = new Rectangle();
+        rect.width = Graphics.boxWidth / 2;
+        rect.height = 20;
+        rect.x = ChatBox.getX(10, rect.width);
+        rect.y = ChatBox.getY(newPosition, rect.height);
+        return rect;
+    }
+
+  }
 
   //------------------------------------------------------------------------------
   // Input
@@ -399,133 +393,68 @@ function ChatBox() {
   //
   //
 
-  // Release the auto movement system of the player when clicking the chat box.
-  Game_Temp.prototype.isDestinationValid = function() {
-    return (this._destinationX !== null) && !$gameTemp.chatFocus;
+  var alias_Game_Temp_initialize = Game_Temp.prototype.initialize;
+  Game_Temp.prototype.initialize = function () {
+      alias_Game_Temp_initialize.call(this);
+      this.chatFocus = true;
   };
 
-  //------------------------------------------------------------------------------
+  // Release the auto movement system of the player when clicking the chat box.
+  Game_Temp.prototype.isDestinationValid = function() {
+      return (this._destinationX !== null) && !$gameTemp.chatFocus;
+  };
+
+  //----------------------------------------------------------------------------
   // Scene_Map
   //
   //
 
-  Scene_Map.prototype.createChatBox = function() {
-
-    // Creates the Chat Box
-    this._chatBox = new ChatBox(0, 0, Graphics.boxWidth / 2, Graphics.boxHeight / 3);
-    this.addWindow(this._chatBox);
-
-    // Fill the color.
-    var color = 'rgba(0, 0, 0, 0.6)';
-    this._chatBox.contents.fillAll(color);
-
-    // Set the position
-    this._chatBox.x = 10;
-    this._chatBox.y = Graphics.boxHeight - this._chatBox.height - 80;
-
-    // Create the Edit Box
-    this._inputBox = this.createEditBox(this._chatBox.y + this._chatBox.height + 10);
-    this._inputBox.style.color = 'rgb(255,255,255)';
-
-    // Set an event called 'onchange'
-      this._inputBox.onchange = function() {
-        var msg = {
-          id : RS.Net.Socket.io.engine.id,
-          name: $gameParty.members()[0].name(),
-          msg: this._inputBox.value
-        };
-
-        RS.Net.Socket.emit('chat message', JSON.stringify(msg));
-
-        this._inputBox.value = "";
-      }.bind(this);
-
-    // Set an event called 'onfocus'
-    this._inputBox.onfocus = function() {
-      $gameTemp.chatFocus = true;
-    }.bind(this);
-
-    // Set an event called 'onblur'
-    this._inputBox.onblur = function() {
-      $gameTemp.chatFocus = false;
-    }.bind(this);
-
-    // Set the Message handling functions.
-
-    if(RS.Net.count === 0) {
-
-      // Send Chat Message to the server.
-      RS.Net.Socket.on('chat message', function(msg) {
-        $gameMessage.addChat(msg);
+  Scene_Map.prototype.createEditBox = function(newPosition) {
+      let divc = UICreator.prepareElement();
+      let inp = UICreator.addTextBox(newPosition);
+      document.addEventListener('resize', function() {
+        UICreator.resizeTextBox(newPosition);
+        UICreator.resizeWindowFrame();
       });
-
-      // Get Current connected Users to the server.
-      RS.Net.Socket.on('current user', function(msg) {
-        var param = RS.Net.Params;
-        $gameMessage.addNotice(param.connectedUsersMSG1 + msg + param.connectedUsersMSG2);
-      });
-
-      RS.Net.setCryptKey();
-
-      // Get the key of a cryptolect.
-      RS.Net.Socket.on('get key', function(key) {
-        RS.Net.cryptKey = key;
-      });
-
-      // Get the text of a cryptolect.
-      RS.Net.Socket.on('crypt', function(encrypted) {
-        RS.Net.cryptText = encrypted;
-      });
-
-      // play the youtube on the map.
-      RS.Net.Socket.on('playYoutube', function(msg) {
-        eval(msg);
-      });
-
-     RS.Net.count++;
-
-    };
-
-    // ------------------------------------------------------------------------
-    // Redraw All of the Text in the ChatBox.
-
-    var _chatBox_update = this._chatBox.update;
-    this._chatBox.update = function() {
-
-      var _color;
-
-      _chatBox_update.call(this);
-
-      if($gameMessage._textList && $gameMessage._textList instanceof Array) {
-
-        // Clear Bitmap.
-        this.contents.clear();
-
-        // Set the default color
-        _color = 'rgba(0, 0, 0, 0.6)';
-
-        // Fill the contents to the default color
-        this.contents.fillAll(_color);
-
-        // Adding the Text on TextList
-        $gameMessage._textList.forEach( function(nowText, index, array) {
-          this.drawTextEx(nowText, 0, (index) * 20);
-        }.bind(this));
-
-      }
-    };
-
+      return inp;
   };
 
-  // Destroy the EditBox object from DOM(Document Object Model)
-  var _Scene_Map_terminate = Scene_Map.prototype.terminate;
+  var alias_Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
+  Scene_Map.prototype.createDisplayObjects = function() {
+      alias_Scene_Map_createDisplayObjects.call(this);
+      this.initChat();
+  };
+
+  Scene_Map.prototype.createChatElement = function () {
+      this._chatBox = new ChatBox(0, 0, Graphics.boxWidth / 2, Graphics.boxHeight / 3);
+      this._chatBox.fillColor('rgba(0, 0, 0, 0.6)');
+      this._chatBox.setPosition(10, Graphics.boxHeight - this._chatBox.height - 80);
+      this.addWindow(this._chatBox);
+  };
+
+  Scene_Map.prototype.createInputElement = function () {
+      this._inputBox = this.createEditBox(this._chatBox.y + this._chatBox.height + 10);
+      this._inputBox.style.color = 'rgb(255,255,255)';
+  };
+
+  Scene_Map.prototype.initChat = function() {
+      this.createChatElement();
+      this.createInputElement();
+      if(!NetworkHelper.initialized) {
+        NetworkHelper.registerEventListeners();
+        NetworkHelper.obtainMessage();
+        NetworkHelper.initialized = true;
+      }
+  };
+
+  var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    _Scene_Map_termine.call(this);
+    alias_Scene_Map_terminate.call(this);
     if(this._inputBox) {
-      var __inputField = document.getElementById('inputField');
-      var __inputBox = document.getElementById('input1');
-      __inputField.removeChild(__inputBox);
-      document.body.removeChild(__inputField);
+      var defaultPanel = document.getElementById('defaultPanel');
+      var defaultInputBox = document.getElementById('defaultInputBox');
+      defaultPanel.removeChild(defaultInputBox);
+      document.body.removeChild(defaultPanel);
     }
   };
 
@@ -534,43 +463,63 @@ function ChatBox() {
   //
   //
 
+  var alias_Game_Message_initialize = Game_Message.prototype.initialize;
+  Game_Message.prototype.initialize = function() {
+    alias_Game_Message_initialize.call(this);
+    this._textList = [];
+  };
+
+  Game_Message.prototype.addNewMessage = function (newMessage) {
+    this._textList.push(newMessage);
+  };
+
+  Game_Message.prototype.releaseMessage = function () {
+    if(this._textList.length > 0) this._textList.shift();
+  };
+
   // Add a string on Chat Box.
   Game_Message.prototype.addChat = function(text) {
-    var headText;
-    var res = JSON.parse(text);
+    const res = JSON.parse(text);
+    const engineId = NetworkHelper.SOCKET.io.engine.id;
+    let prefix;
 
     // Check the command that can change the nickname.
-    if((res.msg).match( RS.Net.nickCommand ) && RS.Net.Socket.io.engine.id === res.id) {
-      $gameParty.members()[0].setName(RegExp.$1);
+    if(res.msg.match( NetworkHelper.nickCommand ) && engineId === res.id) {
+        $gameParty.members()[0].setName(RegExp.$1);
     }
 
-    this._textList = this._textList || [];
-
-    if(RS.Net.Socket.io.engine.id === res.id) {
-      // Highlighting the text color of my own.
-      headText = "\\c[4][%1]\\c[0] : ".format(res.name);
+    if(engineId === res.id) {
+        prefix = `\\c[4][${res.name}]\\c[0] : `;
     } else {
-      // Handling the text color except itself.
-      headText = "[%1] : ".format(res.name);
+        prefix = `[${res.name}] : `;
     }
 
-    this._textList.push(headText + res.msg);
-    setTimeout(function() { this._textList.shift(); }.bind(this), 1000 * 10);
+    this.addNewMessage(headText + res.msg);
+
+    setTimeout(function() {
+        $gameMessage.releaseMessage();
+    }, 1000 * 10);
+
   };
 
   // Show the notification text.
   Game_Message.prototype.addNotice = function(text) {
-    var result = RS.Net.Params.noticeMSG + " " + text;
-    this._textList = this._textList || [];
-    this._textList.push(result);
+    this.addNewMessage(`${NetworkHelper.Params.noticeMSG} ${text}`);
     setTimeout(function() {
-        this._textList.shift();
-    }.bind(this), 1000 * 10);
+        $gameMessage.releaseMessage();
+    }, 1000 * 10);
   };
 
   // Play the Youtube for All Users.
   Game_Message.prototype.playYoutubeAllUser = function() {
-    if(RS.Net.Socket) RS.Net.Socket.emit('playYoutube', JSON.stringify(""));
+    if(NetworkHelper.SOCKET) NetworkHelper.SOCKET.emit('playYoutube', JSON.stringify(""));
   };
+
+  //----------------------------------------------------------------------------
+  // Main
+  //
+  //
+
+  NetworkHelper.initialize();
 
 })();

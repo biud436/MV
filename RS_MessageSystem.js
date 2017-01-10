@@ -440,6 +440,19 @@ var Color = Color || {};
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
+  /**
+   * @method popParameter
+   */
+  RS.MessageSystem.popParameter = function () {
+    var k = Object.keys(arguments);
+    var lastUsed = "";
+    while(k.length > 0) {
+      lastUsed = arguments[parseInt(k.pop())];
+      if(parameters[lastUsed]) return parameters[lastUsed];
+    }
+    return "";
+  };
+
   RS.MessageSystem.Reg = RS.MessageSystem.Reg || {};
   RS.MessageSystem.Reg.Default = RS.MessageSystem.Reg.Default || [];
   RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Group || [];
