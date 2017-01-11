@@ -18,6 +18,3 @@ This is not using the database. But The Database will be updating later.
 This plugin provides the Basic Framework that can send a message and can receive the message, via a library called Node.js and Socket.io. But I am thinking that my code is a mess.
 
 - [TEST VIDEO](https://www.youtube.com/watch?v=r7Ov_5h9qbo)
-
-### Last Updated
-2015.11.25

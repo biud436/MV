@@ -29,6 +29,7 @@
  * 2015.11.25 - Added functions that could download the login page from the Server.
  * 2016.05.10 - Added plugin parameters that could change the IP or Port of the Server.
  * 2016.06.28 - Added the parameters.
+ * 2017.01.11 - Converted sources to ES6
  *
  * =============================================================================
  * Development Environment
@@ -49,6 +50,66 @@
  * UICreator.prepareLoginElement() - Indicate the Login page.
  *
  */
+ /*:ko
+  * RS_Net_Module.js
+  * @plugindesc 간단한 온라인 채팅 (Node.js + Socket.io)
+  * @author biud436
+  *
+  * @param SERVER_IP
+  * @desc 서버 아이피
+  * @default 127.0.0.1
+  *
+  * @param PORT
+  * @desc 포트 번호
+  * @default 3100
+  *
+  * @param REG1
+  * @desc 닉네임 변경 처리를 할 수 있는 정규 표현식
+  * @default /@닉변[ ]*:[ ]*(.*)/
+  *
+  * @help
+  *
+  * =============================================================================
+  * 개발자 노트
+  * =============================================================================
+  *
+  * - 사용한 라이브러리
+  * 이것은 단순 채팅 시스템으로 접속자 모두에게 통지하여 메시지를 업데이트하는 기능을 가지고 있습니다.
+  * 정상적으로 구동하려면 index.html 파일을 수정해야 하며 <script> 태그를 <body>에 삽입해야 합니다.
+  * socket.io 라이브러리는 다양한 브라우저에서 네트워크 관련 함수가 동작하게 가능하게 해주는 라이브러리로
+  * 이 채팅 시스템 구동에 꼭 필요합니다. 다만 데이터베이스 관련 기능이 없으므로 사용자 아이디를 엔진 ID로
+  * 비교하고 있는데 이 속성들은 라이브러리 버전이 달라지면서 없어질 수도 있습니다.
+  *
+  * - 기본 룰
+  * 단순 메시지 전송 및 수신 기능을 가지고 있으며 JSON 기반의 문자열을 전송하고 있고 메시지는 암호화되지 않습니다.
+  *
+  * =============================================================================
+  * 기본 채팅 명령어
+  * =============================================================================
+  * @닉변 : 닉네임명 - This command provides a function that could change a nickname on chat box.
+  *
+  * =============================================================================
+  * 기본 함수
+  * =============================================================================
+  * NetworkHelper.userCount() - 서버에 접속된 유저 수
+  * NetworkHelper.getTime() - 서버 시간
+  * NetworkHelper.loadScript(ScriptName) - 서버에서 스크립트 다운로드
+  * UICreator.prepareLoginElement() - 로그인 페이지를 화면에 띄웁니다.
+  *
+  * =============================================================================
+  * 버전 로그
+  * =============================================================================
+  * 2015.11.06 - First Release, Added the Text Box
+  * 2015.11.07 - Fixed the Text Box
+  * 2015.11.08 - Added A Server based on NodeJS and Chat.
+  * 2015.11.23 - Added a many function in the client.
+  * 2015.11.24 - Added a function called '$gameMessage.addNotice()'
+  * 2015.11.25 - Added functions that could download the login page from the Server.
+  * 2016.05.10 - Added plugin parameters that could change the IP or Port of the Server.
+  * 2016.06.28 - Added the parameters.
+  * 2017.01.11 - Converted sources to ES6
+  *
+  */
 
 "use strict";
 var Imported = Imported || {};
@@ -171,7 +232,7 @@ Imported.RS_NetModule = true;
             'msg': inputBox.value
           };
           NetworkHelper.SOCKET.emit('chat message', JSON.stringify(msg));
-          currentScene._inputBox.value = "";
+          inputBox.value = "";
       });
       inputBox.addEventListener('focus', function () {
           $gameTemp.chatFocus = true;
