@@ -342,13 +342,14 @@ Imported.RS_NetModule = true;
 
     static resizeWindowFrame() {
         if(!Utils.isNwjs()) return;
+        if(!Imported.QElectron) return;
         const gui = require('nw.gui');
         const win = gui.Window.get();
         const w = Graphics.boxWidth;
         const h = Graphics.boxHeight;
         win.setMinimumSize(w,h);
         win.setMaximumSize(w,h);
-        win.setPosition('center');
+        win.setPosition('center');          
     }
 
   }
