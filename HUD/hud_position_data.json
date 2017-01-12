@@ -1,0 +1,45 @@
+{
+"frames": {
+	"exr.png": {
+		"frame": {"x":0, "y":186, "w":195, "h":4},
+		"spriteSourceSize": {"x":0,"y":0,"w":195,"h":4},
+		"sourceSize": {"w":195,"h":4}
+	},
+	"gauge.png": {
+		"frame": {"x":0, "y":233, "w":120, "h":20},
+		"spriteSourceSize": {"x":0,"y":0,"w":120,"h":20},
+		"sourceSize": {"w":120,"h":20}
+	},
+	"hp.png": {
+		"frame": {"x":0, "y":212, "w":120, "h":20},
+		"spriteSourceSize": {"x":0,"y":0,"w":120,"h":20},
+		"sourceSize": {"w":120,"h":20}
+	},
+	"hud_window_empty.png": {
+		"frame": {"x":0, "y":0, "w":312, "h":92},
+		"spriteSourceSize": {"x":0,"y":3,"w":319,"h":101},
+		"sourceSize": {"w":319,"h":101}
+	},
+	"hud_window_empty_inbattle.png": {
+		"frame": {"x":0, "y":93, "w":312, "h":92},
+		"spriteSourceSize": {"x":0,"y":3,"w":319,"h":101},
+		"sourceSize": {"w":319,"h":101}
+	},
+	"masking.png": {
+		"frame": {"x":313, "y":0, "w":87, "h":87},
+		"spriteSourceSize": {"x":0,"y":0,"w":87,"h":87},
+		"sourceSize": {"w":87,"h":87}
+	},
+	"mp.png": {
+		"frame": {"x":0, "y":191, "w":120, "h":20},
+		"spriteSourceSize": {"x":0,"y":0,"w":120,"h":20},
+		"sourceSize": {"w":120,"h":20}
+	}
+
+},
+"meta": {
+	"image": "hud_sheet.png",
+	"size": {"w": 512, "h": 256},
+	"scale": "1"
+}
+}
