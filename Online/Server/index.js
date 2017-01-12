@@ -26,8 +26,8 @@ const options = {
     cert: fs.readFileSync('cert.pem')
 };
 
-const http = require('http').ServerWorker(app);
-const https = require('https').createServerWorker(options, app).listen(3000, function(){
+const http = require('http').Server(app);
+const https = require('https').createServer(options, app).listen(3000, function(){
   console.log('listening on *:3000');
 });
 const io = require('socket.io')(http);
