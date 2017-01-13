@@ -55,6 +55,7 @@
  * Change Log
  * =============================================================================
  * 2016.12.19 - Removed a functionality that shows up the dialog only in the title scene.
+ * 2017.01.13 - Added preventDefault
  */
 
 var Imported = Imported || {};
@@ -88,6 +89,7 @@ RS.ExitDialog = RS.ExitDialog || {};
   document.addEventListener("deviceready", onDeviceReady, false);
 
   function onDeviceReady() {
+      document.removeEventListener("backbutton", function(){}, false);
       document.addEventListener("backbutton", SceneManager.onExit, false);
   }
 
@@ -95,18 +97,17 @@ RS.ExitDialog = RS.ExitDialog || {};
       if(SceneManager._scene.onExit) SceneManager._scene.onExit();
   };
 
-  Scene_Base.prototype.onExit = function () {
+  Scene_Base.prototype.onExit = function (e) {
       var title = $dataSystem.gameTitle || document.title;
       var okButtonId = 1;
+      e.preventDefault();
       if(!$.Params.isCustomTitleName) title = $.Params.title;
-
       // The index number starts from 1 (1,2,3...)
       navigator.notification.confirm($.Params.message, function(idx) {
           if(idx === okButtonId) {
               SceneManager.exit();
           }
       }, title, [$.Params.okBtn, $.Params.cancelBtn]);
-
   };
 
   //============================================================================
