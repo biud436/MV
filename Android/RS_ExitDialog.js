@@ -54,8 +54,10 @@
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.12.19 - Removed a functionality that shows up the dialog only in the title scene.
- * 2017.01.13 - Added preventDefault
+ * 2016.04.07  - Added plugin parameters.
+ * 2016.05.29  - The incorrect character fixed.
+ * 2016.12.19  - Removed a functionality that shows up the dialog only in the title scene.
+ * 2017.01.13 - Fixed a bug that causing when pressing a back button several times.
  */
 
 var Imported = Imported || {};
