@@ -79,7 +79,7 @@
  * That is because this plugin has a bug that 'navigator.language' has always returned
  * 'en-US' due to a bug of crosswalk-10.39.235.16 xwalk library. So I added this
  * to solve the problem of returning the wrong character width.
- * 2017.01.13 (v1.6.3) - Fixed an issue that indicates the status bar after firing onchange event on android
+ * 2017.01.13 (v1.6.3) - Fixed a bug that didn't hide the status bar after firing onchange event on android.
  */
  /*:ko
   * RS_Window_KorNameEdit.js
@@ -163,7 +163,7 @@
   * 2016.12.20 (v1.6.2) : Default CharWidth 라는 플러그인 매개변수를 추가했습니다.
   * 안드로이드에서 crosswalk-10.39.235.16를 사용하여 빌드했을 때 폭이 제대로 계산되지 않는 버그가 있습니다.
   * (시스템 언어가 항상 'en-US'로 고정되는 라이브러리 상의 버그가 있었습니다)
-  * 2017.01.13 (v1.6.3) - android cordova에서 onchange 이벤트를 실행 한 후 상태 표시 줄을 생기는 문제가 해결되었습니다.
+  * 2017.01.13 (v1.6.3) - android cordova에서 onchange 이벤트를 실행 한 후 상태 표시 줄이 사라지지 않는 버그를 수정했습니다.
   */
 
 var Imported = Imported || {};
