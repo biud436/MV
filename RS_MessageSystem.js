@@ -1591,9 +1591,15 @@ var Color = Color || {};
       var width = this.windowWidth();
       var height = this.windowHeight();
       Window_Base.prototype.initialize.call(this, 0, 0, width, height);
-      this.openness = 0;
+      this.setWindowStyle();
+    };
 
-      // 스텐실 테스트를 거치지 않게 됩니다.
+    RS.Window_Name.prototype.setWindowStyle = function () {
+      this.openness = 0;
+      this.opacity = RS.MessageSystem.Params.defaultOpacity;
+      this.backOpacity = RS.MessageSystem.Params.backOpacity;
+      this.contentsOpacity = RS.MessageSystem.Params.contentsOpacity;
+      this.translucentOpacity = RS.MessageSystem.Params.translucentOpacity;
       this._isWindow = false;
     };
 
