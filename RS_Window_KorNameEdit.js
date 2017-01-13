@@ -287,6 +287,7 @@ Imported.Window_KorNameEdit = true;
     this.getFocus();
     if (keyCode < TextBox.IS_NOT_CHAR) {
       if(keyCode === TextBox.BACK_SPACE) {
+        if(e && e.preventDefault) e.preventDefault();
         this.backSpace();
       } else if(keyCode === TextBox.ENTER) {
         if(this.getTextLength() <= 0) {

@@ -100,7 +100,7 @@ RS.ExitDialog = RS.ExitDialog || {};
   Scene_Base.prototype.onExit = function (e) {
       var title = $dataSystem.gameTitle || document.title;
       var okButtonId = 1;
-      e.preventDefault();
+      if(e && e.preventDefault) e.preventDefault();
       if(!$.Params.isCustomTitleName) title = $.Params.title;
       // The index number starts from 1 (1,2,3...)
       navigator.notification.confirm($.Params.message, function(idx) {
