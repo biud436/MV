@@ -431,6 +431,9 @@ Imported.Window_KorNameEdit = true;
     this.createEditWindow();
     this.createTextBox();
     this._textBox.setEvent( this.onInputOk.bind(this) );
+    if(window.cordova && window.StatusBar) {
+      window.StatusBar.show();
+    }
   };
 
   Scene_KorName.prototype.createEditWindow = function() {
@@ -459,7 +462,7 @@ Imported.Window_KorNameEdit = true;
 
   Scene_Name.prototype.onInputOk = function() {
     if(window.cordova && window.StatusBar) {
-      if(window.StatusBar.isVisible) window.StatusBar.hide();
+      window.StatusBar.hide();
     }
     this._actor.setName(this._editWindow.name());
     this.popScene();
