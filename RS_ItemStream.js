@@ -49,7 +49,7 @@ Imported.RS_ItemStream = true;
 
 (function() {
 
-  "use_strict";
+  "use strict";
 
   //============================================================================
   // ** Services Class
@@ -196,7 +196,7 @@ Imported.RS_ItemStream = true;
     }
 
     static saveGameWithoutRescue(savefileId, header, contents) {
-      
+
       let json = JsonEx.stringify(this.makeSaveContents(contents));
 
       if (json.length >= 200000) {

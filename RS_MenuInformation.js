@@ -28,6 +28,8 @@ Imported.RS_MenuInformation = true;
 
 (function() {
 
+  "use strict";
+
   let parameters = PluginManager.parameters('RS_MenuInformation');
   let _menuName = String(parameters['Menu Name'] || "Information");
   let _menuSymbol = String("information");

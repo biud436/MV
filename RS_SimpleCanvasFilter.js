@@ -39,6 +39,8 @@ var RS = RS || {};
 
 (function () {
 
+  "use strict";
+
   var multipleFlag = false;
 
   RS.SimpleCanvasFilter = RS.SimpleCanvasFilter || {};
@@ -60,7 +62,34 @@ var RS = RS || {};
     'sepia': "sepia(%1%)"
   };
 
-  var waveVertexSrc = [
+  //===========================================================================
+  // WaveFilterDecoder
+  //===========================================================================
+
+  class WaveFilterDecoder {
+    static decodeUniformData(u1, u2, u3, u4) {
+      let waveHeight = parseFloat(u1) || 0.5,
+      waveFrequency = parseFloat(u2) || 0.02,
+      waveTime = parseFloat(u3) || 0.0,
+      UVSpeed = parseFloat(u4) || 0.25,
+      wavePhase = 6.283185307179586,
+      uniformBlocks = [];
+      uniformBlocks.push(`waveHeight ${waveHeight}`);
+      uniformBlocks.push(`waveFrequency ${waveFrequency}`);
+      uniformBlocks.push(`waveTime ${waveTime}`);
+      uniformBlocks.push(`UVSpeed ${UVSpeed}`);
+      uniformBlocks.push(`wavePhase ${wavePhase}`);
+      return uniformBlocks;
+    }
+
+    static getChromeVersion() {
+      let ret = /Chrome\/(.{11,})(?=\s)/i.exec(navigator.userAgent);
+      return parseInt(RegExp.$1.substr(0, 2));
+    }
+
+  }
+
+  WaveFilterDecoder.waveVertexSrc = [
     'precision mediump float;',
 
     'attribute vec3 a_position;',
@@ -77,7 +106,7 @@ var RS = RS || {};
     '}    '
   ].join('\n');
 
-  var waveFragmentSrc = [
+  WaveFilterDecoder.waveFragmentSrc = [
     'precision mediump float;',
 
     'uniform float waveHeight;',
@@ -149,8 +178,8 @@ var RS = RS || {};
   }
 
   function loadCustomFilter(target, vsPath, fsPath, uniformObject) {
-    var path = ['./data/', vertexShader, fragmentShader];
-    var customFilter = "custom(url(%1) mix(url(%2) normal source-atop)".format( vsPath, fsPath );
+    let ret = uniformObject.join(', ').trim();
+    let customFilter = `custom(url(${vsPath}) url(${fsPath}), ${ret});`;
     target.style.webkitFilter = customFilter;
     target.style.filter = customFilter;
   }
@@ -231,6 +260,14 @@ var RS = RS || {};
     var url = URL.createObjectURL(blob);
     return url;
   };
+
+  RS.SimpleCanvasFilter.loadCustomFilter = function () {
+    let target = target || Graphics._canvas;
+    let vsPath = vsPath || waveVertexSrc;
+    let fsPath = fsPath || waveFragmentSrc;
+    let uniformObject = WaveFilterDecoder.decodeUniformData();
+    loadCustomFilter(target, vsPath, fsPath, uniformObject);
+  }
 
   RS.SimpleCanvasFilter.canvasFilterPluginCommand = function (args, target) {
     switch(args[0]) {
