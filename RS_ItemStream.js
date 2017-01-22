@@ -1,7 +1,6 @@
 /*:
  * RS_ItemStream.js
- * @plugindesc This plugin sends an item to the save-file or
- * gets an item from the save-file.
+ * @plugindesc This plugin sends an item to the save-file or gets an item from the save-file.
  * @author biud436
  * @date 2016.03.07
  * @version 1.0.1
@@ -42,6 +41,7 @@
  * 2016.03.22 (v1.0.1) - The simple light plugin was not compatible
  * with this plugin, But Fixed it.
  * 2016.04.24 (v1.0.2) - Fixed a bug
+ * 2017.01.23 (v1.0.3) - Converted sources to ES6
  */
 
 var Imported = Imported || {};
@@ -49,102 +49,91 @@ Imported.RS_ItemStream = true;
 
 (function() {
 
-  var Stream = Stream || {};
-
-  Stream.RECEIVER = -1;
-  Stream.SENDER = 0;
+  "use_strict";
 
   //============================================================================
   // ** Services Class
   //============================================================================
 
-  function Services() {
-      this.initialize.apply(this, arguments);
-  }
+  class Services {
 
-  Services.prototype.constructor = Services;
-
-  Services.prototype.initialize = function(sender, receiver) {
+    constructor(sender, receiver) {
       this._senderHeader = sender.header;
       this._receiverHeader = receiver.header;
       this._senderContents = sender.contents;
       this._receiverContents = receiver.contents;
-  };
+    }
 
-  Services.prototype.setMethod = function(m) {
+    setMethod(m) {
       this._method = m;
-  };
+    }
 
-  Services.prototype.callMethod = function(sender_index,receiver_index) {
+    callMethod(sender_index,receiver_index) {
       this._method(sender_index, this._senderHeader, this._senderContents);
       this._method(receiver_index, this._receiverHeader, this._receiverContents);
-  };
+    }
 
-  Services.prototype.sender = function() {
+    sender() {
       return this._senderContents.party;
-  };
+    }
 
-  Services.prototype.receiver = function() {
+    receiver() {
       return this._receiverContents.party;
-  };
+    }
 
-  Services.prototype.gainItem = function(item) {
+    gainItem(item) {
       if(this.sender().hasItem(item)) {
         this.sender().gainItem(item, -1);
         this.receiver().gainItem(item, +1);
       }
-  };
+    }
 
-  Services.prototype.gainGold = function(value) {
+    gainGold(value) {
       if(this.sender().gold() >= value) {
         this.sender().loseGold(value);
         this.receiver().gainGold(value);
       }
-  };
+    }
+
+  }
 
   //============================================================================
   // ** Sender Class
   //============================================================================
 
-  function Sender() {
-      this.initialize.apply(this, arguments);
-  }
+  class Sender extends Services {
 
-  Sender.prototype = Object.create(Services.prototype);
-  Sender.prototype.constructor = Sender;
-
-  Sender.prototype.initialize = function(sender, receiver) {
-      Services.prototype.initialize.call(this, sender, receiver);
+    constructor(sender, receiver) {
+      super(sender, receiver);
       this._senderHeader = sender.header;
       this._senderContents = {'party': $gameParty};
-  }
+    }
 
-  Sender.prototype.callMethod = function(sender_index, receiver_index) {
+    callMethod(sender_index, receiver_index) {
       this._method(receiver_index, this._receiverHeader, this._receiverContents);
-  };
+    }
+
+  }
 
   //============================================================================
   // ** Receiver Class
   //============================================================================
 
-  function Receiver() {
-      this.initialize.apply(this, arguments);
-  }
+  class Receiver extends Sender {
 
-  Receiver.prototype = Object.create(Sender.prototype);
-  Receiver.prototype.constructor = Sender;
+    constructor(sender, receiver) {
+      super(sender, receiver);
+    }
 
-  Receiver.prototype.initialize = function(sender, receiver) {
-        Sender.prototype.initialize.call(this, sender, receiver);
-  }
-
-  Receiver.prototype.sender = function() {
+    sender() {
       return this._receiverContents.party;
-  };
+    }
 
-  Receiver.prototype.receiver = function() {
+    receiver() {
       return this._senderContents.party;
-  };
+    }
+
+  }
 
   //============================================================================
   // ** DataManager
@@ -171,9 +160,10 @@ Imported.RS_ItemStream = true;
   // ** Stream Class (Static)
   //============================================================================
 
-  Stream.makeSaveContents = function(data) {
-      // A save data does not contain $gameTemp, $gameMessage, and $gameTroop.
-      var contents = {};
+  class Stream {
+
+    static makeSaveContents(data) {
+      let contents = {};
       contents.system       = data.system;
       contents.screen       = data.screen;
       contents.timer        = data.timer
@@ -186,16 +176,15 @@ Imported.RS_ItemStream = true;
       contents.player       = data.player;
       if(!!Imported.RS_SimpleLight) contents.lightConfig = RS.LightConfig.makeLightConfig();
       return contents;
-  };
+    }
 
-  // 세이브 파일 불러오기
-  Stream.loadGameWithoutRescue = function(savefileId) {
+    static loadGameWithoutRescue(savefileId) {
       try {
           if(savefileId === Stream.RECEIVER ||
              savefileId === Stream.SENDER) {
             return {'header': "", "contents": {'party': $gameParty}};
           }
-          var _header, _contents, json;
+          let _header, _contents, json;
           json = StorageManager.load(savefileId);
           _header = DataManager.loadSavefileInfo(savefileId);
           _contents = JsonEx.parse(json);
@@ -204,55 +193,50 @@ Imported.RS_ItemStream = true;
       } catch(e) {
         console.error(e);
       }
-  };
+    }
 
-  // 세이브 파일 저장하기
-  Stream.saveGameWithoutRescue = function(savefileId, header, contents) {
-      var json = JsonEx.stringify(this.makeSaveContents(contents));
+    static saveGameWithoutRescue(savefileId, header, contents) {
+      
+      let json = JsonEx.stringify(this.makeSaveContents(contents));
+
       if (json.length >= 200000) {
           console.warn('Save data too big!');
       }
+
       StorageManager.save(savefileId, json);
       this._lastAccessedId = savefileId;
 
-      var globalInfo = DataManager.loadGlobalInfo() || [];
+      let globalInfo = DataManager.loadGlobalInfo() || [];
       globalInfo[savefileId] = DataManager.makeSavefileInfo2(header, contents);
       DataManager.saveGlobalInfo(globalInfo);
 
       return true;
-  };
+    }
 
-  // 서비스 만들기
-  Stream.createServices = function(sender, receiver) {
+    static createServices(sender, receiver) {
       this._services = new Services(sender, receiver);
       this._services.setMethod(this.saveGameWithoutRescue.bind(this));
-  };
+    }
 
-  // 전송자 만들기
-  Stream.createSender = function(sender, receiver) {
+    static createSender(sender, receiver) {
       this._services = new Sender(sender, receiver);
       this._services.setMethod(this.saveGameWithoutRescue.bind(this));
-  };
+    }
 
-  // 수신자 만들기
-  Stream.createReceiver = function(sender, receiver) {
+    static createReceiver(sender, receiver) {
       this._services = new Receiver(sender, receiver);
       this._services.setMethod(this.saveGameWithoutRescue.bind(this));
-  };
+    }
 
-  // 서비스 호출
-  // callServices
-  Stream.callServices = function(sender_index, receiver_index) {
+    static callServices(sender_index, receiver_index) {
       this._services.callMethod(sender_index, receiver_index);
-  };
+    }
 
-  // 서비스 종료
-  Stream.destroyServices = function() {
+    static destroyServices() {
       this._services = null;
-  };
+    }
 
-  // 서비스 선택
-  Stream.selectServices = function(index, sender, receiver) {
+    static selectServices(index, sender, receiver) {
       switch (index) {
         // 다른 세이브 파일에서 아이템 받기
         case Stream.RECEIVER:
@@ -266,20 +250,18 @@ Imported.RS_ItemStream = true;
         default:
           this.createServices(sender, receiver);
       }
-  };
+    }
 
-  // 아이템 전송
-  Stream.sendItem = function(sender_index, receiver_index, sym, id) {
+    static sendItem(sender_index, receiver_index, sym, id) {
       try {
 
-          var sender, receiver;
+          let sender, receiver;
           sender = this.loadGameWithoutRescue(sender_index);
           receiver = this.loadGameWithoutRescue(receiver_index);
           this.selectServices(sender_index, sender, receiver);
 
           switch (sym) {
             case 'gold':
-              // console.log('test1');
               this._services.gainGold(id);
               break;
             case 'item':
@@ -293,15 +275,22 @@ Imported.RS_ItemStream = true;
               break;
           }
 
-          // console.log('test2');
           this.callServices(sender_index, receiver_index);
-          // console.log('test3');
           this.destroyServices();
 
       } catch(err) {
           console.error(err);
       }
-  };
+    }
+
+  }
+
+  Stream.RECEIVER = -1;
+  Stream.SENDER = 0;
+
+  //============================================================================
+  // ** Game_Interpreter
+  //============================================================================
 
   /**
    * @method sendItem
