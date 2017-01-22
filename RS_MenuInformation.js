@@ -15,58 +15,52 @@
  * This plugin command allows you to delete all texts.
  * MenuInformation clear
  *
- * - Change Log
+ * =============================================================================
+ * Change Log
+ * =============================================================================
  * 2016.02.27 - Fixed a few code (makeCommandList → addOriginalCommands)
  * 2016.03.05 - Fixed the class structure.
+ * 2017.01.23 (v1.0.2) - Converted sources to ES6
  */
 
 var Imported = Imported || {};
 Imported.RS_MenuInformation = true;
 
-function Window_Information() {
-   this.initialize.apply(this, arguments);
-}
-
-function Scene_Information() {
-   this.initialize.apply(this, arguments);
-}
-
 (function() {
 
-  var parameters = PluginManager.parameters('RS_MenuInformation');
-  var _menuName = String(parameters['Menu Name'] || "Information");
-  var _menuSymbol = String("information");
+  let parameters = PluginManager.parameters('RS_MenuInformation');
+  let _menuName = String(parameters['Menu Name'] || "Information");
+  let _menuSymbol = String("information");
 
-  // private class
-  function MenuInformation() {
-      throw new Error('This is a static class');
-  }
+  class MenuInformation {
 
-  MenuInformation._texts = [];
-
-  MenuInformation.add = function(text) {
+    add(text) {
       this._texts.push(text);
-  }
-  MenuInformation.clear = function() {
-      if(this._texts.length > 0) {
-        this._texts = [];
-      }
-  }
-  MenuInformation.allText = function() {
+    }
+
+    clear() {
+      if(this._texts.length > 0) this._texts = [];
+    }
+
+    allText() {
       if(this._texts.length > 0) {
         return this._texts.reduce(function(cur, now) {
-         return cur + '\n' + now;
+          return cur + '\n' + now;
         });
       } else {
         return '';
       }
+    }
+
   }
 
-  //----------------------------------------------------------------------------
+  MenuInformation._texts = [];
+
+  //============================================================================
   // Window_MenuCommand
-  //
-  //
-  var alias_Window_MenuCommand_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
+  //============================================================================
+
+  let alias_Window_MenuCommand_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
   Window_MenuCommand.prototype.addOriginalCommands = function() {
     alias_Window_MenuCommand_addOriginalCommands.call(this);
     this.addInformationCommand();
@@ -76,11 +70,11 @@ function Scene_Information() {
     this.addCommand(_menuName, _menuSymbol, true);
   };
 
-  //----------------------------------------------------------------------------
+  //============================================================================
   // Scene_Menu
-  //
-  //
-  var alias_Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
+  //============================================================================
+
+  let alias_Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
   Scene_Menu.prototype.createCommandWindow = function() {
     alias_Scene_Menu_createCommandWindow.call(this);
     this._commandWindow.setHandler(_menuSymbol, this.commandInformation.bind(this));
@@ -90,73 +84,78 @@ function Scene_Information() {
       SceneManager.push(Scene_Information);
   };
 
-  //----------------------------------------------------------------------------
+  //============================================================================
   // Window_Information
-  //
-  //
-  Window_Information.prototype = Object.create(Window_Base.prototype);
-  Window_Information.prototype.constructor = Window_Information;
+  //============================================================================
 
-  Window_Information.prototype.initialize = function(numLines) {
-      var width = Graphics.boxWidth;
-      var height = Graphics.boxHeight;
-      Window_Base.prototype.initialize.call(this, 0, 0, width, height);
+  class Window_Information extends Window_Base {
+
+    constructor(numLines) {
+      super(0, 0, Graphics.boxWidth, Graphics.boxHeight);
       this._text = '';
-  };
+    }
 
-  Window_Information.prototype.setText = function(text) {
+    setText(text) {
       if (this._text !== text) {
           this._text = text;
           this.refresh();
       }
-  };
+    }
 
-  Window_Information.prototype.clear = function() {
+    clear() {
       this.setText('');
-  };
+    }
 
-  Window_Information.prototype.refresh = function() {
+    refresh() {
       this.contents.clear();
       this.drawTextEx(this._text, this.textPadding(), 0);
-  };
+    }
+
+  }
 
   //----------------------------------------------------------------------------
   // Scene_Information
   //
   //
-  Scene_Information.prototype = Object.create(Scene_MenuBase.prototype);
-  Scene_Information.prototype.constructor = Scene_Information;
 
-  Scene_Information.prototype.initialize = function() {
-      Scene_MenuBase.prototype.initialize.call(this);
-  };
+  class Scene_Information extends Scene_MenuBase {
 
-  Scene_Information.prototype.create = function() {
-      Scene_MenuBase.prototype.create.call(this);
+    constructor() {
+      super();
+    }
+
+    create() {
+      super.create();
       this._informationWindow = new Window_Information();
       this.addWindow(this._informationWindow);
       this.refresh();
-  };
-
-  Scene_Information.prototype.update = function() {
-    Scene_MenuBase.prototype.update.call(this);
-    if(this.isCancelled()) {
-      this.popScene();
     }
-  }
 
-  Scene_Information.prototype.isCancelled = function() {
+    update() {
+      super.update();
+      if(this.isCancelled()) {
+        this.popScene();
+      }
+    }
+
+    isCancelled() {
       return Input.isTriggered('menu') || TouchInput.isCancelled();
-  };
+    }
 
-  Scene_Information.prototype.refresh = function() {
-      var actor = this.actor();
+    refresh() {
+      let actor = this.actor();
       this._informationWindow.setText(MenuInformation.allText());
       this._informationWindow.refresh();
       this._informationWindow.activate();
-  };
+    }
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  }
+
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
+
+  let alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
     if(command === "MenuInformation") {
@@ -171,5 +170,7 @@ function Scene_Information() {
       }
     }
   }
+
+  window.MenuInformation = MenuInformation;
 
 })();
