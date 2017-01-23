@@ -38,7 +38,7 @@
 
 },
 "meta": {
-	"image": "hud_sheet.png",
+	"image": "sprites.png",
 	"size": {"w": 512, "h": 256},
 	"scale": "1"
 }
