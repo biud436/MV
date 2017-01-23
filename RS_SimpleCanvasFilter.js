@@ -62,12 +62,16 @@ var RS = RS || {};
     'sepia': "sepia(%1%)"
   };
 
-  //===========================================================================
-  // WaveFilterDecoder
-  //===========================================================================
-
+  //============================================================================
+  /**
+  * To use a custom filter, you will should be enabling the css shader option.
+  * But, it does not seem to support it in the latest Chrome (Chrome canary)
+   * @class WaveFilterDecoder
+   */
+  //============================================================================
   class WaveFilterDecoder {
     static decodeUniformData(u1, u2, u3, u4) {
+      let ver = this.getChromeVersion();
       let waveHeight = parseFloat(u1) || 0.5,
       waveFrequency = parseFloat(u2) || 0.02,
       waveTime = parseFloat(u3) || 0.0,
