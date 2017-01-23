@@ -20,7 +20,7 @@
  * =============================================================================
  * 2016.02.27 - Fixed a few code (makeCommandList → addOriginalCommands)
  * 2016.03.05 - Fixed the class structure.
- * 2017.01.23 (v1.0.2) - Converted sources to ES6
+ * 2017.01.23 (v1.0.2) - Converted sources to ES6.
  */
 
 var Imported = Imported || {};
@@ -36,15 +36,15 @@ Imported.RS_MenuInformation = true;
 
   class MenuInformation {
 
-    add(text) {
+    static add(text) {
       this._texts.push(text);
     }
 
-    clear() {
+    static clear() {
       if(this._texts.length > 0) this._texts = [];
     }
 
-    allText() {
+    static allText() {
       if(this._texts.length > 0) {
         return this._texts.reduce(function(cur, now) {
           return cur + '\n' + now;
@@ -174,5 +174,7 @@ Imported.RS_MenuInformation = true;
   }
 
   window.MenuInformation = MenuInformation;
+  window.Window_Information = Window_Information;
+  window.Scene_Information = Scene_Information;
 
 })();
