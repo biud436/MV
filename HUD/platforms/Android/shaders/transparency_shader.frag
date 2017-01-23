@@ -12,6 +12,6 @@ uniform sampler2D uAlphaSampler;
 void main(void) {
    gl_FragColor = texture2D(uSampler, vCoord);
    if(enabled > 0.0) {
-		gl_FragColor.a = texture2D(uAlphaSampler, vCoord);
+		gl_FragColor.a = texture2D(uAlphaSampler, vCoord).r;
    }
 }
