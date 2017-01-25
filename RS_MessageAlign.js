@@ -2,9 +2,13 @@
  * @plugindesc Message Align
  * @author biud436
  * @help
+ * 
+ * This plugin should require YEP_MessageCore.
+ * 
  * \TA[0] - LEFT
  * \TA[1] - CENTER
  * \TA[2] - RIGHT
+ *
  */
 
 var Imported = Imported || {};
