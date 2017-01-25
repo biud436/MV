@@ -61,6 +61,12 @@ Imported.RS_MessageAlign = true;
     this.processAlign();
   };
   
+  if(!Imported.YEP_MessageCore) {
+    Window_Base.prototype.textWidthEx = function(text) {
+      return this.drawTextEx(text, 0, this.contents.height + this.lineHeight());
+    };
+  }
+  
   Window_Base.prototype.calcTextWidth = function(text) {
     var tempText = text; tempText = tempText.split(/[\n]+/);
     return this.textWidthEx(tempText[0]);
