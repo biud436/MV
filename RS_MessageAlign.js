@@ -8,6 +8,9 @@
  * \TA[0] - LEFT
  * \TA[1] - CENTER
  * \TA[2] - RIGHT
+ * 
+ * - It may not be working properly when using px and py textcodes in Yanfly Message Core.
+ * - It may not be working properly when wordwrapping in Yanfly Message Core.
  *
  */
 
