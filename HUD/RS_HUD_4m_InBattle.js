@@ -113,7 +113,7 @@
  * - Fixed the bug that is not controlled the opacity of HUD.
  * 2016.12.22 (v1.1.7) :
  * - Now this plugin does not provide the functionality to automatically adjust transparency and tone changes due to poor performance in canvas mode of mobile device.
- * - The text elements perform an update through the event handler.
+ * - The text elements perform an update through the event handler.
  * - Fixed an issue that plugins did not work due to image position data parsing errors in crosswalk.
  * - Fixed an issue that can not be saved due to this update.
  */

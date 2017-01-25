@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.0) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.1) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
@@ -384,17 +384,18 @@
  * 2016.12.19 (v1.1.8b) - Fixed a bug that is not set up the coordinates of the face image.
  * 2016.12.22 (v1.1.9) :
  * - Now this plugin does not provide the functionality to automatically adjust transparency and tone changes due to poor performance in canvas mode of mobile device.
- * - The text elements perform an update through the event handler.
+ * - The text elements perform an update through the event handler.
  * - Fixed an issue that plugins did not work due to image position data parsing errors in crosswalk.
  * - Fixed an issue that can not be saved due to this update.
  * 2017.01.06 (v1.2.0) :
  * - Fixed to redraw the Hud when using the $gameParty.swapOrder method.
  * - Fixed the hud to process the refresh when the event lisnter listens a refresh request.
  *   $gameHud.refresh() -> $gameTemp.notifyHudRefresh();
+ * 2017.01.25 (v1.2.1) - Fixed a bug that causes the null when 'battle only' parameter is true.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.2.0';
+Imported.RS_HUD_4m = '1.2.1';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -1184,6 +1185,44 @@ RS.HUD.param = RS.HUD.param || {};
   });
 
   //----------------------------------------------------------------------------
+  // RS_EmptyHudLayer
+  //
+  //
+
+  function RS_EmptyHudLayer() {
+    this.initialize.apply(this, arguments);
+  }
+
+  RS_EmptyHudLayer.prototype = Object.create(Sprite.prototype);
+  RS_EmptyHudLayer.prototype.constructor = RS_EmptyHudLayer;
+
+  RS_EmptyHudLayer.prototype.initialize = function(bitmap) {
+    Sprite.prototype.initialize.call(this, bitmap);
+    this.alpha = 0;
+  };
+
+  RS_EmptyHudLayer.prototype.constructor = RS_EmptyHudLayer;
+
+  Object.defineProperty(RS_EmptyHudLayer.prototype, 'show', {
+      get: function() {
+          return $gameSystem._rs_hud.show;
+      },
+      set: function(value) {
+          $gameSystem._rs_hud.show = value;
+      }
+  });
+
+  Object.defineProperty(RS_EmptyHudLayer.prototype, 'opacity', {
+      get: function() {
+          return $gameSystem._rs_hud.opacity;
+      },
+      set: function(value) {
+          $gameSystem._rs_hud.opacity = value.clamp(0, 255);
+      }
+  });
+
+
+  //----------------------------------------------------------------------------
   // TouchInput
   //
   //
@@ -1583,10 +1622,12 @@ RS.HUD.param = RS.HUD.param || {};
   // Scene_Map
   //
   //
-  var _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
+  var alias_Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
-    _Scene_Map_createDisplayObjects.call(this);
-    if(!RS.HUD.param.battleOnly) {
+    alias_Scene_Map_createDisplayObjects.call(this);
+    if(RS.HUD.param.battleOnly) {
+      $gameHud = new RS_EmptyHudLayer();
+    } else {
       this._hudLayer = new RS_HudLayer();
       this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
@@ -1598,13 +1639,11 @@ RS.HUD.param = RS.HUD.param || {};
     }
   };
 
-  var _Scene_Map_terminate = Scene_Map.prototype.terminate;
+  var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    // if(!RS.HUD.param.battleOnly) {
-      this.removeChild(this._hudLayer);
-      $gameHud = null;
-    // }
-    _Scene_Map_terminate.call(this);
+    this.removeChild(this._hudLayer);
+    $gameHud = null;
+    alias_Scene_Map_terminate.call(this);
   };
 
   //----------------------------------------------------------------------------
