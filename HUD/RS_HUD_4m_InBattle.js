@@ -148,6 +148,7 @@
  * - Fixed a bug that is not working to preload
  * - Added a new parameter that could increase the number of the HUD.
  * - Added parameters for user custom HUD position.
+ * - Fixed an issue that is not working in battle test mode
  */
 
 var Imported = Imported || {};
@@ -198,6 +199,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   RS.HUD.initBattleParameters = function () {
+    RS.HUD.param.nBttleMememberSize = Math.min(RS.HUD.param.nBttleMememberSize, $gameParty.size());
     for(var i = 0; i < RS.HUD.param.nBttleMememberSize; i++) {
       var idx = parseInt(i + 1);
       RS.HUD.param.ptCustormBattleAnchor[i] = RS.HUD.loadCustomBattlePosition(parameters['Pos ' + idx] || '0, 0');
@@ -404,14 +406,22 @@ RS.HUD.param = RS.HUD.param || {};
   var alais_Scene_Battle_create = Scene_Battle.prototype.create;
   Scene_Battle.prototype.create = function() {
     alais_Scene_Battle_create.call(this);
-    this._hudLayer = new RS_HudLayer();
-    this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
-    $gameHud = this._hudLayer;
-    $gameHud.drawAllHud();
+  };
+  
+  var alias_Scene_Battle_update = Scene_Battle.prototype.update;
+  Scene_Battle.prototype.update = function() {
+    alias_Scene_Battle_update.call(this);
+    if(!this._hudLayer && $gameParty.members()) {
+      this._hudLayer = new RS_HudLayer();
+      this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
-    this.addChild(this._hudLayer);
-    this.swapChildren(this._windowLayer, this._hudLayer);
+      $gameHud = this._hudLayer;
+      $gameHud.drawAllHud();
+
+      this.addChild(this._hudLayer);
+      this.swapChildren(this._windowLayer, this._hudLayer);      
+    }
   };
 
   var alais_Scene_Battle_terminate = Scene_Battle.prototype.terminate;

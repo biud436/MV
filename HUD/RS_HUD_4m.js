@@ -424,6 +424,7 @@
  * - Fixed a bug that is not working to preload
  * - Added a new parameter that could increase the number of the HUD.
  * - Added parameters for user custom HUD position.
+ * - Fixed an issue that is not working in battle test mode
  */
 
 var Imported = Imported || {};
@@ -1602,7 +1603,7 @@ RS.HUD.param = RS.HUD.param || {};
       var vt = Vector2.quadraticBezier(this._vtA, this._vtB, this._vtA, t);
       obj.setColorTone([vt.x, vt.x, vt.x, 0]);
     } else {
-      obj.setColorTone([this._vtA.x, this._vtA.x, this._vtA.x, 0]);
+      if(obj) obj.setColorTone([this._vtA.x, this._vtA.x, this._vtA.x, 0]);
     }
   }
 
