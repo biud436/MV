@@ -403,12 +403,6 @@ RS.HUD.param = RS.HUD.param || {};
   //
   //
 
-  var alais_Scene_Battle_create = Scene_Battle.prototype.create;
-  Scene_Battle.prototype.create = function() {
-    alais_Scene_Battle_create.call(this);
-
-  };
-  
   var alias_Scene_Battle_update = Scene_Battle.prototype.update;
   Scene_Battle.prototype.update = function() {
     alias_Scene_Battle_update.call(this);
@@ -420,7 +414,7 @@ RS.HUD.param = RS.HUD.param || {};
       $gameHud.drawAllHud();
 
       this.addChild(this._hudLayer);
-      this.swapChildren(this._windowLayer, this._hudLayer);      
+      this.swapChildren(this._windowLayer, this._hudLayer);
     }
   };
 
@@ -559,7 +553,7 @@ RS.HUD.param = RS.HUD.param || {};
     this._AtbArrow.rotation = (-HUD.PI2) * rate;
     this._AtbArrow.x = dx;
     this._AtbArrow.y = dy;
-  }
+  };
 
   HUD.prototype.drawArraow = function(r, rate) {
     if(!Imported.YEP_BattleEngineCore) return;
@@ -571,7 +565,7 @@ RS.HUD.param = RS.HUD.param || {};
     var offsetX = 12;
     var offsetY = 12;
     this._AtbArrow.bitmap.blt(bitmap, 132, 24, 20, 20, 0, 0);
-  }
+  };
 
   //----------------------------------------------------------------------------
   // (Alias) YEP_X_BattleSysATB
