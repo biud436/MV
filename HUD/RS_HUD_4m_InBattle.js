@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.1.8) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
@@ -55,6 +55,10 @@
  * @desc
  * @default 4
  *
+ * @param Max Battle Members
+ * @desc
+ * @default 4
+ *
  * @param --- Custom HUD Anchor
  * @desc
  * @default
@@ -64,20 +68,44 @@
  * @default ['Pos 1', 'Pos 2', 'Pos 3', 'Pos 4']
  *
  * @param Pos 1
- * @desc (default : 102, 422)
- * @default 102, 422
+ * @desc
+ * @default [0, BH - (H * 2) - PD]
  *
  * @param Pos 2
- * @desc (default : 0, 523)
- * @default 0, 523
+ * @desc
+ * @default [0, BH - H - PD]
  *
  * @param Pos 3
- * @desc (default : 499, 422)
- * @default 499, 422
+ * @desc
+ * @default [W + PD, BH - (H * 2) - PD]
  *
  * @param Pos 4
- * @desc (default : 397, 523)
- * @default 397, 523
+ * @desc
+ * @default [W + PD, BH - H - PD]
+ *
+ * @param Pos 5
+ * @desc
+ * @default [(W * 2) + PD, BH - (H * 2) - PD]
+ *
+ * @param Pos 6
+ * @desc
+ * @default [(W * 2) + PD, BH - H - PD]
+ *
+ * @param Pos 7
+ * @desc
+ * @default [(W * 3) + PD, BH - (H * 2) - PD]
+ *
+ * @param Pos 8
+ * @desc
+ * @default [(W * 3) + PD, BH - H - PD]
+ *
+ * @param Pos 9
+ * @desc
+ * @default [(W * 4) + PD, BH - (H * 2) - PD]
+ *
+ * @param Pos 10
+ * @desc
+ * @default [(W * 4) + PD, BH - H - PD]
  *
  * @help
  * =============================================================================
@@ -116,10 +144,14 @@
  * - The text elements perform an update through the event handler.
  * - Fixed an issue that plugins did not work due to image position data parsing errors in crosswalk.
  * - Fixed an issue that can not be saved due to this update.
+ * 2017.01.26 (v1.1.8) :
+ * - Fixed a bug that is not working to preload
+ * - Added a new parameter that could increase the number of the HUD.
+ * - Added parameters for user custom HUD position.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.1.7';
+Imported.RS_HUD_4m_InBattle = '1.1.8';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -128,14 +160,17 @@ RS.HUD.param = RS.HUD.param || {};
 
 (function() {
 
-  if(!Imported.RS_HUD_4m || Imported.RS_HUD_4m < '1.1.3') {
-    throw new Error("HUD core's version is lower.");
+  if(!Imported.RS_HUD_4m || Imported.RS_HUD_4m < '1.2.2') {
+    throw new Error("HUD core's version is lower");
   }
 
   var parameters = PluginManager.parameters('RS_HUD_4m_InBattle');
+
   RS.HUD.param.isWndsAlignment = Boolean(parameters['Auto Windows Alignment'] === 'true');
   RS.HUD.param.imgEmptyBattleHUD = String(parameters['HUD Battle Background'] || 'hud_window_empty_inbattle');
   RS.HUD.param.arrangementInBattle = eval(parameters['Arrangement']);
+
+  RS.HUD.param.nBttleMememberSize = parseInt(parameters["Max Battle Members"] || 4);
 
   // Add TP Settings
   RS.HUD.param.imgTP = String(parameters['TP Gauge'] || 'exr');
@@ -148,9 +183,33 @@ RS.HUD.param = RS.HUD.param || {};
   // Custom HUD Anchor
   RS.HUD.param.ptCustormBattleAnchor = [];
 
-  for(var i = 0; i < 4; i++) {
-    RS.HUD.param.ptCustormBattleAnchor.push( RS.HUD.loadCustomPosition(parameters['Pos ' + (i + 1)] || '0, 0') );
-  }
+  RS.HUD.loadCustomBattlePosition = function (sources) {
+    var W = RS.HUD.param.nWidth;
+    var H = RS.HUD.param.nHeight;
+    var PD = RS.HUD.param.nPD;
+    var BW = Graphics.boxWidth || 816;
+    var BH = Graphics.boxHeight || 624;
+    var ret = eval(sources);
+    if(ret instanceof Array) {
+      return new Point(ret[0], ret[1]);
+    } else {
+      return new Point(0, 0);
+    }
+  };
+
+  RS.HUD.initBattleParameters = function () {
+    for(var i = 0; i < RS.HUD.param.nBttleMememberSize; i++) {
+      var idx = parseInt(i + 1);
+      RS.HUD.param.ptCustormBattleAnchor[i] = RS.HUD.loadCustomBattlePosition(parameters['Pos ' + idx] || '0, 0');
+    }
+  };
+
+  var alias_Scene_Boot_start = Scene_Boot.prototype.start;
+  Scene_Boot.prototype.start = function() {
+    alias_Scene_Boot_start.call(this);
+    RS.HUD.initBattleParameters();
+  };
+
 
   //----------------------------------------------------------------------------
   // RS_HudLayer
@@ -174,7 +233,8 @@ RS.HUD.param = RS.HUD.param || {};
 
     items.forEach(function(item, index){
       if(!!$gameParty.members()[index]) {
-        allHud.addChild(new HUD({szAnchor: item, nIndex: index}));
+        var m = new HUD({szAnchor: item, nIndex: index});
+        allHud.addChild(m);
       }
     }, this);
 
@@ -257,8 +317,9 @@ RS.HUD.param = RS.HUD.param || {};
     var anchor = RS.HUD.getDefaultHUDAnchor();
 
     // Add Custom Anchor
-    for(var i = 0; i < 4; i++) {
-      anchor['Custom Pos ' + (i + 1)] = RS.HUD.param.ptCustormAnchor[i];
+    for(var i = 0; i < RS.HUD.param.nMaxMembers; i++) {
+      var idx = parseInt(i + 1);
+      anchor['Custom Pos ' + idx] = RS.HUD.param.ptCustormAnchor[i];
     }
 
     if(this.inBattle()) {
@@ -271,8 +332,9 @@ RS.HUD.param = RS.HUD.param || {};
       anchor["RightBottom"].y = Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD;
 
       // Add Custom Anchor
-      for(var i = 0; i < 4; i++) {
-        anchor['Pos ' + (i + 1)] = RS.HUD.param.ptCustormBattleAnchor[i];
+      for(var i = 0; i < RS.HUD.param.nBttleMememberSize; i++) {
+        var idx = parseInt(i + 1);
+        anchor['Pos ' + idx] = RS.HUD.param.ptCustormBattleAnchor[i];
       }
 
     }
