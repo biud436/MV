@@ -418,7 +418,7 @@ function Scene_InputDialog() {
 
   Scene_InputDialog.prototype.okResult = function () {
     var text = this._textBox.getText() || '';
-    if(text.match(/^([\d]+)/g)) text = Number(RegExp.$1);
+    if(text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
     $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
     if(SceneManager._stack.length > 0) {
       Input.clear();
