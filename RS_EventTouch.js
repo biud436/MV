@@ -14,7 +14,8 @@
  * called 'Event Click' into the event's list.
  *
  * - Change Log
- * 2016.07.03(v1.0.0) - First Release
+ * 2016.07.03 (v1.0.0) - First Release
+ * 2017.01.30 (v1.0.1) - Fixed the bug that is not working when using event starting conditions
  */
 
 var Imported = Imported || {};
@@ -34,12 +35,12 @@ Imported.RS_EventTouch = true;
       id = $gameMap.eventIdXy(x, y);
       lEvent = this.event(id);
       if(!lEvent) return false;
+      if(lEvent.findProperPageIndex() < 0) return false;
+      if(lEvent.isTriggerIn([0, 1, 2]) && lEvent.isNormalPriority()) return false;
       lEvent.list().forEach(function(i) {
         if(i.code === 108 || i.code === 408) {
           if( i.parameters[0].match(regex) ) {
-            if( lEvent && lEvent._trigger < 3 ) {
-              lEvent.start();
-            }
+            lEvent.start();
           }
         }
       }, this);
