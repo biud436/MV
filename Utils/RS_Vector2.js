@@ -304,6 +304,27 @@ Vector2.prototype.pointDirection = function(vec, angle) {
     return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
 };
 
+// Vector2.prototype.setDirectionAsBasis = function (iVec, target) {
+//     var pos = [],
+//         length = 0,
+//         jVec = Vector2.empty();
+//
+//     // Forward
+//     iVec.x = iVec.x - target.x; iVec.y = iVec.y - target.y;
+//     iVec = iVec.normalize();
+//     length = iVec.length;
+//
+//     // Side
+//     jVec.x = -iVec.y * length / 2.0; jVec.y = iVec.x * length / 2.0;
+//
+//     // Rect
+//     pos.push( new Vector2( target.x - jVec.x, target.y - jVec.y ) );
+//     pos.push( new Vector2( iVec.x - jVec.x, iVec.y - jVec.y ) );
+//     pos.push( new Vector2( target.x + jVec.x, target.y + jVec.y ) );
+//     pos.push( new Vector2( iVec.x + jVec.x, iVec.y + jVec.y ) );
+//     return pos;
+// };
+
 /**
  * @method isEqual
  * @param {Vector2} vec
