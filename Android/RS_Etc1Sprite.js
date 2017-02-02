@@ -11,7 +11,7 @@ Imported.RS_Etc1Sprite = true;
  * @help
  *
  */
- 
+
 //============================================================================
 // Etc1AlphaFilter
 //============================================================================
@@ -32,7 +32,7 @@ function Etc1AlphaFilter() {
     '    vTextureCoord = aTextureCoord;',
     '}'
   ].join('\n');
-  
+
   var fragmentSrc = [
     '#define GLSLIFY 1',
 
@@ -51,9 +51,9 @@ function Etc1AlphaFilter() {
     '   }',
     '}'
    ].join('\n');
-   
+
   PIXI.Filter.call( this, vertexSrc, fragmentSrc );
-   
+
   this.uniforms.enabled = 0;
 };
 
@@ -62,6 +62,7 @@ Etc1AlphaFilter.prototype.constructor = Etc1AlphaFilter;
 
 Etc1AlphaFilter.prototype.setAlphaTexture = function(texture) {
   this.uniform.uAlphaSampler = texture;
+  if(texture instanceof PIXI.Texture) this.uniform.enabled = 1.0;
 };
 
 //============================================================================
