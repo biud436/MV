@@ -61,8 +61,8 @@ Etc1AlphaFilter.prototype = Object.create(PIXI.Filter.prototype);
 Etc1AlphaFilter.prototype.constructor = Etc1AlphaFilter;
 
 Etc1AlphaFilter.prototype.setAlphaTexture = function(texture) {
-  this.uniform.uAlphaSampler = texture;
-  if(texture instanceof PIXI.Texture) this.uniform.enabled = 1.0;
+  this.uniforms.uAlphaSampler = texture;
+  if(texture instanceof PIXI.Texture) this.uniforms.enabled = 1.0;
 };
 
 //============================================================================
