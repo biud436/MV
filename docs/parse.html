@@ -85,7 +85,9 @@
 
     $("#b1").click(function() {
       // $("#resultView").append(`<div><a href="${$('#t2').val()}">${$('#t2').val()}</a></div>`);
-      location.href = parseUrl($('#t1').val())
+      if($('#t1').val() !== "") {
+        location.href = parseUrl($('#t1').val())
+      }
     });
 
     </script>
