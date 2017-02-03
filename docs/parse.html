@@ -59,38 +59,7 @@
     <script src="http://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script type="text/javascript">
 
-    function parseUrl(preUrl) {
-      var previousUrl = new URL(preUrl);
-      var newParam = previousUrl.search.slice(1).slice(/%2Ftopic%2F[\d]+.{1}(.+)/i).slice(0, -1).replace("/topic/", "");
-      var postNumber = newParam.match(/[\d]+/)[0];
-      var newUrl = `http://forums.rpgmakerweb.com/index.php?threads/${postNumber}/`;
-      return newUrl;
-    }
-
-    (function($){
-
-    $.fn.extend({
-            center: function () {
-                return this.each(function() {
-                    var top = ($(window).height() - $(this).outerHeight()) / 2;
-                    var left = ($(window).width() - $(this).outerWidth()) / 2;
-                    $(this).css({position:'absolute', margin:0, top: (top > 0 ? top : 0)+'px', left: (left > 0 ? left : 0)+'px'});
-                });
-            }
-        });
-    })(jQuery);
-
-    $(".main").center();
-
-    $('#t1').focus();
-
-    $("#b1").click(function() {
-	  $("#t2").val(parseUrl($('#t1').val()));
-      $("#resultView").append(`<div><a href="${$('#t2').val()}">${$('#t2').val()}</a></div>`);
-      <!-- if($('#t1').val() !== "") { -->
-        <!-- location.href = parseUrl($('#t1').val()) -->
-      <!-- } -->
-    });
+function parseUrl(preUrl) { var previousUrl = new URL(preUrl); var newParam = previousUrl.search.slice(1).slice(/%2Ftopic%2F[\d]+.{1}(.+)/i).slice(0, -1).replace("/topic/", ""); var postNumber = newParam.match(/[\d]+/)[0]; var newUrl = `http://forums.rpgmakerweb.com/index.php?threads/${postNumber}/`; return newUrl; } (function($){ $.fn.extend({ center: function () { return this.each(function() { var top = ($(window).height() - $(this).outerHeight()) / 2; var left = ($(window).width() - $(this).outerWidth()) / 2; $(this).css({position:'absolute', margin:0, top: (top > 0 ? top : 0)+'px', left: (left > 0 ? left : 0)+'px'}); }); } }); })(jQuery); $(".main").center(); $('#t1').focus(); $("#b1").click(function() { $("#t2").val(parseUrl($('#t1').val())); $("#resultView").append(`<div><a href="${$('#t2').val()}">${$('#t2').val()}</a></div>`); });
 
     </script>
   </body>
