@@ -22,25 +22,26 @@
  * - Change Log
  * 2016.02.23 (v1.0.0) - First Release
  * 2016.07.11 (v1.0.1) - In pluginCommand, Wrong Character Fixes.
- *
+ * 2017.02.03 (v1.0.2) - Fixed the variable name.
  */
 
 var Imported = Imported || {};
 Imported.RS_Game_Variables = true;
 
-var RS = RS || {};
-RS.Game_Variables = RS.Game_Variables || {};
-
 (function() {
 
   var parameters = PluginManager.parameters('RS_GameVariables');
-  RS.Game_Variables._min = Number(parameters['Min'] || 0);
-  RS.Game_Variables._max = Number(parameters['Max'] || 999);
+  var min = Number(parameters['Min'] || 0);
+  var max = Number(parameters['Max'] || 999);
 
+  /**
+   * @method setValue
+   * override
+   */
   Game_Variables.prototype.setValue = function(variableId, value) {
      if (variableId > 0 && variableId < $dataSystem.variables.length) {
          if (typeof(value) === 'number') {
-             value = Math.floor(value.clamp(RS.Game_Variables._min, RS.Game_Variables._max));
+             value = Math.floor(value.clamp(min, max));
          }
          this._data[variableId] = value;
          this.onChange();
@@ -53,10 +54,10 @@ RS.Game_Variables = RS.Game_Variables || {};
     if(command === "Var") {
       switch (args[0].toLowerCase()) {
         case 'min':
-          RS.Game_Variables._min = Number(args[1] || 0);
+          min = Number(args[1] || 0);
           break;
         case 'max':
-          RS.Game_Variables._max = Number(args[1] || 999);
+          max = Number(args[1] || 999);
           break;
       }
     }

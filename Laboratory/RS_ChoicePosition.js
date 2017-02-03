@@ -14,9 +14,21 @@
  * =============================================================================
  * Plugin Command
  * =============================================================================
+ * This plugin command can change the position of the choice list window,
+ * you need to decide values of two parameters as integer.
  * Choice pos x y
+ * Choice pos event id
+ * Choice pos player
+ *
+ * You can deactivate or activate plugin itself through these plugin commands
  * Choice enable
  * Choice disable
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2017.02.03 (v1.0.1) :
+ * - Added the function allows the choice window to move linearly from a current position to the destination.
+ * - It could automatically set the position of the choice window when the player is loading the save data.
  */
 
 var Imported = Imported || {};
@@ -29,16 +41,125 @@ Imported.Window_ChoiceListPosition = true;
   var my = Number(parameters['y']);
   var enabled = true;
 
+  var alias_Window_ChoiceList_initialize = Window_ChoiceList.prototype.initialize;
+  Window_ChoiceList.prototype.initialize = function(messageWindow) {
+      alias_Window_ChoiceList_initialize.call(this, messageWindow);
+      this._aligned = false;
+  };
+
   var alias_Window_ChoiceList_updatePlacement = Window_ChoiceList.prototype.updatePlacement;
   Window_ChoiceList.prototype.updatePlacement = function() {
-      alias_Window_ChoiceList_updatePlacement.call(this);
-       if(enabled) this.setCustomPosition();
+      this.width = this.windowWidth();
+      this.height = this.windowHeight();
+      if($gameSystem.isChoiceMoveable()) {
+
+          this.setCustomPosition();
+
+      } else {
+
+          alias_Window_ChoiceList_updatePlacement.call(this);
+
+      }
+
   };
 
   Window_ChoiceList.prototype.setCustomPosition = function() {
-      this.x = mx;
-      this.y = my;
-  }
+
+      var mx = $gameSystem.getChoiceWindowX();
+      var my = $gameSystem.getChoiceWindowY();
+
+      if(mx === undefined || mx === null || mx === NaN) mx = this.getChoiceX();
+      if(mx === undefined || mx === null || mx === NaN) my = this.getChoiceY();
+
+      this.moveLenear( mx, my );
+
+  };
+
+  Window_ChoiceList.prototype.moveLenear = function (tx, ty) {
+      var t = performance.now();
+      var dt = (t % 10000 / 10000) * 0.5;
+      this.x = this.x + dt * (tx - this.x);
+      this.y = this.y + dt * (ty - this.y);
+  };
+
+  Window_ChoiceList.prototype.getChoiceX = function () {
+      var x = 0;
+      switch ($gameMessage.choicePositionType()) {
+      case 0:
+          x = 0;
+          break;
+      case 1:
+          x = (Graphics.boxWidth - this.width) / 2;
+          break;
+      case 2:
+          x = Graphics.boxWidth - this.width;
+          break;
+      }
+      return x;
+  };
+
+  Window_ChoiceList.prototype.getChoiceY = function () {
+      var y = 0;
+      if (messageY >= Graphics.boxHeight / 2) {
+          y = messageY - this.height;
+      } else {
+          y = messageY + this._messageWindow.height;
+      }
+      return y;
+  };
+
+  var alias_Window_ChoiceList_update = Window_ChoiceList.prototype.update;
+  Window_ChoiceList.prototype.update = function () {
+      if(alias_Window_ChoiceList_update) alias_Window_ChoiceList_update.call(this);
+      if($gameMessage.choices().length > 0) this.updatePlacement();
+  };
+
+  //===========================================================================
+  // Game_Temp
+  //===========================================================================
+  var alias_Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+      alias_Game_System_initialize.call(this);
+      this._isChoiceMoveable = false;
+      this._choiceWindowTempPosition = new Point(0, 0);
+  };
+
+  Game_System.prototype.getChoiceWindowX = function () {
+      return this._choiceWindowTempPosition.x;
+  };
+
+  Game_System.prototype.getChoiceWindowY = function () {
+      return this._choiceWindowTempPosition.y;
+  };
+
+  Game_System.prototype.setChoiceWindowPos = function () {
+
+      if(arguments.length < 2) {
+
+          var id = arguments[0];
+
+          if(id > 0) {
+            this._choiceWindowTempPosition.x = $gameMap.event(id).screenX();
+            this._choiceWindowTempPosition.y = $gameMap.event(id).screenY();
+          } else {
+            this._choiceWindowTempPosition.x = $gamePlayer.screenX();
+            this._choiceWindowTempPosition.y = $gamePlayer.screenY();
+          }
+
+      } else {
+          this._choiceWindowTempPosition.x = arguments[0];
+          this._choiceWindowTempPosition.y = arguments[1];
+      }
+
+  };
+
+  Game_System.prototype.setChoiceMoveable = function (enabled) {
+      this._isChoiceMoveable = enabled;
+  };
+
+  Game_System.prototype.isChoiceMoveable = function () {
+      return this._isChoiceMoveable;
+  };
 
   //===========================================================================
   // Game_Interpreter
@@ -50,15 +171,23 @@ Imported.Window_ChoiceListPosition = true;
       if(command === "Choice") {
         switch(args[0]) {
           case 'pos':
-            mx = Number(args[1]);
-            my = Number(args[2]);
-            break;
+              if(typeof args[0] === 'string') {
+                if(args[1] === 'event') {
+                  $gameSystem.setChoiceWindowPos(Number(args[1]));
+                }
+                if(args[1] === 'player') {
+                  $gameSystem.setChoiceWindowPos(-1);
+                }
+              } else {
+                $gameSystem.setChoiceWindowPos(Number(args[1]), Number(args[2]));
+              }
+              break;
           case 'enable':
-            enabled = true;
-            break;
+              $gameSystem.setChoiceMoveable(true);
+              break;
           case 'disable':
-            enabled = false;
-            break;
+              $gameSystem.setChoiceMoveable(false);
+              break;
         }
       }
   };
