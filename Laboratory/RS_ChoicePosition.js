@@ -68,8 +68,8 @@ Imported.Window_ChoiceListPosition = true;
       var mx = $gameSystem.getChoiceWindowX();
       var my = $gameSystem.getChoiceWindowY();
 
-      if(mx === undefined || mx === null || mx === NaN) mx = this.getChoiceX();
-      if(mx === undefined || mx === null || mx === NaN) my = this.getChoiceY();
+      if(mx === undefined || mx === null || isNaN(mx)) mx = this.getChoiceX();
+      if(my === undefined || my === null || isNaN(my)) my = this.getChoiceY();
 
       this.moveLenear( mx, my );
 
