@@ -44,9 +44,9 @@
       <div>
         <input type='text' id='t1' class='t' placeholder= "Input">
       </div>
-      <div>
+      <!-- <div>
         <input type='text' id='t2' class='t' placeholder= "Output" >
-      </div>
+      </div> -->
       <div class="">
         <button id="b1" class="b1" type="button">Convert</button>
       </div>
@@ -84,8 +84,8 @@
     $(".main").center();
 
     $("#b1").click(function() {
-      $('#t2').val(parseUrl($('#t1').val()));
-      $("#resultView").append(`<div><a href="${$('#t2').val()}">${$('#t2').val()}</a></div>`);
+      // $("#resultView").append(`<div><a href="${$('#t2').val()}">${$('#t2').val()}</a></div>`);
+      location.href = parseUrl($('#t1').val())
     });
 
     </script>
