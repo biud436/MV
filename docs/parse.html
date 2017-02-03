@@ -86,10 +86,11 @@
     $('#t1').focus();
 
     $("#b1").click(function() {
-      // $("#resultView").append(`<div><a href="${$('#t2').val()}">${$('#t2').val()}</a></div>`);
-      if($('#t1').val() !== "") {
-        location.href = parseUrl($('#t1').val())
-      }
+	  $("#t2").val(parseUrl($('#t1').val()));
+      $("#resultView").append(`<div><a href="${$('#t2').val()}">${$('#t2').val()}</a></div>`);
+      <!-- if($('#t1').val() !== "") { -->
+        <!-- location.href = parseUrl($('#t1').val()) -->
+      <!-- } -->
     });
 
     </script>
