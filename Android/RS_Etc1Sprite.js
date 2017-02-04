@@ -117,6 +117,13 @@ AlphaSpriteFactory.prototype.initialize = function (atlasName, jsonPath) {
   }
 };
 
+AlphaSpriteFactory.prototype.destroyTexture = function (name) {
+  if(self._children[name]) {
+    // deletes the texture to texture cache, in pixi
+    self._children[name].destory({'destroyBase': true});
+  }
+};
+
 AlphaSpriteFactory.prototype.loadTexture = function (name) {
   var self = this;
   this._loader.add(this._atlasName, this._jsonPath, this._atlasOptions).load(function (loader, resources) {
