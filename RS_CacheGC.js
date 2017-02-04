@@ -185,4 +185,14 @@ RS.CacheGC.Params = RS.CacheGC.Params || {};
         }
     };
 
+    //==========================================================================
+    // ImageManager
+    //==========================================================================
+
+    var alias_ImageManager_clear = ImageManager.clear;
+    ImageManager.clear = function() {
+      alias_ImageManager_clear.call(this);
+      Graphics.cacheGC.count = 0;
+    };
+
 })(RS.CacheGC);
