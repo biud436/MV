@@ -10,6 +10,10 @@
  * @desc y
  * @default 0
  *
+ * @param Auto Disable
+ * @desc
+ * @default false
+ *
  * @help
  * =============================================================================
  * Plugin Command
@@ -29,6 +33,8 @@
  * 2017.02.03 (v1.0.1) :
  * - Added the function allows the choice window to move linearly from a current position to the destination.
  * - It could automatically set the position of the choice window when the player is loading the save data.
+ * 2017.02.08 (v1.0.2)
+ * - Optimized for motion.
  */
 
 var Imported = Imported || {};
@@ -39,12 +45,11 @@ Imported.Window_ChoiceListPosition = true;
   var parameters = PluginManager.parameters('RS_ChoicePosition');
   var mx = Number(parameters['x']);
   var my = Number(parameters['y']);
-  var enabled = true;
+  var isAudoDisable = Boolean(parameters['Auto Disable'] === 'true');
 
   var alias_Window_ChoiceList_initialize = Window_ChoiceList.prototype.initialize;
   Window_ChoiceList.prototype.initialize = function(messageWindow) {
       alias_Window_ChoiceList_initialize.call(this, messageWindow);
-      this._aligned = false;
   };
 
   var alias_Window_ChoiceList_updatePlacement = Window_ChoiceList.prototype.updatePlacement;
@@ -52,15 +57,10 @@ Imported.Window_ChoiceListPosition = true;
       this.width = this.windowWidth();
       this.height = this.windowHeight();
       if($gameSystem.isChoiceMoveable()) {
-
           this.setCustomPosition();
-
       } else {
-
           alias_Window_ChoiceList_updatePlacement.call(this);
-
       }
-
   };
 
   Window_ChoiceList.prototype.setCustomPosition = function() {
@@ -76,6 +76,9 @@ Imported.Window_ChoiceListPosition = true;
   };
 
   Window_ChoiceList.prototype.moveLenear = function (tx, ty) {
+      if(this.x >= tx - 0.001 && this.y >= ty - 0.001 && isAudoDisable) {
+        $gameSystem.setChoiceMoveable(false);
+      }
       var t = performance.now();
       var dt = (t % 10000 / 10000) * 0.5;
       this.x = this.x + dt * (tx - this.x);
@@ -111,7 +114,9 @@ Imported.Window_ChoiceListPosition = true;
   var alias_Window_ChoiceList_update = Window_ChoiceList.prototype.update;
   Window_ChoiceList.prototype.update = function () {
       if(alias_Window_ChoiceList_update) alias_Window_ChoiceList_update.call(this);
-      if($gameMessage.choices().length > 0) this.updatePlacement();
+      if($gameMessage.choices().length > 0 && $gameSystem.isChoiceMoveable()) {
+        this.updatePlacement();
+      }
   };
 
   //===========================================================================
@@ -135,9 +140,7 @@ Imported.Window_ChoiceListPosition = true;
   Game_System.prototype.setChoiceWindowPos = function () {
 
       if(arguments.length < 2) {
-
-          var id = arguments[0];
-
+          var id = parseInt(arguments[0]);
           if(id > 0) {
             this._choiceWindowTempPosition.x = $gameMap.event(id).screenX();
             this._choiceWindowTempPosition.y = $gameMap.event(id).screenY();
