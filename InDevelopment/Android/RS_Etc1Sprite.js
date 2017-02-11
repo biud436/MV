@@ -80,7 +80,7 @@ AlphaSprite.prototype.initialize = function(texture, alphaTexture) {
   PIXI.Sprite.call(this, texture);
   if(Graphics.isWebGL() && this.isEtc1() && Utils.isAndroidChrome()) {
     var isChr = /Chrome\/(.{11,})(?=\s)/i.test(navigator.userAgent);
-    if(isChr && parseInt(RegExp.$1.substr(0, 2) > 50) {
+    if(isChr && parseInt(RegExp.$1.substr(0, 2) > 50)) {
       this._etc1Filter = new Etc1AlphaFilter();
       this._etc1Filter.setAlphaTexture(alphaTexture);
       this.filters = [this._etc1Filter];
