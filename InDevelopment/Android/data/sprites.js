@@ -38,7 +38,7 @@
 
 },
 "meta": {
-	"image": "sprites.png",
+	"image": "sprites.etc1",
 	"size": {"w": 512, "h": 256},
 	"scale": "1"
 }
