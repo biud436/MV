@@ -5,8 +5,6 @@ precision mediump float;
 varying vec2 vTextureCoord;
 varying vec4 vColor;
 
-uniform float enabled;
-
 uniform sampler2D uSampler;
 uniform sampler2D uAlphaSampler;
 

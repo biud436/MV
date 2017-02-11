@@ -22,10 +22,12 @@ function Etc1AlphaFilter() {
 
     'attribute vec2 aVertexPosition;',
     'attribute vec2 aTextureCoord;',
+    'attribute vec4 aColor;',
 
     'uniform mat3 projectionMatrix;',
 
     'varying vec2 vTextureCoord;',
+    'varying vec4 vColor;',
 
     'void main(void){',
     '    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
@@ -39,22 +41,21 @@ function Etc1AlphaFilter() {
     'precision mediump float;',
 
     'varying vec2 vTextureCoord;',
+    'varying vec4 vColor;',
 
-    'uniform float enabled;',
     'uniform sampler2D uSampler;',
     'uniform sampler2D uAlphaSampler;',
 
     'void main(void) {',
-    '   gl_FragColor = texture2D(uSampler, vCoord);',
-    '   if(enabled > 0.0) {',
-    '    gl_FragColor.a = texture2D(uAlphaSampler, vCoord).r;',
-    '   }',
+    '    vec4 texColor = texture2D(uSampler, vCoord);',
+    '    vec4 retColor = vec4(texColor.rgb, texture2D(uAlphaSampler, vCoord).r);',
+    '    retColor.rgb *= retColor.a;',
+    '    gl_FragColor = texColor * vColor;',
     '}'
    ].join('\n');
 
   PIXI.Filter.call( this, vertexSrc, fragmentSrc );
 
-  this.uniforms.enabled = 0;
 };
 
 Etc1AlphaFilter.prototype = Object.create(PIXI.Filter.prototype);
@@ -62,7 +63,6 @@ Etc1AlphaFilter.prototype.constructor = Etc1AlphaFilter;
 
 Etc1AlphaFilter.prototype.setAlphaTexture = function(texture) {
   this.uniforms.uAlphaSampler = texture;
-  if(texture instanceof PIXI.Texture) this.uniforms.enabled = 1.0;
 };
 
 //============================================================================
