@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc (v1.1.8) This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.1.9) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
@@ -148,7 +148,7 @@
  * - Fixed a bug that is not working to preload
  * - Added a new parameter that could increase the number of the HUD.
  * - Added parameters for user custom HUD position.
- * - Fixed an issue that is not working in battle test mode
+ * 2017.02.11 (v1.1.9) : Fixed an issue that the hud is set in an incorrect position when adding a new party member.
  */
 
 var Imported = Imported || {};
@@ -199,7 +199,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   RS.HUD.initBattleParameters = function () {
-    RS.HUD.param.nBttleMememberSize = Math.min(RS.HUD.param.nBttleMememberSize, $gameParty.size());
+    RS.HUD.param.nBttleMememberSize = Math.max(RS.HUD.param.nBttleMememberSize, $gameParty.size());
     for(var i = 0; i < RS.HUD.param.nBttleMememberSize; i++) {
       var idx = parseInt(i + 1);
       RS.HUD.param.ptCustormBattleAnchor[i] = RS.HUD.loadCustomBattlePosition(parameters['Pos ' + idx] || '0, 0');
@@ -224,6 +224,7 @@ RS.HUD.param = RS.HUD.param || {};
     if(SceneManager._scene instanceof Scene_Battle ||
             $gameParty.inBattle() ||
             DataManager.isBattleTest()) {
+      RS.HUD.initBattleParameters();
       items = RS.HUD.param.arrangementInBattle;
     } else {
       items = RS.HUD.param.arrangement;
@@ -403,6 +404,12 @@ RS.HUD.param = RS.HUD.param || {};
   //
   //
 
+  var alais_Scene_Battle_create = Scene_Battle.prototype.create;
+  Scene_Battle.prototype.create = function() {
+    alais_Scene_Battle_create.call(this);
+
+  };
+
   var alias_Scene_Battle_update = Scene_Battle.prototype.update;
   Scene_Battle.prototype.update = function() {
     alias_Scene_Battle_update.call(this);
@@ -553,7 +560,7 @@ RS.HUD.param = RS.HUD.param || {};
     this._AtbArrow.rotation = (-HUD.PI2) * rate;
     this._AtbArrow.x = dx;
     this._AtbArrow.y = dy;
-  };
+  }
 
   HUD.prototype.drawArraow = function(r, rate) {
     if(!Imported.YEP_BattleEngineCore) return;
@@ -565,7 +572,7 @@ RS.HUD.param = RS.HUD.param || {};
     var offsetX = 12;
     var offsetY = 12;
     this._AtbArrow.bitmap.blt(bitmap, 132, 24, 20, 20, 0, 0);
-  };
+  }
 
   //----------------------------------------------------------------------------
   // (Alias) YEP_X_BattleSysATB
