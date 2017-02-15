@@ -61,7 +61,7 @@
  * -----------------------------------------------------------------------------
  * 2015.12.13 (v1.0.0) - First Release
  * 2016.08.23 (v1.1.0) - Fixed and Added Parameters.
- * 2016.08.23 (v1.1.1) - Added position parameter
+ * 2016.08.23 (v1.1.1) - Added position parameter.
  */
 
 var Imported = Imported || {};
@@ -70,17 +70,19 @@ Imported.RS_VersionLayer = true;
 (function () {
 
   var parameters = PluginManager.parameters("RS_VersionLayer");
-  var version = String(parameters["Version"] || '1.0');
-  var fontSize = Number(parameters['fontSize'] || 14);
-  var textColor = String(parameters['textColor'] || "rgb(56, 150, 119)");
-  var outlineColor =  String(parameters['outlineColor'] || "rgb(255, 255, 255)");
-  var outlineWidth = Number(parameters['outlineWidth'] || 2);
-  var defaultText = String(parameters['defaultText'] || 'Version : ');
-  var textAlign = String(parameters['textAlign'] || 'right');
-  var visible = Boolean(parameters['visible'] === 'true');
-  var opacity = Number(parameters['opaicty'] || 255);
-  var position = String(parameters['Position'] || 'Top');
-  var bitmapRefresh = false;
+  var params = [
+    String(parameters["Version"] || '1.0'),
+    Number(parameters['fontSize'] || 14),
+    String(parameters['textColor'] || "rgb(56, 150, 119)"),
+    String(parameters['outlineColor'] || "rgb(255, 255, 255)"),
+    Number(parameters['outlineWidth'] || 2),
+    String(parameters['defaultText'] || 'Version : '),
+    String(parameters['textAlign'] || 'right'),
+    Boolean(parameters['visible'] === 'true'),
+    Number(parameters['opaicty'] || 255),
+    String(parameters['Position'] || 'Top'),
+    false
+  ];
 
   //----------------------------------------------------------------------------
   // VersionLayer
@@ -101,22 +103,23 @@ Imported.RS_VersionLayer = true;
 
   VersionLayer.prototype.refresh = function () {
     if(!this.bitmap) return;
-    var width = this.bitmap.width, height = this.bitmap.height;
-    this.visible = visible;
-    this.opacity = opacity;
+    var width = this.bitmap.width;
+    var height = this.bitmap.height;
+    this.visible = params[7];
+    this.opacity = params[8];
     this.bitmap.clear();
-    this.bitmap.fontSize = fontSize;
-    this.bitmap.textColor = textColor;
-    this.bitmap.outlineColor = outlineColor;
-    this.bitmap.outlineWidth = outlineWidth;
-    this.bitmap.drawText(defaultText + ' ' + version, 0, 0, width, height, textAlign);
+    this.bitmap.fontSize = params[1];
+    this.bitmap.textColor = params[2];
+    this.bitmap.outlineColor = params[3];
+    this.bitmap.outlineWidth = params[4];
+    this.bitmap.drawText(params[5] + ' ' + params[0], 0, 0, width, height, params[6]);
   };
 
   VersionLayer.prototype.update = function () {
     Sprite.prototype.update.call(this);
-    if(bitmapRefresh) {
+    if(params[10]) {
       this.refresh();
-      bitmapRefresh = false;
+      params[10] = false;
     }
   };
 
@@ -135,19 +138,20 @@ Imported.RS_VersionLayer = true;
   Scene_Base.prototype.start = function () {
     alias_Scene_Base_start.call(this);
     this.addVersionLayer();
-  }
+  };
+
+  var alias_Scene_Base_terminate = Scene_Base.prototype.terminate;
+  Scene_Base.prototype.terminate = function () {
+    if(alias_Scene_Base_terminate) alias_Scene_Base_terminate.call(this);
+    this.removeChild(this._versionLayer);
+  };
 
   Scene_Base.prototype.createVersionLayer = function () {
-    var pos = position.toLowerCase();
+    var pos = params[9].toLowerCase();
     var padding = 1;
-    this._versionLayer = new VersionLayer(new Bitmap(Graphics.boxWidth, fontSize + 2));
-    switch (pos) {
-      case 'bottom':
-        this._versionLayer.y = Graphics._renderer.height - fontSize - padding;
-        break;
-      default:
-        this._versionLayer.y = padding;
-    }
+    var fontSize = params[1] + 2;
+    this._versionLayer = new VersionLayer(new Bitmap(Graphics.boxWidth, fontSize));
+    this._versionLayer.y = (pos === 'bottom') ? (Graphics._renderer.height - fontSize - padding) : padding;
   };
 
   Scene_Base.prototype.addVersionLayer = function () {
@@ -166,12 +170,12 @@ Imported.RS_VersionLayer = true;
       if(command === "VersionLayer") {
         switch(args[0]) {
           case 'true':
-            visible = true;
-            bitmapRefresh = true;
+            params.splice(7, 1, true);
+            params.splice(10, 1, true);
             break;
           case 'false':
-            visible = false;
-            bitmapRefresh = true;
+            params.splice(7, 1, false);
+            params.splice(10, 1, true);
             break;
         }
       }

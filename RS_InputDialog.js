@@ -115,6 +115,7 @@
  * 2016.12.08 (v1.1.68) - Removed the text hint window.
  * 2016.12.17 (v1.1.69) - Fixed an issue that an integer value could not be checked due to the text type issue.
  * 2017.01.30 (v1.1.7) - Fixed an issue that is not working properly if the text dialog has a string to start with a number.
+ * 2017.02.16 (v1.1.8) - Fixed bugs
  */
 
 var Imported = Imported || {};
@@ -131,13 +132,21 @@ function Scene_InputDialog() {
 (function () {
 
   var parameters = PluginManager.parameters('RS_InputDialog');
+
+  //============================================================================
+  // Global Variables in RS.InputDialog
+  //============================================================================
+
   RS.InputDialog.Params.textBoxWidth = Number(parameters['textBox Width'] || 488);
   RS.InputDialog.Params.textBoxHeight = Number(parameters['textBox Height'] || 36);
   RS.InputDialog.Params.variableID = Number(parameters['variable ID'] || 3);
+
   RS.InputDialog.Params.debug = Boolean(parameters['debug'] === 'true');
+
   RS.InputDialog.Params.localText = String(parameters['Text Hint'] || 'Test Message');
   RS.InputDialog.Params.backgroundColor = String(parameters['Background Color'] || '#cff09e');
   RS.InputDialog.Params.inputDirection = String(parameters['direction'] || 'ltr');
+
   RS.InputDialog.Params.nMaxLength = parseInt(parameters['Max Length'] || '6');
 
   RS.InputDialog.Params.border = parameters['Border'] || "2px solid #3b8686";
@@ -149,6 +158,12 @@ function Scene_InputDialog() {
 
   RS.InputDialog.Params.szTextBoxId = 'md_textBox';
   RS.InputDialog.Params.szFieldId = 'md_inputField';
+
+  RS.InputDialog.Params.nCheckScreenLock = 8000;
+
+  //============================================================================
+  // public methods in RS.InputDialog
+  //============================================================================
 
   RS.InputDialog.createInstance = function() {
     var scene = SceneManager._scene;
@@ -162,18 +177,19 @@ function Scene_InputDialog() {
   RS.InputDialog.setRect = function () {
     var textBox = document.getElementById(RS.InputDialog.Params.szTextBoxId);
     if(textBox) {
-      textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
+      textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
       textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
       textBox.style.border = RS.InputDialog.Params.border;
       textBox.style.borderRadius = RS.InputDialog.Params.borderRadius;
       textBox.style.textShadow = RS.InputDialog.Params.textShadow;
       textBox.style.fontFamily = RS.InputDialog.Params.fontFamily;
       textBox.style.color = RS.InputDialog.Params.color;
-      textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
-      textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
+      textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+      textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
       textBox.style.direction = RS.InputDialog.Params.inputDirection;
       textBox.maxLength = RS.InputDialog.Params.nMaxLength;
       textBox.max = RS.InputDialog.Params.nMaxLength;
+      textBox.placeholder = RS.InputDialog.Params.localText;
     }
   };
 
@@ -182,6 +198,29 @@ function Scene_InputDialog() {
     target.style.webkitFilter = blur;
     target.style.filter = blur;
   };
+
+  RS.InputDialog.getScreenWidth = function (value) {
+    // TODO: 게임의 그래픽스 파이프라인과는 다르게 처리되므로 크기가 실제와 다르다는 문제가 있다.
+    // 임의 해결이라 현재 코드로는 해상도에 따라서 비율이 천차만별로 달라지게 된다.
+    // PC에서는 더 작고 모바일에서는 더 크게 표시되는 것이 현재까지 파악된 문제다.
+    if(screen.availWidth <= Graphics.boxWidth) {
+      return parseFloat(screen.availWidth / Graphics.boxWidth) * value;
+    } else {
+      return parseFloat(Graphics.boxWidth / screen.availWidth) * value;
+    }
+  };
+
+  RS.InputDialog.getScreenHeight = function (value) {
+    if(screen.availHeight <= Graphics.boxHeight) {
+      return parseFloat(screen.availHeight / Graphics.boxHeight) * value;
+    } else {
+      return parseFloat(Graphics.boxHeight / screen.availHeight) * value;
+    }
+  };
+
+  //============================================================================
+  // Input
+  //============================================================================
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -197,7 +236,10 @@ function Scene_InputDialog() {
       return false;
   };
 
-  // private class
+  //============================================================================
+  // TextBox
+  //============================================================================
+
   function TextBox() {
     this.initialize.apply(this, arguments);
   };
@@ -210,6 +252,7 @@ function Scene_InputDialog() {
   TextBox.prototype.initialize = function(fieldID, textBoxID)  {
     this._fieldId = fieldID;
     this._textBoxID = textBoxID;
+    this._lastInputTime = performance.now();
     this.prepareElement(fieldID);
     this.createTextBox(textBoxID);
     this.getFocus();
@@ -232,10 +275,14 @@ function Scene_InputDialog() {
     this._textBox = document.createElement('input');
     this._textBox.type = "text";
     this._textBox.id = id;
+
     this._textBox.style.opacity = RS.InputDialog.Params.opacity;
     this._textBox.style.zIndex = 1000;
+
     this._textBox.autofocus = false;
     this._textBox.multiple = false;
+
+    // TODO: 너무 길다. 스타일시트를 지정할 수 있게 하면 좋을 것 같다.
     this._textBox.style.imeMode = 'active';
     this._textBox.style.position = 'absolute';
     this._textBox.style.top = 0;
@@ -243,7 +290,7 @@ function Scene_InputDialog() {
     this._textBox.style.right = 0;
     this._textBox.style.bottom = 0;
     this._textBox.style.direction = RS.InputDialog.Params.inputDirection;
-    this._textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
+    this._textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
     this._textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
     this._textBox.style.border = RS.InputDialog.Params.border;
     this._textBox.style.borderRadius = RS.InputDialog.Params.borderRadius;
@@ -251,12 +298,33 @@ function Scene_InputDialog() {
     this._textBox.style.fontFamily = RS.InputDialog.Params.fontFamily;
     this._textBox.style.color = RS.InputDialog.Params.color;
     this._textBox.style.outline = 'none';
-    this._textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
-    this._textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
+
+    this._textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+    this._textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
+
     this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
     this._textBox.max = RS.InputDialog.Params.nMaxLength;
 
+    // Text hint
+    this._textBox.placeholder = RS.InputDialog.Params.localText;
+
     this._textBox.addEventListener('keydown', this.onKeyDown.bind(this));
+
+    this._textBox.addEventListener('focus', function () {
+      var text = document.getElementById(RS.InputDialog.Params.szTextBoxId);
+      if(text && Utils.isMobileDevice()) {
+        text.style.bottom = RS.InputDialog.getScreenHeight(Graphics.boxHeight / 2) + 'px';
+      }
+    });
+
+    this._textBox.addEventListener('blur', function () {
+      var text = document.getElementById(RS.InputDialog.Params.szTextBoxId);
+      // TODO: 텍스트 에디터가 이미 사라진 시점에서 실행되는 경우가 있었다.
+      if(text && Utils.isMobileDevice()) {
+        text.style.bottom = '0';
+        text.focus();
+      }
+    });
 
     var field = document.getElementById(this._fieldId);
     field.appendChild(this._textBox);
@@ -270,9 +338,9 @@ function Scene_InputDialog() {
         if(field && textBox) {
             Graphics._centerElement(field);
             Graphics._centerElement(textBox);
-            textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
-            textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
-            textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
+            textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
+            textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+            textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
         }
       }
     }, false);
@@ -281,10 +349,10 @@ function Scene_InputDialog() {
 
   TextBox.prototype.setRect = function () {
     var textBox = document.getElementById(this._textBoxID);
-    textBox.style.fontSize = (RS.InputDialog.Params.textBoxHeight - 4) + 'px';
+    textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
     textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
-    textBox.style.width = RS.InputDialog.Params.textBoxWidth + 'px';
-    textBox.style.height = RS.InputDialog.Params.textBoxHeight + 'px';
+    textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+    textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
     textBox.style.direction = RS.InputDialog.Params.inputDirection;
   };
 
@@ -296,8 +364,8 @@ function Scene_InputDialog() {
     field.style.top = '0';
     field.style.right = '0';
     field.style.bottom = '0';
-    field.style.width = Graphics.boxWidth + 'px';
-    field.style.height = Graphics.boxHeight + 'px';
+    field.style.width = RS.InputDialog.getScreenWidth(Graphics.boxWidth) + 'px';
+    field.style.height = RS.InputDialog.getScreenHeight(Graphics.boxHeight) + 'px';
     field.style.zIndex = "0";
     document.body.appendChild(field);
     Graphics._centerElement(field);
@@ -319,20 +387,24 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.onKeyDown = function(e) {
-
     var keyCode = e.which;
-
     if (keyCode < TextBox.IS_NOT_CHAR) {
-
       if(keyCode === TextBox.ENTER) {
-
         if(this._func instanceof Function) this._func();
-
       }
-
     }
 
-  }
+    this._lastInputTime = performance.now();
+
+  };
+
+  TextBox.prototype.isScreenLock = function () {
+    var val = parseInt(performance.now() - this._lastInputTime);
+    var ret = false;
+    if(val >= RS.InputDialog.Params.nCheckScreenLock && this.isBusy()) ret = true;
+    this._lastInputTime = performance.now();
+    return ret;
+  };
 
   TextBox.prototype.getTextLength = function() {
     var textBox = document.getElementById(this._textBoxID);
@@ -366,7 +438,8 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.setTextHint = function () {
-    this.setText(RS.InputDialog.Params.localText).select();
+    var textBox = document.getElementById(this._textBoxID);
+    return textBox.placeholder = RS.InputDialog.Params.localText;
   };
 
   TextBox.prototype.isBusy = function () {
@@ -380,8 +453,7 @@ function Scene_InputDialog() {
 
   //============================================================================
   // Scene_InputDialog
-  //
-  //
+  //============================================================================
 
   Scene_InputDialog.prototype = Object.create(Scene_Base.prototype);
   Scene_InputDialog.prototype.constructor = Scene_InputDialog;
@@ -396,10 +468,24 @@ function Scene_InputDialog() {
     this.createTextBox();
   };
 
+  var alias_Scene_InputDialog_update = Scene_InputDialog.prototype.update;
+  Scene_InputDialog.prototype.update = function () {
+    alias_Scene_InputDialog_update.call(this);
+    // TODO: 모바일에서 취소키를 누르면 키입력 창이 사라지는 버그가 있다.
+    // 그래서 추가했지만 화면을 누르면 꺼진다는 것을 모르는 유저들이 버그로 착각할 수 있다.
+    if(this.isScreenLock() && TouchInput.isTriggered()) {
+      this.okResult();
+    }
+  };
+
   Scene_InputDialog.prototype.terminate = function () {
     Scene_Base.prototype.terminate.call(this);
     this._textBox.terminate();
     this._textBox = null;
+  };
+
+  Scene_InputDialog.prototype.isScreenLock = function () {
+    return this._textBox.isScreenLock();
   };
 
   Scene_InputDialog.prototype.createBackground = function() {
@@ -428,8 +514,7 @@ function Scene_InputDialog() {
 
   //============================================================================
   // Game_Troop
-  //
-  //
+  //============================================================================
 
   Game_Troop.prototype.battleInterpreterTaskLock = function () {
     this._interpreter._waitMode = 'IME Mode';
@@ -440,23 +525,8 @@ function Scene_InputDialog() {
   };
 
   //============================================================================
-  // Game_Interpreter
-  //
-  //
-
-  var alias_Game_Interpreter_updateWaitMode = Game_Interpreter.prototype.updateWaitMode;
-  Game_Interpreter.prototype.updateWaitMode = function() {
-    if(this._waitMode === 'IME Mode') {
-      return true;
-    } else {
-      return alias_Game_Interpreter_updateWaitMode.call(this);
-    }
-  };
-
-  //============================================================================
   // Scene_Battle
-  //
-  //
+  //============================================================================
 
   var alias_Scene_Battle_initialize = Scene_Battle.prototype.initialize;
   Scene_Battle.prototype.initialize = function () {
@@ -467,6 +537,16 @@ function Scene_InputDialog() {
   var alias_Scene_Battle_create = Scene_Battle.prototype.create;
   Scene_Battle.prototype.create = function () {
     alias_Scene_Battle_create.call(this);
+  };
+
+  var alias_Scene_Battle_update = Scene_Battle.prototype.update;
+  Scene_Battle.prototype.update = function () {
+    alias_Scene_Battle_update.call(this);
+    // TODO: 모바일에서 취소키를 누르면 키입력 창이 사라지는 버그가 있다.
+    // 그래서 추가했지만 화면을 누르면 꺼진다는 것을 모르는 유저들이 버그로 착각할 수 있다.
+    if(this.isScreenLock() && TouchInput.isTriggered()) {
+      this.okResult();
+    }
   };
 
   var alias_Scene_Battle_terminate = Scene_Battle.prototype.terminate;
@@ -505,6 +585,10 @@ function Scene_InputDialog() {
     $gameTroop.battleInterpreterTaskUnlock();
   };
 
+  Scene_Battle.prototype.isScreenLock = function () {
+    return this._textBox.isScreenLock();
+  };
+
   Scene_Battle.prototype.okResult = function () {
     if(!this._textBox) return '';
     if( this.textBoxIsBusy() ) {
@@ -522,8 +606,16 @@ function Scene_InputDialog() {
 
   //============================================================================
   // Game_Interpreter
-  //
-  //
+  //============================================================================
+
+  var alias_Game_Interpreter_updateWaitMode = Game_Interpreter.prototype.updateWaitMode;
+  Game_Interpreter.prototype.updateWaitMode = function() {
+    if(this._waitMode === 'IME Mode') {
+      return true;
+    } else {
+      return alias_Game_Interpreter_updateWaitMode.call(this);
+    }
+  };
 
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {

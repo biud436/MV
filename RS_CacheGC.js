@@ -54,7 +54,7 @@ RS.CacheGC.Params = RS.CacheGC.Params || {};
 (function($) {
 
     "use strict";
-
+    let $tempContext = undefined;
     let parameters = $plugins.filter(function (i) {
       return i.description.contains('<RS_CacheGC>');
     });
