@@ -147,6 +147,7 @@ Imported.ScreenOrientation = true;
   Sprite_FullscreenButton.prototype.callClickHandler = function(event) {
       if (this._clickHandler && this._executeCallbck) {
           this._clickHandler(event);
+          this._executeCallbck = false;
       }
   };
 
