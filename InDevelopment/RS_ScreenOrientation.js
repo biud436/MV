@@ -128,7 +128,7 @@ Imported.ScreenOrientation = true;
       if (this.isActive()) {
           if (TouchInput.isTriggered() && this.isButtonTouched()) {
               this._touching = true;
-              this._executeCallbck = false;
+              this._executeCallbck = true;
           }
           if (this._touching) {
               if (TouchInput.isReleased() || !this.isButtonTouched()) {
@@ -145,10 +145,12 @@ Imported.ScreenOrientation = true;
   };
 
   Sprite_FullscreenButton.prototype.callClickHandler = function(event) {
-      if (this._clickHandler && this._executeCallbck) {
-          this._clickHandler(event);
-          this._executeCallbck = false;
-      }
+      setTimeout(function () {
+        if (this._clickHandler && this._executeCallbck) {
+            this._clickHandler(event);
+            this._executeCallbck = false;
+        }
+      }.bind(this), 0);
   };
 
 })();
