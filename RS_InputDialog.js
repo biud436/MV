@@ -115,7 +115,7 @@
  * 2016.12.08 (v1.1.68) - Removed the text hint window.
  * 2016.12.17 (v1.1.69) - Fixed an issue that an integer value could not be checked due to the text type issue.
  * 2017.01.30 (v1.1.7) - Fixed an issue that is not working properly if the text dialog has a string to start with a number.
- * 2017.02.16 (v1.1.8) - Fixed bugs
+ * 2017.02.16 (v1.1.8) - Fixed incorrect position of the text box
  */
 
 var Imported = Imported || {};
@@ -200,22 +200,27 @@ function Scene_InputDialog() {
   };
 
   RS.InputDialog.getScreenWidth = function (value) {
-    // TODO: 게임의 그래픽스 파이프라인과는 다르게 처리되므로 크기가 실제와 다르다는 문제가 있다.
-    // 임의 해결이라 현재 코드로는 해상도에 따라서 비율이 천차만별로 달라지게 된다.
-    // PC에서는 더 작고 모바일에서는 더 크게 표시되는 것이 현재까지 파악된 문제다.
-    if(screen.availWidth <= Graphics.boxWidth) {
-      return parseFloat(screen.availWidth / Graphics.boxWidth) * value;
-    } else {
-      return parseFloat(Graphics.boxWidth / screen.availWidth) * value;
-    }
+    var canvas = Graphics._canvas.getBoundingClientRect();
+    var canvasX = canvas.left;
+
+    var pixelRatio = window.devicePixelRatio;
+
+    var realX = (value - canvasX);
+
+    return parseFloat(Graphics.boxWidth / canvas.width) * realX;
+
   };
 
   RS.InputDialog.getScreenHeight = function (value) {
-    if(screen.availHeight <= Graphics.boxHeight) {
-      return parseFloat(screen.availHeight / Graphics.boxHeight) * value;
-    } else {
-      return parseFloat(Graphics.boxHeight / screen.availHeight) * value;
-    }
+    var canvas = Graphics._canvas.getBoundingClientRect();
+    var canvasY = canvas.top;
+
+    var pixelRatio = window.devicePixelRatio;
+
+    var realY = (value - canvasY);
+
+    return parseFloat(Graphics.boxHeight / canvas.height) * realY;
+
   };
 
   //============================================================================
