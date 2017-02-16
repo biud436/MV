@@ -115,7 +115,10 @@
  * 2016.12.08 (v1.1.68) - Removed the text hint window.
  * 2016.12.17 (v1.1.69) - Fixed an issue that an integer value could not be checked due to the text type issue.
  * 2017.01.30 (v1.1.7) - Fixed an issue that is not working properly if the text dialog has a string to start with a number.
- * 2017.02.16 (v1.1.8) - Fixed incorrect position of the text box
+ * 2017.02.16 (v1.1.8) :
+ * - Fixed incorrect position and width, height values in the text box.
+ * - Added new feature that indicates the input dialog at the top position of the screen when pressing any key on your own mobile device.
+ * - Added new feature that automatically returns a result of the text box if you did not press anything.
  */
 
 var Imported = Imported || {};
