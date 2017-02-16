@@ -15,10 +15,14 @@
  *
  * @help
  * =============================================================================
+ * How to setup an image
+ * =============================================================================
+ * Download an image from https://github.com/biud436/MV/blob/master/docs/images/fullscreen.png
+ * and then place it in your img/system folder.
+ * =============================================================================
  * Version Log
  * =============================================================================
- * 2017.02.15 (v1.0.0) - First Release
- * 2017.02.16 (v1.0.1) - Fixed bugs
+ * 2017.02.16 (v1.0.0) - First Release
  */
 
 var Imported = Imported || {};
