@@ -401,7 +401,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   RS.ArabicMessageSystem.findWindowClasses = function () {
     var allWindowObjects = Object.keys(window);
     var resultWindowClasses = allWindowObjects.filter(function(i) {
-      return i.includes("Window_");
+      return i.includes("Window_")
     });
     return resultWindowClasses;
   };
@@ -713,7 +713,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
       messageMode = 'arabic';
       return result;
     };
-    Window_EventMiniL abel.prototype.refresh = function() {
+    Window_EventMiniLabel.prototype.refresh = function() {
       if (Imported.YEP_SelfSwVar) {
         $gameTemp.setSelfSwVarEvent(this._character._mapId, this._character._eventId);
       }
