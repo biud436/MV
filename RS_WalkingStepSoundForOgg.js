@@ -265,6 +265,7 @@
  * 2016.03.10 (v1.0.3) - Fixed the sound option.
  * 2016.09.14 (v1.0.4) - Fixed the issue that the step sound property is initialized to the false in ConfigManager.
  * 2016.12.05 (v1.0.5) - Fixed the value of ConfigManager.stepSound
+ * 2017.02.26 (v1.0.6) - Fixed a bug that is not configurable the config value called 'stepSound' as true when starting the game.
  */
 
 var Imported = Imported || {};
@@ -407,8 +408,15 @@ Imported.RS_WalkingStepSound = true;
   var alias_applyData = ConfigManager.applyData;
   ConfigManager.applyData = function(config) {
     alias_applyData.call(this, config);
-    this.stepSound = this.readFlag(config, 'stepSound');
+    var ret = config['stepSound'];
+    var temp = ConfigManager.stepSound;
+    if(ret !== undefined) {
+      this.stepSound = ret;
+    } else {
+      this.stepSound = temp;
+    }
   };
+
 
   //-----------------------------------------------------------------------------
   // Window_Options

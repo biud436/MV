@@ -53,6 +53,10 @@ RS.CacheGC.Params = RS.CacheGC.Params || {};
 
 (function($) {
 
+    if(!Utils.RPGMAKER_VERSION <= "1.3.5") {
+      return false;
+    }
+
     "use strict";
     let $tempContext = undefined;
     let parameters = $plugins.filter(function (i) {
