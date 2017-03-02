@@ -1,11 +1,11 @@
 /*:
- * @plugindesc This plugin allows you to quit the video completely when you press the Esc key during playing the video..
+ * @plugindesc This plugin allows you to end the video completely when you press the Esc key during playing the video.
  * @author biud436
  */
  /*:ko
   * @plugindesc 동영상 재생 중에 메뉴 키를 누르면 동영상이 종료 됩니다.
   * @author biud436
-  */ 
+  */
 
 var Imported = Imported || {};
 Imported.RS_StopMovie = true;
