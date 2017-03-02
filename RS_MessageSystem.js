@@ -1,7 +1,7 @@
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.5) 한글 메시지 시스템 <RS_MessageSystem>
-* @author 러닝은빛(biud436)
+* @plugindesc (v0.1.5) Hangul Message System <RS_MessageSystem>
+* @author biud436
 *
 * @param Font Size
 * @desc 텍스트 기본 크기
@@ -105,6 +105,248 @@
 * @default NanumBrush
 *
 * @param Custom Font Src
+* @desc 사용자 지정 Font의 경로를 지정하세요
+* @default fonts/NanumBrush.ttf
+*
+* @param ---
+* @desc
+* @default
+*
+* @help
+* =============================================================================
+* 플러그인 커맨드
+* =============================================================================
+* 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
+*
+* - 텍스트의 속도는 0에서 가장 빠르고, 프레임 단위로 지정할 수 있습니다.
+* 메시지 텍스트속도 number
+*
+* 메시지 폰트크기 number
+* 메시지 폰트최소크기 number
+* 메시지 폰트최대크기 number
+*
+* - 그레디언트 텍스트로 색상을 변경할 수 있습니다.
+* 메시지 그레디언트 color1 color2 color3
+*
+* - 라인 수를 바꿀 수 있는 플러그인 명령입니다.
+* 메시지 라인 number
+* 메시지 시작위치 number
+*
+* 이름 윈도우의 좌표를 조절
+* 메시지 이름윈도우 x number
+* 메시지 이름윈도우 y number
+* 메시지 이름윈도우 padding number
+* 메시지 큰페이스칩X number
+* 메시지 큰페이스칩Y number
+* 메시지 큰페이스칩Z number
+* 메시지 탭크기 number
+* 메시지 배경투명도 number
+* 메시지 컨텐츠투명도 number
+*
+* =============================================================================
+* 큰 페이스칩 설정
+* =============================================================================
+* 페이스칩을 img/faces 에 넣고 페이스칩의 이름을 Big_ 으로 시작하게 합니다.
+*
+* =============================================================================
+* 텍스트 코드(Text Code)
+* =============================================================================
+* \색[색상명]
+* \속도[값]
+* \테두리색[색상명]
+* \테두리크기[값]
+* \들여쓰기[값]
+* \굵게!
+* \이탤릭!
+* \이름<이벤트명>
+* \그레디언트<텍스트>
+* \파티원[번호]
+* \주인공[번호]
+* \변수[번호]
+* \아이콘[번호]
+* \확대
+* \축소
+* \골드
+* \말풍선[이벤트의 ID]
+* \말풍선[0]
+* \말풍선[-1]
+* \정렬자[1]
+* \정렬자[2]
+* \숫자[숫자]
+* \크기[숫자]
+* \t : 탭의 크기는 8 입니다.
+* \r : X를 시작 위치로 되돌립니다.
+* \효과음<효과음명>
+* \그림표시<그림번호, 그림이름, 원점번호, X좌표, Y좌표>
+* \그림제거[그림번호]
+* \아이템[번호]
+* \무기구[번호]
+* \방어구[번호]
+* \직업[번호]
+* \적군[번호]
+* \상태[번호]
+* \스킬[번호]
+* =============================================================================
+* 색상(Colors)
+* =============================================================================
+* 청록, 청록색, c_aqua
+* 검은색, 검정, c_black
+* 파란색, 파랑, c_blue
+* 짙은회색, c_dkgray
+* 자홍색, 자홍, c_fuchsia
+* 회색, c_gray
+* 녹색, c_green
+* 밝은녹색, 라임, c_lime
+* 밝은회색, c_ltgray
+* 밤색, 마룬, c_maroon
+* 감청색, 네이비, c_navy
+* 황록색, 올리브, c_olive
+* 주황색, 주황, 오렌지, c_orange
+* 보라색, 보라, c_purple
+* 빨간색, 빨강, c_red
+* 은색, 은, c_silver
+* 민트색, c_teal
+* 흰색, 흰, c_white
+* 노란색, 노랑, c_yellow
+* 기본, 기본색, c_normal
+*
+* =============================================================================
+* 버전 로그(Version Log)
+* =============================================================================
+* 2017.02.18 (v0.1.5) :
+* - 한글 유니코드 범위가 잘못되어있던 문제 수정
+* - 효과음 재생 기능 추가
+* - 그림 표시 기능 추가
+* - 그림 제거 기능 추가
+* - 데이터베이스 항목 표시 기능 추가
+* - 정렬자 함수의 텍스트 폭 계산 함수 수정
+* 2016.11.27 (v0.1.4) : 플러그인 커맨드에서 '0'값을 설정할 수 없는 오류를 수정했습니다.
+* 2016.11.12 (v0.1.3) :
+* - 사용자 정의 폰트, 배경 투명도 변경 기능 추가
+* - 탭 및 캐리지 리턴 기능 동작하지 않는 버그가 있습니다.
+* - 이름 윈도우와 같이 말풍선 윈도우를 띄울 경우, 이름 윈도우가 화면 밖으로 빠져나가는 버그가 있습니다.
+* 2016.10.12 (v0.1.2) - 규격에 맞지 않는 캐릭터도 이제 말풍선이 제대로 표시됩니다.
+* 2016.09.19 (v0.1.1) - 정렬자 기능 개선
+* 2016.06.18 (v0.1.0) - 이름 윈도우 후면에 스프라이트가 그려지지 않는 문제를 수정했습니다
+* 2016.03.21 (v0.0.9) - \t (탭), \r (캐리지 리턴) 추가
+* 2016.03.01 (v0.0.8) - 말풍선 모드에 페이스칩 표시, 플러그인 커맨드 및 버그 픽스
+* 2016.02.27 (v0.0.7) - 통화 서식 추가
+* 2016.02.15 (v0.0.6) - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
+* 2016.01.18 (v0.0.5) - 버그 픽스 (updateNameWindow, calcBalloonRect)
+* 2016.01.01 (v0.0.4) - 버그 픽스 (resizeMessageSystem)
+* 2015.12.03 (v0.0.3) - 말풍선 기능 추가
+* 2015.12.02 (v0.0.2) - 큰 페이스칩 기능 추가
+* 2015.12.01 (v0.0.1) - 최초 작성
+*/
+/*:ko
+* RS_MessageSystem.js
+* @plugindesc (v0.1.5) 한글 메시지 시스템 <RS_MessageSystem>
+* @author 러닝은빛(biud436)
+*
+* @param 글꼴 크기
+* @desc 글꼴의 크기를 정수로 지정하세요
+* 기본 값 : 28
+* @default 28
+*
+* @param 라인 갯수
+* @desc 라인 갯수
+* @default 4
+*
+* @param 그레디언트 시작 색상
+* @desc 그레디언트 시작 색상
+* @default #FFFFFF
+*
+* @param 그레디언트 중간 색상
+* @desc 그레디언트 중간 색상
+* @default #F29661
+*
+* @param 그레디언트 끝 색상
+* @desc 그레디언트 끝 색상
+* @default #CC3D3D
+*
+* @param 기본 텍스트 출력 속도
+* @desc 기본 값 : 0 프레임
+* @default 0
+*
+* @param 폰트 최소 크기
+* @desc \}로 텍스트 크기를 한 단계 줄일 때 최소 크기를 제한합니다
+* @default 24
+*
+* @param 폰트 최대 크기
+* @desc \{로 텍스트 크기를 한 단계 키울 때 최대 크기를 제한합니다
+* @default 96
+*
+* @param 텍스트 시작 X
+* @desc 큰 페이스칩이 설정되어있을 때 텍스트 시작 좌표를 정수로 기입하세요.
+* @default 256
+*
+* @param 이름 윈도우 X
+* @desc 대화창의 좌표를 기준으로 오프셋 됩니다
+* @default 0
+*
+* @param 이름 윈도우 Y
+* @desc 대화창의 좌표를 기준으로 오프셋 됩니다
+* @default 0
+*
+* @param 이름 윈도우 안쪽 여백
+* @desc 이름 윈도우 안쪽 여백
+* @default 10
+*
+* @param 큰 페이스칩 OX
+* @desc 큰 페이스칩의 오프셋 X
+* @default 0
+*
+* @param 큰 페이스칩 OY
+* @desc 큰 페이스칩의 오프셋 Y
+* @default 0
+*
+* @param 대화창 뒤에 얼굴 표시
+* @desc 큰 페이스칩을 메시지창의 뒷면에 표시합니다.
+* 예 - true   아니오 - false
+* @default false
+*
+* @param 탭 크기
+* @desc 탭 크기
+* @default 4
+*
+* @param 배경 그림의 투명도
+* @desc 대화창 배경의 투명도입니다
+* @default 192
+*
+* @param 기본 투명도
+* @desc 대화창의 기본적인 투명도 값입니다
+* @default 255
+*
+* @param 내용의 투명도
+* @desc 대화창 컨텐츠의 투명도 값입니다
+* @default 255
+*
+* @param 반투명도
+* @desc 대화창의 반투명도를 조절합니다.
+* @default 160
+*
+* @param 테두리 크기
+* @desc 텍스트의 테두리 크기를 정수로 지정하세요
+* @default 2
+*
+* @param 테두리 색상
+* @desc 텍스트의 테두리 색상을 웹컬러 규격으로 지정하세요
+* @default rgba(0, 0, 0, 1.0)
+*
+* @param --- 커스텀 폰트
+* @desc
+* @default
+*
+* @param 사용자 지정 폰트 사용 여부
+* @desc 사용자 지정 폰트를 사용하시겠습니까?
+* 예 - true   아니오 - false
+* @default false
+*
+* @param 사용자 지정 폰트명
+* @desc Font의 이름을 작성하세요
+* @default NanumBrush
+*
+* @param 사용자 지정 폰트 경로
 * @desc 사용자 지정 Font의 경로를 지정하세요
 * @default fonts/NanumBrush.ttf
 *
@@ -484,38 +726,38 @@ var Color = Color || {};
 
   RS.MessageSystem.Params = RS.MessageSystem.Params || {};
 
-  RS.MessageSystem.Params.fontSize = Number(parameters['Font Size'] || 28);
-  RS.MessageSystem.Params.textSpeed = Number(parameters['Text Speed'] || 0);
-  RS.MessageSystem.Params.minFontSize = Number(parameters['Text Min Size'] || 24);
-  RS.MessageSystem.Params.maxFontSize = Number(parameters['Text Max Size'] || 96);
-  RS.MessageSystem.Params.textStartX = Number(parameters['Text Start X'] || 192);
+  RS.MessageSystem.Params.fontSize = Number(RS.MessageSystem.popParameter('Font Size', "글꼴 크기") || 28);
+  RS.MessageSystem.Params.textSpeed = Number(RS.MessageSystem.popParameter('Text Speed', "기본 텍스트 출력 속도") || 0);
+  RS.MessageSystem.Params.minFontSize = Number(RS.MessageSystem.popParameter('Text Min Size', "폰트 최소 크기") || 24);
+  RS.MessageSystem.Params.maxFontSize = Number(RS.MessageSystem.popParameter('Text Max Size', "폰트 최대 크기") || 96);
+  RS.MessageSystem.Params.textStartX = Number(RS.MessageSystem.popParameter('Text Start X', "텍스트 시작 X") || 192);
   RS.MessageSystem.Params.faceStartOriginX = 168;
-  RS.MessageSystem.Params.numVisibleRows  = Number(parameters['numVisibleRows'] || 4);
-  RS.MessageSystem.Params.gradientColor1 = String(parameters['gradientColor1'] || '#FFFFFF');
-  RS.MessageSystem.Params.gradientColor2 = String(parameters['gradientColor2'] || '#F29661');
-  RS.MessageSystem.Params.gradientColor3 = String(parameters['gradientColor3'] || '#CC3D3D');
-  RS.MessageSystem.Params.nameWindowX = Number(parameters['Name Window X'] || 0);
-  RS.MessageSystem.Params.nameWindowY = Number(parameters['Name Window Y'] || 0);
-  RS.MessageSystem.Params.nameWindowStdPadding = Number(parameters['Name Window Inner Padding'] || 18);
-  RS.MessageSystem.Params.faceOX = Number(parameters['Big Face OX'] || 0);
-  RS.MessageSystem.Params.faceOY = Number(parameters['Big Face OY'] || 0);
-  RS.MessageSystem.Params.faceSide = Boolean(parameters['Show Big Face Back'] === 'true'|| false);
+  RS.MessageSystem.Params.numVisibleRows  = Number(RS.MessageSystem.popParameter('numVisibleRows', "라인 갯수") || 4);
+  RS.MessageSystem.Params.gradientColor1 = String(RS.MessageSystem.popParameter('gradientColor1', "그레디언트 시작 색상") || '#FFFFFF');
+  RS.MessageSystem.Params.gradientColor2 = String(RS.MessageSystem.popParameter('gradientColor2', "그레디언트 중간 색상") || '#F29661');
+  RS.MessageSystem.Params.gradientColor3 = String(RS.MessageSystem.popParameter('gradientColor3', "그레디언트 끝 색상") || '#CC3D3D');
+  RS.MessageSystem.Params.nameWindowX = Number(RS.MessageSystem.popParameter('Name Window X', "이름 윈도우 X") || 0);
+  RS.MessageSystem.Params.nameWindowY = Number(RS.MessageSystem.popParameter('Name Window Y', "이름 윈도우 Y") || 0);
+  RS.MessageSystem.Params.nameWindowStdPadding = Number(RS.MessageSystem.popParameter('Name Window Inner Padding', "이름 윈도우 안쪽 여백") || 18);
+  RS.MessageSystem.Params.faceOX = Number(RS.MessageSystem.popParameter('Big Face OX', "큰 페이스칩 OX") || 0);
+  RS.MessageSystem.Params.faceOY = Number(RS.MessageSystem.popParameter('Big Face OY', "큰 페이스칩 OY") || 0);
+  RS.MessageSystem.Params.faceSide = Boolean(RS.MessageSystem.popParameter('Show Big Face Back', "대화창 뒤에 얼굴 표시") === 'true'|| false);
   RS.MessageSystem.Params.FONT_SIZE = 28;
   RS.MessageSystem.Params.STD_PADDING = 18;
   RS.MessageSystem.Params.WIDTH = (RS.MessageSystem.Params.FONT_SIZE * 6) + RS.MessageSystem.Params.STD_PADDING;
   RS.MessageSystem.Params.HEIGHT = RS.MessageSystem.Params.FONT_SIZE + (RS.MessageSystem.Params.STD_PADDING / 2);
-  RS.MessageSystem.Params.TabSize = Number(parameters['Tab Size'] || 4);
+  RS.MessageSystem.Params.TabSize = Number(RS.MessageSystem.popParameter('Tab Size', "탭 크기") || 4);
 
-  RS.MessageSystem.Params.backOpacity = Number(parameters['back Opacity'] || 192);
-  RS.MessageSystem.Params.translucentOpacity = Number(parameters['translucent Opacity'] || 160);
-  RS.MessageSystem.Params.defaultOpacity = Number(parameters['default Opacity'] || 255);
-  RS.MessageSystem.Params.contentsOpacity = Number(parameters['contents Opacity'] || 255);
-  RS.MessageSystem.Params.defaultOutlineWidth = Number(parameters['default outline width'] || 2);
-  RS.MessageSystem.Params.defaultOutlineColor = parameters['default outline Color'] || 'white';
+  RS.MessageSystem.Params.backOpacity = Number(RS.MessageSystem.popParameter('back Opacity', "배경 그림의 투명도") || 192);
+  RS.MessageSystem.Params.translucentOpacity = Number(RS.MessageSystem.popParameter('translucent Opacity', "반투명도") || 160);
+  RS.MessageSystem.Params.defaultOpacity = Number(RS.MessageSystem.popParameter('default Opacity', "기본 투명도") || 255);
+  RS.MessageSystem.Params.contentsOpacity = Number(RS.MessageSystem.popParameter('contents Opacity', "내용의 투명도") || 255);
+  RS.MessageSystem.Params.defaultOutlineWidth = Number(RS.MessageSystem.popParameter('default outline width', "테두리 크기") || 2);
+  RS.MessageSystem.Params.defaultOutlineColor = RS.MessageSystem.popParameter('default outline Color', "테두리 색상") || 'white';
 
-  RS.MessageSystem.Params.customFont = Boolean(parameters['Using Custom Font'] === 'true');
-  RS.MessageSystem.Params.customFontName = String(parameters['Custom Font Name'] || 'GameFont' );
-  RS.MessageSystem.Params.customFontSrc = String(parameters['Custom Font Src'] || 'fonts/mplus-1m-regular.ttf');
+  RS.MessageSystem.Params.customFont = Boolean(RS.MessageSystem.popParameter('Using Custom Font', "사용자 지정 폰트 사용 여부") === 'true');
+  RS.MessageSystem.Params.customFontName = String(RS.MessageSystem.popParameter('Custom Font Name', "사용자 지정 폰트명") || 'GameFont' );
+  RS.MessageSystem.Params.customFontSrc = String(RS.MessageSystem.popParameter('Custom Font Src', "사용자 지정 폰트 경로") || 'fonts/mplus-1m-regular.ttf');
 
   // RS.MessageSystem.Params.prefixOptions = String(parameters['Prefix Options']);
 

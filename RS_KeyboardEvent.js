@@ -30,6 +30,7 @@ Imported.RS_KeyboardEvent = true;
  * Change Log
  * =============================================================================
  * 2017.01.02 (v1.0.0) - First Release.
+ * 2017.03.03 (v1.0.1) - Added new function that can add new keyCode.
  */
 
 (function() {
@@ -82,6 +83,18 @@ Imported.RS_KeyboardEvent = true;
       });
   };
 
+  Input._executeJson = function (keyInt, keyName, func) {
+    var retObj, type, json;
+    json = {keyInt: keyName};
+    if(typeof json === 'object') retObj = JSON.parse(json);
+    if(retObj) {
+      type = Object.keys(retObj);
+      if(typeof type[0] === 'number') {
+        if(typeof func === 'function') func(retObj);
+      }
+    }
+  };
+
   //============================================================================
   // Game_Interpreter
   //
@@ -99,6 +112,11 @@ Imported.RS_KeyboardEvent = true;
         case 'executeKey':
           var keyCode = parseInt(args[1] || 0);
           Input._makeKeyTiming(keyCode);
+          break;
+        case 'addNewKey':
+          Input._executeJson(parseInt(args[1]), args[2], function (retObj) {
+            Object.assign(Input.keyMapper, retObj);
+          });
           break;
         }
 
