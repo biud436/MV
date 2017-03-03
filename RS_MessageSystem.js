@@ -165,8 +165,9 @@
 * =============================================================================
 * Large Face Bitmap (Bust Image)
 * =============================================================================
-* Place the face image in your img/faces folder and then its file name must set up to start with 'Big_'
-*
+* Adding prefixes like "Big_" to names is a good way to immediately find out a bitmap for a bust from img/faces folder.
+* So you place the image for a bust in your img/faces folder and then its file name must set up to start with 'Big_'
+* Always make sure your resources name.
 * =============================================================================
 * Text code list (English)
 * =============================================================================
@@ -242,7 +243,7 @@
 * =============================================================================
 * Text code list (Chinese)
 * =============================================================================
-* To use these text codes, you must set the language setting as Chinese.
+* To use these text codes, you must set the language setting as Chinese (zh)
 *
 * 色[文本]
 * 速度[值]
@@ -305,15 +306,14 @@
 * 通常
 *
 * =============================================================================
-* Version Log (Korean)
+* Version Log
 * =============================================================================
 * 2017.02.18 (v0.1.5) :
-* - 한글 유니코드 범위가 잘못되어있던 문제 수정
-* - 효과음 재생 기능 추가
-* - 그림 표시 기능 추가
-* - 그림 제거 기능 추가
-* - 데이터베이스 항목 표시 기능 추가
-* - 정렬자 함수의 텍스트 폭 계산 함수 수정
+* - Fixed the problem that has incorrect a range for Hangul Unicode.
+* - Added a feature that plays back a sound files
+* - Added a feature that displays and removes a picture
+* - Added a feature that the text code converted as names of an item in Database.
+* - Fixed the function that calculates the maximum width of the text when using the alignment feature.
 * 2016.11.27 (v0.1.4) : 플러그인 커맨드에서 '0'값을 설정할 수 없는 오류를 수정했습니다.
 * 2016.11.12 (v0.1.3) :
 * - 사용자 정의 폰트, 배경 투명도 변경 기능 추가
