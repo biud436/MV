@@ -4,91 +4,94 @@
 * @author biud436
 *
 * @param Font Size
-* @desc 텍스트 기본 크기
+* @desc Specifies the text size as integer type.
+* (default : 28)
 * @default 28
 *
 * @param numVisibleRows
-* @desc 라인 갯수
+* @desc Sets the number of rows to indicate in a message window.
 * @default 4
 *
 * @param gradientColor1
-* @desc 그레디언트 시작 색상
+* @desc Sets needed gradient color for the start point of the gradient text.
 * @default #FFFFFF
 *
 * @param gradientColor2
-* @desc 그레디언트 중간 색상
+* @desc Sets needed gradient color for the middle point of the gradient text.
 * @default #F29661
 *
 * @param gradientColor3
-* @desc 그레디언트 끝 색상
+* @desc Sets needed gradient color for the ended point of the gradient text.
+
 * @default #CC3D3D
 *
 * @param Text Speed
-* @desc 기본 텍스트 출력 속도
+* @desc Sets the default text speed
 * @default 0
 *
 * @param Text Min Size
-* @desc 폰트 최대 크기
+* @desc limits the text size by specifying the minimum text size when using the text code called '\}'.
 * @default 24
 *
 * @param Text Max Size
-* @desc 폰트 최소 크기
+* @desc limits the text size by specifying the maximum text size when using the text code called '\{'.
 * @default 96
 *
 * @param Text Start X
-* @desc 텍스트 시작 X
+* @desc The starting x position of the text in case of using a large face bitmap.
 * @default 256
 *
 * @param Name Window X
-* @desc 이름 윈도우 X
+* @desc Sets the name window's offset x by dx.
 * @default 0
 *
 * @param Name Window Y
-* @desc 이름 윈도우 Y
+* @desc Sets the name window's offset y by dy.
 * @default 0
 *
 * @param Name Window Inner Padding
-* @desc 이름 윈도우 안쪽 여백
+* @desc Sets the name window's inner padding
 * @default 10
 *
 * @param Big Face OX
-* @desc 큰 페이스칩 X
+* @desc Sets the large face bitmap's offset x
 * @default 0
 *
 * @param Big Face OY
-* @desc 큰 페이스칩 OY
+* @desc Sets the large face bitmap's offset y
 * @default 0
 *
 * @param Show Big Face Back
-* @desc 큰 페이스칩을 메시지창의 뒷면에 표시합니다.
+* @desc Whether display a large face bitmap on the backside of the message window.
+* YES - true  NO - false
 * @default false
 *
 * @param Tab Size
-* @desc 탭 크기
+* @desc Sets the maximum width for tabs.
 * @default 4
 *
 * @param back Opacity
-* @desc 배경 그림의 투명도
+* @desc Sets the opacity of the message window for backgrounds.
 * @default 192
 *
 * @param default Opacity
-* @desc 기본 투명도
+* @desc Sets the default opacity of the message window.
 * @default 255
 *
 * @param contents Opacity
-* @desc 내용의 투명도
+* @desc Sets the opacity of the message window for all contents.
 * @default 255
 *
 * @param translucent Opacity
-* @desc 반투명도
+* @desc Sets the translucent opacity of the message window.
 * @default 160
 *
 * @param default outline width
-* @desc 테두리의 크기를 지정하세요
+* @desc Specifies the maximum width for text borders.
 * @default 2
 *
 * @param default outline Color
-* @desc 테두리 색상을 지정하세요
+* @desc Specifies the color for text borders.
 * @default rgba(0, 0, 0, 1.0)
 *
 * @param --- Custom Font
@@ -96,16 +99,16 @@
 * @default
 *
 * @param Using Custom Font
-* @desc 사용자 지정 폰트를 사용하시겠습니까?
-* 예 - true   아니오 - false
+* @desc Do you wish to use a custom font?
+* YES - true   NO - false
 * @default false
 *
 * @param Custom Font Name
-* @desc Font의 이름을 작성하세요
+* @desc Specifies the name for fonts
 * @default NanumBrush
 *
 * @param Custom Font Src
-* @desc 사용자 지정 Font의 경로를 지정하세요
+* @desc Specifies the file path for fonts
 * @default fonts/NanumBrush.ttf
 *
 * @param ---
@@ -114,43 +117,66 @@
 *
 * @help
 * =============================================================================
-* 플러그인 커맨드
+* Plugin Commands
 * =============================================================================
-* 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
 *
-* - 텍스트의 속도는 0에서 가장 빠르고, 프레임 단위로 지정할 수 있습니다.
-* 메시지 텍스트속도 number
+* You can be available the plugin commands as follows.
 *
-* 메시지 폰트크기 number
-* 메시지 폰트최소크기 number
-* 메시지 폰트최대크기 number
+* - The speed of the text is the fastest at 0, then you can specify as the frame units.
+* Message textSpeed number
 *
-* - 그레디언트 텍스트로 색상을 변경할 수 있습니다.
-* 메시지 그레디언트 color1 color2 color3
+* Message fontSize number
+* Message minFontSize number
+* Message maxFontSize number
 *
-* - 라인 수를 바꿀 수 있는 플러그인 명령입니다.
-* 메시지 라인 number
-* 메시지 시작위치 number
+* - This plugin command allows you to change the color of the gradient text.
+* 'color1' is the color of the start point of the gradient text.
+* 'color2' is the color of the middle point of the gradient text.
+* 'color3' is the color of the ended point of the gradient text.
+* All colors must set as a string type the same as #FFFFFF
+* Message gradient color1 color2 color3
 *
-* 이름 윈도우의 좌표를 조절
-* 메시지 이름윈도우 x number
-* 메시지 이름윈도우 y number
-* 메시지 이름윈도우 padding number
-* 메시지 큰페이스칩X number
-* 메시지 큰페이스칩Y number
-* 메시지 큰페이스칩Z number
-* 메시지 탭크기 number
-* 메시지 배경투명도 number
-* 메시지 컨텐츠투명도 number
+* - This plugin command allows you to change the number of rows in the message window.
+* Message line number
+*
+* - This plugin command allows you to change the starting x position of the text when using a large face bitmap.
+* Message textStartX number
+*
+* - These plugin commands can set the name window's offset by x, y
+* Message name x number
+* Message name y number
+* Message name padding number
+*
+* - These plugin commands can set the large face bitmap's offset by dx, dy
+* Message faceOX dx
+* Message faceOY dy
+*
+* - This plugin command allows you to set whether display a large face bitmap on the backside of the message window.
+* If you set the 'value' by 0, -1, it will display the bitmap on the backside of the message window.
+* Otherwise, it will display it in a front in case of the 'value' is 1 or more.
+* Message faceZ value
+*
+* - This plugin command allows you to set the maximum width for tabs.
+* Message TabSize number
+*
+* Message backOpacity number
+* Message contentsOpacity number
 *
 * =============================================================================
-* 큰 페이스칩 설정
+* Large Face Bitmap (Bust Image)
 * =============================================================================
-* 페이스칩을 img/faces 에 넣고 페이스칩의 이름을 Big_ 으로 시작하게 합니다.
+* Place the face image in your img/faces folder and then its file name must set up to start with 'Big_'
 *
 * =============================================================================
-* 텍스트 코드(Text Code)
+* Text code list (English)
 * =============================================================================
+* There's nothing.
+*
+* =============================================================================
+* Text code list (Korean)
+* =============================================================================
+* To use these text codes, you must set the language setting as Korean.
+*
 * \색[색상명]
 * \속도[값]
 * \테두리색[색상명]
@@ -186,9 +212,12 @@
 * \적군[번호]
 * \상태[번호]
 * \스킬[번호]
+*
 * =============================================================================
-* 색상(Colors)
+* Color list (Korean)
 * =============================================================================
+* To use these colors, you must set the language setting as Korean.
+*
 * 청록, 청록색, c_aqua
 * 검은색, 검정, c_black
 * 파란색, 파랑, c_blue
@@ -211,7 +240,72 @@
 * 기본, 기본색, c_normal
 *
 * =============================================================================
-* 버전 로그(Version Log)
+* Text code list (Chinese)
+* =============================================================================
+* To use these text codes, you must set the language setting as Chinese.
+*
+* 色[文本]
+* 速度[值]
+* 大小[值]
+* 轮廓颜色[颜色的名]
+* 轮廓宽度[大小]
+* 缩进[值]
+* 加粗!
+* 倾斜!
+* 名字<文本>
+* 渐变颜色<文本>
+* 队伍成员[号码]
+* 角色[号码]
+* 变量[号码]
+* 图标[号码]
+* 增大
+* 减少
+* 金币
+* 对话框[EventID]
+* 对话框[0]
+* 对话框[-1]
+* 对齐[1] (居中对齐)
+* 对齐[2] (右对齐)
+* 数[值]
+* 音效播放<sound name>
+* 显示图像<号码, picture name, origin, x, y>
+* 隐藏图像[号码]
+* 道具[号码]
+* 武器[号码]
+* 装甲[号码]
+* 职业[号码]
+* 敌人[号码]
+* 状态[号码]
+* 技能[号码]
+*
+* =============================================================================
+* Color list (Chinese)
+* =============================================================================
+* To use these colors, you must set the language setting as Chinese.
+*
+* 水色
+* 黑色
+* 蓝色
+* 深灰色
+* 紫红色
+* 灰色
+* 绿色
+* 浅绿色
+* 浅灰色
+* 栗色
+* 绀青色
+* 黄绿色
+* 橙黄色
+* 紫色
+* 红色
+* 银白色
+* 水鸭色
+* 白色
+* 黄色
+* 通常
+*
+* =============================================================================
+* Version Log (Korean)
 * =============================================================================
 * 2017.02.18 (v0.1.5) :
 * - 한글 유니코드 범위가 잘못되어있던 문제 수정
@@ -479,209 +573,6 @@
 * 2015.12.03 (v0.0.3) - 말풍선 기능 추가
 * 2015.12.02 (v0.0.2) - 큰 페이스칩 기능 추가
 * 2015.12.01 (v0.0.1) - 최초 작성
-*/
-/*:zh
-* @plugindesc (v0.1.5) Chinese Message System <RS_MessageSystem>
-* @author biud436
-*
-* @param Font Size
-* @desc Sets the text size
-* @default 28
-*
-* @param numVisibleRows
-* @desc Sets the visible rows in the message window.
-* @default 4
-*
-* @param gradientColor1
-* @desc Sets the gradient color 1
-* @default #FFFFFF
-*
-* @param gradientColor2
-* @desc Sets the gradient color 2
-* @default #F29661
-*
-* @param gradientColor3
-* @desc Sets the gradient color 3
-* @default #CC3D3D
-*
-* @param Text Speed
-* @desc Sets the text speed
-* @default 0
-*
-* @param Text Min Size
-* @desc Sets minimum size of the text
-* @default 24
-*
-* @param Text Max Size
-* @desc Sets maximum size of the text
-* @default 96
-*
-* @param Text Start X
-* @desc Sets stating position of the text
-* @default 256
-*
-* @param Name Window X
-* @desc Sets position-x in the name window
-* @default 0
-*
-* @param Name Window Y
-* @desc Sets position-y in the name window
-* @default 0
-*
-* @param Name Window Inner Padding
-* @desc Sets the inner padding value in a name window
-* @default 10
-*
-* @param Big Face OX
-* @desc Sets the offset position-x of a face
-* @default 0
-*
-* @param Big Face OY
-* @desc Sets the offset position-y of a face
-* @default 0
-*
-* @param Show Big Face Back
-* @desc Hidden the face in the message window.
-* @default false
-*
-* @param Tab Size
-* @desc Tab Size
-* @default 4
-*
-* @param back Opacity
-* @desc
-* @default 192
-*
-* @param default Opacity
-* @desc
-* @default 255
-*
-* @param contents Opacity
-* @desc
-* @default 255
-*
-* @param translucent Opacity
-* @desc
-* @default 160
-*
-* @param default outline width
-* @desc
-* @default 2
-*
-* @param default outline Color
-* @desc
-* @default rgba(0, 0, 0, 1.0)
-*
-* @param --- Custom Font
-* @desc
-* @default
-*
-* @param Using Custom Font
-* @desc
-* @default false
-*
-* @param Custom Font Name
-* @desc
-* @default NanumBrush
-*
-* @param Custom Font Src
-* @desc
-* @default fonts/NanumBrush.ttf
-*
-* @param ---
-* @desc
-* @default
-*
-* @param Prefix Options
-* @desc
-* @default
-*
-*-------------------------------------------------------------------------------
-* Help
-*-------------------------------------------------------------------------------
-* @help
-*
-* - Plugin Commands
-* You are available plugin commands as follows.
-* These plugin commands may be very useful to user.
-*
-* Message textSpeed number
-* Message fontSize number
-* Message minFontSize number
-* Message maxFontSize number
-* Message gradient color1 color2 color3
-* Message line number
-* Message textStartX number
-* Message name x number
-* Message name y number
-* Message name padding number
-* Message faceOX number
-* Message faceOY number
-* Message faceZ number
-* Message TabSize number
-* Message backOpacity number
-* Message contentsOpacity number
-*
-* - Text Code
-* These text codes are available in the message window.
-*
-* 色[文本]
-* 速度[值]
-* 大小[值]
-* 轮廓颜色[颜色的名]
-* 轮廓宽度[大小]
-* 缩进[值]
-* 加粗!
-* 倾斜!
-* 名字<文本>
-* 渐变颜色<文本>
-* 队伍成员[号码]
-* 角色[号码]
-* 变量[号码]
-* 图标[号码]
-* 增大
-* 减少
-* 金币
-* 对话框[EventID]
-* 对话框[0]
-* 对话框[-1]
-* 对齐[1] (居中对齐)
-* 对齐[2] (右对齐)
-* 数[值]
-* 音效播放<sound name>
-* 显示图像<号码, picture name, origin, x, y>
-* 隐藏图像[号码]
-* 道具[号码]
-* 武器[号码]
-* 装甲[号码]
-* 职业[号码]
-* 敌人[号码]
-* 状态[号码]
-* 技能[号码]
-*
-* - Colors
-* These text colors are available in the message window.
-
-* 水色
-* 黑色
-* 蓝色
-* 深灰色
-* 紫红色
-* 灰色
-* 绿色
-* 浅绿色
-* 浅灰色
-* 栗色
-* 绀青色
-* 黄绿色
-* 橙黄色
-* 紫色
-* 红色
-* 银白色
-* 水鸭色
-* 白色
-* 黄色
-* 通常
 */
 
 var Imported = Imported || {};
