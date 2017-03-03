@@ -6,26 +6,58 @@ var Imported = Imported || {};
 Imported.RS_KeyboardEvent = true;
 
 /*:
- * @plugindesc This plugin allows you to send keyboard input events manually.
+ * @plugindesc (v1.01) This plugin allows you to send keyboard input events manually.
  * @author biud436
  * @help
  * =============================================================================
+ * Introduction
+ * ============================================================================= *
+ * This plugin can process a keyboard event without pressing a real button within a keyboard.
+ *
+ * =============================================================================
  * Plugin Commands
  * =============================================================================
+ * - 'keyCode' must be number type like as 0x58 or 80
+ * - 'keyName' should be the value for a strings that could not found in Input.keyMapper
+ *
+ * - These commands allow user to send a virtual key code in main logic of Input class.
+ * KeyEvent executeString keyName
+ * KeyEvent executeKey keyCode
+ *
+ * - This command allows user to add a new virtual key code in global Input class.
+ * KeyEvent addNewKey keyCode keyName
+ *
+ * - There are example codes at the next line.
  * KeyEvent executeString left
  * KeyEvent executeString escape
  * KeyEvent executeKey 0x58
+ * KeyEvent addNewKey 0x50 p
  * =============================================================================
  * Script Calls
  * =============================================================================
+ * Here's two javascript functions.
+ *
+ * - This function allows user to send a virtual key code in main logic of Input class.
+ *
+ * Input._makeKeyTiming(keyCode);
+ *
+ * - This function allows user to add a new virtual key code in global Input class.
+ * 'keyCode' must be number type like as 0x58 or 80
+ * 'keyName' should be the value for a strings that could not found in Input.keyMapper
+ * 'func' object has executed if JSON object is successfully created.
+ * The first parameter of the callback function is the JSON object that created at the caller.
+ *
+ * Input._executeJson(keyCode, keyName, func);
+ *
+ * - There are example codes at the next line.
  * Input._makeKeyTiming('left');
  * Input._makeKeyTiming('escape');
- *
  * Input._makeKeyTiming('down');
  * Input._makeKeyTiming('control');
- *
  * Input._makeKeyTiming(116);
- *
+ * Input._executeJson(0x58, 'p', function (retObj) {
+ *   Object.assign(Input.keyMapper, retObj);
+ * });
  * =============================================================================
  * Change Log
  * =============================================================================
