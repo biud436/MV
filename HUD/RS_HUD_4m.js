@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.2) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.3) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
@@ -9,42 +9,42 @@
  * @default
  *
  * @param EXP Gauge
- * @desc
+ * @desc Specifies to import file in the path named 'exr' from img/pictures folder.
  * @default exr
  * @require 1
  * @dir img/pictures/
  * @type file
  *
  * @param Empty Gauge
- * @desc
+ * @desc Specifies to import file in the path named 'gauge' from img/pictures folder.
  * @default gauge
  * @require 1
  * @dir img/pictures/
  * @type file
  *
  * @param HP Gauge
- * @desc
+ * @desc Specifies to import file in the path named 'hp' from img/pictures folder.
  * @default hp
  * @require 1
  * @dir img/pictures/
  * @type file
  *
  * @param MP Gauge
- * @desc
+ * @desc Specifies to import file in the path named 'mp' from img/pictures folder.
  * @default mp
  * @require 1
  * @dir img/pictures/
  * @type file
  *
  * @param HUD Background
- * @desc
+ * @desc Specifies to import file in the path named 'hud_window_empty' from img/pictures folder.
  * @default hud_window_empty
  * @require 1
  * @dir img/pictures/
  * @type file
  *
  * @param Masking
- * @desc
+ * @desc Specifies to import file in the path named 'masking' from img/pictures folder.
  * @default masking
  * @require 1
  * @dir img/pictures/
@@ -55,48 +55,48 @@
  * @default
  *
  * @param Face Position
- * @desc x, y, visible
- * (default : 0, 0, true)
+ * @desc Specifies the properties of the face sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 0, 0, true
  *
  * @param HP Position
- * @desc x, y, visible
- * (default : 160, 43, true)
+ * @desc Specifies the properties of the hp sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 160, 43, true
  *
  * @param MP Position
- * @desc x, y, visible
- * (default : 160, 69, true)
+ * @desc Specifies the properties of the mp sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 160, 69, true
  *
  * @param EXP Position
- * @desc x, y, visible
- * (default : 83, 91, true)
+ * @desc Specifies the properties of the exp sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 83, 91, true
  *
  * @param HP Text Position
- * @desc x, y, visible
- * (default : 160, 53, true)
+ * @desc Specifies the properties of the hp text sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 160, 53, true
  *
  * @param MP Text Position
- * @desc x, y, visible
- * (default : 160, 79, true)
+ * @desc Specifies the properties of the mp text sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 160, 79, true
  *
  * @param Level Text Position
- * @desc x, y, visible
- * (default : 60, 80, true)
+ * @desc Specifies the properties of the level text sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 60, 80, true
  *
  * @param EXP Text Position
- * @desc x, y, visible
- * (default : 120.5, 93, true)
+ * @desc Specifies the properties of the exp text sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 120.5, 93, true
  *
  * @param Name Text Position
- * @desc x, y, visible
- * (default : 54, 53, false)
+ * @desc Specifies the properties of the name text sprite by x, y, visible
+ * (Draw it at changing position relative to a background sprite)
  * @default 54, 53, false
  *
  * @param --- Noraml
@@ -104,13 +104,13 @@
  * @default
  *
  * @param Width
- * @desc Width (default : 317)
- * Do not change this when you are using the default sprite batch.
+ * @desc Do not change this when you are using the default sprite batch.
+ * (default : 317)
  * @default 317
  *
  * @param Height
- * @desc Height (default : 101)
- * Do not change this when you are using the default sprite batch.
+ * @desc Do not change this when you are using the default sprite batch.
+ * (default : 101)
  * @default 101
  *
  * @param Margin
@@ -158,7 +158,7 @@
  * @default ------/------
  *
  * @param Max Members
- * @desc
+ * @desc Specifies the maximum number of party members that displays within the game screen.
  * @default 4
  *
  * @param --- Font
@@ -174,27 +174,27 @@
  * @default NanumGothic, Dotum, AppleGothic, sans-serif
  *
  * @param Standard Font
- * @desc
+ * @desc Specifies to import a css for the font file from ./fonts folder.
  * @default GameFont
  *
  * @param Level Text Size
- * @desc
+ * @desc Specify the text size for levels.
  * @default 24
  *
  * @param HP Text Size
- * @desc
+ * @desc Specify the text size for HP.
  * @default 12
  *
  * @param MP Text Size
- * @desc
+ * @desc Specify the text size for MP.
  * @default 12
  *
  * @param EXP Text Size
- * @desc
+ * @desc Specify the text size for EXP.
  * @default 12
  *
  * @param Name Text Size
- * @desc
+ * @desc Specify the text size for names.
  * @default 12
  *
  * @param --- Text Color
@@ -202,23 +202,23 @@
  * @default
  *
  * @param HP Color
- * @desc
+ * @desc Specify the text color for HP.
  * @default #ffffff
  *
  * @param MP Color
- * @desc
+ * @desc Specify the text color for MP.
  * @default #ffffff
  *
  * @param EXP Color
- * @desc
+ * @desc Specify the text color for EXP.
  * @default #ffffff
  *
  * @param Level Color
- * @desc
+ * @desc Specify the text color for levels.
  * @default #ffffff
  *
  * @param Name Color
- * @desc
+ * @desc Specify the text color for names.
  * @default #ffffff
  *
  * @param --- Text Outline Color
@@ -226,23 +226,23 @@
  * @default
  *
  * @param HP Outline Color
- * @desc
+ * @desc Specify the text outline color for HP.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param MP Outline Color
- * @desc
+ * @desc Specify the text outline color for MP.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param EXP Outline Color
- * @desc
+ * @desc Specify the text outline color for EXP.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param Level Outline Color
- * @desc
+ * @desc Specify the text outline color for levels.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param Name Outline Color
- * @desc
+ * @desc Specify the text outline color for names.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param --- Text Outline Width
@@ -250,23 +250,23 @@
  * @default
  *
  * @param HP Outline Width
- * @desc
+ * @desc Specify the maximum width of a text border line for HP.
  * @default 4
  *
  * @param MP Outline Width
- * @desc
+ * @desc Specify the maximum width of a text border line for MP.
  * @default 4
  *
  * @param EXP Outline Width
- * @desc
+ * @desc Specify the maximum width of a text border line for EXP.
  * @default 4
  *
  * @param Level Outline Width
- * @desc
+ * @desc Specify the maximum width of a text border line for levels.
  * @default 4
  *
  * @param Name Outline Width
- * @desc
+ * @desc Specify the maximum width of a text border line for names.
  * @default 4
  *
  * @param --- Custom Font
@@ -274,15 +274,16 @@
  * @default
  *
  * @param Using Custom Font
- * @desc
+ * @desc Specify whether the custom font shows (default : false)
+ * YES - true   /   NO - false
  * @default false
  *
  * @param Custom Font Name
- * @desc
+ * @desc Specify the name of the custom font
  * @default NanumBrush
  *
  * @param Custom Font Src
- * @desc
+ * @desc Specify the path of the font file from a game project folder
  * @default fonts/NanumBrush.ttf
  *
  * @param --- Custom HUD Anchor
@@ -290,90 +291,149 @@
  * @default
  *
  * @param Custom Pos 1
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to a custom position of the help section)
  * @default 0, (H * 0) + PD
  *
  * @param Custom Pos 2
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default 0, (H * 1) + PD
  *
  * @param Custom Pos 3
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default 0, (H * 2) + PD
  *
  * @param Custom Pos 4
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default 0, (H * 3) + PD
  *
  * @param Custom Pos 5
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default 0, (H * 4) + PD
  *
  * @param Custom Pos 6
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default W + PD, (H * 0) + PD
  *
  * @param Custom Pos 7
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default W + PD, (H * 1) + PD
  *
  * @param Custom Pos 8
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default W + PD, (H * 2) + PD
  *
  * @param Custom Pos 9
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default W + PD, (H * 3) + PD
  *
  * @param Custom Pos 10
- * @desc
+ * @desc Predefined Variables : W, H, PD, BW, BH
+ * (Please refer to the help section)
  * @default W + PD, (H * 4) + PD
  *
  * @help
  * =============================================================================
  * Installations
  * =============================================================================
+ *
  * Download the resources and place them in your img/pictures folder.
  * All the resources can download in the following link.
  * Resources Link : https://www.dropbox.com/s/umjlbgfgdts2rf7/pictures.zip?dl=0
  *
- * In Plugin Manager,
- * You have to pre-load the resources using the parameter called 'preloadImportantFaces'.
+ * In Plugin Manager, You have to pre-load the resources using the parameter
+ * called 'preloadImportantFaces'.
  *
  * Demo Link : https://www.dropbox.com/s/v6prurtempabqqv/hud.zip?dl=0
  * Github Link : https://github.com/biud436/MV/blob/master/HUD/RS_HUD_4m.js
  *
  * =============================================================================
+ * Custom Positions
+ * =============================================================================
+ *
+ * To display in correct place, you need to know which predefined variables are currently available.
+ * You can be available predefined variables as belows when specifying the parameter
+ * named 'Custom Pos'. So you can quickly set up positions for a hud itself.
+ *
+ * Predefined Variables :
+ *    W   - 'W' is the same as a parameter named 'Width' in Plugin Manager.
+ *    H   - 'H' is the same as a parameter named 'Height' in Plugin Manager
+ *    PD  - 'PD' is the same as a parameter named 'Margin' in Plugin Manager
+ *    BW  - 'BW' is the same as a maximum width of the game canvas.
+ *    BH  - 'BH' is the same as a maximum height of the game canvas.
+ *
+ * Each sprites draw at changing position relative to the background sprite.
+ * Therefore, this custom position is pretty important values.
+ *
+ * =============================================================================
+ * Notetags
+ * =============================================================================
+ *
+ * Insert the following the notetag into the map property window as below.
+ * <DISABLE_HUD> : A notetag can use in the map that does not wish create each huds.
+ *
+ * =============================================================================
  * Script Calls
  * =============================================================================
  *
- * - Sets the opacity
- * Sets the opacity of the HUD to x. That is a number between 0 and 255.
- * $gameHud.opacity = 0;
+ * -----------------------------------------------------------------------------
+ * Set Opacity
+ * -----------------------------------------------------------------------------
+ * Sets the opacity of the HUD to x.
  *
- * - Sets the visible
+ *    $gameHud.opacity = x;
+ *
+ * That is a number between 0 and 255.
+ *
+ * For example :
+ *    $gameHud.opacity = 128;
+ *
+ * -----------------------------------------------------------------------------
+ * Set visibility
+ * -----------------------------------------------------------------------------
  * This variable will change the visible option of the HUD.
- * $gameHud.show = true;
- * $gameHud.show = false;
  *
+ *    $gameHud.show = true/false;
+ *
+ * For example :
+ *    $gameHud.show = false;
+ *
+ * -----------------------------------------------------------------------------
+ * Refresh Texts
+ * -----------------------------------------------------------------------------
+ * In general, text and gauge sprites refresh when requesting a refresh so this one is not
+ * updated on every frame. Therefore if you need to immediately refresh
+ * all texts for themselves, you will use as belows.
+ *
+ *   $gameTemp.notifyHudTextRefresh();
+ *
+ * -----------------------------------------------------------------------------
+ * Clear and create all huds
+ * -----------------------------------------------------------------------------
+ * if you need to immediately recreate for all Huds, you will use as belows.
+ *
+ *   $gameTemp.notifyHudRefresh();
  * =============================================================================
  * Plugin Commands
  * =============================================================================
  *
- * RS_HUD Opacity x
- * the x is number value between 0 and 255.
+ * RS_HUD Opacity x : This command sets up the opacity for all hud elements.
+ *    'x' is a number value between 0 and 255.
  *
- * RS_HUD Visible true
- * Setting the HUD's visible status to true
+ * RS_HUD Visible true/false : This command sets up whether it displays all containers for HUD.
+ *    'RS_HUD Visible true' sets its visibility to true.
+ *    'RS_HUD Visible false' sets its visibility to false.
  *
- * RS_HUD Visible false
- * Setting the HUD's visible status to false.
- *
- * RS_HUD import file_name
- * Import the parameter as the json file from your data folder.
- *
- * RS_HUD export file_name
- * Export the parameter as the json file to your data folder.
+ * RS_HUD import file_name : This command imports the parameter as the json file from your data folder.
+ * RS_HUD export file_name : This command exports the parameter as the json file to your data folder.
  *
  * =============================================================================
  * Change Log
@@ -425,10 +485,13 @@
  * - Added a new parameter that could increase the number of the HUD.
  * - Added parameters for user custom HUD position.
  * - Fixed an issue that is not working in battle test mode
+ * 2017.03.06 (v1.2.3) :
+ * - Added many descriptions for plugin parameters and help section.
+ * - Altered the hud to be updated all parameters once when initializing.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.2.2';
+Imported.RS_HUD_4m = '1.2.3';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -1024,6 +1087,7 @@ RS.HUD.param = RS.HUD.param || {};
     this.setCallbackFunction(func);
     this.updateTextLog();
     this._params = params;
+    this.requestUpdate();
     this.addEventListener('broadcast.rs.hud');
   };
 
@@ -1294,6 +1358,7 @@ RS.HUD.param = RS.HUD.param || {};
       this.createText();
       this.createVector();
       this.setPosition();
+      this.paramUpdate();
       this.addEventListener('broadcast.rs.hud');
   };
 
@@ -1661,9 +1726,12 @@ RS.HUD.param = RS.HUD.param || {};
   var alias_Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
     alias_Scene_Map_createDisplayObjects.call(this);
-    if(RS.HUD.param.battleOnly) {
+    if(RS.HUD.param.battleOnly || ($dataMap && $dataMap.meta.DISABLE_HUD) ) {
+
       $gameHud = new RS_EmptyHudLayer();
+
     } else {
+
       this._hudLayer = new RS_HudLayer();
       this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
@@ -1672,6 +1740,7 @@ RS.HUD.param = RS.HUD.param || {};
 
       this.addChild(this._hudLayer);
       this.swapChildren(this._windowLayer, this._hudLayer);
+
     }
   };
 
