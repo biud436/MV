@@ -1,45 +1,102 @@
 /**
- * =============================================================================
- * npm init
- * npm install --save express
- * npm install --save socket.io
- * npm install --save crypto-js
- * npm install --save body-parser
- * npm install --save pbkdf2-password
- * =============================================================================
+ * package.json을 참고하세요
  */
 
-const app = require('express')();
-const session = require('express-session');
-const fs = require('fs');
-const bkfd2Password = require("pbkdf2-password");
-const hasher = bkfd2Password();
+const express = require('express'),
+      app = express(),
+      cookieParser = require('cookie-parser'),
+      session = require('express-session'),
+      fs = require('fs'),
+      bkfd2Password = require("pbkdf2-password"),
+      hasher = bkfd2Password(),
+      DebugLog = require('./Log'),
+      log = new DebugLog();
 
-app.use(session({
-  secret: 'f+nzTglLSOwcsfuUoDq0btcEjLafbG2cdK77gOTEmODqptelqgKSMsOqcmMEr3oTZWQyCOsUFmkJFj678Pdlug==',
-  resave: false,
-  saveUninitialized: true
-}));
+// Set the default port to app object.
+app.set('port', process.env.PORT || 3000);
 
 const options = {
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
 };
 
-const http = require('http').Server(app);
-const https = require('https').createServer(options, app).listen(3000, function(){
-  console.log('listening on *:3000');
-});
-const io = require('socket.io')(http);
-const bodyParser = require('body-parser');
-const CryptoJS = require("crypto-js");
-const AES = require("crypto-js/aes");
+const http = require('http').Server(app),
+      https = require('https').createServer(options, app).listen(app.get('port'), function(){
+        log.emit('info', `listening on *:${app.get('port')}`);
+      }),
+      io = require('socket.io')(http),
+      bodyParser = require('body-parser'),
+      sstatic = require('serve-static'),
+      CryptoJS = require("crypto-js"),
+      AES = require("crypto-js/aes"),
+      path = require('path'),
+      router = express.Router();
 
 /**
- * =============================================================================
+ * 오류 페이지 설정
+ */
+
+const expressErrorHanlder = require('express-error-handler');
+
+let errorHandler = expressErrorHanlder({
+  static: {
+    '404': './public/404.html'
+  }
+});
+
+/**
+ * 미들웨어 설정
+ * bodyParser -> router
+ */
+
+ // application/x-www-form-urlencoded 형식 처리
+ app.use(bodyParser.urlencoded({ extended: false }));
+
+ // JSON 형식 처리
+ app.use(bodyParser.json(););
+
+ // public 폴더 내로 접근
+ app.use('/public', sstatic( path.join(__dirname, 'public') ));
+
+// 쿠키 처리
+app.use( express.cookieParser() );
+
+// 세션 처리
+app.use(session({
+    secret: 'f+nzTglLSOwcsfuUoDq0btcEjLafbG2cdK77gOTEmODqptelqgKSMsOqcmMEr3oTZWQyCOsUFmkJFj678Pdlug==',
+    resave: true,
+    saveUninitialized: true
+}));
+
+// 404 오류 처리
+app.use( expressErrorHanlder.httpError(404) );
+app.use( errorHandler );
+
+// 라우터 설정
+app.use('/', router);
+
+//------------------------------------------------------------------------------
+
+const MongoClient = require('mogodb').MongoClient;
+
+class DB
+{
+  connect()
+  {
+    let databaseUrl = 'mogodb://localhost:27017/local';
+    MongoClient.connect(databaseUrl, function (err, db)
+    {
+      if (err) throw err;
+      DB.database = db;
+    });
+  }
+}
+
+DB.database = null;
+
+/**
  * JSON 파일 암호화
  * @class JsonFormatter
- * =============================================================================
  */
 
 class JsonFormatter {
@@ -131,17 +188,11 @@ class ServerWorker {
     }
 
     static render() {
-      this.processBodyParser();
       this.processDataKey();
       this.requestLoginPage();
       this.requestJsonFomatter();
       this.processSocketIo();
       this.waitForHttpConneted();
-    }
-
-    static processBodyParser() {
-      app.use(bodyParser.json());
-      app.use(bodyParser.urlencoded({ extended: false }));
     }
 
     static processDataKey() {
@@ -152,8 +203,7 @@ class ServerWorker {
     static reqeustLoginPage() {
 
       app.get('/login.html', function (req, res) {
-        res.set({'Content-Type': 'text/html',
-        'charset': 'utf-8'});
+        res.set({'Content-Type': 'text/html', 'charset': 'utf-8'});
         res.sendFile(__dirname + '/login.html');
       });
 
@@ -232,7 +282,7 @@ class ServerWorker {
 
     static waitForHttpConneted() {
       http.listen(3100, function(){
-        console.log('listening on *:3100');
+        log.emit('info', 'listening on *:3100');
       });
     }
 

@@ -33,36 +33,43 @@ Imported.AnimatedTitleImage = true;
 
 (function() {
 
-  var parameters = PluginManager.parameters('RS_AnimatedTitleImage');
-  var titleFile = (function() {
-    return parameters['files'].split(/[^\w]/gi);
-  })();
-  var titleTime = Number(parameters['time intervals'] || 2);
-  var isPreload = Boolean(parameters['preload'] === 'true');
-
-  var saveTime = Date.now();
-
   var alias_Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
   Scene_Boot.prototype.loadSystemImages = function() {
-    alias_Scene_Boot_loadSystemImages.call(this);
-    if(!isPreload) return;
-    titleFile.forEach(function(i) {
-      ImageManager.loadTitle1(i);
-    }, this);
+      alias_Scene_Boot_loadSystemImages.call(this);
+      var parameters = PluginManager.parameters('RS_AnimatedTitleImage');
+      var titleFile = parameters['files'].split(/[^\w]/gi);
+      var isPreload = Boolean(parameters['preload'] === 'true');
+      if(!isPreload) return;
+      titleFile.forEach(function(i) {
+        ImageManager.loadTitle1(i);
+      }, this);
+  };
+
+  var alias_Scene_Title_create = Scene_Title.prototype.create;
+  Scene_Title.prototype.create = function () {
+      alias_Scene_Title_create.call(this);
+      var parameters = PluginManager.parameters('RS_AnimatedTitleImage');
+      this._titleFile = parameters['files'].split(/[^\w]/gi);
+      this._nSavingTime = Date.now();
+      this._nTitleTime = Number(parameters['time intervals'] || 2);
   };
 
   var alias_Scene_Title_update = Scene_Title.prototype.update;
   Scene_Title.prototype.update = function() {
-    alias_Scene_Title_update.call(this);
-    this.chooseIndex();
+      alias_Scene_Title_update.call(this);
+      this.chooseIndex();
+  };
+
+  Scene_Title.prototype.isRefresh = function () {
+      return Date.now() - this._nSavingTime >= Math.floor(this._nTitleTime * 1000);
   };
 
   Scene_Title.prototype.chooseIndex = function() {
-    if( Date.now() - saveTime >= (titleTime * 1000) ) {
-      this._spriteIndex = (saveTime % titleFile.length) || 0;
-      this._backSprite1.bitmap = ImageManager.loadTitle1(titleFile[this._spriteIndex]);
-      saveTime = Date.now();
-    }
+      if( this.isRefresh() ) {
+          this._spriteIndex = (this._nSavingTime % titleFile.length) || 0;
+          this._backSprite1.bitmap = ImageManager.loadTitle1(this._titleFile[this._spriteIndex]);
+          this._nSavingTime = Date.now();
+      }
   };
 
 })();
