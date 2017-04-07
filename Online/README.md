@@ -4,12 +4,7 @@ To run the game server, You have to install the Node.js for Windows. After that,
 
 ```shell
 npm init
-npm install --save express
-npm install --save socket.io
-npm install --save crypto-js
-npm install --save body-parser
-npm install --save pbkdf2-password
-npm insntall --save express-session
+npm install
 ```
 
 This is not using the database. But The Database will be updating later.
