@@ -1,14 +1,11 @@
+I will redesign the server and client from the ground up.
+Of course, To do all these improvements, I'll need a lot of time.
 
-# How to start the server
+# Goals
 
-If you start the server, you will start a file called <b>'start.bat'</b>
-
-```shell
-start.bat
-```
-
-<p> Or You can start a file called <b>'index.js'</b> using <b>node.js</b><br>
-
-```shell
-node index.js
-```
+- Manage a database using MongoDB (NoSQL)
+Saving an ID and hashed password
+- Manage an user schema using Mongoose
+- Adding an Encryption feature
+- Modularization all of features
+- Designing Login (Cookie, Session)
