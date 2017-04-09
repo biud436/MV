@@ -98,7 +98,7 @@ let JsonFormatter = require('./module/JsonFormatter');
 let BasicEmitter = require('./module/BasicEmitter');
 let ServerWorker = require('./module/ServerWorker');
 let Service = require('./module/Service');
-let Ranking = require('.module/Ranking');
+let Ranking = require('./module/Ranking');
 
 ServerWorker.create();
 ServerWorker.render();
