@@ -4,7 +4,7 @@ Of course, To do all these improvements, I'll need a lot of time.
 # Goals
 
 - Manage a database using MongoDB (NoSQL)
-<BR>Saving an ID and hashed password
+<BR>Many good games are saving an ID and hashed password to DB.
 - Manage an user schema using Mongoose
 - Adding an Encryption feature
 - Modularization all of features
