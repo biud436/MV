@@ -2,6 +2,8 @@
  * package.json을 참고하세요
  */
 
+let config = require('./config');
+
 const express = require('express'),
       app = express(),
       cookieParser = require('cookie-parser'),
@@ -9,11 +11,11 @@ const express = require('express'),
       fs = require('fs'),
       bkfd2Password = require("pbkdf2-password"),
       hasher = bkfd2Password(),
-      DebugLog = require('./Log'),
+      DebugLog = require('./log'),
       log = new DebugLog();
 
 // Set the default port to app object.
-app.set('port', process.env.PORT || 3000);
+app.set('port', config.serverPort);
 
 const options = {
     key: fs.readFileSync('key.pem'),
@@ -75,25 +77,12 @@ app.use( errorHandler );
 // 라우터 설정
 app.use('/', router);
 
-//------------------------------------------------------------------------------
+/**
+ * 다른 모듈에서 로그를 사용할 수 있게 getter/setter를 설정하는 것
+ */
+app.set('log', log);
 
-// const MongoClient = require('mogodb').MongoClient;
-//
-// class DB
-// {
-//   connect()
-//   {
-//     let databaseUrl = 'mogodb://localhost:27017/local';
-//     MongoClient.connect(databaseUrl, function (err, db)
-//     {
-//       if (err) throw err;
-//       DB.database = db;
-//     });
-//   }
-// }
-//
-// DB.database = null;
-
+// TODO: 다시 설계할 예정이다
 let JsonFormatter = require('./module/JsonFormatter');
 let BasicEmitter = require('./module/BasicEmitter');
 let ServerWorker = require('./module/ServerWorker');
