@@ -1,63 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+	<link rel="stylesheet" href="./bootstrap.min.css">
+	<!-- <link rel="stylesheet" href="./font-awesome.min.css"> -->
 	<style>
-		.login {
-			font-size: 12px;
-			width: 230px;
-			background-color: rgba(255,255,255,1);
-			box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-			border: 1px solid rgba(0,0,0,0.1);
-			border-radius: 10px;			
-			padding-left: 10px;
-			padding-bottom: 30px;
-			margin: auto;
-			position: relative;
+		body { padding-top: 50px; }
+		@font-face {
+			font-family: 'Nanum Gothic';
+			font-style: normal;
+			font-weight: 400;
+			src: local('NanumGothic'),
+				url('./fonts/NanumGothic.ttf');
 		}
-
-		.login .box {
-			padding-right: 10%;
-			align: left;
-		}
-		
-		.login .textbox {
-			font-size: 12px;
-			font-color: rgba(0,0,0,0.3);
-			background:#ffffff;
-			border-right:1px;
-			border-radius: 5px;		
-			padding-right: 3%;
-			margin-left: 2%;
-			float : right;
-			border-width: 1px;		
-		}		
-		
-		.login .button {
-			font-size: 12px;
-			background-color: rgba(0,0,0,0);
-			border-radius: 3px;		
-			padding-right: 3%;
-			margin-left: 2%;
-			float: right;
-			border-width: 1px;
-		}
-		
+		h1, p, a {font-family: 'Nanum Gothic'}
 	</style>
 </head>
-
-<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
-<div id='login' class='login'>
-	<form id="myForm" method="post" action="/login">
-		<p class='box'> <label for="ID">아이디</label><input type="text" id="ID" class='textbox' name="id" 
-		placeholder = "아이디" value="" />
-		<p class='box'><label for="PW">비밀번호</label><input type="password" id="PW" class='textbox' name="pw" 
-		placeholder = "패스워드" value="" />
-		<p class='box'> 
-		<input type="button" class='button' onclick="alert('미구현')" value="회원 가입">
-		<input type="submit" class='button' value="로그인">
-	</form>
-</div>
-
+<body>
+	<div class="container">
+		<div class="jumbotron col-sm-6 col-sm-offset-3">
+			<h1><span class="fa fa-sign-in"></span>회원가입</h1>
+			<br>
+			<form action="/signup" method="post">
+				<div class="form-group">
+					<input type="text" class="form-control" name="email" placeholder="이메일">
+				</div>
+				<div class="form-group">
+					<input type="password" class="form-control" name="password" placeholder="비밀번호">
+				</div>
+				<div class="form-group">
+					<input type="password" class="form-control" name="password-confirm" placeholder="비밀번호 확인">
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" name="name" placeholder="별명">
+				</div>
+				<button type="submit" class="btn btn-default" name="button">회원 가입</button>
+			</form>
+			<hr>
+		</div>
+	</div>
 </body>
 </html>
