@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc (v1.1.9) This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.2.0) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
@@ -149,10 +149,13 @@
  * - Added a new parameter that could increase the number of the HUD.
  * - Added parameters for user custom HUD position.
  * 2017.02.11 (v1.1.9) : Fixed an issue that the hud is set in an incorrect position when adding a new party member.
+ * 2017.04.13 (v1.2.0) - Fixed the issue that the parameters update function is
+ * properly not working in case of you're not using the battle addon, in a
+ * community version.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.1.8';
+Imported.RS_HUD_4m_InBattle = '1.2.0';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -353,7 +356,6 @@ RS.HUD.param = RS.HUD.param || {};
       this.updateOpacity();
     }
     this.updateToneForAll();
-    this.paramUpdate();
   };
 
   HUD.prototype.refreshIcon = function() {
@@ -422,6 +424,7 @@ RS.HUD.param = RS.HUD.param || {};
 
       this.addChild(this._hudLayer);
       this.swapChildren(this._windowLayer, this._hudLayer);
+      $gameTemp.notifyHudTextRefresh();
     }
   };
 

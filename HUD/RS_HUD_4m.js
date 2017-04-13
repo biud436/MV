@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.3) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.4) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
@@ -488,10 +488,13 @@
  * 2017.03.06 (v1.2.3) :
  * - Added many descriptions for plugin parameters and help section.
  * - Altered the hud to be updated all parameters once when initializing.
+ * 2017.04.13 (v1.2.4) - Fixed the issue that the parameters update function is
+ * properly not working in case of you're not using the battle addon, in a
+ * community version.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.2.3';
+Imported.RS_HUD_4m = '1.2.4';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -1740,7 +1743,17 @@ RS.HUD.param = RS.HUD.param || {};
 
       this.addChild(this._hudLayer);
       this.swapChildren(this._windowLayer, this._hudLayer);
+    }
+  };
 
+  var alias_Scene_Map_start = Scene_Map.prototype.start;
+  Scene_Map.prototype.start = function () {
+    alias_Scene_Map_start.call(this);
+    var isCommunityVerstion = Utils.RPGMAKER_ENGINE;
+    if(isCommunityVerstion && isCommunityVerstion.contains('community') > 0) {
+      $gameTemp.notifyHudRefresh();
+    } else {
+      $gameTemp.notifyHudTextRefresh();
     }
   };
 
