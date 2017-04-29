@@ -141,6 +141,8 @@ RS.ScreenShot = RS.ScreenShot || {};
       var blob = new Blob([html], {type : 'text/html'});
       var url = URL.createObjectURL(blob);
       var win = window.open(url, '_blank');
+      // var url2 = canvas.toDataURL("image/png");
+      // var win = window.open(url2, '_blank');
     }
     if(renderTexture) renderTexture.destroy( { destroyBase: true } );
 
@@ -152,6 +154,7 @@ RS.ScreenShot = RS.ScreenShot || {};
   $.takeSnapshot = function() {
 
     if(!StorageManager.isLocalMode()) {
+      console.warn('takeSnapshot function does not support on your mobile device');
       return;
     }
 
