@@ -22,6 +22,7 @@ import org.xwalk.app.XWalkRuntimeActivityBase;
 public class AppTemplateActivity extends XWalkRuntimeActivityBase {
 	
 	private File mFile;
+	public static final String FOLDER_SAVE = "/sdcard/TestGame/save/";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,11 +36,34 @@ public class AppTemplateActivity extends XWalkRuntimeActivityBase {
 				readTextFile();
 			}
 			
+			createSaveFile("save.txt", "save");
+			
 		} catch(IOException ex) {
 			ex.printStackTrace();
 		}
 		
     }
+	
+	private void createSaveFile(String filename, String raw) throws IOException  {
+		
+		File saveFolder = new File(FOLDER_SAVE);
+		File saveFile = new File(FOLDER_SAVE + filename.toString());
+		
+		if(!saveFolder.isDirectory()) {
+			saveFolder.mkdirs();
+		}
+		
+		if(saveFile.exists()) {
+			saveFile.delete();
+		}
+		
+		FileOutputStream fos = new FileOutputStream(FOLDER_SAVE + filename);
+		fos.write(raw.getBytes());
+		fos.close();		
+	
+		Toast toast = Toast.makeText(getApplicationContext(), "The save file created", Toast.LENGTH_SHORT);
+		toast.show();
+	}
 	
     private File createFile() throws IOException {
         String fileName = "test.txt";	
