@@ -34,7 +34,7 @@ public class FileAPITest extends CordovaPlugin {
 
 		@Override
 		public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-		    super.initialize(cordova, webView);
+				super.initialize(cordova, webView);
 
 				this.cordova.getThreadPool().execute(new Runnable() {
 					public void run() {
@@ -68,11 +68,11 @@ public class FileAPITest extends CordovaPlugin {
 
 		public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
 				final CordovaInterface cordova = this.cordova;
-			  if ("createSaveFile".equals(action)) {
-					  final String filename = args.getString(0);
+				if ("createSaveFile".equals(action)) {
+						final String filename = args.getString(0);
 						final String raw = args.getString(1);
 						cordova.getThreadPool().execute(new Runnable() {
-	            public void run() {
+							public void run() {
 								try {
 									this.createSaveFile(filename, raw);
 									callbackContext.success();
@@ -83,13 +83,13 @@ public class FileAPITest extends CordovaPlugin {
 							}
 						});
 						return true;
-			  }
+				}
 				if ("readTextFile".equals(action)) {
 					cordova.getThreadPool().execute(new Runnable() {
 						public void run() {
 							try {
 								JSONObject ret = new JSONObject();
-		            ret.put("values", this.readTextFile());
+								ret.put("values", this.readTextFile());
 								callbackContext.success(ret);
 							} catch(IOException ex) {
 									ex.printStackTrace();
@@ -100,19 +100,19 @@ public class FileAPITest extends CordovaPlugin {
 					return true;
 				}
 				if (action.equals("echo")) {
-		        String message = args.getString(0);
-		        this.echo(message, callbackContext);
-		        return true;
-		    }
-			  return false;
+						String message = args.getString(0);
+						this.echo(message, callbackContext);
+						return true;
+				}
+				return false;
 		}
 
 		private void echo(String message, CallbackContext callbackContext) {
-		    if (message != null && message.length() > 0) {
-		        callbackContext.success(message);
-		    } else {
-		        callbackContext.error("Expected one non-empty string argument.");
-		    }
+				if (message != null && message.length() > 0) {
+						callbackContext.success(message);
+				} else {
+						callbackContext.error("Expected one non-empty string argument.");
+				}
 		}
 
 		private synchronized void createSaveFile(String filename, String raw) throws IOException {
@@ -135,12 +135,12 @@ public class FileAPITest extends CordovaPlugin {
 				toast.show();
 		}
 
-	  private synchronized File createFile() throws IOException {
-			  String fileName = "test.txt";
-			  File storageDir = getExternalCacheDir();
-			  File curFile = new File(storageDir, fileName);
-			  return curFile;
-	  }
+		private synchronized File createFile() throws IOException {
+				String fileName = "test.txt";
+				File storageDir = getExternalCacheDir();
+				File curFile = new File(storageDir, fileName);
+				return curFile;
+		}
 
 		private synchronized void writeTextFile() throws IOException {
 				try {
