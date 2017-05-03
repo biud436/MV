@@ -9,12 +9,12 @@ var exec = require('cordova/exec'),
 function FileAPITest() {
     var self = this;
     channel.onCordovaReady.subscribe(function() {
+      "testing",
       this.echo(function (req) {
         util.alert(req);
       }, function (e) {
         utils.alert("[ERROR] Error initializing Cordova: " + e);
-      },
-      res);
+      });
     });
 }
 
