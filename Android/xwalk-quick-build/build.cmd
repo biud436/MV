@@ -6,26 +6,26 @@ SET CURRENT_DIR=%cd%
 :JAVAC_READY
 WHERE "javac.exe">nul 2>nul
 IF NOT %errorlevel%==0 (
-	SET ERRORMSG=JDK를 찾을 수 없습니다.
+	SET ERRORMSG=Could not find JDK
 	GOTO :ERR
 )
-ECHO === JDK 준비됨 [OK]
+ECHO === JDK is ready [OK]
 
 :PYTHON_READY
 WHERE "python.exe">nul 2>nul
 IF NOT %errorlevel%==0 (
-	SET ERRORMSG=파이썬을 찾을 수 없습니다
+	SET ERRORMSG=Could not find Python.
 	GOTO :ERR
 )
-ECHO === 파이썬 준비됨 [OK]
+ECHO === Python is ready [OK]
 
 :ANDROID_SDK_READY
 WHERE "SDK Manager.exe">nul 2>nul
 IF NOT %errorlevel%==0 (
-	SET ERRORMSG=안드로이드 SDK를 찾을 수 없습니다.
+	SET ERRORMSG=Could not find Android SDK
 	GOTO :ERR
 )
-ECHO === 안드로이드 SDK [OK]
+ECHO === Android SDK [OK]
 
 :MAKE_APK_PY_READY
 ECHO === make_apk.py 파일을 찾고 있습니다.
@@ -105,7 +105,7 @@ IF NOT EXIST %KS_PATH% (
 	GOTO :ERR
 )
 SET /p KS_ALIAS=키스토어의 별칭을 입력하세요:
-SET /p KS_PASSCODE=키스토어 비밀번호를 입력하세요(6자리이상):	
+SET /p KS_PASSCODE=키스토어 비밀번호를 입력하세요(6자리이상):
 SET /p KS_ALIAS_PASSCODE=키스토어 비밀번호를 다시 한 번 입력하세요(6자리이상):
 
 :MAKE_APK
