@@ -13,19 +13,46 @@
  *
  * @help
  * =============================================================================
- * Additional Text Code
+ * Please read this stuff before you begin using this plugin
+ * -----------------------------------------------------------------------------
+ * This plugin will rewrite everything that is required for Arabic so you will
+ * have to notice that it may occur the collision issue with another similar
+ * plugin when using this plugin. Please notice to me if it is not working
+ * due to the collision issue with another plugin. In that case, I'll react for
+ * your comment in some way (This plugin exists purely to help Arabic user or
+ * someone else)
  * =============================================================================
+ * Text codes
+ * -----------------------------------------------------------------------------
  * This text code is available to implement the left-to-right language.
  * \LTR<Hello, World!>
  * =============================================================================
- * Arabic Message System with YEP_MessageCore
- * =============================================================================
- * YEP_MessageCore.js - v1.15
- * YEP_X_ExtMesPack1.js - v1.10
- * YEP_StatusMenuCore.js - v1.01a
+ * Compatibility List
+ * -----------------------------------------------------------------------------
+ * These are some compatible plugin list that are showing up properly Arabic so
+ * if it does not have in this list, it may not work properly.
+ *
+ * Window_Help
+ * Window_Status
+ * Window_BattleLog
+ * Window_MapName
+ * Window_Message
+ * Window_Command
+ * Window_ScrollText
+ * Window_ChoiceList
+ * YEP_MessageCore (by containing Window_NameBox) >=1.15
+ * YEP_X_ExtMesPack1 >=1.10
+ * YEP_EventMiniLabel
+ * YEP_GabWindow
+ * YEP_StatusMenuCore >=1.01a
+ *
+ * When used the Arabic texts into the custom window object that other people
+ * are made, It does not automatically change a text align direction. If you want
+ * to be used in another plugin, it must be bound all of required code for
+ * Arabic texts into it.
  * =============================================================================
  * Change Log
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * 2016.09.19 (v1.0.0) - First Release.
  * 2016.09.19 (v1.0.1) - Fixed DrawIcon, DrawFace function.
  * 2016.09.20 (v1.1.0) - Fixed Arabic text sturcture.
