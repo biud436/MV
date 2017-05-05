@@ -42,10 +42,11 @@
  * - Supported YEP_GabWindow plugin
  * - Supported YEP_EventMiniLabel plugin
  * - Fixed the processNormalCharacter method.
+ * 2017.05.05 (v1.1.8) - Fixed the issue that does not properly show up Arabic when using a choice window.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.7';
+Imported.RS_ArabicMessageSystem = '1.1.8';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -847,6 +848,36 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
       this._renderSprite.texture = this._renderTexture;
     }
 
+  };
+
+  //============================================================================
+  // Window_ChoiceList
+  //
+  //
+
+  var alias_Window_ChoiceList_initialize = Window_ChoiceList.prototype.initialize;
+  Window_ChoiceList.prototype.initialize = function(messageWindow) {
+    alias_Window_ChoiceList_initialize.call(this, messageWindow);
+    RS.ArabicMessageSystem.createArabicLayer.call(this);
+    RS.ArabicMessageSystem.defineProtoype(Window_ChoiceList);
+  };
+
+  Window_ChoiceList.prototype.textWidthEx = function(text) {
+    messageMode = 'normal';
+    var ret = Window_Base.prototype.drawTextEx.call(this, text, 0, this.contents.height);
+    messageMode = 'arabic';
+    return ret;
+  };
+
+  Window_ChoiceList.prototype.refresh = function() {
+    this.clearCommandList();
+    this.makeCommandList();
+    this.createContents();
+    if (this.contents) {
+        this.contents.clear();
+        RS.ArabicMessageSystem.createArabicLayer.call(this);
+        this.drawAllItems();
+    }
   };
 
 })();
