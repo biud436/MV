@@ -1,0 +1,1 @@
+- [LICENSE](https://github.com/gree/unity-webview/blob/master/LICENSE)
