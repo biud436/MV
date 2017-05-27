@@ -29,7 +29,7 @@ ECHO === Android SDK [OK]
 
 :MAKE_APK_PY_READY
 ECHO === make_apk.py 파일을 찾고 있습니다.
-WHERE /R %HOMEPATH%\desktop make_apk.py >temp_path.txt 2>nul
+WHERE /R %HOMEDRIVE%\crosswalk-10.39.235.16 make_apk.py >temp_path.txt 2>nul
 IF NOT %errorlevel%==0 (
 	SET ERRORMSG=make_apk.py 파일을 찾을 수 없습니다
 	GOTO :ERR

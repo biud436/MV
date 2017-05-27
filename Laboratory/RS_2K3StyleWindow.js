@@ -6,11 +6,12 @@
  * Change Log
  * -----------------------------------------------------------------------------
  * 2017.05.25 - First Release
+ * 2017.05.27 - Fixed an issue that is not updated a text inside a help window when begin skill or item windows.
  */
- 
+
 var Imported = Imported || {};
 Imported.RS_2K3StyleWindow = true;
- 
+
 (function() {
 
   //-----------------------------------------------------------------------------
@@ -19,15 +20,15 @@ Imported.RS_2K3StyleWindow = true;
   function Window_ItemList_2K3() {
       this.initialize.apply(this, arguments);
   };
-  
+
   Window_ItemList_2K3.prototype = Object.create(Window_ItemList.prototype);
   Window_ItemList_2K3.prototype.constructor = Window_ItemList_2K3;
-  
+
   var alias_Window_ItemList_initialize = Window_ItemList.prototype.initialize;
   Window_ItemList_2K3.prototype.initialize = function(x, y, width, height) {
       Window_ItemList.prototype.initialize.call(this, x, y, width, height);
       this.refresh();
-      this.resetScroll();  
+      this.resetScroll();
       this.select(0);
       this.activate();
   };
@@ -38,7 +39,7 @@ Imported.RS_2K3StyleWindow = true;
   Window_ItemList_2K3.prototype.makeItemList = function() {
       this._data = $gameParty.allItems();
   };
-  
+
   //-----------------------------------------------------------------------------
   // Scene_Item
 
@@ -52,6 +53,7 @@ Imported.RS_2K3StyleWindow = true;
       this._itemWindow.setHelpWindow(this._helpWindow);
       this._itemWindow.setHandler('ok',     this.onItemOk.bind(this));
       this._itemWindow.setHandler('cancel', this.onItemCancel.bind(this));
+      this._itemWindow.callUpdateHelp();
       this.addWindow(this._itemWindow);
   };
 
@@ -59,28 +61,28 @@ Imported.RS_2K3StyleWindow = true;
       this._itemWindow.deselect();
       this.popScene();
   };
-  
+
   //-----------------------------------------------------------------------------
-  // Window_SkillList  
-  
+  // Window_SkillList
+
   function Window_SkillList_2K3() {
       this.initialize.apply(this, arguments);
   };
-  
+
   Window_SkillList_2K3.prototype = Object.create(Window_SkillList.prototype);
-  Window_SkillList_2K3.prototype.constructor = Window_SkillList_2K3;  
-  
+  Window_SkillList_2K3.prototype.constructor = Window_SkillList_2K3;
+
   Window_SkillList_2K3.prototype.initialize = function(x, y, width, height) {
       Window_SkillList.prototype.initialize.call(this, x, y, width, height);
       this.refresh();
-      this.resetScroll();  
+      this.resetScroll();
       this.select(0);
-      this.activate();        
+      this.activate();
   };
-   
+
   Window_SkillList_2K3.prototype.setStypeId = function(stypeId) {
-  };   
-  
+  };
+
   Window_SkillList_2K3.prototype.makeItemList = function() {
       if (this._actor) {
           this._data = this._actor.skills();
@@ -88,16 +90,16 @@ Imported.RS_2K3StyleWindow = true;
           this._data = [];
       }
   };
-  
+
   //-----------------------------------------------------------------------------
   // Scene_Skill
-  
+
   Scene_Skill.prototype.createSkillTypeWindow = function() {
   };
 
   Scene_Skill.prototype.createStatusWindow = function() {
   };
-  
+
   Scene_Skill.prototype.createItemWindow = function() {
       var wx = 0;
       var wy = this._helpWindow.height;;
@@ -108,15 +110,16 @@ Imported.RS_2K3StyleWindow = true;
       this._itemWindow.setHandler('ok',     this.onItemOk.bind(this));
       this._itemWindow.setHandler('cancel', this.onItemCancel.bind(this));
       this._itemWindow.setHandler('pagedown', this.nextActor.bind(this));
-      this._itemWindow.setHandler('pageup',   this.previousActor.bind(this));      
-      this.addWindow(this._itemWindow);    
+      this._itemWindow.setHandler('pageup',   this.previousActor.bind(this));
+      this._itemWindow.callUpdateHelp();
+      this.addWindow(this._itemWindow);
   };
-  
+
   Scene_Skill.prototype.refreshActor = function() {
       var actor = this.actor();
       this._itemWindow.setActor(actor);
-  };  
-  
+  };
+
   Scene_Skill.prototype.onItemCancel = function() {
       this._itemWindow.deselect();
       this.popScene();
@@ -133,11 +136,11 @@ Imported.RS_2K3StyleWindow = true;
   };
 
   //-----------------------------------------------------------------------------
-  // Scene_Equip    
-    
+  // Scene_Equip
+
   Scene_Equip.prototype.createCommandWindow = function() {
   };
-  
+
   Scene_Equip.prototype.createSlotWindow = function() {
       var wx = this._statusWindow.width;
       var wy = this._helpWindow.height;
@@ -147,30 +150,30 @@ Imported.RS_2K3StyleWindow = true;
       this._slotWindow.setHelpWindow(this._helpWindow);
       this._slotWindow.setStatusWindow(this._statusWindow);
       this._slotWindow.setHandler('ok',       this.onSlotOk.bind(this));
-      this._slotWindow.setHandler('cancel',   this.onSlotCancel.bind(this));   
+      this._slotWindow.setHandler('cancel',   this.onSlotCancel.bind(this));
       this.addWindow(this._slotWindow);
   };
-  
+
   var alias_Scene_Equip_createItemWindow = Scene_Equip.prototype.createItemWindow;
-  Scene_Equip.prototype.createItemWindow = function() {  
+  Scene_Equip.prototype.createItemWindow = function() {
       alias_Scene_Equip_createItemWindow.call(this);
       this.commandEquip();
-  };  
-  
+  };
+
   Scene_Equip.prototype.commandOptimize = function() {
   };
 
   Scene_Equip.prototype.commandClear = function() {
   };
-    
+
   Scene_Equip.prototype.onSlotCancel = function() {
       this._slotWindow.deselect();
       this.popScene();
-  };    
-  
+  };
+
   Scene_Equip.prototype.onActorChange = function() {
       this.refreshActor();
       this._slotWindow.activate();
-  };  
-    
+  };
+
 })();
