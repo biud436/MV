@@ -1,6 +1,6 @@
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.5) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.6) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -308,6 +308,14 @@
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2017.05.27 (v0.1.6) :
+* - In the balloon window mode, Added a new feature that the pause sign sprite
+* displays as the position of an message owner.
+* - In the balloon window mode, Added a new feature that the name window is
+* located up at the bottom of the message window when indicating the message
+* window at the top of the screen.
+* - Fixed an issue that the name window moves up a little bit to the right when
+* setting up the face image inside a message window.
 * 2017.02.18 (v0.1.5) :
 * - Fixed the problem that has incorrect a range for Hangul Unicode.
 * - Added a feature that plays back a sound files
@@ -334,7 +342,7 @@
 */
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.5) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.6) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -549,6 +557,10 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2017.05.27 (v0.1.6) :
+* - 말풍선 모드 시 멈춤 표시 스프라이트 위치를 화자의 위치로 자동 변경합니다.
+* - 말풍선 모드 시 대화창이 상단에 있을 때 이름 윈도우를 아래에 표시합니다.
+* - 얼굴 이미지가 설정되었을 때 이름 윈도우가 오른쪽으로 이동하는 현상을 제거했습니다.
 * 2017.02.18 (v0.1.5) :
 * - 한글 유니코드 범위가 잘못되어있던 문제 수정
 * - 효과음 재생 기능 추가
@@ -1361,6 +1373,8 @@ var Color = Color || {};
     this.contents.outlineWidth = RS.MessageSystem.Params.defaultOutlineWidth;
     this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
     this.contents.fontGradient = false;
+    this._windowPauseSignSprite.move(this._width / 2, this._height);
+    this._windowPauseSignSprite.scale.y = 1;
     $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
   };
 
@@ -1444,12 +1458,10 @@ var Color = Color || {};
 
   Window_Message.prototype.updateNameWindow = function() {
     var self = this;
-    this._nameWindow.x = this.x + this.newLineX() + RS.MessageSystem.Params.nameWindowX;
+    this._nameWindow.x = this.x + RS.MessageSystem.Params.nameWindowX;
     if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
       this._nameWindow.y = 0;
       this.y = this._nameWindow.height + RS.MessageSystem.Params.nameWindowY;
-    } else {
-      this._nameWindow.y = self.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
     }
   };
 
@@ -1628,23 +1640,32 @@ var Color = Color || {};
   };
 
   Window_Message.prototype.calcBalloonRect = function(text) {
-    var temp = text;
-    var tempText = this.textProcessing(temp);
+    var temp, tempText, height, min, pad;
+
+    temp = text;
+    tempText = this.textProcessing(temp);
     tempText = tempText.split(/[\r\n]+/);
     tempText = tempText.sort(function(a, b) {
       return b.length - a.length;
     }.bind(this));
-    var height = tempText.length * this.lineHeight() + this.standardPadding() * 2;
-    this._bWidth = this.textWidth(tempText[0]) + this.standardPadding() * 2 || RS.MessageSystem.Params.WIDTH;
+
+    pad = (this.standardPadding() * 2) + this.textPadding() * 2;
+
+    height = tempText.length * this.lineHeight() + pad;
+    this._bWidth = (this.textWidth(tempText[0]) + pad) || RS.MessageSystem.Params.WIDTH;
+
     if($gameMessage.faceName() !== '') {
-      var min = this.fittingHeight(4);
-      this._bWidth += this.newLineX() + this.standardPadding() * 2;
+      min = this.fittingHeight(4);
+      this._bWidth += this.newLineX() + pad;
       if(height < min) height = height.clamp(min, height + (min - height));
     }
+
     this._bHeight = height;
+
   };
 
   Window_Message.prototype.updateBalloonPosition = function() {
+    var owner, mx, my, dx, dy, tileHeight, tx, ty, scaleY, ny;
 
     // -2 라면 이 함수를 처리하지 않습니다.
     if($gameMessage.getBalloon() === -2) {
@@ -1653,96 +1674,59 @@ var Color = Color || {};
     };
 
     // 말풍선 소유자의 화면 좌표
-    var owner = $gameMap.getMsgOwner();
-    var mx = owner.screenX();
-    var my = owner.screenY();
-    var dx, dy, tileHeight;
-
-    // 말풍선의 폭과 높이 범위 제한
-    // this._bWidth = this._bWidth.clamp(RS.MessageSystem.Params.WIDTH, Graphics.boxWidth - RS.MessageSystem.Params.WIDTH);
-    // this._bHeight = this._bHeight.clamp(RS.MessageSystem.Params.HEIGHT, Graphics.boxHeight - RS.MessageSystem.Params.HEIGHT);
-
+    owner = $gameMap.getMsgOwner();
+    mx = owner.screenX();
+    my = owner.screenY();
+    tx = this._width / 2;
+    ty = this._height;
+    scaleY = 1;
     tileHeight = $gameMessage.getBalloonPatternHeight();
     dx =  mx - (this._bWidth / 2);
     dy =  my - this._bHeight - tileHeight;
+    ny = this.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
 
-    if(mx - (this._bWidth / 2) <= 0) {
+    // 화면 좌측
+    if(mx - (this._bWidth / 2) < 0) {
       dx = 0;
-      // this._downArrowSprite.move(this._width, h-q);
+      tx = this.canvasToLocalX(mx);
     }
 
-    if(mx - (this._bWidth / 2) >= Graphics.boxWidth - this._bWidth ) {
-      dx = Graphics.boxWidth - this._bWidth ;
+    // 화면 우측
+    if(mx - (this._bWidth / 2) > Graphics.boxWidth - this._bWidth ) {
+      dx = Graphics.boxWidth - this._bWidth;
+      tx = this.canvasToLocalX(mx);
     }
 
-    if( (my - this._bHeight - tileHeight / 2) <= 0 ) {
+    // 화면 상단
+    if( (my - this._bHeight - tileHeight / 2) < 0 ) {
       dy = my + tileHeight / 2;
+      scaleY = -1;
+      ty = (this._height * scaleY) + this._height;
+      ny = (this.y + this._bHeight) + RS.MessageSystem.Params.nameWindowY;
     }
 
-    // 말풍선 위치 및 크기 설정 (화면 내에 가두지 않습니다)
+    // 화면 하단
+    if(my - this._bHeight > Graphics.boxHeight - this._bHeight ) {
+      dy = Graphics.boxWidth - this._bHeight;
+      ty = this._height;
+    }
+
+    // 말풍선 위치 및 크기 설정
     this.x =  dx;
     this.y =  dy;
     this.width = this._bWidth;
     this.height = this._bHeight;
 
-    // if(!$gameParty.inBattle()) {
-    //   var ddx = owner._realX - $gamePlayer.centerX();
-    //   var ddy = owner._realY - $gamePlayer.centerY();
-    //   $gameMap.setDisplayPos(ddx, ddy);
-    // }
+    // 멈춤 표시 스프라이트 위치 조정
+    this._windowPauseSignSprite.move(tx, ty);
+    this._windowPauseSignSprite.scale.y = scaleY;
+
+    this._nameWindow.y = ny;
 
     // 1프레임 대기
     this.startWait(1);
   };
 
-  var alias_Window_Message_refreshPauseSign = Window_Message.prototype._refreshPauseSign;
-  Window_Message.prototype._refreshPauseSign = function() {
-
-    // -2 라면 이 함수를 처리하지 않습니다.
-    if($gameMessage.getBalloon() === -2) {
-      return alias_Window_Message_refreshPauseSign.call(this);
-    };
-
-    var sx = 144;
-    var sy = 96;
-    var p = 24;
-    this._windowPauseSignSprite.bitmap = this._windowskin;
-    this._windowPauseSignSprite.anchor.x = 0.5;
-    this._windowPauseSignSprite.anchor.y = 1;
-    this._windowPauseSignSprite.move(this._width / 2, this._height);
-    this._windowPauseSignSprite.setFrame(sx, sy, p, p);
-    this._windowPauseSignSprite.alpha = 0;
-
-  };
-
-  var alias_Window_Message_updatePauseSign = Window_Message.prototype._updatePauseSign;
-  Window_Message.prototype._updatePauseSign = function() {
-
-    // -2 라면 이 함수를 처리하지 않습니다.
-    if($gameMessage.getBalloon() === -2) {
-      return alias_Window_Message_updatePauseSign.call(this);
-    };
-
-    var sprite = this._windowPauseSignSprite;
-    var x = Math.floor(this._animationCount / 16) % 2;
-    var y = Math.floor(this._animationCount / 16 / 2) % 2;
-    var sx = 144;
-    var sy = 96;
-    var p = 24;
-    if (!this.pause) {
-      sprite.alpha = 0;
-    } else if (sprite.alpha < 1) {
-      sprite.alpha = Math.min(sprite.alpha + 0.1, 1);
-    }
-    sprite.setFrame(sx+x*p, sy+y*p, p, p);
-    sprite.visible = this.isOpen();
-
-  };
-
-  /**
-  * @memberOf Window_Message
-  * @method updateBalloonPosition
-  */
   Window_Message.prototype.setupOwner = function(sign) {
 
     switch(sign) {
@@ -1899,11 +1883,12 @@ var Color = Color || {};
   RS.Window_Name.prototype.getWidth = function(text) {
     try {
       var tempText = this.textProcessing(text);
+      var textPadding = this.textPadding() * 2;
       tempText = tempText.split(/[\r\n]/);
       tempText = tempText.sort(function(a, b) {
         return b.length - a.length;
       }.bind(this));
-      this.width = this.textWidth(tempText[0]) + this.standardPadding() * 2;
+      this.width = this.textWidth(tempText[0]) + (this.standardPadding() * 2) + textPadding;
     } catch(e) {
       this.width = this.windowWidth + this.standardPadding();
     }
