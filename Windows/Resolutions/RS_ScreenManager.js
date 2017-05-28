@@ -204,10 +204,23 @@ Imported.RS_ScreenManager = true;
   };
 
   ScreenConfig.prototype.getRatio = function (width, height) {
-    var gcd, temp, ret;
+    var gcd, ret;
     if(width === height) return [1, 1];
     gcd = this.gcd(width, height);
     ret = [(width / gcd), (height / gcd)];
+    return ret;
+  };
+
+  ScreenConfig.prototype.getRatioAsString = function (width, height) {
+    var gcd, temp, ret;
+    if(width === height) return [1, 1];
+    if(width < height) {
+      temp = width;
+      width = height;
+      height = temp;
+    }
+    gcd = this.gcd(width, height);
+    ret = Number(width / gcd) + ':' + Number(height / gcd);
     return ret;
   };
 
@@ -392,7 +405,11 @@ Imported.RS_ScreenManager = true;
 
     Window_Options.prototype.isResolution = function (symbol) {
       return symbol.contains('Resolutions');
-    }
+    };
+
+    Window_Options.prototype.isAspectRatio = function (symbol) {
+      return symbol.contains('Aspect Ratio');
+    };
 
     Window_Options.prototype.processOk = function() {
       var index = this.index();
@@ -435,7 +452,11 @@ Imported.RS_ScreenManager = true;
             }
           }
         } else {
-          return this.booleanStatusText(value);
+          if( this.isAspectRatio( symbol ) ) {
+            return new ScreenConfig(0, 0, '').getRatioAsString(Graphics.boxWidth, Graphics.boxHeight);
+          } else {
+            return this.booleanStatusText(value);
+          }
         }
       }
     };
@@ -444,6 +465,7 @@ Imported.RS_ScreenManager = true;
     Window_Options.prototype.addVolumeOptions = function() {
       alias_Window_Options_addVolumeOptions.call(this);
       this.addCommand('Resolutions', 'Resolutions');
+      this.addCommand('Aspect Ratio', 'Aspect Ratio');
     };
 
   }
