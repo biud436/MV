@@ -6,31 +6,27 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.2) <RS_ScreenManager>
+ * @plugindesc (v1.0.3) <RS_ScreenManager>
  * @author biud436
  *
  * @param isMobileAutoFullScreen
  * @desc Set whether it automatically switches to the full screen in the mobile.
  * @default true
  *
- * @param isLimitedInMaxRect
- * @desc
- * @default true
- *
  * @param isGraphicsRendererResize
- * @desc
+ * @desc (TEST OPTION)
  * @default false
  *
  * @param isGraphicsAutoScaling
- * @desc
+ * @desc (TEST OPTION)
  * @default false
  *
  * @param isMaintainingMinimumWidth
- * @desc
+ * @desc Set whether it can not set the width is minimum width or less.
  * @default true
  *
  * @param isMaintainingMinimumHeight
- * @desc
+ * @desc Set whether it can not set the width is minimum height or less.
  * @default true
  *
  * @param imageName
@@ -49,7 +45,7 @@ Imported.RS_ScreenManager = true;
  * @default Full Screen
  *
  * @param Recreate Scene
- * @desc
+ * @desc To set as true, the current scene will recreate after changing screen size
  * @default true
  *
  * @param Use All Resolutions
@@ -76,6 +72,8 @@ Imported.RS_ScreenManager = true;
  * 2016.10.04 (v1.0.0) - First Release.
  * 2016.10.24 (v1.0.1) - Added Resolution Button in Option.
  * 2016.11.26 (v1.0.2) - Added the function that recreates the scene.
+ * 2017.05.28 (v1.0.3) - Added a new feature that the game screen size changes
+ * automatically depending on an aspect ratio of the screen on mobile device.
  */
 
 (function () {
@@ -89,7 +87,6 @@ Imported.RS_ScreenManager = true;
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
   var isMobileAutoFullScreen = Boolean(parameters['isMobileAutoFullScreen'] === 'true');
-  var isLimitedInMaxRect = Boolean(parameters['isLimitedInMaxRect'] === 'true');
   var isGraphicsRendererResize = Boolean(parameters['isGraphicsRendererResize'] === 'true');
   var isGraphicsAutoScaling = Boolean(parameters['isGraphicsAutoScaling'] === 'true');
   var isMaintainingMinimumWidth = Boolean(parameters['isMaintainingMinimumWidth'] === 'true');
@@ -97,15 +94,11 @@ Imported.RS_ScreenManager = true;
   var imageName = String(parameters['imageName'] || 'Mountains3');
   var panelTextName = String(parameters["panelTextName"] || "Display Resolutions");
   var fullScreenButtonName = String(parameters["fullScreenButtonName"] || 'Full Screen');
-
   var isRecreateScene = Boolean(parameters['Recreate Scene'] === 'true');
-
   var resolutionCommand = "Display Resolutions";
-
   var isUseAllResolutions = Boolean(parameters['Use All Resolutions'] === 'true');
-
+  var isEnabledAspectRatio = Boolean(parameters['Enable Aspect Ratio'] === 'true');
   var bitmap = ImageManager.loadParallax(imageName);
-
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
 
   var pcGraphicsTempArray = [
@@ -155,6 +148,7 @@ Imported.RS_ScreenManager = true;
   ];
 
   if( Utils.isNwjs() ) {
+
     if(process && process.platform && process.platform === 'win32') {
       var winDisplaySettingsLib = undefined;
       try {
@@ -178,25 +172,82 @@ Imported.RS_ScreenManager = true;
   }
 
   //============================================================================
+  // ScreenConfig
+  //============================================================================
+
+  function ScreenConfig() {
+    this.initialize.apply(this, arguments);
+  };
+
+  ScreenConfig.prototype.constructor = ScreenConfig;
+  ScreenConfig.prototype.initialize = function (originWidth, originHeight, orientation) {
+    this._originWidth = originWidth;
+    this._originHeight = originHeight;
+    this._orientation = orientation;
+    this._aspectRatio = this.getRatio(originWidth, originHeight);
+  };
+
+  ScreenConfig.prototype.gcd = function (p, q) {
+    var self = this;
+    if(q === 0) return p;
+    return this.gcd(q, p % q);
+  };
+
+  ScreenConfig.prototype.getSize = function (virtualWidth) {
+    var ret, w, h;
+
+    w = parseInt(virtualWidth);
+    h = parseInt(this.getHeight(virtualWidth));
+    ret = [w, h];
+
+    return ret;
+  };
+
+  ScreenConfig.prototype.getRatio = function (width, height) {
+    var gcd, temp, ret;
+    if(width === height) return [1, 1];
+    gcd = this.gcd(width, height);
+    ret = [(width / gcd), (height / gcd)];
+    return ret;
+  };
+
+  ScreenConfig.prototype.getWidth = function (newHeight) {
+    var ar = this._aspectRatio;
+    var ratio = parseFloat(ar[0] / ar[1]);
+    return ratio * newHeight;
+  };
+
+  ScreenConfig.prototype.getHeight = function (newWidth) {
+    var ar = this._aspectRatio;
+    var ratio = parseFloat(ar[1] / ar[0]);
+    return ratio * newWidth;
+  };
+
+  //============================================================================
   // Point
   //============================================================================
   Point.prototype.toString = function () {
     return this.x + ' x ' +  this.y;
-  }
+  };
 
   //============================================================================
   // Graphics
   //============================================================================
 
   Graphics.getAvailGraphicsArray = function (returnType) {
-    var data;
-    var tw, th;
-    var pt;
-    var gArray = [];
-    var result = [];
-    var maxSW = window.screen.availWidth, maxSH = window.screen.availHeight;
-    // var type = ((maxSW / maxSH) >= 1.0) ? 'landscape' : 'portrait';
-    var type = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
+    var data, tw, th, pt, gArray, result, maxSW, maxSH, type;
+
+    gArray = [];
+    result = [];
+    maxSW = window.screen.availWidth;
+    maxSH = window.screen.availHeight;
+    if(Utils.isNwjs()) {
+      type = (maxSW > maxSH) ? 'landscape' : 'portrait';
+      if(maxSW === maxSH) type = 'landscape';
+    } else {
+      type = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
+    }
+
     data = (Utils.isMobileDevice() === true) ? mobileGraphicsArray : pcGraphicsArray;
 
     data.forEach(function (i) {
@@ -227,21 +278,42 @@ Imported.RS_ScreenManager = true;
   };
 
   Graphics.setScreenResize = function (newScr) {
-    var cx = (window.screen.availWidth / 2) - (newScr.x / 2);
-    var cy = (window.screen.availHeight / 2) - (newScr.y / 2);
-    var xPadding = 16;
-    var yPadding = 39;
-    var tw = ($gameMap && $gameMap.tileWidth) ? $gameMap.tileWidth() : 48;
-    var th = ($gameMap && $gameMap.tileHeight) ? $gameMap.tileHeight() : 48;
-    var minW = (tw * 17) || Graphics._renderer.width;
-    var minH = (th * 13) || Graphics._renderer.height;
+    var cx, cy, xPadding, yPadding;
+    var tw, th, minW, minH;
+    var orientation, config, aspectRatio;
+    var maxSW, maxSH;
+
+    maxSW = window.screen.availWidth;
+    maxSH = window.screen.availHeight;
+
+    if(Utils.isNwjs()) {
+      orientation = (maxSW > maxSH) ? 'landscape' : 'portrait';
+      if(maxSW === maxSH) orientation = 'landscape';
+    } else {
+      orientation = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
+    }
+    config = new ScreenConfig(newScr.x, newScr.y, orientation);
+    aspectRatio = config._aspectRatio || [17, 13];
+
+    cx = (window.screen.availWidth / 2) - (newScr.x / 2);
+    cy = (window.screen.availHeight / 2) - (newScr.y / 2);
+
+    xPadding = 16;
+    yPadding = 39;
+
+    tw = ($gameMap && $gameMap.tileWidth) ? $gameMap.tileWidth() : 48;
+    th = ($gameMap && $gameMap.tileHeight) ? $gameMap.tileHeight() : 48;
+
+    minW = (tw * aspectRatio[0]) || Graphics._renderer.width;
+    minH = (th * aspectRatio[1]) || Graphics._renderer.height;
+
     window.resizeTo(newScr.x + xPadding, newScr.y + yPadding);
     window.moveTo(cx, cy);
+
     if(isGraphicsAutoScaling && (tw/th >= 1.0) && tw >= 48) {
       if(isMaintainingMinimumWidth) Graphics.width = Graphics.boxWidth = Math.max(minW, newScr.x);
       if(isMaintainingMinimumHeight) Graphics.height = Graphics.boxHeight = Math.max(minH, newScr.y);
       if(!isMaintainingMinimumWidth && !isMaintainingMinimumHeight) {
-        // Half
         Graphics.width = Graphics.boxWidth = Math.max(minW / 2, newScr.x);
         Graphics.height = Graphics.boxHeight = Math.max(minH / 2, newScr.y);
       }
@@ -257,6 +329,50 @@ Imported.RS_ScreenManager = true;
     }
   };
 
+  SceneManager.initGraphics = function() {
+    var self = this;
+    var type, size, orientation, config, mobile;
+    var sw, sh, bw, bh;
+    var maxSW, maxSH;
+
+    maxSW = window.screen.availWidth;
+    maxSH = window.screen.availHeight;
+    type = this.preferableRendererType();
+
+    if(Utils.isNwjs()) {
+      orientation = (maxSW > maxSH) ? 'landscape' : 'portrait';
+      if(maxSW === maxSH) orientation = 'landscape';
+    } else {
+      orientation = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
+    }
+    config = new ScreenConfig(maxSW, maxSH, orientation);
+
+    // This allows you to get a new size of the screen using an aspect ratio on mobile device.
+    size = config.getSize(this._screenWidth);
+
+    mobile = Utils.isMobileDevice();
+    sw = (mobile === true) ? size[0] : this._screenWidth;
+    sh = (mobile === true) ? size[1] : this._screenHeight;
+    bw = (mobile === true) ? size[0] : this._boxWidth;
+    bh = (mobile === true) ? size[1] : this._boxHeight;
+
+    Graphics.initialize(sw, sh, type);
+    Graphics.boxWidth = bw;
+    Graphics.boxHeight = bh;
+
+    Graphics.setLoadingImage('img/system/Loading.png');
+    if (Utils.isOptionValid('showfps')) {
+        Graphics.showFps();
+    }
+    if (type === 'webgl') {
+        this.checkWebGL();
+    }
+  };
+
+  //============================================================================
+  // Game_System
+  //============================================================================
+
   var alias_Game_System_initialize = Game_System.prototype.initialize;
   Game_System.prototype.initialize = function() {
     alias_Game_System_initialize.call(this);
@@ -264,13 +380,73 @@ Imported.RS_ScreenManager = true;
   };
 
   //============================================================================
-  // Scene_Boot
+  // Window_Options
   //============================================================================
 
-  var alias_Scene_Boot_create = Scene_Boot.prototype.create;
-  Scene_Boot.prototype.create = function() {
-    alias_Scene_Boot_create.call(this);
-  };
+  if(Utils.isNwjs()) {
+    var alias_Window_Options_initialize = Window_Options.prototype.initialize;
+    Window_Options.prototype.initialize = function() {
+      alias_Window_Options_initialize.call(this);
+      this._lastIndex = $gameSystem._lastScreenManagerItem || 0;
+    };
+
+    Window_Options.prototype.isResolution = function (symbol) {
+      return symbol.contains('Resolutions');
+    }
+
+    Window_Options.prototype.processOk = function() {
+      var index = this.index();
+      var symbol = this.commandSymbol(index);
+      var value = this.getConfigValue(symbol);
+      if (this.isVolumeSymbol(symbol)) {
+          value += this.volumeOffset();
+          if (value > 100) {
+              value = 0;
+          }
+          value = value.clamp(0, 100);
+          this.changeValue(symbol, value);
+      } else {
+          if(this.isResolution( symbol ) ) {
+            SceneManager.push( ScreenManager );
+          } else {
+            this.changeValue(symbol, !value);
+          }
+      }
+    };
+
+    Window_Options.prototype.statusText = function(index) {
+      var symbol = this.commandSymbol(index);
+      var value = this.getConfigValue(symbol);
+      if (this.isVolumeSymbol(symbol)) {
+          return this.volumeStatusText(value);
+      } else {
+        if(this.isResolution( symbol ) ) {
+          idx = this._lastIndex;
+          var item = Graphics.getAvailGraphicsArray('String');
+          item.push(fullScreenButtonName);
+          if(!idx) {
+            return String(Graphics.boxWidth + " x " + Graphics.boxHeight);
+          } else {
+            if(!Graphics._isFullScreen()) {
+              return fullScreenButtonName;
+            } else {
+              this._lastIndex = idx;
+              return item[idx || 0];
+            }
+          }
+        } else {
+          return this.booleanStatusText(value);
+        }
+      }
+    };
+
+    var alias_Window_Options_addVolumeOptions = Window_Options.prototype.addVolumeOptions;
+    Window_Options.prototype.addVolumeOptions = function() {
+      alias_Window_Options_addVolumeOptions.call(this);
+      this.addCommand('Resolutions', 'Resolutions');
+    };
+
+  }
 
   //============================================================================
   // Window_AvailGraphicsList
@@ -306,7 +482,7 @@ Imported.RS_ScreenManager = true;
   };
 
   Window_AvailGraphicsList.prototype.makeItemList = function() {
-    this._data = Graphics.getAvailGraphicsArray('String');
+    this._data = Graphics.getAvailGraphicsArray('String').slice(0);
     this._data.push(fullScreenButtonName);
   };
 
@@ -319,11 +495,11 @@ Imported.RS_ScreenManager = true;
   };
 
   Window_AvailGraphicsList.prototype.resetFontSettings = function() {
-      this.contents.fontFace = this.standardFontFace();
-      this.contents.fontSize = this.standardFontSize();
-      this.contents.outlineColor = Utils.rgbToCssColor(128, 0, 0);
-      this.contents.outlineWidth = 2;
-      this.resetTextColor();
+    this.contents.fontFace = this.standardFontFace();
+    this.contents.fontSize = this.standardFontSize();
+    this.contents.outlineColor = Utils.rgbToCssColor(128, 0, 0);
+    this.contents.outlineWidth = 2;
+    this.resetTextColor();
   };
 
   Window_AvailGraphicsList.prototype.drawItem = function(index) {
@@ -340,72 +516,6 @@ Imported.RS_ScreenManager = true;
     this.makeItemList();
     this.createContents();
     this.drawAllItems();
-  };
-
-  //============================================================================
-  // Window_Options
-  //============================================================================
-
-  var alias_Window_Options_initialize = Window_Options.prototype.initialize;
-  Window_Options.prototype.initialize = function() {
-    alias_Window_Options_initialize.call(this);
-    this._lastIndex = $gameSystem._lastScreenManagerItem || 0;
-  };
-
-  Window_Options.prototype.isResolution = function (symbol) {
-    return symbol.contains('Resolutions');
-  }
-
-  Window_Options.prototype.processOk = function() {
-    var index = this.index();
-    var symbol = this.commandSymbol(index);
-    var value = this.getConfigValue(symbol);
-    if (this.isVolumeSymbol(symbol)) {
-        value += this.volumeOffset();
-        if (value > 100) {
-            value = 0;
-        }
-        value = value.clamp(0, 100);
-        this.changeValue(symbol, value);
-    } else {
-        if(this.isResolution( symbol ) ) {
-          SceneManager.push( ScreenManager );
-        } else {
-          this.changeValue(symbol, !value);
-        }
-    }
-  };
-
-  Window_Options.prototype.statusText = function(index) {
-    var symbol = this.commandSymbol(index);
-    var value = this.getConfigValue(symbol);
-    if (this.isVolumeSymbol(symbol)) {
-        return this.volumeStatusText(value);
-    } else {
-      if(this.isResolution( symbol ) ) {
-        idx = this._lastIndex;
-        var item = Graphics.getAvailGraphicsArray('String');
-        item.push(fullScreenButtonName);
-        if(!idx) {
-          return String(Graphics.boxWidth + " x " + Graphics.boxHeight);
-        } else {
-          if(!Graphics._isFullScreen()) {
-            return fullScreenButtonName;
-          } else {
-            this._lastIndex = idx;
-            return item[idx || 0];
-          }
-        }
-      } else {
-        return this.booleanStatusText(value);
-      }
-    }
-  };
-
-  var alias_Window_Options_addVolumeOptions = Window_Options.prototype.addVolumeOptions;
-  Window_Options.prototype.addVolumeOptions = function() {
-    alias_Window_Options_addVolumeOptions.call(this);
-    this.addCommand('Resolutions', 'Resolutions');
   };
 
   //============================================================================
@@ -495,7 +605,9 @@ Imported.RS_ScreenManager = true;
       if(command === "ScreenManager") {
         switch(args[0]) {
           case 'Start':
-            SceneManager.push(ScreenManager);
+            if(Utils.isNwjs()) {
+              SceneManager.push(ScreenManager);
+            }
             break;
         }
       }
