@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.4) <RS_ScreenManager>
+ * @plugindesc (v1.0.5) <RS_ScreenManager>
  * @author biud436
  *
  * @param isMobileAutoFullScreen
@@ -84,6 +84,7 @@ Imported.RS_ScreenManager = true;
  * 2017.05.28 (v1.0.3) - Added a new feature that the game screen size changes
  * automatically depending on an aspect ratio of the screen on mobile device.
  * 2017.05.29 (v1.0.4) - Added a new feature that can apply a custom aspect ratio.
+ * 2017.05.30 (v1.0.5) - Fixed the background scale
  */
 
 (function () {
@@ -672,6 +673,23 @@ Imported.RS_ScreenManager = true;
   };
 
   //============================================================================
+  // Scene_Options
+  //============================================================================
+
+  var alias_Scene_Options_createBackground = Scene_Options.prototype.createBackground;
+  Scene_Options.prototype.createBackground = function() {
+    alias_Scene_Options_createBackground.call(this);
+    var bitmap = this._backgroundSprite.bitmap;
+    var scaleX = Graphics.boxWidth / bitmap.width;
+    var scaleY = Graphics.boxHeight / bitmap.height;
+    var x = Graphics.boxWidth / 2 - (bitmap.width * scaleX) / 2;
+    var y = Graphics.boxHeight / 2 - (bitmap.height * scaleY) / 2;
+    this._backgroundSprite.move(x, y);
+    this._backgroundSprite.scale.x = scaleX;
+    this._backgroundSprite.scale.y = scaleY;
+  };
+
+  //============================================================================
   // ScreenManager
   //============================================================================
 
@@ -696,9 +714,17 @@ Imported.RS_ScreenManager = true;
 
   ScreenManager.prototype.createBackground = function () {
     var bitmap = ImageManager.loadParallax(imageName);
+    var bw = Graphics.boxWidth;
+    var bh = Graphics.boxHeight;
+    var scaleX = (bw / bitmap.width);
+    var scaleY = (bh / bitmap.height);
+    var x = Graphics.boxWidth / 2 - (bitmap.width * scaleX) / 2;
+    var y = Graphics.boxHeight / 2 - (bitmap.height * scaleY) / 2;
     this._backgroundWindow = new Sprite(bitmap);
-    this._backgroundWindow.x = Graphics.boxWidth / 2 - this._backgroundWindow.bitmap.width / 2;
-    this._backgroundWindow.y = Graphics.boxHeight / 2 - this._backgroundWindow.bitmap.height / 2;
+    this._backgroundWindow.x = x;
+    this._backgroundWindow.y = y;
+    this._backgroundWindow.scale.x = scaleX;
+    this._backgroundWindow.scale.y = scaleY;
     this._backgroundWindow.blendMode = 3;
     this.addWindow(this._backgroundWindow);
   };
