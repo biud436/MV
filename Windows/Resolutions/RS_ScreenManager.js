@@ -729,9 +729,10 @@ Imported.RS_ScreenManager = true;
       if(scr) {
         Graphics.setScreenResize(scr);
       } else {
-        var aw = window.screen.availWidth;
-        var ah = window.screen.availHeight;
-        Graphics.setScreenResize(new Point(aw, ah));
+        var config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
+        var insData = parseInt(window.screen.availWidth / customAspectRatio[0]) * customAspectRatio[0];
+        var data = config.getSize(insData);
+        Graphics.setScreenResize(new Point(data[0], data[1]));
       }
 
       // Switches a fullscreen
