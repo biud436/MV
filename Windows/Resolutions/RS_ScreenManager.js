@@ -9,10 +9,6 @@ Imported.RS_ScreenManager = true;
  * @plugindesc (v1.0.5) <RS_ScreenManager>
  * @author biud436
  *
- * @param isMobileAutoFullScreen
- * @desc Set whether it automatically switches to the full screen in the mobile.
- * @default true
- *
  * @param isGraphicsRendererResize
  * @desc (TEST OPTION)
  * @default false
@@ -120,7 +116,6 @@ Imported.RS_ScreenManager = true;
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
-  var isMobileAutoFullScreen = Boolean(parameters['isMobileAutoFullScreen'] === 'true');
   var isGraphicsRendererResize = Boolean(parameters['isGraphicsRendererResize'] === 'true');
   var isGraphicsAutoScaling = Boolean(parameters['isGraphicsAutoScaling'] === 'true');
   var isMaintainingMinimumWidth = Boolean(parameters['isMaintainingMinimumWidth'] === 'true');
