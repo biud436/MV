@@ -500,24 +500,26 @@ Imported.RS_ScreenManager = true;
     }
 
     // auto resize...
-    window.addEventListener('resize', function () {
-      var canvas = document.querySelector('canvas');
-      var dx = parseInt(canvas.style.width);
-      var dy = parseInt(canvas.style.height);
-      var xPadding = window.outerWidth - window.innerWidth;
-      var yPadding = window.outerHeight - window.innerHeight;
-      var cx = (window.screen.availWidth / 2) - (Graphics.boxWidth / 2);
-      var cy = (window.screen.availHeight / 2) - (Graphics.boxHeight / 2);
-      if(dx !== Graphics.boxWidth) {
-        var mx = (Graphics.boxWidth - dx);
-        var my = (Graphics.boxHeight - dy);
-        window.resizeTo(
-          parseInt(Graphics.boxWidth - mx + xPadding),
-          parseInt(Graphics.boxHeight - my + yPadding)
-        );
-        window.moveTo(cx + mx / 2, cy + my / 2);
-      }
-    });
+    if(Utils.isNwjs()) {
+      window.addEventListener('resize', function () {
+        var canvas = document.querySelector('canvas');
+        var dx = parseInt(canvas.style.width);
+        var dy = parseInt(canvas.style.height);
+        var xPadding = window.outerWidth - window.innerWidth;
+        var yPadding = window.outerHeight - window.innerHeight;
+        var cx = (window.screen.availWidth / 2) - (Graphics.boxWidth / 2);
+        var cy = (window.screen.availHeight / 2) - (Graphics.boxHeight / 2);
+        if(dx !== Graphics.boxWidth) {
+          var mx = (Graphics.boxWidth - dx);
+          var my = (Graphics.boxHeight - dy);
+          window.resizeTo(
+            parseInt(Graphics.boxWidth - mx + xPadding),
+            parseInt(Graphics.boxHeight - my + yPadding)
+          );
+          window.moveTo(cx + mx / 2, cy + my / 2);
+        }
+      });
+    }
 
     Graphics.setLoadingImage('img/system/Loading.png');
     if (Utils.isOptionValid('showfps')) {
