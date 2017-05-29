@@ -676,6 +676,19 @@ Imported.RS_ScreenManager = true;
   // Scene_Options
   //============================================================================
 
+  var alias_Scene_MenuBase_createBackground = Scene_MenuBase.prototype.createBackground;
+  Scene_MenuBase.prototype.createBackground = function() {
+    alias_Scene_MenuBase_createBackground.call(this);
+    var bitmap = this._backgroundSprite.bitmap;
+    var scaleX = Graphics.boxWidth / bitmap.width;
+    var scaleY = Graphics.boxHeight / bitmap.height;
+    var x = Graphics.boxWidth / 2 - (bitmap.width * scaleX) / 2;
+    var y = Graphics.boxHeight / 2 - (bitmap.height * scaleY) / 2;
+    this._backgroundSprite.move(x, y);
+    this._backgroundSprite.scale.x = scaleX;
+    this._backgroundSprite.scale.y = scaleY;
+  };
+
   var alias_Scene_Options_createBackground = Scene_Options.prototype.createBackground;
   Scene_Options.prototype.createBackground = function() {
     alias_Scene_Options_createBackground.call(this);
