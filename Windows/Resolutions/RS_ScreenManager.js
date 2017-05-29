@@ -574,21 +574,21 @@ Imported.RS_ScreenManager = true;
 
   Window_AvailGraphicsList.prototype.initWithItemPoint = function () {
     var data = Graphics.getAvailGraphicsArray('Number');
-    var target, prev, cur, config, insData, fullscreenData;
-    var ret = [];
+    // var target, prev, cur, config, insData, fullscreenData;
+    // var ret = [];
+    //
+    // this.uniqWithPoint(data, function (uniqItem) {
+    //   ret.push(uniqItem);
+    // });
+    //
+    // // Insert a fullscreen data to fit an aspect ratio
+    // config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
+    // insData = parseInt(window.screen.availWidth / customAspectRatio[0]) * customAspectRatio[0];
+    // fullscreenData = config.getSize(insData);
+    //
+    // ret.push(new Point(fullscreenData[0], fullscreenData[1]));
 
-    this.uniqWithPoint(data, function (uniqItem) {
-      ret.push(uniqItem);
-    });
-
-    // Insert a fullscreen data to fit an aspect ratio
-    config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
-    insData = parseInt(window.screen.availWidth / customAspectRatio[0]) * customAspectRatio[0];
-    fullscreenData = config.getSize(insData);
-
-    ret.push(new Point(fullscreenData[0], fullscreenData[1]));
-
-    this._itemToPoint = ret;
+    this._itemToPoint = data;
 
   };
 
@@ -621,7 +621,7 @@ Imported.RS_ScreenManager = true;
   };
 
   Window_AvailGraphicsList.prototype.makeItemList = function() {
-    this._data = this.uniq(Graphics.getAvailGraphicsArray('String').slice(0));
+    this._data = Graphics.getAvailGraphicsArray('String');
     this._data.push(fullScreenButtonName);
   };
 
