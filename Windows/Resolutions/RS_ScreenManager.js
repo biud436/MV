@@ -110,7 +110,7 @@ Imported.RS_ScreenManager = true;
   var bitmap = ImageManager.loadParallax(imageName);
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
 
-  var isEnabledAspectRatio = Boolean(parameters['isEnabledAspectRatio'] === 'true');
+  var isEnabledAspectRatio = Boolean(parameters['Enable Custom Aspect Ratio'] === 'true');
 
   var customAspectRatio = parameters['Custom Aspect Ratio'] || "16:9";
   customAspectRatio = customAspectRatio.trim().split(":");
@@ -295,8 +295,11 @@ Imported.RS_ScreenManager = true;
 
     gArray = [];
     result = [];
+
     maxSW = window.screen.availWidth;
     maxSH = window.screen.availHeight;
+
+    // Screen Orientation
     if(Utils.isNwjs()) {
       type = (maxSW > maxSH) ? 'landscape' : 'portrait';
       if(maxSW === maxSH) type = 'landscape';
@@ -305,12 +308,16 @@ Imported.RS_ScreenManager = true;
     }
 
     data = (Utils.isMobileDevice() === true) ? mobileGraphicsArray : pcGraphicsArray;
+
+    // Set a custom aspect ratio
     config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
 
     data.forEach(function (i) {
       if(i.match(getTargetRegex)) {
+
         tw = Number(RegExp.$1);
         th = Number(RegExp.$2);
+
         if(type === 'portrait') {
           if(maxSW > maxSH) {
             var temp = tw;
@@ -318,6 +325,7 @@ Imported.RS_ScreenManager = true;
             th = temp;
           }
         }
+
         if(tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
 
           // The screen size will convert to fit an aspect ratio of the wide screen.
@@ -574,38 +582,35 @@ Imported.RS_ScreenManager = true;
 
   Window_AvailGraphicsList.prototype.initWithItemPoint = function () {
     var data = Graphics.getAvailGraphicsArray('Number');
-    // var target, prev, cur, config, insData, fullscreenData;
-    // var ret = [];
-    //
-    // this.uniqWithPoint(data, function (uniqItem) {
-    //   ret.push(uniqItem);
-    // });
-    //
-    // // Insert a fullscreen data to fit an aspect ratio
-    // config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
-    // insData = parseInt(window.screen.availWidth / customAspectRatio[0]) * customAspectRatio[0];
-    // fullscreenData = config.getSize(insData);
-    //
-    // ret.push(new Point(fullscreenData[0], fullscreenData[1]));
+    var ret = [];
+    this.uniqWithPoint(data.slice(0), function (newData) {
+      ret = newData;
+    });
 
-    this._itemToPoint = data;
+    if(isEnabledAspectRatio) {
+      var config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
+      var insData = parseInt(window.screen.availWidth / customAspectRatio[0]) * customAspectRatio[0];
+      var fullscreenData = config.getSize(insData);
+      ret.push(new Point(fullscreenData[0], fullscreenData[1]));
+    }
 
+    this._itemToPoint = ret;
+    console.log(this._itemToPoint);
   };
 
-  Window_AvailGraphicsList.prototype.uniqWithPoint = function (item, callback) {
-    var cur, next, target;
-    for (var i = 0; i < item.length; i++) {
-      next = item[i+1];
-      cur = item[i];
-      if(next && next instanceof Point) {
-        if(next.x > cur.x && next.y > cur.y) {
-          callback(cur);
+  Window_AvailGraphicsList.prototype.uniqWithPoint = function (data, callback) {
+    var ret = [];
+    ret = data.filter(function(e, i, a) {
+      if(a[i-1] instanceof Point) {
+        if(a[i-1].x === e.x && a[i-1].y === e.y) {
+          return false;
         }
+        return true;
+      } else {
+        return true;
       }
-      if(next === null || next === undefined) {
-        callback(cur);
-      }
-    }
+    });
+    callback(ret);
   };
 
   Window_AvailGraphicsList.prototype.getCurrentItemToPoint = function () {
@@ -622,7 +627,11 @@ Imported.RS_ScreenManager = true;
 
   Window_AvailGraphicsList.prototype.makeItemList = function() {
     this._data = Graphics.getAvailGraphicsArray('String');
+    if(isEnabledAspectRatio) {
+      this._data = this.uniq(this._data.slice(0));
+    }
     this._data.push(fullScreenButtonName);
+    console.log(this._data);
   };
 
   Window_AvailGraphicsList.prototype.isCurrentItemEnabled = function() {
