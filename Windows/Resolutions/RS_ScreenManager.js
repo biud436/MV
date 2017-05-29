@@ -595,7 +595,6 @@ Imported.RS_ScreenManager = true;
     }
 
     this._itemToPoint = ret;
-    console.log(this._itemToPoint);
   };
 
   Window_AvailGraphicsList.prototype.uniqWithPoint = function (data, callback) {
@@ -631,7 +630,6 @@ Imported.RS_ScreenManager = true;
       this._data = this.uniq(this._data.slice(0));
     }
     this._data.push(fullScreenButtonName);
-    console.log(this._data);
   };
 
   Window_AvailGraphicsList.prototype.isCurrentItemEnabled = function() {
