@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.3) <RS_ScreenManager>
+ * @plugindesc (v1.0.4) <RS_ScreenManager>
  * @author biud436
  *
  * @param isMobileAutoFullScreen
@@ -37,11 +37,11 @@ Imported.RS_ScreenManager = true;
  * @type file
  *
  * @param panelTextName
- * @desc
+ * @desc Specify the name of the panel that places in the top of the screen
  * @default Display Resolutions
  *
  * @param fullScreenButtonName
- * @desc
+ * @desc Specify the name of the button for fullscreen
  * @default Full Screen
  *
  * @param Recreate Scene
@@ -51,6 +51,15 @@ Imported.RS_ScreenManager = true;
  * @param Use All Resolutions
  * @desc Sets whether resolution gets even if the resolution of your device is not supported.
  * @default false
+ *
+ * @param Enable Wide Screen
+ * @desc In case of true, the screen size will convert to fit an aspect ratio of the wide screen.
+ * @default false
+ *
+ * @param Custom Aspect Ratio
+ * @desc Specify the aspect ratio as you want.
+ * (16:9, 4:3)
+ * @default 16:9
  *
  * @help
  * =============================================================================
@@ -74,6 +83,7 @@ Imported.RS_ScreenManager = true;
  * 2016.11.26 (v1.0.2) - Added the function that recreates the scene.
  * 2017.05.28 (v1.0.3) - Added a new feature that the game screen size changes
  * automatically depending on an aspect ratio of the screen on mobile device.
+ * 2017.05.29 (v1.0.4) - Added a new feature that can apply a custom aspect ratio.
  */
 
 (function () {
@@ -100,6 +110,11 @@ Imported.RS_ScreenManager = true;
   var isEnabledAspectRatio = Boolean(parameters['Enable Aspect Ratio'] === 'true');
   var bitmap = ImageManager.loadParallax(imageName);
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
+
+  var isEnabledWideScreen = Boolean(parameters['Enable Wide Screen'] === 'true');
+
+  var customAspectRatio = parameters['Custom Aspect Ratio'] || "16:9";
+  customAspectRatio = customAspectRatio.trim().split(":");
 
   var pcGraphicsTempArray = [
   "640 x 480",
@@ -237,6 +252,33 @@ Imported.RS_ScreenManager = true;
   };
 
   //============================================================================
+  // CustomScreenConfig
+  //============================================================================
+  function CustomScreenConfig() {
+    this.initialize.apply(this, arguments);
+  };
+
+  CustomScreenConfig.prototype = Object.create(ScreenConfig.prototype);
+  CustomScreenConfig.prototype.constructor = CustomScreenConfig;
+
+  CustomScreenConfig.prototype.initialize = function (a, b) {
+    // We don't need parameters,
+    // But it is just for calling the constructor of corresponding superclass.
+    ScreenConfig.prototype.initialize.call(this, 1600, 900, 'landscape');
+    a = a || 16;
+    b = b || 9;
+    this._aspectRatio = [a, b];
+  };
+
+  /**
+   * This method calculates a new screen size that is added an aspect ratio
+   * @memberof CustomScreenConfig
+   * @method getSize
+   * @param {Number} virtualWidth
+   * @return {Array}
+   */
+
+  //============================================================================
   // Point
   //============================================================================
   Point.prototype.toString = function () {
@@ -249,6 +291,8 @@ Imported.RS_ScreenManager = true;
 
   Graphics.getAvailGraphicsArray = function (returnType) {
     var data, tw, th, pt, gArray, result, maxSW, maxSH, type;
+    var orientation, config, aspectRatio;
+    var temp, ret;
 
     gArray = [];
     result = [];
@@ -262,6 +306,7 @@ Imported.RS_ScreenManager = true;
     }
 
     data = (Utils.isMobileDevice() === true) ? mobileGraphicsArray : pcGraphicsArray;
+    config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
 
     data.forEach(function (i) {
       if(i.match(getTargetRegex)) {
@@ -275,19 +320,41 @@ Imported.RS_ScreenManager = true;
           }
         }
         if(tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
+
+          // The screen size will convert to fit an aspect ratio of the wide screen.
+          if(isEnabledWideScreen) {
+            temp = config.getSize(tw);
+            tw = temp[0];
+            th = temp[1];
+          }
+
           pt = new Point(tw, th);
           gArray.push(pt);
           result.push(pt.toString());
+
         } else {
+
           if(isUseAllResolutions) {
+
+            // The screen size will convert to fit an aspect ratio of the wide screen.
+            if(isEnabledWideScreen) {
+              temp = config.getSize(tw);
+              tw = temp[0];
+              th = temp[1];
+            }
+
             pt = new Point(tw, th);
             gArray.push(pt);
             result.push(pt.toString());
+
           }
+
         }
       }
     }, this);
+
     return (returnType === 'String')? result : gArray;
+
   };
 
   Graphics.setScreenResize = function (newScr) {
@@ -295,22 +362,36 @@ Imported.RS_ScreenManager = true;
     var tw, th, minW, minH;
     var orientation, config, aspectRatio;
     var maxSW, maxSH;
+    var temp;
 
     maxSW = window.screen.availWidth;
     maxSH = window.screen.availHeight;
 
+    // Get an orientation in your screen
     if(Utils.isNwjs()) {
       orientation = (maxSW > maxSH) ? 'landscape' : 'portrait';
       if(maxSW === maxSH) orientation = 'landscape';
     } else {
       orientation = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
     }
+
+    // Get an aspect ratio of a new screen size.
     config = new ScreenConfig(newScr.x, newScr.y, orientation);
     aspectRatio = config._aspectRatio || [17, 13];
 
+    if(isEnabledWideScreen) {
+      config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
+      aspectRatio = config._aspectRatio;
+      temp = config.getSize(newScr.x);
+      newScr.x = temp[0];
+      newScr.y = temp[1];
+    }
+
+    // Variables that can set the position of an application as the middle of the screen.
     cx = (window.screen.availWidth / 2) - (newScr.x / 2);
     cy = (window.screen.availHeight / 2) - (newScr.y / 2);
 
+    // These padding variables indicate the width or height of an each window border.
     xPadding = 16;
     yPadding = 39;
 
@@ -483,16 +564,53 @@ Imported.RS_ScreenManager = true;
 
   Window_AvailGraphicsList.prototype.initialize = function (x, y, width, height) {
     Window_Selectable.prototype.initialize.call(this, x, y, width, height);
-    this._itemToPoint = Graphics.getAvailGraphicsArray('Number');
     this._windowFrameSprite.visible = false;
+    this._index = 0;
     this._item = [];
+    this.initWithItemPoint();
     this.refresh();
     this.activate();
     this.select($gameSystem._lastScreenManagerItem || 0);
   };
 
+  Window_AvailGraphicsList.prototype.initWithItemPoint = function () {
+    var data = Graphics.getAvailGraphicsArray('Number');
+    var target, prev, cur, config, insData, fullscreenData;
+    var ret = [];
+
+    this.uniqWithPoint(data, function (uniqItem) {
+      ret.push(uniqItem);
+    });
+
+    // Insert a fullscreen data to fit an aspect ratio
+    config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
+    insData = parseInt(window.screen.availWidth / customAspectRatio[0]) * customAspectRatio[0];
+    fullscreenData = config.getSize(insData);
+
+    ret.push(new Point(fullscreenData[0], fullscreenData[1]));
+
+    this._itemToPoint = ret;
+
+  };
+
+  Window_AvailGraphicsList.prototype.uniqWithPoint = function (item, callback) {
+    var cur, next, target;
+    for (var i = 0; i < item.length; i++) {
+      next = item[i+1];
+      cur = item[i];
+      if(next && next instanceof Point) {
+        if(next.x > cur.x && next.y > cur.y) {
+          callback(cur);
+        }
+      }
+      if(next === null || next === undefined) {
+        callback(cur);
+      }
+    }
+  };
+
   Window_AvailGraphicsList.prototype.getCurrentItemToPoint = function () {
-    return this._itemToPoint && this.index() >= 0 ? this._itemToPoint[this.index()] : null;
+    return this._itemToPoint && this._index >= 0 ? this._itemToPoint[this._index] : null;
   };
 
   Window_AvailGraphicsList.prototype.maxItems = function() {
@@ -500,11 +618,11 @@ Imported.RS_ScreenManager = true;
   };
 
   Window_AvailGraphicsList.prototype.item = function() {
-    return this._data && this.index() >= 0 ? this._data[this.index()] : null;
+    return this._data && this._index >= 0 ? this._data[this._index] : null;
   };
 
   Window_AvailGraphicsList.prototype.makeItemList = function() {
-    this._data = Graphics.getAvailGraphicsArray('String').slice(0);
+    this._data = this.uniq(Graphics.getAvailGraphicsArray('String').slice(0));
     this._data.push(fullScreenButtonName);
   };
 
@@ -538,6 +656,13 @@ Imported.RS_ScreenManager = true;
     this.makeItemList();
     this.createContents();
     this.drawAllItems();
+  };
+
+  Window_AvailGraphicsList.prototype.uniq = function (data) {
+    data = data.filter(function (e, i, a) {
+      return a.indexOf(e) === i;
+    }, this);
+    return data;
   };
 
   //============================================================================
@@ -600,10 +725,7 @@ Imported.RS_ScreenManager = true;
   };
 
   ScreenManager.prototype.convertScreenSize = function () {
-    if(!Utils.isMobileDevice() &&
-      this._availGraphicsList.item() === fullScreenButtonName) {
-      Graphics._switchFullScreen();
-    } else {
+    if(Utils.isNwjs()) {
       var scr = this._availGraphicsList.getCurrentItemToPoint();
       if(scr) {
         Graphics.setScreenResize(scr);
@@ -611,6 +733,11 @@ Imported.RS_ScreenManager = true;
         var aw = window.screen.availWidth;
         var ah = window.screen.availHeight;
         Graphics.setScreenResize(new Point(aw, ah));
+      }
+
+      // Switches a fullscreen
+      if(this._availGraphicsList.item() === fullScreenButtonName) {
+        Graphics._switchFullScreen();
       }
     }
     $gameSystem._lastScreenManagerItem = this._availGraphicsList.index();
