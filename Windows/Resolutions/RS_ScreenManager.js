@@ -423,8 +423,8 @@ Imported.RS_ScreenManager = true;
     cy = (window.screen.availHeight / 2) - (newScr.y / 2);
 
     // These padding variables indicate the width or height of an each window border.
-    xPadding = 16;
-    yPadding = 39;
+    xPadding = window.outerWidth - window.innerWidth;
+    yPadding = window.outerHeight - window.innerHeight;
 
     tw = ($gameMap && $gameMap.tileWidth) ? $gameMap.tileWidth() : 48;
     th = ($gameMap && $gameMap.tileHeight) ? $gameMap.tileHeight() : 48;
@@ -446,12 +446,19 @@ Imported.RS_ScreenManager = true;
       Graphics.width = Graphics.boxWidth = newScr.x;
       Graphics.height = Graphics.boxHeight = newScr.y;
     }
+
     if(isGraphicsRendererResize) {
         Graphics._renderer.resize(newScr.x, newScr.y);
     }
+
+    // Graphics._canvas.style.margin = "0px";
+    // Graphics._canvas.style.width = newScr.x + 'px';
+    // Graphics._canvas.style.height = newScr.y + 'px';
+
     if(isRecreateScene) {
       if(SceneManager._scene) SceneManager.push(SceneManager._scene.constructor);
     }
+
   };
 
   SceneManager.initGraphics = function() {
