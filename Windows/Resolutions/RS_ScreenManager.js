@@ -29,6 +29,9 @@ Imported.RS_ScreenManager = true;
  * @desc Set whether it can not set the width is minimum height or less.
  * @default true
  *
+ * @param ---
+ * @default
+ *
  * @param imageName
  * @desc image Name
  * @default Mountains3
@@ -44,6 +47,9 @@ Imported.RS_ScreenManager = true;
  * @desc Specify the name of the button for fullscreen
  * @default Full Screen
  *
+ * @param ---
+ * @default
+ *
  * @param Recreate Scene
  * @desc To set as true, the current scene will recreate after changing screen size
  * @default true
@@ -51,6 +57,9 @@ Imported.RS_ScreenManager = true;
  * @param Use All Resolutions
  * @desc Sets whether resolution gets even if the resolution of your device is not supported.
  * @default false
+ *
+ * @param ---
+ * @default
  *
  * @param Enable Custom Aspect Ratio
  * @desc In case of true, the screen size will convert to fit a custom aspect ratio.
@@ -60,6 +69,17 @@ Imported.RS_ScreenManager = true;
  * @desc Specify the aspect ratio as you want.
  * (16:9, 4:3)
  * @default 16:9
+ *
+ * @param ---
+ * @default
+ *
+ * @param Default Screen Width
+ * @desc Change your game screen width
+ * @default 1280
+ *
+ * @param Default Screen Height
+ * @desc Change your game screen height
+ * @default 720
  *
  * @help
  * =============================================================================
@@ -84,7 +104,10 @@ Imported.RS_ScreenManager = true;
  * 2017.05.28 (v1.0.3) - Added a new feature that the game screen size changes
  * automatically depending on an aspect ratio of the screen on mobile device.
  * 2017.05.29 (v1.0.4) - Added a new feature that can apply a custom aspect ratio.
- * 2017.05.30 (v1.0.5) - Fixed the background scale
+ * 2017.05.30 (v1.0.5) :
+ * - Added a new feature that is resized the game screen when starting the game.
+ * - Fixed the problem that is not fitted a size of the background image
+ * to a new screen size after resizing the screen.
  */
 
 (function () {
@@ -115,6 +138,11 @@ Imported.RS_ScreenManager = true;
 
   var customAspectRatio = parameters['Custom Aspect Ratio'] || "16:9";
   customAspectRatio = customAspectRatio.trim().split(":");
+
+  var defaultScreenSize = new Point(
+    Number(parameters["Default Screen Width"] || 1280),
+    Number(parameters["Default Screen Height"] || 720)
+  );
 
   var pcGraphicsTempArray = [
   "640 x 480",
@@ -436,10 +464,15 @@ Imported.RS_ScreenManager = true;
     var type, size, orientation, config, mobile;
     var sw, sh, bw, bh;
     var maxSW, maxSH;
+    var defScrWidth, defScrHeight;
 
     maxSW = window.screen.availWidth;
     maxSH = window.screen.availHeight;
     type = this.preferableRendererType();
+
+    // Default Screen Size
+    defScrWidth = Math.min(defaultScreenSize.x, maxSW);
+    defScrHeight = Math.min(defaultScreenSize.y, maxSH);
 
     if(Utils.isNwjs()) {
       orientation = (maxSW > maxSH) ? 'landscape' : 'portrait';
@@ -450,17 +483,21 @@ Imported.RS_ScreenManager = true;
     config = new ScreenConfig(maxSW, maxSH, orientation);
 
     // This allows you to get a new size of the screen using an aspect ratio on mobile device.
-    size = config.getSize(this._screenWidth);
+    size = config.getSize(defScrWidth);
 
     mobile = Utils.isMobileDevice();
-    sw = (mobile === true) ? size[0] : this._screenWidth;
-    sh = (mobile === true) ? size[1] : this._screenHeight;
-    bw = (mobile === true) ? size[0] : this._boxWidth;
-    bh = (mobile === true) ? size[1] : this._boxHeight;
+    sw = (mobile === true) ? size[0] : defScrWidth;
+    sh = (mobile === true) ? size[1] : defScrHeight;
+    bw = (mobile === true) ? size[0] : defScrWidth;
+    bh = (mobile === true) ? size[1] : defScrHeight;
 
     Graphics.initialize(sw, sh, type);
     Graphics.boxWidth = bw;
     Graphics.boxHeight = bh;
+
+    if(Utils.isNwjs()) {
+      Graphics.setScreenResize(new Point(sw, sh));
+    }
 
     Graphics.setLoadingImage('img/system/Loading.png');
     if (Utils.isOptionValid('showfps')) {
