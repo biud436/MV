@@ -52,8 +52,8 @@ Imported.RS_ScreenManager = true;
  * @desc Sets whether resolution gets even if the resolution of your device is not supported.
  * @default false
  *
- * @param Enable Wide Screen
- * @desc In case of true, the screen size will convert to fit an aspect ratio of the wide screen.
+ * @param Enable Custom Aspect Ratio
+ * @desc In case of true, the screen size will convert to fit a custom aspect ratio.
  * @default false
  *
  * @param Custom Aspect Ratio
@@ -107,11 +107,10 @@ Imported.RS_ScreenManager = true;
   var isRecreateScene = Boolean(parameters['Recreate Scene'] === 'true');
   var resolutionCommand = "Display Resolutions";
   var isUseAllResolutions = Boolean(parameters['Use All Resolutions'] === 'true');
-  var isEnabledAspectRatio = Boolean(parameters['Enable Aspect Ratio'] === 'true');
   var bitmap = ImageManager.loadParallax(imageName);
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
 
-  var isEnabledWideScreen = Boolean(parameters['Enable Wide Screen'] === 'true');
+  var isEnabledAspectRatio = Boolean(parameters['isEnabledAspectRatio'] === 'true');
 
   var customAspectRatio = parameters['Custom Aspect Ratio'] || "16:9";
   customAspectRatio = customAspectRatio.trim().split(":");
@@ -322,7 +321,7 @@ Imported.RS_ScreenManager = true;
         if(tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
 
           // The screen size will convert to fit an aspect ratio of the wide screen.
-          if(isEnabledWideScreen) {
+          if(isEnabledAspectRatio) {
             temp = config.getSize(tw);
             tw = temp[0];
             th = temp[1];
@@ -337,7 +336,7 @@ Imported.RS_ScreenManager = true;
           if(isUseAllResolutions) {
 
             // The screen size will convert to fit an aspect ratio of the wide screen.
-            if(isEnabledWideScreen) {
+            if(isEnabledAspectRatio) {
               temp = config.getSize(tw);
               tw = temp[0];
               th = temp[1];
@@ -379,7 +378,7 @@ Imported.RS_ScreenManager = true;
     config = new ScreenConfig(newScr.x, newScr.y, orientation);
     aspectRatio = config._aspectRatio || [17, 13];
 
-    if(isEnabledWideScreen) {
+    if(isEnabledAspectRatio) {
       config = new CustomScreenConfig(customAspectRatio[0], customAspectRatio[1]);
       aspectRatio = config._aspectRatio;
       temp = config.getSize(newScr.x);
