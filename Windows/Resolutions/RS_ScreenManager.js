@@ -676,6 +676,11 @@ Imported.RS_ScreenManager = true;
         var sy = Math.floor(iconIndex / 16) * ph;
         var dw = Math.min(Math.floor(Graphics.boxWidth / 25.5), pw);
         var dh = Math.min(Math.floor(Graphics.boxHeight / 19.5), ph);
+        var orientation = Graphics.getOrientation(true);
+        if(orientation === 'portrait') {
+          dw = Math.max(Math.floor(Graphics.boxWidth / 19.5), pw);
+          dh = Math.max(Math.floor(Graphics.boxHeight / 25.5), ph);
+        }
         this.contents.blt(bitmap, sx, sy, pw, ph, x, y, dw, dh);
     };
 
@@ -693,6 +698,11 @@ Imported.RS_ScreenManager = true;
         var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
         var dw = Math.min(Math.floor(Graphics.boxWidth / 5.66), sw);
         var dh = Math.min(Math.floor(Graphics.boxHeight / 4.3), sh);
+        var orientation = Graphics.getOrientation(true);
+        if(orientation === 'portrait') {
+          dw = Math.max(Math.floor(Graphics.boxWidth / 4.3), sw);
+          dh = Math.max(Math.floor(Graphics.boxHeight / 5.66), sh);
+        }
         this.contents.blt(bitmap, sx, sy, sw, sh, dx, dy, dw, dh);
     };
 
@@ -706,7 +716,12 @@ Imported.RS_ScreenManager = true;
         var sy = (Math.floor(n / 4) * 4) * ph;
         var dw = Math.floor(Graphics.boxWidth / customAspectRatio[0]);
         var dh = Math.floor(Graphics.boxHeight / customAspectRatio[1]);
-        this.contents.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph, dw, dh);
+        var orientation = Graphics.getOrientation(true);
+        if(orientation === 'portrait') {
+          dw = Math.max(Math.floor(Graphics.boxWidth / 17), pw);
+          dh = Math.max(Math.floor(Graphics.boxHeight / 13), ph);
+        }
+        this.contents.blt(bitmap, sx, sy, pw, ph, x - dw / 2, y - dh, dw, dh);
     };
 
     Window_Command.prototype.windowWidth = function() {
