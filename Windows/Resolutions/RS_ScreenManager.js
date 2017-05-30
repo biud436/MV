@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.5) <RS_ScreenManager>
+ * @plugindesc (v1.0.6) <RS_ScreenManager>
  * @author biud436
  *
  * @param isGraphicsRendererResize
@@ -18,11 +18,11 @@ Imported.RS_ScreenManager = true;
  * @default false
  *
  * @param isMaintainingMinimumWidth
- * @desc Set whether it can not set the width is minimum width or less.
+ * @desc Set whether it can not set the width is less than minimum width
  * @default true
  *
  * @param isMaintainingMinimumHeight
- * @desc Set whether it can not set the width is minimum height or less.
+ * @desc Set whether it can not set the width is less than minimum height
  * @default true
  *
  * @param ---
@@ -77,6 +77,10 @@ Imported.RS_ScreenManager = true;
  * @desc Change your game screen height
  * @default 720
  *
+ * @param Resize All Windows
+ * @desc Decide whether it will be set as relative size to the screen size.
+ * @default true
+ *
  * @help
  * =============================================================================
  * Installations
@@ -104,6 +108,9 @@ Imported.RS_ScreenManager = true;
  * - Added a new feature that is resized the game screen when starting the game.
  * - Fixed the problem that is not fitted a size of the background image
  * to a new screen size after resizing the screen.
+ * 2017.05.30 (v1.0.6) :
+ * - Fixed the function to get the width or the height of the screen on mobile.
+ * - Added a new feature that relatively changes the area of the UI.
  */
 
 (function () {
@@ -138,6 +145,8 @@ Imported.RS_ScreenManager = true;
     Number(parameters["Default Screen Width"] || 1280),
     Number(parameters["Default Screen Height"] || 720)
   );
+
+  var isResizeAllWindows = Boolean(parameters["Resize All Windows"] === "true");
 
   var pcGraphicsTempArray = [
   "640 x 480",
@@ -466,8 +475,8 @@ Imported.RS_ScreenManager = true;
     var maxSW, maxSH;
     var defScrWidth, defScrHeight;
 
-    maxSW = window.screen.availWidth;
-    maxSH = window.screen.availHeight;
+    maxSW = window.innerWidth;
+    maxSH = window.innerHeight;
     type = this.preferableRendererType();
 
     // Default Screen Size
@@ -619,6 +628,231 @@ Imported.RS_ScreenManager = true;
   }
 
   //============================================================================
+  // Window_Base
+  //============================================================================
+
+  if(isResizeAllWindows) {
+
+    var alias_Window_Base_resetFontSettings = Window_Base.prototype.resetFontSettings;
+    Window_Base.prototype.resetFontSettings = function() {
+        alias_Window_Base_resetFontSettings.call(this);
+        if(Utils.isMobileDevice()) {
+          this.contents.outlineWidth = 1;
+        }
+    };
+
+    Window_Base.prototype.lineHeight = function() {
+        var scale = (Utils.isMobileDevice()) ? 1.5 : 1;
+        return Math.floor(Graphics.boxHeight / customAspectRatio[0]) * scale;
+    };
+
+    Window_Base.prototype.standardFontSize = function() {
+        return (Math.floor(Graphics.boxHeight / customAspectRatio[0]) - 8);
+    };
+
+    Window_Base.prototype.standardPadding = function() {
+        var scale = (Utils.isMobileDevice()) ? 0.5 : 1;
+        return Math.floor(Graphics.boxWidth / 45) * scale;
+    };
+
+    Window_Base.prototype.textPadding = function() {
+        var scale = (Utils.isMobileDevice()) ? 0.5 : 1;
+        return Math.floor(Graphics.boxWidth / 136) * scale;
+    };
+
+    Window_Base.prototype.drawIcon = function(iconIndex, x, y) {
+        var bitmap = ImageManager.loadSystem('IconSet');
+        var pw = Window_Base._iconWidth;
+        var ph = Window_Base._iconHeight;
+        var sx = iconIndex % 16 * pw;
+        var sy = Math.floor(iconIndex / 16) * ph;
+        var dw = Math.min(Math.floor(Graphics.boxWidth / 25.5), pw);
+        var dh = Math.min(Math.floor(Graphics.boxHeight / 19.5), ph);
+        this.contents.blt(bitmap, sx, sy, pw, ph, x, y, dw, dh);
+    };
+
+    Window_Base.prototype.drawFace = function(faceName, faceIndex, x, y, width, height) {
+        width = width || Window_Base._faceWidth;
+        height = height || Window_Base._faceHeight;
+        var bitmap = ImageManager.loadFace(faceName);
+        var pw = Window_Base._faceWidth;
+        var ph = Window_Base._faceHeight;
+        var sw = Math.min(width, pw);
+        var sh = Math.min(height, ph);
+        var dx = Math.floor(x + Math.max(width - pw, 0) / 2);
+        var dy = Math.floor(y + Math.max(height - ph, 0) / 2);
+        var sx = faceIndex % 4 * pw + (pw - sw) / 2;
+        var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
+        var dw = Math.min(Math.floor(Graphics.boxWidth / 5.66), sw);
+        var dh = Math.min(Math.floor(Graphics.boxHeight / 4.3), sh);
+        this.contents.blt(bitmap, sx, sy, sw, sh, dx, dy, dw, dh);
+    };
+
+    Window_Base.prototype.drawCharacter = function(characterName, characterIndex, x, y) {
+        var bitmap = ImageManager.loadCharacter(characterName);
+        var big = ImageManager.isBigCharacter(characterName);
+        var pw = bitmap.width / (big ? 3 : 12);
+        var ph = bitmap.height / (big ? 4 : 8);
+        var n = characterIndex;
+        var sx = (n % 4 * 3 + 1) * pw;
+        var sy = (Math.floor(n / 4) * 4) * ph;
+        var dw = Math.floor(Graphics.boxWidth / customAspectRatio[0]);
+        var dh = Math.floor(Graphics.boxHeight / customAspectRatio[1]);
+        this.contents.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph, dw, dh);
+    };
+
+    Window_Command.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 3.4);
+    };
+
+    Window_Gold.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 3.4);
+    };
+
+    Window_MenuCommand.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 3.4);
+    };
+
+    Window_MenuStatus.prototype.windowWidth = function() {
+        return Graphics.boxWidth - Math.floor(Graphics.boxWidth / 3.4);
+    };
+
+    Window_SkillType.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 3.4);
+    };
+
+    Window_EquipStatus.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 2.62);
+    };
+
+    Window_Options.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 2.04);
+    };
+
+    Window_ShopBuy.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 1.78);
+    };
+
+    Window_ShopNumber.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 1.78);
+    };
+
+    Window_NameEdit.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 1.7);
+    };
+
+    Window_MapName.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 2.26);
+    };
+
+    Window_PartyCommand.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 4.25);
+    };
+
+    Window_ActorCommand.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 4.25);
+    };
+
+    Window_TitleCommand.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 3.4);
+    };
+
+    Window_GameEnd.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 3.4);
+    };
+
+    Window_DebugRange.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 3.4) + 6;
+    };
+
+    Window_NumberInput.prototype.itemWidth = function() {
+        return parseInt(customAspectRatio[0] * 2);
+    };
+
+    Object.defineProperty(Sprite.prototype, 'width', {
+        get: function() {
+            return this._frame.width;
+        },
+        set: function(value) {
+            value = Math.floor(Graphics.boxWidth / (Graphics.boxWidth / value));
+            this._frame.width = value;
+            this._refresh();
+        },
+        configurable: true
+    });
+
+    /**
+     * The height of the sprite without the scale.
+     *
+     * @property height
+     * @type Number
+     */
+    Object.defineProperty(Sprite.prototype, 'height', {
+        get: function() {
+            return this._frame.height;
+        },
+        set: function(value) {
+            value = Math.floor(Graphics.boxHeight / (Graphics.boxHeight / value));
+            this._frame.height = value;
+            this._refresh();
+        },
+        configurable: true
+    });
+
+  }
+
+  //============================================================================
+  // Android Chrome Issues
+  //============================================================================
+
+  if(Utils.isAndroidChrome() && navigator.userAgent.match(/chrome\/(\d+)\.\d+\.\d+\.\d+/i)[1] >= 57) {
+    /**
+     * @static
+     * @method _onTouchStart
+     * @param {TouchEvent} event
+     * @private
+     */
+    TouchInput._onTouchStart = function(event) {
+        for (var i = 0; i < event.changedTouches.length; i++) {
+            var touch = event.changedTouches[i];
+            var x = Graphics.pageToCanvasX(touch.pageX);
+            var y = Graphics.pageToCanvasY(touch.pageY);
+            if (Graphics.isInsideCanvas(x, y)) {
+                this._screenPressed = true;
+                this._pressedTime = 0;
+                if (event.touches.length >= 2) {
+                    this._onCancel(x, y);
+                } else {
+                    this._onTrigger(x, y);
+                }
+                // event.preventDefault();
+            }
+        }
+        // if (window.cordova || window.navigator.standalone) {
+          // event.preventDefault();
+        // }
+    };
+
+    /**
+     * @static
+     * @method _onTouchStart
+     * @param {TouchEvent} event
+     * @private
+     */
+    TouchInput._onTouchEnd = function(event) {
+        for (var i = 0; i < event.changedTouches.length; i++) {
+            var touch = event.changedTouches[i];
+            var x = Graphics.pageToCanvasX(touch.pageX);
+            var y = Graphics.pageToCanvasY(touch.pageY);
+            this._screenPressed = false;
+            this._onRelease(x, y);
+            event.preventDefault();
+        }
+    };
+
+  }
+
+  //============================================================================
   // Window_AvailGraphicsList
   //============================================================================
 
@@ -638,6 +872,10 @@ Imported.RS_ScreenManager = true;
     this.refresh();
     this.activate();
     this.select($gameSystem._lastScreenManagerItem || 0);
+  };
+
+  Window_AvailGraphicsList.prototype.lineHeight = function () {
+    return Math.round(Graphics.boxHeight / 16);
   };
 
   Window_AvailGraphicsList.prototype.initWithItemPoint = function () {
@@ -804,8 +1042,8 @@ Imported.RS_ScreenManager = true;
   ScreenManager.prototype.createPanel = function () {
     var color1 = Window_Base.prototype.dimColor1();
     var color2 = Window_Base.prototype.dimColor2();
-    var width = this._availGraphicsList.width;
-    var height = Window_Base.prototype.lineHeight();
+    var width = Math.floor(Graphics.boxWidth / 3);
+    var height = Math.floor(Graphics.boxHeight / 17);
     var x = 0;
     var y = 0;
     this._panel = new Sprite(new Bitmap(width, height * 2));
@@ -818,11 +1056,11 @@ Imported.RS_ScreenManager = true;
   }
 
   ScreenManager.prototype.createAvailGraphicsList = function () {
-    var width = 320;
-    var height = 440;
-    this._availGraphicsList = new Window_AvailGraphicsList(0, 0, 320, 480);
-    this._availGraphicsList.x = Graphics.boxWidth / 2 - (320 / 2);
-    this._availGraphicsList.y = Graphics.boxHeight / 2 - (480 / 2);
+    var width = Math.floor(Graphics.boxWidth / 3);
+    var height = Math.floor(Graphics.boxWidth / 2.5);
+    this._availGraphicsList = new Window_AvailGraphicsList(0, 0, width, height);
+    this._availGraphicsList.x = Graphics.boxWidth / 2 - (width / 2);
+    this._availGraphicsList.y = Graphics.boxHeight / 2 - (height / 2);
     this._availGraphicsList.setHandler('ok', this.convertScreenSize.bind(this));
     this._availGraphicsList.setHandler('cancel', this.popScene.bind(this));
     this.addWindow(this._availGraphicsList);
