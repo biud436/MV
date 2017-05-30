@@ -397,6 +397,19 @@ Imported.RS_ScreenManager = true;
 
   };
 
+  Graphics.getOrientation = function (inner) {
+    var maxSW = (inner === true) ? window.innerWidth : window.screen.availWidth;
+    var maxSH = (inner === true) ? window.innerHeight : window.screen.availHeight;
+    var orientation = 'landscape';
+    if(Utils.isNwjs()) {
+      orientation = (maxSW > maxSH) ? 'landscape' : 'portrait';
+      if(maxSW === maxSH) orientation = 'landscape';
+    } else {
+      orientation = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
+    }
+    return orientation;
+  };
+
   Graphics.setScreenResize = function (newScr) {
     var cx, cy, xPadding, yPadding;
     var tw, th, minW, minH;
@@ -408,12 +421,7 @@ Imported.RS_ScreenManager = true;
     maxSH = window.screen.availHeight;
 
     // Get an orientation in your screen
-    if(Utils.isNwjs()) {
-      orientation = (maxSW > maxSH) ? 'landscape' : 'portrait';
-      if(maxSW === maxSH) orientation = 'landscape';
-    } else {
-      orientation = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
-    }
+    orientation = this.getOrientation(false);
 
     // Get an aspect ratio of a new screen size.
     config = new ScreenConfig(newScr.x, newScr.y, orientation);
@@ -483,12 +491,7 @@ Imported.RS_ScreenManager = true;
     defScrWidth = Math.min(defaultScreenSize.x, maxSW);
     defScrHeight = Math.min(defaultScreenSize.y, maxSH);
 
-    if(Utils.isNwjs()) {
-      orientation = (maxSW > maxSH) ? 'landscape' : 'portrait';
-      if(maxSW === maxSH) orientation = 'landscape';
-    } else {
-      orientation = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
-    }
+    orientation = Graphics.getOrientation(true);
     config = new ScreenConfig(maxSW, maxSH, orientation);
 
     // This allows you to get a new size of the screen using an aspect ratio on mobile device.
@@ -647,7 +650,12 @@ Imported.RS_ScreenManager = true;
     };
 
     Window_Base.prototype.standardFontSize = function() {
-        return (Math.floor(Graphics.boxHeight / customAspectRatio[0]) - 8);
+        var orientation = Graphics.getOrientation(true);
+        if(orientation === 'landscape') {
+          return Math.floor(Graphics.boxWidth / 29);
+        } else {
+          return Math.floor(Graphics.boxHeight / 29);
+        }
     };
 
     Window_Base.prototype.standardPadding = function() {
