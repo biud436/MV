@@ -474,7 +474,14 @@ Imported.RS_ScreenManager = true;
 
   };
 
-
+  // Graphics._changeOrientation = function (event) {
+  //   if(this._deviceOrientationAlpha !== event.alpha) {
+  //     var maxSW = window.innerWidth;
+  //     var maxSH = window.innerHeight;
+  //     this.setScreenResize(new Point(maxSW, maxSH));
+  //     this._deviceOrientationAlpha = event.alpha;
+  //   };
+  // };
 
   SceneManager.initGraphics = function() {
     var self = this;
@@ -488,8 +495,8 @@ Imported.RS_ScreenManager = true;
     type = this.preferableRendererType();
 
     // Default Screen Size
-    defScrWidth = Math.min(defaultScreenSize.x, maxSW);
-    defScrHeight = Math.min(defaultScreenSize.y, maxSH);
+    defScrWidth = defaultScreenSize.x;
+    defScrHeight = defaultScreenSize.y;
 
     orientation = Graphics.getOrientation(true);
     config = new ScreenConfig(maxSW, maxSH, orientation);
@@ -511,34 +518,41 @@ Imported.RS_ScreenManager = true;
       Graphics.setScreenResize(new Point(sw, sh));
     }
 
-    // auto resize...
-    if(Utils.isNwjs()) {
-      window.addEventListener('resize', function () {
-        var canvas = document.querySelector('canvas');
-        var dx = parseInt(canvas.style.width);
-        var dy = parseInt(canvas.style.height);
-        var xPadding = window.outerWidth - window.innerWidth;
-        var yPadding = window.outerHeight - window.innerHeight;
-        var cx = (window.screen.availWidth / 2) - (Graphics.boxWidth / 2);
-        var cy = (window.screen.availHeight / 2) - (Graphics.boxHeight / 2);
-        if(dx !== Graphics.boxWidth) {
-          var mx = (Graphics.boxWidth - dx);
-          var my = (Graphics.boxHeight - dy);
-          window.resizeTo(
-            parseInt(Graphics.boxWidth - mx + xPadding),
-            parseInt(Graphics.boxHeight - my + yPadding)
-          );
-          window.moveTo(cx + mx / 2, cy + my / 2);
-        }
-      });
-    }
-
     Graphics.setLoadingImage('img/system/Loading.png');
     if (Utils.isOptionValid('showfps')) {
         Graphics.showFps();
     }
     if (type === 'webgl') {
         this.checkWebGL();
+    }
+  };
+
+  // var alias_Graphics_setupEventHandlers = Graphics._setupEventHandlers;
+  // Graphics._setupEventHandlers = function() {
+  //   alias_Graphics_setupEventHandlers.call(this);
+  //   window.addEventListener("deviceorientation", Graphics._changeOrientation.bind(this));
+  // };
+
+  var alias_Graphics_onWindowResize = Graphics._onWindowResize;
+  Graphics._onWindowResize = function() {
+    alias_Graphics_onWindowResize.call(this);
+    if(Utils.isNwjs()) {
+      var canvas = document.querySelector('canvas');
+      var dx = parseInt(canvas.style.width);
+      var dy = parseInt(canvas.style.height);
+      var xPadding = window.outerWidth - window.innerWidth;
+      var yPadding = window.outerHeight - window.innerHeight;
+      var cx = (window.screen.availWidth / 2) - (Graphics.boxWidth / 2);
+      var cy = (window.screen.availHeight / 2) - (Graphics.boxHeight / 2);
+      if(dx !== Graphics.boxWidth) {
+        var mx = (Graphics.boxWidth - dx);
+        var my = (Graphics.boxHeight - dy);
+        window.resizeTo(
+          parseInt(Graphics.boxWidth - mx + xPadding),
+          parseInt(Graphics.boxHeight - my + yPadding)
+        );
+        window.moveTo(cx + mx / 2, cy + my / 2);
+      }
     }
   };
 
