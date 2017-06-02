@@ -11,6 +11,11 @@
  * @desc
  * @default Simplified Arabic, Times New Roman, Segoe UI
  *
+ * @param Font Size
+ * @desc Specifies the text size as integer type.
+ * (default : 28)
+ * @default 28
+ *
  * @help
  * =============================================================================
  * Please read this stuff before you begin using this plugin
@@ -70,14 +75,19 @@
  * - Supported YEP_EventMiniLabel plugin
  * - Fixed the processNormalCharacter method.
  * 2017.05.05 (v1.1.8) - Fixed the issue that does not properly show up Arabic when using a choice window.
+ * 2017.06.03 (v1.1.9) - Fixed an issue that is incorrectly displayed a non-character word : !, @, #, $, dot.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.1.8';
+Imported.RS_ArabicMessageSystem = '1.1.9';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
 RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
+
+function ArabicUtils() {
+  throw new Error("This is a static class")
+};
 
 (function () {
   var parameters = $plugins.filter(function (i) {
@@ -90,6 +100,9 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   var arabicFont = String(parameters["Arabic Font"] || "Simplified Arabic, Times New Roman, Segoe UI");
 
   var useFilters = false;
+
+  RS.ArabicMessageSystem.Params = RS.ArabicMessageSystem.Params || {};
+  RS.ArabicMessageSystem.Params.fontSize = parseInt(parameters['Font Size'] || 28);
 
   //============================================================================
   // Bitmap
@@ -448,6 +461,36 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     }
   };
 
+  Window_Base.prototype.getYWithText = function (y, textState) {
+    return y + textState.height - ( textState.height - this.contents.fontSize * 0.7) / 2;
+  };
+
+  //============================================================================
+  // ArabicUtils
+  //
+  //
+
+  // http://www.unicode.org/Public/UNIDATA/Scripts.txt
+
+  ArabicUtils.LEFT_TO_RIGHT_EMBEDDING = "\u202A";
+  ArabicUtils.RIGHT_TO_LEFT_EMBEDDING = "\u202B";
+  ArabicUtils.POP_DIRECTIONAL_FORMATTING = "\u202C";
+  ArabicUtils.LEFT_TO_RIGHT_OVERRIDE = "\u202D";
+  ArabicUtils.RIGHT_TO_LEFT_OVERRIDE = "\u202E";
+  ArabicUtils.LEFT_TO_RIGHT_ISOLATE = "\u2066";
+  ArabicUtils.RIGHT_TO_LEFT_ISOLATE = "\u2067";
+  ArabicUtils.FIRST_STRONG_ISOLATE = "\u2068";
+  ArabicUtils.POP_DIRECTIONAL_ISOLATE = "\u2069";
+
+  ArabicUtils.isArabic = function (text) {
+    var pattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFD\uFE70-\uFEFF\u10E600-\u10E7E\u1EE00-\u1EEFF]/;
+    return pattern.test(text);
+  };
+
+  ArabicUtils.makeText = function (text) {
+    return String(ArabicUtils.RIGHT_TO_LEFT_OVERRIDE + text);
+  };
+
   //============================================================================
   // Window_Message
   //
@@ -474,6 +517,10 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     this.addChild(this._windowPauseSignSprite);
   };
 
+  Window_Message.prototype.standardFontSize = function() {
+    return RS.ArabicMessageSystem.Params.fontSize;
+  };
+
   var alias_Window_Message_newPage = Window_Message.prototype.newPage;
   Window_Message.prototype.newPage = function(textState) {
     if(messageMode === "arabic" || navigator.language.match(/^ar/)) {
@@ -498,9 +545,14 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   Window_Message.prototype.createArabicText = function (text, x, y, maxWidth, lineHeight, align) {
 
     // Initialize
-    var bitmap = new Bitmap(maxWidth, lineHeight);
-    bitmap._canvas.dir = "rtl";
+    text = ArabicUtils.RIGHT_TO_LEFT_OVERRIDE + text;
+    // text = ArabicUtils.RIGHT_TO_LEFT_EMBEDDING + text;
+
+    var maxHeight = lineHeight + Math.floor(lineHeight * 0.5);
+    var bitmap = new Bitmap(maxWidth, maxHeight);
     var sprite = new Sprite(bitmap);
+
+    var yPad = Math.round(this.contents.fontSize * 0.09);
 
     // Set the Text Properties
     bitmap.fontFace = this.contents.fontFace;
@@ -511,7 +563,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     bitmap.outlineWidth = this.contents.outlineWidth;
 
     // Draw Text
-    sprite.bitmap.drawText(text, 0, 0, maxWidth, lineHeight, align);
+    sprite.bitmap.drawText(text, 0, yPad, maxWidth, lineHeight, align);
 
     // Set Flip Text
     sprite.x = x;
@@ -533,6 +585,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
     // Check the escase character and line break
     for(var i = 0; i < szValidText.length; i++) {
+
       if(szValidText[i + 1] === '\x1b') {
         szWhitespace = [szValidText.slice(0, i + 1)];
         break;
@@ -555,11 +608,13 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
     // Draw Text
     var c = szResultText;
     var w = this.textWidth(c);
+
     if(messageMode === "arabic") {
       this.createArabicText(c, textState.x, textState.y, w * 2, textState.height);
     } else {
       this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
     }
+
     textState.x += w;
 
   };
@@ -590,7 +645,7 @@ RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
   };
 
   Window_Message.prototype.drawLeftToRightText = function (text, textState) {
-    var c = text;
+    var c = ArabicUtils.LEFT_TO_RIGHT_EMBEDDING + text;
     var w = this.textWidth(c);
     this.createArabicText(c, textState.x, textState.y, w * 2, textState.height);
     textState.x += w;
