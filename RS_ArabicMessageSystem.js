@@ -488,7 +488,7 @@ function ArabicUtils() {
   };
 
   ArabicUtils.makeText = function (text) {
-    return String(ArabicUtils.RIGHT_TO_LEFT_OVERRIDE + text);
+    return String(ArabicUtils.RIGHT_TO_LEFT_EMBEDDING + text);
   };
 
   //============================================================================
@@ -545,7 +545,7 @@ function ArabicUtils() {
   Window_Message.prototype.createArabicText = function (text, x, y, maxWidth, lineHeight, align) {
 
     // Initialize
-    text = ArabicUtils.RIGHT_TO_LEFT_OVERRIDE + text;
+    text = ArabicUtils.RIGHT_TO_LEFT_EMBEDDING + text;
     // text = ArabicUtils.RIGHT_TO_LEFT_EMBEDDING + text;
 
     var maxHeight = lineHeight + Math.floor(lineHeight * 0.5);
