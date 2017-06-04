@@ -1,6 +1,6 @@
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.6) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.7) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -308,6 +308,7 @@
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2017.06.04 (v0.1.7) - Fixed the issue that is not changed the y-position for a name window
 * 2017.05.27 (v0.1.6) :
 * - In the balloon window mode, Added a new feature that the pause sign sprite
 * displays as the position of an message owner.
@@ -342,7 +343,7 @@
 */
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.6) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.7) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -557,6 +558,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2017.06.04 (v0.1.7) - 이름 윈도우의 Y좌표가 수정이 되지 않는 문제를 수정했습니다.
 * 2017.05.27 (v0.1.6) :
 * - 말풍선 모드 시 멈춤 표시 스프라이트 위치를 화자의 위치로 자동 변경합니다.
 * - 말풍선 모드 시 대화창이 상단에 있을 때 이름 윈도우를 아래에 표시합니다.
@@ -1462,6 +1464,8 @@ var Color = Color || {};
     if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
       this._nameWindow.y = 0;
       this.y = this._nameWindow.height + RS.MessageSystem.Params.nameWindowY;
+    } else {
+      this._nameWindow.y = self.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
     }
   };
 
@@ -2248,7 +2252,7 @@ var Color = Color || {};
           RS.MessageSystem.Params.nameWindowX = Number(args[2]);
           break;
           case 'y':
-          RS.MessageSystem.Params.nameWindowX = Number(args[2]);
+          RS.MessageSystem.Params.nameWindowY = Number(args[2]);
           break;
           case 'padding':
           RS.MessageSystem.Params.nameWindowStdPadding = Number(args[2]);
