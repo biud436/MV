@@ -6,15 +6,16 @@
  * @since 2015.10.19
  *
  * @param windowWidth
- * @desc Number
- * @default 580
+ * @desc Directly specify the width of a window for editing name.
+ * (It will automatically calculate if specifying the width as 'auto')
+ * @default auto
  *
  * @param windowCenter
- * @desc Boolean
+ * @desc The window will align to the center of the screen unless set the same as 'false' value.
  * @default false
  *
  * @param editWindow_Opacity
- * @desc This value is opacity of a name edit window between 0 and 255.
+ * @desc The opacity can set as number between 0 and 255.
  * @default 225
  *
  * @param askingText
@@ -22,36 +23,53 @@
  * @default Please enter the name
  *
  * @param outlineWidth
- * @desc
+ * @desc Specify the outline width as you want
  * @default 1
  *
  * @param outlineColor
- * @desc
+ * @desc Specify the outline color as you want
  * @default black
  *
  * @param fontColor
- * @desc
+ * @desc Specify the font color as you want
  * @default white
  *
  * @param standardFontSize
- * @desc
+ * @desc Specify the font size as you want
  * @default 28
  *
  * @param Chinese Fonts
- * @desc
+ * @desc Specify the Chinese font as you want
  * @default SimHei, Heiti TC, sans-serif, Noto Sans
  *
  * @param Korean Fonts
- * @desc
+ * @desc Specify the Korean font as you want
  * @default Noto Sans, Dotum, AppleGothic, sans-serif
  *
  * @param Default Fonts
- * @desc
+ * @desc Specify the default font as you want
  * @default GameFont
  *
  * @param Default CharWidth
- * @desc This plugin calculates the text width using this text when the system language is English.
+ * @desc This plugin calculates a text width using this letter when the system language is English.
  * @default A
+ *
+ * @param Default Background
+ * @desc Specify the background on your scene for editing the name from img/pictures folder
+ * 'auto' : default map background
+ * @default auto
+ *
+ * @param Default Edit Button
+ * @desc Specify the button name that would activate the edit window
+ * @default Edit
+ *
+ * @param Default OK Button
+ * @desc Specify the button name that would return to previous map after finishing the actor name
+ * @default OK
+ *
+ * @param Default Cancel Button
+ * @desc Specify the button name that would return to previous map.
+ * @default Cancel
  *
  * @help
  * This plugin provides a keyboard that allows you to type in korean
@@ -80,6 +98,10 @@
  * 'en-US' due to a bug of crosswalk-10.39.235.16 xwalk library. So I added this
  * to solve the problem of returning the wrong character width.
  * 2017.01.13 (v1.6.3) - Fixed a bug that didn't hide the status bar after firing onchange event on android.
+ * 2017.06.07 (v1.6.4) :
+ * - Added a new feature that can change a default background image.
+ * - Fixed the issue that is not changed the text after pressing the cancel button on an Android.
+ * - Now it does not get the focus of a text editor unless pressing the edit button.
  */
  /*:ko
   * RS_Window_KorNameEdit.js
@@ -90,7 +112,8 @@
   *
   * @param windowWidth
   * @desc 숫자값을 입력하세요.
-  * @default 580
+  * ('auto'로 설정하면 자동으로 설정됩니다)
+  * @default auto
   *
   * @param windowCenter
   * @desc true 또는 false를 입력하세요.
@@ -136,6 +159,23 @@
   * @desc 시스템 언어가 영어인 경우, 여기 설정된 텍스트를 사용하여 폭을 계산합니다.
   * @default A
   *
+  * @param Default Background
+  * @desc 기본 배경으로 쓸 이미지 파일을 설정하세요
+  * 'auto' : 맵을 배경 화면으로 사용합니다
+  * @default auto
+  *
+  * @param Default Edit Button
+  * @desc 에디트 윈도우를 활성화 할 수 있는 버튼의 이름입니다
+  * @default 수정
+  *
+  * @param Default OK Button
+  * @desc 이름 입력을 끝내고 맵으로 돌아갈 수 있는 버튼의 이름입니다
+  * @default 결정
+  *
+  * @param Default Cancel Button
+  * @desc 이름 입력을 취소하고 맵으로 돌아갈 수 있는 버튼의 이름입니다
+  * @default 돌아가기
+  *
   * @help
   *
   * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
@@ -164,6 +204,10 @@
   * 안드로이드에서 crosswalk-10.39.235.16를 사용하여 빌드했을 때 폭이 제대로 계산되지 않는 버그가 있습니다.
   * (시스템 언어가 항상 'en-US'로 고정되는 라이브러리 상의 버그가 있었습니다)
   * 2017.01.13 (v1.6.3) - android cordova에서 onchange 이벤트를 실행 한 후 상태 표시 줄이 사라지지 않는 버그를 수정했습니다.
+  * 2017.06.07 (v1.6.4) :
+  * - 이제 배경 이미지를 따로 설정할 수 있습니다.
+  * - 취소 버튼을 눌렀을 때 간헐적으로 편집이 되지 않는 문제를 수정했습니다.
+  * - 이제 수정 버튼을 누르지 않으면 포커스를 얻을 수 없습니다.
   */
 
 var Imported = Imported || {};
@@ -191,7 +235,7 @@ Imported.Window_KorNameEdit = true;
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
-  RSMatch.windowWidth = Number(parameters['windowWidth'] || 580);
+  RSMatch.windowWidth = parameters['windowWidth'];
   RSMatch.windowCenter = String(parameters['windowCenter'] || 'false');
   RSMatch.outlineWidth = Number(parameters['outlineWidth'] || 1);
   RSMatch.outlineColor = String(parameters['outlineColor'] || 'black');
@@ -205,6 +249,11 @@ Imported.Window_KorNameEdit = true;
     'DefaultFonts': parameters['Default Fonts'] || 'GameFont',
   };
   RSMatch.defaultCharWidth = parameters['Default CharWidth'] || 'A';
+  RSMatch.defaultBackground = parameters["Default Background"] || 'auto';
+
+  RSMatch.defaultEditButtonName = parameters["Default Edit Button"] || 'Edit';
+  RSMatch.defaultOKButtonName = parameters["Default OK Button"] || 'OK';
+  RSMatch.defaultCancelButtonName = parameters["Default Cancel Button"] || 'Cancel';
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -233,8 +282,8 @@ Imported.Window_KorNameEdit = true;
   TextBox.prototype.initialize = function(_editWindow)  {
     this._editWindow = _editWindow;
     this.createTextBox();
-    this.getFocus();
     this.startToConvertInput();
+    this.blur();
   };
 
   TextBox.prototype.createTextBox = function() {
@@ -287,8 +336,7 @@ Imported.Window_KorNameEdit = true;
     this.getFocus();
     if (keyCode < TextBox.IS_NOT_CHAR) {
       if(keyCode === TextBox.BACK_SPACE) {
-        if(e && e.preventDefault) e.preventDefault();
-        this.backSpace();
+        // if(e && e.preventDefault) e.preventDefault();
       } else if(keyCode === TextBox.ENTER) {
         if(this.getTextLength() <= 0) {
           e.preventDefault();
@@ -331,6 +379,10 @@ Imported.Window_KorNameEdit = true;
     this._textBox.focus();
   };
 
+  TextBox.prototype.blur = function() {
+    this._textBox.blur();
+  };
+
   TextBox.prototype.terminate =  function() {
     this.terminateTextBox();
   };
@@ -348,6 +400,7 @@ Imported.Window_KorNameEdit = true;
 
   Window_KorNameEdit.prototype.initialize = function(actor, maxLength) {
     Window_NameEdit.prototype.initialize.call(this, actor, maxLength);
+    this.updateWindowWidth();
   };
 
   Window_KorNameEdit.prototype.standardFontFace = function() {
@@ -390,7 +443,18 @@ Imported.Window_KorNameEdit = true;
   };
 
   Window_KorNameEdit.prototype.windowWidth = function () {
-    return RSMatch.windowWidth;
+    return 580;
+  };
+
+  Window_KorNameEdit.prototype.updateWindowWidth = function () {
+    var padding = this.padding * 2;
+    var faceWidth = this.faceWidth();
+    var textWidth = this.textWidth(RSMatch.askText) + this.textPadding() * 2;
+    if(RSMatch.windowWidth === 'auto') {
+      this.width = Math.max(Math.min(padding + faceWidth + textWidth, Graphics.boxWidth - padding), 580);
+    } else {
+      this.width = Number(RSMatch.windowWidth || 580);
+    }
   };
 
   Window_KorNameEdit.prototype.drawChar = function (index) {
@@ -404,6 +468,75 @@ Imported.Window_KorNameEdit = true;
 
   Window_KorNameEdit.prototype.standardFontSize = function() {
       return RSMatch.standardFontSize;
+  };
+
+  Window_KorNameEdit.prototype.refresh = function() {
+    this.contents.clear();
+    this.drawActorFace(this._actor, 0, 0);
+
+    var rect = this.itemRect(Math.max(this._index - 1, 0));
+
+    for (var i = 0; i < this._maxLength; i++) {
+        this.drawUnderline(i);
+    }
+    for (var j = 0; j < this._name.length; j++) {
+        this.drawChar(j);
+    }
+
+    if(this._index === 0) {
+      this.setCursorRect(rect.x, rect.y, 1, rect.height);
+    } else {
+      this.setCursorRect(rect.x + (rect.width - 1), rect.y, 1, rect.height);
+    }
+
+  };
+
+  //===========================================================================
+  // Window_NameOK
+  //===========================================================================
+  function Window_KorNameInput() {
+      this.initialize.apply(this, arguments);
+  }
+
+  Window_KorNameInput.prototype = Object.create(Window_Command.prototype);
+  Window_KorNameInput.prototype.constructor = Window_KorNameInput;
+
+  Window_KorNameInput.prototype.initialize = function(editWindow) {
+    this._editWindow = editWindow;
+    this.clearCommandList();
+    this.makeCommandList();
+    var width = this.windowWidth();
+    var height = this.windowHeight();
+    Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+    this.updatePlacement();
+    this.refresh();
+    this.select(0);
+    this.activate();
+  };
+
+  Window_KorNameInput.prototype.maxCols = function () {
+    return 3;
+  };
+
+  Window_KorNameInput.prototype.makeCommandList = function() {
+    this.addCommand(RSMatch.defaultEditButtonName, 'edit');
+    this.addCommand(RSMatch.defaultOKButtonName, 'ok');
+    this.addCommand(RSMatch.defaultCancelButtonName, 'cancel');
+  };
+
+  Window_KorNameInput.prototype.itemTextAlign = function() {
+      return 'center';
+  };
+
+  Window_KorNameInput.prototype.updatePlacement = function() {
+    var width = 0;
+    for (var i = 0; i < this.maxItems(); i++) {
+      width += this.textWidth(this._list[i].name) + this.textPadding() * 2;
+    }
+    width += this.padding * 2 + this.spacing();
+    this.width = width;
+    this.x = this._editWindow.x + this._editWindow.width - width;
+    this.y = this._editWindow.y + this._editWindow.height + 10;
   };
 
   //===========================================================================
@@ -421,15 +554,41 @@ Imported.Window_KorNameEdit = true;
       Scene_Name.prototype.initialize.call(this);
   };
 
+  Scene_KorName.prototype.createBackground = function() {
+    var bitmap = SceneManager.backgroundBitmap();
+    var customBackgroundImageName = RSMatch.defaultBackground;
+    this._backgroundSprite = new Sprite();
+    if(customBackgroundImageName === 'auto') {
+      this._backgroundSprite.bitmap = bitmap;
+    } else {
+      this._backgroundSprite.bitmap = ImageManager.loadPicture(customBackgroundImageName || '');
+    }
+
+    this.addChild(this._backgroundSprite);
+
+  };
+
   Scene_KorName.prototype.update = function() {
-    Scene_Name.prototype.update.call(this);
-  }
+    if(this._commandWindow.active) {
+      this._textBox.blur();
+    } else {
+      this._textBox.getFocus();
+    }
+    this._textBox.update();
+    Scene_MenuBase.prototype.update.call(this);
+  };
+
+  Scene_KorName.prototype.terminate = function() {
+    Scene_MenuBase.prototype.terminate.call(this);
+    this._textBox.terminate();
+  };
 
   Scene_KorName.prototype.create = function () {
     Scene_MenuBase.prototype.create.call(this);
     this._actor = $gameActors.actor(this._actorId);
     this.createEditWindow();
     this.createTextBox();
+    this.createCommandWindow();
     this._textBox.setEvent( this.onInputOk.bind(this) );
     if(window.cordova && window.StatusBar) {
       window.StatusBar.show();
@@ -437,8 +596,52 @@ Imported.Window_KorNameEdit = true;
   };
 
   Scene_KorName.prototype.createEditWindow = function() {
-      this._editWindow = new Window_KorNameEdit(this._actor, this._maxLength);
-      this.addWindow(this._editWindow);
+    this._editWindow = new Window_KorNameEdit(this._actor, this._maxLength);
+    this.addWindow(this._editWindow);
+  };
+
+  Scene_KorName.prototype.createCommandWindow = function () {
+    this._commandWindow = new Window_KorNameInput(this._editWindow);
+    this._commandWindow.setHandler('edit', this.commandEdit.bind(this));
+    this._commandWindow.setHandler('ok', this.commandInput.bind(this));
+    this._commandWindow.setHandler('cancel', this.commandCancel.bind(this));
+    this.addWindow(this._commandWindow);
+  };
+
+  Scene_KorName.prototype.commandEdit = function () {
+    this._commandWindow.deactivate();
+    this._editWindow.activate();
+    this._textBox.getFocus();
+  };
+
+  /**
+   * specify the name on your actor and then a currently scene ends up
+   * @method commandInput
+   */
+  Scene_KorName.prototype.commandInput = function () {
+    if(this._editWindow._name === undefined) {
+      this.commandEdit();
+      return;
+    }
+    this._editWindow.deactivate();
+    this._textBox.blur();
+    if(window.cordova && window.StatusBar) {
+      window.StatusBar.hide();
+    }
+    this._actor.setName(this._editWindow.name());
+    this.popScene();
+  };
+
+  /**
+   * A currently scene ends up
+   * @method commandCancel
+   */
+  Scene_KorName.prototype.commandCancel = function () {
+    this._textBox.blur();
+    if(window.cordova && window.StatusBar) {
+      window.StatusBar.hide();
+    }
+    this.popScene();
   };
 
   Scene_KorName.prototype.createTextBox =  function() {
@@ -449,23 +652,18 @@ Imported.Window_KorNameEdit = true;
     this._editWindow.opacity = RSMatch.opacity;
   }
 
-  Scene_KorName.prototype.update = function() {
-    this._textBox.getFocus();
-    this._textBox.update();
-    Scene_MenuBase.prototype.update.call(this);
-  }
-
-  Scene_KorName.prototype.terminate = function() {
-    Scene_MenuBase.prototype.terminate.call(this);
-    this._textBox.terminate();
-  }
-
   Scene_Name.prototype.onInputOk = function() {
-    if(window.cordova && window.StatusBar) {
-      window.StatusBar.hide();
-    }
-    this._actor.setName(this._editWindow.name());
-    this.popScene();
+
+    // Lose Focus
+    this._editWindow.deactivate();
+    this._textBox.blur();
+
+    // Select symbol.
+    this._commandWindow.selectSymbol('ok');
+    this._commandWindow.activate();
+
+    Input.clear();
+
   };
 
   //===========================================================================
@@ -494,7 +692,11 @@ Imported.Window_KorNameEdit = true;
         switch(args[0]) {
           case 'width':
           case '폭':
-            RSMatch.windowWidth = Number(args[1] || 580);
+            if(args[1] !== 'auto') {
+              RSMatch.windowWidth = Number(args[1] || 580);
+            } else {
+              RSMatch.windowWidth = 'auto';
+            }
             break;
           case 'center':
           case '중앙정렬':
@@ -502,7 +704,7 @@ Imported.Window_KorNameEdit = true;
             break;
           case 'outlineWidth':
           case '테두리크기':
-            RSMatch.windowWidth = Number(args[1] || 1);
+            RSMatch.outlineWidth = Number(args[1] || 1);
             break;
           case 'outlineColor':
           case '테두리색상':
