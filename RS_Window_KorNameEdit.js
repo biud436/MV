@@ -58,6 +58,9 @@
  * @desc Specify the background on your scene for editing the name from img/pictures folder
  * 'auto' : default map background
  * @default auto
+ * @require 1
+ * @dir img/pictures/
+ * @type file
  *
  * @param Default Edit Button
  * @desc Specify the button name that would activate the edit window
@@ -163,6 +166,9 @@
   * @desc 기본 배경으로 쓸 이미지 파일을 설정하세요
   * 'auto' : 맵을 배경 화면으로 사용합니다
   * @default auto
+  * @require 1
+  * @dir img/pictures/
+  * @type file
   *
   * @param Default Edit Button
   * @desc 에디트 윈도우를 활성화 할 수 있는 버튼의 이름입니다

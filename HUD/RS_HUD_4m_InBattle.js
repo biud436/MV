@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc (v1.2.0) This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.2.1) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
@@ -152,6 +152,7 @@
  * 2017.04.13 (v1.2.0) - Fixed the issue that the parameters update function is
  * properly not working in case of you're not using the battle addon, in a
  * community version.
+ * 2017.06.08 (v1.2.1) - Fixed the issue that is not displaying specific image in RMMV 1.5
  */
 
 var Imported = Imported || {};
@@ -409,7 +410,11 @@ RS.HUD.param = RS.HUD.param || {};
   var alais_Scene_Battle_create = Scene_Battle.prototype.create;
   Scene_Battle.prototype.create = function() {
     alais_Scene_Battle_create.call(this);
-
+    if(Utils.RPGMAKER_VERSION >= '1.5.0') {
+      ImageManager.loadPicture(RS.HUD.param.imgHP);
+      ImageManager.loadPicture(RS.HUD.param.imgMP);
+      ImageManager.loadPicture(RS.HUD.param.imgTP);
+    }
   };
 
   var alias_Scene_Battle_update = Scene_Battle.prototype.update;

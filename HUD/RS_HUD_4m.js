@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.4) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.5) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
@@ -491,10 +491,11 @@
  * 2017.04.13 (v1.2.4) - Fixed the issue that the parameters update function is
  * properly not working in case of you're not using the battle addon, in a
  * community version.
+ * 2017.06.08 (v1.2.5) - Fixed the issue that is not displaying specific image in RMMV 1.5
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.2.4';
+Imported.RS_HUD_4m = '1.2.5';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -1796,8 +1797,18 @@ RS.HUD.param = RS.HUD.param || {};
 
     // Load Face
     RS.HUD.param.preloadImportantFaces.forEach(function(i) {
-      ImageManager.loadFace(i);
+      if(Utils.RPGMAKER_VERSION >= '1.5.0') {
+        ImageManager.reserveFace(i)
+      } else {
+        ImageManager.loadFace(i);
+      }
     }, this);
+
+    if(Utils.RPGMAKER_VERSION >= '1.5.0') {
+      ImageManager.loadPicture(RS.HUD.param.imgHP);
+      ImageManager.loadPicture(RS.HUD.param.imgMP);
+      ImageManager.loadPicture(RS.HUD.param.imgEXP);
+    }
 
   };
 
