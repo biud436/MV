@@ -156,7 +156,7 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.2.0';
+Imported.RS_HUD_4m_InBattle = '1.2.1';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
