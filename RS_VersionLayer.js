@@ -1,13 +1,13 @@
 /*:
- * @plugindesc (v1.1.1) This plugin shows up the version anywhere.
+ * @plugindesc (v1.0.2) This plugin allows you to show up the version anywhere.
  * @author biud436
  *
  * @param Version
- * @desc
+ * @desc Indicate the text with a version
  * @default 1.0
  *
  * @param visible
- * @desc
+ * @desc set whether the version shows up on the screen
  * @default true
  *
  * @param --- Font
@@ -15,31 +15,31 @@
  * @default
  *
  * @param textSize
- * @desc
+ * @desc Specify a size of the version text
  * @default 14
  *
  * @param textColor
- * @desc
+ * @desc Specify a color of the version text
  * @default rgb(56, 150, 119)
  *
  * @param outlineColor
- * @desc
+ * @desc Specify a outline color of the version text
  * @default rgb(255, 255, 255)
  *
  * @param outlineWidth
- * @desc
+ * @desc Specify a outline width of the version text
  * @default 2
  *
  * @param defaultText
- * @desc
+ * @desc Specify the prefix in front a text
  * @default Version :
  *
  * @param textAlign
- * @desc
+ * @desc Sets up a text align as you want
  * @default right
  *
- * @param opaicty
- * @desc
+ * @param opacity
+ * @desc Sets up the text opacity
  * @default 255
  *
  * @param -- Position
@@ -47,21 +47,26 @@
  * @default
  *
  * @param Position
- * @desc Top, Bottom
+ * @desc Specify either 'Bottom' or 'Top' positions.
  * @default Bottom
  *
  * @help
  * -----------------------------------------------------------------------------
  * Plugin Commands
  * -----------------------------------------------------------------------------
- * VersionLayer true
- * VersionLayer false
+ *
+ * The command is that shows a version text :
+ *    VersionLayer true
+ *
+ * The command is that hides a version text :
+ *    VersionLayer false
+ *
  * -----------------------------------------------------------------------------
  * Version Log
  * -----------------------------------------------------------------------------
  * 2015.12.13 (v1.0.0) - First Release
- * 2016.08.23 (v1.1.0) - Fixed and Added Parameters.
- * 2016.08.23 (v1.1.1) - Added position parameter.
+ * 2016.08.23 (v1.0.1) - Fixed and Added Parameters.
+ * 2016.08.23 (v1.0.2) - Added position parameter.
  */
 
 var Imported = Imported || {};
@@ -79,7 +84,7 @@ Imported.RS_VersionLayer = true;
     String(parameters['defaultText'] || 'Version : '),
     String(parameters['textAlign'] || 'right'),
     Boolean(parameters['visible'] === 'true'),
-    Number(parameters['opaicty'] || 255),
+    Number(parameters['opacity'] || 255),
     String(parameters['Position'] || 'Top'),
     false
   ];

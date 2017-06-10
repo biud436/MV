@@ -45,13 +45,7 @@ Imported.RS_MenuInformation = true;
     }
 
     static allText() {
-      if(this._texts.length > 0) {
-        return this._texts.reduce(function(cur, now) {
-          return cur + '\n' + now;
-        });
-      } else {
-        return '';
-      }
+      return this._texts.join('\n');
     }
 
   }
@@ -83,7 +77,7 @@ Imported.RS_MenuInformation = true;
   };
 
   Scene_Menu.prototype.commandInformation = function() {
-      SceneManager.push(Scene_Information);
+    SceneManager.push(Scene_Information);
   };
 
   //============================================================================
@@ -176,5 +170,9 @@ Imported.RS_MenuInformation = true;
   window.MenuInformation = MenuInformation;
   window.Window_Information = Window_Information;
   window.Scene_Information = Scene_Information;
+
+  if(Imported.RS_ArabicMessageSystem) {
+    RS.ArabicMessageSystem.defineInitialize(Window_Information);
+  }
 
 })();

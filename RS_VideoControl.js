@@ -1,7 +1,6 @@
 /*:
  * RS_VideoControl.js
- * @plugindesc This plugin shows the play control bar of a video,
- * and the player stops the movement while playing the video.
+ * @plugindesc This plugin allows you to indicagte the play control bar of a video
  * @author biud436
  *
  * @param zIndex
@@ -9,22 +8,29 @@
  * @default 1000
  *
  * @param Show Control Bar
- * @desc shows a control bar on a video
+ * @desc Set whether shows a control bar on a video
  * @default true
  *
  * @help
  * =============================================================================
  * Plugin Command
  * =============================================================================
- * VideoControl show true
- * VideoControl show false
- * VideoControl zIndex 1000
+ *
+ *    :
+ *    VideoControl show true
+ *
+ *    :
+ *    VideoControl show false
+ *
+ *    :
+ *    VideoControl zIndex 1000
  *
  * =============================================================================
  * Change Log
  * =============================================================================
  * 2016.05.07 (v1.0.0) - First Release
  * 2016.10.21 (v1.0.1) - Fixed some funtions (RMMV 1.3.2)
+ * 2017.06.10 (v1.0.2) - Fixed the plugin command and the code for RMMV 1.5.0
  */
 
 var Imported = Imported || {};
@@ -39,68 +45,15 @@ RS.VideoControl = RS.VideoControl || {};
   RS.VideoControl.enabledContol = parameters['Show Control Bar'] === 'true';
 
   //----------------------------------------------------------------------------
-  // Game_Player
-  //
-  //
-  var alias_Game_Player_initMembers = Game_Player.prototype.initMembers;
-  Game_Player.prototype.initMembers = function() {
-    alias_Game_Player_initMembers.call(this);
-    this._locked = false;
-    this._prelockDirection = 2;
-  }
-
-  Game_Player.prototype.lock = function() {
-      if (!this._locked) {
-          this._prelockDirection = this.direction();
-          this._locked = true;
-      }
-  };
-
-  Game_Player.prototype.unlock = function() {
-      if (this._locked) {
-          this._locked = false;
-          this.setDirection(this._prelockDirection);
-      }
-  };
-
-  var alias_Game_Player_canMove = Game_Player.prototype.canMove;
-  Game_Player.prototype.canMove = function() {
-      if(this._locked) {
-        return false;
-      }
-      return alias_Game_Player_canMove.call(this);
-  };
-
-  //----------------------------------------------------------------------------
   // Graphics
   //
   //
+
+  var alias_Graphics_updateVideo = Graphics._updateVideo;
   Graphics._updateVideo = function() {
-      this._video.width = this._width;
-      this._video.height = this._height;
+      alias_Graphics_updateVideo.call(this);
       this._video.style.zIndex = RS.VideoControl.zIndex;
       this._video.controls = RS.VideoControl.enabledContol;
-      this._centerElement(this._video);
-  };
-
-  Graphics._onVideoLoad = function() {
-      this._video.play();
-      this._updateVisibility(true);
-      $gamePlayer.lock();
-      if (Utils.isMobileSafari()) {
-          waitForLoading = false;
-      }
-  };
-
-  Graphics._onVideoEnd = function() {
-      this._updateVisibility(false);
-      $gamePlayer.unlock();
-      if (Utils.isMobileSafari()) {
-          if (register) {
-              document.removeEventListener('touchstart', handleiOSTouch);
-              register = false;
-          }
-      }
   };
 
   //----------------------------------------------------------------------------
@@ -115,7 +68,7 @@ RS.VideoControl = RS.VideoControl || {};
           case 'show':
             RS.VideoControl.enabledContol = Boolean(args[1] === 'true');
             break;
-          case 'zIndex':
+          case 'zindex':
             RS.VideoControl.zIndex = Number(args[1] || 1000);
             break;
         }
