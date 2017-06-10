@@ -9,10 +9,11 @@ Imported.RS_TitleManagerEx = true;
  * @plugindesc This plugin allows player to change resources of the title scene after the user has been ended a certain epilogue.
  * @author biud436
  *
- * @param -- epilogue 1 --
- * @desc
+ * @param Epilogue 1
  *
  * @param ep1 Title1
+ * @text Title 1
+ * @parent Epilogue 1
  * @desc
  * @default Book
  * @require 1
@@ -20,6 +21,8 @@ Imported.RS_TitleManagerEx = true;
  * @type file
  *
  * @param ep1 Title2
+ * @text Title 2
+ * @parent Epilogue 1
  * @desc
  * @default
  * @require 1
@@ -27,16 +30,19 @@ Imported.RS_TitleManagerEx = true;
  * @type file
  *
  * @param ep1 BGM
+ * @text BGM
+ * @parent Epilogue 1
  * @desc
  * @default Theme1
  * @require 1
  * @dir audio/bgm/
  * @type file
  *
- * @param -- epilogue 2 --
- * @desc
+ * @param Epilogue 2
  *
  * @param ep2 Title1
+ * @text Title 1
+ * @parent Epilogue 2
  * @desc
  * @default Devil
  * @require 1
@@ -44,6 +50,8 @@ Imported.RS_TitleManagerEx = true;
  * @type file
  *
  * @param ep2 Title2
+ * @text Title 2
+ * @parent Epilogue 2
  * @desc
  * @default
  * @require 1
@@ -51,16 +59,19 @@ Imported.RS_TitleManagerEx = true;
  * @type file
  *
  * @param ep2 BGM
+ * @text BGM
+ * @parent Epilogue 2
  * @desc
  * @default Field2
  * @require 1
  * @dir audio/bgm/
  * @type file
  *
- * @param -- epilogue 3 --
- * @desc
+ * @param Epilogue 3
  *
  * @param ep3 Title1
+ * @text Title 1
+ * @parent Epilogue 3
  * @desc
  * @default Book
  * @require 1
@@ -68,6 +79,8 @@ Imported.RS_TitleManagerEx = true;
  * @type file
  *
  * @param ep3 Title2
+ * @text Title 2
+ * @parent Epilogue 3
  * @desc
  * @default
  * @require 1
@@ -75,16 +88,19 @@ Imported.RS_TitleManagerEx = true;
  * @type file
  *
  * @param ep3 BGM
+ * @text BGM
+ * @parent Epilogue 3
  * @desc
  * @default Theme1
  * @require 1
  * @dir audio/bgm/
  * @type file
  *
- * @param -- epilogue 4 --
- * @desc
+ * @param Epilogue 4
  *
  * @param ep4 Title1
+ * @text Title 1
+ * @parent Epilogue 4
  * @desc
  * @default Book
  * @require 1
@@ -92,6 +108,8 @@ Imported.RS_TitleManagerEx = true;
  * @type file
  *
  * @param ep4 Title2
+ * @text Title 2
+ * @parent Epilogue 4
  * @desc
  * @default
  * @require 1
@@ -99,37 +117,50 @@ Imported.RS_TitleManagerEx = true;
  * @type file
  *
  * @param ep4 BGM
+ * @text BGM
+ * @parent Epilogue 4
  * @desc
  * @default Theme1
  * @require 1
  * @dir audio/bgm/
  * @type file
  *
- * @param -- Location --
- * @desc
+ * @param Location
  *
  * @param Map ID
+ * @parent Location
  * @desc Specify the id of hidden map. This can move to a hidden map through a newly created command
+ * @type number
  * @default 1
  *
  * @param Map X
+ * @parent Location
  * @desc Specify the starting point of hidden map. This can move to a hidden map through a newly created command
+ * @type number
  * @default 0
  *
  * @param Map Y
+ * @parent Location
  * @desc Specify the starting point of hidden map. This can move to a hidden map through a newly created command
+ * @type number
  * @default 0
  *
- * @param -- Additional Command --
- * @desc
+ * @param Additional Command
  *
  * @param Specific Command
+ * @parent Additional Command
  * @desc Specify the command name. This can move to a hidden map through this command
+ * @type text
  * @default Specific Command
  *
  * @param Show Specific Sommand
+ * @text Show
+ * @parent Additional Command
  * @desc Decide whether the command window is visible.
+ * @type boolean
  * @default true
+ * @on visible
+ * @off hide
  *
  * @help
  * =============================================================================

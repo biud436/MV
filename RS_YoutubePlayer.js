@@ -7,6 +7,13 @@
  * @desc highres, hd1080, hd720, large, medium, small
  * default : hd720
  * @default hd720
+ * @type select
+ * @option highres
+ * @option hd1080
+ * @option hd720
+ * @option large
+ * @option medium
+ * @option small
  *
  * @help
  * In general, In Android Chrome and Mobile Safari, It doesn't automatically

@@ -7,32 +7,42 @@
  * @default http://www.google.com/
  *
  * @param --- Tray Menu
- * @desc
- * @default
  *
  * @param Open
+ * @parent --- Tray Menu
  * @desc
  * @default Open
+ * @type text
  *
  * @param tooltip
+ * @parent --- Tray Menu
  * @desc
  * @default tooltip
+ * @type text
  *
  * @param Minimize To Tray
+ * @parent --- Tray Menu
  * @desc
  * @default To Tray
+ * @type text
  *
  * @param Window Always On Top
+ * @parent --- Tray Menu
  * @desc
  * @default Window Always On Top
+ * @type text
  *
  * @param Show Internet
+ * @parent --- Tray Menu
  * @desc
  * @default Open URL
+ * @type text
  *
  * @param Exit
+ * @parent --- Tray Menu
  * @desc
  * @default Game Exit
+ * @type text
  *
  * @help
  * =============================================================================

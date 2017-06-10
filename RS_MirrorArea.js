@@ -1,14 +1,11 @@
 /*:
- * @plugindesc <RS_MirrorArea>
+ * @plugindesc This plugin allows you to indicate the mirror image the character on the screen <RS_MirrorArea>
  * @author biud436
  *
- * @param Mirror
- * @desc [w, h, mask_ox, mask_oy, char_ox, char_oy]
- * @default [28, 42, 10, 25, 10, 25]
- *
- * @param Dresser
- * @desc [w, h, mask_ox, mask_oy, char_ox, char_oy]
- * @default [34, 15, 10, -5, 10, 70]
+ * @param Mirrors
+ * @desc Define the mirror as you want
+ * @default ["{\"note\":\"MIRROR_NORMAL\",\"w\":\"28\",\"h\":\"42\",\"mask_ox\":\"10\",\"mask_oy\":\"25\",\"char_ox\":\"10\",\"char_oy\":\"25\"}","{\"note\":\"MIRROR_DRESSER\", \"w\": \"34\",\"h\":\"15\", \"mask_ox\": \"10\", \"mask_oy\": \"-5\", \"char_ox\": \"10\", \"char_oy\": \"70\"}"]
+ * @type struct<MirrorBase>[]
  *
  * @help
  * =============================================================================
@@ -45,7 +42,46 @@
  * 2016.12.09 (v0.0.6) - Fixed an error that could not find deleted events in the event list.
  * 2016.12.10 (v0.0.7) - Fixed the problem that could not find event ID of an event when you loaded saved file.
  * 2016.12.16 (v0.0.8) - Fixed a scale and the scale mode in the mirror sprite.
+ * 2017.06.10 (v0.0.9) - Fixed the bug that is not working fine on RMMV 1.5.0 or more
  */
+ /*~struct~MirrorBase:
+  *
+  * @param note
+  * @desc This plugin finds out a target character via this note string on the map
+  * @default MIRROR_TYPE
+  * @type string
+  *
+  * @param w
+  * @type number
+  * @desc Specify the width of the mask bitmap
+  * @min 1
+  *
+  * @param h
+  * @type number
+  * @desc Specify the height of the mask bitmap
+  * @min 1
+  *
+  * @param mask_ox
+  * @type number
+  * @desc Specify the offset-x of the mask bitmap
+  * @default 0
+  *
+  * @param mask_oy
+  * @type number
+  * @desc Specify the offset-x of the mask bitmap
+  * @default 0
+  *
+  * @param char_ox
+  * @type number
+  * @desc Specify the offset-x of the target character
+  * @default 0
+  *
+  * @param char_oy
+  * @type number
+  * @desc Specify the offset-x of the target character
+  * @default 0
+  *
+  */
 
 var Imported = Imported || {};
 Imported.RS_MirrorArea = true;
@@ -68,8 +104,10 @@ function Sprite_Mirror() {
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
-  $.oMirror = JSON.parse(parameters['Mirror'] || '[28, 42, 10, 25, 10, 25]');
-  $.oDresser = JSON.parse(parameters['Dresser'] || '[34, 15, 10, -5, 10, 70]');
+  $.allMirrors = JSON.parse(parameters['Mirrors']);
+
+  // $.oMirror = JSON.parse(parameters['Mirror']);
+  // $.oDresser = JSON.parse(parameters['Dresser']);
   $.fBlur = parseFloat(parameters['Blur'] || 0.0);
   $.allImagesVisible = true;
   $.allScale = new PIXI.Point(0.8, 0.8);
@@ -112,7 +150,7 @@ function Sprite_Mirror() {
 
   Sprite_Mirror.prototype.initialize = function (character) {
       Sprite_Character.prototype.initialize.call(this, character);
-      this._offset = [0, 0, 0, 0];
+      this._offset = {};
       this.scale = $.allScale;
   };
 
@@ -129,9 +167,9 @@ function Sprite_Mirror() {
 
   Sprite_Mirror.prototype.updatePosition = function() {
       //  graphics's height.
-      var maskY = this._offset[1];
+      var maskY = parseInt(this._offset['h']);
       this.x = this._character.screenX();
-      this.y = this._character.screenY() - maskY - this._offset[5] / 2;
+      this.y = this._character.screenY() - maskY - parseInt(this._offset['char_oy'] / 2);
       this.z = this._character.screenZ() + 4;
       this.updateMask();
   };
@@ -145,25 +183,56 @@ function Sprite_Mirror() {
   var alias_Sprite_Mirror_destroy = Sprite_Mirror.prototype.destroy;
   Sprite_Mirror.prototype.destroy = function () {
       alias_Sprite_Mirror_destroy.call(this);
-      this._maskGraphics = null;
       this._targetEvent = null;
+      SceneManager._scene.getMirrorSprite().removeChild(this._maskSprite);
       this.mask = null;
   };
 
   Sprite_Mirror.prototype.setProperties = function (mask, targetEvent, offset) {
-      this._maskGraphics = mask;
+
       this._targetEvent = targetEvent;
       this._offset = offset;
-      this.mask = mask;
+
+      this._maskSprite = new Sprite();
+      this._maskSprite.texture = Graphics._renderer.generateTexture(mask);
+
+      SceneManager._scene.getMirrorSprite().addChild(this._maskSprite);
+
+      this.mask = this._maskSprite;
   };
 
   Sprite_Mirror.prototype.updateMask = function () {
-      if(this._targetEvent && this._maskGraphics) {
-        var x = this._targetEvent.screenX() - $gameMap.tileWidth() / 2 + this._offset[2];
-        var y = this._targetEvent.screenY() - $gameMap.tileHeight() - this._offset[3];
-        this._maskGraphics.x = x;
-        this._maskGraphics.y = y;
+      if(this._targetEvent && this._maskSprite) {
+        var x = this._targetEvent.screenX() - $gameMap.tileWidth() / 2 + parseInt(this._offset['mask_ox']);
+        var y = this._targetEvent.screenY() - $gameMap.tileHeight() - parseInt(this._offset['mask_oy']);
+        this._maskSprite.x = x;
+        this._maskSprite.y = y;
       }
+  };
+
+  //============================================================================
+  // Scene_Map
+  //============================================================================
+
+  var alias_Scene_Map_create = Scene_Map.prototype.create;
+  Scene_Map.prototype.create = function () {
+      alias_Scene_Map_create.call(this);
+      this.createMirrorSprite();
+  };
+
+  Scene_Map.prototype.createMirrorSprite = function () {
+      this._mirrorSprite = new Sprite();
+      this.addChild(this._mirrorSprite);
+  };
+
+  Scene_Map.prototype.getMirrorSprite = function () {
+      return this._mirrorSprite;
+  };
+
+  var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
+  Scene_Map.prototype.terminate = function () {
+      alias_Scene_Map_terminate.call(this);
+      this.removeChild(this._mirrorSprite);
   };
 
   //============================================================================
@@ -175,6 +244,10 @@ function Sprite_Mirror() {
       alias_Spriteset_Map_createLowerLayer.call(this);
       this.initMirrorMembers();
       this.findAllTypeMirrors();
+  };
+
+  Spriteset_Map.prototype.destroyMirrorTexture = function () {
+      this._mirrorRenderTexture.destroy(true);
   };
 
   Spriteset_Map.prototype.initMirrorMembers = function () {
@@ -195,28 +268,23 @@ function Sprite_Mirror() {
 
   Spriteset_Map.prototype.createMirrorImage = function (event, type, id) {
 
-      var offset = [0, 0, 0, 0];
+      var offset = type;
       var target = $gameMap.findEventInMap(id);
 
-      if(type === 'mirror') offset = $.oMirror;
-      if(type === 'dresser') offset = $.oDresser;
+      // if(type === 'mirror') offset = $.oMirror;
+      // if(type === 'dresser') offset = $.oDresser;
 
-      var x = event.screenX() - offset[2];
-      var y = event.screenY() - offset[3];
-      var w = offset[0];
-      var h = offset[1];
+      var x = event.screenX() - parseInt(offset['mask_ox']);
+      var y = event.screenY() - parseInt(offset['mask_oy']);
+      var w = parseInt(offset['w']);
+      var h = parseInt(offset['h']);
 
       var graphics = new PIXI.Graphics();
-      graphics.beginFill(0xffffff, 0.5 );
+      graphics.beginFill(0xffffff, 0.9 );
       graphics.x = x;
       graphics.y = y;
-      graphics.drawRoundedRect( 0, 0, w, h, 3 );
+      graphics.drawRoundedRect( 0, 0, w, h, 1 );
       graphics.endFill();
-
-      this.addChild( graphics );
-
-      // TODO: If it creates the sprites for every mirror event, it will call many functions that do not need.
-      // So I'll fix them later.
 
       var mirrorCharacter = new Sprite_Mirror( target );
       mirrorCharacter.setProperties( graphics, event, offset );
@@ -247,18 +315,16 @@ function Sprite_Mirror() {
         eventlist.forEach(function (list, i ,a) {
 
           if(list.code === 108 || list.code === 408) {
+            $.allMirrors.forEach(function (mirror) {
+              var data = JSON.parse(mirror);
+              if(typeof data === 'object' && data.hasOwnProperty('note')) {
+                if(list.parameters[0].match(new RegExp(`<(?:${data.note}).W*\:.\W*(.+?)>`, 'gi'))) {
+                  id = parseInt(RegExp.$1);
+                  if(id >= 0) self.createMirrorImage(event, data, id);
+                }
+              }
 
-            if(list.parameters[0].match(/<(?:MIRROR_NORMAL).W*\:.\W*(.+?)>/gi)) {
-
-              id = parseInt(RegExp.$1);
-              if(id >= 0) self.createMirrorImage(event, 'mirror', id);
-
-            } else if(list.parameters[0].match(/<(?:MIRROR_DRESSER).W*\:.\W*(.+?)>/gi)) {
-
-              id = parseInt(RegExp.$1);
-              if(id >= 0) self.createMirrorImage(event, 'dresser', id);
-
-            }
+            }, this);
           }
 
         });
