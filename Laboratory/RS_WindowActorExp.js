@@ -1,16 +1,26 @@
 /*:
- * @plugindesc (v1.0.1) This plugin allows you to clearly display a gauge bar for Exp value to status window.
+ * @plugindesc (v1.0.2) This plugin allows you to clearly display a gauge bar for Exp value to status window.
  * @author biud436
  *
+ * @param Colors
+ *
  * @param Exp Gauge Color1
+ * @parent Colors 
+ * @type number
  * @desc Change the gauge color for exp
  * @default 10
  *
  * @param Exp Gauge Color2
+ * @parent Colors 
+ * @type number 
  * @desc Change the gauge color for exp
  * @default 11
  *
+ * @param Param
+ *
  * @param Padding
+ * @parent Param
+ * @type number 
  * @desc Change padding value of each line in Menu Status
  * @default 10
  *
@@ -21,6 +31,7 @@
  * 2017.04.11 (v1.0.0) - First Release.
  * 2017.04.12 (v1.0.1) - Added a new parameter can be able to set the padding
  * value of each line in Menu Status Window.
+ * 2017.06.12 (v1.0.2) - Fixed the max value length in drawCurrentAndMax function
  */
 
 var Imported = Imported || {};
@@ -65,6 +76,27 @@ Imported.RS_WindowActorExp = true;
   // Window_Base
   //============================================================================
 
+  Window_Base.prototype.drawCurrentAndMax = function(current, max, x, y,
+                                                     width, color1, color2, type) {
+      type = type || 'HP';                                                  
+      var labelWidth = this.textWidth(type);
+      var valueWidth = this.textWidth(Number(max).toString());
+      var slashWidth = this.textWidth('/');
+      var x1 = x + width - valueWidth;
+      var x2 = x1 - slashWidth;
+      var x3 = x2 - valueWidth;
+      if (x3 >= x + labelWidth) {
+          this.changeTextColor(color1);
+          this.drawText(Number(current).toString(), x3, y, valueWidth, 'right');
+          this.changeTextColor(color2);
+          this.drawText('/', x2, y, slashWidth, 'right');
+          this.drawText(Number(max).toString(), x1, y, valueWidth, 'right');
+      } else {
+          this.changeTextColor(color1);
+          this.drawText(Number(current).toString(), x1, y, valueWidth, 'right');
+      }
+  };      
+  
   Window_Base.prototype.drawActorExp = function(actor, x, y, width) {
       width = width || 186;
       var color1 = this.textColor(colorExpGauge1);
@@ -76,9 +108,9 @@ Imported.RS_WindowActorExp = true;
       this.changeTextColor(this.systemColor());
       this.drawText(TextManager.expA, x, y, 44);
       this.drawCurrentAndMax(exp, mexp, x, y, width,
-                             this.normalColor(), this.normalColor());
+                             this.normalColor(), this.normalColor(), 'EXP');
   };
-
+  
   //============================================================================
   // Window_MenuStatus
   //============================================================================
@@ -120,7 +152,7 @@ Imported.RS_WindowActorExp = true;
       this.drawGauge(x, y, width, mpRate, color1, color2);
       this.drawText(requiredExp, x, y, width, 'right');
   };
-
+ 
   Window_Status.prototype.drawExpInfo = function(x, y) {
       var lineHeight = this.lineHeight();
       var expTotal = TextManager.expTotal.format(TextManager.exp);
