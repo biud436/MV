@@ -6,29 +6,52 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.6) <RS_ScreenManager>
+ * @plugindesc (v1.0.7) <RS_ScreenManager>
  * @author biud436
  *
+ * @param TEST OPTION
+ *
  * @param isGraphicsRendererResize
- * @desc (TEST OPTION)
+ * @text Resize Graphics Renderer
+ * @type boolean
+ * @parent TEST OPTION
+ * @desc
  * @default false
+ * @on true
+ * @off false
  *
  * @param isGraphicsAutoScaling
- * @desc (TEST OPTION)
+ * @text Auto Scaling
+ * @type boolean
+ * @parent TEST OPTION
+ * @desc
  * @default false
+ * @on true
+ * @off false
  *
  * @param isMaintainingMinimumWidth
+ * @text ON Minimum Width
+ * @parent TEST OPTION
+ * @type boolean
  * @desc Set whether it can not set the width is less than minimum width
  * @default true
+ * @on true
+ * @off true
  *
  * @param isMaintainingMinimumHeight
+ * @text ON Minimum Height
+ * @parent TEST OPTION
+ * @type boolean
  * @desc Set whether it can not set the width is less than minimum height
  * @default true
+ * @on true
+ * @off true
  *
- * @param ---
+ * @param Resource Options
  * @default
  *
  * @param imageName
+ * @parent Resource Options
  * @desc image Name
  * @default Mountains3
  * @require 1
@@ -36,50 +59,97 @@ Imported.RS_ScreenManager = true;
  * @type file
  *
  * @param panelTextName
+ * @parent Resource Options
  * @desc Specify the name of the panel that places in the top of the screen
  * @default Display Resolutions
  *
  * @param fullScreenButtonName
+ * @parent Resource Options
  * @desc Specify the name of the button for fullscreen
  * @default Full Screen
  *
- * @param ---
+ * @param Scene Options
  * @default
  *
  * @param Recreate Scene
+ * @parent Scene Options
+ * @type boolean
  * @desc To set as true, the current scene will recreate after changing screen size
  * @default true
  *
  * @param Use All Resolutions
+ * @parent Scene Options
+ * @type boolean
  * @desc Sets whether resolution gets even if the resolution of your device is not supported.
  * @default false
  *
- * @param ---
- * @default
- *
  * @param Enable Custom Aspect Ratio
+ * @parent Scene Options
  * @desc In case of true, the screen size will convert to fit a custom aspect ratio.
  * @default false
  *
  * @param Custom Aspect Ratio
+ * @parent Scene Options
+ * @type select
  * @desc Specify the aspect ratio as you want.
- * (16:9, 4:3)
  * @default 16:9
+ * @option 16:9 (Wide Screen)
+ * @value 16:9
+ * @option 4:3
+ * @value 4:3
  *
- * @param ---
- * @default
+ * @param Screen Size
  *
- * @param Default Screen Width
- * @desc Change your game screen width
- * @default 1280
- *
- * @param Default Screen Height
- * @desc Change your game screen height
- * @default 720
+ * @param Default Screen Size
+ * @parent Screen Size
+ * @type select
+ * @desc This parameter allows you to change your default game screen size
+ * Note that the screen size limited on you available screen size
+ * @default 1280 x 720
+ * @option 640 x 480 (4:3)
+ * @value 640 x 480
+ * @option 800 x 600 (4:3)
+ * @value 800 x 600
+ * @option 1024 x 768 (4:3)
+ * @value 1024 x 768
+ * @option 1152 x 864 (4:3)
+ * @value 1152 x 864
+ * @option 1280 x 720 (16:9)
+ * @value 1280 x 720
+ * @option 1280 x 800 (8:5)
+ * @value 1280 x 800
+ * @option 1280 x 960 (4:3)
+ * @value 1280 x 960
+ * @option 1360 x 768 (85:48)
+ * @value 1360 x 768
+ * @option 1366 x 768 (683:384)
+ * @value 1366 x 768
+ * @option 1400 x 1050 (4:3)
+ * @value 1400 x 1050
+ * @option 1440 x 900 (8:5)
+ * @value 1440 x 900
+ * @option 1600 x 900 (16:9)
+ * @value 1600 x 900
+ * @option 1600 x 1200 (4:3)
+ * @value 1600 x 1200
+ * @option 1680 x 1050 (8:5)
+ * @value 1680 x 1050
+ * @option 1920 x 1080 (16:9)
+ * @value 1920 x 1080
+ * @option 1920 x 1200 (8:5)
+ * @value 1920 x 1200
+ * @option 2048 x 1152 (16:9)
+ * @value 2048 x 1152
+ * @option 2560 x 1440 (16:9)
+ * @value 2560 x 1440
+ * @option 2560 x 1600 (8:5)
+ * @value 2560 x 1600
  *
  * @param Resize All Windows
+ * @parent Screen Size
+ * @type boolean
  * @desc Decide whether it will be set as relative size to the screen size.
- * @default true
+ * @default false
  *
  * @help
  * =============================================================================
@@ -111,6 +181,10 @@ Imported.RS_ScreenManager = true;
  * 2017.05.30 (v1.0.6) :
  * - Fixed the function to get the width or the height of the screen on mobile.
  * - Added a new feature that relatively changes the area of the UI.
+ * 2017.06.12 (v1.0.7) :
+ * - Fixed the parameter about default screen width and height.
+ * - Fixed an issue to incorrect scale the background (Scene_Title, Scene_MenuBase, Scene_Gameover)
+ * - Fixed the default value of the 'Resize All Windows' parameter is to false.
  */
 
 (function () {
@@ -141,9 +215,11 @@ Imported.RS_ScreenManager = true;
   var customAspectRatio = parameters['Custom Aspect Ratio'] || "16:9";
   customAspectRatio = customAspectRatio.trim().split(":");
 
+  var ptCustomScreenSize = String(parameters["Default Screen Size"] || '1280 x 720').split(' x ');
+
   var defaultScreenSize = new Point(
-    Number(parameters["Default Screen Width"] || 1280),
-    Number(parameters["Default Screen Height"] || 720)
+    parseInt(ptCustomScreenSize[0]) || 1280,
+    parseInt(ptCustomScreenSize[1]) || 720
   );
 
   var isResizeAllWindows = Boolean(parameters["Resize All Windows"] === "true");
@@ -836,7 +912,7 @@ Imported.RS_ScreenManager = true;
         configurable: true
     });
 
-  }
+    }
 
   //============================================================================
   // Android Chrome Issues
@@ -1007,33 +1083,39 @@ Imported.RS_ScreenManager = true;
   };
 
   //============================================================================
-  // Scene_Options
+  // Scene_Base
   //============================================================================
 
-  var alias_Scene_MenuBase_createBackground = Scene_MenuBase.prototype.createBackground;
-  Scene_MenuBase.prototype.createBackground = function() {
-    alias_Scene_MenuBase_createBackground.call(this);
-    var bitmap = this._backgroundSprite.bitmap;
+  Scene_Base.prototype.rescaleSprite = function (sprite) {
+    if(!sprite.bitmap) return;
+    var bitmap = sprite.bitmap;
     var scaleX = Graphics.boxWidth / bitmap.width;
     var scaleY = Graphics.boxHeight / bitmap.height;
-    var x = Graphics.boxWidth / 2 - (bitmap.width * scaleX) / 2;
-    var y = Graphics.boxHeight / 2 - (bitmap.height * scaleY) / 2;
-    this._backgroundSprite.move(x, y);
-    this._backgroundSprite.scale.x = scaleX;
-    this._backgroundSprite.scale.y = scaleY;
+    sprite.scale.x = (scaleX > 1.0) ? scaleX : 1.0;
+    sprite.scale.y = (scaleY > 1.0) ? scaleY : 1.0;
+    sprite.x = Graphics.boxWidth / 2;
+    sprite.y = Graphics.boxHeight / 2;
+    sprite.anchor.x = 0.5;
+    sprite.anchor.y = 0.5;
   };
 
-  var alias_Scene_Options_createBackground = Scene_Options.prototype.createBackground;
-  Scene_Options.prototype.createBackground = function() {
-    alias_Scene_Options_createBackground.call(this);
-    var bitmap = this._backgroundSprite.bitmap;
-    var scaleX = Graphics.boxWidth / bitmap.width;
-    var scaleY = Graphics.boxHeight / bitmap.height;
-    var x = Graphics.boxWidth / 2 - (bitmap.width * scaleX) / 2;
-    var y = Graphics.boxHeight / 2 - (bitmap.height * scaleY) / 2;
-    this._backgroundSprite.move(x, y);
-    this._backgroundSprite.scale.x = scaleX;
-    this._backgroundSprite.scale.y = scaleY;
+  var alias_Scene_MenuBase_start = Scene_MenuBase.prototype.start;
+  Scene_MenuBase.prototype.start = function() {
+    alias_Scene_MenuBase_start.call(this);
+    this.rescaleSprite(this._backgroundSprite);
+  };
+
+  var alias_Scene_Title_start = Scene_Title.prototype.start;
+  Scene_Title.prototype.start = function() {
+    alias_Scene_Title_start.call(this);
+    this.rescaleSprite(this._backSprite1);
+    this.rescaleSprite(this._backSprite2);
+  };
+
+  var alias_Scene_Gameover_start = Scene_Gameover.prototype.start;
+  Scene_Gameover.prototype.start = function() {
+    alias_Scene_Gameover_start.call(this);
+    this.rescaleSprite(this._backSprite);
   };
 
   //============================================================================
