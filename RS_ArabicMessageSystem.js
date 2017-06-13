@@ -720,15 +720,6 @@ function ArabicUtils() {
     alias_Window_Message_resetFontSettings.call(this);
   };
 
-  var alias_Window_Message_terminateMessage = Window_Message.prototype.terminateMessage;
-  Window_Message.prototype.terminateMessage = function() {
-    alias_Window_Message_terminateMessage.call(this);
-    if(this._arabicTexts) {
-      this._windowContentsSprite.removeChild(this._arabicTexts);
-      this._arabicTexts = null;
-    }
-  };
-
   Window_Message.prototype.onArabicPause = function () {
     this._arabicPause = true;
     this.off('arabicPause', this.onArabicPause, this);
