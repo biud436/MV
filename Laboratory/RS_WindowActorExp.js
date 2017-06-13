@@ -5,14 +5,14 @@
  * @param Colors
  *
  * @param Exp Gauge Color1
- * @parent Colors 
+ * @parent Colors
  * @type number
  * @desc Change the gauge color for exp
  * @default 10
  *
  * @param Exp Gauge Color2
- * @parent Colors 
- * @type number 
+ * @parent Colors
+ * @type number
  * @desc Change the gauge color for exp
  * @default 11
  *
@@ -20,7 +20,7 @@
  *
  * @param Padding
  * @parent Param
- * @type number 
+ * @type number
  * @desc Change padding value of each line in Menu Status
  * @default 10
  *
@@ -45,6 +45,7 @@ Imported.RS_WindowActorExp = true;
   var colorExpGauge1 = parseInt(parameter['Exp Gauge Color1'] || 10);
   var colorExpGauge2 = parseInt(parameter['Exp Gauge Color2'] || 11);
   var linePadding = parseInt(parameter['Padding'] || 10);
+  var szActorExpTextAlign = 'right';
 
   //============================================================================
   // Using YEP?
@@ -78,25 +79,26 @@ Imported.RS_WindowActorExp = true;
 
   Window_Base.prototype.drawCurrentAndMax = function(current, max, x, y,
                                                      width, color1, color2, type) {
-      type = type || 'HP';                                                  
+      type = type || 'HP';
       var labelWidth = this.textWidth(type);
       var valueWidth = this.textWidth(Number(max).toString());
       var slashWidth = this.textWidth('/');
       var x1 = x + width - valueWidth;
       var x2 = x1 - slashWidth;
       var x3 = x2 - valueWidth;
+      var align = szActorExpTextAlign.slice(0);
       if (x3 >= x + labelWidth) {
           this.changeTextColor(color1);
-          this.drawText(Number(current).toString(), x3, y, valueWidth, 'right');
+          this.drawText(current, x3, y, valueWidth, 'align');
           this.changeTextColor(color2);
-          this.drawText('/', x2, y, slashWidth, 'right');
-          this.drawText(Number(max).toString(), x1, y, valueWidth, 'right');
+          this.drawText('/', x2, y, slashWidth, align);
+          this.drawText(max, x1, y, valueWidth, align);
       } else {
           this.changeTextColor(color1);
-          this.drawText(Number(current).toString(), x1, y, valueWidth, 'right');
+          this.drawText(current, x1, y, valueWidth, align);
       }
-  };      
-  
+  };
+
   Window_Base.prototype.drawActorExp = function(actor, x, y, width) {
       width = width || 186;
       var color1 = this.textColor(colorExpGauge1);
@@ -104,13 +106,14 @@ Imported.RS_WindowActorExp = true;
       var exp = actor.relativeExp();
       var mexp = actor.relativeMaxExp();
       var mpRate = (actor.relativeExp() / actor.relativeMaxExp());
+      if (actor.isMaxLevel()) mexp = '-----';
       this.drawGauge(x, y, width, mpRate, color1, color2);
       this.changeTextColor(this.systemColor());
       this.drawText(TextManager.expA, x, y, 44);
       this.drawCurrentAndMax(exp, mexp, x, y, width,
                              this.normalColor(), this.normalColor(), 'EXP');
   };
-  
+
   //============================================================================
   // Window_MenuStatus
   //============================================================================
@@ -152,7 +155,7 @@ Imported.RS_WindowActorExp = true;
       this.drawGauge(x, y, width, mpRate, color1, color2);
       this.drawText(requiredExp, x, y, width, 'right');
   };
- 
+
   Window_Status.prototype.drawExpInfo = function(x, y) {
       var lineHeight = this.lineHeight();
       var expTotal = TextManager.expTotal.format(TextManager.exp);
