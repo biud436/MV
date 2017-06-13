@@ -690,7 +690,7 @@ function ArabicUtils() {
     sprite.startTextAnimation(text, 0, yPad, maxWidth, lineHeight, align);
 
     // Add Child
-    this._arabicTexts.addChild(sprite);
+    if(this._arabicTexts) this._arabicTexts.addChild(sprite);
 
   };
 
