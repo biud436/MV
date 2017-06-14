@@ -12,15 +12,27 @@
  * @default Simplified Arabic, Times New Roman, Segoe UI
  *
  * @param Font Size
+ * @type number
  * @desc Specifies the text size as integer type.
  * (default : 28)
  * @default 28
  *
+ * @param Text Animation
+ *
  * @param Text Wait Time
+ * @parent Text
  * @type number
  * @desc Specify the wait time for Arabic texts
  * (1000 Millisecond = 1 Sec)
  * @default 10
+ *
+ * @param Animated Text
+ * @parent Text Animation
+ * @type boolean
+ * @desc Set whether the text has animated
+ * @default true
+ * @on Enable
+ * @off Disable
  *
  * @help
  * =============================================================================
@@ -37,6 +49,20 @@
  * -----------------------------------------------------------------------------
  * This text code is available to implement the left-to-right language.
  * \LTR<Hello, World!>
+ * =============================================================================
+ * Plugin Commands
+ * -----------------------------------------------------------------------------
+ *
+ * This plugin command allows you to indicate by delaying the text in milliseconds
+ * and the text is displayed slowly at right to left.
+ *
+ *    EnableArabicTextAnimation
+ *
+ * This plugin command allows you to immediately indicate the text without
+ * the delay.
+ *
+ *    DisableArabicTextAnimation
+ *
  * =============================================================================
  * Compatibility List
  * -----------------------------------------------------------------------------
@@ -82,11 +108,15 @@
  * - Fixed the processNormalCharacter method.
  * 2017.05.05 (v1.1.8) - Fixed the issue that does not properly show up Arabic when using a choice window.
  * 2017.06.03 (v1.1.9) - Fixed an issue that is incorrectly displayed a non-character word : !, @, #, $, dot.
- * 2017.06.14 (v1.2.0) - Added a new feature that can draw the text one by one.
+ * 2017.06.14 (v1.2.0) :
+ * - Added a new feature that can draw the text one by one.
+ * 2017.06.14 (v1.2.1) :
+ * - Fixed to appear the text slowly at the right to left.
+ * - Added plugin commands for animating text.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.2.0';
+Imported.RS_ArabicMessageSystem = '1.2.1';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -111,6 +141,7 @@ function ArabicUtils() {
   RS.ArabicMessageSystem.Params = RS.ArabicMessageSystem.Params || {};
   RS.ArabicMessageSystem.Params.fontSize = parseInt(parameters['Font Size'] || 28);
   RS.ArabicMessageSystem.Params.textWaitTime = parseInt(parameters["Text Wait Time"] || 10);
+  RS.ArabicMessageSystem.Params.isAnimatedText = Boolean(parameters["Animated Text"] === 'true');
 
   //============================================================================
   // ArabicUtils
@@ -448,7 +479,14 @@ function ArabicUtils() {
     }
   };
 
+  ArabicTextSprite.prototype.textWidth = function (text) {
+    return this.bitmap.measureTextWidth(text);
+  };
+
   ArabicTextSprite.prototype.updateTextAnimation = function () {
+
+    var deltaX = 0;
+
     this._iTextNumber++;
     if(this._iTextNumber >= this._maxTextLength && !this._isFinished) {
       this._iTextNumber = this._maxTextLength;
@@ -459,10 +497,13 @@ function ArabicUtils() {
     }
     this._finishedText += this._text[this._iTextNumber];
     this.bitmap.clear();
+
+    deltaX = this.textWidth(this._text) - this.textWidth(this._finishedText);
+
     if(this._isFinished) {
         this.bitmap.drawText(this._text, this._tx, this._ty, this._tMaxWidth, this._tLineHeight, this._tAlign)
     } else {
-        this.bitmap.drawText(this._finishedText, this._tx, this._ty, this._tMaxWidth, this._tLineHeight, this._tAlign)
+        this.bitmap.drawText(this._finishedText, this._tx + deltaX, this._ty, this._tMaxWidth, this._tLineHeight, this._tAlign)
     }
   };
 
@@ -525,7 +566,7 @@ function ArabicUtils() {
     sprite.scale.x = -1;
 
     // Add Child
-    this._arabicTexts.addChild(sprite);
+    if(this._arabicTexts) this._arabicTexts.addChild(sprite);
 
   };
 
@@ -669,7 +710,8 @@ function ArabicUtils() {
 
     var maxHeight = lineHeight + Math.floor(lineHeight * 0.5);
     var bitmap = new Bitmap(maxWidth, maxHeight);
-    var sprite = new ArabicTextSprite(bitmap);
+    var isAnimatedText = RS.ArabicMessageSystem.Params.isAnimatedText;
+    var sprite = (isAnimatedText === true) ? new ArabicTextSprite(bitmap) : new Sprite(bitmap);
 
     var yPad = Math.round(this.contents.fontSize * 0.09);
 
@@ -687,7 +729,11 @@ function ArabicUtils() {
     sprite.pivot.x = maxWidth / 2;
     sprite.scale.x = -1;
 
-    sprite.startTextAnimation(text, 0, yPad, maxWidth, lineHeight, align);
+    if(isAnimatedText) {
+      sprite.startTextAnimation(text, 0, yPad, maxWidth, lineHeight, align);
+    } else {
+      sprite.bitmap.drawText(text, 0, yPad, maxWidth, lineHeight, align);
+    }
 
     // Add Child
     if(this._arabicTexts) this._arabicTexts.addChild(sprite);
@@ -1022,6 +1068,23 @@ function ArabicUtils() {
         RS.ArabicMessageSystem.createArabicLayer.call(this);
         this.drawAllItems();
     }
+  };
+
+  //===========================================================================
+  // Game_Interpreter
+  //===========================================================================
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+
+    if(command === "DisableArabicTextAnimation") {
+      RS.ArabicMessageSystem.Params.isAnimatedText = false;
+    }
+    if(command === "EnableArabicTextAnimation") {
+      RS.ArabicMessageSystem.Params.isAnimatedText = true;
+    }
+
   };
 
 })();
