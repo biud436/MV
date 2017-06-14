@@ -82,14 +82,14 @@
    Window_Base.prototype.setAlignCenter = function(textState) {
      var padding = this.textPadding();
      textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
-     textState.x = ( this.newLineX() + this.contentsWidth() + padding) / 2 - textState.tx / 2;
+     textState.x = ( this.newLineX() + this.contentsWidth() + padding * 2) / 2 - textState.tx / 2;
      textState.left = textState.x;
    };
 
    Window_Base.prototype.setAlignRight = function(textState) {
      var padding = this.textPadding();
      textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
-     textState.x = ( this.contentsWidth() - padding) - textState.tx;
+     textState.x = ( this.contentsWidth() - padding * 2) - textState.tx;
      textState.left = textState.x;
    };
 
