@@ -113,6 +113,7 @@
  * 2017.06.14 (v1.2.1) :
  * - Fixed to appear the text slowly at the right to left.
  * - Added plugin commands for animating text.
+ * - Fixed an incorrect text padding in command button.
  */
 
 var Imported = Imported || {};
@@ -832,7 +833,7 @@ function ArabicUtils() {
     var rect = this.itemRectForText(index);
     var align = this.itemTextAlign();
     if(align !== 'center' && align !== 'right') {
-      var x = rect.x + rect.width - this.textWidth(this.commandName(index)) + this.textPadding();
+      var x = rect.x + rect.width - this.textWidth(this.commandName(index));
     } else {
       var x = rect.x;
     }
