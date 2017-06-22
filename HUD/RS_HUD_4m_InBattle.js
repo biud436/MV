@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc (v1.2.1) This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.2.2) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
@@ -153,10 +153,11 @@
  * properly not working in case of you're not using the battle addon, in a
  * community version.
  * 2017.06.08 (v1.2.1) - Fixed the issue that is not displaying specific image in RMMV 1.5
+ * 2017.06.22 (v1.2.2) - Extended as the ATB gauge bar to support Victor Engine ATB or Ellye ATB plugins.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.2.1';
+Imported.RS_HUD_4m_InBattle = '1.2.2';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -353,6 +354,7 @@ RS.HUD.param = RS.HUD.param || {};
     if(this.inBattle()) {
       this.updateSelectEffect();
       this.updateDeathEffect();
+      this.updateBattleHud();
     } else {
       this.updateOpacity();
     }
@@ -474,6 +476,50 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   //----------------------------------------------------------------------------
+  // Active Time Battle supports
+  //
+  //
+
+  Game_System.prototype.isAtbSystem = function () {
+    if(Imported.YEP_BattleEngineCore && Imported.YEP_X_BattleSysATB) {
+      return true;
+    }
+    if(Imported.Ellye_ATB) {
+      return true;
+    }
+    if(Imported['VE - Active Time Battle']) {
+      return true;
+    }
+    return false;
+  };
+
+  Game_Battler.prototype.getAtbRate = function () {
+    if(Imported.YEP_BattleEngineCore && Imported.YEP_X_BattleSysATB) {
+      return this.atbRate();
+    }
+    if(Imported.Ellye_ATB) {
+      return this.atbRatio();
+    }
+    if(Imported['VE - Active Time Battle']) {
+      return this.atbRate();
+    }
+    return 1;
+  };
+
+  Game_Battler.prototype.getChargeRate = function () {
+    if(Imported.YEP_BattleEngineCore && Imported.YEP_X_BattleSysATB) {
+      return this.atbChargeRate();
+    }
+    if(Imported.Ellye_ATB) {
+      return this.castRatio();
+    }
+    if(Imported['VE - Active Time Battle']) {
+      return this.atbRate();
+    }
+    return 1;
+  };
+
+  //----------------------------------------------------------------------------
   // (Addon) Yanfly Engine Plugins - Battle System - Active Turn Battle
   //
   //
@@ -481,8 +527,7 @@ RS.HUD.param = RS.HUD.param || {};
   var alias_yanflyATB_gauge_HUD_initialize = HUD.prototype.initialize;
   HUD.prototype.initialize = function(config) {
     alias_yanflyATB_gauge_HUD_initialize.call(this, config);
-    if(!Imported.YEP_BattleEngineCore) return;
-    if(!Imported.YEP_X_BattleSysATB) return;
+    if(!$gameSystem.isAtbSystem()) return;
     if( !this.inBattle() ) return;
     this.createATBGauge();
     this.createArrow();
@@ -492,8 +537,7 @@ RS.HUD.param = RS.HUD.param || {};
   HUD.PI2 = Math.PI * 2;
 
   HUD.prototype.createATBGauge = function () {
-    if(!Imported.YEP_BattleEngineCore) return;
-    if(!Imported.YEP_X_BattleSysATB) return;
+    if(!$gameSystem.isAtbSystem()) return;
     if( !this.inBattle() ) return;
     var r = 96;
     this._AtbGauge = new Sprite(new Bitmap(RS.HUD.param.nWidth, RS.HUD.param.nHeight * 2));
@@ -503,8 +547,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.createArrow = function () {
-    if(!Imported.YEP_BattleEngineCore) return;
-    if(!Imported.YEP_X_BattleSysATB) return;
+    if(!$gameSystem.isAtbSystem()) return;
     if( !this.inBattle() ) return;
     this._AtbArrow = new Sprite(new Bitmap(24, 24));
     this._AtbArrow.x = this._hud.x;
@@ -536,9 +579,15 @@ RS.HUD.param = RS.HUD.param || {};
     return (Math.PI / 180.0) * degree;
   };
 
+  HUD.prototype.updateBattleHud = function () {
+    if(!$gameSystem.isAtbSystem()) return;
+    if( !this.inBattle() ) return;
+    var player = this.getPlayer();
+    this.drawAtbGauge(player.getAtbRate());
+  };
+
   HUD.prototype.drawAtbGauge = function (rate) {
-    if(!Imported.YEP_BattleEngineCore) return;
-    if(!Imported.YEP_X_BattleSysATB) return;
+    if(!$gameSystem.isAtbSystem()) return;
     if( !this.inBattle() ) return;
     var x = 0;
     var y = 0;
@@ -560,8 +609,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.setArraowPosition = function(r, rate) {
-    if(!Imported.YEP_BattleEngineCore) return;
-    if(!Imported.YEP_X_BattleSysATB) return;
+    if(!$gameSystem.isAtbSystem()) return;
     if( !this.inBattle() ) return;
     var dx = (this._hud.x + r + 1) + r * Math.cos(HUD.PI2 * rate);
     var dy = (this._hud.y + r + 4) + r * Math.sin(-HUD.PI2 * rate);
@@ -571,8 +619,7 @@ RS.HUD.param = RS.HUD.param || {};
   }
 
   HUD.prototype.drawArraow = function(r, rate) {
-    if(!Imported.YEP_BattleEngineCore) return;
-    if(!Imported.YEP_X_BattleSysATB) return;
+    if(!$gameSystem.isAtbSystem()) return;
     if( !this.inBattle() ) return;
     var bitmap = ImageManager.loadSystem('Window');
     var dx = (0 + r + 1) + r * Math.cos(Math.PI * 2 * rate);
@@ -580,39 +627,6 @@ RS.HUD.param = RS.HUD.param || {};
     var offsetX = 12;
     var offsetY = 12;
     this._AtbArrow.bitmap.blt(bitmap, 132, 24, 20, 20, 0, 0);
-  }
-
-  //----------------------------------------------------------------------------
-  // (Alias) YEP_X_BattleSysATB
-  //
-  // Callback functions
-
-  var alias_Window_BattleStatus_drawActorAtbGauge =
-    Window_BattleStatus.prototype.drawActorAtbGauge;
-
-  Window_BattleStatus.prototype.drawActorAtbGauge = function(actor, wx, wy, ww) {
-    if(!Imported.YEP_BattleEngineCore) return;
-    if(!Imported.YEP_X_BattleSysATB) return;
-  	alias_Window_BattleStatus_drawActorAtbGauge.call(this, actor, wx, wy, ww);
-    if($gameHud) {
-      $gameHud._items.children.forEach(function (i) {
-        if(i.getPlayer() === actor) i.drawAtbGauge(actor.atbRate());
-      }, this);
-    }
-  };
-
-  var alias_Window_BattleStatus_drawAtbChargeGauge =
-    Window_BattleStatus.prototype.drawAtbChargeGauge;
-
-  Window_BattleStatus.prototype.drawAtbChargeGauge = function(actor, wx, wy, ww) {
-    if(!Imported.YEP_BattleEngineCore) return;
-    if(!Imported.YEP_X_BattleSysATB) return;
-  	alias_Window_BattleStatus_drawAtbChargeGauge.call(this, actor, wx, wy, ww);
-    if($gameHud) {
-      $gameHud._items.children.forEach(function (i) {
-        if(i.getPlayer() === actor) i.drawAtbGauge(actor.atbChargeRate());
-      }, this);
-    }
   };
 
 })();

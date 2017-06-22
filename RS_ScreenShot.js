@@ -105,6 +105,20 @@ RS.ScreenShot = RS.ScreenShot || {};
     return decodeURIComponent(path);
   };
 
+  $.getParentFolder = function (url2) {
+    url2 = url2 || location.href;
+    var i = 0;
+    var ret = '';
+    while(url2[i] !== undefined) {
+     i++;
+    }
+    while(url2[i] !== '/') {
+     i--;
+    }
+    ret = url2.slice(0, i).concat('/');
+    return ret;
+  };
+
   $.previewScreenShot = function (fileName) {
     var renderer = Graphics._renderer;
     var renderTexture = PIXI.RenderTexture.create(renderer.width, renderer.height);

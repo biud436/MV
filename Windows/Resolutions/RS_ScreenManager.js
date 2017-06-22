@@ -106,10 +106,66 @@ Imported.RS_ScreenManager = true;
  * @desc This parameter allows you to change your default game screen size
  * Note that the screen size limited on you available screen size
  * @default 1280 x 720
+ * @option 320 x 240 (4:3)
+ * @value 320 x 240
+ * @option 544 x 416 (17:13)
+ * @value 544 x 416
  * @option 640 x 480 (4:3)
  * @value 640 x 480
  * @option 800 x 600 (4:3)
  * @value 800 x 600
+ * @option 816 x 624 (17:13)
+ * @value 816 x 624
+ * @option 1024 x 768 (4:3)
+ * @value 1024 x 768
+ * @option 1152 x 864 (4:3)
+ * @value 1152 x 864
+ * @option 1280 x 720 (16:9)
+ * @value 1280 x 720
+ * @option 1280 x 800 (8:5)
+ * @value 1280 x 800
+ * @option 1280 x 960 (4:3)
+ * @value 1280 x 960
+ * @option 1360 x 768 (85:48)
+ * @value 1360 x 768
+ * @option 1366 x 768 (683:384)
+ * @value 1366 x 768
+ * @option 1400 x 1050 (4:3)
+ * @value 1400 x 1050
+ * @option 1440 x 900 (8:5)
+ * @value 1440 x 900
+ * @option 1600 x 900 (16:9)
+ * @value 1600 x 900
+ * @option 1600 x 1200 (4:3)
+ * @value 1600 x 1200
+ * @option 1680 x 1050 (8:5)
+ * @value 1680 x 1050
+ * @option 1920 x 1080 (16:9)
+ * @value 1920 x 1080
+ * @option 1920 x 1200 (8:5)
+ * @value 1920 x 1200
+ * @option 2048 x 1152 (16:9)
+ * @value 2048 x 1152
+ * @option 2560 x 1440 (16:9)
+ * @value 2560 x 1440
+ * @option 2560 x 1600 (8:5)
+ * @value 2560 x 1600
+ *
+ * @param Default Graphics Size
+ * @parent Screen Size
+ * @type select
+ * @desc This parameter allows you to change your default graphics size
+ * @default 1280 x 720
+ * @option 320 x 240 (4:3)
+ * @value 320 x 240
+ * @option 544 x 416 (17:13)
+ * @value 544 x 416
+ * @option 640 x 480 (4:3)
+ * @value 640 x 480
+ * @option 800 x 600 (4:3)
+ * @value 800 x 600
+ * @option 816 x 624 (17:13)
+ * @value 816 x 624
  * @option 1024 x 768 (4:3)
  * @value 1024 x 768
  * @option 1152 x 864 (4:3)

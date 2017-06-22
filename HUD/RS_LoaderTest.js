@@ -3,7 +3,12 @@
  * @author biud436
  *
  */
-
+ /*:ko
+  * @plugindesc 메모리와 드로우콜을 줄일 수 있는 아틀라스 텍스처 로드 테스트입니다
+  * @author biud436
+  *
+  */
+  
  var Imported = Imported || {};
  Imported.RS_LoaderTest = 'test';
 
