@@ -188,7 +188,77 @@
 * =============================================================================
 * Text code list (English)
 * =============================================================================
-* There's nothing.
+* To use these text codes, you must set the system language setting as English.
+*
+* \color[color_name] - Specify the color name as you want it.
+* \text_speed[x]
+* \outline_color[color_name]
+* \outline_width[x]
+* \indent[x]
+* \bold!
+* \italic!
+* \name<text> - Shows up the name window over the message window
+* \gradient<text>
+* \party_member[x]
+* \player[x]
+* \var[x]
+* \icon[x]
+* \increase[x]
+* \decrease[x]
+* \gold
+* \balloon[0] - A balloon is set over the position of this event.
+* \balloon[-1] - A balloon is set over the position of the game player.
+* \balloon[id] - A balloon is set over the position of certain event.
+* \align[0] - left
+* \align[1] - center
+* \align[2] - right
+* \num - formatted number
+* \text_size[x]
+* \tab - the tab size is to 8
+* \carriage_return
+* \play_se[name]
+* \show_picture<picid, picname, origin, x, y>
+* \hide_picture[picid]
+* \item
+* \weapon
+* \armor
+* \classes
+* \enemy
+* \state
+* \skill
+*
+* =============================================================================
+* Color list (English)
+* =============================================================================
+* To use these colors, you must set the language setting as English.
+*
+* Built in color lists are :
+*
+* \color[AQUA]
+*
+* AQUA
+* BLACK
+* BLUE
+* DKGRAY
+* FUCHSIA
+* GRAY
+* GREEN
+* LIME
+* LTGRAY
+* MAROON
+* OLIVE
+* NAVY
+* ORANGE
+* PURPLE
+* RED
+* SILVER
+* TEAL
+* WHITE
+* YELLOW
+* NORMAL
+*
+* The Web colors can use the same as :
+* \color[#FFFFFF]
 *
 * =============================================================================
 * Text code list (Korean)
@@ -674,6 +744,7 @@ var Color = Color || {};
   RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Group || [];
   RS.MessageSystem.Reg.Korean = RS.MessageSystem.Reg.Korean || [];
   RS.MessageSystem.Reg.Chinese = RS.MessageSystem.Reg.Chinese || [];
+  RS.MessageSystem.Reg.English = RS.MessageSystem.Reg.English || [];
   RS.MessageSystem.TextCodes = RS.MessageSystem.TextCodes || {};
 
   RS.MessageSystem.Params = RS.MessageSystem.Params || {};
@@ -719,6 +790,7 @@ var Color = Color || {};
 
   RS.MessageSystem.Reg.KoreanEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[가-ퟻ]+[!]*/i;
   RS.MessageSystem.Reg.ChineseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[一-鼣]+[!]*/i;
+  RS.MessageSystem.Reg.EnglishEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[A-Z]+[!]*/i;
   RS.MessageSystem.Reg.defaultEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[가-ퟻ]+[!]*/i;
   RS.MessageSystem.TextCodes = {
     'Korean': [
@@ -740,6 +812,16 @@ var Color = Color || {};
       't', 'r', "音效播放", "显示图像", // 24
       "隐藏图像", "道具", "武器", "装甲",  // 28
       "职业", "敌人", "状态", "技能" // 32
+    ],
+    'English': [
+      undefined, "COLOR", "TEXT_SPEED", "OUTLINE_COLOR", "OUTLINE_WIDTH", // 4
+      "INDENT", "BOLD!", "ITALIC!", "NAME", // 8
+      "GRADIENT", "PARTY_MEMBER", "PLAYER",  "VAR", // 12
+      "ICON", "INCREASE", "DECREASE", "GOLD",  // 16
+      'BALLOON', "ALIGN", "NUM", 'TEXT_SIZE', // 20
+      'TAB', 'CARRIAGE_RETURN', "PLAY_SE", "SHOW_PICTURE",  // 24
+      "HIDE_PICTURE", "ITEM", "WEAPON", "ARMOR", // 28
+      "CLASSES", "ENEMY", "STATE", "SKILL" // 32
     ]
   };
 
@@ -787,7 +869,10 @@ var Color = Color || {};
     if(!!navigator.language.match(/zh/)) {
       return RS.MessageSystem.TextCodes['Chinese'][idx];
     }
-    return undefined;
+    if(!!navigator.language.match(/en/)) {
+      return RS.MessageSystem.TextCodes['English'][idx];
+    }
+    return RS.MessageSystem.TextCodes['English'][idx];
   };
 
   // Korean Text Codes
@@ -860,17 +945,66 @@ var Color = Color || {};
   RS.MessageSystem.Reg.Chinese[31] = /(?:\x1b状态)\[(\d+)\]/g; // 상태
   RS.MessageSystem.Reg.Chinese[32] = /(?:\x1b技能)\[(\d+)\]/g; // 스킬
 
+  // English Text Codes
+  RS.MessageSystem.Reg.English[0] = undefined;
+  RS.MessageSystem.Reg.English[1] = /(?:\x1bC|\x1bCOLOR)\[(.+?)\]/gi;   // 색
+  RS.MessageSystem.Reg.English[2] = /\x1bTEXT_SPEED\[(\d+)\]/gi;    // 속도
+  RS.MessageSystem.Reg.English[3] = /\x1bOUTLINE_COLOR\[(.+?)\]/gi;  // 테두리색
+  RS.MessageSystem.Reg.English[4] = /\x1bOUTLINE_WIDTH\[(\d+)\]/gi; // 테두리크기
+  RS.MessageSystem.Reg.English[5] = /\x1bINDENT\[(\d+)\]/gi; // 들여쓰기
+  RS.MessageSystem.Reg.English[6] = /\x1bBOLD!/gi; // 굵게
+  RS.MessageSystem.Reg.English[7] = /\x1bITALIC!/gi; // 이탤릭!
+  RS.MessageSystem.Reg.English[8] = /\x1bNAME\<(.+?)\>/gi; // 이름
+  RS.MessageSystem.Reg.English[9] = /\x1bGRADIENT<(.+)>/gi; // 그레디언트
+  RS.MessageSystem.Reg.English[10] = /(?:\x1bP|\x1bPARTY_MEMBER)\[(\d+)\]/gi; // 파티원
+  RS.MessageSystem.Reg.English[11] = /(?:\x1bN|\x1bPLAYER)\[(\d+)\]/gi; // 주인공
+  RS.MessageSystem.Reg.English[12] = /(?:\x1bV|\x1bVAR)\[(\d+)\]/gi; // 변수
+  RS.MessageSystem.Reg.English[13] = /(?:\x1bI|\x1bICON)\[(\d+)\]/g; // 아이콘
+  RS.MessageSystem.Reg.English[14] = /(?:\x1b{|\x1bINCREASE)/gi;  // 확대
+  RS.MessageSystem.Reg.English[15] = /(?:\x1b{|\x1bDECREASE)/gi; // 축소
+  RS.MessageSystem.Reg.English[16] = /(?:\x1bG|\x1bGOLD)/gi; // 골드
+  RS.MessageSystem.Reg.English[17] = /\x1bBALLOON\[(\d+|-\d+)\]/gi; // 말풍선
+  RS.MessageSystem.Reg.English[18] = /\x1bALIGN\[(\d+)]/gi; // 정렬자
+  RS.MessageSystem.Reg.English[19] = /\x1bNUM\[(\d+)\]/gi; // 숫자
+  RS.MessageSystem.Reg.English[20] = /\x1bTEXT_SIZE\[(\d+)\]/gi; // 크기
+  RS.MessageSystem.Reg.English[21] = /\x1bTAB/gi;   // r
+  RS.MessageSystem.Reg.English[22] = /\x1bCARRIAGE_RETURN/gi; // t
+  RS.MessageSystem.Reg.English[23] = /\x1bPLAY_SE\<(.+?)\>/gi;  // 효과음
+  RS.MessageSystem.Reg.English[24] = /\x1bSHOW_PICTURE\<(.+?)\>/gi; // 그림 표시
+  RS.MessageSystem.Reg.English[25] = /\x1bHIDE_PICTURE\[(\d+)\]/gi; // 그림 제거
+  RS.MessageSystem.Reg.English[26] = /(?:\x1bITEM)\[(\d+)\]/g; // 아이템
+  RS.MessageSystem.Reg.English[27] = /(?:\x1bWEAPON)\[(\d+)\]/g; // 무기구
+  RS.MessageSystem.Reg.English[28] = /(?:\x1bARMOR)\[(\d+)\]/g; // 방어구
+  RS.MessageSystem.Reg.English[29] = /(?:\x1bCLASSES)\[(\d+)\]/g; // 직업
+  RS.MessageSystem.Reg.English[30] = /(?:\x1bENEMY)\[(\d+)\]/g; // 적군
+  RS.MessageSystem.Reg.English[31] = /(?:\x1bSTATE)\[(\d+)\]/g; // 상태
+  RS.MessageSystem.Reg.English[32] = /(?:\x1bSKILL)\[(\d+)\]/g; // 스킬
+
   RS.MessageSystem.initSystem = function () {
     var type = navigator.language;
+    var ret = false;
     if(type.match(/ko/)) {
       RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Korean;
       RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.KoreanEscapeCode;
       RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.Korean;
+      ret = true;
     }
     if(type.match(/zh/)) {
       RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Chinese;
       RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.ChineseEscapeCode;
       RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.Chinese;
+      ret = true;
+    }
+    if(type.match(/en/)) {
+      RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.English;
+      RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.EnglishEscapeCode;
+      RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.English;
+      ret = true;
+    }
+    if(ret === false) {
+      RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.English;
+      RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.EnglishEscapeCode;
+      RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.English;
     }
   };
 
@@ -986,6 +1120,53 @@ var Color = Color || {};
     }
   };
 
+  RS.MessageSystem.getEnglishColor = function(string) {
+    switch(string) {
+      case 'AQUA': case 'c_aqua':
+      return Color.getColor(16776960);
+      case 'BLACK': case 'c_black':
+      return Color.getColor(0);
+      case 'BLUE': case 'c_blue':
+      return Color.getColor(16711680);
+      case 'DKGRAY': case 'c_dkgray':
+      return Color.getColor(4210752);
+      case 'FUCHSIA': case 'c_fuchsia':
+      return Color.getColor(16711935);
+      case 'GRAY': case 'c_gray':
+      return Color.getColor(8421504);
+      case 'GREEN': case 'c_green':
+      return Color.getColor(32768);
+      case 'LIME': case 'c_lime':
+      return Color.getColor(65280);
+      case 'LTGRAY': case 'c_ltgray':
+      return Color.getColor(12632256);
+      case 'MAROON': case 'c_maroon':
+      return Color.getColor(128);
+      case 'NAVY': case 'c_navy':
+      return Color.getColor(8388608);
+      case 'OLIVE': case 'c_olive':
+      return Color.getColor(32896);
+      case 'ORANGE': case 'c_orange':
+      return Color.getColor(4235519);
+      case 'PURPLE': case 'c_purple':
+      return Color.getColor(8388736);
+      case 'RED': case 'c_red':
+      return Color.getColor(255);
+      case 'SILVER': case 'c_silver':
+      return Color.getColor(12632256);
+      case 'TEAL': case 'c_teal':
+      return Color.getColor(8421376);
+      case 'WHITE': case 'c_white':
+      return Color.getColor(16777215);
+      case 'YELLOW': case 'c_yellow':
+      return Color.getColor(65535);
+      case 'NORMAL': case 'c_normal':
+      return Color.getBaseColor();
+      default:
+      return string;
+    }
+  };
+
   Color.gmColor = function(string) {
     var type = navigator.language;
     if(type.match(/ko/)) {
@@ -994,6 +1175,10 @@ var Color = Color || {};
     if(type.match(/zh/)) {
       return RS.MessageSystem.getChineseColor(string);
     }
+    if(type.match(/en/)) {
+      return RS.MessageSystem.getEnglishColor(string);
+    }
+    return RS.MessageSystem.getEnglishColor(string);
   };
 
   //============================================================================
