@@ -13,11 +13,11 @@ Imported.RS_FollowerPassable = true;
  * @author biud436
  *
  * @param Enabled
- * @desc
+ * @type boolean
  * @default true
  *
  * @param Separate Mode
- * @desc
+ * @type boolean
  * @default false
  *
  * @help

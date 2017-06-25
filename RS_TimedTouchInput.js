@@ -3,6 +3,7 @@
  * @author biud436
  *
  * @param Time to stop
+ * @type number
  * @desc Specify the time to stop the mouse
  * (30 = 30 Frames)
  * @default 30
@@ -23,6 +24,7 @@
   * @author biud436
   *
   * @param Time to stop
+ * @type number  
   * @desc 터치 입력을 멈출 시간을 지정하세요
   * (30 = 30 프레임)
   * @default 30

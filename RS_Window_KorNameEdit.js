@@ -11,12 +11,16 @@
  * @default auto
  *
  * @param windowCenter
+ * @type boolean
  * @desc The window will align to the center of the screen unless set the same as 'false' value.
  * @default false
  *
  * @param editWindow_Opacity
+ * @type number
  * @desc The opacity can set as number between 0 and 255.
  * @default 225
+ * @min 0
+ * @max 255
  *
  * @param askingText
  * @desc This is a text hint
@@ -119,12 +123,16 @@
   * @default auto
   *
   * @param windowCenter
+  * @type boolean
   * @desc true 또는 false를 입력하세요.
   * @default false
   *
   * @param editWindow_Opacity
+  * @type number
   * @desc 이름 윈도우의 투명도 값으로 0 ~ 255 사이의 숫자 값을 입력하세요.
   * @default 225
+  * @min 0
+  * @max 255
   *
   * @param askingText
   * @desc 텍스트 힌트

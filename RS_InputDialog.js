@@ -12,10 +12,12 @@
  * @default 36
  *
  * @param variable ID
+ * @type variable
  * @desc Sets an id of the game variables.
  * @default 3
  *
  * @param debug
+ * @type boolean
  * @desc Whether this determines the alert window.
  * @default false
  *
@@ -24,46 +26,61 @@
  * @default Please enter the value...
  *
  * @param direction
+ * @type select
  * @desc Sets the direction of content flow.
- * ltr - Left to Right, rtl - Right to Left
  * @default ltr
+ * @option Left to Right
+ * @value ltr
+ * @option Right to Left
+ * @option rtl
  *
  * @param Max Length
+ * @type number
  * @desc Specifies the maximum number of character for an input field
  * @default 255
+ * @min 1
+ * @max 255
  *
- * @param Style ----
- * @desc
- * @default
+ * @param Style
  *
  * @param Background Color
+ * @parent Style
  * @desc Specifies a background color of the text box.
  * @default #cff09e
  *
  * @param Border
+ * @parent Style
  * @desc Specifies a border color of the text box.
  * @default 2px solid #3b8686
  *
  * @param Border Radius
+ * @parent Style
  * @desc Specifies a border radius of the text box.
  * @default 10px
  *
  * @param Text Shadow
+ * @parent Style
  * @desc Specifies a text shadow of the text box.
  * @default 0px 1px 3px #a8dba8
  *
  * @param Font Family
+ * @parent Style
  * @desc Specifies a font family of the text box.
  * @default arial
  *
  * @param Color
+ * @parent Style
  * @desc Specifies a font color of the text box.
  * @default #79bd9a
  *
  * @param Opacity
+ * @parent Style
+ * @type number
+ * @decimals 1
  * @desc Specifies a opacity of the text box.
- * (value range : 0.0 ~ 1.0)
  * @default 0.8
+ * @min 0.0
+ * @max 1.0
  *
  * @help
  * =============================================================================

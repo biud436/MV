@@ -4,6 +4,7 @@
  * @author biud436
  *
  * @param isdeltaTime
+ * @type boolean
  * @desc true : Slow Speed
  * false : Consistent Speed (Fast)
  * @default false
@@ -25,12 +26,16 @@
  * @default 200
  *
  * @param speed
+ * @type number 
  * @desc
  * @default 0.1
+ * @decimals 1
  *
  * @param limited time
+ * @type number
  * @desc
  * @default 1.0
+ * @decimals 1
  *
  * @help
  * =============================================================================

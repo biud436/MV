@@ -6,14 +6,17 @@
  * @date 2015.12.22
  *
  * @param key
+ * @type number
  * @desc Type the keyCode.
  * @default 118
  *
  * @param Screenshot Preview Window
+ * @type boolean
  * @desc
  * @default true
  *
  * @param Play Se
+ * @type boolean
  * @desc Yes - true, No - false
  * @default true
  *
@@ -48,14 +51,17 @@
 * @date 2015.12.22
 *
 * @param key
+* @type number
 * @desc 키 코드를 입력하세요
 * @default 118
 *
 * @param Screenshot Preview Window
+* @type boolean
 * @desc 스크린샷을 미리 볼 지 여부를 결정합니다.
 * @default true
 *
 * @param Play Se
+* @type boolean
 * @desc 재생 - true, 재생하지 않음 - false
 * @default true
 *

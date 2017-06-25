@@ -4,11 +4,12 @@
  * @author biud436
  *
  * @param Enabled
+ * @type boolean
  * @desc If this is enabled, the log window shows up. if not, it hides.
  * @default true
  *
  * @help
- * There are two plugin commands, 
+ * There are two plugin commands,
  * the 'show' command allows players to show up the log window,
  * the 'hide' command allows players to hide the log window.
  *

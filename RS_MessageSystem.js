@@ -4,13 +4,16 @@
 * @author biud436
 *
 * @param Font Size
+* @type number
 * @desc Specifies the text size as integer type.
 * (default : 28)
 * @default 28
 *
 * @param numVisibleRows
+* @type number
 * @desc Sets the number of rows to indicate in a message window.
 * @default 4
+* @min 1
 *
 * @param gradientColor1
 * @desc Sets needed gradient color for the start point of the gradient text.
@@ -22,71 +25,88 @@
 *
 * @param gradientColor3
 * @desc Sets needed gradient color for the ended point of the gradient text.
-
 * @default #CC3D3D
 *
 * @param Text Speed
+* @type number
 * @desc Sets the default text speed
 * @default 0
+* @min 0
 *
 * @param Text Min Size
+* @type number
 * @desc limits the text size by specifying the minimum text size when using the text code called '\}'.
 * @default 24
 *
 * @param Text Max Size
+* @type number
 * @desc limits the text size by specifying the maximum text size when using the text code called '\{'.
 * @default 96
 *
 * @param Text Start X
+* @type number
 * @desc The starting x position of the text in case of using a large face bitmap.
 * @default 256
 *
 * @param Name Window X
+* @type number
 * @desc Sets the name window's offset x by dx.
 * @default 0
 *
 * @param Name Window Y
+* @type number
 * @desc Sets the name window's offset y by dy.
 * @default 0
 *
 * @param Name Window Inner Padding
+* @type number
 * @desc Sets the name window's inner padding
 * @default 10
 *
 * @param Big Face OX
+* @type number
 * @desc Sets the large face bitmap's offset x
 * @default 0
 *
 * @param Big Face OY
+* @type number
 * @desc Sets the large face bitmap's offset y
 * @default 0
 *
 * @param Show Big Face Back
+* @type boolean
 * @desc Whether display a large face bitmap on the backside of the message window.
-* YES - true  NO - false
 * @default false
+* @on Can Display
+* @off Can't Display
 *
 * @param Tab Size
+* @type number
 * @desc Sets the maximum width for tabs.
 * @default 4
 *
 * @param back Opacity
+* @type number
 * @desc Sets the opacity of the message window for backgrounds.
 * @default 192
 *
 * @param default Opacity
+* @type number
 * @desc Sets the default opacity of the message window.
 * @default 255
 *
 * @param contents Opacity
+* @type number
 * @desc Sets the opacity of the message window for all contents.
 * @default 255
 *
 * @param translucent Opacity
+* @type number
 * @desc Sets the translucent opacity of the message window.
 * @default 160
 *
 * @param default outline width
+* @type number
 * @desc Specifies the maximum width for text borders.
 * @default 2
 *
@@ -94,26 +114,23 @@
 * @desc Specifies the color for text borders.
 * @default rgba(0, 0, 0, 1.0)
 *
-* @param --- Custom Font
-* @desc
-* @default
+* @param Custom Font
 *
 * @param Using Custom Font
+* @parent Custom Font
+* @type boolean
 * @desc Do you wish to use a custom font?
-* YES - true   NO - false
 * @default false
 *
 * @param Custom Font Name
+* @parent Custom Font
 * @desc Specifies the name for fonts
 * @default NanumBrush
 *
 * @param Custom Font Src
+* @parent Custom Font
 * @desc Specifies the file path for fonts
 * @default fonts/NanumBrush.ttf
-*
-* @param ---
-* @desc
-* @default
 *
 * @help
 * =============================================================================
@@ -347,13 +364,16 @@
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
+* @type number
 * @desc 글꼴의 크기를 정수로 지정하세요
 * 기본 값 : 28
 * @default 28
 *
 * @param 라인 갯수
+* @type number
 * @desc 라인 갯수
 * @default 4
+* @min 1
 *
 * @param 그레디언트 시작 색상
 * @desc 그레디언트 시작 색상
@@ -368,94 +388,121 @@
 * @default #CC3D3D
 *
 * @param 기본 텍스트 출력 속도
+* @type number
 * @desc 기본 값 : 0 프레임
 * @default 0
 *
 * @param 폰트 최소 크기
+* @type number
 * @desc \}로 텍스트 크기를 한 단계 줄일 때 최소 크기를 제한합니다
 * @default 24
 *
 * @param 폰트 최대 크기
+* @type number
 * @desc \{로 텍스트 크기를 한 단계 키울 때 최대 크기를 제한합니다
 * @default 96
 *
 * @param 텍스트 시작 X
+* @type number
 * @desc 큰 페이스칩이 설정되어있을 때 텍스트 시작 좌표를 정수로 기입하세요.
 * @default 256
 *
 * @param 이름 윈도우 X
+* @type number
 * @desc 대화창의 좌표를 기준으로 오프셋 됩니다
 * @default 0
 *
 * @param 이름 윈도우 Y
+* @type number
 * @desc 대화창의 좌표를 기준으로 오프셋 됩니다
 * @default 0
 *
 * @param 이름 윈도우 안쪽 여백
+* @type number
 * @desc 이름 윈도우 안쪽 여백
 * @default 10
 *
 * @param 큰 페이스칩 OX
+* @type number
 * @desc 큰 페이스칩의 오프셋 X
 * @default 0
 *
 * @param 큰 페이스칩 OY
+* @type number
 * @desc 큰 페이스칩의 오프셋 Y
 * @default 0
 *
 * @param 대화창 뒤에 얼굴 표시
+* @type boolean
 * @desc 큰 페이스칩을 메시지창의 뒷면에 표시합니다.
 * 예 - true   아니오 - false
 * @default false
+* @on 대화창 뒤에
+* @off 대화창을 가림
 *
 * @param 탭 크기
+* @type number
 * @desc 탭 크기
 * @default 4
 *
 * @param 배경 그림의 투명도
+* @type number
 * @desc 대화창 배경의 투명도입니다
 * @default 192
+* @min 0
+* @max 255
 *
 * @param 기본 투명도
+* @type number
 * @desc 대화창의 기본적인 투명도 값입니다
 * @default 255
+* @min 0
+* @max 255
 *
 * @param 내용의 투명도
+* @type number
 * @desc 대화창 컨텐츠의 투명도 값입니다
 * @default 255
+* @min 0
+* @max 255
 *
 * @param 반투명도
+* @type number
 * @desc 대화창의 반투명도를 조절합니다.
 * @default 160
+* @min 0
+* @max 255
 *
 * @param 테두리 크기
+* @type number
 * @desc 텍스트의 테두리 크기를 정수로 지정하세요
 * @default 2
+* @min 0
 *
 * @param 테두리 색상
 * @desc 텍스트의 테두리 색상을 웹컬러 규격으로 지정하세요
 * @default rgba(0, 0, 0, 1.0)
 *
-* @param --- 커스텀 폰트
-* @desc
-* @default
+* @param 커스텀 폰트
 *
 * @param 사용자 지정 폰트 사용 여부
+* @parent 커스텀 폰트
+* @type boolean
 * @desc 사용자 지정 폰트를 사용하시겠습니까?
 * 예 - true   아니오 - false
 * @default false
+* @on 사용
+* @off 사용하지 않음
 *
 * @param 사용자 지정 폰트명
+* @parent 커스텀 폰트
 * @desc Font의 이름을 작성하세요
 * @default NanumBrush
 *
 * @param 사용자 지정 폰트 경로
+* @parent 커스텀 폰트
 * @desc 사용자 지정 Font의 경로를 지정하세요
 * @default fonts/NanumBrush.ttf
-*
-* @param ---
-* @desc
-* @default
 *
 * @help
 * =============================================================================

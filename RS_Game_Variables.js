@@ -31,8 +31,8 @@ Imported.RS_Game_Variables = true;
 (function() {
 
   var parameters = PluginManager.parameters('RS_GameVariables');
-  var min = Number(parameters['Min'] || 0);
-  var max = Number(parameters['Max'] || 999);
+  var min = Number(parameters['Min']);
+  var max = Number(parameters['Max']);
 
   /**
    * @method setValue

@@ -4,10 +4,12 @@
  * @author biud436
  *
  * @param Maximum viewport
+ * @type number
  * @desc Sets the number of viewports to display on the screen.
  * @default 4
  *
  * @param Viewport orientation
+ * @type boolean
  * @desc Sets the viewport to portrait orientation.
  * @default true
  *

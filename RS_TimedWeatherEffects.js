@@ -4,10 +4,12 @@
  * @author biud436
  *
  * @param default S Power
+ * @type number
  * @desc
  * @default 0
  *
  * @param default E Power
+ * @type number
  * @desc
  * @default 0
  *

@@ -3,14 +3,17 @@
  * @author biud436
  *
  * @param x
- * @desc x
+ * @type number
+ * @desc Specify the x position for choices window
  * @default 0
  *
  * @param y
- * @desc y
+ * @type number
+ * @desc Specify the y position for choices window
  * @default 0
  *
  * @param Auto Disable
+ * @type boolean
  * @desc
  * @default false
  *

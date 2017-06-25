@@ -10,8 +10,11 @@
  * @type file
  *
  * @param default orientation
+ * @type select
  * @desc landscape, portrait
  * @default landscape
+ * @option landscape
+ * @option portrait
  *
  * @help
  * =============================================================================

@@ -9,9 +9,11 @@
  * @default 16
  *
  * @param Show Player Text
+ * @type boolean
  * @desc Shows player's name on its head
- * (true / false)
  * @default true
+ * @on Can show
+ * @off Can't show
  *
  * @param Boat
  * @desc Changes Boat Name

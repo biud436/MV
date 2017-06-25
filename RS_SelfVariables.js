@@ -4,10 +4,12 @@
  * @author biud436
  *
  * @param Save notifying variable
+ * @type boolean
  * @desc
  * @default false
  *
  * @param notifying variable number
+ * @type variable
  * @desc
  * @default 1
  *

@@ -6,8 +6,11 @@
  * @param zIndex
  * @desc range of the z-index is a number between 0 and 2147483647.
  * @default 1000
+ * @min 0
+ * @max 2147483647
  *
  * @param Show Control Bar
+ * @type boolean
  * @desc Set whether shows a control bar on a video
  * @default true
  *

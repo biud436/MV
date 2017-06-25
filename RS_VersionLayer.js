@@ -7,48 +7,63 @@
  * @default 1.0
  *
  * @param visible
+ * @type boolean
  * @desc set whether the version shows up on the screen
  * @default true
  *
  * @param --- Font
- * @desc
- * @default
  *
  * @param textSize
+ * @parent --- Font
  * @desc Specify a size of the version text
  * @default 14
  *
  * @param textColor
+ * @parent --- Font
  * @desc Specify a color of the version text
  * @default rgb(56, 150, 119)
  *
  * @param outlineColor
+ * @parent --- Font
  * @desc Specify a outline color of the version text
  * @default rgb(255, 255, 255)
  *
  * @param outlineWidth
+ * @parent --- Font
  * @desc Specify a outline width of the version text
  * @default 2
  *
  * @param defaultText
+  * @parent --- Font
  * @desc Specify the prefix in front a text
  * @default Version :
  *
  * @param textAlign
+ * @parent --- Font
+ * @type select
  * @desc Sets up a text align as you want
  * @default right
+ * @option left
+ * @option center
+ * @option right
  *
  * @param opacity
+ * @parent --- Font
+ * @type number
  * @desc Sets up the text opacity
  * @default 255
+ * @min 0
+ * @max 255
  *
  * @param -- Position
- * @desc
- * @default
  *
  * @param Position
+ * @parent -- Position
+ * @type select
  * @desc Specify either 'Bottom' or 'Top' positions.
  * @default Bottom
+ * @option Bottom
+ * @option Top
  *
  * @help
  * -----------------------------------------------------------------------------

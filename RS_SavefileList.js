@@ -4,10 +4,12 @@
  * @author biud436
  *
  * @param Project Title
+ * @type boolean
  * @desc Decide whether the project title is drawing.
  * @default false
  *
  * @param Play Time
+ * @type boolean
  * @desc Decide whether the play time is drawing.
  * @default true
  *
@@ -25,10 +27,12 @@
   * @author biud436
   *
   * @param Project Title
+  * @type boolean
   * @desc 게임 제목을 화면에 그려야 할 지 여부
   * @default false
   *
   * @param Play Time
+  * @type boolean
   * @desc 플레이 시간을 그려야 할 지 여부
   * @default true
   *

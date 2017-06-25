@@ -9,21 +9,61 @@
  * @default English
  *
  * @param Auto
+ * @type boolean
  * @desc Automatically Load through your system language.
  * @default true
+ * @on can load
+ * @off can't load
  *
  * @param Enabled Switch ID
+ * @type switch
  * @desc if its switch value is the same as status called 'ON',
  * you could be able to load a map of being configure for each language.
  * @default 11
  *
  * @param Supported Languages
- * @desc en, ko, br, ja, zn, de
+ * @type select
+ * @desc 
  * @default en
+ * @option English
+ * @value en
+ * @option Korean
+ * @value ko
+ * @option Portuguese
+ * @value pt
+ * @option Portuguese(Brazil)
+ * @value pt_BR
+ * @option Japanese
+ * @value ja
+ * @option Chinese(Simplified)
+ * @value zh
+ * @option Chinese(Taditional)
+ * @value zh_TW
+ * @option German
+ * @value de
+ * @option Russian
+ * @value ru
+ * @option Danish
+ * @value da
+ * @option Italian
+ * @value it
+ * @option French
+ * @value ft
+ * @option Swedish
+ * @value sv
+ * @option Arabic
+ * @value ar
+ * @option Estonian
+ * @value et
+ * @option Turkish
+ * @value tr
  *
  * @param Load Database
+ * @type boolean
  * @desc
  * @default true
+ * @on Can Load
+ * @off Can't Load
  *
  * @help
  * The following command calls Localization-Change-function using the plugin command function.

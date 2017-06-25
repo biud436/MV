@@ -4,18 +4,23 @@
  * @author biud436
  *
  * @param Save File ID
+ * @type number
  * @desc Auto Save
  * @default 1
+ * @min 1
  *
  * @param Show Preview Window
+ * @type boolean
  * @desc Indicate whether or not the preview window is visible.
  * @default false
  *
  * @param Auto Reload
+ * @type boolean
  * @desc Decide whether or not to reload the game.
  * @default true
  *
  * @param Auto closing time
+ * @type number
  * @desc delay (Millisecond)
  * @default 2500
  *

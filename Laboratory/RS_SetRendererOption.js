@@ -4,14 +4,17 @@
  * @author biud436
  *
  * @param transparent
+ * @type boolean
  * @desc If the value is false, no alpha buffer is available.
  * @default false
  *
  * @param antialias
+ * @type boolean
  * @desc If the value is false or the implementation does not support antialiasing, no antialiasing is performed.
  * @default false
  *
  * @param preserveDrawingBuffer
+ * @type boolean
  * @desc See the help
  * @default false
  *
@@ -36,32 +39,6 @@ Imported.RS_SetRendererOption = true;
   var bTransparent = Boolean(parameters['transparent'] === true);
   var bAntialias = Boolean(parameters['antialias'] === true);
   var bPreserveDrawingBuffer = Boolean(parameters['preserveDrawingBuffer'] === true);
-
-  Graphics._createRenderer = function() {
-      PIXI.dontSayHello = true;
-      var width = this._width;
-      var height = this._height;
-      var options = { view: this._canvas,
-                      transparent: bTransparent,
-                      antialias: bAntialias,
-                      preserveDrawingBuffer: bPreserveDrawingBuffer
-                    };
-      try {
-          switch (this._rendererType) {
-          case 'canvas':
-              this._renderer = new PIXI.CanvasRenderer(width, height, options);
-              break;
-          case 'webgl':
-              this._renderer = new PIXI.WebGLRenderer(width, height, options);
-              break;
-          default:
-              this._renderer = PIXI.autoDetectRenderer(width, height, options);
-              break;
-          }
-      } catch (e) {
-          this._renderer = null;
-      }
-  };
 
   Graphics._getShaderVersion = function() {
     if(!this.isWebGL()) return false;
