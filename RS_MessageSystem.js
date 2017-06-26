@@ -182,8 +182,9 @@
 * =============================================================================
 * Large Face Bitmap (Bust Image)
 * =============================================================================
-* Adding prefixes like "Big_" to names is a good way to immediately find out a bitmap for a bust from img/faces folder.
-* So you place the image for a bust in your img/faces folder and then its file name must set up to start with 'Big_'
+* Adding prefixes like "Big_" to names is a good way to immediately find out a
+* bitmap for a bust from img/faces folder. So you place the image for a bust
+* in your img/faces folder and then its file name must set up to start with 'Big_'
 * Always make sure your resources name.
 * =============================================================================
 * Text code list (English)
@@ -212,7 +213,7 @@
 * \align[0] - left
 * \align[1] - center
 * \align[2] - right
-* \num - formatted number
+* \num[x] - formatted number
 * \text_size[x]
 * \tab - the tab size is to 8
 * \carriage_return

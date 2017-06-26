@@ -4,47 +4,59 @@
  * @author biud436
  *
  * @param --- Android ---
- * @desc
- * @default
  *
  * @param android Banner ID
+ * @parent --- Android ---
  * @desc Banner ID
  * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
  *
  * @param android Interstitial Ad ID
+ * @parent --- Android ---
  * @desc Interstitial Ad ID
  * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
  *
  * @param --- IOS ---
- * @desc
- * @default
  *
  * @param ios Banner ID
+ * @parent --- IOS ---
  * @desc Banner ID
  * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
  *
  * @param ios Interstitial Ad ID
+ * @parent --- IOS ---
  * @desc Interstitial Ad ID
  * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
  *
  * @param --- Settings ---
- * @desc
- * @default
  *
  * @param bannerAtTop
+ * @parent --- Settings ---
+ * @type boolean
  * @desc The banner shows up at the top of the screen.
  * true / false
  * @default false
  *
  * @param Testing
+ * @parent --- Settings ---
+ * @type boolean
  * @desc Show up the test ads.
  * true / false
  * @default false
  *
  * @help
+ *
+ * 1. Setup the AdMob:
+ * - You must set up the id of the ads type at the google AdMob setup page.
+ * If its id doesn't exist and invalid, then it doesn't work properly so you must
+ * check it.
+ *
+ * 2. Check whether the internet connects:
+ * - You should also connect the internet while the ads is showing up. if not,
+ * then Ads-View may not seem create it.
+ *
  * =============================================================================
  * Plugin Commands
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * There are four functions here. you can use them. They could be created new Ads
  * and could already be hidden the created Ads.
  *
@@ -52,20 +64,34 @@
  * Banner remove
  * Interstitial show
  * CheckInternet url
- * 
+ *
  * =============================================================================
  * Cordova Plugin URL
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * To use this plugin, you should add intel xdk cordova plugin as follows.
+ *
  * https://github.com/sunnycupertino/cordova-plugin-admob-simple
+ *
+ * if you would like to add required library in the command line interface and
+ * then your cordova version is to 7 or more, You can add the plugin easily by
+ * calling at the command line interface as below command:
+ *
+ *    cordova plugin add cordova-plugin-admob-simple
+ *
+ * if your cordova version is less than 7, You must call as below command in your
+ * command line interface:
+ *
+ *    npm install -g cordova
+ *    cordova plugin add cordova-plugin-admob-simple
+ *
  * =============================================================================
  * Change Log
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * 2016.08.06 (v1.0.0) - First Release
  * 2016.10.05 (v1.0.1) - Added the function that could be checking the internet.
  * =============================================================================
  * Credit
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * Sunny Cupertino
  * Liming Xie
  */
@@ -75,63 +101,85 @@
  * @author biud436
  *
  * @param --- Android ---
- * @desc
- * @default
  *
  * @param android Banner ID
- * @desc 배너 광고 ID
+ * @parent --- Android ---
+ * @desc 배너 광고 ID (반드시 수정하세요)
  * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
  *
  * @param android Interstitial Ad ID
- * @desc 전면 광고 ID
+ * @parent --- Android ---
+ * @desc 전면 광고 ID (반드시 수정하세요)
  * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
  *
  * @param --- IOS ---
- * @desc
- * @default
  *
  * @param ios Banner ID
+ * @parent --- IOS ---
  * @desc 배너 광고 ID
  * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
  *
  * @param ios Interstitial Ad ID
+ * @parent --- IOS ---
  * @desc 전면 광고 ID
  * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
  *
  * @param --- Settings ---
- * @desc
- * @default
  *
  * @param bannerAtTop
+ * @parent --- Settings ---
  * @desc 배너를 상단에 표시합니다.
  * true / false
  * @default false
  *
  * @param Testing
+ * @parent --- Settings ---
  * @desc 테스트 광고를 표시합니다
  * true / false
  * @default false
  *
  * @help
+ * 애드몹 설정 페이지에서 광고 단위를 설정한 후, 유효한 광고 ID 값을 매개변수에 적으시
+ * 기 바랍니다. 인터넷에 연결되어있지 않거나, 광고 값이 틀린 경우 광고가 나오지 않습니다.
+ * 광고 ID 값은 반드시 유효한 상태여야 합니다, 이점 반드시 확인 하시기 바랍니다.
+ *
+ * - 초기 생성 시 인터넷에 연결되어있지 않으면 애드뷰가 생성되지 않는 것 같습니다.
+ * - 광고 ID 값을 반드시 수정하세요, 수정하지 않으면 광고가 표시되지 않습니다.
+ *
  * =============================================================================
  * Plugin Commands
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * 배너광고 표시
  * 배너광고 제거
  * 전면광고 표시
  * 인터넷체크 주소
+ *
  * =============================================================================
  * Cordova Plugin URL
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * https://github.com/sunnycupertino/cordova-plugin-admob-simple
+ *
+ * 코르도바 버전이 7이상이고, CLI 환경에서 빌드한다면, 명령 프롬프트에서 아래 명령어를
+ * 호출하여 플러그인을 추가할 수 있습니다.
+ *
+ *    cordova plugin add cordova-plugin-admob-simple
+ *
+ * 동작하지 않거나 이전 버전이라면,
+ * 'npm install -g cordova'로 최신 버전으로 업데이트 해보시기 바랍니다.
+ * 아니면 다음 명령어를 호출해보세요.
+ *
+ *    cordova plugin add https://github.com/sunnycupertino/cordova-plugin-admob-simple
+ *
+ *
  * =============================================================================
  * Change Log
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * 2016.08.06 (v1.0.0) - First Release.
  * 2016.10.05 (v1.0.1) - 인터넷 접속 체크를 할 수 있는 기능을 추가했습니다.
+ *
  * =============================================================================
  * Credit
- * =============================================================================
+ * -----------------------------------------------------------------------------
  * Sunny Cupertino
  * Liming Xie
  */
