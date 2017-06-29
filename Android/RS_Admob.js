@@ -45,7 +45,7 @@
  *
  * @help
  *
- * 1. Setup the AdMob:
+ * 1. Join and setup the AdMob:
  * - You must set up the id of the ads type at the google AdMob setup page.
  * If its id doesn't exist and invalid, then it doesn't work properly so you must
  * check it.

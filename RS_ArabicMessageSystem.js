@@ -30,7 +30,7 @@
  * @parent Text Animation
  * @type boolean
  * @desc Set whether the text has animated
- * @default true
+ * @default false
  * @on Enable
  * @off Disable
  *
@@ -62,6 +62,9 @@
  * the delay.
  *
  *    DisableArabicTextAnimation
+ *
+ *
+ * Important : An icon drawing is not working properly when using an animation option.
  *
  * =============================================================================
  * Compatibility List
@@ -436,7 +439,11 @@ function ArabicUtils() {
       var index = this.getChildIndex(child);
       var id = index + 1;
       if(this.children[id] !== undefined) {
+        this.cacheAsBitmap = false;
         this.children[id].emit('startTextAnimation');
+      } else {
+        // A code that provides a performance benefit after finished drawing all elements.
+        this.cacheAsBitmap = true;
       }
     }
   };
