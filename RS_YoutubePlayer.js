@@ -57,6 +57,73 @@
  * - Added a plugin parameter about video quality settings.
  * - Added the ability to play YouTube videos from a specified time.
  */
+ /*:ko
+  * RS_YoutubePlayer.js
+  * @plugindesc 유튜브 플레이어 <RS_YoutubePlayer>
+  * @author 러닝은빛(biud436)
+  *
+  * @param Video Quality
+  * @desc 비디오 품질(화질)을 설정하세요
+  * default : hd720
+  * @default hd720
+  * @type select
+  * @option highres
+  * @option hd1080
+  * @option hd720
+  * @option large
+  * @option medium
+  * @option small
+  *
+  * @help
+  * 안드로이드 크롬과 모바이 사파리에서는 자동으로 동영상이 재생되지 않습니다.
+  * 유튜브 플레이어를 종료하려면 동영상 영역 바깥 쪽을 클릭하시면 됩니다
+  * 아니면 동영상이 끝날 때 까지 기다리세요.
+  *
+  * =============================================================================
+  * Plugin Command
+  * =============================================================================
+  * - 인터넷만 연결되어있으면 동영상이 재생됩니다.
+  * (아래 형식의 URL들만 제대로 파싱됩니다)
+  *
+  * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
+  * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
+  * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
+  *
+  * - 유튜브 동영상 재생을 중단합니다.
+  *
+  * YTPlayer stop
+  *
+  * 유튜브 API의 기능이 변경되어 동영상이 재생되지 않는 경우, 아래 메일 또는 아방스나
+  * 인디사이드를 통해 제보를 해주시면 됩니다 (궁금한 점도 질문 가능합니다)
+  *
+  * 이메일 : biud436@gmail.com
+  * 
+  * =============================================================================
+  * 스크립트 호출
+  * =============================================================================
+  * 유튜브 동영상을 스크립트 명령으로 재생하려면 다음을 호출하세요.
+  * Graphics.playYoutube("https://www.youtube.com/watch?v=C4ze-KCSxQY");
+  *
+  * 재생 중인 유튜브 동영상의 상태를 유튜브 API로 확인할 수 있습니다.
+  * 직접 접근하려면 YTPlayer 전역 객체를 사용하세요.
+  *
+  * if(YTPlayer.isPlaying()) YTPlayer.stopVideo();
+  * YTPlayer.isPaused();
+  * YTPlayer.isBuffering();
+  * YTPlayer.isEnded();
+  *
+  * =============================================================================
+  * 버전 로그
+  * =============================================================================
+  * 2016.05.08 (v1.0.0) - First Release
+  * 2016.05.09 (v1.0.1) - Added Error Handler
+  * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL.
+  * 2016.07.04 (v1.0.3) - Fixed a few logic about the range were converted to Rectangular object.
+  * 2016.10.06 (v1.0.4) - Added Canvas Filters.
+  * 2016.12.10 (v1.0.5) :
+  * - Added a plugin parameter about video quality settings.
+  * - Added the ability to play YouTube videos from a specified time.
+  */
 
 var Imported = Imported || {};
 Imported.RS_YoutubePlayer = true;
