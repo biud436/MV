@@ -398,3 +398,17 @@ RS.Math.round = function (x) {
   var self = RS.Math;
   return (self.fract(x) >= 0.5) ? ( (x >> 0) + 1 ) : x >> 0;
 };
+
+/**
+ * 램덤 함수이지만 최대값에서 벗어난 값도 나올 수 있다(박스-뮬러 변환의 basic form)
+ * @method randomNormal
+ * @param {Number} maxValue
+ */
+RS.Math.randomNormal = function (maxValue) {
+  // basic form
+  var r = Math.sqrt(-2 * Math.log(Math.random()));
+  var t = Math.PI * 2 * Math.random();
+  var x = r * Math.cos(t) * maxValue;
+  var y = r * Math.sin(t) * maxValue;
+  return [x, y];
+};
