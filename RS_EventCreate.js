@@ -1,9 +1,13 @@
 /*:
  * RS_EventCreate.js
- * @plugindesc (v1.0.4) It is possible to create or copy or delete an event via the plugin commands.
+ * @plugindesc (v1.0.6) This plugin allows you to create or copy or delete an event
  *
  * @author biud436
  * @since 2015.10.16
+ *
+ * @param Default Event Data
+ * @desc Specify the default event data
+ * @type struct<EventData>
  *
  * @help
  * =============================================================================
@@ -35,7 +39,300 @@
  * 2016.02.24 (v1.0.3) - Fixed a bug that is initialized to the default value when the parameters were set to zero.
  * 2016.10.30 (v1.0.4) - Optimized.
  * 2016.10.30 (v1.0.5) - Optimized.
+ * 2017.07.07 (v1.0.6) :
+ * - Added a feature that changes a default event data.
+ * - Fixed the bug with the image file extension in a creating function.
  */
+
+ /*~struct~EventData:
+  *
+  * @param id
+  * @type number
+  * @desc IDs will be automatically set for each map in the order that they are created.
+  * @min 1
+  * @default 1
+  *
+  * @param name
+  * @desc The name of the map event.
+  * @default
+  *
+  * @param note
+  * @type note
+  * @desc A text area where you can freely enter notes.
+  * @default ""
+  *
+  * @param pages
+  * @type struct<Page>[]
+  * @desc The event page that you want to edit.
+  * @default ["{\"conditions\":\"{\\\"actorId\\\":\\\"1\\\",\\\"actorValid\\\":\\\"false\\\",\\\"itemId\\\":\\\"1\\\",\\\"itemValid\\\":\\\"false\\\",\\\"selfSwitchCh\\\":\\\"A\\\",\\\"selfSwitchValid\\\":\\\"false\\\",\\\"switch1Id\\\":\\\"1\\\",\\\"switch1Valid\\\":\\\"false\\\",\\\"switch2Id\\\":\\\"1\\\",\\\"switch2Valid\\\":\\\"false\\\",\\\"variableId\\\":\\\"1\\\",\\\"variableValid\\\":\\\"false\\\",\\\"variableValue\\\":\\\"0\\\"}\",\"directionFix\":\"false\",\"image\":\"{\\\"tileId\\\":\\\"0\\\",\\\"characterName\\\":\\\"\\\",\\\"direction\\\":\\\"2\\\",\\\"pattern\\\":\\\"1\\\",\\\"characterIndex\\\":\\\"0\\\"}\",\"list\":\"[\\\"{\\\\\\\"code\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"indent\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"parameters\\\\\\\":\\\\\\\"[]\\\\\\\"}\\\"]\",\"moveFrequency\":\"3\",\"moveRoute\":\"{\\\"list\\\":\\\"[\\\\\\\"{\\\\\\\\\\\\\\\"code\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"0\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"parameters\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"[]\\\\\\\\\\\\\\\"}\\\\\\\"]\\\",\\\"repeat\\\":\\\"true\\\",\\\"skippable\\\":\\\"false\\\",\\\"wait\\\":\\\"false\\\"}\",\"moveSpeed\":\"3\",\"moveType\":\"0\",\"priorityType\":\"1\",\"stepAnime\":\"false\",\"through\":\"false\",\"trigger\":\"0\",\"walkAnime\":\"true\"}"]
+  *
+  * @param x
+  * @type number
+  * @desc the x where indicates the map x-position of the event.
+  * @default 0
+  * @min 0
+  *
+  * @param y
+  * @type number
+  * @desc the y where indicates the map y-position of the event.
+  * @default 0
+  * @min 0
+  *
+  */
+
+ /*~struct~Page:
+  *
+  * @param conditions
+  * @type struct<Conditions>
+  * @desc Conditions for the map event to appear on the map based on the settings of this event page.
+  * @default {"actorId":"1","actorValid":"false","itemId":"1","itemValid":"false","selfSwitchCh":"A","selfSwitchValid":"false","switch1Id":"1","switch1Valid":"false","switch2Id":"1","switch2Valid":"false","variableId":"1","variableValid":"false","variableValue":"0"}
+  *
+  * @param directionFix
+  * @type boolean
+  * @desc Prevents the direction that the image is facing from changing while moving.
+  * @default false
+  *
+  * @param image
+  * @type struct<Image>
+  * @desc Images that are displayed when an event occurs on a map (does not affect the game).
+  * @default {"tileId":"0","characterName":"","direction":"2","pattern":"1","characterIndex":"0"}
+  *
+  * @param list
+  * @type struct<List>[]
+  * @default ["{\"code\":\"0\",\"indent\":\"0\",\"parameters\":\"[]\"}"]
+  *
+  * @param moveFrequency
+  * @type select
+  * @desc select the move frequency
+  * @default 3
+  * @option Lowest
+  * @value 1
+  * @option Lower
+  * @value 2
+  * @option Normal
+  * @value 3
+  * @option Higher
+  * @value 4
+  * @option Highest
+  * @value 5
+  *
+  * @param moveRoute
+  * @type struct<MoveRoute>
+  * @default {"list":"[\"{\\\"code\\\":\\\"0\\\",\\\"parameters\\\":\\\"[]\\\"}\"]","repeat":"true","skippable":"false","wait":"false"}
+  *
+  * @param moveSpeed
+  * @type select
+  * @desc select the move speed
+  * @default 3
+  * @option x8 Slower
+  * @value 1
+  * @option x4 Slower
+  * @value 2
+  * @option x2 Slower
+  * @value 3
+  * @option Normal
+  * @value 4
+  * @option x2 Faster
+  * @value 5
+  * @option x4 Faster
+  * @value 6
+  *
+  * @param moveType
+  * @type select
+  * @desc Specifies how the map event will move
+  * @default 0
+  * @option Fixed
+  * @value 0
+  * @option Random
+  * @value 1
+  * @option Approach
+  * @value 2
+  * @option Custom
+  * @value 3
+  *
+  * @param priorityType
+  * @type select
+  * @desc Choose from the below in order to specify the priority of how players and other events are displayed on top of one another.
+  * @default 1
+  * @option Below characters
+  * @value 0
+  * @option Same as characters
+  * @value 1
+  * @option Above characters
+  * @value 2
+  *
+  * @param stepAnime
+  * @type boolean
+  * @desc Displays the stepping animation while the character is stopped.
+  * @default false
+  *
+  * @param through
+  * @type boolean
+  * @desc Allows to pass through terrain and events that cannot be passed through.
+  * @default false
+  *
+  * @param trigger
+  * @type select
+  * @desc Choose the timing for when the processing of the [Contents] of an event that occurs on the map will be.
+  * @default 0
+  * @option Action Button
+  * @value 0
+  * @option Player Touch
+  * @value 1
+  * @option Event Touch
+  * @value 2
+  * @option Autorun
+  * @value 3
+  * @option Parallel
+  * @value 4
+  *
+  * @param walkAnime
+  * @type boolean
+  * @desc Displays animation when moving.
+  * @default true
+  *
+  */
+
+/*~struct~Conditions:
+ * @param actorId
+ * @type actor
+ * @default 1
+ *
+ * @param actorValid
+ * @type boolean
+ * @default false
+ *
+ * @param itemId
+ * @type item
+ * @default 1
+ *
+ * @param itemValid
+ * @type boolean
+ * @default false
+ *
+ * @param selfSwitchCh
+ * @type select
+ * @default A
+ * @option A
+ * @option B
+ * @option C
+ * @option D
+ *
+ * @param selfSwitchValid
+ * @type boolean
+ * @default false
+ *
+ * @param switch1Id
+ * @type switch
+ * @default 1
+ *
+ * @param switch1Valid
+ * @type boolean
+ * @default false
+ *
+ * @param switch2Id
+ * @type switch
+ * @default 1
+ *
+ * @param switch2Valid
+ * @type boolean
+ * @default false
+ *
+ * @param variableId
+ * @type variable
+ * @default 1
+ *
+ * @param variableValid
+ * @type boolean
+ * @default false
+ *
+ * @param variableValue
+ * @type number
+ * @default 0
+ *
+ */
+
+/*~struct~Image:
+ *
+ * @param tileId
+ * @type number
+ * @default 0
+ *
+ * @param characterName
+ * @type file
+ * @dir img/characters/
+ * @default
+ *
+ * @param direction
+ * @type select
+ * @default 2
+ * @option Up
+ * @value 8
+ * @option Down
+ * @value 2
+ * @option Left
+ * @value 4
+ * @option Right
+ * @value 6
+ *
+ * @param pattern
+ * @type number
+ * @default 1
+ * @min 0
+ * @max 3
+ *
+ * @param characterIndex
+ * @type number
+ * @default 0
+ * @min 0
+ * @max 7
+ *
+ */
+
+/*~struct~List:
+ * @param code
+ * @type number
+ * @default 0
+ *
+ * @param indent
+ * @type number
+ * @default 0
+ *
+ * @param parameters
+ * @type string[]
+ * @default []
+ *
+ */
+
+ /*~struct~MoveRoute:
+  * @param list
+  * @type struct<MoveRouteList>[]
+  * @default ["{\"code\":\"0\",\"parameters\":\"[]\"}"]
+  *
+  * @param repeat
+  * @type boolean
+  * @default true
+  *
+  * @param skippable
+  * @type boolean
+  * @default false
+  *
+  * @param wait
+  * @type boolean
+  * @default false
+  *
+  */
+
+ /*~struct~MoveRouteList:
+  * @param code
+  * @type number
+  * @default 0
+  *
+  * @param parameters
+  * @type string[]
+  * @default []
+  *
+  */
 
 var Imported = Imported || {};
 Imported.RS_EventCreate = true;
@@ -46,6 +343,7 @@ RS.Event = RS.Event || {};
 (function($) {
 
   var defaultFolder = "data/Map";
+  var parameters = PluginManager.parameters('RS_EventCreate');
 
   //============================================================================
   // Array
@@ -77,21 +375,68 @@ RS.Event = RS.Event || {};
   // RS.Event
   //============================================================================
 
+  $.makeEventId = function () {
+    return $gameMap.events().length + 1;
+  };
+
+  $.makeEventName = function (eventID) {
+    return "EV" + String(eventID).padZero(3);
+  };
+
+  $.jsonParse = function (str) {
+    var retData = JSON.parse(str, function (k, v) {
+      try { return $.jsonParse(v); } catch (e) { return v; }
+    });
+    return retData;
+  };
+
+  $.makeEventData = function (x, y, charName, charIdx, eventID, eventName) {
+    var defaultEventData = $.jsonParse(parameters["Default Event Data"]);
+    defaultEventData.id = eventID;
+    defaultEventData.name = eventName;
+    defaultEventData.x = x;
+    defaultEventData.y = y;
+    defaultEventData.pages[0].image.characterName = charName;
+    defaultEventData.pages[0].image.characterIndex = charIdx;
+    defaultEventData.pages[0].list = [];
+    defaultEventData.pages[0].list.push({
+      "code": 101,
+      "indent": 0,
+      "parameters": [charName, charIdx, 0, 2]
+    });
+    defaultEventData.pages[0].list.push({
+      "code": 401,
+      "indent": 0,
+      "parameters": ["\\c[4]-TEST-\\c[0]"]
+    });
+    defaultEventData.pages[0].list.push({
+      "code": 401,
+      "indent": 0,
+      "parameters": ["TEST"]
+    });
+    defaultEventData.pages[0].list.push({
+      "code": 0,
+      "indent": 0,
+      "parameters": []
+    });
+    return defaultEventData;
+  };
+
+  $.applyEventOnMap = function (ev) {
+    if(ev && ev.id) {
+      $dataMap.events[ev.id] = ev;
+    }
+  };
+
   $.instanceCreate = function(x, y, charName, charIdx) {
+    var eventID = $.makeEventId();
+    var eventName = $.makeEventName(eventID);
+    var newEvent = $.makeEventData(x, y, charName, charIdx, eventID, eventName);
 
-    // Set up the event Id.
-    var eventID = $gameMap.events().length + 1;
+    $.applyEventOnMap(newEvent);
 
-    // Set up the event name.
-    var eventName = "EV" + String(eventID).padZero(3);
+    return $.instanceCopy(x, y, $gameMap.mapId(), eventID, newEvent);
 
-    // Set up the custom event data.
-    var event = { "id": eventID, "name": eventName, "note": "", "pages": [{ "conditions": { "actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": false, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0 }, "directionFix": false, "image": { "tileId": 0, "characterName": charName, "direction": 2, "pattern": 1, "characterIndex": charIdx }, "list": [{ "code": 101, "indent": 0, "parameters": [charName, charIdx, 0, 2] }, { "code": 401, "indent": 0, "parameters": ["\\c[4]-TEST-\\c[0]"] }, { "code": 401, "indent": 0, "parameters": ["TEST"] }, { "code": 0, "indent": 0, "parameters": [] }], "moveFrequency": 3, "moveRoute": { "list": [{ "code": 0, "parameters": [] }], "repeat": true, "skippable": false, "wait": false }, "moveSpeed": 3, "moveType": 0, "priorityType": 1, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true }], "x": x, "y": y };
-
-    // Add a new event to the event elements of current map.
-    $dataMap.events[event.id] = event;
-
-    return $.instanceCopy(x, y, $gameMap.mapId(), eventID, event);
   };
 
   $.instanceCopy = function(x, y, mapID, eventID ) {
@@ -104,7 +449,7 @@ RS.Event = RS.Event || {};
       var eventData = new Game_Event(mapID || $gameMap.mapId(), eventID || 1);
 
       // Set up the position of the event itself.
-      eventData.setPosition(x, y);
+      eventData.locate(x, y);
 
       // Check whether the fourth argument is used.
       if(arguments[4]) eventData.setCustomData(arguments[4]);
@@ -133,15 +478,15 @@ RS.Event = RS.Event || {};
   $.getMapData = function(x, y, mapID, eventID) {
       var self = this;
       var xhr = new XMLHttpRequest();
-      var url = defaultFolder + mapID.padZero(3) + ".json";
+      var url = $.getParentFolder() + defaultFolder + mapID.padZero(3) + ".json";
       xhr.open('GET', url);
       xhr.overrideMimeType('application/json');
       xhr.onload = function() {
           if (xhr.status < 400) {
               var item = JSON.parse(xhr.responseText);
               var event = item.events[eventID];
-              event.id = $gameMap.events().length + 1;
-              $dataMap.events[event.id] = event;
+              event.id = $.makeEventId();
+              $.applyEventOnMap(event);
               self.instanceCopy(x, y, $gameMap.mapId(), event.id).setCustomData(event);
           }
       }
@@ -151,10 +496,24 @@ RS.Event = RS.Event || {};
     xhr.send(null);
   };
 
+  $.getParentFolder = function (url2) {
+    url2 = url2 || location.href;
+    var i = 0;
+    var ret = '';
+    while(url2[i] !== undefined) {
+     i++;
+    }
+    while(url2[i] !== '/') {
+     i--;
+    }
+    ret = url2.slice(0, i).concat('/');
+    return ret;
+  };
+
   $.checkCharacterImage = function(imageName, func) {
       var self = this;
       var xhr = new XMLHttpRequest();
-      var url = '/img/characters/' + imageName;
+      var url = $.getParentFolder() + 'img/characters/' + imageName + '.png';
       xhr.open('GET', url);
       xhr.overrideMimeType('application/json');
       xhr.onload = function() {

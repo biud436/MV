@@ -2,8 +2,13 @@
  * @plugindesc Message Align
  * @author biud436
  * @help
+ * =============================================================================
+ * Usage
+ * -----------------------------------------------------------------------------
+ * To be able to use this stuff, It must require a YEP_MessageCore plugin.
  *
- * This plugin should require YEP_MessageCore.
+ * All text codes process before drawn the text.
+ * For each line you can set a different text alignment.
  *
  * \TA[0] - LEFT
  * \TA[1] - CENTER
