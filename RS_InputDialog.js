@@ -4,12 +4,18 @@
  * @author biud436
  *
  * @param textBox Width
+ * @type number
  * @desc Sets the width of Text Box.
  * @default 488
+ * @decimals 0
+ * @min 28
  *
  * @param textBox Height
+ * @type number
  * @desc Sets the height of Text Box.
  * @default 36
+ * @decimals 0
+ * @min 8
  *
  * @param variable ID
  * @type variable

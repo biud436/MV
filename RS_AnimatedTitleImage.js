@@ -4,81 +4,12 @@
  * @author biud436
  * @date 2015.11.09
  *
- * @param Title Image 1
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default Book
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 2
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default Castle
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 3
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default CrossedSwords
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 4
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default Crystal
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 5
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default DemonCastle
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 6
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 7
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 8
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 9
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Title Image 10
- * @desc Specifies to import file in the path from img/titles1 folder.
- * @default
- * @require 1
- * @dir img/titles1/
- * @type file
- *
- * @param Time Intervals
- * @desc redraw the title screen image at specific time intervals.
- * @default 2
+ * @param Title Image
+ * @type struct<TitleImage>[]
+ * @default ["{\"Image\":\"Book\",\"Time\":\"2.0\"}","{\"Image\":\"Night\",\"Time\":\"1.5\"}","{\"Image\":\"Sword\",\"Time\":\"1.2\"}","{\"Image\":\"Tower2\",\"Time\":\"3.4\"}"]
  *
  * @param Preload
+ * @type boolean
  * @desc Decides whether it will be preloading title images.
  * @default true
  *
@@ -94,61 +25,88 @@
  * - Fixed the bug that occurs when the main program lost focus.
  * 2017.06.08 (v1.0.3) :
  * - Fixed the bug that is not working in RMMV 1.5.0
+ * 2017.07.09 (v1.0.4) :
+ * - Added the feature that can add the title images dynamically via newly plugin manager features.
+ */
+
+/*~struct~TitleImage:
+*
+* @param Image
+* @desc Specifies to import file in the path from img/titles1 folder.
+* @default
+* @require 1
+* @dir img/titles1/
+* @type file
+*
+* @param Time
+* @type number
+* @decimals 1
+* @desc redraw the title screen image at specific time intervals.
+* @default 2.0
+* @min 1.0
+*
  */
 
 var Imported = Imported || {};
 var RS = RS || {};
+RS.Utils = RS.Utils || {};
 RS.AnimatedTitleImage = RS.AnimatedTitleImage || {};
 Imported.AnimatedTitleImage = true;
 
 (function() {
 
   var parameters = PluginManager.parameters('RS_AnimatedTitleImage');
+
   RS.AnimatedTitleImage.Params = RS.AnimatedTitleImage.Params || {};
   RS.AnimatedTitleImage.Params.isPreload = Boolean(parameters['Preload'] === 'true');
   RS.AnimatedTitleImage.Params.images = [];
-  RS.AnimatedTitleImage.Params.iTimeIntervals = Number(parameters['Time Intervals'] || 2);
 
-  Object.keys(parameters).forEach(function(e,i,a) {
-    if(e.indexOf('Title Image') != -1) {
-      RS.AnimatedTitleImage.Params.images.push(parameters[e]);
-    }
-  }, this);
+  RS.Utils.jsonParse = function (str) {
+    var retData = JSON.parse(str, function (k, v) {
+      try { return RS.Utils.jsonParse(v); } catch (e) { return v; }
+    });
+    return retData;
+  };
+
+  var data = RS.Utils.jsonParse(parameters['Title Image']);
+  data.forEach(function (e, i, a) {
+    RS.AnimatedTitleImage.Params.images.push(e);
+  });
 
   var alias_Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
   Scene_Boot.prototype.loadSystemImages = function() {
     alias_Scene_Boot_loadSystemImages.call(this);
     if(!RS.AnimatedTitleImage.Params.isPreload) return;
     RS.AnimatedTitleImage.Params.images.forEach(function(i) {
-      ImageManager.loadTitle1(i);
+      ImageManager.loadTitle1(i['Image']);
     }, this);
   };
 
   var alias_Scene_Title_create = Scene_Title.prototype.create;
   Scene_Title.prototype.create = function () {
     alias_Scene_Title_create.call(this);
-    this._titleFile = RS.AnimatedTitleImage.Params.images.filter(function (e) {
-      return !!e;
-    }, this);
-    this._nSavingTime = Date.now();
-    this._nTitleTime = RS.AnimatedTitleImage.Params.iTimeIntervals;
+    this._spriteIndex = 0;
+    PIXI.ticker.shared.add(this.chooseIndex, this);
+    PIXI.ticker.shared.stop();
+    PIXI.ticker.shared.start();
+    this._nSavingTime = performance.now();
   };
 
-  var alias_Scene_Title_update = Scene_Title.prototype.update;
-  Scene_Title.prototype.update = function() {
-    alias_Scene_Title_update.call(this);
-    this.chooseIndex();
-  };
-
-  Scene_Title.prototype.isRefresh = function () {
-    return Date.now() - this._nSavingTime >= Math.floor(this._nTitleTime * 1000);
+  var alias_Scene_Title_terminate = Scene_Title.prototype.terminate;
+  Scene_Title.prototype.terminate = function () {
+    alias_Scene_Title_terminate.call(this);
+    PIXI.ticker.shared.remove(this.chooseIndex, this);
   };
 
   Scene_Title.prototype.chooseIndex = function() {
-    if( this.isRefresh() ) {
-        this._spriteIndex = (this._nSavingTime % this._titleFile.length) || 0;
-        this._backSprite1.bitmap = ImageManager.loadTitle1(this._titleFile[this._spriteIndex]);
-        this._nSavingTime = Date.now();
+    var collections = RS.AnimatedTitleImage.Params.images;
+    var data = collections[this._spriteIndex];
+    var next = (parseFloat(data['Time']) || 1) * 1000;
+    var lastTime = PIXI.ticker.shared.lastTime;
+    if( data && lastTime - this._nSavingTime >= next) {
+      this._backSprite1.bitmap = ImageManager.loadTitle1(data['Image']);
+      this._nSavingTime = lastTime;
+      this._spriteIndex = Math.floor(this._nSavingTime) % collections.length;
     }
   };
 

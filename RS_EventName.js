@@ -5,8 +5,11 @@
  * @author biud436
  *
  * @param text Size
+ * @type number
  * @desc Changes a text size
  * @default 16
+ * @min 4
+ * @decimals 0
  *
  * @param Show Player Text
  * @type boolean

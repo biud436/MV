@@ -3,17 +3,22 @@
  * @author biud436
  *
  * @param Message Mode
+ * @type select
  * @desc this parameter sets up the text direction.
  * default : arabic
  * @default arabic
+ * @option Arabic Mode
+ * @value arabic
+ * @option Normal Mode
+ * @value normal
  *
  * @param Arabic Font
- * @desc
+ * @desc Choose your font that can indicate Arabic text from your system font folder.
  * @default Simplified Arabic, Times New Roman, Segoe UI
  *
  * @param Font Size
  * @type number
- * @desc Specifies the text size as integer type.
+ * @desc Specifies up the text size as integer type.
  * (default : 28)
  * @default 28
  *
@@ -22,14 +27,15 @@
  * @param Text Wait Time
  * @parent Text
  * @type number
- * @desc Specify the wait time for Arabic texts
+ * @desc Specify up the wait time for Arabic texts
  * (1000 Millisecond = 1 Sec)
  * @default 10
  *
  * @param Animated Text
  * @parent Text Animation
  * @type boolean
- * @desc Set whether the text has animated
+ * @desc Set whether the text has animated.
+ * (Important : The performance may be lower in the mobile)
  * @default false
  * @on Enable
  * @off Disable
