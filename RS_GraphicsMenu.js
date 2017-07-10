@@ -15,7 +15,7 @@ Imported.RS_GraphicsMenu = true;
  * @type file
  * @dir img/pictures/
  * @require 1
- * @desc 사용 할 메뉴 이미지를 선택하세요
+ * @desc Select the menu image to used
  * @default inter
  *
  * @param Starting Position
@@ -23,27 +23,27 @@ Imported.RS_GraphicsMenu = true;
  * @param Start X
  * @parent Starting Position
  * @type string
- * @desc 메뉴 이미지의 시작 위치 X 값을 설정하세요
+ * @desc Set up the starting x-position of the menu panel
  * @default Graphics.boxWidth / 2 - ((W * 5) / 2)
  *
  * @param Start Y
  * @parent Starting Position
  * @type string
- * @desc 메뉴 이미지의 시작 위치 Y 값을 설정하세요
+ * @desc Set up the starting y-position of the menu panel
  * @default Graphics.boxHeight / 2 - H / 2
  *
  * @param Rect
  *
  * @param W
  * @type number
- * @desc 버튼의 크기를 픽셀 단위로 설정하세요.
+ * @desc Setup the button size as pixel unit.
  * (Include the macro string called 'W' and then it replaces as a real value.)
  * @default 78
  * @min 1
  *
  * @param H
  * @type number
- * @desc 버튼의 크기를 픽셀 단위로 설정하세요.
+ * @desc Setup the button size as pixel unit.
  * (Include the macro string called 'H' and then it replaces as a real value.)
  * @default 78
  * @min 1
@@ -51,19 +51,20 @@ Imported.RS_GraphicsMenu = true;
  * @param Menu Rect
  * @parent Rect
  * @type struct<MenuRect>[]
- * @desc 메뉴 영역을 설정하세요
+ * @desc Specify the menu rect structs
  * @default ["{\"x\":\"0\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"78\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"156\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"234\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"312\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}"]
  *
  * @param Menu Index
  * @type string[]
- * @desc Scene 함수(클래스)의 이름를 정확하게 입력하세요
+ * @desc Specify the name of Scene constructor.
  * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
  *
  * @help
+ *
  * =============================================================================
  * Version Log
  * -----------------------------------------------------------------------------
- * 2017.07.10 (v0.0.1) - 테스트 중
+ * 2017.07.10 (v0.0.1) - Testing
  */
 
 /*~struct~MenuRect:
@@ -71,24 +72,25 @@ Imported.RS_GraphicsMenu = true;
  * @param x
  * @type number
  * @decimals 0
- * @desc X좌표를 입력하세요
+ * @desc Specify the x-position of the button in the menu panel
  * @default 0
  * @min 0
  *
  * @param y
  * @type number[]
- * @desc 첫 번 째 인덱스에는 'Y좌표', 두 번 째 인덱스에는 버튼이 눌렸을 때의 Y좌표
+ * @desc Note that each elements indicate a y-position inside the sprite sheet.
+ * if an element index is to 1(starts with 0), it will appear the graphics when mouse over.
  * @default ["0","78"]
  *
  * @param width
  * @type number
- * @desc 버튼의 폭
+ * @desc A button width inside a sprite sheet.
  * @default 78
  * @min 1
  *
  * @param height
  * @type number
- * @desc 버튼의 높이
+ * @desc A button height inside a sprite sheet.
  * @default 78
  * @min 1
  *
@@ -125,14 +127,12 @@ Imported.RS_GraphicsMenu = true;
   * @param W
   * @type number
   * @desc 버튼의 크기를 픽셀 단위로 설정하세요.
-  * (Include the macro string called 'W' and then it replaces as a real value.)
   * @default 78
   * @min 1
   *
   * @param H
   * @type number
   * @desc 버튼의 크기를 픽셀 단위로 설정하세요.
-  * (Include the macro string called 'H' and then it replaces as a real value.)
   * @default 78
   * @min 1
   *
