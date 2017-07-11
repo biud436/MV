@@ -8,7 +8,7 @@ Imported.RS_GraphicsMenu = true;
 
 /*:
  *
- * @plugindesc <RS_GraphicsMenu>
+ * @plugindesc This plugin allows you to indicate the menu as an image <RS_GraphicsMenu>
  * @author biud436
  *
  * @param Menu Image
@@ -16,7 +16,7 @@ Imported.RS_GraphicsMenu = true;
  * @dir img/pictures/
  * @require 1
  * @desc Select the menu image to used
- * @default inter
+ * @default inter_alpha
  *
  * @param Starting Position
  *
@@ -60,11 +60,18 @@ Imported.RS_GraphicsMenu = true;
  * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
  *
  * @help
+ * =============================================================================
+ * Credits (Image)
+ * -----------------------------------------------------------------------------
+ * The author of the included resources is as follows (a menu image) :
+ * (Terms of Use : It is completely free)
+ *
+ *  numg94 - http://blog.naver.com/numg94
  *
  * =============================================================================
  * Version Log
  * -----------------------------------------------------------------------------
- * 2017.07.10 (v0.0.1) - Testing
+ * 2017.07.11 (v1.0.0) - First Release
  */
 
 /*~struct~MenuRect:
@@ -98,7 +105,7 @@ Imported.RS_GraphicsMenu = true;
 
  /*:ko
   *
-  * @plugindesc <RS_GraphicsMenu>
+  * @plugindesc 이 플러그인은 메뉴를 그래픽으로 표시합니다<RS_GraphicsMenu>
   * @author biud436
   *
   * @param Menu Image
@@ -149,9 +156,16 @@ Imported.RS_GraphicsMenu = true;
   *
   * @help
   * =============================================================================
+  * 크레딧 (이미지)
+  * -----------------------------------------------------------------------------
+  * 포함된 리소스의 원작자는 다음과 같습니다 (메뉴 이미지) :
+  *
+  *  numg94 - http://blog.naver.com/numg94
+  *
+  * =============================================================================
   * Version Log
   * -----------------------------------------------------------------------------
-  * 2017.07.10 (v0.0.1) - 테스트 중
+  * 2017.07.11 (v1.0.0) - 공개
   */
 
  /*~struct~MenuRect:ko
@@ -186,11 +200,6 @@ var RS = RS || {};
 RS.GraphicsMenu = RS.GraphicsMenu || {};
 RS.GraphicsMenu.Params = RS.GraphicsMenu.Params || {};
 RS.Utils = RS.Utils || {};
-
-function Sprite_MenuCommand() {
-  this.initialize.apply(this, arguments);
-};
-
 
 (function () {
 
@@ -276,6 +285,7 @@ function Sprite_MenuCommand() {
 
   Scene_LinearMenu.prototype.create = function () {
     Scene_MenuBase.prototype.create.call(this);
+    this._touched = false;
     this.createImage();
   };
 
@@ -330,28 +340,34 @@ function Sprite_MenuCommand() {
 
   Scene_LinearMenu.prototype.isSelectedInTouchInput = function () {
 
-    // 버튼의 크기
+    var menu = RS.GraphicsMenu.Params.MENU;
+    if(!menu) return;
+
     var W = parseInt(parameters['W']);
     var H = parseInt(parameters['H']);
-
-    // 시작 위치
     var x = RS.GraphicsMenu.Params.startX;
     var y = RS.GraphicsMenu.Params.startY;
-
-    // 전체 메뉴 패널의 크기
-    var width = Math.floor(W * 5);
+    var width = Math.floor(W * menu.length);
     var height = H;
-
-    // 마우스 좌표
-    var mx = $gameSystem.menuMouseX;
-    var my = $gameSystem.menuMouseY;
+    var mx = $gameSystem.menuMouseX || 0;
+    var my = $gameSystem.menuMouseY || 0;
 
     // 인덱스 값 : (마우스 좌표 - 메뉴 시작 위치) / 메뉴의 폭
     var index = Math.floor( (mx - x) / W );
+    var previousIndex = Scene_LinearMenu.INDEX;
 
+    // 범위 내에 있는 지 확인
     if(mx > x && my > y && mx < (x + width) && my < (y + height)) {
-      Scene_LinearMenu.INDEX = index.clamp(0, 4);
+      Scene_LinearMenu.INDEX = index.clamp(0, menu.length - 1);
       if(TouchInput.isTriggered()) this.selectScene();
+    }
+
+    // 커서 사운드 재생
+    if(previousIndex !== Scene_LinearMenu.INDEX && !this._touched) {
+      SoundManager.playCursor();
+      this._touched = true;
+    } else {
+      this._touched = false;
     }
 
   };
@@ -360,6 +376,7 @@ function Sprite_MenuCommand() {
     var sceneObject = RS.GraphicsMenu.Params.MENU[Scene_LinearMenu.INDEX];
     if(typeof window[sceneObject] === 'function') {
       // push : 현재 메뉴 씬을 메뉴 스택에 누적
+      this._touched = false;
       SceneManager.push(window[sceneObject]);
       SoundManager.playOk();
     }
@@ -368,6 +385,7 @@ function Sprite_MenuCommand() {
   Scene_LinearMenu.prototype.processExit = function () {
     if(Scene_Map.prototype.isMenuCalled.call(this)) {
       // goto : 메뉴 스택에 누적하지 않고 씬 오브젝트 생성
+      this._touched = false;
       SceneManager.goto(Scene_Map);
       SoundManager.playCancel();
     }
@@ -375,7 +393,7 @@ function Sprite_MenuCommand() {
 
   Scene_LinearMenu.prototype.loadBitmap = function (x, y, w, h, index) {
     // 드로우 콜을 줄이기 위해 하나의 이미지만 사용
-    var sprite = new Sprite(ImageManager.loadPicture(parameters['Menu Image']), index);
+    var sprite = new Sprite(ImageManager.loadPicture(parameters['Menu Image']));
     var H = parseInt(parameters['H']);
     sprite.setFrame(x, y, w, h);
     this.addChild(sprite);
