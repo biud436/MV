@@ -24,7 +24,7 @@ Imported.RS_GraphicsMenu = true;
  * @parent Starting Position
  * @type string
  * @desc Set up the starting x-position of the menu panel
- * @default Graphics.boxWidth / 2 - ((W * 5) / 2)
+ * @default Graphics.boxWidth / 2 - ((W * RECT.length) / 2)
  *
  * @param Start Y
  * @parent Starting Position
@@ -61,10 +61,32 @@ Imported.RS_GraphicsMenu = true;
  *
  * @help
  * =============================================================================
+ * Usage
+ * -----------------------------------------------------------------------------
+ *
+ * - Menu Index, A Button size and struct<MenuRect>
+ * First up, You specify the name of certain Scene constructor using plugin parameter,
+ * then have to set up a bound of the button to fit a sprite sheet image.
+ *
+ * The width and height values of the default button are 78 pixel and they have
+ * been set in plugin parameters called 'W' and 'H'.
+ *
+ * Note that these values should also be the same as the width and height value
+ * used in a struct<MenuRect>.
+ *
+ * - Starting position of the menu panel
+ * The starting position will set to fit in the center of the screen. The default
+ * values are as follows:
+ *
+ *  RS.GraphicsMenu.Params.startX = Graphics.boxWidth / 2 - ((W * menu.length) / 2)
+ *  RS.GraphicsMenu.Params.startY = Graphics.boxHeight / 2 - H / 2
+ *
+ * 'W' and 'H" is predefined button size values based on plugin parameters.
+ *
+ * =============================================================================
  * Credits (Image)
  * -----------------------------------------------------------------------------
  * The author of the included resources is as follows (a menu image) :
- * (Terms of Use : It is completely free)
  *
  *  numg94 - http://blog.naver.com/numg94
  *
@@ -121,7 +143,7 @@ Imported.RS_GraphicsMenu = true;
   * @parent Starting Position
   * @type string
   * @desc 메뉴 이미지의 시작 위치 X 값을 설정하세요
-  * @default Graphics.boxWidth / 2 - ((W * 5) / 2)
+  * @default Graphics.boxWidth / 2 - ((W * RECT.length) / 2)
   *
   * @param Start Y
   * @parent Starting Position
