@@ -287,8 +287,10 @@ RS.Utils = RS.Utils || {};
     // 일반 마우스 좌표는 업데이트를 하지 않으므로 호환성을 위해 그대로 두었습니다
     var x = Graphics.pageToCanvasX(event.pageX);
     var y = Graphics.pageToCanvasY(event.pageY);
-    $gameSystem.menuMouseX = x;
-    $gameSystem.menuMouseY = y;
+    if($gameSystem) {
+      $gameSystem.menuMouseX = x;
+      $gameSystem.menuMouseY = y;
+    }
   };
 
   //============================================================================
