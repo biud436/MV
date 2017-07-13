@@ -123,10 +123,12 @@
  * - Fixed to appear the text slowly at the right to left.
  * - Added plugin commands for animating text.
  * - Fixed an incorrect text padding in command button.
+ * 2017.07.13 (v1.2.2) :
+ * - When painting the normal text without processing a text code, Fixed an issue that is incorrectly displayed a non-character word : !, @, #, $, dot
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.2.1';
+Imported.RS_ArabicMessageSystem = '1.2.2';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -237,7 +239,18 @@ function ArabicUtils() {
 
   //============================================================================
   // Bitmap
-    //============================================================================
+  //============================================================================
+
+  var alias_Bitmap_drawText = Bitmap.prototype.drawText;
+  Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
+    var isArabic = ArabicUtils.isArabic(text);
+    if(isArabic) {
+      var retText = ArabicUtils.makeText(text);
+      alias_Bitmap_drawText.call(this, retText, x, y, maxWidth, lineHeight, align);
+    } else {
+      alias_Bitmap_drawText.call(this, text, x, y, maxWidth, lineHeight, align);
+    }
+  };
 
   Bitmap.prototype.RTLblt = function(source, sx, sy, sw, sh, dx, dy, dw, dh) {
       dw = dw || sw;
