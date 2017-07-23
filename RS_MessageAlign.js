@@ -22,6 +22,7 @@
  * -----------------------------------------------------------------------------
  * 2017.01.25 (v1.00) - First Release
  * 2017.06.25 (v1.01) - Fixed an issue that resets a font setting at each line
+ * 2017.07.23 (v1.02) - Fixed a bug that the alignment is not processing in a newly line
  */
 
 
@@ -37,15 +38,16 @@
    var alias_Game_Message_clear = Game_Message.prototype.clear;
    Game_Message.prototype.clear = function() {
      alias_Game_Message_clear.call(this);
-     this._align = 0;
+     this._align = [];
    };
 
    Game_Message.prototype.setAlign = function(n) {
-     this._align = n;
+     this._align = this._align || [];
+     this._align.push(n);
    };
 
    Game_Message.prototype.getAlign = function(n) {
-     return this._align;
+     return this._align.shift() || 0;
    };
 
    //============================================================================
@@ -62,26 +64,36 @@
      return text;
    };
 
-   Window_Base.prototype.processAlign = function() {
+   Window_Base.prototype.processAlign = function(textState) {
+     textState = textState || this._textState;
      switch($gameMessage.getAlign()) {
        case 1:
-         this.setAlignCenter(this._textState);
+         this.setAlignCenter(textState);
          break;
        case 2:
-         this.setAlignRight(this._textState);
+         this.setAlignRight(textState);
          break;
+       default:
+         this.setAlignLeft(textState);
      }
    }
 
    var alias_Window_Base_processNewLine = Window_Base.prototype.processNewLine;
    Window_Base.prototype.processNewLine = function(textState) {
      alias_Window_Base_processNewLine.call(this, textState);
-     this.processAlign();
+     this.processAlign(textState);
    };
 
    Window_Base.prototype.calcTextWidth = function(text) {
      var tempText = text; tempText = tempText.split(/[\n]+/);
      return this.textWidthExCheck(tempText[0]);
+   };
+
+   Window_Base.prototype.setAlignLeft = function(textState) {
+     var padding = this.textPadding();
+     textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
+     textState.x = ( this.newLineX() + padding * 2 );
+     textState.left = textState.x;
    };
 
    Window_Base.prototype.setAlignCenter = function(textState) {
