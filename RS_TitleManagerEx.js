@@ -175,7 +175,7 @@ Imported.RS_TitleManagerEx = true;
  *
  * This plugin command allows you to initialize the Ending :
  *
- *    Ending removeAll
+ *    Ending RemoveAll
  *
  * =============================================================================
  * Useful Scripts
@@ -203,6 +203,7 @@ Imported.RS_TitleManagerEx = true;
  * 2015.12.22 (v1.0.2) - Fixed a bug about the web local storage.
  * 2016.03.07 (v1.0.3) - Fixed a bug that causes a serious problem when the parameters were set to English.
  * 2017.06.09 (v1.0.4) - Fixed the parameter not to remove the resource when deploying the game.
+ * 2017.07.23 (v1.0.5) - Fixed the incorrect description
  */
 
 var RS = RS || {};
@@ -505,13 +506,13 @@ RS.TitleManagerEx = RS.TitleManagerEx || {};
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     alias_pluginCommand.call(this, command, args);
     if(command === "Ending" || command === "엔딩") {
-      switch (args[0]) {
-        case 'Setup':
+      switch (args[0].toLowerCase()) {
+        case 'setup':
         case '설정':
           DataManager.saveToEnding(args[1]);
           break;
         case '초기화':
-        case 'RemoveAll':
+        case 'removeall':
           DataManager.removeEnding();
           break;
       }
