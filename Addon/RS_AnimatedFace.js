@@ -26,7 +26,7 @@
  * @default 200
  *
  * @param speed
- * @type number 
+ * @type number
  * @desc
  * @default 0.1
  * @decimals 1
@@ -116,18 +116,18 @@ Imported.RS_AnimatedFace = true;
 
   Window_Message.prototype.drawBigFace = function(faceName) {
 
-      this._newContents.bitmap = ImageManager.loadFace(faceName);
+      this._faceContents.bitmap = ImageManager.loadFace(faceName);
 
-      this._newContents.y = eval(destYString);
+      this._faceContents.y = eval(destYString);
 
       if($gameMessage.faceIndex() > 0) {
-          this._newContents.x = eval(destXRightString) - power;
+          this._faceContents.x = eval(destXRightString) - power;
       } else {
-          this._newContents.x = eval(destXLeftString) + power;
+          this._faceContents.x = eval(destXLeftString) + power;
       }
 
-      destVec.x = this._newContents.x;
-      destVec.y = this._newContents.y;
+      destVec.x = this._faceContents.x;
+      destVec.y = this._faceContents.y;
 
       updated = true;
       time = 0.0;
@@ -136,7 +136,7 @@ Imported.RS_AnimatedFace = true;
 
   Window_Message.prototype.updateBigface = function() {
     if(!Imported.RS_Vector2) return;
-    if(!this._newContents.bitmap) return;
+    if(!this._faceContents.bitmap) return;
     if(!updated) return;
 
     if(isdeltaTime) {
@@ -152,13 +152,13 @@ Imported.RS_AnimatedFace = true;
       var d = Vector2.quadraticBezier({'x': destVec.x, 'y': destVec.y},
                                       {'x': destVec.x + power / 2, 'y': destVec.y},
                                       {'x': endPos.x, 'y': destVec.y}, time);
-      this._newContents.x = d.x;
+      this._faceContents.x = d.x;
     } else {
       endPos.x = destVec.x - power;
       var d = Vector2.quadraticBezier({'x': destVec.x, 'y': destVec.y},
                                       {'x': destVec.x - power / 2, 'y': destVec.y},
                                       {'x': endPos.x, 'y': destVec.y}, time);
-      this._newContents.x = d.x;
+      this._faceContents.x = d.x;
     }
     if(!isdeltaTime && time >= limitedTime) {
       updated = false;
