@@ -1,6 +1,6 @@
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.7) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.8) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -47,21 +47,6 @@
 * @type number
 * @desc The starting x position of the text in case of using a large face bitmap.
 * @default 256
-*
-* @param Name Window X
-* @type number
-* @desc Sets the name window's offset x by dx.
-* @default 0
-*
-* @param Name Window Y
-* @type number
-* @desc Sets the name window's offset y by dy.
-* @default 0
-*
-* @param Name Window Inner Padding
-* @type number
-* @desc Sets the name window's inner padding
-* @default 10
 *
 * @param Big Face OX
 * @type number
@@ -114,6 +99,13 @@
 * @desc Specifies the color for text borders.
 * @default rgba(0, 0, 0, 1.0)
 *
+* @param Default Windowskin
+* @desc Specifies a window skin to message window
+* @require 1
+* @default Window
+* @dir img/system/
+* @type file
+*
 * @param Custom Font
 *
 * @param Using Custom Font
@@ -131,6 +123,61 @@
 * @parent Custom Font
 * @desc Specifies the file path for fonts
 * @default fonts/NanumBrush.ttf
+*
+* @param Choice Window
+*
+* @param Choice Style
+* @parent Choice Window
+* @type select
+* @desc Can change as the desired choice window style
+* @default default
+* @option RMXP Style
+* @value RMXP
+* @option Default Style
+* @value default
+*
+* @param Name Window
+*
+* @param Name Windowskin
+* @parent Name Window
+* @desc Specifies a window skin for a name window
+* @require 1
+* @default Window
+* @dir img/system/
+* @type file
+*
+* @param Name Window X
+* @parent Name Window
+* @type number
+* @desc Sets the name window's offset x by dx.
+* @default 0
+*
+* @param Name Window Y
+* @parent Name Window
+* @type number
+* @desc Sets the name window's offset y by dy.
+* @default 0
+*
+* @param Name Window Inner Padding
+* @parent Name Window
+* @type number
+* @desc Sets the name window's inner padding
+* @default 10
+*
+* @param Name Window Position
+* @parent Name Window
+* @type select
+* @desc The name window's position sets up as certain position in message window
+* @default left
+* @option Top of left (default)
+* @value left
+* @option Top of right
+* @value right
+*
+* @param Text Code
+* @type struct<TextCode>
+* @desc Can change with desired text codes
+* @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\"]"}
 *
 * @help
 * =============================================================================
@@ -163,6 +210,7 @@
 * Message name x number
 * Message name y number
 * Message name padding number
+* Message name windowskin skin_name
 *
 * - These plugin commands can set the large face bitmap's offset by dx, dy
 * Message faceOX dx
@@ -178,6 +226,8 @@
 *
 * Message backOpacity number
 * Message contentsOpacity number
+*
+* Message windowskin skin_name
 *
 * =============================================================================
 * Large Face Bitmap (Bust Image)
@@ -199,13 +249,15 @@
 * \bold!
 * \italic!
 * \name<text> - Shows up the name window over the message window
+* \name<text:left>
+* \name<text:right>
 * \gradient<text>
 * \party_member[x]
 * \player[x]
 * \var[x]
 * \icon[x]
-* \increase[x]
-* \decrease[x]
+* \increase!
+* \decrease!
 * \gold
 * \balloon[0] - A balloon is set over the position of this event.
 * \balloon[-1] - A balloon is set over the position of the game player.
@@ -215,18 +267,19 @@
 * \align[2] - right
 * \num[x] - formatted number
 * \text_size[x]
-* \tab - the tab size is to 8
-* \carriage_return
+* \tab! - the tab size is to 8
+* \cr!
 * \play_se[name]
 * \show_picture<picid, picname, origin, x, y>
 * \hide_picture[picid]
-* \item
-* \weapon
-* \armor
-* \classes
-* \enemy
-* \state
-* \skill
+* \item[x]
+* \weapon[x]
+* \armor[x]
+* \classes[x]
+* \enemy[x]
+* \state[x]
+* \skill[x]
+* \face<facename, faceindex>
 *
 * =============================================================================
 * Color list (English)
@@ -279,8 +332,8 @@
 * \주인공[번호]
 * \변수[번호]
 * \아이콘[번호]
-* \확대
-* \축소
+* \확대!
+* \축소!
 * \골드
 * \말풍선[이벤트의 ID]
 * \말풍선[0]
@@ -289,8 +342,8 @@
 * \정렬자[2]
 * \숫자[숫자]
 * \크기[숫자]
-* \t : 탭의 크기는 8 입니다.
-* \r : X를 시작 위치로 되돌립니다.
+* \탭! : 탭의 크기는 8 입니다.
+* \캐리지리턴! : X를 시작 위치로 되돌립니다.
 * \효과음<효과음명>
 * \그림표시<그림번호, 그림이름, 원점번호, X좌표, Y좌표>
 * \그림제거[그림번호]
@@ -301,6 +354,7 @@
 * \적군[번호]
 * \상태[번호]
 * \스킬[번호]
+* \얼굴<페이스칩 이름, 페이스칩 인덱스>
 *
 * =============================================================================
 * Color list (Korean)
@@ -333,39 +387,42 @@
 * =============================================================================
 * To use these text codes, you must set the language setting as Chinese (zh)
 *
-* 色[文本]
-* 速度[值]
-* 大小[值]
-* 轮廓颜色[颜色的名]
-* 轮廓宽度[大小]
-* 缩进[值]
-* 加粗!
-* 倾斜!
-* 名字<文本>
-* 渐变颜色<文本>
-* 队伍成员[号码]
-* 角色[号码]
-* 变量[号码]
-* 图标[号码]
-* 增大
-* 减少
-* 金币
-* 对话框[EventID]
-* 对话框[0]
-* 对话框[-1]
-* 对齐[1] (居中对齐)
-* 对齐[2] (右对齐)
-* 数[值]
-* 音效播放<sound name>
-* 显示图像<号码, picture name, origin, x, y>
-* 隐藏图像[号码]
-* 道具[号码]
-* 武器[号码]
-* 装甲[号码]
-* 职业[号码]
-* 敌人[号码]
-* 状态[号码]
-* 技能[号码]
+* \色[文本]
+* \速度[值]
+* \大小[值]
+* \轮廓颜色[颜色的名]
+* \轮廓宽度[大小]
+* \缩进[值]
+* \加粗!
+* \倾斜!
+* \名字<文本>
+* \渐变颜色<文本>
+* \队伍成员[号码]
+* \角色[号码]
+* \变量[号码]
+* \图标[号码]
+* \增大!
+* \减少!
+* \金币
+* \对话框[EventID]
+* \对话框[0]
+* \对话框[-1]
+* \对齐[1] (居中对齐)
+* \对齐[2] (右对齐)
+* \数[值]
+* \音效播放<sound name>
+* \显示图像<号码, picture name, origin, x, y>
+* \隐藏图像[号码]
+* \道具[号码]
+* \武器[号码]
+* \装甲[号码]
+* \职业[号码]
+* \敌人[号码]
+* \状态[号码]
+* \技能[号码]
+* \脸<faceName, faceIndex>
+* \TAB!
+* \CR!
 *
 * =============================================================================
 * Color list (Chinese)
@@ -396,6 +453,15 @@
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2017.07.21 (v0.1.8) :
+* - Fixed the issue that the value couldn't set with 0 in the opacity parameter.
+* - Fixed a bug that the alignment is not processing in a newly line
+* - Added a feature that changes the window skin.
+* - Added a feature that changes the name window positions.
+* - Added a new text code that can change as a different face image during to draw a text.
+* - Added a feature that can change as a different text code.
+* - Fixed the bugs with TAB and CR text codes are not working, and even their name.
+* - Added a feature that can change the style with a choice window.
 * 2017.06.04 (v0.1.7) - Fixed the issue that is not changed the y-position for a name window
 * 2017.05.27 (v0.1.6) :
 * - In the balloon window mode, Added a new feature that the pause sign sprite
@@ -411,27 +477,47 @@
 * - Added a feature that displays and removes a picture
 * - Added a feature that the text code converted as names of an item in Database.
 * - Fixed the function that calculates the maximum width of the text when using the alignment feature.
-* 2016.11.27 (v0.1.4) : 플러그인 커맨드에서 '0'값을 설정할 수 없는 오류를 수정했습니다.
-* 2016.11.12 (v0.1.3) :
-* - 사용자 정의 폰트, 배경 투명도 변경 기능 추가
-* - 탭 및 캐리지 리턴 기능 동작하지 않는 버그가 있습니다.
-* - 이름 윈도우와 같이 말풍선 윈도우를 띄울 경우, 이름 윈도우가 화면 밖으로 빠져나가는 버그가 있습니다.
-* 2016.10.12 (v0.1.2) - 규격에 맞지 않는 캐릭터도 이제 말풍선이 제대로 표시됩니다.
-* 2016.09.19 (v0.1.1) - 정렬자 기능 개선
-* 2016.06.18 (v0.1.0) - 이름 윈도우 후면에 스프라이트가 그려지지 않는 문제를 수정했습니다
-* 2016.03.21 (v0.0.9) - \t (탭), \r (캐리지 리턴) 추가
-* 2016.03.01 (v0.0.8) - 말풍선 모드에 페이스칩 표시, 플러그인 커맨드 및 버그 픽스
-* 2016.02.27 (v0.0.7) - 통화 서식 추가
-* 2016.02.15 (v0.0.6) - 가운데 정렬, 오른쪽 정렬 관련 텍스트 코드 추가
-* 2016.01.18 (v0.0.5) - 버그 픽스 (updateNameWindow, calcBalloonRect)
-* 2016.01.01 (v0.0.4) - 버그 픽스 (resizeMessageSystem)
-* 2015.12.03 (v0.0.3) - 말풍선 기능 추가
-* 2015.12.02 (v0.0.2) - 큰 페이스칩 기능 추가
-* 2015.12.01 (v0.0.1) - 최초 작성
+* 2016.11.27 (v0.1.4) : Fixed the issue that the value couldn't set to 0 in plugin commands
+* 2016.11.12 (v0.1.3) - Added the features with changing a custom font and background opacity values
+* 2016.10.12 (v0.1.2) - Now it is possible to use a non-standard sprites in the popup window.
+* 2016.09.19 (v0.1.1) - Improved the feature with a text alignment.
+* 2016.06.18 (v0.1.0) - Fixed the mask issue in a name window.
+* 2016.03.21 (v0.0.9) - Added text codes for tap and carriage return escape characters.
+* 2016.03.01 (v0.0.8) :
+* - Added a feature that can indicate a face image into message window for popup message mode
+* - Fixed the bugs with plugin commands
+* 2016.02.27 (v0.0.7) - Added a feature that texts are set as currency format.
+* 2016.02.15 (v0.0.6) - Added a feature with a text alignment
+* 2016.01.18 (v0.0.5) - Fixed an issue with positioning the message window and calculating its bounding rect incorrectly.
+* 2016.01.01 (v0.0.4) - Fixed an issue with resizing the message. (resizeMessageSystem)
+* 2015.12.03 (v0.0.3) - Added a feature with a popup message
+* 2015.12.02 (v0.0.2) - Added a feature for large face image.
+* 2015.12.01 (v0.0.1) - First Release
 */
+/*~struct~TextCode:
+ *
+ * @param Korean
+ * @type string[]
+ * @desc Can specify the desired text code as Korean.
+ * (This will be used when the system language is in Korean)
+ * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴"]
+ *
+ * @param Chinese
+ * @type string[]
+ * @desc Can specify the desired text code as Chinese
+ * (This will be used when the system language is in Chinese)
+ * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸"]
+ *
+ * @param English
+ * @type string[]
+ * @desc Can specify the desired text code as English
+ * (This will be used when the system language is to English)
+ * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE"]
+ *
+ */
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.7) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.8) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -477,21 +563,6 @@
 * @type number
 * @desc 큰 페이스칩이 설정되어있을 때 텍스트 시작 좌표를 정수로 기입하세요.
 * @default 256
-*
-* @param 이름 윈도우 X
-* @type number
-* @desc 대화창의 좌표를 기준으로 오프셋 됩니다
-* @default 0
-*
-* @param 이름 윈도우 Y
-* @type number
-* @desc 대화창의 좌표를 기준으로 오프셋 됩니다
-* @default 0
-*
-* @param 이름 윈도우 안쪽 여백
-* @type number
-* @desc 이름 윈도우 안쪽 여백
-* @default 10
 *
 * @param 큰 페이스칩 OX
 * @type number
@@ -554,6 +625,13 @@
 * @desc 텍스트의 테두리 색상을 웹컬러 규격으로 지정하세요
 * @default rgba(0, 0, 0, 1.0)
 *
+* @param 기본 윈도우스킨
+* @desc 기본 윈도우의 윈도우 스킨을 지정하세요
+* @require 1
+* @default Window
+* @dir img/system/
+* @type file
+*
 * @param 커스텀 폰트
 *
 * @param 사용자 지정 폰트 사용 여부
@@ -574,6 +652,61 @@
 * @parent 커스텀 폰트
 * @desc 사용자 지정 Font의 경로를 지정하세요
 * @default fonts/NanumBrush.ttf
+*
+* @param 선택지 표시
+*
+* @param 선택지 스타일
+* @parent 선택지 표시
+* @type select
+* @desc 선택지 창의 스타일을 설정할 수 있습니다
+* @default default
+* @option RMXP 스타일
+* @value RMXP
+* @option 기본 스타일 (MV, VXA)
+* @value default
+*
+* @param 이름 윈도우
+*
+* @param 이름 윈도우스킨
+* @parent 이름 윈도우
+* @desc 이름 윈도우의 윈도우 스킨을 지정하세요
+* @require 1
+* @default Window
+* @dir img/system/
+* @type file
+*
+* @param 이름 윈도우 X
+* @parent 이름 윈도우
+* @type number
+* @desc 대화창의 좌표를 기준으로 오프셋 됩니다
+* @default 0
+*
+* @param 이름 윈도우 Y
+* @parent 이름 윈도우
+* @type number
+* @desc 대화창의 좌표를 기준으로 오프셋 됩니다
+* @default 0
+*
+* @param 이름 윈도우 안쪽 여백
+* @parent 이름 윈도우
+* @type number
+* @desc 이름 윈도우 안쪽 여백
+* @default 10
+*
+* @param 이름 윈도우 위치
+* @parent 이름 윈도우
+* @type select
+* @desc 이름 윈도우 위치를 지정합니다.
+* @default left
+* @option 왼쪽-위 (기본)
+* @value left
+* @option 오른쪽-위
+* @value right
+*
+* @param 텍스트 코드
+* @type struct<TextCode>
+* @desc 텍스트 코드 변경
+* @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\"]"}
 *
 * @help
 * 이 플러그인은 복잡한 텍스트 코드가 아닌 한글 단어로 직관적으로 텍스트 코드를 호출하기
@@ -605,6 +738,8 @@
 * 메시지 이름윈도우 x number
 * 메시지 이름윈도우 y number
 * 메시지 이름윈도우 padding number
+* 메시지 이름윈도우 윈도우스킨 skin_name
+*
 * 메시지 큰페이스칩X number
 * 메시지 큰페이스칩Y number
 *
@@ -614,6 +749,8 @@
 * 메시지 탭크기 number
 * 메시지 배경투명도 number
 * 메시지 컨텐츠투명도 number
+*
+* 메시지 윈도우스킨 skin_name
 *
 * =============================================================================
 * 큰 페이스칩 설정
@@ -648,9 +785,12 @@
 *   \속도[값]
 *
 * 이름 윈도우를 띄우려면 아래 텍스트 코드를 사용하세요, 색상 변경 텍스트 코드도 사용할
-* 수 있습니다. 이름 윈도우는 폭과 높이를 알아서 맞춰줍니다 :
+* 수 있습니다. 이름 윈도우는 폭과 높이를 알아서 맞춰줍니다. 아래와 같이 뒤에 콜론(:)을
+* 붙이는 방식으로 이름 윈도우의 위치를 바꿀 수도 있습니다.
 *
 *   \이름<이벤트명>
+*   \이름<이벤트명:right>
+*   \이름<이벤트명:left>
 *
 * 그레디언트 텍스트를 만드는 텍스트 코드입니다. 기본 색상 값은 플러그인 매개변수에서
 * 변경이 가능합니다. 다만 세밀한 설정은 코드 상에 하드코딩되어있으므로 디자인이 좋지 않아
@@ -676,8 +816,8 @@
 *
 * 글자의 크기를 확대하거나 축소하는 기능입니다 (\{, \}와 같습니다):
 
-*   \확대
-*   \축소
+*   \확대!
+*   \축소!
 *
 * 골드 윈도우를 표시합니다:
 *
@@ -712,8 +852,8 @@
 * 탭과 캐리지 리턴 기능이지만 캐리지 리턴 기능은 완벽하지 않으니 사용에 주의 바랍니다.
 * 다시 말하면 나중에 삭제될 수도 있는 텍스트 코드입니다.
 *
-*   \t : 탭의 크기는 8 입니다.
-*   \r : X를 시작 위치로 되돌립니다.
+*   \탭! : 탭의 크기는 8 입니다.
+*   \캐리지리턴! : X를 시작 위치로 되돌립니다.
 *
 * 효과음을 재생하는 기능으로 SE 파일을 재생합니다:
 *
@@ -733,6 +873,12 @@
 *   \적군[번호]
 *   \상태[번호]
 *   \스킬[번호]
+*
+* 얼굴 이미지를 메시지 표시 도중에 바꾸려면 다음 텍스트 코드를 사용하시기 바랍니다.
+* '얼굴_이미지_이름'은 페이스칩의 이름을 말하고, 인덱스는 페이스칩 선택 창에서
+* 각 얼굴에 붙는 번호입니다. 0부터 시작하고 가장 왼쪽 위에 있는 얼굴이 0번입니다:
+*
+*   \얼굴<얼굴_이미지_이름, 얼굴_이미지_인덱스>
 *
 * =============================================================================
 * 색상(Colors)
@@ -764,6 +910,16 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2017.07.23 (v0.1.8) :
+* - 투명도 매개변수를 0으로 설정할 수 없는 문제를 수정했습니다.
+* - 새로운(또는 다음) 라인으로 넘어갈 때 정렬 텍스트 코드가 제대로 동작하지 않는 문제를 수정했습니다.
+* - 문장을 왼쪽으로 정렬하는 텍스트 코드를 추가했습니다.
+* - 이름 윈도우 또는 대화창의 기본 윈도우 스킨을 변경할 수 있습니다.
+* - 이름 윈도우의 표시 위치를 왼쪽 또는 오른쪽으로 바꿀 수 있습니다.
+* - 얼굴 이미지를 중간에 변경할 수 있는 새로운 텍스트 코드를 추가했습니다.
+* - 텍스트 코드를 원하는 이름으로 변경할 수 있는 기능을 추가했습니다.
+* - 캐리지 리턴과 탭의 버그를 수정했으며 텍스트 코드도 충돌로 인해 다른 이름으로 변경했습니다.
+* - 선택지 윈도우의 스타일을 변경할 수 있습니다.
 * 2017.06.04 (v0.1.7) - 이름 윈도우의 Y좌표가 수정이 되지 않는 문제를 수정했습니다.
 * 2017.05.27 (v0.1.6) :
 * - 말풍선 모드 시 멈춤 표시 스프라이트 위치를 화자의 위치로 자동 변경합니다.
@@ -794,6 +950,24 @@
 * 2015.12.02 (v0.0.2) - 큰 페이스칩 기능 추가
 * 2015.12.01 (v0.0.1) - 최초 작성
 */
+/*~struct~TextCode:ko
+ *
+ * @param Korean
+ * @type string[]
+ * @desc 시스템 언어가 한국어(우리나라 말)일 경우에만 동작합니다.
+ * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴"]
+ *
+ * @param Chinese
+ * @type string[]
+ * @desc 시스템 언어가 중국어로 설정되어있을 때에만 동작합니다
+ * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸"]
+ *
+ * @param English
+ * @type string[]
+ * @desc 시스템 언어가 '영어'로 설정되어있을 때에만 동작합니다.
+ * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE"]
+ *
+ */
 
 var Imported = Imported || {};
 Imported.RS_MessageSystem = true;
@@ -842,7 +1016,7 @@ var Color = Color || {};
   RS.MessageSystem.Params.textSpeed = Number(RS.MessageSystem.popParameter('Text Speed', "기본 텍스트 출력 속도") || 0);
   RS.MessageSystem.Params.minFontSize = Number(RS.MessageSystem.popParameter('Text Min Size', "폰트 최소 크기") || 24);
   RS.MessageSystem.Params.maxFontSize = Number(RS.MessageSystem.popParameter('Text Max Size', "폰트 최대 크기") || 96);
-  RS.MessageSystem.Params.textStartX = Number(RS.MessageSystem.popParameter('Text Start X', "텍스트 시작 X") || 192);
+  RS.MessageSystem.Params.textStartX = Number(RS.MessageSystem.popParameter('Text Start X', "텍스트 시작 X"));
   RS.MessageSystem.Params.faceStartOriginX = 168;
   RS.MessageSystem.Params.numVisibleRows  = Number(RS.MessageSystem.popParameter('numVisibleRows', "라인 갯수") || 4);
   RS.MessageSystem.Params.gradientColor1 = String(RS.MessageSystem.popParameter('gradientColor1', "그레디언트 시작 색상") || '#FFFFFF');
@@ -851,6 +1025,7 @@ var Color = Color || {};
   RS.MessageSystem.Params.nameWindowX = Number(RS.MessageSystem.popParameter('Name Window X', "이름 윈도우 X") || 0);
   RS.MessageSystem.Params.nameWindowY = Number(RS.MessageSystem.popParameter('Name Window Y', "이름 윈도우 Y") || 0);
   RS.MessageSystem.Params.nameWindowStdPadding = Number(RS.MessageSystem.popParameter('Name Window Inner Padding', "이름 윈도우 안쪽 여백") || 18);
+  RS.MessageSystem.Params.namePositionTypeAtX = RS.MessageSystem.popParameter("Name Window Position", "이름 윈도우 위치") || "left";
   RS.MessageSystem.Params.faceOX = Number(RS.MessageSystem.popParameter('Big Face OX', "큰 페이스칩 OX") || 0);
   RS.MessageSystem.Params.faceOY = Number(RS.MessageSystem.popParameter('Big Face OY', "큰 페이스칩 OY") || 0);
   RS.MessageSystem.Params.faceSide = Boolean(RS.MessageSystem.popParameter('Show Big Face Back', "대화창 뒤에 얼굴 표시") === 'true'|| false);
@@ -858,20 +1033,24 @@ var Color = Color || {};
   RS.MessageSystem.Params.STD_PADDING = 18;
   RS.MessageSystem.Params.WIDTH = (RS.MessageSystem.Params.FONT_SIZE * 6) + RS.MessageSystem.Params.STD_PADDING;
   RS.MessageSystem.Params.HEIGHT = RS.MessageSystem.Params.FONT_SIZE + (RS.MessageSystem.Params.STD_PADDING / 2);
-  RS.MessageSystem.Params.TabSize = Number(RS.MessageSystem.popParameter('Tab Size', "탭 크기") || 4);
+  RS.MessageSystem.Params.TabSize = Number(RS.MessageSystem.popParameter('Tab Size', "탭 크기"));
 
-  RS.MessageSystem.Params.backOpacity = Number(RS.MessageSystem.popParameter('back Opacity', "배경 그림의 투명도") || 192);
-  RS.MessageSystem.Params.translucentOpacity = Number(RS.MessageSystem.popParameter('translucent Opacity', "반투명도") || 160);
-  RS.MessageSystem.Params.defaultOpacity = Number(RS.MessageSystem.popParameter('default Opacity', "기본 투명도") || 255);
-  RS.MessageSystem.Params.contentsOpacity = Number(RS.MessageSystem.popParameter('contents Opacity', "내용의 투명도") || 255);
-  RS.MessageSystem.Params.defaultOutlineWidth = Number(RS.MessageSystem.popParameter('default outline width', "테두리 크기") || 2);
+  RS.MessageSystem.Params.backOpacity = Number(RS.MessageSystem.popParameter('back Opacity', "배경 그림의 투명도"));
+  RS.MessageSystem.Params.translucentOpacity = Number(RS.MessageSystem.popParameter('translucent Opacity', "반투명도"));
+  RS.MessageSystem.Params.defaultOpacity = Number(RS.MessageSystem.popParameter('default Opacity', "기본 투명도"));
+  RS.MessageSystem.Params.contentsOpacity = Number(RS.MessageSystem.popParameter('contents Opacity', "내용의 투명도"));
+  RS.MessageSystem.Params.defaultOutlineWidth = Number(RS.MessageSystem.popParameter('default outline width', "테두리 크기"));
   RS.MessageSystem.Params.defaultOutlineColor = RS.MessageSystem.popParameter('default outline Color', "테두리 색상") || 'white';
 
   RS.MessageSystem.Params.customFont = Boolean(RS.MessageSystem.popParameter('Using Custom Font', "사용자 지정 폰트 사용 여부") === 'true');
   RS.MessageSystem.Params.customFontName = String(RS.MessageSystem.popParameter('Custom Font Name', "사용자 지정 폰트명") || 'GameFont' );
   RS.MessageSystem.Params.customFontSrc = String(RS.MessageSystem.popParameter('Custom Font Src', "사용자 지정 폰트 경로") || 'fonts/mplus-1m-regular.ttf');
 
-  // RS.MessageSystem.Params.prefixOptions = String(parameters['Prefix Options']);
+  RS.MessageSystem.Params.windowskin = RS.MessageSystem.popParameter('Default Windowskin', "기본 윈도우스킨") || 'Window';
+  RS.MessageSystem.Params.windowskinForNameWindow = RS.MessageSystem.popParameter('Name Windowskin', "이름 윈도우스킨") || 'Window';
+
+  RS.MessageSystem.Params.choiceWindowStyle = String(RS.MessageSystem.popParameter('Choice Style', "선택지 스타일") || 'default');
+  RS.MessageSystem.Params.isTempSpriteContainerVisibility = false;
 
   //============================================================================
   // Multiple Language supports
@@ -881,38 +1060,17 @@ var Color = Color || {};
   RS.MessageSystem.Reg.ChineseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[一-鼣]+[!]*/i;
   RS.MessageSystem.Reg.EnglishEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[A-Z]+[!]*/i;
   RS.MessageSystem.Reg.defaultEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[가-ퟻ]+[!]*/i;
-  RS.MessageSystem.TextCodes = {
-    'Korean': [
-      undefined, "색", "속도", "테두리색", "테두리크기", // 4
-      "들여쓰기", "굵게!", "이탤릭!", "이름", // 8
-      "그레디언트", "파티원", "주인공",  "변수", // 12
-      "아이콘", "확대", "축소", "골드",  // 16
-      '말풍선', "정렬자", "숫자", '크기', // 20
-      't', 'r', "효과음", "그림표시",  // 24
-      "그림제거", "아이템", "무기구", "방어구", // 28
-      "직업", "적군", "상태", "스킬" // 32
-    ],
-    'Chinese': [
-      undefined, "色", "速度", "轮廓颜色", "轮廓宽度", // 4
-      "缩进", "加粗!", "倾斜!", "名字", // 8
-      "渐变颜色", "队伍成员", "角色", "变量", // 12
-      "图标", "增大", "减少", "金币", // 16
-      "对话框", "对齐", "数", "大小", // 20
-      't', 'r', "音效播放", "显示图像", // 24
-      "隐藏图像", "道具", "武器", "装甲",  // 28
-      "职业", "敌人", "状态", "技能" // 32
-    ],
-    'English': [
-      undefined, "COLOR", "TEXT_SPEED", "OUTLINE_COLOR", "OUTLINE_WIDTH", // 4
-      "INDENT", "BOLD!", "ITALIC!", "NAME", // 8
-      "GRADIENT", "PARTY_MEMBER", "PLAYER",  "VAR", // 12
-      "ICON", "INCREASE", "DECREASE", "GOLD",  // 16
-      'BALLOON', "ALIGN", "NUM", 'TEXT_SIZE', // 20
-      'TAB', 'CARRIAGE_RETURN', "PLAY_SE", "SHOW_PICTURE",  // 24
-      "HIDE_PICTURE", "ITEM", "WEAPON", "ARMOR", // 28
-      "CLASSES", "ENEMY", "STATE", "SKILL" // 32
-    ]
-  };
+
+  RS.MessageSystem.TextCodes = (function() {
+    'use strict';
+    var rowData = RS.MessageSystem.popParameter('Text Code', "텍스트 코드");
+    var data = JSON.parse(rowData);
+    var retData = {};
+    retData.Korean = [undefined].concat(JSON.parse(data.Korean));
+    retData.Chinese = [undefined].concat(JSON.parse(data.Chinese));
+    retData.English = [undefined].concat(JSON.parse(data.English));
+    return retData;
+  }());
 
   RS.MessageSystem.TextCodes.Main = [];
 
@@ -948,7 +1106,8 @@ var Color = Color || {};
     CLASSES: 29,
     ENEMY: 30,
     STATE: 31,
-    SKILL: 32
+    SKILL: 32,
+    FACE: 33
   };
 
   RS.MessageSystem.getTextCode = function (idx) {
@@ -964,110 +1123,57 @@ var Color = Color || {};
     return RS.MessageSystem.TextCodes['English'][idx];
   };
 
-  // Korean Text Codes
-  RS.MessageSystem.Reg.Korean[0] = undefined;
-  RS.MessageSystem.Reg.Korean[1] = /(?:\x1bC|\x1b색)\[(.+?)\]/gi;   // 색
-  RS.MessageSystem.Reg.Korean[2] = /\x1b속도\[(\d+)\]/gi;    // 속도
-  RS.MessageSystem.Reg.Korean[3] = /\x1b테두리색\[(.+?)\]/gi;  // 테두리색
-  RS.MessageSystem.Reg.Korean[4] = /\x1b테두리크기\[(\d+)\]/gi; // 테두리크기
-  RS.MessageSystem.Reg.Korean[5] = /\x1b들여쓰기\[(\d+)\]/gi; // 들여쓰기
-  RS.MessageSystem.Reg.Korean[6] = /\x1b굵게!/gi; // 굵게
-  RS.MessageSystem.Reg.Korean[7] = /\x1b이탤릭!/gi; // 이탤릭!
-  RS.MessageSystem.Reg.Korean[8] = /\x1b이름\<(.+?)\>/gi; // 이름
-  RS.MessageSystem.Reg.Korean[9] = /\x1b그레디언트<(.+)>/gi; // 그레디언트
-  RS.MessageSystem.Reg.Korean[10] = /(?:\x1bP|\x1b파티원)\[(\d+)\]/gi; // 파티원
-  RS.MessageSystem.Reg.Korean[11] = /(?:\x1bN|\x1b주인공)\[(\d+)\]/gi; // 주인공
-  RS.MessageSystem.Reg.Korean[12] = /(?:\x1bV|\x1b변수)\[(\d+)\]/gi; // 변수
-  RS.MessageSystem.Reg.Korean[13] = /(?:\x1bI|\x1b아이콘)\[(\d+)\]/g; // 아이콘
-  RS.MessageSystem.Reg.Korean[14] = /(?:\x1b{|\x1b확대)/gi;  // 확대
-  RS.MessageSystem.Reg.Korean[15] = /(?:\x1b{|\x1b축소)/gi; // 축소
-  RS.MessageSystem.Reg.Korean[16] = /(?:\x1bG|\x1b골드)/gi; // 골드
-  RS.MessageSystem.Reg.Korean[17] = /\x1b말풍선\[(\d+|-\d+)\]/gi; // 말풍선
-  RS.MessageSystem.Reg.Korean[18] = /\x1b정렬자\[(\d+)]/gi; // 정렬자
-  RS.MessageSystem.Reg.Korean[19] = /\x1b숫자\[(\d+)\]/gi; // 숫자
-  RS.MessageSystem.Reg.Korean[20] = /\x1b크기\[(\d+)\]/gi; // 크기
-  RS.MessageSystem.Reg.Korean[21] = /\x1bR/gi;   // r
-  RS.MessageSystem.Reg.Korean[22] = /\x1bT/gi; // t
-  RS.MessageSystem.Reg.Korean[23] = /\x1b효과음\<(.+?)\>/gi;  // 효과음
-  RS.MessageSystem.Reg.Korean[24] = /\x1b그림표시\<(.+?)\>/gi; // 그림 표시
-  RS.MessageSystem.Reg.Korean[25] = /\x1b그림제거\[(\d+)\]/gi; // 그림 제거
-  RS.MessageSystem.Reg.Korean[26] = /(?:\x1b아이템)\[(\d+)\]/g; // 아이템
-  RS.MessageSystem.Reg.Korean[27] = /(?:\x1b무기구)\[(\d+)\]/g; // 무기구
-  RS.MessageSystem.Reg.Korean[28] = /(?:\x1b방어구)\[(\d+)\]/g; // 방어구
-  RS.MessageSystem.Reg.Korean[29] = /(?:\x1b직업)\[(\d+)\]/g; // 직업
-  RS.MessageSystem.Reg.Korean[30] = /(?:\x1b적군)\[(\d+)\]/g; // 적군
-  RS.MessageSystem.Reg.Korean[31] = /(?:\x1b상태)\[(\d+)\]/g; // 상태
-  RS.MessageSystem.Reg.Korean[32] = /(?:\x1b스킬)\[(\d+)\]/g; // 스킬
-
-  // Chinese Text Codes
-  RS.MessageSystem.Reg.Chinese[0] = undefined;
-  RS.MessageSystem.Reg.Chinese[1] = /(?:\x1bC|\x1b色)\[(.+?)\]/gi;   // 색
-  RS.MessageSystem.Reg.Chinese[2] = /\x1b速度\[(\d+)\]/gi;    // 속도
-  RS.MessageSystem.Reg.Chinese[3] = /\x1b轮廓颜色\[(.+?)\]/gi;  // 테두리색
-  RS.MessageSystem.Reg.Chinese[4] = /\x1b轮廓宽度\[(\d+)\]/gi; // 테두리크기
-  RS.MessageSystem.Reg.Chinese[5] = /\x1b缩进\[(\d+)\]/gi; // 들여쓰기
-  RS.MessageSystem.Reg.Chinese[6] = /\x1b加粗!/gi; // 굵게
-  RS.MessageSystem.Reg.Chinese[7] = /\x1b倾斜!/gi; // 이탤릭!
-  RS.MessageSystem.Reg.Chinese[8] = /\x1b名字\<(.+?)\>/gi; // 이름
-  RS.MessageSystem.Reg.Chinese[9] = /\x1b渐变颜色<(.+)>/gi; // 그레디언트
-  RS.MessageSystem.Reg.Chinese[10] = /(?:\x1bP|\x1b队伍成员)\[(\d+)\]/gi; // 파티원
-  RS.MessageSystem.Reg.Chinese[11] = /(?:\x1bN|\x1b角色)\[(\d+)\]/gi; // 주인공
-  RS.MessageSystem.Reg.Chinese[12] = /(?:\x1bV|\x1b变量)\[(\d+)\]/gi; // 변수
-  RS.MessageSystem.Reg.Chinese[13] = /(?:\x1bI|\x1b图标)\[(\d+)\]/g; // 아이콘
-  RS.MessageSystem.Reg.Chinese[14] = /(?:\x1b{|\x1b增大)/gi;  // 확대
-  RS.MessageSystem.Reg.Chinese[15] = /(?:\x1b{|\x1b减少)/gi; // 축소
-  RS.MessageSystem.Reg.Chinese[16] = /(?:\x1bG|\x1b金币)/gi; // 골드
-  RS.MessageSystem.Reg.Chinese[17] = /\x1b对话框\[(\d+)\]/gi; // 말풍선
-  RS.MessageSystem.Reg.Chinese[18] = /\x1b对齐\[(\d+)]/gi; // 정렬자
-  RS.MessageSystem.Reg.Chinese[19] = /\x1b数\[(\d+)\]/gi; // 숫자
-  RS.MessageSystem.Reg.Chinese[20] = /\x1b大小\[(\d+)\]/gi; // 크기
-  RS.MessageSystem.Reg.Chinese[21] = /\x1bR/gi;   // r
-  RS.MessageSystem.Reg.Chinese[22] = /\x1bT/gi; // t
-  RS.MessageSystem.Reg.Chinese[23] = /\x1b音效播放\<(.+?)\>/gi; // 효과음 재생
-  RS.MessageSystem.Reg.Chinese[24] = /\x1b显示图像\<(.+?)\>/gi; // 그림 표시
-  RS.MessageSystem.Reg.Chinese[25] = /\x1b隐藏图像\[(\d+)\]/gi; // 그림 제거
-  RS.MessageSystem.Reg.Chinese[26] = /(?:\x1b道具)\[(\d+)\]/g; // 아이템
-  RS.MessageSystem.Reg.Chinese[27] = /(?:\x1b武器)\[(\d+)\]/g; // 무기구
-  RS.MessageSystem.Reg.Chinese[28] = /(?:\x1b装甲)\[(\d+)\]/g; // 방어구
-  RS.MessageSystem.Reg.Chinese[29] = /(?:\x1b职业)\[(\d+)\]/g; // 직업
-  RS.MessageSystem.Reg.Chinese[30] = /(?:\x1b敌人)\[(\d+)\]/g; // 적군
-  RS.MessageSystem.Reg.Chinese[31] = /(?:\x1b状态)\[(\d+)\]/g; // 상태
-  RS.MessageSystem.Reg.Chinese[32] = /(?:\x1b技能)\[(\d+)\]/g; // 스킬
-
-  // English Text Codes
-  RS.MessageSystem.Reg.English[0] = undefined;
-  RS.MessageSystem.Reg.English[1] = /(?:\x1bC|\x1bCOLOR)\[(.+?)\]/gi;   // 색
-  RS.MessageSystem.Reg.English[2] = /\x1bTEXT_SPEED\[(\d+)\]/gi;    // 속도
-  RS.MessageSystem.Reg.English[3] = /\x1bOUTLINE_COLOR\[(.+?)\]/gi;  // 테두리색
-  RS.MessageSystem.Reg.English[4] = /\x1bOUTLINE_WIDTH\[(\d+)\]/gi; // 테두리크기
-  RS.MessageSystem.Reg.English[5] = /\x1bINDENT\[(\d+)\]/gi; // 들여쓰기
-  RS.MessageSystem.Reg.English[6] = /\x1bBOLD!/gi; // 굵게
-  RS.MessageSystem.Reg.English[7] = /\x1bITALIC!/gi; // 이탤릭!
-  RS.MessageSystem.Reg.English[8] = /\x1bNAME\<(.+?)\>/gi; // 이름
-  RS.MessageSystem.Reg.English[9] = /\x1bGRADIENT<(.+)>/gi; // 그레디언트
-  RS.MessageSystem.Reg.English[10] = /(?:\x1bP|\x1bPARTY_MEMBER)\[(\d+)\]/gi; // 파티원
-  RS.MessageSystem.Reg.English[11] = /(?:\x1bN|\x1bPLAYER)\[(\d+)\]/gi; // 주인공
-  RS.MessageSystem.Reg.English[12] = /(?:\x1bV|\x1bVAR)\[(\d+)\]/gi; // 변수
-  RS.MessageSystem.Reg.English[13] = /(?:\x1bI|\x1bICON)\[(\d+)\]/g; // 아이콘
-  RS.MessageSystem.Reg.English[14] = /(?:\x1b{|\x1bINCREASE)/gi;  // 확대
-  RS.MessageSystem.Reg.English[15] = /(?:\x1b{|\x1bDECREASE)/gi; // 축소
-  RS.MessageSystem.Reg.English[16] = /(?:\x1bG|\x1bGOLD)/gi; // 골드
-  RS.MessageSystem.Reg.English[17] = /\x1bBALLOON\[(\d+|-\d+)\]/gi; // 말풍선
-  RS.MessageSystem.Reg.English[18] = /\x1bALIGN\[(\d+)]/gi; // 정렬자
-  RS.MessageSystem.Reg.English[19] = /\x1bNUM\[(\d+)\]/gi; // 숫자
-  RS.MessageSystem.Reg.English[20] = /\x1bTEXT_SIZE\[(\d+)\]/gi; // 크기
-  RS.MessageSystem.Reg.English[21] = /\x1bTAB/gi;   // r
-  RS.MessageSystem.Reg.English[22] = /\x1bCARRIAGE_RETURN/gi; // t
-  RS.MessageSystem.Reg.English[23] = /\x1bPLAY_SE\<(.+?)\>/gi;  // 효과음
-  RS.MessageSystem.Reg.English[24] = /\x1bSHOW_PICTURE\<(.+?)\>/gi; // 그림 표시
-  RS.MessageSystem.Reg.English[25] = /\x1bHIDE_PICTURE\[(\d+)\]/gi; // 그림 제거
-  RS.MessageSystem.Reg.English[26] = /(?:\x1bITEM)\[(\d+)\]/g; // 아이템
-  RS.MessageSystem.Reg.English[27] = /(?:\x1bWEAPON)\[(\d+)\]/g; // 무기구
-  RS.MessageSystem.Reg.English[28] = /(?:\x1bARMOR)\[(\d+)\]/g; // 방어구
-  RS.MessageSystem.Reg.English[29] = /(?:\x1bCLASSES)\[(\d+)\]/g; // 직업
-  RS.MessageSystem.Reg.English[30] = /(?:\x1bENEMY)\[(\d+)\]/g; // 적군
-  RS.MessageSystem.Reg.English[31] = /(?:\x1bSTATE)\[(\d+)\]/g; // 상태
-  RS.MessageSystem.Reg.English[32] = /(?:\x1bSKILL)\[(\d+)\]/g; // 스킬
+  (function() {
+    'use strict';
+    var regData = ["Korean", "English", "Chinese"];
+    regData.forEach(function (e, i, a) {
+      var tcGroup = RS.MessageSystem.TextCodes[e];
+      tcGroup = tcGroup.map(function (e, i, a) {
+        if(e === undefined) return;
+        var data = [];
+        var ret = "";
+        for (var str of e) {
+          data.push('\\u' + str.charCodeAt().toString(16));
+        }
+        ret = data.join("");
+        return ret;
+      }, this);
+      RS.MessageSystem.Reg[e][0] = undefined;
+      RS.MessageSystem.Reg[e][1] = new RegExp(`(?:\x1bC|\x1b${tcGroup[1]})\\[(.+?)\\]`, 'gi');   // 색
+      RS.MessageSystem.Reg[e][2] = new RegExp(`\x1b${tcGroup[2]}\\[(\\d+)\\]`, 'gi');    // 속도
+      RS.MessageSystem.Reg[e][3] = new RegExp(`\x1b${tcGroup[3]}\\[(.+?)\\]`, 'gi');  // 테두리색
+      RS.MessageSystem.Reg[e][4] = new RegExp(`\x1b${tcGroup[4]}\\[(\\d+)\\]`, 'gi'); // 테두리크기
+      RS.MessageSystem.Reg[e][5] = new RegExp(`\x1b${tcGroup[5]}\\[(\\d+)\\]`, 'gi'); // 들여쓰기
+      RS.MessageSystem.Reg[e][6] = new RegExp(`\x1b${tcGroup[6]}`, 'gi'); // 굵게!
+      RS.MessageSystem.Reg[e][7] = new RegExp(`\x1b${tcGroup[7]}`, 'gi'); // 이탤릭!
+      RS.MessageSystem.Reg[e][8] = new RegExp(`\x1b${tcGroup[8]}\\<(.+?)\\>`, 'gi'); // 이름
+      RS.MessageSystem.Reg[e][9] = new RegExp(`\x1b${tcGroup[9]}\\<(.+)\\>`, 'gi'); // 그레디언트
+      RS.MessageSystem.Reg[e][10] = new RegExp(`(?:\x1bP|\x1b${tcGroup[10]})\\[(\\d+)\\]`, 'gi'); // 파티원
+      RS.MessageSystem.Reg[e][11] = new RegExp(`(?:\x1bN|\x1b${tcGroup[11]})\\[(\\d+)\\]`, 'gi'); // 주인공
+      RS.MessageSystem.Reg[e][12] = new RegExp(`(?:\x1bV|\x1b${tcGroup[12]})\\[(\\d+)\\]`, 'gi'); // 변수
+      RS.MessageSystem.Reg[e][13] = new RegExp(`(?:\x1bI|\x1b${tcGroup[13]})\\[(\\d+)\\]`, 'g'); // 아이콘
+      RS.MessageSystem.Reg[e][14] = new RegExp(`(?:\x1b{|\x1b${tcGroup[14]})`, 'gi');  // 확대!
+      RS.MessageSystem.Reg[e][15] = new RegExp(`(?:\x1b}|\x1b${tcGroup[15]})`, 'gi'); // 축소!
+      RS.MessageSystem.Reg[e][16] = new RegExp(`(?:\x1bG|\x1b${tcGroup[16]})`, 'gi'); // 골드
+      RS.MessageSystem.Reg[e][17] = new RegExp(`\x1b${tcGroup[17]}\\[(.*?)\\]`, 'gi'); // 말풍선
+      RS.MessageSystem.Reg[e][18] = new RegExp(`\x1b${tcGroup[18]}\\[(\\d+)\\]`, 'gi'); // 정렬자
+      RS.MessageSystem.Reg[e][19] = new RegExp(`\x1b${tcGroup[19]}\\[(\\d+)\\]`, 'gi'); // 숫자
+      RS.MessageSystem.Reg[e][20] = new RegExp(`\x1b${tcGroup[20]}\\[(\\d+)\\]`, 'gi'); // 크기
+      RS.MessageSystem.Reg[e][21] = new RegExp(`\x1b${tcGroup[21]}`, 'gi');   // r
+      RS.MessageSystem.Reg[e][22] = new RegExp(`\x1b${tcGroup[22]}`, 'gi'); // t
+      RS.MessageSystem.Reg[e][23] = new RegExp(`\x1b${tcGroup[23]}\\<(.+?)\\>`, 'gi');  // 효과음
+      RS.MessageSystem.Reg[e][24] = new RegExp(`\x1b${tcGroup[24]}\\<(.+?)\\>`, 'gi'); // 그림 표시
+      RS.MessageSystem.Reg[e][25] = new RegExp(`\x1b${tcGroup[25]}\\[(\\d+)\\]`, 'gi'); // 그림 제거
+      RS.MessageSystem.Reg[e][26] = new RegExp(`(?:\x1b${tcGroup[26]})\\[(\\d+)\\]`, 'g'); // 아이템
+      RS.MessageSystem.Reg[e][27] = new RegExp(`(?:\x1b${tcGroup[27]})\\[(\\d+)\\]`, 'g'); // 무기구
+      RS.MessageSystem.Reg[e][28] = new RegExp(`(?:\x1b${tcGroup[28]})\\[(\\d+)\\]`, 'g'); // 방어구
+      RS.MessageSystem.Reg[e][29] = new RegExp(`(?:\x1b${tcGroup[29]})\\[(\\d+)\\]`, 'g'); // 직업
+      RS.MessageSystem.Reg[e][30] = new RegExp(`(?:\x1b${tcGroup[30]})\\[(\\d+)\\]`, 'g'); // 적군
+      RS.MessageSystem.Reg[e][31] = new RegExp(`(?:\x1b${tcGroup[31]})\\[(\\d+)\\]`, 'g'); // 상태
+      RS.MessageSystem.Reg[e][32] = new RegExp(`(?:\x1b${tcGroup[32]})\\[(\\d+)\\]`, 'g'); // 스킬
+      RS.MessageSystem.Reg[e][33] = new RegExp(`\x1b${tcGroup[33]}\\<(.+?)\\>`, 'gi'); // 얼굴
+    }, this);
+  }());
 
   RS.MessageSystem.initSystem = function () {
     var type = navigator.language;
@@ -1441,7 +1547,7 @@ var Color = Color || {};
     this._waitTime = 0;
     this._gradientText = '';
     this._balloon = -2;
-    this._align = 0;
+    this._align = [];
     this._balloonPatternHeight = 0;
   };
 
@@ -1466,7 +1572,8 @@ var Color = Color || {};
   };
 
   Game_Message.prototype.setMaxLine = function(n) {
-    this._maxLine = RS.MessageSystem.Params.numVisibleRows = n;
+    this._maxLine = n;
+    RS.MessageSystem.Params.numVisibleRows = n;
   };
 
   Game_Message.prototype.setBalloon = function(n) {
@@ -1478,11 +1585,12 @@ var Color = Color || {};
   };
 
   Game_Message.prototype.setAlign = function(n) {
-    this._align = n;
+    this._align = this._align || [];
+    this._align.push(n);
   };
 
   Game_Message.prototype.getAlign = function(n) {
-    return this._align;
+    return this._align.shift() || 0;
   };
 
   Game_Message.prototype.getSpriteCharacter = function(owner) {
@@ -1495,26 +1603,6 @@ var Color = Color || {};
       }, this);
     }
     return spriteItem[0];
-  };
-
-  Game_Message.prototype.getBattleEnemySprite = function (id) {
-    var target, spriteItem = [];
-    var scene = SceneManager._scene;
-    if( (scene instanceof Scene_Battle) ) {
-      target = scene._spriteset;
-      spriteItem = target._enemySprites;
-    }
-    if(spriteItem[id]) return spriteItem[id];
-  };
-
-  Game_Message.prototype.getBattleActorSprite = function (id) {
-    var target, spriteItem = [];
-    var scene = SceneManager._scene;
-    if( (scene instanceof Scene_Battle) ) {
-      target = scene._spriteset;
-      spriteItem = target._actorSprites;
-    }
-    if(spriteItem[id]) return spriteItem[id];
   };
 
   Game_Message.prototype.setBalloonPatternHeight = function (value) {
@@ -1601,10 +1689,11 @@ var Color = Color || {};
       this.setTextGradient(textState);
       break;
       case textCode[tcGroup.TAB]:
-      textState.x += this.textWidth("A") * RS.MessageSystem.Params.TabSize;
+      textState.x += Number(this.textWidth("A") * RS.MessageSystem.Params.TabSize);
       break;
       case textCode[tcGroup.CARRIAGE_RETURN]:
-      textState.x = 0;
+      textState.x = Number(textState.left || 0);
+      this.startWait(1);
       break;
       case textCode[tcGroup.PLAY_SE]:
       this.playSe(this.obtainSoundName(textState));
@@ -1616,6 +1705,11 @@ var Color = Color || {};
       case textCode[tcGroup.HIDE_PICTURE]:
       this.erasePicture(this.obtainEscapeParam(textState));
       this.startWait(15);
+      break;
+      case textCode[tcGroup.FACE]:
+      var params = this.obtainSoundName(textState).split(',');
+      this.redrawFaceImage(textState, params[0], params[1], 0, 0);
+      this.startWait(1);
       break;
       default:
       alias_Window_Message_processEscapeCharacter.call(this, code, textState);
@@ -1750,11 +1844,22 @@ var Color = Color || {};
     var regGroup = RS.MessageSystem.Reg.Group;
     text = alias_Window_Message_convertEscapeCharacters.call(this, text);
     text = text.replace(regGroup[tcGroup.NAME], function() {
-      this._nameWindow.drawName(arguments[1]);
+      var retName = arguments[1];
+      if(retName.endsWith(':left')) {
+        retName = retName.replace(':left', '');
+        RS.MessageSystem.Params.namePositionTypeAtX = "left";
+      }
+      if(retName.endsWith(':right')) {
+        retName = retName.replace(':right', '');
+        RS.MessageSystem.Params.namePositionTypeAtX = "right";
+      }
+      this._nameWindow.drawName(retName);
       return '';
     }.bind(this));
     text = text.replace(regGroup[tcGroup.BALLOON], function() {
-      $gameMessage.setBalloon(Number(arguments[1] || -2));
+      var value = Number(arguments[1] || -2);
+      if($gameParty.inBattle()) value = -2;
+      $gameMessage.setBalloon(value);
       return '';
     }.bind(this));
     text = text.replace(regGroup[tcGroup.ALIGN], function() {
@@ -1781,13 +1886,23 @@ var Color = Color || {};
 
   Window_Message.prototype.updateNameWindow = function() {
     var self = this;
-    this._nameWindow.x = this.x + RS.MessageSystem.Params.nameWindowX;
+    var namePositionTypeAtX = RS.MessageSystem.Params.namePositionTypeAtX;
+
+    // X 값
+    if(namePositionTypeAtX === 'right') {
+      this._nameWindow.x = (this.x + this.width) - this._nameWindow.width - RS.MessageSystem.Params.nameWindowX;
+    } else {
+      this._nameWindow.x = this.x + RS.MessageSystem.Params.nameWindowX;
+    }
+
+    // Y 값
     if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
       this._nameWindow.y = 0;
       this.y = this._nameWindow.height + RS.MessageSystem.Params.nameWindowY;
     } else {
       this._nameWindow.y = self.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
     }
+
   };
 
   var alias_Window_Message_initialize = Window_Message.prototype.initialize;
@@ -1795,56 +1910,124 @@ var Color = Color || {};
     alias_Window_Message_initialize.call(this);
     $gameTemp.setMSHeightFunc(this.setHeight.bind(this));
     this.setHeight(RS.MessageSystem.Params.numVisibleRows);
-    this.createNewContents();
+    this.createFaceContents();
+  };
+
+  Window_Message.prototype.loadWindowskin = function() {
+    this.windowskin = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
+    this.windowskin.addLoadListener(function() {
+      Color.baseColor = this.textColor(0);
+    }.bind(this));
   };
 
   Window_Message.prototype.needsNewPage = function(textState) {
     return (!this.isEndOfText(textState) && textState.y + textState.height > this.contentsHeight());
   };
 
-  Window_Message.prototype.createNewContents = function() {
-    this._newContents = new Sprite();
-    this._newContents.x = 0;
-    this._newContents.y = 0;
-    this.addChild(this._newContents);
-    return this._newContents;
+  Window_Message.prototype.createFaceContents = function() {
+    this._faceContents = new Sprite();
+    this._faceContents.x = 0;
+    this._faceContents.y = 0;
+    this.addChild(this._faceContents);
+    return this._faceContents;
   };
 
-  Window_Message.prototype.removeNewContents = function() {
-    if(this._newContents) this.removeChild(this._newContents);
+  Window_Message.prototype.removeFaceContents = function() {
+    if(this._faceContents) this.removeChild(this._faceContents);
   };
 
   Window_Message.prototype.newLineX = function() {
-    if(/^Big_/i.exec( $gameMessage.faceName() ) ) {
-      return ($gameMessage.faceIndex() > 0) ? 0 : RS.MessageSystem.Params.textStartX;
+    var reg = /^Big_/i;
+    var faceName = $gameMessage.faceName();
+    var faceIndex = $gameMessage.faceIndex();
+    if( reg.exec( faceName ) ) {
+      return (faceIndex > 0) ? 0 : RS.MessageSystem.Params.textStartX;
     } else {
-      return (($gameMessage.faceName()) ? RS.MessageSystem.Params.faceStartOriginX : 0);
+      return ((faceName) ? RS.MessageSystem.Params.faceStartOriginX : 0);
     }
   };
 
   Window_Message.prototype.drawBigFace = function(faceName) {
-    this._newContents.bitmap = ImageManager.loadFace(faceName);
-    this._newContents.y = (Graphics.boxHeight - this._faceBitmap.height) - this.y + RS.MessageSystem.Params.faceOY;
 
-    if($gameMessage.faceIndex() > 0) {
-      this._newContents.x = (Graphics.boxWidth - this._faceBitmap.width) - this.x + RS.MessageSystem.Params.faceOX;
+    this.loadMessageFace();
+    var w = Graphics.boxWidth - this._faceBitmap.width;
+    var h = Graphics.boxHeight - this._faceBitmap.height;
+    var offsetX = this.x + RS.MessageSystem.Params.faceOX;
+    var offsetY = this.y + RS.MessageSystem.Params.faceOY;
+    var faceIndex = $gameMessage.faceIndex();
+
+    this._faceContents.bitmap = this._faceBitmap;
+
+    if(faceIndex > 0) {
+      this._faceContents.x = w - offsetX;
     } else {
-      this._newContents.x = this.x + RS.MessageSystem.Params.faceOX;
+      this._faceContents.x = offsetX;
     }
+
+    this._faceContents.y = h - offsetY;
+
   };
 
   Window_Message.prototype.drawMessageFace = function() {
-    if(/^Big_/i.exec( $gameMessage.faceName() ) ) {
-      this.drawBigFace($gameMessage.faceName());
+
+    var reg = /^Big_/i;
+    var faceName = $gameMessage.faceName();
+    var faceIndex = $gameMessage.faceIndex();
+
+    if(reg.exec( faceName ) ) {
+      this.drawBigFace( faceName );
     } else {
-      this.drawFace($gameMessage.faceName(), $gameMessage.faceIndex(), 0, 0);
+      this.drawFace( faceName, faceIndex , 0, 0);
     }
+
+  };
+
+  Window_Message.prototype.isAlreadyDrawnFace = function () {
+    return this._faceContents.bitmap || this.newLineX() > 0;
+  };
+
+  Window_Message.prototype.setFaceZIndex = function (zIndex) {
+    zIndex = zIndex || 0;
+    if(this.parent && RS.MessageSystem.Params.faceSide) this.setChildIndex( this._faceContents, zIndex );
+  };
+
+  Window_Message.prototype.clearFaceBitmap = function () {
+    if(this._faceContents.bitmap) this._faceContents.bitmap = null;
+  };
+
+  Window_Message.prototype.redrawFaceImage = function (textState, faceName, faceIndex, x, y, width, height) {
+
+    if(!this.isAlreadyDrawnFace()) return;
+
+    width = width || Window_Base._faceWidth;
+    height = height || Window_Base._faceHeight;
+    faceName = faceName.trim() || "";
+    faceIndex = parseInt(faceIndex) || 0;
+
+    $gameMessage._faceName = faceName;
+    $gameMessage._faceIndex = faceIndex;
+
+    if( /^Big_/i.test( faceName ) ) {
+      // TODO: 텍스쳐를 교체하는 코드.
+      this.removeFaceContents();
+      this.createFaceContents();
+      this.setFaceZIndex();
+      this.drawBigFace( faceName );
+    } else {
+      // TODO: 다른 플러그인의 영향으로 얼굴 이미지가 오른쪽에 표시된다면 텍스트 영역이 삭제될 수도 있다.
+      // 특정 영역 삭제 및 일반 얼굴 이미지 묘화
+      this.contents.clearRect(x, y, width, height);
+      this.drawFace(faceName, faceIndex, 0, 0);
+    }
+
+    // ImageManager.releaseReservation(RS.MessageSystem.Params._imageReservationId);
+
   };
 
   var alias_Window_Message_newPage = Window_Message.prototype.newPage;
   Window_Message.prototype.newPage = function(textState) {
-    if(this.parent && RS.MessageSystem.Params.faceSide) this.setChildIndex( this._newContents, 0 );
-    if(this._newContents.bitmap) this._newContents.bitmap = null;
+    this.setFaceZIndex();
+    this.clearFaceBitmap();
     this.openBalloon( $gameMessage.getBalloon() );
     alias_Window_Message_newPage.call( this, textState );
   };
@@ -1961,6 +2144,7 @@ var Color = Color || {};
     text = text.replace(regGroup[tcGroup.SKILL], function() {
       return $dataSkills[parseInt(arguments[1])].name || '';
     }.bind(this));
+    text = text.replace(regGroup[tcGroup.FACE], '');
     return text;
   };
 
@@ -1989,67 +2173,92 @@ var Color = Color || {};
 
   };
 
-  Window_Message.prototype.updateBalloonPosition = function() {
-    var owner, mx, my, dx, dy, tileHeight, tx, ty, scaleY, ny;
-
+  Window_Message.prototype.isActiveInBalloon = function () {
     // -2 라면 이 함수를 처리하지 않습니다.
     if($gameMessage.getBalloon() === -2) {
       this.updatePlacement();
-      return;
+      return false;
     };
+    return true;
+  };
 
-    // 말풍선 소유자의 화면 좌표
-    owner = $gameMap.getMsgOwner();
-    mx = owner.screenX();
-    my = owner.screenY();
-    tx = this._width / 2;
-    ty = this._height;
-    scaleY = 1;
-    tileHeight = $gameMessage.getBalloonPatternHeight();
-    dx =  mx - (this._bWidth / 2);
-    dy =  my - this._bHeight - tileHeight;
-    ny = this.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
+  Window_Message.prototype.setBalloonRect = function (data) {
+    this.x =  data.dx;
+    this.y =  data.dy;
+    this.width = this._bWidth;
+    this.height = this._bHeight;
+  };
 
+  Window_Message.prototype.setBalloonPlacement = function (data) {
     // 화면 좌측
-    if(mx - (this._bWidth / 2) < 0) {
-      dx = 0;
-      tx = this.canvasToLocalX(mx);
+    if(!data) return;
+    if(data.mx - (this._bWidth / 2) < 0) {
+      data.dx = 0;
+      data.tx = this.canvasToLocalX(data.mx);
     }
 
     // 화면 우측
-    if(mx - (this._bWidth / 2) > Graphics.boxWidth - this._bWidth ) {
-      dx = Graphics.boxWidth - this._bWidth;
-      tx = this.canvasToLocalX(mx);
+    if(data.mx - (this._bWidth / 2) > Graphics.boxWidth - this._bWidth ) {
+      data.dx = Graphics.boxWidth - this._bWidth;
+      data.tx = this.canvasToLocalX(data.mx);
     }
 
     // 화면 상단
-    if( (my - this._bHeight - tileHeight / 2) < 0 ) {
-      dy = my + tileHeight / 2;
-      scaleY = -1;
-      ty = (this._height * scaleY) + this._height;
-      ny = (this.y + this._bHeight) + RS.MessageSystem.Params.nameWindowY;
+    if( (data.my - this._bHeight - data.tileHeight / 2) < 0 ) {
+      data.dy = data.my + data.tileHeight / 2;
+      data.scaleY = -1;
+      data.ty = (this._height * data.scaleY) + this._height;
+      data.ny = (this.y + this._bHeight) + RS.MessageSystem.Params.nameWindowY;
     }
 
     // 화면 하단
-    if(my - this._bHeight > Graphics.boxHeight - this._bHeight ) {
-      dy = Graphics.boxWidth - this._bHeight;
-      ty = this._height;
+    if(data.my - this._bHeight > Graphics.boxHeight - this._bHeight ) {
+      data.dy = Graphics.boxWidth - this._bHeight;
+      data.ty = this._height;
     }
 
-    // 말풍선 위치 및 크기 설정
-    this.x =  dx;
-    this.y =  dy;
-    this.width = this._bWidth;
-    this.height = this._bHeight;
+    return data;
 
-    // 멈춤 표시 스프라이트 위치 조정
-    this._windowPauseSignSprite.move(tx, ty);
-    this._windowPauseSignSprite.scale.y = scaleY;
+  };
 
-    this._nameWindow.y = ny;
+  Window_Message.prototype.updateSubBalloonElements = function (data) {
+    this._windowPauseSignSprite.move(data.tx, data.ty);
+    this._windowPauseSignSprite.scale.y = data.scaleY;
+    this._nameWindow.y = data.ny;
 
     // 1프레임 대기
     this.startWait(1);
+
+  };
+
+  Window_Message.prototype.updateBalloonPosition = function() {
+    var data = {};
+
+    if(!this.isActiveInBalloon()) return;
+
+    // 말풍선 소유자의 화면 좌표
+    var owner = $gameMap.getMsgOwner();
+    data.mx = owner.screenX();
+    data.my = owner.screenY();
+
+    data.tx = this._width / 2;
+    data.ty = this._height;
+    data.scaleY = 1;
+    data.tileHeight = $gameMessage.getBalloonPatternHeight();
+    data.dx = data.mx - (this._bWidth / 2);
+    data.dy = data.my - this._bHeight - data.tileHeight;
+    data.ny = this.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
+
+    data = this.setBalloonPlacement(Object.create(data));
+
+    // 말풍선 위치 및 크기 설정
+    this.setBalloonRect(data);
+
+    // 멈춤 표시 스프라이트 위치 조정
+    this.updateSubBalloonElements(data);
+
+    if(this.transform) this.updateTransform();
+
   };
 
   Window_Message.prototype.setupOwner = function(sign) {
@@ -2284,6 +2493,7 @@ var Color = Color || {};
     text = text.replace(regGroup[tcGroup.SKILL], function() {
       return $dataSkills[parseInt(arguments[1])].name || '';
     }.bind(this));
+    text = text.replace(regGroup[tcGroup.FACE], '');
     return text;
   };
 
@@ -2312,6 +2522,10 @@ var Color = Color || {};
   RS.Window_Name.prototype.close = function() {
     Window_Base.prototype.close.call(this);
     this.changeTextColor(this.textColor(0));
+  };
+
+  RS.Window_Name.prototype.loadWindowskin = function() {
+    this.windowskin = ImageManager.loadSystem(RS.MessageSystem.Params.windowskinForNameWindow);
   };
 
   //============================================================================
@@ -2375,6 +2589,8 @@ var Color = Color || {};
       case 2:
       this.setAlignRight(this._textState);
       break;
+      default:
+      this.setAlignLeft(this._textState);
     }
 
   };
@@ -2459,6 +2675,7 @@ var Color = Color || {};
     text = text.replace(regGroup[tcGroup.SKILL], function() {
       return $dataSkills[parseInt(arguments[1])].name || '';
     }.bind(this));
+    text = text.replace(regGroup[tcGroup.FACE], '');
     return text;
   };
 
@@ -2467,26 +2684,127 @@ var Color = Color || {};
     // 텍스트를 정렬합니다
     switch($gameMessage.getAlign()) {
       case 1:
-      this.setAlignCenter(this._textState);
+      this.setAlignCenter(textState);
       break;
       case 2:
-      this.setAlignRight(this._textState);
+      this.setAlignRight(textState);
       break;
+      default:
+      this.setAlignLeft(textState);
     }
+  };
+
+  Window_Message.prototype.setAlignLeft = function(textState) {
+    var padding = this.textPadding();
+    textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
+    textState.x = this.newLineX() + (padding * 2);
+    textState.left = textState.x;
   };
 
   Window_Message.prototype.setAlignCenter = function(textState) {
     var padding = this.textPadding();
     textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
-    textState.x = ( this.newLineX() + this.contentsWidth() + padding ) / 2 - textState.tx / 2;
+    textState.x = ( this.newLineX() + this.contentsWidth() + padding * 2 ) / 2 - textState.tx / 2;
     textState.left = textState.x;
   };
 
   Window_Message.prototype.setAlignRight = function(textState) {
     var padding = this.textPadding();
     textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
-    textState.x = ( this.contentsWidth() - padding) - textState.tx;
+    textState.x = ( this.contentsWidth() - padding * 2) - textState.tx;
     textState.left = textState.x;
+  };
+
+  //============================================================================
+  // Window_ChoiceList
+  //============================================================================
+
+  var alias_Window_ChoiceList_initialize = Window_ChoiceList.prototype.initialize;
+  Window_ChoiceList.prototype.initialize = function (messageWindow) {
+    alias_Window_ChoiceList_initialize.call(this, messageWindow);
+    this._isDirty = false;
+  };
+
+  Window_ChoiceList.prototype.initWithStyle = function (type) {
+    switch (type) {
+      case 'RMXP':
+        this.onChangeStyleToRMXP();
+        break;
+      default:
+        this.onChangeStyleToDefault();
+    }
+  };
+
+  var alias_Window_ChoiceList_updatePlacement = Window_ChoiceList.prototype.updatePlacement;
+  Window_ChoiceList.prototype.updatePlacement = function() {
+    var type = RS.MessageSystem.Params.choiceWindowStyle;
+    this.initWithStyle(type);
+  };
+
+  Window_ChoiceList.prototype.onChangeStyleToRMXP = function () {
+    if(!this._messageWindow.isActiveInBalloon()) {
+      RS.MessageSystem.Params.isTempSpriteContainerVisibility = false;
+      this.updateOpacity();
+      this.setPlacement();
+    } else {
+      this.onChangeStyleToDefault();
+    }
+  };
+
+  Window_ChoiceList.prototype.onChangeStyleToDefault = function () {
+    RS.MessageSystem.Params.isTempSpriteContainerVisibility = true;
+    this.needToUpdateWhenChangingVisibility();
+    alias_Window_ChoiceList_updatePlacement.call(this);
+  };
+
+  Window_ChoiceList.prototype.updateOpacity = function () {
+    // 텍스트를 제외한 모든 것들이 렌더링에서 제외된다.
+    // visible을 변경하면 바로 적용되지만,
+    // alpha의 경우, updateTransform()을 수동으로 호출하거나,
+    // 부모의 updateTransform()이 호출될 수 있게 해야 한다.
+    this._windowSpriteContainer.visible = false;
+  };
+
+  Window_ChoiceList.prototype.needToUpdateWhenChangingVisibility = function () {
+    var visible = RS.MessageSystem.Params.isTempSpriteContainerVisibility;
+    if(this._windowSpriteContainer.visible !== visible) {
+      this._windowSpriteContainer.visible = visible;
+    }
+  };
+
+  Window_ChoiceList.prototype.setPlacement = function () {
+
+    // 특정 영역을 마스킹하여 렌더링하고 싶지 않을 때 사용하는 옵션이다.
+    // 프레임 버퍼가 지워질 때, 이 윈도우 영역에 있는 것이 모두 지워지므로,
+    // false로 설정해 마스킹이 되지 않도록 했다.
+    this._isWindow = false;
+
+    var messageHeight = this._messageWindow.windowHeight();
+    var messageTextState = this._messageWindow._textState;
+    var textLength, currentTextHeight, height;
+
+    if(messageTextState.text) {
+
+      textLength = messageTextState.text.slice(0).split('\n').length;
+      // fittingHeight 함수에 패딩 값이 포함되었기 때문에, 패딩 값을 빼준 것.
+      currentTextHeight = this.fittingHeight(textLength) - this.standardPadding() * 2;
+      height = this._messageWindow.height - currentTextHeight;
+
+    } else {
+
+      currentTextHeight = textLength = 0;
+      height = this._messageWindow.height;
+
+    }
+
+    this.width = this._messageWindow.width - this._messageWindow.newLineX();
+
+    // messageHeight는 원래 높이, height는 텍스트가 없는 부분의 높이
+    this.height = (height <= 0) ? messageHeight : height;
+
+    this.x = this._messageWindow.x + this._messageWindow.newLineX();
+    this.y = this._messageWindow.y + currentTextHeight;
+
   };
 
   //===========================================================================
@@ -2529,6 +2847,34 @@ var Color = Color || {};
   //===========================================================================
   // Game_Interpreter
   //===========================================================================
+
+  if(Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= '1.5.0') {
+    var alias_Game_Interpreter_requestImages = Game_Interpreter.requestImages;
+    Game_Interpreter.requestImages = function(list, commonList) {
+      alias_Game_Interpreter_requestImages.call(this, list, commonList);
+      if(!list) return;
+      list.forEach(function(command) {
+        var params = command.parameters;
+        switch(command.code){
+          case 401:
+          var tcGroup = RS.MessageSystem.TextCodes.ENUM;
+          var regGroup = RS.MessageSystem.Reg.Group;
+          var text = params[0].slice(0);
+          text = text.replace(/\\/g, '\x1b');
+          var data = text.match(regGroup[tcGroup.FACE]);
+          if(data) {
+            data.forEach(function (e, i, a) {
+              var faceName = RegExp.$1.split(',')[0].trim();
+              // TODO: 캐시가 가득찰 경우, 삭제될 위험성이 있습니다
+              ImageManager.loadFace(faceName);
+              return '';
+            });
+          }
+          break;
+        };
+      });
+    };
+  }
 
   var alias_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
@@ -2578,7 +2924,9 @@ var Color = Color || {};
           case 'padding':
           RS.MessageSystem.Params.nameWindowStdPadding = Number(args[2]);
           break;
-          default:
+          case 'windowskin': case '윈도우스킨':
+          RS.MessageSystem.Params.windowskinForNameWindow = args.slice(2, args.length).join('');
+          break;
         }
         break;
         //-------------------------------------------------------------------------
@@ -2606,6 +2954,9 @@ var Color = Color || {};
         break;
         case 'contentsOpacity': case '컨텐츠투명도':
         RS.MessageSystem.Params.contentsOpacity = Number(args[1]);
+        break;
+        case 'windowskin':
+        RS.MessageSystem.Params.windowskin = args.slice(1, args.length).join('');
         break;
         // End main switch
       }
