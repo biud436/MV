@@ -25,7 +25,7 @@
  * @param Text Animation
  *
  * @param Text Wait Time
- * @parent Text
+ * @parent Text Animation
  * @type number
  * @desc Specify up the wait time for Arabic texts
  * (1000 Millisecond = 1 Sec)
@@ -46,8 +46,8 @@
  * -----------------------------------------------------------------------------
  * This plugin will rewrite everything that is required for Arabic so you will
  * have to notice that it may occur the collision issue with another similar
- * plugin when using this plugin. Please notice to me if it is not working
- * due to the collision issue with another plugin. In that case, I'll react for
+ * plugin when using this plugin. Please notice to me if it is not working
+ * due to the collision issue with another plugin. In that case, I'll react for
  * your comment in some way (This plugin exists purely to help Arabic user or
  * someone else)
  * =============================================================================
