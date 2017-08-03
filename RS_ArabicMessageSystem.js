@@ -856,7 +856,9 @@ function ArabicUtils() {
       sprite.pivot.x = pw - 2;
       sprite.scale.x = -1;
 
-      sprite.bitmap.blt(bitmap, sx, sy, pw, ph, 0, 0);
+      setTimeout(function() {
+        sprite.bitmap.blt(bitmap, sx, sy, pw, ph, 0, 0);
+      }, 0);
 
       if(this._arabicTexts) this._arabicTexts.addChild(sprite);
 
