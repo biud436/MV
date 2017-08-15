@@ -305,15 +305,14 @@ Imported.Window_KorNameEdit = true;
     this._textBox.type = "text";
     this._textBox.id = "textBox";
     this._textBox.style.opacity = 0;
-    this._textBox.style.zIndex = 1000;
+    this._textBox.style.zIndex = 8;
     this._textBox.autofocus = false;
-    this._textBox.width = 1;
-    this._textBox.height = 1;
     this._textBox.multiple = false;
+
     this._textBox.style.imeMode = 'active';
 
     if($gameSystem.isJapanese()) {
-      this._textBox.inputmode = 'katakana';
+      this._textBox.inputmode = 'hiragana';
     }
 
     this._textBox.style.position = 'absolute';
@@ -321,6 +320,10 @@ Imported.Window_KorNameEdit = true;
     this._textBox.style.left = 0;
     this._textBox.style.right = 0;
     this._textBox.style.bottom = 0;
+
+    // For decreasing a layout size
+    this._textBox.style.width = '1px';
+    this._textBox.style.height = '1px';
 
     this._textBox.onkeydown = this.onKeyDown.bind(this);
 
@@ -340,14 +343,28 @@ Imported.Window_KorNameEdit = true;
     this._textBox.onchange = func;
   };
 
-  TextBox.prototype.terminateTextBox = function() {
+  TextBox.prototype.removeEvent = function() {
+    this._textBox.onchange = null;
+  };
+
+  TextBox.prototype.removeElement = function () {
+    this._textBox.style.display = 'none';
     document.body.removeChild(this._textBox);
+  };
+
+  TextBox.prototype.terminateTextBox = function() {
+    this.removeEvent();
+    this.removeElement();
     this.startToOriginalInput();
   };
 
   TextBox.prototype.onKeyDown = function(e) {
     var keyCode = e.which;
+
+    // TODO: It may be performance down because recalculating a style and layout.
+    // link : https://goo.gl/29Q9wD
     this.getFocus();
+    
     if (keyCode < TextBox.IS_NOT_CHAR) {
       if(keyCode === TextBox.BACK_SPACE) {
         // if(e && e.preventDefault) e.preventDefault();

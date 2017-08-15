@@ -226,6 +226,10 @@ function Scene_InputDialog() {
   };
 
   RS.InputDialog.getScreenWidth = function (value) {
+
+    // TODO: layout is needed and calculate so performance is lower.
+    // refer to this link https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+
     var canvas = Graphics._canvas.getBoundingClientRect();
     var canvasX = canvas.left;
 
@@ -238,6 +242,10 @@ function Scene_InputDialog() {
   };
 
   RS.InputDialog.getScreenHeight = function (value) {
+
+    // TODO: layout is needed and calculate so performance is lower.
+    // refer to this link https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+
     var canvas = Graphics._canvas.getBoundingClientRect();
     var canvasY = canvas.top;
 
@@ -302,6 +310,7 @@ function Scene_InputDialog() {
   TextBox.prototype.createTextBox = function(id) {
 
     var self = this;
+    var field = document.getElementById(this._fieldId);
 
     this._textBox = document.createElement('input');
     this._textBox.type = "text";
@@ -313,7 +322,7 @@ function Scene_InputDialog() {
     this._textBox.autofocus = false;
     this._textBox.multiple = false;
 
-    // TODO: 너무 길다. 스타일시트를 지정할 수 있게 하면 좋을 것 같다.
+    // TODO: How could it be short this code?
     this._textBox.style.imeMode = 'active';
     this._textBox.style.position = 'absolute';
     this._textBox.style.top = 0;
@@ -339,43 +348,19 @@ function Scene_InputDialog() {
     // Text hint
     this._textBox.placeholder = RS.InputDialog.Params.localText;
 
-    this._textBox.addEventListener('keydown', this.onKeyDown.bind(this));
-
-    this._textBox.addEventListener('focus', function () {
-      var text = document.getElementById(RS.InputDialog.Params.szTextBoxId);
-      if(text && Utils.isMobileDevice()) {
-        text.style.bottom = RS.InputDialog.getScreenHeight(Graphics.boxHeight / 2) + 'px';
-      }
-    });
-
-    this._textBox.addEventListener('blur', function () {
-      var text = document.getElementById(RS.InputDialog.Params.szTextBoxId);
-      // TODO: 텍스트 에디터가 이미 사라진 시점에서 실행되는 경우가 있었다.
-      if(text && Utils.isMobileDevice()) {
-        text.style.bottom = '0';
-        text.focus();
-      }
-    });
-
-    var field = document.getElementById(this._fieldId);
     field.appendChild(this._textBox);
 
     Graphics._centerElement(this._textBox);
 
-    window.addEventListener('resize', function () {
-      if(SceneManager._scene instanceof Scene_InputDialog) {
-        var field = document.getElementById(self._fieldId);
-        var textBox = document.getElementById(self._textBoxID);
-        if(field && textBox) {
-            Graphics._centerElement(field);
-            Graphics._centerElement(textBox);
-            textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
-            textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
-            textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
-        }
-      }
-    }, false);
+    this.addAllEventListener();
 
+  };
+
+  TextBox.prototype.addAllEventListener = function () {
+    this._textBox.addEventListener('keydown', this.onKeyDown.bind(this), false);
+    this._textBox.addEventListener('focus', this.onFocus.bind(this), false);
+    this._textBox.addEventListener('blur', this.onBlur.bind(this), false);
+    window.addEventListener('resize', this.onResize.bind(this), false);
   };
 
   TextBox.prototype.setRect = function () {
@@ -429,6 +414,36 @@ function Scene_InputDialog() {
 
   };
 
+  TextBox.prototype.onFocus = function () {
+    var text = document.getElementById(RS.InputDialog.Params.szTextBoxId);
+    if(text && Utils.isMobileDevice()) {
+      text.style.bottom = RS.InputDialog.getScreenHeight(Graphics.boxHeight / 2) + 'px';
+    }
+  };
+
+  TextBox.prototype.onBlur = function () {
+    var text = document.getElementById(RS.InputDialog.Params.szTextBoxId);
+    if(text && Utils.isMobileDevice()) {
+      text.style.bottom = '0';
+      text.focus();
+    }
+  };
+
+  TextBox.prototype.onResize = function () {
+    var self = this;
+    if(SceneManager._scene instanceof Scene_InputDialog) {
+      var field = document.getElementById(self._fieldId);
+      var textBox = document.getElementById(self._textBoxID);
+      if(field && textBox) {
+          Graphics._centerElement(field);
+          Graphics._centerElement(textBox);
+          textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
+          textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+          textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
+      }
+    }
+  };
+
   TextBox.prototype.isScreenLock = function () {
     var val = parseInt(performance.now() - this._lastInputTime);
     var ret = false;
@@ -478,7 +493,39 @@ function Scene_InputDialog() {
     return field.style.zIndex > 0;
   };
 
+  TextBox.prototype.removeAllEventListener = function () {
+    this._textBox.onchange = undefined;
+    this._func = null;
+
+    this._textBox.removeEventListener('keydown', this.onKeyDown.bind(this));
+    this._textBox.removeEventListener('focus', this.onFocus.bind(this));
+    this._textBox.removeEventListener('blur', this.onBlur.bind(this));
+
+    window.removeEventListener('resize', this.onResize.bind(this), false);
+
+  };
+
+  /**
+   * @author MDN
+   */
+  TextBox.prototype.updateScale = function () {
+
+    var canvas = Graphics._canvas;
+    var field = document.getElementById(this._fieldId);
+
+    var scaleX = window.innerWidth / canvas.width;
+    var scaleY = window.innerHeight / canvas.height;
+
+    var scaleToFit = Math.min(scaleX, scaleY);
+    var scaleToCover = Math.max(scaleX, scaleY);
+
+    field.style.transformOrigin = '0 0';
+    field.style.transform = 'scale(' + scaleToFit + ')';
+
+  };
+
   TextBox.prototype.terminate =  function() {
+    this.removeAllEventListener();
     this.terminateTextBox();
   };
 

@@ -12,8 +12,8 @@
  * @desc if true, it doesn't be rendering an object that is an out of the screen.
  * @default true
  *
- * @help 
- * 
+ * @help
+ *
  */
 /*:ko
  * @plugindesc RS_ViewportCulling
@@ -34,11 +34,11 @@
  * @on 사용
  * @off 미사용
  *
- * @help 
- * 이 플러그인은 화면 바깥으로 나간 오브젝트들을 렌더링하지 않습니다. 
+ * @help
+ * 이 플러그인은 화면 바깥으로 나간 오브젝트들을 렌더링하지 않습니다.
  * 또한 모바일에서 테스트 용도로 타일맵을 아예 생성하지 않을 수 있습니다.
  *
- */ 
+ */
 
 var Imported = Imported || {};
 Imported.RS_ViewportCulling = true;
@@ -158,6 +158,59 @@ Imported.RS_ViewportCulling = true;
       this._tilemap.pivot.x = $gameMap.displayX() * $gameMap.tileWidth();
       this._tilemap.pivot.y = $gameMap.displayY() * $gameMap.tileHeight();
     };
-  }
+  };
+
+  //============================================================================
+  // SceneManager
+  //============================================================================
+
+  SceneManager._deltaTime = 1.0 / 60.0;
+
+  SceneManager.getDistancePerFrame = function (d) {
+    d = d || 256;
+    var deltaTime = this._deltaTime;
+    var defaultDeltaTime = parseFloat(1.0 / 60.0);
+    var retValue = d * (defaultDeltaTime / deltaTime);
+    return retValue;
+  };
+
+  //============================================================================
+  // Game_CharacterBase
+  //============================================================================
+
+  Game_CharacterBase.prototype.distancePerFrame = function() {
+    return Math.pow(2, this.realMoveSpeed()) / SceneManager.getDistancePerFrame(256);
+  };
+
+  //============================================================================
+  // Game_Map
+  //============================================================================
+
+  Game_Map.prototype.scrollDistance = function() {
+    return Math.pow(2, this._scrollSpeed) / SceneManager.getDistancePerFrame(256);
+  };
+
+  //============================================================================
+  // Scene_Map
+  //============================================================================
+
+  var alias_Scene_Base_startFadeOut = Scene_Base.prototype.startFadeOut;
+  Scene_Base.prototype.startFadeOut = function(duration, white) {
+    var isMobile = Utils.isMobileDevice();
+    if(isMobile) {
+      if(this._fadeSprite) {
+        this._fadeSprite.visible = false;
+      }
+      return false;
+    }
+    alias_Scene_Base_startFadeOut.call(this, duration, white);
+  };
+
+  var alias_Scene_Map_callMenu = Scene_Map.prototype.callMenu;
+  Scene_Map.prototype.callMenu = function() {
+    var isMobile = Utils.isMobileDevice();
+    if(isMobile) return;
+    alias_Scene_Map_callMenu.call(this);
+  };
 
   })();
