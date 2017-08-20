@@ -58,6 +58,8 @@ Imported.RS_SimpleProtector = true;
   Scene_Map.prototype.updateCheckPartyGold = function() {
     if(!$gameParty.isValidGold()) {
       console.warn("Memory hacking has detected.");
+      alert("Memory hacking has detected.");
+      SceneManager.exit();
     }
   };
    
