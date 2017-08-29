@@ -51,12 +51,10 @@ function WindowManager() {
     }
   }
 
-  if(!!RS.WindowManager) {
-    Object.defineProperty(WindowManager, 'alpha', {
-      set: function(value) {
-        RS.WindowManager.setAlpha(value);
-      }
-    });
-  }
+  Object.defineProperty(WindowManager, 'alpha', {
+    set: function(value) {
+      RS.WindowManager.setAlpha(value);
+    }
+  });
 
 })(WindowManager);
