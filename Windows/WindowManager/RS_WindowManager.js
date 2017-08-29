@@ -16,29 +16,40 @@ function WindowManager() {
   throw new Error("This is a static class");
 }
 
-(function () {
+(function ($) {
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_WindowManager>');
   });
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
-  
+
+  $.getPath = function () {
+    var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, '/js/libs');
+    if (path.match(/^\/([A-Z]\:)/)) {
+      path = path.slice(1);
+    }
+    return decodeURIComponent(path);
+  };
+
   if( Utils.isNwjs() ) {
     if(process && process.platform && process.platform === 'win32') {
-      RS.WindowManager = require('./js/libs/WindowManager.node');
-    } else {
-      console.error('This plugin is not supported in Mac OS');
-      return false;
+      $.alpha = function(value) {
+        "use strict";
+        var child_process = require('child_process');
+        var fileName = $.getPath() + "/WindowManager.exe";
+        var projectName = document.querySelector('title').text;
+        child_process.exec(`cmd.exe /K ${fileName} /c ${value} ${projectName}`);
+      };
     }
-  }  
-    
+  }
+
   if(!!RS.WindowManager) {
     Object.defineProperty(WindowManager, 'alpha', {
       set: function(value) {
         RS.WindowManager.setAlpha(value);
       }
-    });    
+    });
   }
 
-})();
+})(WindowManager);
