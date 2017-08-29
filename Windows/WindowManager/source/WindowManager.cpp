@@ -19,11 +19,11 @@ using namespace std;
 HWND g_hWnd;
 
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
-    char buff[255];
+	char buff[255];
 	string szClassName = NW_CLASS_NAME;
 	string szWindowName = (TCHAR*)lParam;
 	
-    if (IsWindowVisible(hWnd)) {	
+	if (IsWindowVisible(hWnd)) {	
 		GetWindowText(hWnd, (LPSTR) buff, 254);		
 		
 		if(szWindowName.compare(buff) != 0) {
@@ -38,9 +38,9 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
 		}
 		
 		g_hWnd = hWnd;
-    }
+	}
 	
-    return TRUE;
+	return TRUE;
 }
 
 int SetNodeWebkitWindowOpacity(int opacity, string wndName)
