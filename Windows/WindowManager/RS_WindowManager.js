@@ -8,6 +8,13 @@ Imported.RS_WindowManager = true;
 /*:
  * @plugindesc (v1.0.0) <RS_WindowManager>
  * @author biud436
+ *
+ * @help
+ * The x is the number between 0 and 255
+ *
+ *    WindowManager.alpha = x;
+ *
+ *
  */
 
 var RS = RS || {};
@@ -34,7 +41,7 @@ function WindowManager() {
 
   if( Utils.isNwjs() ) {
     if(process && process.platform && process.platform === 'win32') {
-      $.alpha = function(value) {
+      $.setAlpha = function(value) {
         "use strict";
         var child_process = require('child_process');
         var fileName = $.getPath() + "/WindowManager.exe";
