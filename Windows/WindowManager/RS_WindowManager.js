@@ -6,15 +6,33 @@ var Imported = Imported || {};
 Imported.RS_WindowManager = true;
 
 /*:
- * @plugindesc (v1.0.0) <RS_WindowManager>
+ * @plugindesc (v1.0.1) This plugin allows you to indicate the transparent window <RS_WindowManager>
  * @author biud436
  *
  * @help
- * The x is the number between 0 and 255
+ * =============================================================================
+ * Introductions
+ * =============================================================================
+ * When you set this property, it will set the transparent window.
+ * The alpha property can set as the number between 0 and 255.
+ * Here is an example code that easily sets up like this.
  *
- *    WindowManager.alpha = x;
+ *  WindowManager.alpha = x;
  *
+ * Note that the features are limited to Windows target.
+ * And to use this you should have installed an extension program called
+ * 'WindowManager.exe' to js/libs folder.
  *
+ * =============================================================================
+ * Known Issues
+ * =============================================================================
+ * If you have many of the Chrome Windows, it may not properly get the handle of
+ * the game program(Getting handle is only executed to a maximum of two times)
+ *
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2017.08.29 (v1.0.1) - Fixed the library with an executable file for Windows
  */
 
 var RS = RS || {};
@@ -46,7 +64,10 @@ function WindowManager() {
         var child_process = require('child_process');
         var fileName = $.getPath() + "/WindowManager.exe";
         var projectName = document.querySelector('title').text;
-        child_process.exec(`cmd.exe /K ${fileName} /c ${value} ${projectName}`);
+        var cmdProcess = child_process.exec(`cmd.exe /K ${fileName} /c ${value} ${projectName}`);
+        cmdProcess.stdout.on('data', function(data) {
+          console.log(data);
+        });
       };
     }
   }

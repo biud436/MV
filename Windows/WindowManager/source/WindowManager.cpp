@@ -18,21 +18,35 @@ using namespace std;
 int SetNodeWebkitWindowOpacity(int opacity, string wndName)
 {
 	HWND hWnd = FindWindow(NW_CLASS_NAME, wndName.c_str());
+	LONG exStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
 	char buffer[255];
+	
 	if(hWnd == NULL) {
 		GetWindowText(hWnd, buffer, 255);
 		wndName = buffer;
 		 hWnd = FindWindow(NW_CLASS_NAME, wndName.c_str());
 	}
-	SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLong(NULL, GWL_EXSTYLE) | WS_EX_LAYERED);
-	if(opacity < MINIMUM_OPACITY) opacity = MINIMUM_OPACITY;
-	if(opacity > MAXIMUM_OPACITY) opacity = MAXIMUM_OPACITY;
-	SetLayeredWindowAttributes(hWnd, NULL, opacity, LWA_ALPHA);
-	ShowWindow(hWnd, SW_SHOW);
-	if( GetLastError() != ERROR_SUCCESS ) {
-		return -1;
+	
+	if(opacity == 255) {
+		SetWindowLong(hWnd, GWL_EXSTYLE, exStyle & ~WS_EX_LAYERED);		
 	}
-	return 0;
+
+	if( exStyle & WS_EX_LAYERED ) {
+		SetWindowLong(hWnd, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);		
+	}
+		
+	if(opacity < MINIMUM_OPACITY) 
+		opacity = MINIMUM_OPACITY;
+	
+	if(opacity > MAXIMUM_OPACITY) 
+		opacity = MAXIMUM_OPACITY;
+	
+	if(SetLayeredWindowAttributes(hWnd, NULL, opacity, LWA_ALPHA)) {
+		ShowWindow(hWnd, SW_SHOW);
+		return 0;
+	}
+	
+	return -1;
 }
 
 int main(int argc, char** argv)
