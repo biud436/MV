@@ -27,6 +27,8 @@ Imported.RS_WindowManager = true;
  * Change Log
  * =============================================================================
  * 2017.08.29 (v1.0.1) - Fixed the library with an executable file for Windows
+ * 2017.08.30 (v1.0.2) : 
+ * - Fixed the issue that causes the error when calling the code called 'WindowManager.alpha'
  */
 
 var RS = RS || {};
@@ -68,7 +70,7 @@ function WindowManager() {
 
   Object.defineProperty(WindowManager, 'alpha', {
     set: function(value) {
-      RS.WindowManager.setAlpha(value);
+      $.setAlpha(value);
     }
   });
 
