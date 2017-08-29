@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_WindowManager = true;
 
 /*:
- * @plugindesc (v1.0.1) This plugin allows you to indicate the transparent window <RS_WindowManager>
+ * @plugindesc (v1.0.2) This plugin allows you to indicate the transparent window <RS_WindowManager>
  * @author biud436
  *
  * @help
