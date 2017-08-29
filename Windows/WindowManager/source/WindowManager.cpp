@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <string>
+#include <tchar.h>
 
 #define NW_CLASS_NAME "Chrome_WidgetWin_0"
 #define NW_WINDOW_NAME NULL
@@ -15,25 +16,46 @@
 
 using namespace std;
 
-int SetNodeWebkitWindowOpacity(int opacity, string wndName)
-{
-	HWND hWnd = FindWindow(NW_CLASS_NAME, wndName.c_str());
-	LONG exStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
-	char buffer[255];
-	
-	if(hWnd == NULL) {
-		GetWindowText(hWnd, buffer, 255);
-		wndName = buffer;
-		 hWnd = FindWindow(NW_CLASS_NAME, wndName.c_str());
-	}
-	
-	if(opacity == 255) {
-		SetWindowLong(hWnd, GWL_EXSTYLE, exStyle & ~WS_EX_LAYERED);		
-	}
+HWND g_hWnd;
 
-	if( exStyle & WS_EX_LAYERED ) {
-		SetWindowLong(hWnd, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);		
+BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
+    char buff[255];
+	string szClassName = NW_CLASS_NAME;
+	string szWindowName = (TCHAR*)lParam;
+	
+    if (IsWindowVisible(hWnd)) {	
+		GetWindowText(hWnd, (LPSTR) buff, 254);		
+		
+		if(szWindowName.compare(buff) != 0) {
+			return TRUE;
+		}
+		
+		memset(buff, 0, 255);
+		GetClassName(hWnd, (LPSTR) buff, 254);
+		
+		if(szClassName.compare(buff) != 0) {
+			return TRUE;
+		}
+		
+		g_hWnd = hWnd;
+    }
+	
+    return TRUE;
+}
+
+int SetNodeWebkitWindowOpacity(int opacity, string wndName)
+{	
+	BOOL ret = EnumWindows(EnumWindowsProc, (LPARAM)wndName.c_str());
+	
+	if(g_hWnd == NULL) {
+		return -1;
 	}
+	
+	cout << g_hWnd << endl;
+		
+	LONG exStyle = GetWindowLong(g_hWnd, GWL_EXSTYLE);
+		
+	SetWindowLong(g_hWnd, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);		
 		
 	if(opacity < MINIMUM_OPACITY) 
 		opacity = MINIMUM_OPACITY;
@@ -41,17 +63,19 @@ int SetNodeWebkitWindowOpacity(int opacity, string wndName)
 	if(opacity > MAXIMUM_OPACITY) 
 		opacity = MAXIMUM_OPACITY;
 	
-	if(SetLayeredWindowAttributes(hWnd, NULL, opacity, LWA_ALPHA)) {
-		ShowWindow(hWnd, SW_SHOW);
+	if(SetLayeredWindowAttributes(g_hWnd, NULL, opacity, LWA_ALPHA)) {
+		ShowWindow(g_hWnd, SW_SHOW);
 		return 0;
 	}
 	
-	return -1;
+	return -1;			
+	
 }
 
 int main(int argc, char** argv)
 {
 	const char *arg = argv[1];	
+	g_hWnd = NULL;
 	
 	arg++;
 	
