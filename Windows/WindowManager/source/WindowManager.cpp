@@ -50,8 +50,6 @@ int SetNodeWebkitWindowOpacity(int opacity, string wndName)
 	if(g_hWnd == NULL) {
 		return -1;
 	}
-	
-	cout << g_hWnd << endl;
 		
 	LONG exStyle = GetWindowLong(g_hWnd, GWL_EXSTYLE);
 		

@@ -24,12 +24,6 @@ Imported.RS_WindowManager = true;
  * 'WindowManager.exe' to js/libs folder.
  *
  * =============================================================================
- * Known Issues
- * =============================================================================
- * If you have many of the Chrome Windows, it may not properly get the handle of
- * the game program(Getting handle is only executed to a maximum of two times)
- *
- * =============================================================================
  * Change Log
  * =============================================================================
  * 2017.08.29 (v1.0.1) - Fixed the library with an executable file for Windows
