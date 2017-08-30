@@ -52,9 +52,16 @@ int SetNodeWebkitWindowOpacity(int opacity, string wndName)
 	}
 		
 	LONG exStyle = GetWindowLong(g_hWnd, GWL_EXSTYLE);
-		
-	SetWindowLong(g_hWnd, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);		
-		
+	
+	if(opacity == 255) {
+		// Remove the memory
+		// https://msdn.microsoft.com/en-us/library/windows/desktop/ms632598(v=vs.85).aspx#layered_win
+		SetWindowLong(g_hWnd, GWL_EXSTYLE, (exStyle) & ~WS_EX_LAYERED);
+		RedrawWindow( g_hWnd, NULL, NULL, RDW_ERASE|RDW_INVALIDATE|RDW_FRAME|RDW_ALLCHILDREN );
+	} else {
+		SetWindowLong(g_hWnd, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);		
+	}
+	
 	if(opacity < MINIMUM_OPACITY) 
 		opacity = MINIMUM_OPACITY;
 	
