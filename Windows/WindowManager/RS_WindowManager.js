@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_WindowManager = true;
 
 /*:
- * @plugindesc (v1.0.2) This plugin allows you to indicate the transparent window <RS_WindowManager>
+ * @plugindesc (v1.0.3) This plugin allows you to indicate the transparent window <RS_WindowManager>
  * @author biud436
  *
  * @help
@@ -27,8 +27,11 @@ Imported.RS_WindowManager = true;
  * Change Log
  * =============================================================================
  * 2017.08.29 (v1.0.1) - Fixed the library with an executable file for Windows
- * 2017.08.30 (v1.0.2) : 
+ * 2017.08.30 (v1.0.2) :
  * - Fixed the issue that causes the error when calling the code called 'WindowManager.alpha'
+ * 2017.08.30 (v1.0.3) :
+ * - Fixed the project name didn't recognize that has the white space.
+ * - Fixed issue that incorrectly gets the path after deploying the game as Windows target.
  */
 
 var RS = RS || {};
@@ -45,12 +48,11 @@ function WindowManager() {
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
-  $.getPath = function () {
-    var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, '/js/libs');
-    if (path.match(/^\/([A-Z]\:)/)) {
-      path = path.slice(1);
-    }
-    return decodeURIComponent(path);
+  $.getParentFolder = function () {
+    var path = require('path');
+    var base = path.dirname(process.mainModule.filename);
+    var ret = path.join(base, 'js/libs');
+    return ret;
   };
 
   if( Utils.isNwjs() ) {
@@ -58,9 +60,9 @@ function WindowManager() {
       $.setAlpha = function(value) {
         "use strict";
         var child_process = require('child_process');
-        var fileName = $.getPath() + "/WindowManager.exe";
+        var fileName = $.getParentFolder() + "/WindowManager.exe";
         var projectName = document.querySelector('title').text;
-        var cmdProcess = child_process.exec(`cmd.exe /K ${fileName} /c ${value} ${projectName}`);
+        var cmdProcess = child_process.exec(`cmd.exe /K ${fileName} /c ${value} "${projectName}"`);
         cmdProcess.stdout.on('data', function(data) {
           console.log(data);
         });
