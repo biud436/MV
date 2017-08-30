@@ -116,7 +116,6 @@ Imported.RS_PauseGame = true;
         var newTime = this._getTimeInMs();
         var fTime = (newTime - this._currentTime) / 1000;
         if (fTime > 0.25) fTime = 0.25;
-        if (fTime < this._deltaTime) fTime = this._deltaTime;
         this._currentTime = newTime;
         this._accumulator += fTime;
         while (this._accumulator >= this._deltaTime) {
