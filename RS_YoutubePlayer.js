@@ -15,6 +15,22 @@
  * @option medium
  * @option small
  *
+ * @param Size
+ * @type select
+ * @desc Specify the size of the default player.
+ * @default Normal
+ * @option Normal (560 * 315px)
+ * @value Normal 
+ * @option Fullscreen
+ * @value Fullscreen
+ *
+ * @param Looping
+ * @type boolean
+ * @desc Sets the video to loop or not.
+ * @default false
+ * @on Loop always
+ * @off Playback once
+ * 
  * @help
  * In general, In Android Chrome and Mobile Safari, It doesn't automatically
  * start playback. and you can stop the video by clicking around the YouTube video.
@@ -56,6 +72,9 @@
  * 2016.12.10 (v1.0.5) :
  * - Added a plugin parameter about video quality settings.
  * - Added the ability to play YouTube videos from a specified time.
+ * 2017.08.31 (v1.0.6) :
+ * - Added a feature that the video size sets up with a fullscreen mode.
+ * - Added a feature that can set the video to loop
  */
  /*:ko
   * RS_YoutubePlayer.js
@@ -73,6 +92,22 @@
   * @option large
   * @option medium
   * @option small
+  *
+  * @param Size
+  * @type select
+  * @desc 기본 유튜브 플레이어의 크기를 지정하세요
+  * @default Normal
+  * @option 보통 (560 * 315px)
+  * @value Normal 
+  * @option 전체 화면
+  * @value Fullscreen
+  *
+  * @param Looping
+  * @type boolean
+  * @desc 동영상 루프 여부를 지정하세요
+  * @default false
+  * @on 루프로 설정
+  * @off 한 번만 재생
   *
   * @help
   * 안드로이드 크롬과 모바이 사파리에서는 자동으로 동영상이 재생되지 않습니다.
@@ -123,12 +158,18 @@
   * 2016.12.10 (v1.0.5) :
   * - Added a plugin parameter about video quality settings.
   * - Added the ability to play YouTube videos from a specified time.
+  * 2017.08.31 (v1.0.6) :
+  * - Added a feature that the video size sets up with a fullscreen mode.
+  * - Added a feature that can set the video to loop
   */
 
 var Imported = Imported || {};
 Imported.RS_YoutubePlayer = true;
 
 var player;
+var RS = RS || {};
+RS.YoutubePlayer = RS.YoutubePlayer || {};
+RS.YoutubePlayer.Params = RS.YoutubePlayer.Params || {};
 
 function YTPlayer() {
   throw new Error("This is a static class");
@@ -147,8 +188,11 @@ function onYouTubeIframeAPIReady() {
     autoplay: 1,
     enablejsapi: 1,
     rel: 1,
-    showinfo: 1,
+    showinfo: 0,
     playsinline: 0,
+    controls: 0,
+    autohide: 1,
+    loop: 1,
     events: {
       'onReady': onPlayerReady,
       'onStateChange': onPlayerStateChange,
@@ -204,7 +248,12 @@ function onPlayerStateChange (event) {
       case YT.PlayerState.ENDED: // 종료됨
           console.log('Video has ended.');
           YTPlayer._status = YT.PlayerState.ENDED;
-          YTPlayer.removeAllElement();
+          if(RS.YoutubePlayer.Params.isLooping) {
+            YTPlayer.callPlayer('playVideo', []);
+            YTPlayer.callPlayer('seekTo', [0, true]);
+          } else {
+            YTPlayer.removeAllElement();
+          }
           break;
       case YT.PlayerState.PLAYING: // 재생 중
           console.log('Video is playing.');
@@ -239,18 +288,25 @@ function onPlayerStateChange (event) {
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
   var quality = parameters['Video Quality'] || 'hd720';
+  
+  RS.YoutubePlayer.Params.viewSize = parameters['Size'] || 'Normal';
+  RS.YoutubePlayer.Params.isLooping = Boolean(parameters['Looping'] === 'true');
 
   //----------------------------------------------------------------------------
   // YTPlayer
   //
   //
   YTPlayer.initialize = function() {
+    "use strict";
+    var tw = window.outerWidth - window.innerWidth;
+    var th = window.outerHeight - window.innerHeight;
+    var viewMode = RS.YoutubePlayer.Params.viewSize;
     this._init = false;
     this._status = -1;
     this._ytPlayer = document.createElement('div');
     this._ytPlayer.id = 'ytplayer';
-    this._ytPlayer.style.width = '560px';
-    this._ytPlayer.style.height = '315px';
+    this._ytPlayer.style.width = (viewMode === 'Fullscreen' ) ? `${Graphics.boxWidth - tw}px` : '560px';
+    this._ytPlayer.style.height = (viewMode === 'Fullscreen' ) ? `${Graphics.boxHeight - th}px` : '315px';
     document.body.appendChild(this._ytPlayer);
     this._tag = document.createElement('script');
     this._tag.src = "https://www.youtube.com/iframe_api";
@@ -258,10 +314,11 @@ function onPlayerStateChange (event) {
   };
 
   YTPlayer.createIframe = function () {
+    var viewMode = RS.YoutubePlayer.Params.viewSize;    
     this._iframe = document.createElement('iframe');
     this._iframe.id = 'ytplayer-iframe';
-    this._iframe.width = 560;
-    this._iframe.height = 315;
+    this._iframe.width = (viewMode === 'Fullscreen' ) ? Graphics.boxWidth : '560px';
+    this._iframe.height = (viewMode === 'Fullscreen' ) ? Graphics.boxHeight : '315px';
     this._iframe.style.opacity = '0';
     this._iframe.style.zIndex = '0';
     this._iframe.frameBorder = 0;
@@ -424,6 +481,7 @@ function onPlayerStateChange (event) {
     YTPlayer.playVideo(url);
     lastStep = setInterval(function() {
       YTPlayer.callPlayer('playVideo');
+      YTPlayer.callPlayer('setLoop', [true]);
       YTPlayer.callPlayer('setPlaybackQuality', [quality]);
       YTPlayer.callPlayer('seekTo', [startSecond, true]);
       if(YTPlayer.isOnPlayer()) {
