@@ -1,5 +1,5 @@
 /*:
- * @plugindesc Message Align
+ * @plugindesc This plugin allows you to align the text in the message system
  * @author biud436
  * @help
  * =============================================================================
@@ -14,8 +14,9 @@
  * \TA[1] - CENTER
  * \TA[2] - RIGHT
  *
- * - It may not be working properly when using px and py textcodes in Yanfly Message Core.
- * - It may not be working properly when wordwrapping in Yanfly Message Core.
+ * When using Yanfly Message Core :
+ * - Do not use the text code like as 'px' and 'py'.
+ * - Do not use the wordwrapping.
  *
  * =============================================================================
  * Change Log
