@@ -109,6 +109,8 @@
  * - Added a new feature that can change a default background image.
  * - Fixed the issue that is not changed the text after pressing the cancel button on an Android.
  * - Now it does not get the focus of a text editor unless pressing the edit button.
+ * 2017.09.15 (v1.6.5) :
+ * - Added a new feature that pre-sets the default name when the name processing.
  */
  /*:ko
   * RS_Window_KorNameEdit.js
@@ -222,6 +224,8 @@
   * - 이제 배경 이미지를 따로 설정할 수 있습니다.
   * - 취소 버튼을 눌렀을 때 간헐적으로 편집이 되지 않는 문제를 수정했습니다.
   * - 이제 수정 버튼을 누르지 않으면 포커스를 얻을 수 없습니다.
+  * 2017.09.15 (v1.6.5) :
+  * - 이름 입력 시작 시 기본 이름을 미리 설정하는 기능이 추가되었습니다.
   */
 
 var Imported = Imported || {};
@@ -364,7 +368,7 @@ Imported.Window_KorNameEdit = true;
     // TODO: It may be performance down because recalculating a style and layout.
     // link : https://goo.gl/29Q9wD
     this.getFocus();
-    
+
     if (keyCode < TextBox.IS_NOT_CHAR) {
       if(keyCode === TextBox.BACK_SPACE) {
         // if(e && e.preventDefault) e.preventDefault();
@@ -416,6 +420,11 @@ Imported.Window_KorNameEdit = true;
 
   TextBox.prototype.terminate =  function() {
     this.terminateTextBox();
+  };
+
+  TextBox.prototype.setDefaultName = function (name) {
+    this._textBox.value = name || '';
+    this.refreshNameEdit();
   };
 
   //===========================================================================
@@ -677,11 +686,12 @@ Imported.Window_KorNameEdit = true;
 
   Scene_KorName.prototype.createTextBox =  function() {
     this._textBox = new TextBox(this._editWindow);
+    if(this._actor) this._textBox.setDefaultName(this._actor.name());
     if(RSMatch.windowCenter === "true") {
       this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
     }
     this._editWindow.opacity = RSMatch.opacity;
-  }
+  };
 
   Scene_Name.prototype.onInputOk = function() {
 
