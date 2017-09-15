@@ -74,7 +74,6 @@ Imported.RS_EmbossingButtonStyleEx = true;
       context.fillStyle = grad;
       context.strokeStyle = border;
       context.strokeRect(x + lineWidth/2, y + lineWidth/2, width - lineWidth, height - lineWidth);
-      context.lineWidth = lineWidth;
       context.fillRect(x + lineWidth/2, y + lineWidth/2, width - lineWidth, height - lineWidth);
       context.restore();
       this._setDirty();
