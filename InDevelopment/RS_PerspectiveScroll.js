@@ -72,11 +72,11 @@ Imported.RS_PerspectiveScroll = true;
 
   Sprite_PerspectiveScroll.prototype.renderVertices = function (vertices) {
 
-    var			  x, y;
-  	var				temp;
-    var       x1, x2, x3, y1, y2, y3;
-  	var				a12, a13, a23;
-  	var				xl, xr;
+    var x, y;
+    var temp;
+    var x1, x2, x3, y1, y2, y3;
+    var a12, a13, a23;
+    var xl, xr;
 
     x1 = vertices[0];
     y1 = vertices[1];
@@ -85,58 +85,58 @@ Imported.RS_PerspectiveScroll = true;
     x3 = vertices[4];
     y3 = vertices[5];
 
-  	// 사전준비(y좌표로 정렬)
-  	if ( y1 > y2 ) {
-  		temp = y1;  y1 = y2;  y2 = temp;
-  		temp = x1;  x1 = x2;  x2 = temp;
-  	}
-  	if ( y1 > y3 ) {
-  		temp = y1;  y1 = y3;  y3 = temp;
-  		temp = x1;  x1 = x3;  x3 = temp;
-  	}
-  	if ( y2 > y3 ) {
-  		temp = y2;  y2 = y3;  y3 = temp;
-  		temp = x2;  x2 = x3;  x3 = temp;
-  	}
+    // 사전준비(y좌표로 정렬)
+    if ( y1 > y2 ) {
+      temp = y1;  y1 = y2;  y2 = temp;
+      temp = x1;  x1 = x2;  x2 = temp;
+    }
+    if ( y1 > y3 ) {
+      temp = y1;  y1 = y3;  y3 = temp;
+      temp = x1;  x1 = x3;  x3 = temp;
+    }
+    if ( y2 > y3 ) {
+      temp = y2;  y2 = y3;  y3 = temp;
+      temp = x2;  x2 = x3;  x3 = temp;
+    }
 
-  	// y방향에 대한 기울기
-  	a12 = ( x2 - x1 ) / ( y2 - y1 );
-  	a13 = ( x3 - x1 ) / ( y3 - y1 );
-  	a23 = ( x3 - x2 ) / ( y3 - y2 );
-  	xl = x1;  xr = x1;
+    // y방향에 대한 기울기
+    a12 = ( x2 - x1 ) / ( y2 - y1 );
+    a13 = ( x3 - x1 ) / ( y3 - y1 );
+    a23 = ( x3 - x2 ) / ( y3 - y2 );
+    xl = x1;  xr = x1;
 
-  	if ( a12 < a13 ) {
-  		for ( y = y1; y < y2; y++ ) {		// y방향 루프
-  				for ( x = xl; x < xr; x++ ) {	// x방향 루프
-  					this.drawPoints(x, y, 255, 255, 255 );
-  				}
-  			xl += a12;  xr += a13;
-  			this.flushDrawingPictures(xl, y1);
-  		}
-  		for ( y = y2; y < y3; y++ ) {		// y방향 루프
-  				for ( x = xl; x < xr; x++ ) {	// x방향 루프
-  					this.drawPoints(x, y, 255, 255, 255 );
-  				}
-  			xl += a23;  xr += a13;
-  			this.flushDrawingPictures(xl, y2);
-  		}
-  	}
-  	else {
-  		for ( y = y1; y < y2; y++ ) {		// y방향 루프
-  				for ( x = xl; x < xr; x++ ) {	// x방향 루프
-  					this.drawPoints(x, y, 255, 255, 255 );
-  				}
-  			xl += a13;  xr += a12;
-  			this.flushDrawingPictures(xl, y1);
-  		}
-  		for ( y = y2; y < y3; y++ ) {		// y방향 루프
-  				for ( x = xl; x < xr; x++ ) {	// x방향 루프
-  					this.drawPoints(x, y, 255, 255, 255 );
-  				}
-  			xl += a13;  xr += a23;
-  			this.flushDrawingPictures(xl, y2);
-  		}
-  	}
+    if ( a12 < a13 ) {
+      for ( y = y1; y < y2; y++ ) {    // y방향 루프
+          for ( x = xl; x < xr; x++ ) {  // x방향 루프
+            this.drawPoints(x, y, 255, 255, 255 );
+          }
+        xl += a12;  xr += a13;
+        this.flushDrawingPictures(xl, y1);
+      }
+      for ( y = y2; y < y3; y++ ) {    // y방향 루프
+          for ( x = xl; x < xr; x++ ) {  // x방향 루프
+            this.drawPoints(x, y, 255, 255, 255 );
+          }
+        xl += a23;  xr += a13;
+        this.flushDrawingPictures(xl, y2);
+      }
+    }
+    else {
+      for ( y = y1; y < y2; y++ ) {    // y방향 루프
+          for ( x = xl; x < xr; x++ ) {  // x방향 루프
+            this.drawPoints(x, y, 255, 255, 255 );
+          }
+        xl += a13;  xr += a12;
+        this.flushDrawingPictures(xl, y1);
+      }
+      for ( y = y2; y < y3; y++ ) {    // y방향 루프
+          for ( x = xl; x < xr; x++ ) {  // x방향 루프
+            this.drawPoints(x, y, 255, 255, 255 );
+          }
+        xl += a13;  xr += a23;
+        this.flushDrawingPictures(xl, y2);
+      }
+    }
   };
 
   Sprite_PerspectiveScroll.prototype.renderAllVertices = function () {
