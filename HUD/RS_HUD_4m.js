@@ -1805,9 +1805,9 @@ RS.HUD.param = RS.HUD.param || {};
     }, this);
 
     if(Utils.RPGMAKER_VERSION >= '1.5.0') {
-      ImageManager.loadPicture(RS.HUD.param.imgHP);
-      ImageManager.loadPicture(RS.HUD.param.imgMP);
-      ImageManager.loadPicture(RS.HUD.param.imgEXP);
+      ImageManager.reservePicture(RS.HUD.param.imgHP);
+      ImageManager.reservePicture(RS.HUD.param.imgMP);
+      ImageManager.reservePicture(RS.HUD.param.imgEXP);
     }
 
   };

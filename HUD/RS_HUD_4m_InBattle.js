@@ -413,9 +413,9 @@ RS.HUD.param = RS.HUD.param || {};
   Scene_Battle.prototype.create = function() {
     alais_Scene_Battle_create.call(this);
     if(Utils.RPGMAKER_VERSION >= '1.5.0') {
-      ImageManager.loadPicture(RS.HUD.param.imgHP);
-      ImageManager.loadPicture(RS.HUD.param.imgMP);
-      ImageManager.loadPicture(RS.HUD.param.imgTP);
+      ImageManager.reservePicture(RS.HUD.param.imgHP);
+      ImageManager.reservePicture(RS.HUD.param.imgMP);
+      ImageManager.reservePicture(RS.HUD.param.imgTP);
     }
   };
 
