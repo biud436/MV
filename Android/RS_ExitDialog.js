@@ -25,22 +25,18 @@
  *
  * @help
  * =============================================================================
- * How to add a Cordova notification plugin
+ * Installation
  * =============================================================================
+ * You will need to have installed the 'cordova-plugin-dialogs' plugin in Cordova CLI.
  *
- * 1. Add a Cordova Notification plugin using Intel XDK HTML5 Development tools.
+ * 1. Create a cordova application
+ * In case of using a cordova-cli, Before you start build your mobile application,
+ * you need to attempt as below.
+
+ * if your cordova version is to 7 or more, you can easily add the plugin by
+ * calling as below command:
  *
- * 2. Add a tag from index.html file in your game project directory.
- * First up, you can use a text editor such as Notepad++, Atom, default Intel XDK text editor
- * and have to contain Cordova Script file into <body> statement, It looks like this :
- *       ...
- *     <body style="background-color: black">
- *       <script type="text/javascript" src="cordova.js"></script>
- *       <script type="text/javascript" src="js/libs/pixi.js"></script>
- *       ...
- *     </body>
- *
- * If it has already been added, you do not need to add it again.
+ *    cordova plugin add cordova-plugin-dialogs
  *
  * =============================================================================
  * How to change a default behavior
