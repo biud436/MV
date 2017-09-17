@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.5) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.6) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
@@ -492,10 +492,11 @@
  * properly not working in case of you're not using the battle addon, in a
  * community version.
  * 2017.06.08 (v1.2.5) - Fixed the issue that is not displaying specific image in RMMV 1.5
+ * 2017.09.17 (v1.2.6) - Fixed the bug that cause the error when restarting the game.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.2.5';
+Imported.RS_HUD_4m = '1.2.6';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -992,31 +993,12 @@ RS.HUD.param = RS.HUD.param || {};
   //
   //
 
-  var alias_Game_Temp_initialize = Game_Temp.prototype.initialize;
-  Game_Temp.prototype.initialize = function() {
-    alias_Game_Temp_initialize.call(this);
-    this.initHudEvent();
-    this.initHudTextEvent();
-  };
-
-  Game_Temp.prototype.initHudEvent = function () {
-    this._hudEvents = document.createEvent('Event');
-    this._hudEvents.initEvent('broadcast.rs.hud', true, true);
-  };
-
-  Game_Temp.prototype.initHudTextEvent = function () {
-    this._hudRefreshEvent = document.createEvent('Event');
-    this._hudRefreshEvent.initEvent('refresh.rs.hud', true, true);
-  };
-
   Game_Temp.prototype.notifyHudTextRefresh = function() {
-    var elm = document.body;
-    elm.dispatchEvent(this._hudEvents);
+    if($gameHud) $gameHud.updateText();
   };
 
   Game_Temp.prototype.notifyHudRefresh = function() {
-    var elm = document.body;
-    elm.dispatchEvent(this._hudRefreshEvent);
+    if($gameHud) $gameHud.refresh();
   };
 
   //----------------------------------------------------------------------------
@@ -1092,17 +1074,6 @@ RS.HUD.param = RS.HUD.param || {};
     this.updateTextLog();
     this._params = params;
     this.requestUpdate();
-    this.addEventListener('broadcast.rs.hud');
-  };
-
-  TextData.prototype.addEventListener = function (type) {
-    document.body.addEventListener(type, this.requestUpdate.bind(this), false);
-  };
-
-  var alias_TextData_destroy = TextData.prototype.destroy;
-  TextData.prototype.destroy = function () {
-    if(alias_TextData_destroy) alias_TextData_destroy.call(this);
-    document.body.removeEventListener('broadcast.rs.hud', this.requestUpdate.bind(this), false);
   };
 
   TextData.prototype.setCallbackFunction = function (cbFunc) {
@@ -1256,7 +1227,21 @@ RS.HUD.param = RS.HUD.param || {};
     }, this);
     this.drawAllHud();
     this.show = $gameSystem._rs_hud.show;
-  }
+  };
+
+  RS_HudLayer.prototype.updateText = function() {
+    var allHud = this._items;
+    allHud.children.forEach(function(i) {
+        i.updateText();
+    }, this);
+  };
+
+  RS_HudLayer.prototype.updateFrame = function () {
+    var allHud = this._items;
+    allHud.children.forEach(function(i) {
+        i.paramUpdate();
+    }, this);
+  };
 
   RS_HudLayer.prototype.remove = function(index) {
     var self = this;
@@ -1363,21 +1348,6 @@ RS.HUD.param = RS.HUD.param || {};
       this.createVector();
       this.setPosition();
       this.paramUpdate();
-      this.addEventListener('broadcast.rs.hud');
-  };
-
-  HUD.prototype.addEventListener = function (type) {
-    document.body.addEventListener(type, this.paramUpdate.bind(this), false);
-  };
-
-  HUD.prototype.removeEventListener = function (type) {
-    document.body.removeEventListener(type, this.paramUpdate.bind(this), false);
-  };
-
-  var alias_HUD_destroy = HUD.prototype.destroy;
-  HUD.prototype.destroy = function () {
-    if(alias_HUD_destroy) alias_HUD_destroy.call(this);
-    this.removeEventListener('broadcast.rs.hud');
   };
 
   HUD.prototype.getAnchor = function(magnet) {
@@ -1636,6 +1606,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
+    this.paramUpdate();
     this.updateOpacity();
     this.updateToneForAll();
   };
@@ -1682,6 +1653,12 @@ RS.HUD.param = RS.HUD.param || {};
     this.checkForToneUpdate( this._hp, this.getPlayer().hpRate() <= nHPGlitter );
     this.checkForToneUpdate( this._mp, this.getPlayer().mpRate() <= nMPGlitter );
     this.checkForToneUpdate( this._exp, this.getRealExpRate() >= nEXPGlitter );
+  };
+
+  HUD.prototype.updateText = function() {
+    [this._hpText, this._mpText, this._expText, this._levelText, this._nameText].forEach(function (e) {
+      e.requestUpdate();
+    }, this);
   };
 
   HUD.prototype.paramUpdate = function() {

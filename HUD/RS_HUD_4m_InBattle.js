@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc (v1.2.2) This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.2.3) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
@@ -154,10 +154,11 @@
  * community version.
  * 2017.06.08 (v1.2.1) - Fixed the issue that is not displaying specific image in RMMV 1.5
  * 2017.06.22 (v1.2.2) - Extended as the ATB gauge bar to support Victor Engine ATB or Ellye ATB plugins.
+ * 2017.09.17 (v1.2.3) - Fixed the bug that cause the error when restarting the game.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.2.2';
+Imported.RS_HUD_4m_InBattle = '1.2.3';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -351,6 +352,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
+    this.paramUpdate();
     if(this.inBattle()) {
       this.updateSelectEffect();
       this.updateDeathEffect();
