@@ -4,22 +4,33 @@
  * @author biud436
  *
  * @param back Opacity
+ * @type number
  * @desc
  * @default 192
  *
  * @param default Opacity
+ * @type number
  * @desc
  * @default 255
+ * @min 0
+ * @max 255
  *
  * @param contents Opacity
+ * @type number
  * @desc
  * @default 255
+ * @min 0
+ * @max 255
  *
  * @param translucent Opacity
+ * @type number
  * @desc
  * @default 160
+ * @min 0
+ * @max 255
  *
  * @param default outline width
+ * @type number
  * @desc
  * @default 2
  *
@@ -28,12 +39,10 @@
  * @default rgba(0, 0, 0, 1.0)
  *
  * @help
- * This plugin does not provide plugin commands
- *
  */
 
 var Imported = Imported || {};
-Imported.RS_MessageParamManagers = '1.0.0';
+Imported.RS_MessageParamManagers = '1.0.1';
 
 (function() {
 
@@ -61,19 +70,20 @@ Imported.RS_MessageParamManagers = '1.0.0';
       this.contentsOpacity = __contentsOpacity;
   };
 
-  var alias_Window_Message_update = Window_Message.prototype.update;
-  Window_Message.prototype.update = function() {
+  var alias_Window_Message_updatePlacement = Window_Message.prototype.updatePlacement;
+  Window_Message.prototype.updatePlacement = function() {
     alias_Window_Message_update.call(this);
     this.updateDefaultOpacity();
     this.updateContentsOpacity();
   };
 
+  var alias_Window_Message_resetFontSettings = Window_Message.prototype.resetFontSettings;
   Window_Message.prototype.resetFontSettings = function() {
-      Window_Base.prototype.resetFontSettings.call(this);
-      this.contents.fontBold = false;
-      this.contents.fontItalic = false;
-      this.contents.outlineWidth = 2;
-      this.contents.outlineColor = __defaultOutlineColor;
+    alias_Window_Message_resetFontSettings.call(this);
+    this.contents.fontBold = false;
+    this.contents.fontItalic = false;
+    this.contents.outlineWidth = 2;
+    this.contents.outlineColor = __defaultOutlineColor;
   };
 
 })();
