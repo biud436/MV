@@ -1,6 +1,6 @@
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.8) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.9) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -453,6 +453,7 @@
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2017.09.23 (v0.1.9) - Fixed the issue that is not changed the background type.
 * 2017.07.21 (v0.1.8) :
 * - Fixed the issue that the value couldn't set with 0 in the opacity parameter.
 * - Fixed a bug that the alignment is not processing in a newly line
@@ -517,7 +518,7 @@
  */
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.8) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.9) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -904,6 +905,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2017.09.23 (v0.1.9) - 배경 타입이 바뀌지 않는 문제를 수정했습니다.
 * 2017.07.23 (v0.1.8) :
 * - 투명도 매개변수를 0으로 설정할 수 없는 문제를 수정했습니다.
 * - 새로운(또는 다음) 라인으로 넘어갈 때 정렬 텍스트 코드가 제대로 동작하지 않는 문제를 수정했습니다.
@@ -1822,6 +1824,8 @@ var Color = Color || {};
       this.updateBalloonPosition();
     }
     this._goldWindow.y = this.y > 0 ? 0 : Graphics.boxHeight - this._goldWindow.height;
+    this.updateDefaultOpacity();
+    this.updateContentsOpacity();
   };
 
   var alias_Window_Message_updatePlacement = Window_Message.prototype.updatePlacement;
@@ -2293,13 +2297,6 @@ var Color = Color || {};
 
   Window_Message.prototype.updateContentsOpacity = function() {
     this.contentsOpacity = RS.MessageSystem.Params.contentsOpacity;
-  };
-
-  var alias_Window_Message_update = Window_Message.prototype.update;
-  Window_Message.prototype.update = function() {
-    alias_Window_Message_update.call(this);
-    this.updateDefaultOpacity();
-    this.updateContentsOpacity();
   };
 
   //============================================================================
