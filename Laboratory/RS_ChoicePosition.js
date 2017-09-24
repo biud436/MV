@@ -38,6 +38,8 @@
  * - It could automatically set the position of the choice window when the player is loading the save data.
  * 2017.02.08 (v1.0.2)
  * - Optimized for motion.
+ * 2017.09.24 (v1.0.3)
+ * - Fixed the bug that is not working the plugin command named 'Choice pos'
  */
 
 var Imported = Imported || {};
@@ -177,15 +179,15 @@ Imported.Window_ChoiceListPosition = true;
       if(command === "Choice") {
         switch(args[0]) {
           case 'pos':
-              if(typeof args[0] === 'string') {
-                if(args[1] === 'event') {
+              switch (args[1]) {
+                case 'event':
                   $gameSystem.setChoiceWindowPos(Number(args[1]));
-                }
-                if(args[1] === 'player') {
+                  break;
+                case 'player':
                   $gameSystem.setChoiceWindowPos(-1);
-                }
-              } else {
-                $gameSystem.setChoiceWindowPos(Number(args[1]), Number(args[2]));
+                  break;
+                default:
+                  $gameSystem.setChoiceWindowPos(Number(args[1]), Number(args[2]));
               }
               break;
           case 'enable':
