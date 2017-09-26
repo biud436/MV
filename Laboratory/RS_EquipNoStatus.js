@@ -1,14 +1,17 @@
 /*:
  * RS_EquipNoStatus.js
- * @plugindesc http://cafe.naver.com/sonnysoft2004/66458
+ * @plugindesc This plugin allows you to hide the status window in the equip window.
  * @author biud436
  *
  * @param width
- * @desc
+ * @type number
+ * @desc Specify the width of the virtual status window
  * @default 312
  *
  * @param height
- * @desc
+ * @type number
+ * @desc Specify the height of the virtual status window
+ * (Important that it must set as the script)
  * @default Window_Base.prototype.fittingHeight(7)
  *
  */
@@ -21,6 +24,10 @@ Imported.RS_EquipNoStatus = true;
   var parameters = PluginManager.parameters('RS_EquipNoStatus');
   var width = Number(parameters['width'] || 0);
   var height = eval(parameters['height']);
+
+  //============================================================================
+  // Scene_Equip
+  //============================================================================
 
   Scene_Equip.prototype.initialize = function() {
       Scene_MenuBase.prototype.initialize.call(this);
@@ -103,10 +110,18 @@ Imported.RS_EquipNoStatus = true;
       this._itemWindow.refresh();
   };
 
+  //============================================================================
+  // Window_EquipSlot
+  //============================================================================
+
   Window_EquipSlot.prototype.updateHelp = function() {
       Window_Selectable.prototype.updateHelp.call(this);
       this.setHelpWindowItem(this.item());
   };
+
+  //============================================================================
+  // Window_EquipItem
+  //============================================================================
 
   Window_EquipItem.prototype.updateHelp = function() {
       Window_ItemList.prototype.updateHelp.call(this);
@@ -115,6 +130,10 @@ Imported.RS_EquipNoStatus = true;
           actor.forceChangeEquip(this._slotId, this.item());
       }
   };
+
+  //============================================================================
+  // Window_EquipCommand
+  //============================================================================
 
   Window_EquipCommand.prototype.maxCols = function() {
       return 2;

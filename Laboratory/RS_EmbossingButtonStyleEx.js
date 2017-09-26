@@ -4,29 +4,31 @@
  *
  * @param backColor1
  * @text Background Color1
- * @desc
+ * @desc Specify the background color
  * @default rgb(156, 161, 160)
  *
  * @param backColor2
  * @text Background Color2
- * @desc
+ * @desc Specify the background color
  * @default rgb(108, 124, 124)
  *
  * @param borderColor1
  * @text Border Color1
- * @desc
+ * @desc Specify the border color
  * @default rgb(232, 231, 226)
  *
  * @param borderColor2
  * @text Border Color2
- * @desc
+ * @desc Specify the border color
  * @default rgb(30, 33, 32)
  *
  * @param lineWidth
  * @text Line Width
- * @desc
+ * @desc Specify the line width
  * @default 2
  *
+ * @help
+ * 
  */
 
 var Imported = Imported || {};
