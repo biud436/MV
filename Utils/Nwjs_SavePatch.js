@@ -4,6 +4,10 @@
  * @author biud436
  *
  * @help
+ * ============================================================================
+ * Change Log
+ * ============================================================================
+ * 2017.09.29 (v1.0.1) - Fixed the bug that is not saving the save file
  */
  /*:ko
   * Nwjs_SavePatch.js
@@ -11,6 +15,10 @@
   * @author biud436
   *
   * @help
+  * ============================================================================
+  * Change Log
+  * ============================================================================
+  * 2017.09.29 (v1.0.1) - 게임 파일 단일화 시 생기는 버그 수정
   */
 
 var Imported = Imported || {};
@@ -19,16 +27,17 @@ Imported.Nwjs_SavePatch = true;
 (function () {
 
   StorageManager.getParentFolder = function (url2) {
-    url2 = url2 || location.href;
-    var i = 0;
-    var ret = '';
-    while(url2[i] !== undefined) {
-     i++;
+    var isNwJs = this.isLocalMode();
+    var path = require('path');
+    var ret;
+
+    if(!isNwJs) return;
+
+    if(!Utils.isOptionValid('test')) {
+      ret = path.dirname(url2 || process.execPath).concat('/');
+    } else {
+      ret = path.dirname(url2 || process.mainModule.filename).concat('/');
     }
-    while(url2[i] !== '/') {
-     i--;
-    }
-    ret = url2.slice(0, i).concat('/');
     return ret;
   };
 
