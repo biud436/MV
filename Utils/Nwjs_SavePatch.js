@@ -1,13 +1,13 @@
 /*:
  * Nwjs_SavePatch.js
- * @plugindesc This plugin allows you to save all save files for this game to another folder instead of the default save folder.
+ * @plugindesc This plugin allows you to save all save files for your game to another folder instead of the default save folder.
  * @author biud436
  *
  * @help
  * ============================================================================
  * Introductions
  * ============================================================================
- * This plugin allows you to save all save files for this game to another folder
+ * This plugin allows you to save all save files for your game to another folder
  * instead of the default save folder.
  *
  * ============================================================================
