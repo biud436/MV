@@ -1,13 +1,21 @@
 /*:
  * Nwjs_SavePatch.js
- * @plugindesc This plugin provides a function to solve the problem related to a path of Save.
+ * @plugindesc This plugin allows you to save all save files for this game to another folder instead of the default save folder.
  * @author biud436
  *
  * @help
  * ============================================================================
+ * Introductions
+ * ============================================================================
+ * This plugin allows you to save all save files for this game to another folder
+ * instead of the default save folder.
+ *
+ * ============================================================================
  * Change Log
  * ============================================================================
- * 2017.09.29 (v1.0.1) - Fixed the bug that is not saving the save file
+ * 2017.09.29 (v1.0.1) :
+ * -Fixed the issue that didn't create the save file when running the game with
+ * the independent executable file.
  */
  /*:ko
   * Nwjs_SavePatch.js
@@ -18,7 +26,7 @@
   * ============================================================================
   * Change Log
   * ============================================================================
-  * 2017.09.29 (v1.0.1) - 게임 파일 단일화 시 생기는 버그 수정
+  * 2017.09.29 (v1.0.1) - 게임 파일 단일화 시 저장 및 로드가 되지 않는 문제를 수정했습니다.
   */
 
 var Imported = Imported || {};
