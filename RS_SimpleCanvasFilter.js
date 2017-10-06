@@ -30,6 +30,7 @@
  * Change Log
  * =============================================================================
  * 2016.10.06(v1.0.0) - First Release.
+ * 2017.10.06(v1.0.1) - Fixed the bug that could not set a real value less than 1.
  */
 
 var Imported = Imported || {};
@@ -147,7 +148,7 @@ var RS = RS || {};
     var amount = 0;
 
     if(value.contains(suffix)) {
-      amount = Number( value.split(/^([0-9]+)/g)[1] );
+      amount = parseFloat( value ) || 0;
     } else {
       amount = Number(value);
     }
