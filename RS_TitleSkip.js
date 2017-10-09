@@ -1,13 +1,41 @@
 /*:
  * RS_TitleSkip.js
- * @plugindesc This plugin allows you to skip the title screen.
+ * @plugindesc (v1.01) This plugin allows you to skip the title screen <RS_TitleSkip>
  * @author biud436
+ *
+ * @param Extra Option
+ *
+ * @param Reload
+ * @parent Extra Option
+ * @type select
+ * @desc Set whether reload the page named index.html when pressing
+ * the button called 'To Title' in the 'Game End' scene.
+ * @default false
+ * @option true (maybe this takes a long period of the time)
+ * @value true
+ * @option false
+ * @value false
+ *
+ * @help
+ * 2017.10.09 (v1.01) - Added a new plugin parameter called 'Reload'
  */
 
 var Imported = Imported || {};
 Imported.RS_TitleSkip = true;
 
 (function() {
+
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_TitleSkip>');
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
+  var isReload = Boolean(parameters["Reload"] === 'true');
+
+  //============================================================================
+  // Scene_Boot
+  //============================================================================
 
   Scene_Boot.prototype.start = function() {
       Scene_Base.prototype.start.call(this);
@@ -25,6 +53,18 @@ Imported.RS_TitleSkip = true;
           Window_TitleCommand.initCommandPosition();
       }
       this.updateDocumentTitle();
+  };
+
+  //============================================================================
+  // Scene_GameEnd
+  //============================================================================
+
+  Scene_GameEnd.prototype.commandToTitle = function() {
+      this.fadeOutAll();
+      if(isReload) {
+        location.reload();
+      } else {
+        SceneManager.goto(Scene_Boot);
   };
 
 })()
