@@ -5,7 +5,8 @@
  * =============================================================================
  * Usage
  * -----------------------------------------------------------------------------
- * To be able to use this stuff, It must require a YEP_MessageCore plugin.
+ * That plugin is an addon, so it should be installed the plugin somewhere
+ * below 'YEP_MessageCore'.
  *
  * All text codes process before drawn the text.
  * For each line you can set a different text alignment.
@@ -24,6 +25,7 @@
  * 2017.01.25 (v1.00) - First Release
  * 2017.06.25 (v1.01) - Fixed an issue that resets a font setting at each line
  * 2017.07.23 (v1.02) - Fixed a bug that the alignment is not processing in a newly line
+ * 2017.10.13 (v1.03) - Fixed the class name.
  */
 
 
@@ -52,12 +54,12 @@
    };
 
    //============================================================================
-   // Window_Base
+   // Window_Message
    //============================================================================
 
-   var alias_Window_Base_convertEscapeCharacters = Window_Base.prototype.convertEscapeCharacters;
-   Window_Base.prototype.convertEscapeCharacters = function(text) {
-     text = alias_Window_Base_convertEscapeCharacters.call(this, text);
+   var alias_Window_Message_convertEscapeCharacters = Window_Message.prototype.convertEscapeCharacters;
+   Window_Message.prototype.convertEscapeCharacters = function(text) {
+     text = alias_Window_Message_convertEscapeCharacters.call(this, text);
      text = text.replace(/\x1bTA\[(\d+)\]/gi, function() {
        $gameMessage.setAlign(Number(arguments[1] || 0));
        return "";
@@ -65,7 +67,7 @@
      return text;
    };
 
-   Window_Base.prototype.processAlign = function(textState) {
+   Window_Message.prototype.processAlign = function(textState) {
      textState = textState || this._textState;
      switch($gameMessage.getAlign()) {
        case 1:
@@ -79,41 +81,37 @@
      }
    }
 
-   var alias_Window_Base_processNewLine = Window_Base.prototype.processNewLine;
-   Window_Base.prototype.processNewLine = function(textState) {
-     alias_Window_Base_processNewLine.call(this, textState);
+   var alias_Window_Message_processNewLine = Window_Message.prototype.processNewLine;
+   Window_Message.prototype.processNewLine = function(textState) {
+     alias_Window_Message_processNewLine.call(this, textState);
      this.processAlign(textState);
    };
 
-   Window_Base.prototype.calcTextWidth = function(text) {
+   Window_Message.prototype.calcTextWidth = function(text) {
      var tempText = text; tempText = tempText.split(/[\n]+/);
      return this.textWidthExCheck(tempText[0]);
    };
 
-   Window_Base.prototype.setAlignLeft = function(textState) {
+   Window_Message.prototype.setAlignLeft = function(textState) {
      var padding = this.textPadding();
      textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
      textState.x = ( this.newLineX() + padding * 2 );
      textState.left = textState.x;
    };
 
-   Window_Base.prototype.setAlignCenter = function(textState) {
+   Window_Message.prototype.setAlignCenter = function(textState) {
      var padding = this.textPadding();
      textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
      textState.x = ( this.newLineX() + this.contentsWidth() + padding * 2) / 2 - textState.tx / 2;
      textState.left = textState.x;
    };
 
-   Window_Base.prototype.setAlignRight = function(textState) {
+   Window_Message.prototype.setAlignRight = function(textState) {
      var padding = this.textPadding();
      textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
      textState.x = ( this.contentsWidth() - padding * 2) - textState.tx;
      textState.left = textState.x;
    };
-
-   //============================================================================
-   // Window_Message
-   //============================================================================
 
    var alias_Window_Message_startMessage_setAlignCenter = Window_Message.prototype.startMessage;
    Window_Message.prototype.startMessage = function() {
