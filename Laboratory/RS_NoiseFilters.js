@@ -52,7 +52,7 @@ Imported.RS_NoiseFilters = true;
 var RS = RS || {};
 RS.NoiseFilters = RS.NoiseFilters || {};
 
-(function ($) {
+(function () {
 
   var isFilterPIXI4 = (PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
   var isWebGL = Graphics.isWebGL();
@@ -113,8 +113,6 @@ RS.NoiseFilters = RS.NoiseFilters || {};
     this.uniforms.b = 78.233;
     this.uniforms.c = 43758.5453;
   };
-
-
 
   PIXI.NoiseFilterConfig.prototype = Object.create( PIXI.Filter.prototype );
   PIXI.NoiseFilterConfig.constructor = PIXI.NoiseFilterConfig;
@@ -326,4 +324,4 @@ RS.NoiseFilters = RS.NoiseFilters || {};
     }
   };
 
-})(PIXI.tilemap);
+})();
