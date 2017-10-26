@@ -1,110 +1,128 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc (v1.2.3) This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.2.4) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
  * @param --- Image Name
- * @desc
- * @default
  *
  * @param HUD Battle Background
- * @desc
+ * @parent --- Image Name
+ * @desc Specify the background image for the battle hud
  * @default hud_window_empty_inbattle
  * @require 1
  * @dir img/pictures/
  * @type file
  *
  * @param TP Gauge
- * @desc
+ * @parent --- Image Name
+ * @desc Specify the technical point(TP) gauge image for the battle hud
  * @default exr
  * @require 1
  * @dir img/pictures/
  * @type file
  *
  * @param --- Noraml
- * @desc
- * @default
  *
  * @param Auto Windows Alignment
- * @desc
+ * @parent --- Noraml
+ * @type boolean
+ * @desc Rectifies the coordinate for all windows except the log and help windows.
  * @default true
  *
  * @param --- Text Settings
- * @desc
- * @default
  *
  * @param TP Position
+ * @parent --- Text Settings
  * @desc x, y, visible
  * (default : 83, 91, true)
  * @default 83, 91, true
  *
  * @param TP Text Size
- * @desc
+ * @parent --- Text Settings
+ * @type number
+ * @desc Specify the size of the text for the value that indicates the technical point.
  * @default 12
  *
  * @param TP Color
- * @desc
+ * @parent --- Text Settings
+ * @desc Specify the color of the text for the value that indicates the technical point.
  * @default #ffffff
  *
  * @param TP Outline Color
- * @desc
+ * @parent --- Text Settings
+ * @desc Specify the outline color of the text for the value that indicates the technical point.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param TP Outline Width
- * @desc
+ * @parent --- Text Settings
+ * @type number
+ * @desc Specify the outline width of the text for the value that indicates the technical point.
  * @default 4
  *
  * @param Max Battle Members
- * @desc
+ * @parent --- Text Settings
+ * @type number
+ * @min 1
+ * @desc Specify the maximum size of the party members to indicate the gauge.
  * @default 4
  *
  * @param --- Custom HUD Anchor
- * @desc
- * @default
  *
  * @param Arrangement
- * @desc Create an array to set the anchor of each HUD.
- * @default ['Pos 1', 'Pos 2', 'Pos 3', 'Pos 4']
+ * @parent --- Custom HUD Anchor
+ * @type string[]
+ * @desc Set the array that is used the basis position of each HUD.
+ * @default ["Pos 1", "Pos 2", "Pos 3", "Pos 4"]
  *
  * @param Pos 1
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [0, BH - (H * 2) - PD]
  *
  * @param Pos 2
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [0, BH - H - PD]
  *
  * @param Pos 3
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [W + PD, BH - (H * 2) - PD]
  *
  * @param Pos 4
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [W + PD, BH - H - PD]
  *
  * @param Pos 5
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [(W * 2) + PD, BH - (H * 2) - PD]
  *
  * @param Pos 6
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [(W * 2) + PD, BH - H - PD]
  *
  * @param Pos 7
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [(W * 3) + PD, BH - (H * 2) - PD]
  *
  * @param Pos 8
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [(W * 3) + PD, BH - H - PD]
  *
  * @param Pos 9
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [(W * 4) + PD, BH - (H * 2) - PD]
  *
  * @param Pos 10
- * @desc
+ * @parent --- Custom HUD Anchor
+ * @desc Set the coordinate while creating the hud sprite.
  * @default [(W * 4) + PD, BH - H - PD]
  *
  * @help
@@ -155,10 +173,11 @@
  * 2017.06.08 (v1.2.1) - Fixed the issue that is not displaying specific image in RMMV 1.5
  * 2017.06.22 (v1.2.2) - Extended as the ATB gauge bar to support Victor Engine ATB or Ellye ATB plugins.
  * 2017.09.17 (v1.2.3) - Fixed the bug that cause the error when restarting the game.
+ * 2017.10.26 (v1.2.4) - This plugin has applied with the new plugin manager features in the plugin parameters.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.2.3';
+Imported.RS_HUD_4m_InBattle = '1.2.4';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -284,13 +303,13 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.createHud = function() {
     var name = ( this.inBattle() && $dataSystem.optDisplayTp ) ? RS.HUD.param.imgEmptyBattleHUD : RS.HUD.param.imgEmptyHUD;
-    this._hud = new Sprite(ImageManager.loadPicture(name));
+    this._hud = new Sprite(RS.HUD.loadPicture(name));
     this.addChild(this._hud);
   };
 
   HUD.prototype.createExp = function() {
     var name = ( this.inBattle() && $dataSystem.optDisplayTp ) ? RS.HUD.param.imgTP : RS.HUD.param.imgEXP;
-    this._exp = new Sprite(ImageManager.loadPicture(name));
+    this._exp = new Sprite(RS.HUD.loadPicture(name));
     this.addChild(this._exp);
   };
 

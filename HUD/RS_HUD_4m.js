@@ -1,14 +1,13 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.6) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.7) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
  * @param --- Image Name
- * @desc
- * @default
  *
  * @param EXP Gauge
+ * @parent --- Image Name
  * @desc Specifies to import file in the path named 'exr' from img/pictures folder.
  * @default exr
  * @require 1
@@ -16,6 +15,7 @@
  * @type file
  *
  * @param Empty Gauge
+ * @parent --- Image Name
  * @desc Specifies to import file in the path named 'gauge' from img/pictures folder.
  * @default gauge
  * @require 1
@@ -23,6 +23,7 @@
  * @type file
  *
  * @param HP Gauge
+ * @parent --- Image Name
  * @desc Specifies to import file in the path named 'hp' from img/pictures folder.
  * @default hp
  * @require 1
@@ -30,6 +31,7 @@
  * @type file
  *
  * @param MP Gauge
+ * @parent --- Image Name
  * @desc Specifies to import file in the path named 'mp' from img/pictures folder.
  * @default mp
  * @require 1
@@ -37,6 +39,7 @@
  * @type file
  *
  * @param HUD Background
+ * @parent --- Image Name
  * @desc Specifies to import file in the path named 'hud_window_empty' from img/pictures folder.
  * @default hud_window_empty
  * @require 1
@@ -44,6 +47,7 @@
  * @type file
  *
  * @param Masking
+ * @parent --- Image Name
  * @desc Specifies to import file in the path named 'masking' from img/pictures folder.
  * @default masking
  * @require 1
@@ -51,291 +55,345 @@
  * @type file
  *
  * @param --- Image Custom Position
- * @desc
- * @default
  *
  * @param Face Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the face sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 0, 0, true
  *
  * @param HP Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the hp sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 160, 43, true
  *
  * @param MP Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the mp sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 160, 69, true
  *
  * @param EXP Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the exp sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 83, 91, true
  *
  * @param HP Text Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the hp text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 160, 53, true
  *
  * @param MP Text Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the mp text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 160, 79, true
  *
  * @param Level Text Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the level text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 60, 80, true
  *
  * @param EXP Text Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the exp text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 120.5, 93, true
  *
  * @param Name Text Position
+ * @parent --- Image Custom Position
  * @desc Specifies the properties of the name text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
  * @default 54, 53, false
  *
  * @param --- Noraml
- * @desc
- * @default
  *
  * @param Width
+ * @parent --- Noraml
  * @desc Do not change this when you are using the default sprite batch.
  * (default : 317)
  * @default 317
  *
  * @param Height
+ * @parent --- Noraml
  * @desc Do not change this when you are using the default sprite batch.
  * (default : 101)
  * @default 101
  *
  * @param Margin
+ * @parent --- Noraml
+ * @type number
+ * @min 0
  * @desc Sets the margin to the HUD borders.
  * @default 0
  *
  * @param Gaussian Blur
+ * @parent --- Noraml
+ * @type boolean
  * @desc Sets the Gaussian Blur.
  * @default true
  *
  * @param Show
+ * @parent --- Noraml
+ * @type boolean
  * @desc Sets the visible status. (default : true)
  * @default true
  *
  * @param Opacity
+ * @parent --- Noraml
+ * @type number
+ * @min 0
+ * @max 255
  * @desc Sets the opacity.
  * @default 255
  *
  * @param Arrangement
+ * @parent --- Noraml
+ * @type string[]
  * @desc Create an array to set the anchor of each HUD.
- * ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
- * @default ['LeftTop', 'LeftBottom', 'RightTop', 'RightBottom']
+ * @default ["LeftTop", "LeftBottom", "RightTop", "RightBottom"]
  *
  * @param Anchor
+ * @parent --- Noraml
  * @desc If anchor is not found, HUD would set to this anchor.
  * @default LeftTop
  *
  * @param preloadImportantFaces
+ * @parent --- Noraml
+ * @type string[]
  * @desc Allow you to pre-load the base face chips.
  * (If you do not set this parameter, It can cause errors in the game.)
- * @default ['Actor1', 'Actor2', 'Actor3']
+ * @default ["Actor1", "Actor2", "Actor3"]
  *
  * @param Battle Only
+ * @parent --- Noraml
+ * @type boolean
  * @desc If you want to use the HUD only in battles.
  * (default : false)
  * @default false
  *
  * @param Show Comma
+ * @parent --- Noraml
+ * @type boolean
  * @desc Sets the value that indicates whether this parameter displays
  * the values with commas every three digits.
  * @default false
  *
  * @param Max Exp Text
+ * @parent --- Noraml
  * @desc
  * @default ------/------
  *
  * @param Max Members
+ * @parent --- Noraml
+ * @type number
+ * @min 1
  * @desc Specifies the maximum number of party members that displays within the game screen.
  * @default 4
  *
  * @param --- Font
- * @desc
- * @default
  *
  * @param Chinese Font
- * @desc
+ * @parent --- Font
+ * @desc Specifies the desired fonts
  * @default SimHei, Heiti TC, sans-serif
  *
  * @param Korean Font
- * @desc
+ * @parent --- Font
+ * @desc Specifies the desired fonts
  * @default NanumGothic, Dotum, AppleGothic, sans-serif
  *
  * @param Standard Font
+ * @parent --- Font
  * @desc Specifies to import a css for the font file from ./fonts folder.
  * @default GameFont
  *
  * @param Level Text Size
+ * @parent --- Font
  * @desc Specify the text size for levels.
  * @default 24
  *
  * @param HP Text Size
+ * @parent --- Font
  * @desc Specify the text size for HP.
  * @default 12
  *
  * @param MP Text Size
+ * @parent --- Font
  * @desc Specify the text size for MP.
  * @default 12
  *
  * @param EXP Text Size
+ * @parent --- Font
  * @desc Specify the text size for EXP.
  * @default 12
  *
  * @param Name Text Size
+ * @parent --- Font
  * @desc Specify the text size for names.
  * @default 12
  *
  * @param --- Text Color
- * @desc
- * @default
  *
  * @param HP Color
+ * @parent --- Text Color
  * @desc Specify the text color for HP.
  * @default #ffffff
  *
  * @param MP Color
+ * @parent --- Text Color
  * @desc Specify the text color for MP.
  * @default #ffffff
  *
  * @param EXP Color
+ * @parent --- Text Color
  * @desc Specify the text color for EXP.
  * @default #ffffff
  *
  * @param Level Color
+ * @parent --- Text Color
  * @desc Specify the text color for levels.
  * @default #ffffff
  *
  * @param Name Color
+ * @parent --- Text Color
  * @desc Specify the text color for names.
  * @default #ffffff
  *
  * @param --- Text Outline Color
- * @desc
- * @default
  *
  * @param HP Outline Color
+ * @parent --- Text Outline Color
  * @desc Specify the text outline color for HP.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param MP Outline Color
+ * @parent --- Text Outline Color
  * @desc Specify the text outline color for MP.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param EXP Outline Color
+ * @parent --- Text Outline Color
  * @desc Specify the text outline color for EXP.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param Level Outline Color
+ * @parent --- Text Outline Color
  * @desc Specify the text outline color for levels.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param Name Outline Color
+ * @parent --- Text Outline Color
  * @desc Specify the text outline color for names.
  * @default rgba(0, 0, 0, 0.5)
  *
  * @param --- Text Outline Width
- * @desc
- * @default
  *
  * @param HP Outline Width
+ * @parent --- Text Outline Width
  * @desc Specify the maximum width of a text border line for HP.
  * @default 4
  *
  * @param MP Outline Width
+ * @parent --- Text Outline Width
  * @desc Specify the maximum width of a text border line for MP.
  * @default 4
  *
  * @param EXP Outline Width
+ * @parent --- Text Outline Width
  * @desc Specify the maximum width of a text border line for EXP.
  * @default 4
  *
  * @param Level Outline Width
+ * @parent --- Text Outline Width
  * @desc Specify the maximum width of a text border line for levels.
  * @default 4
  *
  * @param Name Outline Width
+ * @parent --- Text Outline Width
  * @desc Specify the maximum width of a text border line for names.
  * @default 4
  *
  * @param --- Custom Font
- * @desc
- * @default
  *
  * @param Using Custom Font
+ * @parent --- Custom Font
  * @desc Specify whether the custom font shows (default : false)
  * YES - true   /   NO - false
  * @default false
  *
  * @param Custom Font Name
+ * @parent --- Custom Font
  * @desc Specify the name of the custom font
  * @default NanumBrush
  *
  * @param Custom Font Src
+ * @parent --- Custom Font
  * @desc Specify the path of the font file from a game project folder
  * @default fonts/NanumBrush.ttf
  *
  * @param --- Custom HUD Anchor
- * @desc
- * @default
  *
  * @param Custom Pos 1
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to a custom position of the help section)
  * @default 0, (H * 0) + PD
  *
  * @param Custom Pos 2
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default 0, (H * 1) + PD
  *
  * @param Custom Pos 3
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default 0, (H * 2) + PD
  *
  * @param Custom Pos 4
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default 0, (H * 3) + PD
  *
  * @param Custom Pos 5
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default 0, (H * 4) + PD
  *
  * @param Custom Pos 6
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default W + PD, (H * 0) + PD
  *
  * @param Custom Pos 7
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default W + PD, (H * 1) + PD
  *
  * @param Custom Pos 8
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default W + PD, (H * 2) + PD
  *
  * @param Custom Pos 9
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default W + PD, (H * 3) + PD
  *
  * @param Custom Pos 10
+ * @parent --- Custom HUD Anchor
  * @desc Predefined Variables : W, H, PD, BW, BH
  * (Please refer to the help section)
  * @default W + PD, (H * 4) + PD
@@ -493,10 +551,11 @@
  * community version.
  * 2017.06.08 (v1.2.5) - Fixed the issue that is not displaying specific image in RMMV 1.5
  * 2017.09.17 (v1.2.6) - Fixed the bug that cause the error when restarting the game.
+ * 2017.10.26 (v1.2.7) - This plugin has applied with the new plugin manager features in the plugin parameters.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.2.6';
+Imported.RS_HUD_4m = '1.2.7';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -504,6 +563,11 @@ RS.HUD = RS.HUD || {};
 RS.HUD.param = RS.HUD.param || {};
 
 (function() {
+
+  if(Utils.RPGMAKER_VERSION < '1.5.0') {
+    console.warn('Note that RS_HUD_4m plugin can use only in RMMV v1.5.0 or above.');
+    return;
+  }
 
   var parameters = PluginManager.parameters('RS_HUD_4m');
 
@@ -690,6 +754,16 @@ RS.HUD.param = RS.HUD.param || {};
       }
     }
     xhr.send();
+  };
+
+  RS.HUD.loadPicture = function (filename) {
+    var bitmap = ImageManager.reservePicture(filename);
+    return bitmap;
+  };
+
+  RS.HUD.loadFace = function (filename) {
+    var bitmap = ImageManager.reserveFace(filename);
+    return bitmap;
   };
 
   //----------------------------------------------------------------------------
@@ -986,6 +1060,32 @@ RS.HUD.param = RS.HUD.param || {};
       return true;
     }
     return false;
+  };
+
+  //----------------------------------------------------------------------------
+  // Bitmap
+  //
+  //
+
+  Bitmap.prototype.drawClippingImage = function(bitmap, maskImage , _x, _y, _sx, _sy) {
+    var context = this._context;
+    context.save();
+    context.drawImage(maskImage._canvas, _x, _y, nFaceDiameter, nFaceDiameter);
+    context.globalCompositeOperation = 'source-atop';
+    context.drawImage(bitmap._canvas, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
+    context.restore();
+    this._setDirty();
+  };
+
+  Bitmap.prototype.drawClippingImageNonBlur = function(bitmap, _x, _y, _sx, _sy) {
+    var context = this._context;
+    context.save();
+    context.beginPath();
+    context.arc(_x + 45, _y + 45 , 45, 0, Math.PI * 2, false);
+    context.clip();
+    context.drawImage(bitmap._canvas, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
+    context.restore();
+    this._setDirty();
   };
 
   //----------------------------------------------------------------------------
@@ -1377,38 +1477,17 @@ RS.HUD.param = RS.HUD.param || {};
   }
 
   HUD.prototype.createHud = function() {
-    this._hud = new Sprite(ImageManager.loadPicture(RS.HUD.param.imgEmptyHUD));
+    this._hud = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgEmptyHUD));
     this.addChild(this._hud);
   };
 
   HUD.prototype.createFace = function() {
     var player = this.getPlayer();
-    this._faceBitmap = ImageManager.loadFace(player.faceName());
-    this._maskBitmap = ImageManager.loadPicture(RS.HUD.param.imgMasking);
+    this._faceBitmap = RS.HUD.loadFace(player.faceName());
+    this._maskBitmap = RS.HUD.loadPicture(RS.HUD.param.imgMasking);
     this._maskBitmap.addLoadListener(function() {
         this._faceBitmap.addLoadListener(this.circleClippingMask.bind(this, player.faceIndex()));
     }.bind(this));
-  };
-
-  Bitmap.prototype.drawClippingImage = function(bitmap, maskImage , _x, _y, _sx, _sy) {
-    var context = this._context;
-    context.save();
-    context.drawImage(maskImage._canvas, _x, _y, nFaceDiameter, nFaceDiameter);
-    context.globalCompositeOperation = 'source-atop';
-    context.drawImage(bitmap._canvas, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
-    context.restore();
-    this._setDirty();
-  };
-
-  Bitmap.prototype.drawClippingImageNonBlur = function(bitmap, _x, _y, _sx, _sy) {
-    var context = this._context;
-    context.save();
-    context.beginPath();
-    context.arc(_x + 45, _y + 45 , 45, 0, Math.PI * 2, false);
-    context.clip();
-    context.drawImage(bitmap._canvas, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
-    context.restore();
-    this._setDirty();
   };
 
   HUD.prototype.circleClippingMask = function(faceIndex) {
@@ -1434,17 +1513,17 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.createHp = function() {
-    this._hp = new Sprite(ImageManager.loadPicture(RS.HUD.param.imgHP));
+    this._hp = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgHP));
     this.addChild(this._hp);
   };
 
   HUD.prototype.createMp = function() {
-    this._mp = new Sprite(ImageManager.loadPicture(RS.HUD.param.imgMP));
+    this._mp = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgMP));
     this.addChild(this._mp);
   };
 
   HUD.prototype.createExp = function() {
-    this._exp = new Sprite(ImageManager.loadPicture(RS.HUD.param.imgEXP));
+    this._exp = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgEXP));
     this.addChild(this._exp);
   };
 
@@ -1727,12 +1806,7 @@ RS.HUD.param = RS.HUD.param || {};
   var alias_Scene_Map_start = Scene_Map.prototype.start;
   Scene_Map.prototype.start = function () {
     alias_Scene_Map_start.call(this);
-    var isCommunityVerstion = Utils.RPGMAKER_ENGINE;
-    if(isCommunityVerstion && isCommunityVerstion.contains('community') > 0) {
-      $gameTemp.notifyHudRefresh();
-    } else {
-      $gameTemp.notifyHudTextRefresh();
-    }
+    $gameTemp.notifyHudTextRefresh();
   };
 
   var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
