@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.7) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.7b) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
@@ -322,6 +322,7 @@
  *
  * @param Using Custom Font
  * @parent --- Custom Font
+ * @type boolean
  * @desc Specify whether the custom font shows (default : false)
  * YES - true   /   NO - false
  * @default false
@@ -552,6 +553,7 @@
  * 2017.06.08 (v1.2.5) - Fixed the issue that is not displaying specific image in RMMV 1.5
  * 2017.09.17 (v1.2.6) - Fixed the bug that cause the error when restarting the game.
  * 2017.10.26 (v1.2.7) - This plugin has applied with the new plugin manager features in the plugin parameters.
+ * 2017.10.27 (v1.2.7b) - Fixed the issue that has the endless loading when using the custom font.
  */
 
 var Imported = Imported || {};
@@ -1841,11 +1843,6 @@ RS.HUD.param = RS.HUD.param || {};
   Scene_Boot.prototype.loadSystemWindowImage = function() {
     alias_Scene_Boot_loadSystemWindowImage.call(this);
 
-    // Load Custom Font
-    if(RS.HUD.param.bUseCustomFont) {
-      Graphics.loadFont(RS.HUD.param.szCustomFontName, RS.HUD.param.szCustomFontSrc);
-    }
-
     // Load Face
     RS.HUD.param.preloadImportantFaces.forEach(function(i) {
       if(Utils.RPGMAKER_VERSION >= '1.5.0') {
@@ -1869,6 +1866,10 @@ RS.HUD.param = RS.HUD.param || {};
     // Load Custom Anchor
     for(var i = 0; i < RS.HUD.param.nMaxMembers; i++) {
       RS.HUD.param.ptCustormAnchor.push( RS.HUD.loadCustomPosition(parameters[String('Custom Pos ' + (i + 1))] || '0, 0') );
+    }
+    // Load Custom Font
+    if(RS.HUD.param.bUseCustomFont) {
+      Graphics.loadFont(RS.HUD.param.szCustomFontName, RS.HUD.param.szCustomFontSrc);
     }
   };
 
