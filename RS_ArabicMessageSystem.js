@@ -40,6 +40,11 @@
  * @on Enable
  * @off Disable
  *
+ * @param Binder
+ * @type note[]
+ * @desc Can run the scripts
+ * @default ["\"  // YEP_MessageCore\\n  if(Imported.YEP_MessageCore) {\\n\\n    Window_Message.prototype.standardFontFace = function () {\\n      return Window_Base.prototype.standardFontFace.call(this);\\n    };\\n\\n    var alias_Window_NameBox_initialize = Window_NameBox.prototype.initialize;\\n    Window_NameBox.prototype.initialize = function(parentWindow) {\\n      alias_Window_NameBox_initialize.call(this, parentWindow);\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      RS.ArabicMessageSystem.defineProtoype(Window_NameBox);\\n    };\\n\\n    Window_NameBox.prototype.standardFontFace = function() {\\n      return Window_Base.prototype.standardFontFace.call(this);\\n    };\\n\\n    Window_NameBox.prototype.refresh = function(text, position) {\\n      this.show();\\n      this._lastNameText = text;\\n      this._text = Yanfly.Param.MSGNameBoxText + text;\\n      this._position = position;\\n      this.width = this.windowWidth();\\n      this.createContents();\\n      this.contents.clear();\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      this.resetFontSettings();\\n      this.changeTextColor(this.textColor(Yanfly.Param.MSGNameBoxColor));\\n      var padding = eval(Yanfly.Param.MSGNameBoxPadding) / 2;\\n      this.drawTextEx(this._text, padding, 0);\\n      this._parentWindow.adjustWindowSettings();\\n      this._parentWindow.updatePlacement();\\n      this.adjustPositionX();\\n      this.adjustPositionY();\\n      this.open();\\n      this.activate();\\n      this._closeCounter = 4;\\n      return '';\\n    };\\n  };\"","\"  // YEP_EventMiniLabel\\n  if(Imported.YEP_EventMiniLabel) {\\n    RS.ArabicMessageSystem.defineInitialize(Window_EventMiniLabel);\\n    Window_EventMiniLabel.prototype.textWidthEx = function(text) {\\n      messageMode = 'normal';\\n      var result = Window_Base.prototype.drawTextEx.call(this, text, 0, this.contents.height);\\n      messageMode = 'arabic';\\n      return result;\\n    };\\n  }\\n\"","\"  // YEP_GabWindow\\n  if(Imported.YEP_GabWindow) {\\n    var alias_Window_Gab_initialize = Window_Gab.prototype.initialize;\\n    Window_Gab.prototype.initialize = function(battle) {\\n      alias_Window_Gab_initialize.call(this, battle);\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      RS.ArabicMessageSystem.defineRefresh(Window_Gab);\\n      RS.ArabicMessageSystem.defineProtoype(Window_Gab);\\n    };\\n\\n    Window_Gab.prototype.standardFontFace = function() {\\n      return Window_Base.prototype.standardFontFace.call(this);\\n    };\\n  }\"","\"  // YEP_ItemCore\\n  if(Imported.YEP_ItemCore) {\\n    var alias_Window_ItemActionCommand_initialize = Window_ItemActionCommand.prototype.initialize;\\n    Window_ItemActionCommand.prototype.initialize = function(x, y) {\\n      alias_Window_ItemActionCommand_initialize.call(this, x, y);\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n    };\\n    Window_ItemActionCommand.prototype.drawAllItems = function() {\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      var topIndex = this.topIndex();\\n      for (var i = 0; i < this.maxPageItems(); i++) {\\n          var index = topIndex + i;\\n          if (index < this.maxItems()) {\\n              this.drawItem(index);\\n          }\\n      }\\n    };\\n  }\"","\"  // YEP_SaveCore\\n\\n  if(Imported.YEP_SaveCore) {\\n\\n    Window_Base.prototype.drawSvActor = function(actor, x, y) {\\n      var filename = actor.battlerName();\\n      var bitmap = ImageManager.loadSvActor(filename);\\n      var pw = bitmap.width / 9;\\n      var ph = bitmap.height / 6;\\n      var sx = 0;\\n      var sy = 0;\\n      this.contents.RTLblt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);\\n    };\\n\\n    Window_Base.prototype.textWidthEx = function(text) {\\n      messageMode = 'normal';\\n      var result = this.drawTextEx.call(this, text, 0, this.contents.height);\\n      messageMode = 'arabic';\\n      return result;\\n    };\\n\\n    var alias_Window_SaveInfo_initialize = Window_SaveInfo.prototype.initialize;\\n    Window_SaveInfo.prototype.initialize = function(x, y, width, height, mode) {\\n      alias_Window_SaveInfo_initialize.call(this, x, y, width, height, mode);\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n    };\\n\\n    Window_SaveInfo.prototype.refresh = function() {\\n      this.contents.clear();\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      this.resetFontSettings();\\n      var dy = 0;\\n      dy = this.drawGameTitle(dy);\\n      if (!this._valid) return this.drawInvalidText(dy);\\n      this._saveContents = StorageManager.load(this.savefileId());\\n      this.drawContents(dy);\\n    };\\n\\n    RS.ArabicMessageSystem.defineInitialize(Window_SaveConfirm);\\n\\n  }\""]
+ *
  * @help
  * =============================================================================
  * Please read this stuff before you begin using this plugin
@@ -133,10 +138,11 @@
  * 2017.08.03 (v1.2.3) :
  * - Fixed the bug that didn't show up a icon when using a text animation option.
  * - Added a feature that can shows up texts fast.
+ * 2017.10.29 (v1.2.4) - Added the scripts binder.
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = '1.2.3';
+Imported.RS_ArabicMessageSystem = '1.2.4';
 
 var RS = RS || {};
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
@@ -147,6 +153,12 @@ function ArabicUtils() {
 };
 
 (function () {
+
+  if(Utils.RPGMAKER_VERSION < '1.5.0') {
+    console.warn('Note that RS_ArabicMessageSystem plugin can use only in RMMV v1.5.0 or above.');
+    return;
+  }
+
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_ArabicMessageSystem>');
   });
@@ -162,6 +174,21 @@ function ArabicUtils() {
   RS.ArabicMessageSystem.Params.fontSize = parseInt(parameters['Font Size'] || 28);
   RS.ArabicMessageSystem.Params.textWaitTime = parseInt(parameters["Text Wait Time"] || 10);
   RS.ArabicMessageSystem.Params.isAnimatedText = Boolean(parameters["Animated Text"] === 'true');
+  RS.ArabicMessageSystem.Params.bindScripts = (function () {
+    var src = parameters["Binder"];
+    var jsonParse = function (str) {
+      var retData = JSON.parse(str, function (k, v) {
+        try { return jsonParse(v); } catch (e) { return v; }
+      });
+      return retData;
+    };
+    var data = jsonParse(src);
+    var items = [];
+    if(data instanceof Array) {
+        return data;
+    }
+    return [];
+  })();
 
   //============================================================================
   // ArabicUtils
@@ -935,147 +962,15 @@ function ArabicUtils() {
   RS.ArabicMessageSystem.defineInitialize(Window_MapName);
 
   //============================================================================
-  // YEP_MessageCore
+  // Script Binder
   //============================================================================
-
-  if(Imported.YEP_MessageCore) {
-
-    Window_Message.prototype.standardFontFace = function () {
-      return Window_Base.prototype.standardFontFace.call(this);
-    };
-
-    var alias_Window_NameBox_initialize = Window_NameBox.prototype.initialize;
-    Window_NameBox.prototype.initialize = function(parentWindow) {
-      alias_Window_NameBox_initialize.call(this, parentWindow);
-      RS.ArabicMessageSystem.createArabicLayer.call(this);
-      RS.ArabicMessageSystem.defineProtoype(Window_NameBox);
-    };
-
-    Window_NameBox.prototype.standardFontFace = function() {
-      return Window_Base.prototype.standardFontFace.call(this);
-    };
-
-    Window_NameBox.prototype.refresh = function(text, position) {
-      this.show();
-      this._lastNameText = text;
-      this._text = Yanfly.Param.MSGNameBoxText + text;
-      this._position = position;
-      this.width = this.windowWidth();
-      this.createContents();
-      this.contents.clear();
-      RS.ArabicMessageSystem.createArabicLayer.call(this);
-      this.resetFontSettings();
-      this.changeTextColor(this.textColor(Yanfly.Param.MSGNameBoxColor));
-      var padding = eval(Yanfly.Param.MSGNameBoxPadding) / 2;
-      this.drawTextEx(this._text, padding, 0);
-      this._parentWindow.adjustWindowSettings();
-      this._parentWindow.updatePlacement();
-      this.adjustPositionX();
-      this.adjustPositionY();
-      this.open();
-      this.activate();
-      this._closeCounter = 4;
-      return '';
-    };
-  };
-
-  //============================================================================
-  // YEP_EventMiniLabel
-  //============================================================================
-
-  if(Imported.YEP_EventMiniLabel) {
-    RS.ArabicMessageSystem.defineInitialize(Window_EventMiniLabel);
-    Window_EventMiniLabel.prototype.textWidthEx = function(text) {
-      messageMode = 'normal';
-      var result = Window_Base.prototype.drawTextEx.call(this, text, 0, this.contents.height);
-      messageMode = 'arabic';
-      return result;
-    };
-  }
-
-  //============================================================================
-  // YEP_GabWindow
-  //============================================================================
-
-  if(Imported.YEP_GabWindow) {
-    var alias_Window_Gab_initialize = Window_Gab.prototype.initialize;
-    Window_Gab.prototype.initialize = function(battle) {
-      alias_Window_Gab_initialize.call(this, battle);
-      RS.ArabicMessageSystem.createArabicLayer.call(this);
-      RS.ArabicMessageSystem.defineRefresh(Window_Gab);
-      RS.ArabicMessageSystem.defineProtoype(Window_Gab);
-    };
-
-    Window_Gab.prototype.standardFontFace = function() {
-      return Window_Base.prototype.standardFontFace.call(this);
-    };
-  }
-
-  //============================================================================
-  // YEP_ItemCore
-  //============================================================================
-
-  if(Imported.YEP_ItemCore) {
-    var alias_Window_ItemActionCommand_initialize = Window_ItemActionCommand.prototype.initialize;
-    Window_ItemActionCommand.prototype.initialize = function(x, y) {
-      alias_Window_ItemActionCommand_initialize.call(this, x, y);
-      RS.ArabicMessageSystem.createArabicLayer.call(this);
-    };
-    Window_ItemActionCommand.prototype.drawAllItems = function() {
-      RS.ArabicMessageSystem.createArabicLayer.call(this);
-      var topIndex = this.topIndex();
-      for (var i = 0; i < this.maxPageItems(); i++) {
-          var index = topIndex + i;
-          if (index < this.maxItems()) {
-              this.drawItem(index);
-          }
-      }
-    };
-  }
-
-  //===========================================================================
-  // YEP_SaveCore
-  //===========================================================================
-
-  if(Imported.YEP_SaveCore) {
-
-    Window_Base.prototype.drawSvActor = function(actor, x, y) {
-      var filename = actor.battlerName();
-      var bitmap = ImageManager.loadSvActor(filename);
-      var pw = bitmap.width / 9;
-      var ph = bitmap.height / 6;
-      var sx = 0;
-      var sy = 0;
-      this.contents.RTLblt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);
-    };
-
-    Window_Base.prototype.textWidthEx = function(text) {
-      messageMode = 'normal';
-      var result = this.drawTextEx.call(this, text, 0, this.contents.height);
-      messageMode = 'arabic';
-      return result;
-    };
-
-    var alias_Window_SaveInfo_initialize = Window_SaveInfo.prototype.initialize;
-    Window_SaveInfo.prototype.initialize = function(x, y, width, height, mode) {
-      alias_Window_SaveInfo_initialize.call(this, x, y, width, height, mode);
-      RS.ArabicMessageSystem.createArabicLayer.call(this);
-    };
-
-    Window_SaveInfo.prototype.refresh = function() {
-      this.contents.clear();
-      RS.ArabicMessageSystem.createArabicLayer.call(this);
-      this.resetFontSettings();
-      var dy = 0;
-      dy = this.drawGameTitle(dy);
-      if (!this._valid) return this.drawInvalidText(dy);
-      this._saveContents = StorageManager.load(this.savefileId());
-      this.drawContents(dy);
-    };
-
-    RS.ArabicMessageSystem.defineInitialize(Window_SaveConfirm);
-
-  }
+  RS.ArabicMessageSystem.Params.bindScripts.forEach(function (el) {
+    try {
+      eval(el);
+    } catch (e) {
+      console.warn(e);
+    }
+  });
 
   //============================================================================
   // Window_ScrollText
