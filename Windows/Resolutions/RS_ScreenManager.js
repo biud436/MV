@@ -6,16 +6,16 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.7) <RS_ScreenManager>
+ * @plugindesc (v1.0.8) <RS_ScreenManager>
  * @author biud436
  *
- * @param TEST OPTION
+ * @param TEST OPTION (TEST ONLY)
  *
  * @param isGraphicsRendererResize
  * @text Resize Graphics Renderer
  * @type boolean
- * @parent TEST OPTION
- * @desc
+ * @parent TEST OPTION (TEST ONLY)
+ * @desc This is the parameter for resizing the graphics renderer
  * @default false
  * @on true
  * @off false
@@ -23,15 +23,15 @@ Imported.RS_ScreenManager = true;
  * @param isGraphicsAutoScaling
  * @text Auto Scaling
  * @type boolean
- * @parent TEST OPTION
- * @desc
+ * @parent TEST OPTION (TEST ONLY)
+ * @desc This is the parameter for scaling the graphics objects.
  * @default false
  * @on true
  * @off false
  *
  * @param isMaintainingMinimumWidth
  * @text ON Minimum Width
- * @parent TEST OPTION
+ * @parent TEST OPTION (TEST ONLY)
  * @type boolean
  * @desc Set whether it can not set the width is less than minimum width
  * @default true
@@ -40,7 +40,7 @@ Imported.RS_ScreenManager = true;
  *
  * @param isMaintainingMinimumHeight
  * @text ON Minimum Height
- * @parent TEST OPTION
+ * @parent TEST OPTION (TEST ONLY)
  * @type boolean
  * @desc Set whether it can not set the width is less than minimum height
  * @default true
@@ -51,8 +51,9 @@ Imported.RS_ScreenManager = true;
  * @default
  *
  * @param imageName
+ * @text Background Image Name
  * @parent Resource Options
- * @desc image Name
+ * @desc Specify the name of the image for background that is to be drawn in the Scene Manager.
  * @default Mountains3
  * @require 1
  * @dir img/parallaxes/
@@ -211,11 +212,10 @@ Imported.RS_ScreenManager = true;
  * =============================================================================
  * Installations
  * =============================================================================
- * - Download the plugin and library files.
- * - Put winDisplaySettings.node file in your project ./js/libs folder.
- * - Open the Plugin Managers and then set up this plugin.
- * - Deploy your project by Windows platform.
- * - Rename the Game.exe to nw.exe.
+ * Step1. Download the plugin and the extension program for Win32
+ * Step2. Put displaySettings.exe file in your project ./js/libs folder.
+ * Step3. Open the Plugin Managers and then set up this plugin.
+ * Step4. Deploy your project by Windows platform.
  * =============================================================================
  * Plugin Commands
  * =============================================================================
@@ -241,6 +241,9 @@ Imported.RS_ScreenManager = true;
  * - Fixed the parameter about default screen width and height.
  * - Fixed an issue to incorrect scale the background (Scene_Title, Scene_MenuBase, Scene_Gameover)
  * - Fixed the default value of the 'Resize All Windows' parameter is to false.
+ * 2017.11.24 (v1.0.8) :
+ * - Fixed some issues that are not working in RMMV 1.6.0 (Beta)
+ * - Now this plugin doesn't use the node webkit extension.
  */
 
 (function () {
@@ -326,29 +329,39 @@ Imported.RS_ScreenManager = true;
   "2048 x 2732", // iPadPro
   ];
 
-  if( Utils.isNwjs() ) {
+  (function(){
+    "use strict";
 
-    if(process && process.platform && process.platform === 'win32') {
-      var winDisplaySettingsLib = undefined;
-      try {
-        winDisplaySettingsLib = require('./js/libs/winDisplaySettings');
-      } catch(e) {
-        winDisplaySettingsLib = null;
-      }
-      if(winDisplaySettingsLib) {
-        var displaySetting = winDisplaySettingsLib.GetDisplaySettings();
-        pcGraphicsArray = displaySetting.split('\n').filter(function(i, idx, item) {
-          return item.indexOf(i) === idx;
-        });
-      } else {
-        // in case of that the lib file has not found...
+    if( Utils.isNwjs() ) {
+      if(process && process.platform && process.platform === 'win32') {
+
+        var path = require('path');
+        var base = path.dirname(process.mainModule.filename);
+        var child_process = require('child_process');
+        var fileName = path.join(base,"js/libs/DisplaySettings.exe");
+        var projectName = document.querySelector('title').text;
+        var cmdProcess = child_process.exec(`cmd.exe /K ${fileName} /c`);
+
         pcGraphicsArray = pcGraphicsTempArray;
+
+        cmdProcess.stdout.on('data', function(data) {
+          pcGraphicsArray = data.split('\n').filter(function(i, idx, item) {
+            return item.indexOf(i) === idx;
+          });
+        });
+
+        process.on('exit', function () {
+          cmdProcess.kill();
+        });
+
+      } else {
+        // in case of Mac OS
+        pcGraphicsArray = pcGraphicsTempArray;
+
       }
-    } else {
-      // in case of Mac OS
-      pcGraphicsArray = pcGraphicsTempArray;
     }
-  }
+
+  })();
 
   //============================================================================
   // ScreenConfig
