@@ -149,6 +149,19 @@
 
 (function () {
 
+  var isValidRMVersion = (Utils.RPGMAKER_VERSION >= '1.5.1');
+  if(!isValidRMVersion) {
+    var texts = [
+      "The version of RPG MAKER MV is lower.",
+      "This plugin is needed RM 1.5.1 version or above.",
+      "You can update as the latest versions of RPG Maker MV from the following websites.",
+      "Steam - http://store.steampowered.com/app/363890/RPG_Maker_MV/",
+      "RPG Maker Web - http://www.rpgmakerweb.com/products/programs/rpg-maker-mv"
+    ].join("\n");
+    console.warn(texts);
+    return;
+  }
+
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_CheckVersions>');
   }); parameters = (parameters.length > 0) && parameters[0].parameters;
