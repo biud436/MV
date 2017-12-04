@@ -1,6 +1,6 @@
 /*:
  * RS_EventCreate.js
- * @plugindesc (v1.0.6) This plugin allows you to create or copy or delete an event
+ * @plugindesc (v1.0.7) This plugin allows you to create or copy or delete an event
  *
  * @author biud436
  * @since 2015.10.16
@@ -8,6 +8,7 @@
  * @param Default Event Data
  * @desc Specify the default event data
  * @type struct<EventData>
+ * @default {"id":"1","name":"","note":"\"\"","pages":"[\"{\\\"conditions\\\":\\\"{\\\\\\\"actorId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"actorValid\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"itemId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"itemValid\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"selfSwitchCh\\\\\\\":\\\\\\\"A\\\\\\\",\\\\\\\"selfSwitchValid\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"switch1Id\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"switch1Valid\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"switch2Id\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"switch2Valid\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"variableId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"variableValid\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"variableValue\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"directionFix\\\":\\\"false\\\",\\\"image\\\":\\\"{\\\\\\\"tileId\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"characterName\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"direction\\\\\\\":\\\\\\\"2\\\\\\\",\\\\\\\"pattern\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"characterIndex\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"list\\\":\\\"[\\\\\\\"{\\\\\\\\\\\\\\\"code\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"0\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"indent\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"0\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"parameters\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"[]\\\\\\\\\\\\\\\"}\\\\\\\"]\\\",\\\"moveFrequency\\\":\\\"3\\\",\\\"moveRoute\\\":\\\"{\\\\\\\"list\\\\\\\":\\\\\\\"[\\\\\\\\\\\\\\\"{\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"code\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"parameters\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"[]\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"}\\\\\\\\\\\\\\\"]\\\\\\\",\\\\\\\"repeat\\\\\\\":\\\\\\\"true\\\\\\\",\\\\\\\"skippable\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"wait\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"moveSpeed\\\":\\\"3\\\",\\\"moveType\\\":\\\"0\\\",\\\"priorityType\\\":\\\"1\\\",\\\"stepAnime\\\":\\\"false\\\",\\\"through\\\":\\\"false\\\",\\\"trigger\\\":\\\"0\\\",\\\"walkAnime\\\":\\\"true\\\"}\"]","x":"0","y":"0"}
  *
  * @help
  * =============================================================================
@@ -42,6 +43,9 @@
  * 2017.07.07 (v1.0.6) :
  * - Added a feature that changes a default event data.
  * - Fixed the bug with the image file extension in a creating function.
+ * 2017.12.05 (v1.0.7) :
+ * - Added the default value in the plugin parameter called 'Default Event Data'.
+ * - Removed the code that is creating a testing message in an event create command.
  */
 
  /*~struct~EventData:
@@ -398,27 +402,6 @@ RS.Event = RS.Event || {};
     defaultEventData.y = y;
     defaultEventData.pages[0].image.characterName = charName;
     defaultEventData.pages[0].image.characterIndex = charIdx;
-    defaultEventData.pages[0].list = [];
-    defaultEventData.pages[0].list.push({
-      "code": 101,
-      "indent": 0,
-      "parameters": [charName, charIdx, 0, 2]
-    });
-    defaultEventData.pages[0].list.push({
-      "code": 401,
-      "indent": 0,
-      "parameters": ["\\c[4]-TEST-\\c[0]"]
-    });
-    defaultEventData.pages[0].list.push({
-      "code": 401,
-      "indent": 0,
-      "parameters": ["TEST"]
-    });
-    defaultEventData.pages[0].list.push({
-      "code": 0,
-      "indent": 0,
-      "parameters": []
-    });
     return defaultEventData;
   };
 
