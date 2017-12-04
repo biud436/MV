@@ -123,7 +123,7 @@ function Game_SelfVariables() {
   $.saveFlags = Boolean(parameters['Save notifying variable'] === 'true');
   $.nonEventPointer = 10000;
   $.length = 10000;
-  $.battleFlgas = 15000;
+  $.battleFlags = 15000;
 
   //============================================================================
   // Game_SelfVariables
@@ -175,7 +175,7 @@ function Game_SelfVariables() {
     } else {
       // In case of Battle Events
       if($gameParty.inBattle()) {
-        key = [$gameMap.mapId(), this2.battleFlgas++ , value || 0];
+        key = [$gameMap.mapId(), this2.battleFlags++ , value || 0];
       } else {
       // In case of Common Events
         key = [$gameMap.mapId(), this2.nonEventPointer++, value || 0];
@@ -209,7 +209,7 @@ function Game_SelfVariables() {
   $.clearPointer = function() {
     var self = this;
     self.nonEventPointer = 10000;
-    self.battleFlgas = 15000;
+    self.battleFlags = 15000;
   };
 
   $.setEventProperties = function (key, newValue) {

@@ -418,78 +418,161 @@ function Sprite_VehicleName() {
   };
 
   //----------------------------------------------------------------------------
+  // Sprite_Character
+  //
+  //
+
+  Sprite_Character.prototype.isValidNameSprite = function () {
+    var c;
+    var character = this._character;
+    if( character ) c = character.constructor.name;
+    if(c === 'Game_Event') return true;
+    if(c === 'Game_Vehicle') return true;
+    if(c === 'Game_Player') return true;
+    return false;
+  };
+
+  Sprite_Character.prototype.createNameSprite = function () {
+    if(!this.isValidNameSprite()) return;
+  };
+
+  var alias_Sprite_Character_update = Sprite_Character.prototype.update;
+  Sprite_Character.prototype.update = function () {
+    alias_Sprite_Character_update.call(this);
+    if(!this._nameSprite) this.createNameSprite();
+  };
+
+  //----------------------------------------------------------------------------
   // Spriteset_Map
   //
   //
 
+  Spriteset_Map.prototype.addNewNameSprite = function (type, data) {
+
+    var newNameSprite;
+
+    switch (type) {
+      case 'Game_Player':
+        newNameSprite = new Sprite_PlayerName(data);
+        break;
+      case 'Game_Vehicle':
+        newNameSprite = new Sprite_VehicleName(data);
+        break;
+      case 'Game_Event':
+        newNameSprite = new Sprite_Name(data);
+        break;
+    }
+
+    if(this._nameLayer && newNameSprite) {
+      this._nameLayer.addChild(newNameSprite);
+    }
+
+  };
+
+  Spriteset_Map.prototype.createNameLayer = function () {
+
+    var commonData = {
+      'outlineWidth': 2,
+      'anchor': new Point(0.5, 1.0),
+      'textSize': textSize,
+      'height': $gameMap.tileHeight.bind(this)
+    };
+
+    // Create Name Layer
+    this._nameLayer = new Sprite();
+    this._nameLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    this._nameLayer.z = 20;
+    this.addChild(this._nameLayer);
+
+    // Create Each Characters
+    this._characterSprites.forEach(function(i) {
+
+      var color = [];
+      var character = i._character;
+      var _constructor = character.constructor.name;
+
+      switch(_constructor) {
+
+        case 'Game_Player':
+          if($gameParty.members()[0]) {
+            this.addNewNameSprite(_constructor, Object.assign(commonData, {
+              'member': $gamePlayer,
+              'textColor': [255,255,255]
+            }));
+          }
+        break;
+
+        case 'Game_Event':
+
+          if(character._erased) return;
+          if(character.isTransparent()) return;
+          if(!character.event().note.match(colorMatch)) return;
+
+          color.push(Number(RegExp.$1 || 255));
+          color.push(Number(RegExp.$2 || 255));
+          color.push(Number(RegExp.$3 || 255));
+
+          this.addNewNameSprite(_constructor, Object.assign(commonData, {
+            'member': character,
+            'textColor': color,
+          }));
+        break;
+
+        case 'Game_Vehicle':
+
+          this.addNewNameSprite(_constructor, Object.assign(commonData, {
+            'member': character,
+            'textSize': textSize,
+            'textColor': [255, 255, 255],
+            'name': character._type
+          }));
+
+        break;
+      }
+
+    }, this);
+
+  };
+
+  Spriteset_Map.prototype.removeNameLayer = function () {
+    var layer = this._nameLayer;
+    var children = layer.children;
+    var length = children.length;
+    if(!layer) return;
+
+    children.forEach(function (i) {
+      i.visible = false;
+      if(i._member) i._member = null;
+      if(i._name) i._name = null;
+      if(i._offsetY) i._offsetY = null;
+    });
+
+    layer.removeChildren(0, length);
+
+    layer = null;
+    this._nameLayer = null;
+  };
+
   var alias_Spriteset_Map_createCharacters = Spriteset_Map.prototype.createCharacters;
   Spriteset_Map.prototype.createCharacters = function() {
       alias_Spriteset_Map_createCharacters.call(this);
+      this.createNameLayer();
+  };
 
-      // Create Name Layer
-      this._nameLayer = new Sprite();
-      this._nameLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
-      this._nameLayer.z = 20;
-      this.addChild(this._nameLayer);
+  var alias_Spriteset_Map_destroy = Spriteset_Map.prototype.destroy;
+  Spriteset_Map.prototype.destroy = function () {
+      Spriteset_Map.prototype.destroy.call(this);
+      this.removeNameLayer();
+  };
 
-      // Create Each Characters
-      this._characterSprites.forEach(function(i) {
+  var alias_Spriteset_Map_update = Spriteset_Map.prototype.update;
+  Spriteset_Map.prototype.update = function () {
+      alias_Spriteset_Map_update.call(this);
+      this.checkWithNameSprite();
+  };
 
-        var color = [];
-        var character = i._character;
-        var _constructor = character.constructor.name;
+  Spriteset_Map.prototype.checkWithNameSprite = function () {
 
-        switch(_constructor) {
-
-          case 'Game_Player':
-            if($gameParty.members()[0]) {
-              this._nameLayer.addChild(new Sprite_PlayerName({
-                'member': $gamePlayer,
-                'textSize': textSize,
-                'textColor': [255,255,255],
-                'outlineWidth': 2,
-                'anchor': new Point(0.5, 1.0),
-                'height': $gameMap.tileHeight.bind(this)
-              }));
-            }
-          break;
-
-          case 'Game_Event':
-
-            if(character._erased) return;
-            if(character.isTransparent()) return;
-            if(!character.event().note.match(colorMatch)) return;
-
-            color.push(Number(RegExp.$1 || 255));
-            color.push(Number(RegExp.$2 || 255));
-            color.push(Number(RegExp.$3 || 255));
-
-            this._nameLayer.addChild(new Sprite_Name({
-              'member': character,
-              'textSize': textSize,
-              'textColor': color,
-              'outlineWidth': 2,
-              'anchor': new Point(0.5, 1.0),
-              'height': $gameMap.tileHeight.bind(this)
-            }));
-          break;
-
-          case 'Game_Vehicle':
-
-            this._nameLayer.addChild(new Sprite_VehicleName({
-              'member': character,
-              'textSize': textSize,
-              'textColor': [255, 255, 255],
-              'outlineWidth': 2,
-              'anchor': new Point(0.5, 1.0),
-              'height': $gameMap.tileHeight.bind(this),
-              'name': character._type
-            }));
-
-          break;
-        }
-
-      }, this);
   };
 
   //----------------------------------------------------------------------------
@@ -499,20 +582,6 @@ function Sprite_VehicleName() {
 
   var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    var layer = this._spriteset._nameLayer;
-    var children = layer.children;
-    var length = children.length;
-    if(layer) {
-      children.forEach(function (i) {
-        i.visible = false;
-        if(i._member) i._member = null;
-        if(i._name) i._name = null;
-        if(i._offsetY) i._offsetY = null;
-      });
-      layer.removeChildren(0, length);
-      layer = null;
-      this._spriteset._nameLayer = null;
-    }
     alias_Scene_Map_terminate.call(this);
   };
 

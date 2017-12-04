@@ -20,7 +20,7 @@
  * @desc Specify the size of the default player.
  * @default Normal
  * @option Normal (560 * 315px)
- * @value Normal 
+ * @value Normal
  * @option Fullscreen
  * @value Fullscreen
  *
@@ -30,7 +30,7 @@
  * @default false
  * @on Loop always
  * @off Playback once
- * 
+ *
  * @help
  * In general, In Android Chrome and Mobile Safari, It doesn't automatically
  * start playback. and you can stop the video by clicking around the YouTube video.
@@ -76,92 +76,171 @@
  * - Added a feature that the video size sets up with a fullscreen mode.
  * - Added a feature that can set the video to loop
  */
- /*:ko
-  * RS_YoutubePlayer.js
-  * @plugindesc 유튜브 플레이어 <RS_YoutubePlayer>
-  * @author 러닝은빛(biud436)
-  *
-  * @param Video Quality
-  * @desc 비디오 품질(화질)을 설정하세요
-  * default : hd720
-  * @default hd720
-  * @type select
-  * @option highres
-  * @option hd1080
-  * @option hd720
-  * @option large
-  * @option medium
-  * @option small
-  *
-  * @param Size
-  * @type select
-  * @desc 기본 유튜브 플레이어의 크기를 지정하세요
-  * @default Normal
-  * @option 보통 (560 * 315px)
-  * @value Normal 
-  * @option 전체 화면
-  * @value Fullscreen
-  *
-  * @param Looping
-  * @type boolean
-  * @desc 동영상 루프 여부를 지정하세요
-  * @default false
-  * @on 루프로 설정
-  * @off 한 번만 재생
-  *
-  * @help
-  * 안드로이드 크롬과 모바이 사파리에서는 자동으로 동영상이 재생되지 않습니다.
-  * 유튜브 플레이어를 종료하려면 동영상 영역 바깥 쪽을 클릭하시면 됩니다
-  * 아니면 동영상이 끝날 때 까지 기다리세요.
-  *
-  * =============================================================================
-  * Plugin Command
-  * =============================================================================
-  * - 인터넷만 연결되어있으면 동영상이 재생됩니다.
-  * (아래 형식의 URL들만 제대로 파싱됩니다)
-  *
-  * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
-  * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
-  * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
-  *
-  * - 유튜브 동영상 재생을 중단합니다.
-  *
-  * YTPlayer stop
-  *
-  * 유튜브 API의 기능이 변경되어 동영상이 재생되지 않는 경우, 아래 메일 또는 아방스나
-  * 인디사이드를 통해 제보를 해주시면 됩니다 (궁금한 점도 질문 가능합니다)
-  *
-  * 이메일 : biud436@gmail.com
-  * 
-  * =============================================================================
-  * 스크립트 호출
-  * =============================================================================
-  * 유튜브 동영상을 스크립트 명령으로 재생하려면 다음을 호출하세요.
-  * Graphics.playYoutube("https://www.youtube.com/watch?v=C4ze-KCSxQY");
-  *
-  * 재생 중인 유튜브 동영상의 상태를 유튜브 API로 확인할 수 있습니다.
-  * 직접 접근하려면 YTPlayer 전역 객체를 사용하세요.
-  *
-  * if(YTPlayer.isPlaying()) YTPlayer.stopVideo();
-  * YTPlayer.isPaused();
-  * YTPlayer.isBuffering();
-  * YTPlayer.isEnded();
-  *
-  * =============================================================================
-  * 버전 로그
-  * =============================================================================
-  * 2016.05.08 (v1.0.0) - First Release
-  * 2016.05.09 (v1.0.1) - Added Error Handler
-  * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL.
-  * 2016.07.04 (v1.0.3) - Fixed a few logic about the range were converted to Rectangular object.
-  * 2016.10.06 (v1.0.4) - Added Canvas Filters.
-  * 2016.12.10 (v1.0.5) :
-  * - Added a plugin parameter about video quality settings.
-  * - Added the ability to play YouTube videos from a specified time.
-  * 2017.08.31 (v1.0.6) :
-  * - Added a feature that the video size sets up with a fullscreen mode.
-  * - Added a feature that can set the video to loop
-  */
+/*:ko
+ * RS_YoutubePlayer.js
+ * @plugindesc 유튜브 플레이어 <RS_YoutubePlayer>
+ * @author 러닝은빛(biud436)
+ *
+ * @param Video Quality
+ * @desc 비디오 품질(화질)을 설정합니다.
+ * default : hd720
+ * @default hd720
+ * @type select
+ * @option highres
+ * @option hd1080
+ * @option hd720
+ * @option large
+ * @option medium
+ * @option small
+ *
+ * @param Size
+ * @type select
+ * @desc 기본 유튜브 플레이어의 크기를 지정합니다.
+ * @default Normal
+ * @option 보통 (560 * 315px)
+ * @value Normal
+ * @option 전체 화면
+ * @value Fullscreen
+ *
+ * @param Looping
+ * @type boolean
+ * @desc 동영상 반복 재생 여부를 지정합니다
+ * @default false
+ * @on 루프로 설정
+ * @off 한 번만 재생
+ *
+ * @help
+ * 안드로이드 '크롬'과 모바일 '사파리'에서는 동영상이 자동으로 재생되지 않습니다.
+ * 유튜브 플레이어를 종료하고자 한다면 동영상 영역의 바깥 쪽을 클릭하시거나,
+ * 동영상이 끝날 때 까지 기다려주세요.
+ *
+ * =============================================================================
+ * Plugin Command
+ * =============================================================================
+ * 인터넷이 연결되어있으면 동영상이 재생됩니다.
+ * 아래에 기입된 주소 형식만 제대로 재생됩니다.
+ *
+ * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
+ * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
+ * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
+ *
+ * YTPlayer stop // 유튜브 동영상 재생을 중단합니다
+ *
+ * 버그 제보는 아래 메일 주소로 보내주세요.
+ *
+ * biud436@gmail.com
+ *
+ * =============================================================================
+ * 스크립트 명령
+ * =============================================================================
+ * 유튜브 동영상을 '스크립트 커맨드'로 재생하려면 다음을 호출하세요.
+ * Graphics.playYoutube("https://www.youtube.com/watch?v=C4ze-KCSxQY");
+ *
+ * 재생 중인 유튜브 동영상의 상태를 유튜브 API로 확인할 수 있습니다.
+ * 직접 접근하려면 YTPlayer 전역 객체를 사용하세요.
+ *
+ * if(YTPlayer.isPlaying()) YTPlayer.stopVideo();
+ * YTPlayer.isPaused();
+ * YTPlayer.isBuffering();
+ * YTPlayer.isEnded();
+ *
+ * =============================================================================
+ * 버전 로그
+ * =============================================================================
+ * 2016.05.08 (v1.0.0) - First Release
+ * 2016.05.09 (v1.0.1) - Added Error Handler
+ * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL.
+ * 2016.07.04 (v1.0.3) - Fixed a few logic about the range were converted to Rectangular object.
+ * 2016.10.06 (v1.0.4) - Added Canvas Filters.
+ * 2016.12.10 (v1.0.5) :
+ * - Added a plugin parameter about video quality settings.
+ * - Added the ability to play YouTube videos from a specified time.
+ * 2017.08.31 (v1.0.6) :
+ * - Added a feature that the video size sets up with a fullscreen mode.
+ * - Added a feature that can set the video to loop
+ */
+/*:ja
+ * RS_YoutubePlayer.js
+ * @plugindesc ユーチューブプレイヤーです。<RS_YoutubePlayer>
+ * @author biud436
+ *
+ * @param Video Quality
+ * @desc 動画の品質を設定します。
+ * default : hd720
+ * @default hd720
+ * @type select
+ * @option highres
+ * @option hd1080
+ * @option hd720
+ * @option large
+ * @option medium
+ * @option small
+ *
+ * @param Size
+ * @type select
+ * @desc ユーチューブプレーヤーの動画の大きさを指定します。
+ * @default Normal
+ * @option 普通 (560 * 315px)
+ * @value Normal
+ * @option フルスクリーンモード
+ * @value Fullscreen
+ *
+ * @param Looping
+ * @type boolean
+ * @desc 動画反復再生するかどうかを指定してください。
+ * @default false
+ * @on 繰り返し再生
+ * @off 一度再生
+ *
+ * @help
+ * アンドロイドクロムとモバイルのサファリでは、自動で動画が再生されません。
+ * ユーチューブプレーヤーを終了するには、動画領域の外側をクリックすればいいです
+ * それとも動画が終わるまで待ってください。
+ *
+ * =============================================================================
+ * プラグインコマンドについて
+ * =============================================================================
+ * インターネットがつながっていれば動画が再生されます。
+ * きちんと表示されるアドレス形式は次のようです。
+ *
+ * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
+ * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
+ * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
+ *
+ * YTPlayer stop // ユーチューブ動画再生を中断します。
+ *
+ * ユーチューブAPIの機能が変更されて動画が再生されない場合,
+ * 下記のアドレスにメールを送ってください。
+ *
+ * biud436@gmail.com
+ *
+ * =============================================================================
+ * スクリプトコマンドについて
+ * =============================================================================
+ * Graphics.playYoutube("YOUTUBE_URL"); // ユーチューブ動画を再生します。
+ *
+ * 再生中のユーチューブ動画の状態をで確認できます。
+ *
+ * if(YTPlayer.isPlaying()) YTPlayer.stopVideo();
+ * YTPlayer.isPaused();
+ * YTPlayer.isBuffering();
+ * YTPlayer.isEnded();
+ *
+ * =============================================================================
+ * Version
+ * =============================================================================
+ * 2016.05.08 (v1.0.0) - First Release
+ * 2016.05.09 (v1.0.1) - Added Error Handler
+ * 2016.05.12 (v1.0.2) - Fixed a function that parses a URL.
+ * 2016.07.04 (v1.0.3) - Fixed a few logic about the range were converted to Rectangular object.
+ * 2016.10.06 (v1.0.4) - Added Canvas Filters.
+ * 2016.12.10 (v1.0.5) :
+ * - Added a plugin parameter about video quality settings.
+ * - Added the ability to play YouTube videos from a specified time.
+ * 2017.08.31 (v1.0.6) :
+ * - Added a feature that the video size sets up with a fullscreen mode.
+ * - Added a feature that can set the video to loop
+ */
 
 var Imported = Imported || {};
 Imported.RS_YoutubePlayer = true;
@@ -288,7 +367,7 @@ function onPlayerStateChange (event) {
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
   var quality = parameters['Video Quality'] || 'hd720';
-  
+
   RS.YoutubePlayer.Params.viewSize = parameters['Size'] || 'Normal';
   RS.YoutubePlayer.Params.isLooping = Boolean(parameters['Looping'] === 'true');
 
@@ -314,7 +393,7 @@ function onPlayerStateChange (event) {
   };
 
   YTPlayer.createIframe = function () {
-    var viewMode = RS.YoutubePlayer.Params.viewSize;    
+    var viewMode = RS.YoutubePlayer.Params.viewSize;
     this._iframe = document.createElement('iframe');
     this._iframe.id = 'ytplayer-iframe';
     this._iframe.width = (viewMode === 'Fullscreen' ) ? Graphics.boxWidth : '560px';

@@ -2,7 +2,6 @@
  * RS_AnimatedTitleImage.js
  * @plugindesc This plugin changes a title screen image at specific time intervals.
  * @author biud436
- * @date 2015.11.09
  *
  * @param Title Image
  * @type struct<TitleImage>[]
@@ -42,6 +41,55 @@
 * @type number
 * @decimals 1
 * @desc redraw the title screen image at specific time intervals.
+* @default 2.0
+* @min 1.0
+*
+*/
+/*:ko
+ * @plugindesc 일정한 시간이 지나면 타이틀 이미지를 자동으로 변경합니다.
+ * @author biud436
+ *
+ * @param Title Image
+ * @text 타이틀 이미지
+ * @type struct<TitleImage>[]
+ * @default ["{\"Image\":\"Book\",\"Time\":\"2.0\"}","{\"Image\":\"Night\",\"Time\":\"1.5\"}","{\"Image\":\"Sword\",\"Time\":\"1.2\"}","{\"Image\":\"Tower2\",\"Time\":\"3.4\"}"]
+ *
+ * @param Preload
+ * @text 이미지 미리 불러오기
+ * @type boolean
+ * @desc 타이틀 이미지 파일을 미리 캐시 메모리에 할당할 지 여부를 결정합니다
+ * @default true
+ *
+ * @help
+ * =============================================================================
+ * 버전 정보
+ * =============================================================================
+ * 2015.11.09 (v1.0.0) - 플러그인 공개일
+ * 2016.07.16 (v1.0.1) - 타이틀 이미지를 미리 불러올 수 있는 매개변수를 추가했습니다.
+ * 2016.10.30 (v1.0.2) :
+ * - 잘못된 파일명을 수정했습니다.
+ * - 메인 프로그램이 포커스를 잃었을 때 생기는 버그를 수정하였습니다.
+ * 2017.06.08 (v1.0.3) :
+ * - RMMV 1.5.0에서 플러그인이 잘 동작하지 않는 문제를 수정했습니다.
+ * 2017.07.09 (v1.0.4) :
+ * - 새로운 플러그인 매니저의 기능을 플러그인에 반영했습니다.
+ */
+
+/*~struct~TitleImage:ko
+*
+* @param Image
+* @text 이미지
+* @desc img/titles1 폴더에 있는 이미지를 불러옵니다
+* @default
+* @require 1
+* @dir img/titles1/
+* @type file
+*
+* @param Time
+* @text 시간 간격
+* @type number
+* @decimals 1
+* @desc 일정한 시간이 흐르면 타이틀 이미지를 변경합니다
 * @default 2.0
 * @min 1.0
 *
