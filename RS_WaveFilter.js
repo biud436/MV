@@ -7,48 +7,68 @@
  *
  * @help
  *
- * - Type 1 (Sprite)
- * The following code applies the wave effect to Sprite.
- * http://biud436.tistory.com/17
+ * =============================================================================
+ * Sprite
+ * =============================================================================
+ * The following properties applies the wave effect to Sprite.
+ * For Information, Refer to http://biud436.tistory.com/17
  *
- * - Type 2 (Tilemap)
+ *    - wave : The default value is false.
+ *    - wave_amp : The default value is to 0.05
+ *    - wave_length : The default value is to a maxHeight
+ *    - wave_speed : The default value is to 0.25
+ *    - wave_phase : The default value is to 360
+ *
+ * =============================================================================
+ * Picture
+ * =============================================================================
+ * This plugin command would activate the wave effect to your picture:
+ *
+ *    PictureWave Start picture_id wave_speed wave_amp
+ *      - picture_id : Specify the id of the game picture.
+ *      - wave_speed : The available value is the number between 0 and 1.
+ *                    (The default value is to 0.25)
+ *      - wave_amp : The available value is the number between 0 and 1.
+ *                   (The default value is to 0.05)
+ *
+ * This plugin command would deactivate the wave effect of your picture:
+ *
+ *    PictureWave Stop picture_id
+ *      - picture_id : Specify the id of the game picture.
+ *
+ * =============================================================================
+ * Tilemap
+ * =============================================================================
  *
  * The following plugin commands applies the wave effect to Tilemap.
  * This plugin contains these six types the plugin commands.
  *
  * This plugin commands allows you to enable or disable the wave effect
  *
- * Tilemap_Wave Enable
- * Tilemap_Wave Disable
+ *    TilemapWave Enable
+ *    TilemapWave Disable
  *
  * This plugin commands allows you to set the speed of the wave effect.
  * the x is a floating-point number between 0 and 2.
  * Default value is to 2.0. But the fragment shader does not use this value.
  *
- * Tilemap_Wave waveSpeed x
+ *    TilemapWave waveSpeed x
  *
  * This plugin commands allows you to set the amplitude of the wave effect.
  * the x is a floating-point number between 0 and 1.
  * Default value is to 0.02
  *
- * Tilemap_Wave waveFrequency x
+ *    TilemapWave waveFrequency x
  *
  * This plugin commands allows you to set the UV speed of the wave effect.
  * the x is a floating-point number between 0 and 1.
  * Default value is to 0.25
  *
- * Tilemap_Wave UVSpeed x
+ *    TilemapWave UVSpeed x
  *
- *=============================================================================
- * RPG Maker VX Ace Sprite Wave Properties
- *=============================================================================
- * wave_amp (default value is to 0 ~ 1)
- * wave_length (default value is to 0 ~ maxHeight)
- * wave_speed (default value is to 0.25)
- * wave_phase (default value is to 360)
- *=============================================================================
- *
- * - Change Log
+ * =============================================================================
+ * Change Log
+ * =============================================================================
  * 2016.01.14 (v1.0.0) - First Release.
  * 2016.01.16 (v1.0.1) - Added the function to remove the filter.
  * 2016.01.18 (v1.1.0) - Added the plugin command.
@@ -63,8 +83,11 @@
  * 2016.11.18 (v1.5.3) - Fixed an issue where the original tilemap is rendered when using Orange Overlay plugin.
  * 2016.11.26 (v1.5.4) - Added certain code to remove the texture from memory.
  * 2016.11.30 (v1.5.5) - Fixed the issue that has the black border in a filter area.
+ * 2017.12.10 (v1.5.6) - Added the plugin command called 'PictureWave' (it is tested on 1.6.0 beta version)
  *
- * - Terms of Use
+ * =============================================================================
+ * Terms of Use
+ * =============================================================================
  * Free for commercial and non-commercial use
  *
  */
@@ -203,10 +226,9 @@ RS.WaveConfig = RS.WaveConfig || {};
     }
   });
 
-  //----------------------------------------------------------------------------
+  //============================================================================
   // Sprite
-  //
-  //
+  //============================================================================
 
   var alias_Sprite_initialize = Sprite.prototype.initialize;
   Sprite.prototype.initialize = function(bitmap) {
@@ -321,6 +343,29 @@ RS.WaveConfig = RS.WaveConfig || {};
      configurable: true
   });
 
+  //============================================================================
+  // Sprite_Picture
+  //============================================================================
+
+  Sprite_Picture.prototype.updateWave = function() {
+    var picture = this.picture();
+    this.wave = picture.wave();
+    this.wave_speed = picture.waveSpeed();
+    this.wave_amp = picture.waveAmp();
+  };
+
+  var alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
+  Sprite_Picture.prototype.update = function() {
+    alias_Sprite_Picture_update.call(this);
+    if(this.visible) {
+      this.updateWave();
+    }
+  };
+
+  //============================================================================
+  // Spriteset_Map
+  //============================================================================
+
   var alias_Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer;
   Spriteset_Map.prototype.createLowerLayer = function() {
     alias_Spriteset_Map_createLowerLayer.call(this);
@@ -359,10 +404,61 @@ RS.WaveConfig = RS.WaveConfig || {};
    }
   };
 
-  //----------------------------------------------------------------------------
+  //============================================================================
+  // Game_Picture
+  //============================================================================
+
+  var alias_Game_Picture_initBasic = Game_Picture.prototype.initBasic;
+  Game_Picture.prototype.initBasic = function() {
+    alias_Game_Picture_initBasic.call(this);
+    this._wave = false;
+    this._waveSpeed = 0.25;
+    this._waveAmp = 0.02;
+  };
+
+  Game_Picture.prototype.wave = function () {
+    return this._wave;
+  };
+
+  Game_Picture.prototype.waveSpeed = function () {
+    return this._waveSpeed;
+  };
+
+  Game_Picture.prototype.waveAmp = function () {
+    return this._waveAmp;
+  };
+
+  Game_Picture.prototype.startWave = function(waveSpeed, waveAmp) {
+    this._wave = true;
+    this._waveSpeed = waveSpeed;
+    this._waveAmp = waveAmp
+  };
+
+  Game_Picture.prototype.stopWave = function() {
+    this._wave = false;
+  };
+
+  //============================================================================
+  // Game_Screen
+  //============================================================================
+
+  Game_Screen.prototype.startWave = function(pictureId, waveSpeed, waveAmp) {
+    var picture = this.picture(pictureId);
+    if (picture) {
+        picture.startWave(waveSpeed, waveAmp);
+    }
+  };
+
+  Game_Screen.prototype.stopWave = function(pictureId) {
+    var picture = this.picture(pictureId);
+    if (picture) {
+        picture.stopWave();
+    }
+  };
+
+  //============================================================================
   // Game_System
-  //
-  //
+  //============================================================================
 
   var alias_Game_System_initialize = Game_System.prototype.initialize;
   Game_System.prototype.initialize = function() {
@@ -413,10 +509,14 @@ RS.WaveConfig = RS.WaveConfig || {};
    return this._waveProp.wavePhase;
   };
 
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
+
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
      alias_Game_Interpreter_pluginCommand.call(this, command, args);
-     if(command === "Tilemap_Wave") {
+     if(command === "Tilemap_Wave" || command === "TilemapWave") {
        switch(args[0]) {
          case 'Enable':
            $gameSystem.setWaveProperty('wave', true);
@@ -433,6 +533,15 @@ RS.WaveConfig = RS.WaveConfig || {};
          case 'UVSpeed':
            $gameSystem.setWaveProperty('UVSpeed', Number(args[1]));
            break;
+       }
+     }
+     if(command === "Picture_Wave" || command === "PictureWave") {
+       switch (args[0].toLowerCase()) {
+         case "start":
+           $gameScreen.startWave(Number(args[1]), Number(args[2]), Number(args[3]));
+           break;
+         case "stop":
+           $gameScreen.stopWave(Number(args[1]));
        }
      }
   };
