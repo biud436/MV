@@ -142,6 +142,7 @@
  * 2017.12.12 (v1.2.5) :
  * - Fixed the bug of the swap code that changes the message mode as the normal mode when calculating the text width.
  * - Added a feature that changes a text direction in the Game Option.
+ * - Added a feature that saves the config of the text direction as file.
  */
 
 var Imported = Imported || {};
@@ -1138,10 +1139,15 @@ function ArabicUtils() {
   var alias_applyData = ConfigManager.applyData;
   ConfigManager.applyData = function(config) {
     alias_applyData.call(this, config);
-    if(messageMode === "arabic") {
-      this.rtlText = true;
+    var value = config.rtlText;
+    if (value !== undefined) {
+      this.rtlText = value;
     } else {
-      this.rtlText = false;
+      if(messageMode === "arabic") {
+        this.rtlText = true;
+      } else {
+        this.rtlText = false;
+      }
     }
   };
 
