@@ -57,6 +57,7 @@ Imported.RS_GraphicsMenu = true;
  * @param Menu Index
  * @type string[]
  * @desc Specify the name of Scene constructor.
+ * (you can exit the game when setting the text as :exit)
  * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
  *
  * @help
@@ -94,6 +95,7 @@ Imported.RS_GraphicsMenu = true;
  * Version Log
  * -----------------------------------------------------------------------------
  * 2017.07.11 (v1.0.0) - First Release
+ * 2017.12.19 (v1.0.1) - Added a new feature that can exit the game.
  */
 
 /*~struct~MenuRect:
@@ -173,7 +175,8 @@ Imported.RS_GraphicsMenu = true;
   *
   * @param Menu Index
   * @type string[]
-  * @desc Scene 함수(클래스)의 이름를 정확하게 입력하세요
+  * @desc Scene 함수(클래스)의 이름를 정확하게 입력하세요.
+  * :exit라고 적으면 게임을 즉각 종료할 수 있습니다.
   * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
   *
   * @help
@@ -188,6 +191,7 @@ Imported.RS_GraphicsMenu = true;
   * Version Log
   * -----------------------------------------------------------------------------
   * 2017.07.11 (v1.0.0) - 공개
+  * 2017.12.19 (v1.0.1) - 게임 종료 기능 추가
   */
 
  /*~struct~MenuRect:ko
@@ -398,6 +402,14 @@ RS.Utils = RS.Utils || {};
 
   Scene_LinearMenu.prototype.selectScene = function () {
     var sceneObject = RS.GraphicsMenu.Params.MENU[Scene_LinearMenu.INDEX];
+    if(sceneObject.endsWith(':exit')) {
+      setTimeout(function () {
+        this._touched = false;
+        SoundManager.playOk();
+        SceneManager.exit();
+      }, 0);
+      return;
+    }
     if(typeof window[sceneObject] === 'function') {
       // push : 현재 메뉴 씬을 메뉴 스택에 누적
       this._touched = false;
