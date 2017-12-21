@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin allows you to get the color without calling function getPixel <RS_ChangeWindowTextColorSafely>
+ * @plugindesc This plugin allows you to change the text color for window as you desired. <RS_ChangeWindowTextColorSafely>
  * @author biud436
  *
  * @param windowList
@@ -9,16 +9,22 @@
  * @default ""
  *
  * @help
- * In the plugin parameter called 'Window List', Include these note tags :
+ *
+ * We're going to define each window a different special color. To quickly define,
+ * We must use to define a notetag in the plugin parameter called 'Window List'
  *
  *    <Window_ItemList normalColor #ff0000>
  *    <Window_SkillList normalColor #ffff00>
+ *    <Window_SkillList crisisColor #ff0000>
+ *
+ * Note tags provide the information likes as a class name and method name,
+ * color value for window. You can see how the text color for window that is
+ * changed in the game.
  *
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2017.12.21 - First Release.
- * 2017.12.21 - Added notetags.
+ * 2017.12.21 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
