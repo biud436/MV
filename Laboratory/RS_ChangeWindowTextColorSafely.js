@@ -2,24 +2,23 @@
  * @plugindesc This plugin allows you to get the color without calling function getPixel <RS_ChangeWindowTextColorSafely>
  * @author biud436
  *
- * @param normalColor
- * @text Normal Color
- * @type color
- * @desc Specify the normal color
- * (#ffffff = white)
- * @default #ffffff
- *
  * @param windowList
  * @text Window List
- * @type note[]
- * @desc Specify the function name (that means the class name in Ruby)
- * @default []
+ * @type note
+ * @desc Refer to a help documentation
+ * @default ""
  *
  * @help
+ * In the plugin parameter called 'Window List', Include these note tags :
+ *
+ *    <Window_ItemList normalColor #ff0000>
+ *    <Window_SkillList normalColor #ffff00>
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
  * 2017.12.21 - First Release.
+ * 2017.12.21 - Added notetags.
  */
 
 var Imported = Imported || {};
@@ -43,18 +42,50 @@ RS.Utils = RS.Utils || {};
     return retData;
   };
 
-  var textNormalColor = parameters['normalColor'] || '#ffffff';
   var defaultWindowClasses = RS.Utils.jsonParse(parameters['windowList']);
 
-  Utils.changeWindowTextColorSafely = function(ITEMS) {
-    ITEMS.forEach(function(e,i,a) {
-      var CLASS_NAME = window[e];
-      if(typeof(CLASS_NAME) === 'function') {
-        CLASS_NAME.prototype.normalColor = function() { return textNormalColor; };
-      }
-    }, this);
+  Utils.changeWindowTextColorSafely = function(NOTETAGS) {
+
+      var clsName = "";
+      var funcName = "";
+      var color = "";
+      var done = false;
+
+      var notetags = NOTETAGS.split(/[\r\n]+/);
+
+      notetags.forEach(function (note) {
+
+        if(note.match(/<(.*)[ ](.*)[ ](.*)>/)) {
+
+          clsName = String(RegExp.$1);
+          funcName = String(RegExp.$2);
+          color = String(RegExp.$3);
+          done = true;
+
+        }
+
+        if(done) {
+
+          var CLASS_NAME = window[clsName];
+          var FUNC_NAME = funcName.slice(0);
+          var COLOR_NAME = color.slice(0);
+
+          if(typeof(CLASS_NAME) === 'function') {
+
+            var prototypeName = CLASS_NAME.prototype[FUNC_NAME];
+
+            if(typeof(prototypeName) === 'function') {
+              CLASS_NAME.prototype[funcName] = function() { return COLOR_NAME; };
+            }
+
+          }
+
+        }
+
+      }, this);
+
   };
 
-  Utils.changeWindowTextColorSafely(defaultWindowClasses || []);
+  Utils.changeWindowTextColorSafely(defaultWindowClasses);
 
 })();
