@@ -96,6 +96,7 @@ Imported.RS_GraphicsMenu = true;
  * -----------------------------------------------------------------------------
  * 2017.07.11 (v1.0.0) - First Release
  * 2017.12.19 (v1.0.1) - Added a new feature that can exit the game.
+ * 2017.12.29 (v1.0.2) - Fixed the issue that is not changed the button index when using a button index is six or above.
  */
 
 /*~struct~MenuRect:
@@ -192,6 +193,7 @@ Imported.RS_GraphicsMenu = true;
   * -----------------------------------------------------------------------------
   * 2017.07.11 (v1.0.0) - 공개
   * 2017.12.19 (v1.0.1) - 게임 종료 기능 추가
+  * 2017.12.29 (v1.0.2) - 메뉴 버튼이 6개 이상일 때, 5개까지만 선택되는 버그 수정
   */
 
  /*~struct~MenuRect:ko
@@ -335,13 +337,14 @@ RS.Utils = RS.Utils || {};
   };
 
   Scene_LinearMenu.prototype.right = function () {
-    Scene_LinearMenu.INDEX = (Scene_LinearMenu.INDEX + 1).mod(5);
+    var RECT = RS.GraphicsMenu.Params.RECT;
+    Scene_LinearMenu.INDEX = (Scene_LinearMenu.INDEX + 1).mod(RECT.length);
     SoundManager.playCursor();
   };
 
   Scene_LinearMenu.prototype.left = function () {
-    // %를 사용하면 계산 오류가 있어서 mod로 변경
-    Scene_LinearMenu.INDEX = (Scene_LinearMenu.INDEX - 1).mod(5);
+    var RECT = RS.GraphicsMenu.Params.RECT;
+    Scene_LinearMenu.INDEX = (Scene_LinearMenu.INDEX - 1).mod(RECT.length);
     SoundManager.playCursor();
   };
 
