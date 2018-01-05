@@ -1,10 +1,14 @@
 /*:
- * @plugindesc <RS_VerifyChildSprite>
+ * @plugindesc This plugin allows you to filter whether the sprite works fine before starting the current frame in the combat. <RS_VerifyChildSprite>
  * @author biud436
+ * @help
+ * 2018.01.05 (v1.0.0) - First Release.
  */
 /*:ko
- * @plugindesc <RS_VerifyChildSprite>
+ * @plugindesc 전투에서 현재 프레임이 시작되기 전에 스프라이트가 제대로인지 필터링합니다. <RS_VerifyChildSprite>
  * @author biud436
+ * @help
+ * 2018.01.05 (v1.0.0) - First Release. 
  */ 
  
 var Imported = Imported || {};
