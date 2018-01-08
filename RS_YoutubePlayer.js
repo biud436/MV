@@ -75,6 +75,9 @@
  * 2017.08.31 (v1.0.6) :
  * - Added a feature that the video size sets up with a fullscreen mode.
  * - Added a feature that can set the video to loop
+ * 2018.01.08 (v1.0.7) :
+ * - Now that The YouTube iframe will be newly created every times when playing back the video.
+ * - Fixed the bug that is not available the function called YTPlayer.isEnded(); 
  */
 /*:ko
  * RS_YoutubePlayer.js
@@ -158,6 +161,9 @@
  * 2017.08.31 (v1.0.6) :
  * - Added a feature that the video size sets up with a fullscreen mode.
  * - Added a feature that can set the video to loop
+ * 2018.01.08 (v1.0.7) :
+ * - Now that The YouTube iframe will be newly created every times when playing back the video.
+ * - Fixed the bug that is not available the function called YTPlayer.isEnded();
  */
 /*:ja
  * RS_YoutubePlayer.js
@@ -240,6 +246,9 @@
  * 2017.08.31 (v1.0.6) :
  * - Added a feature that the video size sets up with a fullscreen mode.
  * - Added a feature that can set the video to loop
+ * 2018.01.08 (v1.0.7) :
+ * - Now that The YouTube iframe will be newly created every times when playing back the video.
+ * - Fixed the bug that is not available the function called YTPlayer.isEnded();
  */
 
 var Imported = Imported || {};
@@ -393,6 +402,9 @@ function onPlayerStateChange (event) {
   };
 
   YTPlayer.createIframe = function () {
+    if(this._iframe) {
+      this._ytPlayer.removeChild(this._iframe);
+    }
     var viewMode = RS.YoutubePlayer.Params.viewSize;
     this._iframe = document.createElement('iframe');
     this._iframe.id = 'ytplayer-iframe';
@@ -422,7 +434,7 @@ function onPlayerStateChange (event) {
   };
 
   YTPlayer.playVideo = function(src) {
-    if(!this._iframe) this.createIframe();
+    this.createIframe();
     this.preVideo(src);
     if(Imported.RS_SimpleCanvasFilter) {
       Graphics.setCanvasFilter('blur', 1.5, false, null);
@@ -448,11 +460,10 @@ function onPlayerStateChange (event) {
 
   YTPlayer.removeAllElement = function() {
     this.stopVideo();
-    this._iframe.style.opacity = '0';
-    this._iframe.style.zIndex = '0';
   };
 
   YTPlayer.callPlayer = function(func, args) {
+      if(!this._iframe) return;
       var frame_id = 'ytplayer-iframe';
       var src = this._iframe.src;
       if (src.indexOf('youtube.com/embed') != -1) {
@@ -494,7 +505,7 @@ function onPlayerStateChange (event) {
   };
 
   YTPlayer.isEnded = function() {
-    if(this._status === YT.PlayerState.ENDED) {
+    if(this._status === YT.PlayerState.ENDED || this._status === YT.PlayerState.CUED) {
       return true;
     }
     return false;
@@ -650,7 +661,7 @@ function onPlayerStateChange (event) {
   var alias_Graphics_isVideoVisible = Graphics._isVideoVisible;
   Graphics._isVideoVisible = function() {
     var youtubePlayer = document.getElementById('ytplayer-iframe');
-    return alias_Graphics_isVideoVisible.call(this) || youtubePlayer.style.opacity > 0;
+    return alias_Graphics_isVideoVisible.call(this) || (youtubePlayer && youtubePlayer.style.opacity > 0);
   };
 
 })();
