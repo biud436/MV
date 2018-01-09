@@ -1,3 +1,39 @@
+/*:ko
+ * @plugindesc 버튼 스타일을 엠보싱 스타일로 변경합니다 <RS_EmbossingButtonStyleEx>
+ * @author biud436
+ *
+ * @param backColor1
+ * @text 배경 색상 1
+ * @desc Specify the background color
+ * @default rgb(156, 161, 160)
+ *
+ * @param backColor2
+ * @text 배경 색상 2
+ * @desc Specify the background color
+ * @default rgb(108, 124, 124)
+ *
+ * @param borderColor1
+ * @text 테두리 색상 1
+ * @desc Specify the border color
+ * @default rgb(232, 231, 226)
+ *
+ * @param borderColor2
+ * @text 테두리 색상 2
+ * @desc Specify the border color
+ * @default rgb(30, 33, 32)
+ *
+ * @param lineWidth
+ * @type number
+ * @text 테두리 굵기
+ * @desc Specify the line width
+ * @default 2
+ *
+ * @help
+ * =============================================================================
+ * 플러그인 동작 환경
+ * =============================================================================
+ * Windows 10, RMMV 1.6.0
+ */
 /*:
  * @plugindesc Embossing Button & Cursor Style <RS_EmbossingButtonStyleEx>
  * @author biud436
@@ -23,12 +59,13 @@
  * @default rgb(30, 33, 32)
  *
  * @param lineWidth
+ * @type number
  * @text Line Width
  * @desc Specify the line width
  * @default 2
  *
  * @help
- * 
+ *
  */
 
 var Imported = Imported || {};

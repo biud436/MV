@@ -1,3 +1,36 @@
+/*:ko
+ * @plugindesc 특정 창의 텍스트 색상을 원하는 색상으로 변경할 수 있습니다 <RS_ChangeWindowTextColorSafely>
+ * @author biud436
+ *
+ * @param windowList
+ * @text 사용자 정의 색상
+ * @type note
+ * @desc 도움말을 참고하세요!
+ * @default ""
+ *
+ * @help
+ * =============================================================================
+ * 사용 방법
+ * =============================================================================
+ * 각 창에 서로 다른 텍스트 색상을 적용하려면,
+ * 사용자 정의 색상 매개변수에 다음 노트 태그를 입력해야 합니다.
+ *
+ *    <Window_ItemList normalColor #ff0000>
+ *    <Window_SkillList normalColor #ffff00>
+ *    <Window_SkillList crisisColor #ff0000>
+ *
+ * 노트 태그는 클래스 이름과 해당 클래스의 메소드 이름 그리고 색상 값을 제공해야 하므로,
+ * 정확히 입력하시기 바랍니다.
+ *
+ * 정말 많은 메소드를 바꿀 수 있지만 모두 표기하진 않았습니다.
+ *
+ * 바뀐 색상은 게임 내에서 확인할 수 있습니다.
+ *
+ * =============================================================================
+ * 변경 기록
+ * =============================================================================
+ * 2017.12.21 (v1.0.0) - First Release.
+ */
 /*:
  * @plugindesc This plugin allows you to change the text color for window as you desired. <RS_ChangeWindowTextColorSafely>
  * @author biud436

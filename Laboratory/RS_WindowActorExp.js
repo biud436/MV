@@ -1,3 +1,43 @@
+/*:ko
+ * @plugindesc (v1.0.2) 상태 정보에 경험치 게이지바를 표시합니다.
+ * @author biud436
+ *
+ * @param Colors
+ * @text 색상
+ *
+ * @param Exp Gauge Color1
+ * @text 경험치 게이지 색상 1
+ * @parent Colors
+ * @type number
+ * @desc 기본 색상 변경
+ * @default 10
+ *
+ * @param Exp Gauge Color2
+ * @text 경험치 게이지 색상 2
+ * @parent Colors
+ * @type number
+ * @desc 기본 색상 변경
+ * @default 11
+ *
+ * @param Param
+ * @text 기타
+ *
+ * @param Padding
+ * @text 간격
+ * @parent Param
+ * @type number
+ * @desc 각 라인의 줄 간격 변경
+ * @default 10
+ *
+ * @help
+ * =============================================================================
+ * 변경 사항
+ * =============================================================================
+ * 2017.04.11 (v1.0.0) - First Release.
+ * 2017.04.12 (v1.0.1) - Added a new parameter can be able to set the padding
+ * value of each line in Menu Status Window.
+ * 2017.06.12 (v1.0.2) - Fixed the max value length in drawCurrentAndMax function
+ */
 /*:
  * @plugindesc (v1.0.2) This plugin allows you to clearly display a gauge bar for Exp value to status window.
  * @author biud436

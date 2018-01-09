@@ -1,5 +1,33 @@
+/*:ko
+ * @plugindesc 이 플러그인은 실험 용도입니다. <RS_ViewportCulling>
+ * @author biud436
+ *
+ * @param Use Tilemap
+ * @text 타일맵 생성 여부
+ * @type boolean
+ * @desc 미사용으로 선택하면 타일맵 객체가 생성되지 않습니다.
+ * 타일맵 객체를 생성하지 않으면 메모리를 많이 확보할 수 있습니다.
+ * @default false
+ * @on 사용
+ * @off 미사용
+ *
+ * @param Use Culling
+ * @text 화면 바깥 오브젝트 렌더링 여부
+ * @type boolean
+ * @desc 사용으로 선택하면 화면 바깥에 있는 스프라이트가 그려지지 않으며 공간 변환식도 수행하지 않습니다.
+ * @default true
+ * @on 사용
+ * @off 미사용
+ *
+ * @help
+ * =============================================================================
+ * 플러그인 동작 환경
+ * =============================================================================
+ * 모바일에서 타일맵을 생성하지 않고 화면 바깥 오브젝트를 렌더링하지 않기 위해 도입된
+ * 것으로 RMMV 1.6.0 최신 버전에서 잘 동작합니다.
+ */
 /*:
- * @plugindesc RS_ViewportCulling
+ * @plugindesc This plugin is for experimentation purposes. <RS_ViewportCulling>
  * @author biud436
  *
  * @param Use Tilemap
@@ -13,30 +41,6 @@
  * @default true
  *
  * @help
- *
- */
-/*:ko
- * @plugindesc RS_ViewportCulling
- * @author biud436
- *
- * @param Use Tilemap
- * @type boolean
- * @desc 미사용으로 선택하면 타일맵 객체가 생성되지 않습니다.
- * 타일맵 객체를 생성하지 않으면 메모리를 많이 확보할 수 있습니다.
- * @default false
- * @on 사용
- * @off 미사용
- *
- * @param Use Culling
- * @type boolean
- * @desc 사용으로 선택하면 화면 바깥에 있는 스프라이트가 그려지지 않으며 공간 변환식도 수행하지 않습니다.
- * @default true
- * @on 사용
- * @off 미사용
- *
- * @help
- * 이 플러그인은 화면 바깥으로 나간 오브젝트들을 렌더링하지 않습니다.
- * 또한 모바일에서 테스트 용도로 타일맵을 아예 생성하지 않을 수 있습니다.
  *
  */
 

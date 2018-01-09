@@ -1,3 +1,125 @@
+/*:ko
+ * RS_Admob.js
+ * @plugindesc 광고 삽입 플러그인입니다.
+ * @author biud436
+ *
+ * @param --- Android ---
+ * @text 안드로이드
+ *
+ * @param android Banner ID
+ * @text 안드로이드 배너 광고 ID
+ * @parent --- Android ---
+ * @desc 배너 광고 ID (반드시 수정하세요)
+ * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
+ *
+ * @param android Interstitial Ad ID
+ * @text 안드로이드 전면 광고 ID
+ * @parent --- Android ---
+ * @desc 전면 광고 ID (반드시 수정하세요)
+ * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
+ *
+ * @param --- IOS ---
+ * @text iOS
+ *
+ * @param ios Banner ID
+ * @text iOS 배너 광고 ID
+ * @parent --- IOS ---
+ * @desc 배너 광고 ID
+ * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
+ *
+ * @param ios Interstitial Ad ID
+ * @text iOS 전면 광고 ID
+ * @parent --- IOS ---
+ * @desc 전면 광고 ID
+ * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
+ *
+ * @param --- Settings ---
+ * @text 설정
+ *
+ * @param bannerAtTop
+ * @text 배너를 상단에 표시
+ * @type boolean
+ * @parent --- Settings ---
+ * @desc 배너를 상단에 표시합니다.
+ * true / false
+ * @default false
+ * @on 상단에 표시합니다.
+ * @off 하단에 표시합니다.
+ *
+ * @param Testing
+ * @text 광고 테스트 모드 설정
+ * @type boolean
+ * @parent --- Settings ---
+ * @desc 테스트 광고를 표시합니다
+ * true / false
+ * @default false
+ * @on 테스트 광고로 표시
+ * @off 실제 광고로 표시
+ *
+ * @help
+ * =============================================================================
+ * 플러그인 동작 환경
+ * =============================================================================
+ * 안드로이드 킷캣(4.4.4)을 기준으로 테스트 되었습니다.
+ *
+ * 또한, 이 플러그인은 코르도바로 패키징된 앱에서만 동작하므로, 사용 전에 반드시 코르도바
+ * 프로젝트를 새로 생성하시기 바랍니다. 어떻게 하는 지 모르겠다는 분들은 아래 글을
+ * 참고해주세요.
+ *
+ * 링크 (네이버 블로그) - http://biud436.blog.me/220521625455
+ *
+ * 애드몹 설정 페이지에서 광고 단위를 설정한 후, 유효한 광고 ID 값을 매개변수에 적으시
+ * 기 바랍니다.
+ *
+ * 인터넷에 연결되어있지 않거나, 광고 값이 틀린 경우 광고가 나오지 않습니다.
+ *
+ * 광고 ID 값은 반드시 유효한 상태여야 합니다, 이점 반드시 확인 하시기 바랍니다.
+ *
+ * - 초기 생성 시 인터넷에 연결되어있지 않으면 애드뷰가 생성되지 않는 것 같습니다.
+ * - 광고 ID 값을 반드시 수정하세요, 수정하지 않으면 광고가 표시되지 않습니다.
+ *
+ * 코르도바 버전이 7이상이고, CLI 환경에서 빌드한다면, 명령 프롬프트에서 아래 명령어를
+ * 호출하여 플러그인을 추가할 수 있습니다.
+ *
+ *    cordova plugin add cordova-plugin-admob-simple
+ *
+ * 동작하지 않거나 이전 버전이라면,
+ * 'npm install -g cordova'로 최신 버전으로 업데이트 해보시기 바랍니다.
+ * 아니면 다음 명령어를 호출해보세요.
+ *
+ *    cordova plugin add https://github.com/sunnycupertino/cordova-plugin-admob-simple
+ *
+ * =============================================================================
+ * 안드로이드 스튜디오로 빌드하기
+ * -----------------------------------------------------------------------------
+ * 코르도바가 아닌 Xilefian님의 안드로이드 스튜디오 소스 코드를 사용하고 싶으시다면,
+ * 아래 글을 참고하여 애드몹을 직접 부착하시기 바랍니다.
+ *
+ * 안드로이드 스튜디오에서 애드몹 광고 삽입하기 :
+ *    http://cafe.naver.com/sonnysoft2004/68937
+ *
+ * 소스 코드는 계속되는 변경되는 사항으로 인하여 별도의 원격 저장소를 만들지 않았습니다.
+ *
+ * =============================================================================
+ * 플러그인 커맨드
+ * -----------------------------------------------------------------------------
+ * 배너광고 표시
+ * 배너광고 제거
+ * 전면광고 표시
+ * 인터넷체크 주소
+ *
+ * =============================================================================
+ * 변경 사항
+ * -----------------------------------------------------------------------------
+ * 2016.08.06 (v1.0.0) - First Release.
+ * 2016.10.05 (v1.0.1) - 인터넷 접속 체크를 할 수 있는 기능을 추가했습니다.
+ *
+ * =============================================================================
+ * 크레딧
+ * -----------------------------------------------------------------------------
+ * Sunny Cupertino
+ * Liming Xie
+ */
 /*:
  * RS_Admob.js
  * @plugindesc This plugin allows you to show up the Ads by using Google AdMob.
@@ -89,94 +211,6 @@
  * -----------------------------------------------------------------------------
  * 2016.08.06 (v1.0.0) - First Release
  * 2016.10.05 (v1.0.1) - Added the function that could be checking the internet.
- * =============================================================================
- * Credit
- * -----------------------------------------------------------------------------
- * Sunny Cupertino
- * Liming Xie
- */
-/*:ko
- * RS_Admob.js
- * @plugindesc 광고 삽입 플러그인입니다.
- * @author biud436
- *
- * @param --- Android ---
- *
- * @param android Banner ID
- * @parent --- Android ---
- * @desc 배너 광고 ID (반드시 수정하세요)
- * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
- *
- * @param android Interstitial Ad ID
- * @parent --- Android ---
- * @desc 전면 광고 ID (반드시 수정하세요)
- * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
- *
- * @param --- IOS ---
- *
- * @param ios Banner ID
- * @parent --- IOS ---
- * @desc 배너 광고 ID
- * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
- *
- * @param ios Interstitial Ad ID
- * @parent --- IOS ---
- * @desc 전면 광고 ID
- * @default ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx
- *
- * @param --- Settings ---
- *
- * @param bannerAtTop
- * @parent --- Settings ---
- * @desc 배너를 상단에 표시합니다.
- * true / false
- * @default false
- *
- * @param Testing
- * @parent --- Settings ---
- * @desc 테스트 광고를 표시합니다
- * true / false
- * @default false
- *
- * @help
- * 애드몹 설정 페이지에서 광고 단위를 설정한 후, 유효한 광고 ID 값을 매개변수에 적으시
- * 기 바랍니다. 인터넷에 연결되어있지 않거나, 광고 값이 틀린 경우 광고가 나오지 않습니다.
- * 광고 ID 값은 반드시 유효한 상태여야 합니다, 이점 반드시 확인 하시기 바랍니다.
- *
- * - 초기 생성 시 인터넷에 연결되어있지 않으면 애드뷰가 생성되지 않는 것 같습니다.
- * - 광고 ID 값을 반드시 수정하세요, 수정하지 않으면 광고가 표시되지 않습니다.
- *
- * =============================================================================
- * Plugin Commands
- * -----------------------------------------------------------------------------
- * 배너광고 표시
- * 배너광고 제거
- * 전면광고 표시
- * 인터넷체크 주소
- *
- * =============================================================================
- * Cordova Plugin URL
- * -----------------------------------------------------------------------------
- * https://github.com/sunnycupertino/cordova-plugin-admob-simple
- *
- * 코르도바 버전이 7이상이고, CLI 환경에서 빌드한다면, 명령 프롬프트에서 아래 명령어를
- * 호출하여 플러그인을 추가할 수 있습니다.
- *
- *    cordova plugin add cordova-plugin-admob-simple
- *
- * 동작하지 않거나 이전 버전이라면,
- * 'npm install -g cordova'로 최신 버전으로 업데이트 해보시기 바랍니다.
- * 아니면 다음 명령어를 호출해보세요.
- *
- *    cordova plugin add https://github.com/sunnycupertino/cordova-plugin-admob-simple
- *
- *
- * =============================================================================
- * Change Log
- * -----------------------------------------------------------------------------
- * 2016.08.06 (v1.0.0) - First Release.
- * 2016.10.05 (v1.0.1) - 인터넷 접속 체크를 할 수 있는 기능을 추가했습니다.
- *
  * =============================================================================
  * Credit
  * -----------------------------------------------------------------------------

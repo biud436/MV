@@ -1,50 +1,3 @@
-/*:
- * RS_AnimatedTitleImage.js
- * @plugindesc This plugin changes a title screen image at specific time intervals.
- * @author biud436
- *
- * @param Title Image
- * @type struct<TitleImage>[]
- * @default ["{\"Image\":\"Book\",\"Time\":\"2.0\"}","{\"Image\":\"Night\",\"Time\":\"1.5\"}","{\"Image\":\"Sword\",\"Time\":\"1.2\"}","{\"Image\":\"Tower2\",\"Time\":\"3.4\"}"]
- *
- * @param Preload
- * @type boolean
- * @desc Decides whether it will be preloading title images.
- * @default true
- *
- * @help
- * This plugin changes a title screen image at specific time intervals.
- *
- * - Change Log
- * 2015.11.09 (v1.0.0) - First Release.
- * 2016.07.16 (v1.0.1) - Added the plugin parameter that could be decided
- * whether it will be preloading title images.
- * 2016.10.30 (v1.0.2) :
- * - Fixed the name of the incorrect file.
- * - Fixed the bug that occurs when the main program lost focus.
- * 2017.06.08 (v1.0.3) :
- * - Fixed the bug that is not working in RMMV 1.5.0
- * 2017.07.09 (v1.0.4) :
- * - Added the feature that can add the title images dynamically via newly plugin manager features.
- */
-
-/*~struct~TitleImage:
-*
-* @param Image
-* @desc Specifies to import file in the path from img/titles1 folder.
-* @default
-* @require 1
-* @dir img/titles1/
-* @type file
-*
-* @param Time
-* @type number
-* @decimals 1
-* @desc redraw the title screen image at specific time intervals.
-* @default 2.0
-* @min 1.0
-*
-*/
 /*:ko
  * @plugindesc 일정한 시간이 지나면 타이틀 이미지를 자동으로 변경합니다.
  * @author biud436
@@ -94,6 +47,53 @@
 * @min 1.0
 *
  */
+/*:
+ * RS_AnimatedTitleImage.js
+ * @plugindesc This plugin changes a title screen image at specific time intervals.
+ * @author biud436
+ *
+ * @param Title Image
+ * @type struct<TitleImage>[]
+ * @default ["{\"Image\":\"Book\",\"Time\":\"2.0\"}","{\"Image\":\"Night\",\"Time\":\"1.5\"}","{\"Image\":\"Sword\",\"Time\":\"1.2\"}","{\"Image\":\"Tower2\",\"Time\":\"3.4\"}"]
+ *
+ * @param Preload
+ * @type boolean
+ * @desc Decides whether it will be preloading title images.
+ * @default true
+ *
+ * @help
+ * This plugin changes a title screen image at specific time intervals.
+ *
+ * - Change Log
+ * 2015.11.09 (v1.0.0) - First Release.
+ * 2016.07.16 (v1.0.1) - Added the plugin parameter that could be decided
+ * whether it will be preloading title images.
+ * 2016.10.30 (v1.0.2) :
+ * - Fixed the name of the incorrect file.
+ * - Fixed the bug that occurs when the main program lost focus.
+ * 2017.06.08 (v1.0.3) :
+ * - Fixed the bug that is not working in RMMV 1.5.0
+ * 2017.07.09 (v1.0.4) :
+ * - Added the feature that can add the title images dynamically via newly plugin manager features.
+ */
+
+/*~struct~TitleImage:
+*
+* @param Image
+* @desc Specifies to import file in the path from img/titles1 folder.
+* @default
+* @require 1
+* @dir img/titles1/
+* @type file
+*
+* @param Time
+* @type number
+* @decimals 1
+* @desc redraw the title screen image at specific time intervals.
+* @default 2.0
+* @min 1.0
+*
+*/
 
 var Imported = Imported || {};
 var RS = RS || {};
