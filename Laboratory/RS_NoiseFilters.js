@@ -1,8 +1,63 @@
-//==============================================================================
-// RS_NoiseFilters.js
-// This plugin has been created by requested.
-//==============================================================================
-
+/*:ko
+* @plugindesc (v1.0.5) 타일맵에 노이즈 필터를 적용합니다.
+* @author biud436, Vico(Shader)
+*
+* @help
+* =============================================================================
+* 플러그인 동작 환경
+* =============================================================================
+* 이 플러그인은 실험 용이며 일부 모바일 기기에서는 동작하지 않을 수 있습니다.
+*
+* =============================================================================
+* 플러그인 커맨드
+* =============================================================================
+* 타일맵에 노이즈 필터 효과를 주려면 다음 커맨드를 호출하시면 됩니다.
+*
+* Tilemap_noise Enable minNoiseAmount maxNoiseAmount
+*
+* 고정된 값이었으나 다음과 같이 하면 고정된 값에 특정 값을 매 프레임 더하여 모래가
+* 날리는 듯한 효과를 냅니다.
+*
+* Tilemap_noise Enable 0.1 0.2
+*
+* 노이즈 생성에 영향을 주는 주요 값에 X와 Y라는 미지수를 붙였습니다. 이 값에 램덤한
+* 값을 추가하여 노이즈에 변화를 줍니다.
+*
+* Tilemap_noise SetRandomX min max
+* Tilemap_noise SetRandomX -3 3
+*
+* Tilemap_noise SetRandomY min max
+* Tilemap_noise SetRandomY -2 2
+*
+* 타일맵에 적용된 노이즈 필터를 해제합니다.
+*
+* Tilemap_noise Disable
+*
+* =============================================================================
+* 스크립트 호출
+* =============================================================================
+* $gameSystem.setNoiseProperty('enabledNoise', true);
+* $gameSystem.setNoiseProperty('enabledNoise', false);
+* $gameSystem.setNoiseProperty('a', 0.1);
+* $gameSystem.setNoiseProperty('b', 0.2);
+* $gameSystem.setNoiseProperty('x', 12.9898);
+* $gameSystem.setNoiseProperty('y', 78.233);
+* $gameSystem.setNoiseProperty('minX', -3);
+* $gameSystem.setNoiseProperty('maxX', 3);
+* $gameSystem.setNoiseProperty('minY', -2);
+* $gameSystem.setNoiseProperty('maxY', 2);
+*
+* =============================================================================
+* 변경 기록
+* =============================================================================
+* 2016.08.28 (v1.0.0) - First Release.
+* 2016.08.28 (v1.0.1) - Fixed noise issue.
+* 2016.08.28 (v1.0.2) - Fixed render code and Added Script class and Plugin Commands.
+* 2016.10.20 (v1.0.3) - Fixed the issue that is not working in RMMV 1.3.2
+* 2016.11.26 (v1.0.4) - Added certain code to remove the texture from memory.
+* 2017.10.15 (v1.0.5) - Fixed an issue that is not working in RMMV 1.5.1
+* 2018.01.10 (v1.0.6) - Fixed the issue that is not working in RMMV 1.6.0
+*/
 /*:
 * RS_NoiseFilters.js
 * @plugindesc (v1.0.5) This plugin applies the noise filter to the tilemap.
@@ -44,6 +99,7 @@
 * 2016.10.20 (v1.0.3) - Fixed the issue that is not working in RMMV 1.3.2
 * 2016.11.26 (v1.0.4) - Added certain code to remove the texture from memory.
 * 2017.10.15 (v1.0.5) - Fixed an issue that is not working in RMMV 1.5.1
+* 2018.01.10 (v1.0.6) - Fixed the issue that is not working in RMMV 1.6.0
 */
 
 var Imported = Imported || {};
@@ -55,18 +111,6 @@ RS.NoiseFilters = RS.NoiseFilters || {};
 (function () {
 
   var isFilterPIXI4 = (PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0");
-  var isWebGL = Graphics.isWebGL();
-
-  if(!isFilterPIXI4) {
-    console.error('This plugin is not PIXI 4.0.0 and RMMV 1.3.0 or more');
-    return;
-  }
-
-  if(!isWebGL) {
-    console.error('This plugin does not support in Canvas Mode');
-    return;
-  }
-
   var isNoiseFilter = false;
   var enabledNoiseFilter = false;
   var defaultNoiseValue = 0.5;

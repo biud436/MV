@@ -1,5 +1,21 @@
+/*:ko
+ * @plugindesc 장비 창에서 상태 창을 숨길 수 있습니다.
+ * @author biud436
+ *
+ * @param width
+ * @text 폭
+ * @type number
+ * @desc 상태 창의 폭을 기입하십시오.
+ * @default 312
+ *
+ * @param height
+ * @text 높이
+ * @type number
+ * @desc 상태 창의 높이를 기입하십시오.
+ * @default Window_Base.prototype.fittingHeight(7)
+ *
+ */
 /*:
- * RS_EquipNoStatus.js
  * @plugindesc This plugin allows you to hide the status window in the equip window.
  * @author biud436
  *
