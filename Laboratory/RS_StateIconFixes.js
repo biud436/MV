@@ -1,6 +1,9 @@
-//==============================================================================
-// RS_StateIconFixes.js
-//==============================================================================
+
+/*:ko
+ * @plugindesc 최대 텍스처 사이즈 제한 때문에 상태 아이콘이 그려지지 않는 문제를 해결할 수 있습니다.
+ * @author biud436
+ * @help
+ */
 /*:
  * @plugindesc RMMV can occur the error related with MAX_TEXTURE_SIZE when using 16K texture.
  * @author biud436
@@ -8,6 +11,9 @@
  * In battle, If you were used this plugin, you could use the texture bigger than 16K (2^14) size.
  * But, It can be slow with the animation speed when using 2d context.
  */
+
+var Imported = Imported || {};
+Imported.RS_StateIconFixes = true;
 
 (function () {
 
