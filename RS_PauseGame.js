@@ -1,25 +1,57 @@
+/*:ko
+ * @plugindesc 특정 버튼으로 게임을 일지 정지합니다.
+ * @author biud436
+ *
+ * @param keyCode
+ * @text 키코드 설정
+ * @desc 키코드를 16진수나 10진수 값으로 설정하세요.
+ * @default 0x50
+ *
+ * @param Pause Image Src
+ * @text 일지 정지 이미지 경로
+ * @desc 이미지 경로를 설정하세요
+ * @default pause
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @help
+ * =============================================================================
+ * 플러그인 동작 환경
+ * -----------------------------------------------------------------------------
+ * Windows
+ * Mac OS X
+ *
+ * 모바일 기기에서는 동작하지 않습니다.
+ *
+ * =============================================================================
+ * 변경 기록
+ * -----------------------------------------------------------------------------
+ * 2017.05.06 (v1.0.0) - First Release.
+ * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
+ */
 /*:
-* @plugindesc This plugin allows user to pause the game.
-* @author biud436
-*
-* @param keyCode
-* @desc Specify the keyCode
-* @default 0x50
-*
-* @param Pause Image Src
-* @desc Specify an image path
-* @default pause
-* @require 1
-* @dir img/pictures/
-* @type file
-*
-* @help
-* ==================================================
-* Change Log
-* --------------------------------------------------
-* 2017.05.06 (v1.0.0) - First Release.
-* 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
-*/
+ * @plugindesc This plugin allows user to pause the game.
+ * @author biud436
+ *
+ * @param keyCode
+ * @desc Specify the keyCode
+ * @default 0x50
+ *
+ * @param Pause Image Src
+ * @desc Specify an image path
+ * @default pause
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ *
+ * @help
+ * ==============================================================================
+ * Change Log
+ * ------------------------------------------------------------------------------
+ * 2017.05.06 (v1.0.0) - First Release.
+ * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
+ */
 
 var Imported = Imported || {};
 Imported.RS_PauseGame = true;
