@@ -7,6 +7,8 @@
  * @type number
  * @desc Sets the number of viewports to display on the screen.
  * @default 4
+ * @min 2
+ * @min 4
  *
  * @param Viewport orientation
  * @type boolean
@@ -93,6 +95,140 @@
  *
  * =============================================================================
  * Changle Log
+ * =============================================================================
+ * 2016.06.13 (v1.0.0) - First Release.
+ * 2016.08.24 (v1.1.0) - Now RPG Maker MV 1.3.0 or more is supported.
+ * 2016.08.24 (v1.1.2) - Added Plugin Commands
+ * 2016.08.25 (v1.1.4) - Added the functions that sets an image of certain viewport.
+ * 2016.09.30 (v1.1.5) - Added the function that plays an video of certain viewport.
+ * 2016.10.01 (v1.1.6) - Added the rendering code that is compatible with the canvas mode.
+ * 2016.10.20 (v1.1.7) - Fixed the issue that is not working in RMMV 1.3.2
+ * 2016.10.23 (v1.1.8) - Fixed the issue that the video frame is not updated in PIXI 4.0.3
+ * 2016.11.24 (v1.1.9) - Now this can change the viewport orientation such as portrait, landscape and can also set the number of viewports.
+ * 2016.11.26 (v1.2.0) - Added certain code to remove the texture from memory.
+ * 2017.02.08 (v1.2.1) :
+ * - Added new function that can change the inner position of certain viewport
+ * - Fixed the bug that video is played in duplicate.
+ * - Fixed an issue that image is set in duplicate.
+ * - Converted some sources to ES6
+ */
+/*:ko
+ * RS_MultipleViewports.js
+ * @plugindesc (v1.2.1) 분할된 화면에 서로 다른 장소를 표시할 수 있습니다.
+ * @author biud436
+ *
+ * @param Maximum viewport
+ * @text 최대 뷰포트 사이즈
+ * @type number
+ * @desc 화면에 표시되는 뷰포트의 갯수
+ * @default 4
+ * @min 2
+ * @min 4
+ *
+ * @param Viewport orientation
+ * @text 뷰포트 화면 방향
+ * @type boolean
+ * @desc 가로 또는 세로 방향으로 설정할 수 있습니다.
+ * @default true
+ * @on 가로
+ * @off 세로
+ *
+ * @help
+ * =============================================================================
+ * 활성화 및 비활성화하는 방법
+ * =============================================================================
+ *
+ * 뷰포트를 활성화하려면 이벤트 에디터의 플러그인 명령 기능으로 다음 명령을 호출하시기
+ * 바랍니다.
+ *
+ *    MultipleViewport Enable
+ *
+ * 이미 뷰포트가 활성화되어있다면 다음 명령으로 뷰포트를 비활성화할 수 있습니다.
+ * 알아두셔야 할 점은 이전 뷰포트에서 사용된 메모리가 해제되지 않는다는 것입니다.
+ * 메모리를 비우고 싶다면 'MultipleViewport ClearImage ViewID' 명령을 사용하세요.
+ *
+ *    MultipleViewport Disable
+ *
+ * =============================================================================
+ * 뷰포트 흔들기 기능
+ * =============================================================================
+ *
+ * 뷰포트를 흔들고 싶다면 다음 명령으로 뷰포트에 쉐이크 효과를 줄 수 있습니다.
+ *
+ *    MultipleViewport StartShake 쉐이크_강도
+ *
+ * 지속적으로 흔들리게 되는데, 다음 명령으로 쉐이크 효과를 종료할 수 있습니다.
+ *
+ *    MultipleViewport EndShake
+ *
+ * =============================================================================
+ * 이미지 설정 기능
+ * =============================================================================
+ *
+ * 특정 뷰포트에 이미지를 설정하고 고정시켜둘 수 있습니다.
+ * ImageName은 이미지 파일의 이름을 적어주시기 바랍니다 (공백 사용 가능)
+ *
+ *    MultipleViewport Image ViewID ImageName
+ *
+ * 특정 뷰포트에 설정된 이미지의 메모리를 해제하고 일반 맵을 묘화합니다.
+ *
+ *    MultipleViewport ClearImage ViewID
+ *
+ * ViewID(뷰포트의 ID) 값은 1부터 4까지의 값입니다.
+ *
+ * =============================================================================
+ * 동영상 재생 기능
+ * =============================================================================
+ * 테스트 플레이에선 저작권 문제로 인하여 (아마도) .webm만 지원하고 있습니다.
+ *
+ * 따라서, 동영상 파일은 .webm만 사용해주시기 바랍니다.
+ *
+ * 'viewID' 에는 1-4의 숫자 값을 적으세요.
+ * 'szSrc'에는 폴더에 있는 동영상의 이름을 적으세요.
+ * 'loop'에는 반복 재생 여부 true 또는 false로 기입하시기 바랍니다.
+ * 'loop' 값을 생략하면 기본적으로 동영상은 한 번만 재생될 것입니다.
+ *
+ * 이 플러그인 커맨드는 특정 뷰포트에 동영상을 설정합니다.
+ *    MultipleViewport Video viewID szSrc loop
+ *
+ * '몇 초 뒤로' 되돌리는 기능입니다.
+ *    MultipleViewport MoveBackSeconds viewID second
+ *
+ * '몇 초 앞으로' 건너뛰는 기능입니다.
+ *    MultipleViewport MoveForwardSeconds viewID second
+ *
+ * 특정 뷰포트에 설정된 동영상을 재생합니다.
+ *    MultipleViewport PlayVideo viewID
+ *
+ * 동영상을 멈춥니다.
+ *    MultipleViewport StopVideo viewID
+ *
+ * 동영상을 일시 정지합니다. 이렇게 하면 나중에 다시 재개할 수 있습니다.
+ *    MultipleViewport PauseVideo viewID
+ *
+ * 뷰포트에 설정된 동영상 텍스처를 제거합니다.
+ *    MultipleViewport ClearVideo viewID
+ *
+ * 잊지 말고 동영상 텍스처를 제거해주시기 바랍니다.
+ *
+ * =============================================================================
+ * 뷰포트 중심점 설정
+ * =============================================================================
+ * 이 플러그인 커맨드를 사용하면 특정 뷰포트를 특정 이벤트가 있는 곳으로
+ * 옮길 수 있습니다.
+ *
+ * 'EventID'가 -1이면 플레이어가 있는 곳으로 뷰포트가 설정되며,
+ *
+ * 그외의 경우 특정 이벤트의 화면 좌표로 설정됩니다.
+ *
+ *    MultipleViewport Target viewID EventID
+ *
+ * RMMV에서는 플레이어 중심(뷰포트가 설정되지 않았을 떄의 기존 화면)에서
+ * 이벤트가 멀어지면, 최적화를 위해 해당 이벤트의 이동 이벤트를 중단시킵니다.
+ * 이 플러그인은 해당 로직을 따로 해제하지 않았음에 유의하시기 바랍니다.
+ *
+ * =============================================================================
+ * 변경 기록
  * =============================================================================
  * 2016.06.13 (v1.0.0) - First Release.
  * 2016.08.24 (v1.1.0) - Now RPG Maker MV 1.3.0 or more is supported.
