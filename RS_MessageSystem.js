@@ -194,7 +194,7 @@
 * @param 텍스트 코드
 * @type struct<TextCode>
 * @desc 텍스트 코드 변경
-* @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\"]"}
+* @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\"]"}
 *
 * @help
 * 이 플러그인은 복잡한 텍스트 코드가 아닌 한글 단어로 직관적으로 텍스트 코드를 호출하기
@@ -670,7 +670,7 @@
 * @param Text Code
 * @type struct<TextCode>
 * @desc Can change with desired text codes
-* @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\"]"}
+* @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\"]"}
 *
 * @help
 * =============================================================================
@@ -1184,7 +1184,9 @@ var Color = Color || {};
     ENEMY: 30,
     STATE: 31,
     SKILL: 32,
-    FACE: 33
+    FACE: 33,
+    FRIENDLY_TROOPS: 34, // 여긴 2018.01.14에 추가됨
+    ENEMY_TROOPS: 35
   };
 
   RS.MessageSystem.getTextCode = function (idx) {
@@ -1248,7 +1250,9 @@ var Color = Color || {};
       RS.MessageSystem.Reg[e][30] = new RegExp(`(?:\x1b${tcGroup[30]})\\[(\\d+)\\]`, 'g'); // 적군
       RS.MessageSystem.Reg[e][31] = new RegExp(`(?:\x1b${tcGroup[31]})\\[(\\d+)\\]`, 'g'); // 상태
       RS.MessageSystem.Reg[e][32] = new RegExp(`(?:\x1b${tcGroup[32]})\\[(\\d+)\\]`, 'g'); // 스킬
-      RS.MessageSystem.Reg[e][33] = new RegExp(`\x1b${tcGroup[33]}\\<(.+?)\\>`, 'gi'); // 얼굴
+      RS.MessageSystem.Reg[e][33] = new RegExp(`\x1b${tcGroup[33]}\\<(.*)\\>`, 'gi'); // 얼굴
+      RS.MessageSystem.Reg[e][34] = new RegExp(`(?:\x1b${tcGroup[34]})\\[(\\d+)\\]`, 'gi'); // 아군
+      RS.MessageSystem.Reg[e][35] = new RegExp(`(?:\x1b${tcGroup[35]})\\[(\\d+)\\]`, 'gi'); // 적군
     }, this);
   }());
 
@@ -1670,18 +1674,6 @@ var Color = Color || {};
     return this._align.shift() || 0;
   };
 
-  Game_Message.prototype.getSpriteCharacter = function(owner) {
-    var target, spriteItem = [];
-    var scene = SceneManager._scene;
-    if( (scene instanceof Scene_Map) ) {
-      target = scene._spriteset;
-      spriteItem = target._characterSprites.filter(function(i) {
-        return i._character === owner;
-      }, this);
-    }
-    return spriteItem[0];
-  };
-
   Game_Message.prototype.setBalloonPatternHeight = function (value) {
     this._balloonPatternHeight = value;
   };
@@ -1902,7 +1894,7 @@ var Color = Color || {};
     if($gameMessage.getBalloon() === -2) {
       this.y = this._positionType * (Graphics.boxHeight - this.height) / 2;
     } else {
-      this.updateBalloonPosition();
+      if(SceneManager._scene instanceof Scene_Map) this.updateBalloonPosition();
     }
     this._goldWindow.y = this.y > 0 ? 0 : Graphics.boxHeight - this._goldWindow.height;
     this.updateDefaultOpacity();
@@ -1939,6 +1931,16 @@ var Color = Color || {};
       var value = Number(arguments[1] || -2);
       if($gameParty.inBattle()) value = -2;
       $gameMessage.setBalloon(value);
+      return '';
+    }.bind(this));
+    text = text.replace(regGroup[tcGroup.FRIENDLY_TROOPS], function() {
+      var value = Number(arguments[1] || 0);
+      $gameMessage.setBalloon( 'ACTORS : ' + value );
+      return '';
+    }.bind(this));
+    text = text.replace(regGroup[tcGroup.ENEMY_TROOPS], function() {
+      var value = Number(arguments[1] || 0);
+      $gameMessage.setBalloon( 'ENEMIES : ' + value );
       return '';
     }.bind(this));
     text = text.replace(regGroup[tcGroup.ALIGN], function() {
@@ -2138,8 +2140,12 @@ var Color = Color || {};
     }
 
     this.setupOwner(sign);
-    this.updateBalloonPosition();
 
+    if(SceneManager._scene instanceof Scene_Battle) {
+      this.updateBalloonPositionInBattle();
+    } else {
+      this.updateBalloonPosition();
+    }
   };
 
   Window_Message.prototype.resizeMessageSystem = function() {
@@ -2224,6 +2230,8 @@ var Color = Color || {};
       return $dataSkills[parseInt(arguments[1])].name || '';
     }.bind(this));
     text = text.replace(regGroup[tcGroup.FACE], '');
+    text = text.replace(regGroup[tcGroup.FRIENDLY_TROOPS], '');
+    text = text.replace(regGroup[tcGroup.ENEMY_TROOPS], '');
     return text;
   };
 
@@ -2340,8 +2348,115 @@ var Color = Color || {};
 
   };
 
-  Window_Message.prototype.setupOwner = function(sign) {
+  Window_Message.prototype.getSpriteActors = function (sign) {
+    if(!typeof(sign) === "number") return;
+    if(!$gameParty.members()) return null;
+    var max = $gameParty.members().length;
+    sign = sign.clamp(0, max);
 
+    return {type: 'actor', id: sign - 1};
+
+  };
+
+  Window_Message.prototype.getSpriteEnemies = function (sign) {
+    if(!typeof(sign) === "number") {
+      return;
+    }
+    if(!$gameTroop.members()) return null;
+    var max = $gameTroop.members().length;
+    sign = sign.clamp(0, max);
+
+    return {type: 'enemy', id: sign - 1};
+
+  };
+
+  Window_Message.prototype.updateBalloonPositionInBattle = function() {
+    if(!$gameParty.inBattle()) {
+      console.warn("전투가 아닙니다");
+      return;
+    }
+    if(!$gameSystem.isSideView()) {
+      console.warn("사이드뷰 전투가 아닙니다.");
+      return;
+    }    // Check the side-view battle.
+
+    var data = {};
+
+    // Set the target's screen position.
+    var owner = $gameMap.getMsgOwner();
+    if(!owner) {
+      console.warn("owner 변수가 없습니다");
+      return;
+    }
+    if(!owner.hasOwnProperty('type')) {
+      console.warn("type 속성이 없습니다 : " + owner);
+      return;
+    }
+    if(!owner.hasOwnProperty('id')) {
+      console.warn("id 속성이 없습니다 : " + owner);
+      return;
+    }
+
+    // Check whether the current scene is the battle.
+    var scene = SceneManager._scene;
+    if(!scene instanceof Scene_Battle) {
+      console.warn("전투 장면이 아닙니다");
+      return false;
+    }
+
+    var parent;
+
+    if(owner.type === 'actor') {
+      parent = scene._spriteset._actorSprites;
+    } else {
+      parent = scene._spriteset._enemySprites;
+    }
+
+    // Find the Sprite_Actor for our actors.
+    var tempBattlers = [];
+    tempBattlers = parent;
+    var target = tempBattlers[owner.id];
+    if(!target) {
+      console.warn("타겟이 없습니다");
+      return;
+    }
+
+    // 이미 죽어있다면 메시지를 일반 메시지로 표시합니다.
+    if(owner.type === 'actor' && !target._actor.isAlive() ||
+    (owner.type === 'enemy' && !target._enemy.isAlive()) ) {
+      return;
+    }
+
+    data.mx = target.x;
+    data.my = target.y;
+
+    data.padY = (owner.type === 'actor') ? (target._mainSprite.bitmap.height / 6) : target.bitmap.height;
+
+    data.tx = this._width / 2;
+    data.ty = this._height;
+
+    data.scaleY = 1;
+    data.tileHeight = $gameMessage.getBalloonPatternHeight();
+
+    data.dx = data.mx - (this._bWidth / 2);
+    data.dy = data.my - this._bHeight - data.tileHeight - data.padY;
+
+    data.ny = this.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
+
+    data = this.setBalloonPlacement(Object.create(data));
+
+    // 말풍선 위치 및 크기 설정
+    this.setBalloonRect(data);
+
+    // 멈춤 표시 스프라이트 위치 조정
+    this.updateSubBalloonElements(data);
+
+    if(this.transform) this.updateTransform();
+
+  };
+
+  Window_Message.prototype.setupOwner = function(sign) {
+    var self = this;
     switch(sign) {
       case -1:
       $gameMap.setMsgOwner($gamePlayer);
@@ -2350,7 +2465,16 @@ var Color = Color || {};
       $gameMap.setMsgOwner($gameMap.getMsgEvent());
       break;
       default:
-      $gameMap.setMsgOwner($gameMap.event(sign));
+      if(SceneManager._scene instanceof Scene_Battle) {
+        if(/(?:ENEMIES)[ ]*:(.*)/.test(sign)) {
+         $gameMap.setMsgOwner( self.getSpriteEnemies(parseInt(RegExp.$1)) );
+        }
+        if(/(?:ACTORS)[ ]*:(.*)/.test(sign)) {
+          $gameMap.setMsgOwner( self.getSpriteActors(parseInt(RegExp.$1)) );
+        }
+      } else {
+          $gameMap.setMsgOwner($gameMap.event(sign));
+      }
       break;
     }
   };
@@ -2566,6 +2690,8 @@ var Color = Color || {};
       return $dataSkills[parseInt(arguments[1])].name || '';
     }.bind(this));
     text = text.replace(regGroup[tcGroup.FACE], '');
+    text = text.replace(regGroup[tcGroup.FRIENDLY_TROOPS], '');
+    text = text.replace(regGroup[tcGroup.ENEMY_TROOPS], '');
     return text;
   };
 
@@ -2633,9 +2759,7 @@ var Color = Color || {};
   */
   Game_Map.prototype.setMsgOwner = function(o) {
     this._msgOwner = o;
-    var sprite = $gameMessage.getSpriteCharacter(o);
-    var n = (sprite) ? sprite.patternHeight() : this.tileHeight();
-    $gameMessage.setBalloonPatternHeight(n);
+    $gameMessage.setBalloonPatternHeight(this.tileHeight());
   };
 
   Game_Map.prototype.getMsgEvent = function() {
@@ -2748,6 +2872,8 @@ var Color = Color || {};
       return $dataSkills[parseInt(arguments[1])].name || '';
     }.bind(this));
     text = text.replace(regGroup[tcGroup.FACE], '');
+    text = text.replace(regGroup[tcGroup.FRIENDLY_TROOPS], '');
+    text = text.replace(regGroup[tcGroup.ENEMY_TROOPS], '');
     return text;
   };
 
