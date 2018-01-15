@@ -1,6 +1,6 @@
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.12) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.13) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -196,6 +196,35 @@
 * @desc 텍스트 코드 변경
 * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\"]"}
 *
+* @param 효과음 재생
+*
+* @param 텍스트 효과음 재생 여부
+* @parent 효과음 재생
+* @type boolean
+* @default true
+* @on 재생합니다.
+* @off 재생하지 않습니다.
+*
+* @param 텍스트 효과음
+* @parent 효과음 재생
+* @type file
+* @dir audio/se/
+* @desc 텍스트 처리 시 특정 사운드를 같이 재생합니다.
+* @default Cursor1
+* @require 1
+*
+* @param 텍스트 효과음 실행 조건
+* @parent 효과음 재생
+* @type note
+* @desc 텍스트 효과음이 재생될 확률을 만듭니다.
+* @default "Math.randomInt(100) < 45"
+*
+* @param 텍스트 효과음 볼륨
+* @parent 효과음 재생
+* @type note
+* @desc 텍스트 효과음의 볼륨을 램덤으로 만듭니다 (0.0 ~ 1.0 사이)
+* @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)"
+*
 * @help
 * 이 플러그인은 복잡한 텍스트 코드가 아닌 한글 단어로 직관적으로 텍스트 코드를 호출하기
 * 위해 개발된 것입니다. 제법 자유로운 라이센스를 따르고 있기 때문에 저작권 자를 따로
@@ -356,6 +385,18 @@
 *
 *   \얼굴<얼굴_이미지_이름, 얼굴_이미지_인덱스>
 *
+* 전투 중 플레이어 또는 아군 파티원에게 말풍선을 띄우고 싶다면 다음 텍스트 코드를 사용
+* 하세요.
+*
+*   \아군[아군_인덱스]
+*
+* 전투 중 적 파티 일원 중 하나가 말풍선으로 대화를 나눠야 한다면, 다음 텍스트 코드를 사용
+* 하세요.
+*
+*   \적그룹[적군_인덱스]
+*
+* 대화 중에 배틀러가 전투 불능 상태가 되면 일반 대화창으로 표시됩니다.
+*
 * =============================================================================
 * 색상(Colors)
 * =============================================================================
@@ -386,6 +427,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2018.01.16 (v0.1.13) - 텍스트 처리 시 효과음을 같이 재생합니다.
 * 2018.01.15 (v0.1.12) :
 * - 전투에서 '아군', '적그룹' 텍스트 코드를 사용하여 말풍선을 띄울 수 있습니다.
 * - 플러그인 관리자에서 사용자 커스텀 색상을 정의할 수 있습니다(예 : \색[연한보라])
@@ -492,7 +534,7 @@
  */
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.12) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.13) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -675,6 +717,33 @@
 * @type struct<TextCode>
 * @desc Can change with desired text codes
 * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\"]"}
+*
+* @param Sound Effects
+*
+* @param Text Sound ON/OFF
+* @parent Sound Effects
+* @type boolean
+* @default true
+*
+* @param Text Sound
+* @parent Sound Effects
+* @type file
+* @dir audio/se/
+* @desc Plays back the text sound when processing for each text.
+* @default Cursor1
+* @require 1
+*
+* @param Text Sound Execution Condition
+* @parent Sound Effects
+* @type note
+* @desc Make the probability to play the text sound.
+* @default "Math.randomInt(100) < 45"
+*
+* @param Text Sound Volume
+* @parent Sound Effects
+* @type note
+* @desc Make the volume of the text sound by the random value that is float between 0.0 and 1.0
+* @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)"
 *
 * @help
 * =============================================================================
@@ -954,6 +1023,8 @@
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2018.01.16 (v0.1.13) - Added a new feature that plays back the text sound
+* together when processing for each text.
 * 2018.01.15 (v0.1.12) :
 * - Added new text codes that can indicate the pop-up message in the combat.
 * - Added a new plugin parameter that can define a new text color (eg: \color[c_lviolet])
@@ -1155,6 +1226,11 @@ var Color = Color || {};
   RS.MessageSystem.Params.isTempSpriteContainerVisibility = false;
 
   RS.MessageSystem.Params.exTextColors = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Color", "텍스트 색상"));
+
+  RS.MessageSystem.Params.isPlayTextSound = Boolean(RS.MessageSystem.popParameter('Text Sound ON/OFF', "텍스트 효과음 재생 여부") === "true");
+  RS.MessageSystem.Params.pathTextSound = String(RS.MessageSystem.popParameter('Text Sound', "텍스트 효과음") || "Cursor1.ogg");
+  RS.MessageSystem.Params.textSoundEval1 = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Execution Condition", "텍스트 효과음 실행 조건") || "Math.randomInt(100) < 45");
+  RS.MessageSystem.Params.textSoundEval2 = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Volume", "텍스트 효과음 볼륨") || "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)");
 
   //============================================================================
   // Multiple Language supports
@@ -2966,6 +3042,43 @@ var Color = Color || {};
     textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
     textState.x = ( this.contentsWidth() - padding * 2) - textState.tx;
     textState.left = textState.x;
+  };
+
+  //============================================================================
+  // Play the text sound into the message system.
+  //============================================================================
+
+  RS.MessageSystem.randomNormal = function (maxValue) {
+    // This code may be the performance penalties can add up.
+    var r = Math.sqrt(-2 * Math.log(Math.random()));
+    var t = Math.PI * 2 * Math.random();
+    var x = r * Math.cos(t) * maxValue;
+    var y = r * Math.sin(t) * maxValue;
+    return [x, y];
+  };
+
+  Window_Message.prototype.playTextSound = function() {
+    if(!RS.MessageSystem.Params.isPlayTextSound) return;
+    if(eval(RS.MessageSystem.Params.textSoundEval1)) return;
+
+    var textSound = document.createElement('audio');
+
+    textSound.id = String(Date.now());
+    document.body.appendChild(textSound);
+
+    // 안드로이드 확장 파일을 사용했을 때 동작하지 않을 수 있다.
+    textSound.src = "./audio/se/" + RS.MessageSystem.Params.pathTextSound + AudioManager.audioFileExt();
+    textSound.volume = eval(RS.MessageSystem.Params.textSoundEval2);
+
+    textSound.addEventListener("canplaythrough", function () {textSound.play();}, false);
+    textSound.addEventListener("ended", function() {document.body.removeChild(textSound);}, false);
+    textSound.addEventListener("error", function() {document.body.removeChild(textSound);}, false);
+  };
+
+  var alias_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
+  Window_Message.prototype.processNormalCharacter = function(textState) {
+    alias_Window_Message_processNormalCharacter.call(this, textState);
+    this.playTextSound();
   };
 
   //============================================================================
