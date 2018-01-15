@@ -1,6 +1,6 @@
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.13) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.14) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -427,7 +427,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
-* 2018.01.16 (v0.1.13) - 텍스트 처리 시 효과음을 같이 재생합니다.
+* 2018.01.16 (v0.1.14) - 텍스트 처리 시 효과음을 같이 재생합니다.
 * 2018.01.15 (v0.1.12) :
 * - 전투에서 '아군', '적그룹' 텍스트 코드를 사용하여 말풍선을 띄울 수 있습니다.
 * - 플러그인 관리자에서 사용자 커스텀 색상을 정의할 수 있습니다(예 : \색[연한보라])
@@ -534,7 +534,7 @@
  */
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.13) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.14) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -1023,7 +1023,7 @@
 * =============================================================================
 * Version Log
 * =============================================================================
-* 2018.01.16 (v0.1.13) - Added a new feature that plays back the text sound
+* 2018.01.16 (v0.1.14) - Added a new feature that plays back the text sound
 * together when processing for each text.
 * 2018.01.15 (v0.1.12) :
 * - Added new text codes that can indicate the pop-up message in the combat.
@@ -3057,17 +3057,43 @@ var Color = Color || {};
     return [x, y];
   };
 
+  Window_Message.prototype.playDecryptTextSound = function(url) {
+    var self = this;
+    var requestFile = new XMLHttpRequest();
+    requestFile.open("GET", url);
+    requestFile.responseType = "arraybuffer";
+    requestFile.send();
+
+    requestFile.onload = function () {
+        if(this.status < Decrypter._xhrOk) {
+            var arrayBuffer = Decrypter.decryptArrayBuffer(requestFile.response);
+            var url = Decrypter.createBlobUrl(arrayBuffer);
+            self._playToCreateAudio(url);
+        }
+    };
+  };
+
   Window_Message.prototype.playTextSound = function() {
     if(!RS.MessageSystem.Params.isPlayTextSound) return;
     if(eval(RS.MessageSystem.Params.textSoundEval1)) return;
 
-    var textSound = document.createElement('audio');
+    var url = "./audio/se/" + RS.MessageSystem.Params.pathTextSound + AudioManager.audioFileExt();
 
+    if(Decrypter.hasEncryptedAudio) {
+      url = Decrypter.extToEncryptExt(url);
+      return this.playDecryptTextSound(url);
+    }
+
+    this._playToCreateAudio(url);
+
+  };
+
+  Window_Message.prototype._playToCreateAudio = function (url) {
+    var textSound = document.createElement('audio');
     textSound.id = String(Date.now());
     document.body.appendChild(textSound);
 
-    // 안드로이드 확장 파일을 사용했을 때 동작하지 않을 수 있다.
-    textSound.src = "./audio/se/" + RS.MessageSystem.Params.pathTextSound + AudioManager.audioFileExt();
+    textSound.src = url;
     textSound.volume = eval(RS.MessageSystem.Params.textSoundEval2);
 
     textSound.addEventListener("canplaythrough", function () {textSound.play();}, false);
