@@ -389,6 +389,7 @@
 * 2018.01.15 (v0.1.12) :
 * - 전투에서 '아군', '적그룹' 텍스트 코드를 사용하여 말풍선을 띄울 수 있습니다.
 * - 플러그인 관리자에서 사용자 커스텀 색상을 정의할 수 있습니다(예 : \색[연한보라])
+* - 왼쪽 정렬 패딩 값 변경
 * 2017.09.23 (v0.1.9) - 배경 타입이 바뀌지 않는 문제를 수정했습니다.
 * 2017.07.23 (v0.1.8) :
 * - 투명도 매개변수를 0으로 설정할 수 없는 문제를 수정했습니다.
@@ -2949,7 +2950,7 @@ var Color = Color || {};
   Window_Message.prototype.setAlignLeft = function(textState) {
     var padding = this.textPadding();
     textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
-    textState.x = this.newLineX() + (padding * 2);
+    textState.x = this.newLineX() + (padding);
     textState.left = textState.x;
   };
 
