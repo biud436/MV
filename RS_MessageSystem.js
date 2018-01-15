@@ -1,6 +1,6 @@
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.9) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.12) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -187,9 +187,9 @@
 * @value right
 *
 * @param 텍스트 색상
-* @type strcut<TextColor>
-* @desc 사용자 정의 텍스트 색상을 추가합니다 (추가 예정)
-* @default
+* @type struct<TextColor>[]
+* @desc 사용자 정의 텍스트 색상을 추가합니다.
+* @default ["{\"Color Name\":\"연한보라\",\"Red\":\"200\",\"Green\":\"191\",\"Blue\":\"231\",\"Alpha\":\"1.0\"}"]
 *
 * @param 텍스트 코드
 * @type struct<TextCode>
@@ -386,6 +386,9 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2018.01.15 (v0.1.12) :
+* - 전투에서 '아군', '적그룹' 텍스트 코드를 사용하여 말풍선을 띄울 수 있습니다.
+* - 플러그인 관리자에서 사용자 커스텀 색상을 정의할 수 있습니다(예 : \색[연한보라])
 * 2017.09.23 (v0.1.9) - 배경 타입이 바뀌지 않는 문제를 수정했습니다.
 * 2017.07.23 (v0.1.8) :
 * - 투명도 매개변수를 0으로 설정할 수 없는 문제를 수정했습니다.
@@ -488,7 +491,7 @@
  */
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.9) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.12) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -663,9 +666,9 @@
 * @value right
 *
 * @param Text Color
-* @type strcut<TextColor>
+* @type struct<TextColor>[]
 * @desc This allows you to add desired text color.
-* @default
+* @default ["{\"Color Name\":\"c_lviolet \",\"Red\":\"200\",\"Green\":\"191\",\"Blue\":\"231\",\"Alpha\":\"1.0\"}"]
 *
 * @param Text Code
 * @type struct<TextCode>
@@ -773,6 +776,8 @@
 * \state[x]
 * \skill[x]
 * \face<facename, faceindex>
+* \friendly_troops[index]
+* \enemy_troops[index]
 *
 * =============================================================================
 * Color list (English)
@@ -916,6 +921,8 @@
 * \脸<faceName, faceIndex>
 * \TAB!
 * \CR!
+* \我军[号码]
+* \敌人组[号码]
 *
 * =============================================================================
 * Color list (Chinese)
@@ -946,6 +953,9 @@
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2018.01.15 (v0.1.12) :
+* - Added new text codes that can indicate the pop-up message in the combat.
+* - Added a new plugin parameter that can define a new text color (eg: \color[c_lviolet])
 * 2017.09.23 (v0.1.9) - Fixed the issue that is not changed the background type.
 * 2017.07.21 (v0.1.8) :
 * - Fixed the issue that the value couldn't set with 0 in the opacity parameter.
@@ -1079,6 +1089,20 @@ var Color = Color || {};
     return "";
   };
 
+  RS.MessageSystem.jsonParse = function (str) {
+
+    var retData = JSON.parse(str, function (k, v) {
+      try {
+        return RS.MessageSystem.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
+    });
+
+    return retData;
+
+  };
+
   RS.MessageSystem.Reg = RS.MessageSystem.Reg || {};
   RS.MessageSystem.Reg.Default = RS.MessageSystem.Reg.Default || [];
   RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Group || [];
@@ -1128,6 +1152,8 @@ var Color = Color || {};
 
   RS.MessageSystem.Params.choiceWindowStyle = String(RS.MessageSystem.popParameter('Choice Style', "선택지 스타일") || 'default');
   RS.MessageSystem.Params.isTempSpriteContainerVisibility = false;
+
+  RS.MessageSystem.Params.exTextColors = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Color", "텍스트 색상"));
 
   //============================================================================
   // Multiple Language supports
@@ -1302,6 +1328,34 @@ var Color = Color || {};
     return Color.baseColor;
   };
 
+  Color.getUserCustomColor = function (string) {
+    "use strict";
+
+    var obj = RS.MessageSystem.Params.exTextColors;
+    var ret = string;
+
+    if(!typeof(obj[0]) === "object") return ret;
+    if(!obj[0].hasOwnProperty("Color Name")) return ret;
+
+    obj.forEach(function (e, i, a) {
+
+      if(e["Color Name"] === string) {
+
+        var r = parseInt(e["Red"]) || 0;
+        var g = parseInt(e["Green"]) || 0;
+        var b = parseInt(e["Blue"]) || 0;
+        var a = parseFloat(e["Alpha"]) || 1.0;
+
+        ret = `rgba(${r},${g},${b},${a})`;
+
+      }
+
+    }, this);
+
+    return ret;
+
+  };
+
   RS.MessageSystem.getKoreanColor = function(string) {
     switch(string) {
       case '청록': case '청록색': case 'c_aqua':
@@ -1345,7 +1399,7 @@ var Color = Color || {};
       case '기본': case '기본색': case 'c_normal':
       return Color.getBaseColor();
       default:
-      return string;
+      return Color.getUserCustomColor(string);
     }
   };
 
@@ -1392,7 +1446,7 @@ var Color = Color || {};
       case '通常': case 'c_normal':
       return Color.getBaseColor();
       default:
-      return string;
+      return Color.getUserCustomColor(string);
     }
   };
 
@@ -1439,7 +1493,7 @@ var Color = Color || {};
       case 'NORMAL': case 'c_normal':
       return Color.getBaseColor();
       default:
-      return string;
+      return Color.getUserCustomColor(string);
     }
   };
 
