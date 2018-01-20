@@ -3079,13 +3079,15 @@ var Color = Color || {};
 
     var url = "./audio/se/" + RS.MessageSystem.Params.pathTextSound + AudioManager.audioFileExt();
 
-    if(Decrypter.hasEncryptedAudio) {
-      url = Decrypter.extToEncryptExt(url);
-      return this.playDecryptTextSound(url);
+    try {
+      if(Decrypter.hasEncryptedAudio) {
+        url = Decrypter.extToEncryptExt(url);
+        return this.playDecryptTextSound(url);
+      }
+      this._playToCreateAudio(url);
+    } catch(e) {
+
     }
-
-    this._playToCreateAudio(url);
-
   };
 
   Window_Message.prototype._playToCreateAudio = function (url) {
@@ -3097,8 +3099,8 @@ var Color = Color || {};
     textSound.volume = eval(RS.MessageSystem.Params.textSoundEval2);
 
     textSound.addEventListener("canplaythrough", function () {textSound.play();}, false);
-    textSound.addEventListener("ended", function() {document.body.removeChild(textSound);}, false);
-    textSound.addEventListener("error", function() {document.body.removeChild(textSound);}, false);
+    textSound.addEventListener("ended", function() {if(textSound) document.body.removeChild(textSound);}, false);
+    textSound.addEventListener("error", function() {if(textSound) document.body.removeChild(textSound);}, false);
   };
 
   var alias_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
