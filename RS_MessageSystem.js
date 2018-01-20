@@ -3092,15 +3092,22 @@ var Color = Color || {};
 
   Window_Message.prototype._playToCreateAudio = function (url) {
     var textSound = document.createElement('audio');
-    textSound.id = String(Date.now());
+    var id = String(Date.now());
+    textSound.id = id;
     document.body.appendChild(textSound);
 
     textSound.src = url;
     textSound.volume = eval(RS.MessageSystem.Params.textSoundEval2);
 
-    textSound.addEventListener("canplaythrough", function () {textSound.play();}, false);
-    textSound.addEventListener("ended", function() {if(textSound) document.body.removeChild(textSound);}, false);
-    textSound.addEventListener("error", function() {if(textSound) document.body.removeChild(textSound);}, false);
+    textSound.addEventListener("canplaythrough", function () {
+      if(document.getElementById(id)) textSound.play();
+    }, false);
+    textSound.addEventListener("ended", function() {
+      if(document.getElementById(id)) document.body.removeChild(textSound);
+    }, false);
+    textSound.addEventListener("error", function() {
+      if(document.getElementById(id)) document.body.removeChild(textSound);},
+      false);
   };
 
   var alias_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
