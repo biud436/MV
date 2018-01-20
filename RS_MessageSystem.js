@@ -3106,8 +3106,8 @@ var Color = Color || {};
       if(document.getElementById(id)) document.body.removeChild(textSound);
     }, false);
     textSound.addEventListener("error", function() {
-      if(document.getElementById(id)) document.body.removeChild(textSound);},
-      false);
+      if(document.getElementById(id)) document.body.removeChild(textSound);
+    }, false);
   };
 
   var alias_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
