@@ -3100,6 +3100,9 @@ var Color = Color || {};
     var self = this;
     var maxPool;
 
+    // HTML5 Audio 지원 여부 확인
+    if(!window.HTMLAudioElement) return false;
+
     this._soundPool = {};
     // 풀에 대기 할 사운드 최대 갯수
     this._soundPool.maxPool = RS.MessageSystem.Params.textSoundPoolSize ;
@@ -3140,6 +3143,9 @@ var Color = Color || {};
 
   Window_Message.prototype._removeTextSoundPool = function () {
 
+    // HTML5 Audio 지원 여부 확인
+    if(!window.HTMLAudioElement) return false;
+
     var maxPool = this._soundPool.maxPool;
 
     // 사운드 풀에 있는 모든 사운드 엘리먼트를 없앤다.
@@ -3165,6 +3171,8 @@ var Color = Color || {};
     if(!RS.MessageSystem.Params.isPlayTextSound) return false;
     // 텍스트 사운드 재생 조건에 실패하면
     if(!eval(RS.MessageSystem.Params.textSoundEval1)) return false;
+    // HTML5 Audio 지원 여부 확인
+    if(!window.HTMLAudioElement) return false;
 
     // 가져올 ID를 찾는다
     currentId = (this._soundPool.currentId + 1) % (this._soundPool.maxPool);
