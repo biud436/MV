@@ -3178,7 +3178,14 @@ var Color = Color || {};
       // 시간과 경로 재설정
       textSound.currentTime = 0;
       textSound.volume = eval(RS.MessageSystem.Params.textSoundEval2).clamp(0.0, 1.0);
-      textSound.play();
+      var playPromise = textSound.play();
+      if (playPromise !== undefined) {
+        playPromise.then(function() {
+
+        }).catch(function (err) {
+
+        });
+      }
     }
 
     return true;
