@@ -753,7 +753,7 @@
 * @parent Sound Effects
 * @type number
 * @desc Specify the size of the text sound pool.
-* @default 6
+* @default 2
 * @min 1
 *
 * @param Text Sound Volume
