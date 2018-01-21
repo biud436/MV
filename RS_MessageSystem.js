@@ -1,6 +1,6 @@
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.14) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.15) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -217,13 +217,20 @@
 * @parent 효과음 재생
 * @type note
 * @desc 텍스트 효과음이 재생될 확률을 만듭니다.
-* @default "Math.randomInt(100) < 45"
+* @default "Math.randomInt(100) < 90"
+*
+* @param 텍스트 사운드 풀 크기
+* @parent 효과음 재생
+* @type number
+* @desc 사운드 풀의 크기를 지정합니다.
+* @default 6
+* @min 1
 *
 * @param 텍스트 효과음 볼륨
 * @parent 효과음 재생
 * @type note
 * @desc 텍스트 효과음의 볼륨을 램덤으로 만듭니다 (0.0 ~ 1.0 사이)
-* @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)"
+* @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.7, 1.0)"
 *
 * @help
 * 이 플러그인은 복잡한 텍스트 코드가 아닌 한글 단어로 직관적으로 텍스트 코드를 호출하기
@@ -427,6 +434,9 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2018.01.21 (v0.1.15) :
+* - 텍스트 효과음 처리 방식을 사운드 풀 방식으로 변경했습니다.
+* - 플러그인 매개변수에서 사운드 풀의 크기를 지정할 수 있습니다.
 * 2018.01.16 (v0.1.14) - 텍스트 처리 시 효과음을 같이 재생합니다.
 * 2018.01.15 (v0.1.12) :
 * - 전투에서 '아군', '적그룹' 텍스트 코드를 사용하여 말풍선을 띄울 수 있습니다.
@@ -534,7 +544,7 @@
  */
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.14) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.15) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -737,13 +747,20 @@
 * @parent Sound Effects
 * @type note
 * @desc Make the probability to play the text sound.
-* @default "Math.randomInt(100) < 45"
+* @default "Math.randomInt(100) < 90"
+*
+* @param Text Sound Pool Size
+* @parent Sound Effects
+* @type number
+* @desc Specify the size of the text sound pool.
+* @default 6
+* @min 1
 *
 * @param Text Sound Volume
 * @parent Sound Effects
 * @type note
 * @desc Make the volume of the text sound by the random value that is float between 0.0 and 1.0
-* @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)"
+* @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.7, 1.0)"
 *
 * @help
 * =============================================================================
@@ -1023,6 +1040,9 @@
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2018.01.21 (v0.1.15) :
+* - Implemented the text sound pool.
+* - In the plugin manager, now that you can change the size of the text sound pool.
 * 2018.01.16 (v0.1.14) - Added a new feature that plays back the text sound
 * together when processing for each text.
 * 2018.01.15 (v0.1.12) :
@@ -1231,6 +1251,7 @@ var Color = Color || {};
   RS.MessageSystem.Params.pathTextSound = String(RS.MessageSystem.popParameter('Text Sound', "텍스트 효과음") || "Cursor1.ogg");
   RS.MessageSystem.Params.textSoundEval1 = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Execution Condition", "텍스트 효과음 실행 조건") || "Math.randomInt(100) < 45");
   RS.MessageSystem.Params.textSoundEval2 = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Volume", "텍스트 효과음 볼륨") || "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)");
+  RS.MessageSystem.Params.textSoundPoolSize = parseInt(RS.MessageSystem.popParameter('텍스트 사운드 풀 크기', "Text Sound Pool Size") || 6);
 
   //============================================================================
   // Multiple Language supports
@@ -3057,7 +3078,7 @@ var Color = Color || {};
     return [x, y];
   };
 
-  Window_Message.prototype.playDecryptTextSound = function(url) {
+  Window_Message.prototype.setDecryptTextSoundSrc = function(url, cb) {
     var self = this;
     var requestFile = new XMLHttpRequest();
     requestFile.open("GET", url);
@@ -3067,53 +3088,119 @@ var Color = Color || {};
     requestFile.onload = function () {
         if(this.status < Decrypter._xhrOk) {
             var arrayBuffer = Decrypter.decryptArrayBuffer(requestFile.response);
-            var url = Decrypter.createBlobUrl(arrayBuffer);
-            self._playToCreateAudio(url);
+            var _url = Decrypter.createBlobUrl(arrayBuffer);
+
+            cb(_url);
+
         }
     };
   };
 
-  Window_Message.prototype.playTextSound = function() {
-    if(!RS.MessageSystem.Params.isPlayTextSound) return;
-    if(eval(RS.MessageSystem.Params.textSoundEval1)) return;
+  Window_Message.prototype._createTextSoundPool = function () {
+    var self = this;
+    var maxPool;
 
-    var url = "./audio/se/" + RS.MessageSystem.Params.pathTextSound + AudioManager.audioFileExt();
+    this._soundPool = {};
+    // 풀에 대기 할 사운드 최대 갯수
+    this._soundPool.maxPool = RS.MessageSystem.Params.textSoundPoolSize ;
+    // 가져올 ID
+    this._soundPool.currentId = 0;
+    // 기본 사운드 엘리먼트 이름
+    this._soundPool.defaultSymbol = "message_system_text_sound";
+    // 기본 사운드 경로
+    this._soundPool.src = "./audio/se/" + RS.MessageSystem.Params.pathTextSound + AudioManager.audioFileExt();
 
-    try {
-      if(Decrypter.hasEncryptedAudio) {
-        url = Decrypter.extToEncryptExt(url);
-        return this.playDecryptTextSound(url);
-      }
-      this._playToCreateAudio(url);
-    } catch(e) {
-
+    // 암호화 파일 처리
+    if(Decrypter.hasEncryptedAudio) {
+      var url = Decrypter.extToEncryptExt(this._soundPool.src);
+      this.setDecryptTextSoundSrc(url, function (src) {
+        if(src) self._soundPool.src = src;
+        self._addTextSoundToPool();
+      });
+    } else {
+      // 일반적인 처리
+      self._addTextSoundToPool();
     }
   };
 
-  Window_Message.prototype._playToCreateAudio = function (url) {
-    var textSound = document.createElement('audio');
-    var id = String(Date.now());
-    textSound.id = id;
-    document.body.appendChild(textSound);
+  Window_Message.prototype._addTextSoundToPool = function () {
+    // 사운드 풀에 사운드를 넣고 대기 상태로
+    maxPool = this._soundPool.maxPool;
 
-    textSound.src = url;
-    textSound.volume = eval(RS.MessageSystem.Params.textSoundEval2);
+    for(var id = 0; id < maxPool; ++id) {
+      var textSound = document.createElement('audio');
+      textSound.id = this._soundPool.defaultSymbol + id;
+      textSound.src = this._soundPool.src;
+      textSound.volume = 0;
+      textSound.loop = false;
+      document.body.appendChild(textSound);
+    }
+  };
 
-    textSound.addEventListener("canplaythrough", function () {
-      if(document.getElementById(id)) textSound.play();
-    }, false);
-    textSound.addEventListener("ended", function() {
-      if(document.getElementById(id)) document.body.removeChild(textSound);
-    }, false);
-    textSound.addEventListener("error", function() {
-      if(document.getElementById(id)) document.body.removeChild(textSound);
-    }, false);
+  Window_Message.prototype._removeTextSoundPool = function () {
+
+    var maxPool = this._soundPool.maxPool;
+
+    // 사운드 풀에 있는 모든 사운드 엘리먼트를 없앤다.
+    for(var id = 0; id < maxPool; ++id) {
+      var textSound = document.getElementById(this._soundPool.defaultSymbol + id);
+      document.body.removeChild(textSound);
+    }
+
+    if(Decrypter.hasEncryptedAudio) {
+      URL.revokeObjectURL(this._soundPool.src);
+    }
+
+  };
+
+  Window_Message.prototype._requestTextSound = function () {
+    var textSound, currentId;
+
+    // 사운드 풀이 있는가?
+    if(!this._soundPool) return false;
+    // 사운드 풀에 해당 속성이 있는가?
+    if(!this._soundPool.hasOwnProperty('maxPool')) return false;
+    // 텍스트 사운드 기능이 ON이 아니라면
+    if(!RS.MessageSystem.Params.isPlayTextSound) return false;
+    // 텍스트 사운드 재생 조건에 실패하면
+    if(!eval(RS.MessageSystem.Params.textSoundEval1)) return false;
+
+    // 가져올 ID를 찾는다
+    currentId = (this._soundPool.currentId + 1) % (this._soundPool.maxPool);
+    // ID를 이용하여 사운드 엘리먼트를 가져온다
+    textSound = document.getElementById(this._soundPool.defaultSymbol + currentId);
+    // ID 업데이트
+    this._soundPool.currentId = currentId;
+
+    if(textSound) {
+      // 멈춤
+      textSound.pause();
+      // 시간과 경로 재설정
+      textSound.currentTime = 0;
+      textSound.volume = eval(RS.MessageSystem.Params.textSoundEval2).clamp(0.0, 1.0);
+      textSound.play();
+    }
+
+    return true;
+
+  };
+
+  var alias_TextSound_Window_Message_startMessage = Window_Message.prototype.startMessage;
+  Window_Message.prototype.startMessage = function() {
+    this._createTextSoundPool();
+    alias_TextSound_Window_Message_startMessage.call(this);
+  };
+
+  var alias_TextSound_Window_Message_terminateMessage = Window_Message.prototype.terminateMessage;
+  Window_Message.prototype.terminateMessage = function () {
+    this._removeTextSoundPool();
+    alias_TextSound_Window_Message_terminateMessage.call(this);
   };
 
   var alias_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
   Window_Message.prototype.processNormalCharacter = function(textState) {
     alias_Window_Message_processNormalCharacter.call(this, textState);
-    this.playTextSound();
+    this._requestTextSound();
   };
 
   //============================================================================
