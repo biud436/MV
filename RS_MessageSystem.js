@@ -223,7 +223,7 @@
 * @parent 효과음 재생
 * @type number
 * @desc 사운드 풀의 크기를 지정합니다.
-* @default 6
+* @default 2
 * @min 1
 *
 * @param 텍스트 효과음 볼륨
@@ -3133,6 +3133,7 @@ var Color = Color || {};
       textSound.src = this._soundPool.src;
       textSound.volume = 0;
       textSound.loop = false;
+      textSound.load();
       document.body.appendChild(textSound);
     }
   };
