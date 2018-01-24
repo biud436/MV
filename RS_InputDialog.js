@@ -118,10 +118,10 @@
  * =============================================================================
  * 2016.08.09 (v1.0.0) - First Release.
  * 2016.08.09 (v1.0.1) - Added Background Color.
- * 2016.08.10 (v1.0.1A) - Added ID Variables.
+ * 2016.08.10 (v1.0.1a) - Added ID Variables.
  * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
  * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
- * 2016.08.16 (v1.1.1A) - Fixed a whitespace bug.
+ * 2016.08.16 (v1.1.1a) - Fixed a whitespace bug.
  * 2016.10.14 (v1.1.2) - Fixed the issue that is not working in Battle.
  * 2016.10.14 (v1.1.3) :
  * - Fixed the bug that does not change the background color.
@@ -129,19 +129,20 @@
  * 2016.10.17 (v1.1.4) - Fixed the frame works of input dialog in battle.
  * 2016.10.18 (v1.1.5) - Fixed an issue that battler's movement is too fast.
  * 2016.10.29 (v1.1.6) - Added the function that allows you to specify the maximum number of character for an input field.
- * 2016.11.13 (v1.1.61) - Fixed the issue that is directly calling the requestUpdate function of SceneManager.
- * 2016.12.02 (v1.1.65) :
+ * 2016.11.13 (v1.1.6a) - Fixed the issue that is directly calling the requestUpdate function of SceneManager.
+ * 2016.12.02 (v1.1.6e) :
  * - Added some style codes such as a text shadow and an outline into the text box.
  * - Fixed the way that can temporarily stop attack and skill actions with an enemy when the text box is activated in the battle.
  * - It will not process the text input when the text box is not shown in the battle.
  * - In the debug mode, It adds the result value to a log window after the text input is done.
- * 2016.12.08 (v1.1.68) - Removed the text hint window.
- * 2016.12.17 (v1.1.69) - Fixed an issue that an integer value could not be checked due to the text type issue.
+ * 2016.12.08 (v1.1.6h) - Removed the text hint window.
+ * 2016.12.17 (v1.1.6i) - Fixed an issue that an integer value could not be checked due to the text type issue.
  * 2017.01.30 (v1.1.7) - Fixed an issue that is not working properly if the text dialog has a string to start with a number.
  * 2017.02.16 (v1.1.8) :
  * - Fixed incorrect position and width, height values in the text box.
  * - Added new feature that indicates the input dialog at the top position of the screen when pressing any key on your own mobile device.
  * - Added new feature that automatically returns a result of the text box if you did not press anything.
+ * 2018.01.25 (v1.1.8a) - test...
  */
 
 var Imported = Imported || {};
@@ -211,6 +212,8 @@ function Scene_InputDialog() {
       textBox.style.fontFamily = RS.InputDialog.Params.fontFamily;
       textBox.style.color = RS.InputDialog.Params.color;
       textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+      textBox.style.minWidth = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+      textBox.style.maxWidth = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
       textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
       textBox.style.direction = RS.InputDialog.Params.inputDirection;
       textBox.maxLength = RS.InputDialog.Params.nMaxLength;
@@ -226,35 +229,11 @@ function Scene_InputDialog() {
   };
 
   RS.InputDialog.getScreenWidth = function (value) {
-
-    // TODO: layout is needed and calculate so performance is lower.
-    // refer to this link https://gist.github.com/paulirish/5d52fb081b3570c81e3a
-
-    var canvas = Graphics._canvas.getBoundingClientRect();
-    var canvasX = canvas.left;
-
-    var pixelRatio = window.devicePixelRatio;
-
-    var realX = (value - canvasX);
-
-    return parseFloat(Graphics.boxWidth / canvas.width) * realX;
-
+    return value;
   };
 
   RS.InputDialog.getScreenHeight = function (value) {
-
-    // TODO: layout is needed and calculate so performance is lower.
-    // refer to this link https://gist.github.com/paulirish/5d52fb081b3570c81e3a
-
-    var canvas = Graphics._canvas.getBoundingClientRect();
-    var canvasY = canvas.top;
-
-    var pixelRatio = window.devicePixelRatio;
-
-    var realY = (value - canvasY);
-
-    return parseFloat(Graphics.boxHeight / canvas.height) * realY;
-
+    return value;
   };
 
   //============================================================================
@@ -339,7 +318,10 @@ function Scene_InputDialog() {
     this._textBox.style.color = RS.InputDialog.Params.color;
     this._textBox.style.outline = 'none';
 
-    this._textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+    var w = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+    this._textBox.style.width = w;
+    this._textBox.style.minWidth = w;
+    this._textBox.style.maxWidth = w;
     this._textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
 
     this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
@@ -360,6 +342,7 @@ function Scene_InputDialog() {
     this._textBox.addEventListener('keydown', this.onKeyDown.bind(this), false);
     this._textBox.addEventListener('focus', this.onFocus.bind(this), false);
     this._textBox.addEventListener('blur', this.onBlur.bind(this), false);
+    this._textBox.addEventListener('autosize', this.onResize.bind(this), false);
     window.addEventListener('resize', this.onResize.bind(this), false);
   };
 
@@ -437,8 +420,13 @@ function Scene_InputDialog() {
       if(field && textBox) {
           Graphics._centerElement(field);
           Graphics._centerElement(textBox);
+
+          var w = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+
           textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
-          textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
+          textBox.style.width = w;
+          textBox.style.minWidth = w;
+          textBox.style.maxWidth = w;
           textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
       }
     }
@@ -500,27 +488,8 @@ function Scene_InputDialog() {
     this._textBox.removeEventListener('keydown', this.onKeyDown.bind(this));
     this._textBox.removeEventListener('focus', this.onFocus.bind(this));
     this._textBox.removeEventListener('blur', this.onBlur.bind(this));
-
+    this._textBox.removeEventListener('autosize', this.onResize.bind(this));
     window.removeEventListener('resize', this.onResize.bind(this), false);
-
-  };
-
-  /**
-   * @author MDN
-   */
-  TextBox.prototype.updateScale = function () {
-
-    var canvas = Graphics._canvas;
-    var field = document.getElementById(this._fieldId);
-
-    var scaleX = window.innerWidth / canvas.width;
-    var scaleY = window.innerHeight / canvas.height;
-
-    var scaleToFit = Math.min(scaleX, scaleY);
-    var scaleToCover = Math.max(scaleX, scaleY);
-
-    field.style.transformOrigin = '0 0';
-    field.style.transform = 'scale(' + scaleToFit + ')';
 
   };
 
