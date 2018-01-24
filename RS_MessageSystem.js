@@ -1,6 +1,6 @@
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.15) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.16) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -434,6 +434,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2018.01.24 (v0.1.16) - 사운드 풀 초기화 관련 문제 수정
 * 2018.01.21 (v0.1.15) :
 * - 텍스트 효과음 처리 방식을 사운드 풀 방식으로 변경했습니다.
 * - 플러그인 매개변수에서 사운드 풀의 크기를 지정할 수 있습니다.
@@ -542,9 +543,10 @@
  * @default 1.0
  *
  */
+
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.15) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.16) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -1040,6 +1042,8 @@
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2018.01.24 (v0.1.16) :
+* - Fixed the issue that doesn't initialize the text sound pool when opening sub windows.
 * 2018.01.21 (v0.1.15) :
 * - Implemented the text sound pool.
 * - In the plugin manager, now that you can change the size of the text sound pool.
@@ -1147,6 +1151,532 @@
  * @default 1.0
  *
  */
+
+ /*:ja
+ * RS_MessageSystem.js
+ * @plugindesc (v0.1.16) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @author biud436
+ *
+ * @param 글꼴 크기
+ * @text フォントサイズ
+ * @type number
+ * @desc フォントの大きさを整数で指定してください。
+ * 기본 값 : 28
+ * @default 28
+ *
+ * @param 라인 갯수
+ * @text 行の数
+ * @type number
+ * @desc 行の数
+ * @default 4
+ * @min 1
+ *
+ * @param 그레디언트 시작 색상
+ * @text グラデーション開始の色
+ * @desc 色を入力してください。
+ * @default #FFFFFF
+ *
+ * @param 그레디언트 중간 색상
+ * @text グラデーション中間の色
+ * @desc 色を入力してください。
+ * @default #F29661
+ *
+ * @param 그레디언트 끝 색상
+ * @text グラデーション最後の色
+ * @desc 色を入力してください。
+ * @default #CC3D3D
+ *
+ * @param 기본 텍스트 출력 속도
+ * @text テキストの出力速度
+ * @type number
+ * @desc デフォルト値 : 0 frame
+ * @default 0
+ *
+ * @param 폰트 최소 크기
+ * @text フォントの最小大きさ
+ * @type number
+ * @desc テキストコード\}を使用してテキストの大きさを一段階減らすとき少なくとも大きさを制限します。
+ * @default 24
+ *
+ * @param 폰트 최대 크기
+ * @text フォントの最大大きさ
+ * @type number
+ * @desc テキストコード\}を使用してテキストの大きさを一段階の増加させる際に最大の大きさを制限します。
+ * @default 96
+ *
+ * @param 텍스트 시작 X
+ * @text テキストのスタート位置x
+ * @type number
+ * @desc 顔のイメージが設定されているとき、テキストの開始座標Xを整数で記入してください。
+ * @default 256
+ *
+ * @param 큰 페이스칩 OX
+ * @text フェースイメージのOX
+ * @type number
+ * @desc 整数で記入してください。
+ * @default 0
+ *
+ * @param 큰 페이스칩 OY
+ * @text フェースイメージのOY
+ * @type number
+ * @desc 整数で記入してください。
+ * @default 0
+ *
+ * @param 대화창 뒤에 얼굴 표시
+ * @text 顔画像Zオーダー
+ * @type boolean
+ * @desc 顔画像のイメージのZを変更します。
+ * @default false
+ * @on メッセージウィンドウよりも低いZ
+ * @off メッセージウィンドウより高いZ
+ *
+ * @param 탭 크기
+ * @text タブの大きさ(タブキー)
+ * @type number
+ * @desc タブの大きさ(タブキー)
+ * @default 4
+ *
+ * @param 배경 그림의 투명도
+ * @text アルファ値が
+ * @type number
+ * @desc メッセージウィンドウ背景の透明度です。
+ * (アルファ値が0-255)
+ * @default 192
+ * @min 0
+ * @max 255
+ *
+ * @param 기본 투명도
+ * @text 基本アルファ値
+ * @type number
+ * @desc メッセージ創意基本アルファ値を調節します。
+ * (アルファ値が0-255)
+ * @default 255
+ * @min 0
+ * @max 255
+ *
+ * @param 내용의 투명도
+ * @text コンテンツのアルファ値
+ * @type number
+ * @desc メッセージウィンドウ内コンテンツの基本アルファ値を調節します。
+ * (アルファ値が0-255)
+ * @default 255
+ * @min 0
+ * @max 255
+ *
+ * @param 반투명도
+ * @text 半透明度
+ * @type number
+ * @desc メッセージ創意半透明度を調節します。
+ * (アルファ値が0-255)
+ * @default 160
+ * @min 0
+ * @max 255
+ *
+ * @param 테두리 크기
+ * @text テキスト輪郭線の大きさ
+ * @type number
+ * @desc テキスト輪郭線の大きさを整数で指定してください。
+ * @default 2
+ * @min 0
+ *
+ * @param 테두리 색상
+ * @text テキスト輪郭線の色
+ * @desc テキスト輪郭線の色をウェブカラーの規格として指定してください。
+ * @default rgba(0, 0, 0, 1.0)
+ *
+ * @param 기본 윈도우스킨
+ * @text 窓基本画像
+ * @desc 窓を構成するデフォルトイメージを他の素材に変更します。
+ * @require 1
+ * @default Window
+ * @dir img/system/
+ * @type file
+ *
+ * @param カスタムフォント
+ *
+ * @param 사용자 지정 폰트 사용 여부
+ * @text カスタムフォントを使用するかどうか
+ * @parent カスタムフォント
+ * @type boolean
+ * @desc カスタムフォントを使用しますか。
+ * はい - true   いいえ - false
+ * @default false
+ * @on 使用
+ * @off 未使用
+ *
+ * @param 사용자 지정 폰트명
+ * @text カスタムフォントの名前
+ * @parent カスタムフォントの名前
+ * @desc カスタムフォントの名前を指定してください。
+ * @default NanumBrush
+ *
+ * @param 사용자 지정 폰트 경로
+ * @text カスタムフォントのファイル経路。
+ * @parent カスタムフォント
+ * @desc カスタムフォントのファイル経路を入力してください。
+ * @default fonts/NanumBrush.ttf
+ *
+ * @param 選択肢の表示
+ *
+ * @param 선택지 스타일
+ * @text 選択肢のスタイル
+ * @parent 選択肢の表示
+ * @type select
+ * @desc 選択肢創意スタイルを設定することができます。
+ * @default default
+ * @option RMXP スタイル
+ * @value RMXP
+ * @option 基本スタイル (MV, VXA)
+ * @value default
+ *
+ * @param 名前のウィンドウ
+ *
+ * @param 이름 윈도우스킨
+ * @text 画像
+ * @parent 名前のウィンドウ
+ * @desc 名前のウィンドウ画像設定
+ * @require 1
+ * @default Window
+ * @dir img/system/
+ * @type file
+ *
+ * @param 이름 윈도우 X
+ * @text X
+ * @parent 名前のウィンドウ
+ * @type number
+ * @desc メッセージウィンドウの座標を基準にオフセットされます
+ * @default 0
+ *
+ * @param 이름 윈도우 Y
+ * @text Y
+ * @parent 名前のウィンドウ
+ * @type number
+ * @desc メッセージウィンドウの座標を基準にオフセットされます
+ * @default 0
+ *
+ * @param 이름 윈도우 안쪽 여백
+ * @text 内側の余白
+ * @parent 名前のウィンドウ
+ * @type number
+ * @desc 内の空白値を設定します。
+ * @default 10
+ *
+ * @param 이름 윈도우 위치
+ * @text 位置
+ * @parent 名前のウィンドウ
+ * @type select
+ * @desc 名前のウィンドウの位置を指定します。
+ * @default left
+ * @option 左-上(デフォルト値)
+ * @value left
+ * @option 右-上
+ * @value right
+ *
+ * @param 텍스트 색상
+ * @text テキストの色
+ * @type struct<TextColor>[]
+ * @desc テキストの色を新たに追加します。
+ * @default ["{\"Color Name\":\"薄紫\",\"Red\":\"200\",\"Green\":\"191\",\"Blue\":\"231\",\"Alpha\":\"1.0\"}"]
+ *
+ * @param 텍스트 코드
+ * @text 制御文字
+ * @type struct<TextCode>
+ * @desc 制御文字を他の文字に変更します。
+ * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\"]"}
+ *
+ * @param 効果音再生
+ *
+ * @param 텍스트 효과음 재생 여부
+ * @text 再生するかどうか
+ * @parent 効果音再生
+ * @type boolean
+ * @desc 再生するかどうか
+ * @default true
+ * @on 再生します。
+ * @off 再生しません。
+ *
+ * @param 텍스트 효과음
+ * @text テキスト効果音設定
+ * @parent 効果音再生
+ * @type file
+ * @dir audio/se/
+ * @desc テキスト処理の際、特定サウンドを一緒に再生します。
+ * @default Cursor1
+ * @require 1
+ *
+ * @param 텍스트 효과음 실행 조건
+ * @text 実行条件
+ * @parent 効果音再生
+ * @type note
+ * @desc 効果音が再生される確率を作ります。
+ * @default "Math.randomInt(100) < 90"
+ *
+ * @param 텍스트 사운드 풀 크기
+ * @text サウンドプルの大きさ
+ * @parent 効果音再生
+ * @type number
+ * @desc サウンドプルの大きさを指定します。
+ * @default 2
+ * @min 1
+ *
+ * @param 텍스트 효과음 볼륨
+ * @text ボリューム
+ * @parent 効果音再生
+ * @type note
+ * @desc 効果音のボリュームをレムドムに設定します。 (0.0~1.0の間)
+ * @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.7, 1.0)"
+ *
+ * @help
+ * =============================================================================
+ * Plugin Commands
+ * =============================================================================
+ *
+ * You can be available the plugin commands as follows.
+ *
+ * - The speed of the text is the fastest at 0, then you can specify as the frame units.
+ * Message textSpeed number
+ *
+ * Message fontSize number
+ * Message minFontSize number
+ * Message maxFontSize number
+ *
+ * - This plugin command allows you to change the color of the gradient text.
+ * 'color1' is the color of the start point of the gradient text.
+ * 'color2' is the color of the middle point of the gradient text.
+ * 'color3' is the color of the ended point of the gradient text.
+ * All colors must set as a string type the same as #FFFFFF
+ * Message gradient color1 color2 color3
+ *
+ * - This plugin command allows you to change the number of rows in the message window.
+ * Message line number
+ *
+ * - This plugin command allows you to change the starting x position of the text when using a large face bitmap.
+ * Message textStartX number
+ *
+ * - These plugin commands can set the name window's offset by x, y
+ * Message name x number
+ * Message name y number
+ * Message name padding number
+ * Message name windowskin skin_name
+ *
+ * - These plugin commands can set the large face bitmap's offset by dx, dy
+ * Message faceOX dx
+ * Message faceOY dy
+ *
+ * - This plugin command allows you to set whether display a   large face bitmap on the backside of the message window.
+ * If you set the 'value' by 0, -1, it will display the bitmap on the backside of the message window.
+ * Otherwise, it will display it in a front in case of the 'value' is 1 or more.
+ * Message faceZ value
+ *
+ * - This plugin command allows you to set the maximum width for tabs.
+ * Message TabSize number
+ *
+ * Message backOpacity number
+ * Message contentsOpacity number
+ *
+ * Message windowskin skin_name
+ *
+ * =============================================================================
+ * Large Face Bitmap (Bust Image)
+ * =============================================================================
+ * Adding prefixes like "Big_" to names is a good way to immediately find out a
+ * bitmap for a bust from img/faces folder. So you place the image for a bust
+ * in your img/faces folder and then its file name must set up to start with 'Big_'
+ * Always make sure your resources name.
+ * =============================================================================
+ * Text code list
+ * =============================================================================
+ * To use these text codes, you must set the system language setting as English.
+ *
+ * \color[color_name] - Specify the color name as you want it.
+ * \text_speed[x]
+ * \outline_color[color_name]
+ * \outline_width[x]
+ * \indent[x]
+ * \bold!
+ * \italic!
+ * \name<text> - Shows up the name window over the message window
+ * \name<text:left>
+ * \name<text:right>
+ * \gradient<text>
+ * \party_member[x]
+ * \player[x]
+ * \var[x]
+ * \icon[x]
+ * \increase!
+ * \decrease!
+ * \gold
+ * \balloon[0] - A balloon is set over the position of this event.
+ * \balloon[-1] - A balloon is set over the position of the game player.
+ * \balloon[id] - A balloon is set over the position of certain event.
+ * \align[0] - left
+ * \align[1] - center
+ * \align[2] - right
+ * \num[x] - formatted number
+ * \text_size[x]
+ * \tab! - the tab size is to 8
+ * \cr!
+ * \play_se[name]
+ * \show_picture<picid, picname, origin, x, y>
+ * \hide_picture[picid]
+ * \item[x]
+ * \weapon[x]
+ * \armor[x]
+ * \classes[x]
+ * \enemy[x]
+ * \state[x]
+ * \skill[x]
+ * \face<facename, faceindex>
+ * \friendly_troops[index]
+ * \enemy_troops[index]
+ *
+ * =============================================================================
+ * Color list
+ * =============================================================================
+ * To use these colors, you must set the language setting as English.
+ *
+ * Built in color lists are :
+ *
+ * \color[AQUA]
+ *
+ * AQUA
+ * BLACK
+ * BLUE
+ * DKGRAY
+ * FUCHSIA
+ * GRAY
+ * GREEN
+ * LIME
+ * LTGRAY
+ * MAROON
+ * OLIVE
+ * NAVY
+ * ORANGE
+ * PURPLE
+ * RED
+ * SILVER
+ * TEAL
+ * WHITE
+ * YELLOW
+ * NORMAL
+ *
+ * The Web colors can use the same as :
+ * \color[#FFFFFF]
+ *
+ * =============================================================================
+ * Version Log
+ * =============================================================================
+ * 2018.01.24 (v0.1.16) :
+ * - Fixed the issue that doesn't initialize the text sound pool when opening sub windows.
+ * 2018.01.21 (v0.1.15) :
+ * - Implemented the text sound pool.
+ * - In the plugin manager, now that you can change the size of the text sound pool.
+ * 2018.01.16 (v0.1.14) - Added a new feature that plays back the text sound
+ * together when processing for each text.
+ * 2018.01.15 (v0.1.12) :
+ * - Added new text codes that can indicate the pop-up message in the combat.
+ * - Added a new plugin parameter that can define a new text color (eg: \color[c_lviolet])
+ * 2017.09.23 (v0.1.9) - Fixed the issue that is not changed the background type.
+ * 2017.07.21 (v0.1.8) :
+ * - Fixed the issue that the value couldn't set with 0 in the opacity parameter.
+ * - Fixed a bug that the alignment is not processing in a newly line
+ * - Added a feature that changes the window skin.
+ * - Added a feature that changes the name window positions.
+ * - Added a new text code that can change as a different face image during to draw a text.
+ * - Added a feature that can change as a different text code.
+ * - Fixed the bugs with TAB and CR text codes are not working, and even their name.
+ * - Added a feature that can change the style with a choice window.
+ * 2017.06.04 (v0.1.7) - Fixed the issue that is not changed the y-position for a name window
+ * 2017.05.27 (v0.1.6) :
+ * - In the balloon window mode, Added a new feature that the pause sign sprite
+ * displays as the position of an message owner.
+ * - In the balloon window mode, Added a new feature that the name window is
+ * located up at the bottom of the message window when indicating the message
+ * window at the top of the screen.
+ * - Fixed an issue that the name window moves up a little bit to the right when
+ * setting up the face image inside a message window.
+ * 2017.02.18 (v0.1.5) :
+ * - Fixed the problem that has incorrect a range for Hangul Unicode.
+ * - Added a feature that plays back a sound files
+ * - Added a feature that displays and removes a picture
+ * - Added a feature that the text code converted as names of an item in Database.
+ * - Fixed the function that calculates the maximum width of the text when using the alignment feature.
+ * 2016.11.27 (v0.1.4) : Fixed the issue that the value couldn't set to 0 in plugin commands
+ * 2016.11.12 (v0.1.3) - Added the features with changing a custom font and background opacity values
+ * 2016.10.12 (v0.1.2) - Now it is possible to use a non-standard sprites in the popup window.
+ * 2016.09.19 (v0.1.1) - Improved the feature with a text alignment.
+ * 2016.06.18 (v0.1.0) - Fixed the mask issue in a name window.
+ * 2016.03.21 (v0.0.9) - Added text codes for tap and carriage return escape characters.
+ * 2016.03.01 (v0.0.8) :
+ * - Added a feature that can indicate a face image into message window for popup message mode
+ * - Fixed the bugs with plugin commands
+ * 2016.02.27 (v0.0.7) - Added a feature that texts are set as currency format.
+ * 2016.02.15 (v0.0.6) - Added a feature with a text alignment
+ * 2016.01.18 (v0.0.5) - Fixed an issue with positioning the message window and calculating its bounding rect incorrectly.
+ * 2016.01.01 (v0.0.4) - Fixed an issue with resizing the message. (resizeMessageSystem)
+ * 2015.12.03 (v0.0.3) - Added a feature with a popup message
+ * 2015.12.02 (v0.0.2) - Added a feature for large face image.
+ * 2015.12.01 (v0.0.1) - First Release
+ */
+ /*~struct~TextCode:ja
+  *
+  * @param Korean
+  * @type string[]
+  * @desc システム言語が韓国語である場合にのみ動作します。
+  * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴"]
+  *
+  * @param Chinese
+  * @type string[]
+  * @desc システム言語が英語に設定されているときだけ動作します。
+  * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸"]
+  *
+  * @param English
+  * @type string[]
+  * @desc システム言語が英語に設定されているときだけ動作します。
+  * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE"]
+  *
+  */
+ /*~struct~TextColor:ja
+  *
+  * @param Color Name
+  * @text 色の名前
+  * @desc テキストコードから呼び出すことになる色の名前を記入してください
+  * @default
+  *
+  * @param Red
+  * @type number
+  * @text 赤
+  * @desc 0 ~ 255
+  * @min 0
+  * @max 255
+  * @default 0
+  *
+  * @param Green
+  * @type number
+  * @text 緑
+  * @desc 0 ~ 255
+  * @min 0
+  * @max 255
+  * @default 0
+  *
+  * @param Blue
+  * @type number
+  * @text 青
+  * @desc 0 ~ 255
+  * @min 0
+  * @max 255
+  * @default 0
+  *
+  * @param Alpha
+  * @type number
+  * @text アルファ値
+  * @desc 0.0~1.0の間の実数の値
+  * @min 0
+  * @max 1
+  * @decimals 1
+  * @default 1.0
+  *
+  */
 
 var Imported = Imported || {};
 Imported.RS_MessageSystem = true;
@@ -3100,8 +3630,14 @@ var Color = Color || {};
     var self = this;
     var maxPool;
 
+    // 텍스트 사운드 기능이 ON이 아니라면
+    if(!RS.MessageSystem.Params.isPlayTextSound) return false;
+
     // HTML5 Audio 지원 여부 확인
     if(!window.HTMLAudioElement) return false;
+
+    // 이미 생성되어있다면
+    if(this._soundPool) return false;
 
     this._soundPool = {};
     // 풀에 대기 할 사운드 최대 갯수
@@ -3127,8 +3663,9 @@ var Color = Color || {};
   };
 
   Window_Message.prototype._addTextSoundToPool = function () {
+
     // 사운드 풀에 사운드를 넣고 대기 상태로
-    maxPool = this._soundPool.maxPool;
+    var maxPool = this._soundPool.maxPool;
 
     for(var id = 0; id < maxPool; ++id) {
       var textSound = document.createElement('audio');
@@ -3137,14 +3674,35 @@ var Color = Color || {};
       textSound.volume = 0;
       textSound.loop = false;
       textSound.load();
+
       document.body.appendChild(textSound);
+
     }
+
+  };
+
+  Window_Message.prototype.isValidTextSound = function () {
+
+    // 사운드 풀이 있는가?
+    if(!this._soundPool) return false;
+
+    // 사운드 풀에 해당 속성이 있는가?
+    if(!this._soundPool.hasOwnProperty('maxPool')) return false;
+
+    // 텍스트 사운드 기능이 ON이 아니라면
+    if(!RS.MessageSystem.Params.isPlayTextSound) return false;
+
+    // HTML5 Audio 지원 여부 확인
+    if(!window.HTMLAudioElement) return false;
+
+    return true;
+
   };
 
   Window_Message.prototype._removeTextSoundPool = function () {
 
-    // HTML5 Audio 지원 여부 확인
-    if(!window.HTMLAudioElement) return false;
+    // 사운드 풀 유효성 체크
+    if(!this.isValidTextSound()) return;
 
     var maxPool = this._soundPool.maxPool;
 
@@ -3163,16 +3721,11 @@ var Color = Color || {};
   Window_Message.prototype._requestTextSound = function () {
     var textSound, currentId;
 
-    // 사운드 풀이 있는가?
-    if(!this._soundPool) return false;
-    // 사운드 풀에 해당 속성이 있는가?
-    if(!this._soundPool.hasOwnProperty('maxPool')) return false;
-    // 텍스트 사운드 기능이 ON이 아니라면
-    if(!RS.MessageSystem.Params.isPlayTextSound) return false;
+    // 사운드 풀 유효성 체크
+    if(!this.isValidTextSound()) return false;
+
     // 텍스트 사운드 재생 조건에 실패하면
     if(!eval(RS.MessageSystem.Params.textSoundEval1)) return false;
-    // HTML5 Audio 지원 여부 확인
-    if(!window.HTMLAudioElement) return false;
 
     // 가져올 ID를 찾는다
     currentId = (this._soundPool.currentId + 1) % (this._soundPool.maxPool);
@@ -3205,21 +3758,16 @@ var Color = Color || {};
 
   };
 
-  var alias_TextSound_Window_Message_startMessage = Window_Message.prototype.startMessage;
-  Window_Message.prototype.startMessage = function() {
+  var alias_TextSound_Window_Message_initialize = Window_Message.prototype.initialize;
+  Window_Message.prototype.initialize = function () {
+    alias_TextSound_Window_Message_initialize.call(this);
     this._createTextSoundPool();
-    alias_TextSound_Window_Message_startMessage.call(this);
+    this.on('removed', this._removeTextSoundPool, this);
   };
 
-  var alias_TextSound_Window_Message_terminateMessage = Window_Message.prototype.terminateMessage;
-  Window_Message.prototype.terminateMessage = function () {
-    this._removeTextSoundPool();
-    alias_TextSound_Window_Message_terminateMessage.call(this);
-  };
-
-  var alias_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
+  var alias_TextSound_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
   Window_Message.prototype.processNormalCharacter = function(textState) {
-    alias_Window_Message_processNormalCharacter.call(this, textState);
+    alias_TextSound_Window_Message_processNormalCharacter.call(this, textState);
     this._requestTextSound();
   };
 
