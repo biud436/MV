@@ -292,7 +292,7 @@ function Scene_InputDialog() {
     <style>
     ${style}
     .inputDialog {
-      direction : ltr;
+      direction : ${RS.InputDialog.Params.inputDirection};
       max-length : ${RS.InputDialog.Params.nMaxLength};
       max : ${RS.InputDialog.Params.nMaxLength};
     }
