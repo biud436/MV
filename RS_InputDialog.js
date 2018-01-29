@@ -1,6 +1,6 @@
 /*:
  * RS_InputDialog.js
- * @plugindesc This plugin allows you to display Text Edit Box on the screen.
+ * @plugindesc This plugin allows you to display Text Edit Box on the screen. <RS_InputDialog>
  * @author biud436
  *
  * @param textBox Width
@@ -38,7 +38,7 @@
  * @option Left to Right
  * @value ltr
  * @option Right to Left
- * @option rtl
+ * @value rtl
  *
  * @param Max Length
  * @type number
@@ -49,44 +49,25 @@
  *
  * @param Style
  *
- * @param Background Color
+ * @param CSS
  * @parent Style
- * @desc Specifies a background color of the text box.
- * @default #cff09e
+ * @type note
+ * @desc Edit the css as you want.
+ * @default "      .inputDialogContainer {\n        min-width : 10em;\n        max-width : 2.5em;\n        top : 0em;\n        left : 0em;\n        width : 10em;\n        height : 2.5em;\n        display : flex;\n        flex-flow : column wrap;\n        align-items : center;\n        justify-content : center;\n        padding : 0;\n        margin : 0;\n        box-sizing : border-box;\n        resize : both;\n      }\n      .inputDialog {\n        ime-mode : active;\n        top : 0em;\n        left : 0em;\n        right : 0em;\n        bottom : 0em;\n        z-index : 1000;\n        opacity : 0.8;\n        position : relative;\n        background-color : #cff09e;\n        border : 2px solid #3b8686;\n        border-radius : 10px;\n        text-shadow : 0px 1px 3px #a8dba8;\n        font-family : arial;\n        color : #79bd9a;\n        outline : none;\n      }\n      .defaultButton {\n        opacity : 0.8;\n        font-family : arial;\n        border : 1px solid #777;\n        background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%)\n        color : #fff;\n        text-shadow : rgba(0,0,0,.7) 0 1px 0;\n        cursor : pointer;\n        border-radius : 0.5em;\n        box-sizing : border-box;\n        box-shadow : 0 1px 4px rgba(0, 0, 0, .6);\n      }\n      .row {\n        width : 70%;\n        height: 1em;\n      }\n      .col {\n        width : 70%;\n        height: 1em;\n      }"
  *
- * @param Border
- * @parent Style
- * @desc Specifies a border color of the text box.
- * @default 2px solid #3b8686
+ * @param Button Name
  *
- * @param Border Radius
- * @parent Style
- * @desc Specifies a border radius of the text box.
- * @default 10px
+ * @param Ok
+ * @parent Button Name
+ * @text Ok Button Name
+ * @desc Specify the name of the Ok Button.
+ * @default OK
  *
- * @param Text Shadow
- * @parent Style
- * @desc Specifies a text shadow of the text box.
- * @default 0px 1px 3px #a8dba8
- *
- * @param Font Family
- * @parent Style
- * @desc Specifies a font family of the text box.
- * @default arial
- *
- * @param Color
- * @parent Style
- * @desc Specifies a font color of the text box.
- * @default #79bd9a
- *
- * @param Opacity
- * @parent Style
- * @type number
- * @decimals 1
- * @desc Specifies a opacity of the text box.
- * @default 0.8
- * @min 0.0
- * @max 1.0
+ * @param Cancel
+ * @parent Button Name
+ * @text Cancel Button Name
+ * @desc Specify the name of the Cancel Button.
+ * @default Cancel
  *
  * @help
  * =============================================================================
@@ -106,9 +87,6 @@
  *
  * - Displays a alert window of the browser when you are pressing the enter
  * InputDialog debug true
- *
- * - Changes a background color of the text box.
- * InputDialog backgroundColor rgba(255, 255, 255, 0.8)
  *
  * - Specifies the maximum number of character for an input field
  * InputDialog maxLength 10
@@ -143,6 +121,10 @@
  * - Added new feature that indicates the input dialog at the top position of the screen when pressing any key on your own mobile device.
  * - Added new feature that automatically returns a result of the text box if you did not press anything.
  * 2018.01.25 (v1.1.8a) - test...
+ * 2018.01.30 (v1.1.9) :
+ * - Added the button called 'OK'.
+ * - Added the button called 'Cancel'.
+ * - Removed the feature that can change the background-color of the input dialog.
  */
 
 var Imported = Imported || {};
@@ -151,6 +133,7 @@ Imported.RS_InputDialog = true;
 var RS = RS || {};
 RS.InputDialog = RS.InputDialog || {};
 RS.InputDialog.Params = RS.InputDialog.Params || {};
+RS.Utils = RS.Utils || {};
 
 function Scene_InputDialog() {
   this.initialize.apply(this, arguments);
@@ -158,7 +141,18 @@ function Scene_InputDialog() {
 
 (function () {
 
-  var parameters = PluginManager.parameters('RS_InputDialog');
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_InputDialog>');
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
+  RS.Utils.jsonParse = function (str) {
+    var retData = JSON.parse(str, function (k, v) {
+      try { return RS.Utils.jsonParse(v); } catch (e) { return v; }
+    });
+    return retData;
+  };
 
   //============================================================================
   // Global Variables in RS.InputDialog
@@ -171,22 +165,19 @@ function Scene_InputDialog() {
   RS.InputDialog.Params.debug = Boolean(parameters['debug'] === 'true');
 
   RS.InputDialog.Params.localText = String(parameters['Text Hint'] || 'Test Message');
-  RS.InputDialog.Params.backgroundColor = String(parameters['Background Color'] || '#cff09e');
   RS.InputDialog.Params.inputDirection = String(parameters['direction'] || 'ltr');
 
   RS.InputDialog.Params.nMaxLength = parseInt(parameters['Max Length'] || '6');
-
-  RS.InputDialog.Params.border = parameters['Border'] || "2px solid #3b8686";
-  RS.InputDialog.Params.borderRadius = parameters['Border Radius'] || '10px';
-  RS.InputDialog.Params.textShadow = parameters['Text Shadow'] || "0px 1px 3px #a8dba8";
-  RS.InputDialog.Params.fontFamily = parameters['Font Family'] || 'arial';
-  RS.InputDialog.Params.color = parameters['Color'] || "#79bd9a";
-  RS.InputDialog.Params.opacity = parameters['Opacity'] || "0.8";
 
   RS.InputDialog.Params.szTextBoxId = 'md_textBox';
   RS.InputDialog.Params.szFieldId = 'md_inputField';
 
   RS.InputDialog.Params.nCheckScreenLock = 8000;
+
+  RS.InputDialog.Params.okButtonName = parameters['Ok'] || "Ok";
+  RS.InputDialog.Params.cancelButtonName = parameters['Cancel'] || "Cancel";
+
+  RS.InputDialog.Params.exStyle = RS.Utils.jsonParse(parameters['CSS']);
 
   //============================================================================
   // public methods in RS.InputDialog
@@ -202,24 +193,28 @@ function Scene_InputDialog() {
   };
 
   RS.InputDialog.setRect = function () {
-    var textBox = document.getElementById(RS.InputDialog.Params.szTextBoxId);
+    "use strict";
+
+    var query, textBox, OkButton, CancelButton;
+
+    query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=text]`;
+    textBox = document.querySelector(query);
+
+    query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=inputDialog-OkBtn]`;
+    OkButton = document.querySelector(query);
+
+    query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=inputDialog-CancelBtn]`;
+    CancelButton = document.querySelector(query);
+
     if(textBox) {
-      textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
-      textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
-      textBox.style.border = RS.InputDialog.Params.border;
-      textBox.style.borderRadius = RS.InputDialog.Params.borderRadius;
-      textBox.style.textShadow = RS.InputDialog.Params.textShadow;
-      textBox.style.fontFamily = RS.InputDialog.Params.fontFamily;
-      textBox.style.color = RS.InputDialog.Params.color;
-      textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
-      textBox.style.minWidth = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
-      textBox.style.maxWidth = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
-      textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
-      textBox.style.direction = RS.InputDialog.Params.inputDirection;
-      textBox.maxLength = RS.InputDialog.Params.nMaxLength;
-      textBox.max = RS.InputDialog.Params.nMaxLength;
-      textBox.placeholder = RS.InputDialog.Params.localText;
+      textBox.style.fontSize = (2 * Graphics._realScale) + "em";
+      textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
+      textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
     }
+
+    if(OkButton) OkButton.style.fontSize = (1 * Graphics._realScale) + "em";
+    if(CancelButton) CancelButton.style.fontSize = (1 * Graphics._realScale) + "em";
+
   };
 
   RS.InputDialog.startBattleBlur = function(target, value) {
@@ -264,6 +259,7 @@ function Scene_InputDialog() {
 
   TextBox.BACK_SPACE = 8;
   TextBox.ENTER = 13;
+  TextBox.ESC = 27;
   TextBox.IS_NOT_CHAR = 32;
   TextBox.KEYS_ARRAY = 255;
 
@@ -273,9 +269,6 @@ function Scene_InputDialog() {
     this._lastInputTime = performance.now();
     this.prepareElement(fieldID);
     this.createTextBox(textBoxID);
-    this.getFocus();
-    this.setRect();
-    this.startToConvertInput();
   };
 
   TextBox.prototype.startToConvertInput = function () {
@@ -288,71 +281,98 @@ function Scene_InputDialog() {
 
   TextBox.prototype.createTextBox = function(id) {
 
+    "use strict";
+
     var self = this;
     var field = document.getElementById(this._fieldId);
 
-    this._textBox = document.createElement('input');
-    this._textBox.type = "text";
-    this._textBox.id = id;
+    var style = eval("`" + RS.InputDialog.Params.exStyle + "`");
 
-    this._textBox.style.opacity = RS.InputDialog.Params.opacity;
-    this._textBox.style.zIndex = 1000;
+    var divInnerHTML = `
+    <style>
+    ${style}
+    .inputDialog {
+      direction : ltr;
+      max-length : ${RS.InputDialog.Params.nMaxLength};
+      max : ${RS.InputDialog.Params.nMaxLength};
+    }
+    </style>
+    <table class="inputDialogContainer">
+  		<tr class="row">
+  			<td class="col">
+  				<input class="inputDialog" type="text" id"=${id} placeholder="${RS.InputDialog.Params.localText}">
+  			</td>
+  		</tr>
+  		<tr class="row" valign="bottom">
+  			<td class="col" align="right">
+  				<input class="defaultButton" id="inputDialog-OkBtn" type="button" value="${RS.InputDialog.Params.okButtonName}" name="">
+          <input class="defaultButton" id="inputDialog-CancelBtn" type="button" value="${RS.InputDialog.Params.cancelButtonName}" name="">
+  			</td>
+  		</tr>
+    <img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' onload='TextBox.onLoadAfterInnerHTML();this.parentNode.removeChild(this);'>
+  	</table>
+    `;
 
-    this._textBox.autofocus = false;
-    this._textBox.multiple = false;
-
-    // TODO: How could it be short this code?
-    this._textBox.style.imeMode = 'active';
-    this._textBox.style.position = 'absolute';
-    this._textBox.style.top = 0;
-    this._textBox.style.left = 0;
-    this._textBox.style.right = 0;
-    this._textBox.style.bottom = 0;
-    this._textBox.style.direction = RS.InputDialog.Params.inputDirection;
-    this._textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
-    this._textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
-    this._textBox.style.border = RS.InputDialog.Params.border;
-    this._textBox.style.borderRadius = RS.InputDialog.Params.borderRadius;
-    this._textBox.style.textShadow = RS.InputDialog.Params.textShadow;
-    this._textBox.style.fontFamily = RS.InputDialog.Params.fontFamily;
-    this._textBox.style.color = RS.InputDialog.Params.color;
-    this._textBox.style.outline = 'none';
-
-    var w = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
-    this._textBox.style.width = w;
-    this._textBox.style.minWidth = w;
-    this._textBox.style.maxWidth = w;
-    this._textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
-
-    this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
-    this._textBox.max = RS.InputDialog.Params.nMaxLength;
-
-    // Text hint
-    this._textBox.placeholder = RS.InputDialog.Params.localText;
-
-    field.appendChild(this._textBox);
-
-    Graphics._centerElement(this._textBox);
-
-    this.addAllEventListener();
+    field.innerHTML += divInnerHTML;
 
   };
 
+  TextBox.onLoadAfterInnerHTML = function () {
+    if(SceneManager._scene) {
+      if( (SceneManager._scene instanceof Scene_InputDialog) ||
+          (SceneManager._scene instanceof Scene_Battle) ) {
+          if(SceneManager._scene._textBox) {
+            SceneManager._scene._textBox.addAllEventListener();
+          }
+        }
+    }
+  };
+
+  TextBox.prototype.getTextBoxId = function () {
+    "use strict";
+    var query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=text]`;
+    return document.querySelector(query);
+  };
+
+  TextBox.prototype.getDefaultButtonId = function (id) {
+    "use strict";
+    id = id || "inputDialog-OkBtn";
+    var query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=${id}]`;
+    return document.querySelector(query);
+  };
+
+  TextBox.prototype.getMainContainer = function () {
+    "use strict";
+    var query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer`;
+    return document.querySelector(query);
+  };
+
   TextBox.prototype.addAllEventListener = function () {
+
+    this._textBox = this.getTextBoxId();
     this._textBox.addEventListener('keydown', this.onKeyDown.bind(this), false);
     this._textBox.addEventListener('focus', this.onFocus.bind(this), false);
     this._textBox.addEventListener('blur', this.onBlur.bind(this), false);
     this._textBox.addEventListener('autosize', this.onResize.bind(this), false);
+
     window.addEventListener('resize', this.onResize.bind(this), false);
+
+    this.getFocus();
+    this.setRect();
+    this.startToConvertInput();
+    this.onResize();
+
   };
 
   TextBox.prototype.setRect = function () {
-    var textBox = document.getElementById(this._textBoxID);
-    textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
-    textBox.style.backgroundColor = RS.InputDialog.Params.backgroundColor;
-    textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
-    textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
-    textBox.style.direction = RS.InputDialog.Params.inputDirection;
+    var textBox = this.getTextBoxId();
+    var OkButton = this.getDefaultButtonId("inputDialog-OkBtn");
+    var CancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
+    textBox.style.fontSize = (2 * Graphics._realScale) + "em";
+    OkButton.style.fontSize = (1 * Graphics._realScale) + "em";
+    CancelButton.style.fontSize = (1 * Graphics._realScale) + "em";
+    textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
+    textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
   };
 
   TextBox.prototype.prepareElement = function(id) {
@@ -363,24 +383,25 @@ function Scene_InputDialog() {
     field.style.top = '0';
     field.style.right = '0';
     field.style.bottom = '0';
-    field.style.width = RS.InputDialog.getScreenWidth(Graphics.boxWidth) + 'px';
-    field.style.height = RS.InputDialog.getScreenHeight(Graphics.boxHeight) + 'px';
+    field.style.width = '100%';
+    field.style.height = '100%';
     field.style.zIndex = "0";
     document.body.appendChild(field);
     Graphics._centerElement(field);
     return field;
   };
 
-  TextBox.prototype.setEvent = function(func) {
-    var textBox = document.getElementById(this._textBoxID);
-    textBox.onchange = func;
-    this._func = func;
+  TextBox.prototype.setEvent = function(okFunc, cancelFunc) {
+    var okButton = this.getDefaultButtonId("inputDialog-OkBtn");
+    var cancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
+    okButton.onclick = okFunc;
+    cancelButton.onclick = cancelFunc;
+    this._okFunc = okFunc;
+    this._cancelFunc = cancelFunc;
   };
 
   TextBox.prototype.terminateTextBox = function() {
     var field = document.getElementById(this._fieldId);
-    var textBox = document.getElementById(this._textBoxID);
-    field.removeChild(textBox);
     document.body.removeChild(field);
     this.startToOriginalInput();
   };
@@ -389,7 +410,10 @@ function Scene_InputDialog() {
     var keyCode = e.which;
     if (keyCode < TextBox.IS_NOT_CHAR) {
       if(keyCode === TextBox.ENTER) {
-        if(this._func instanceof Function) this._func();
+        if(this._okFunc instanceof Function) this._okFunc();
+      }
+      if(keyCode === TextBox.ESC) {
+        if(this._cancelFunc instanceof Function) this._cancelFunc();
       }
     }
 
@@ -398,14 +422,14 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.onFocus = function () {
-    var text = document.getElementById(RS.InputDialog.Params.szTextBoxId);
+    var text = this.getTextBoxId();
     if(text && Utils.isMobileDevice()) {
       text.style.bottom = RS.InputDialog.getScreenHeight(Graphics.boxHeight / 2) + 'px';
     }
   };
 
   TextBox.prototype.onBlur = function () {
-    var text = document.getElementById(RS.InputDialog.Params.szTextBoxId);
+    var text = this.getTextBoxId();
     if(text && Utils.isMobileDevice()) {
       text.style.bottom = '0';
       text.focus();
@@ -416,18 +440,12 @@ function Scene_InputDialog() {
     var self = this;
     if(SceneManager._scene instanceof Scene_InputDialog) {
       var field = document.getElementById(self._fieldId);
-      var textBox = document.getElementById(self._textBoxID);
+      var textBox = self.getTextBoxId();
+      var mainContainer = self.getMainContainer();
       if(field && textBox) {
           Graphics._centerElement(field);
-          Graphics._centerElement(textBox);
-
-          var w = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth) + 'px';
-
-          textBox.style.fontSize = parseInt(RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight - 4)) + 'px';
-          textBox.style.width = w;
-          textBox.style.minWidth = w;
-          textBox.style.maxWidth = w;
-          textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight) + 'px';
+          Graphics._centerElement(mainContainer);
+          this.setRect();
       }
     }
   };
@@ -441,23 +459,23 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.getTextLength = function() {
-    var textBox = document.getElementById(this._textBoxID);
+    var textBox = this.getTextBoxId();
     return textBox.value.length;
   };
 
   TextBox.prototype.getFocus = function() {
-    var textBox = document.getElementById(this._textBoxID);
+    var textBox = this.getTextBoxId();
     textBox.focus();
   };
 
   TextBox.prototype.setText = function (text) {
-    var textBox = document.getElementById(this._textBoxID);
+    var textBox = this.getTextBoxId();
     textBox.value = text || '';
     return textBox;
   };
 
   TextBox.prototype.getText = function () {
-    var textBox = document.getElementById(this._textBoxID);
+    var textBox = this.getTextBoxId();
     return textBox.value;
   };
 
@@ -472,7 +490,7 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.setTextHint = function () {
-    var textBox = document.getElementById(this._textBoxID);
+    var textBox = this.getTextBoxId();
     return textBox.placeholder = RS.InputDialog.Params.localText;
   };
 
@@ -483,7 +501,7 @@ function Scene_InputDialog() {
 
   TextBox.prototype.removeAllEventListener = function () {
     this._textBox.onchange = undefined;
-    this._func = null;
+    this._okFunc = null;
 
     this._textBox.removeEventListener('keydown', this.onKeyDown.bind(this));
     this._textBox.removeEventListener('focus', this.onFocus.bind(this));
@@ -544,7 +562,7 @@ function Scene_InputDialog() {
 
   Scene_InputDialog.prototype.createTextBox = function () {
     this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
-    this._textBox.setEvent(this.okResult.bind(this));
+    this._textBox.setEvent(this.okResult.bind(this), this.cancelResult.bind(this));
     this._textBox.show();
     this._textBox.setTextHint();
   };
@@ -553,6 +571,13 @@ function Scene_InputDialog() {
     var text = this._textBox.getText() || '';
     if(text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
     $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
+    if(SceneManager._stack.length > 0) {
+      Input.clear();
+      this.popScene();
+    };
+  };
+
+  Scene_InputDialog.prototype.cancelResult = function () {
     if(SceneManager._stack.length > 0) {
       Input.clear();
       this.popScene();
@@ -610,7 +635,7 @@ function Scene_InputDialog() {
 
   Scene_Battle.prototype.createTextBox = function () {
     this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
-    this._textBox.setEvent(this.okResult.bind(this));
+    this._textBox.setEvent(this.okResult.bind(this), this.cancelResult.bind(this));
   };
 
   Scene_Battle.prototype.textBoxIsBusy = function () {
@@ -651,6 +676,14 @@ function Scene_InputDialog() {
     }
   };
 
+  Scene_Battle.prototype.cancelResult = function () {
+    if(!this._textBox) return '';
+    if( this.textBoxIsBusy() ) {
+      this._textBox.setText('');
+      this.hideTextBox();
+    }
+  };
+
   //============================================================================
   // Game_Interpreter
   //============================================================================
@@ -685,10 +718,6 @@ function Scene_InputDialog() {
           case 'debug':
             RS.InputDialog.Params.debug = Boolean(args[1] === 'true');
             break;
-          case 'backgroundColor':
-            RS.InputDialog.Params.backgroundColor = args.slice(1, args.length).join('');
-            RS.InputDialog.setRect();
-            break;
           case 'maxLength':
             RS.InputDialog.Params.nMaxLength  = Number(args[1] || 255);
             RS.InputDialog.setRect();
@@ -696,5 +725,7 @@ function Scene_InputDialog() {
         }
       }
   };
+
+  window.TextBox = TextBox;
 
 })();
