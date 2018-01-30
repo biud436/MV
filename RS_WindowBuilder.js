@@ -1,6 +1,13 @@
 /*:
  * @plugindesc <RS_WindowBuilder>
  * @author biud436
+ *
+ * @param Life Time
+ * @type number
+ * @desc a millisecond
+ * @default 10000
+ * @min 1000
+ *
  * @help
  * If you would like to add is the ability to create the window automatically,
  * You could use this plugin to make the new windows
@@ -8,24 +15,39 @@
  *
  * You type a new code to create the window as follows!
  *
- * new Window_Base(0, 0, 200, 96).builder("안녕하세요?", 0, 0);
+ *    new Window_Base(0, 0, 200, 96).builder("안녕하세요?", 0, 0);
  *
  * You are going to pass a first parameter is desired text in the function
  * called 'builder'. It is the text string that would draw on the window.
- * The two next parameters are internal coordinates such as x and y.
+ * The next two parameters are the internal coordinates such as x and y.
+ *
+ * You can also use the plugin commands as follows :
+ *
+ *    WindowBuilder event event_id offset_x offset_y text
+ *
+ * =============================================================================
+ * Version Log
+ * =============================================================================
+ * 2018.01.30 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
 Imported.RS_WindowBuilder = true;
 
-(function () {
+var RS = RS || {};
+RS.WindowBuilder = RS.WindowBuilder || {};
+
+(function ($) {
+
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_WindowBuilder>');
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
 
   var alias_Window_Base_initialize = Window_Base.prototype.initialize;
   Window_Base.prototype.initialize = function (x, y, width, height) {
     alias_Window_Base_initialize.call(this, x, y, width, height);
-    // this.on('removed', function () {
-    //   new Window_Base(0, 0, 320, 96).builder("test", 0, 0);
-    // }, this);
     return this;
   };
 
@@ -54,7 +76,7 @@ Imported.RS_WindowBuilder = true;
     this._builderState = {};
     this._builderState.initTimer = performance.now();
     this._builderState.isDirty = true;
-    this._builderState.lifeTime = 10000;
+    this._builderState.lifeTime = parseInt(parameters["Life Time"]) || 10000;
     this._builderState.velocity = (this._builderState.lifeTime / 1000);
 
     return this;
@@ -82,4 +104,48 @@ Imported.RS_WindowBuilder = true;
     this.contentsOpacity = (o > 0) ? o - diff : 0;
   };
 
-})();
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
+
+  $.pluginCommandToEvent = function (args) {
+    var _event, sx, sy, text, ix, iy, fontSize, width;
+
+    _event = $gameMap.event( parseInt(args[0]) );
+
+    if(!_event) return;
+
+    sx = _event.screenX();
+    sy = _event.screenY();
+
+    ix = parseFloat(args[1]) || 0;
+    iy = parseFloat(args[2]) || 0;
+
+    text = args.slice(3).join(" ") || "";
+
+    bitmap = new Bitmap(1,1);
+    fontSize = bitmap.fontSize + 36;
+    width = bitmap.measureTextWidth(text) + 36;
+
+    sx -= width / 2;
+    sy -= fontSize;
+
+    new Window_Base(sx, sy, width, fontSize).builder(text, ix, iy);
+
+  };
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if(command === "WindowBuilder") {
+      switch (args[0]) {
+        case 'event':
+          $.pluginCommandToEvent(args.slice(1));
+          break;
+        default:
+
+      }
+    }
+  };
+
+})(RS.WindowBuilder);
