@@ -53,7 +53,7 @@
  * @parent Style
  * @type note
  * @desc Edit the css as you want.
- * @default "      .inputDialogContainer {\n        min-width : 10em;\n        max-width : 2.5em;\n        top : 0em;\n        left : 0em;\n        width : 10em;\n        height : 2.5em;\n        display : flex;\n        flex-flow : column wrap;\n        align-items : center;\n        justify-content : center;\n        padding : 0;\n        margin : 0;\n        box-sizing : border-box;\n        resize : both;\n      }\n      .inputDialog {\n        ime-mode : active;\n        top : 0em;\n        left : 0em;\n        right : 0em;\n        bottom : 0em;\n        z-index : 1000;\n        opacity : 0.8;\n        position : relative;\n        background-color : #cff09e;\n        border : 2px solid #3b8686;\n        border-radius : 10px;\n        text-shadow : 0px 1px 3px #a8dba8;\n        font-family : arial;\n        color : #79bd9a;\n        outline : none;\n      }\n      .defaultButton {\n        opacity : 0.8;\n        font-family : arial;\n        border : 1px solid #777;\n        background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%)\n        color : #fff;\n        text-shadow : rgba(0,0,0,.7) 0 1px 0;\n        cursor : pointer;\n        border-radius : 0.5em;\n        box-sizing : border-box;\n        box-shadow : 0 1px 4px rgba(0, 0, 0, .6);\n      }\n      .row {\n        width : 70%;\n        height: 1em;\n      }\n      .col {\n        width : 70%;\n        height: 1em;\n      }"
+ * @default "      .inputDialogContainer {\n        min-width : 10em;\n        max-width : 2.5em;\n        top : 0em;\n        left : 0em;\n        width : 10em;\n        height : 2.5em;\n        display : flex;\n        flex-flow : column wrap;\n        align-items : center;\n        justify-content : center;\n        padding : 0;\n        margin : 0;\n        box-sizing : border-box;\n        resize : both;\n      }\n      .inputDialog {\n        ime-mode : active;\n        top : 0em;\n        left : 0em;\n        right : 0em;\n        bottom : 0em;\n        z-index : 1000;\n        opacity : 0.8;\n        position : relative;\n        background-color : #cff09e;\n        border : 2px solid #3b8686;\n        border-radius : 10px;\n        text-shadow : 0px 1px 3px #a8dba8;\n        font-family : arial;\n        color : #79bd9a;\n        outline : none;\n      }\n      .defaultButton {\n        opacity : 0.8;\n        font-family : arial;\n        border : 1px solid #777;\n        background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%)\n        color : #fff;\n        text-shadow : rgba(0,0,0,.7) 0 1px 0;\n        cursor : pointer;\n        border-radius : 0.5em;\n        box-sizing : border-box;\n        box-shadow : 0 1px 4px rgba(0, 0, 0, .6);\n\t\tfont-size : 1.4em;\n      }\n      .row {\n        width : 70%;\n        height: 1em;\n      }\n      .col {\n        width : 70%;\n        height: 1em;\n      }\n\t  \n\t  @media screen and (min-width : 192px) and (max-width 768px) {\n\t\t.defaultButton {\n\t\t\tfont-size : 6em;\n\t\t}\n\t\t.row {\n\t\t\twidth : 100%;\n\t\t\theight: 2em;\n\t\t}\n\t\t.col {\n\t\t\twidth : 100%;\n\t\t\theight: 2em;\n\t\t}\n\t\t.inputDialog {\n\t\t\tfont-size : 6em;\n\t\t}\n\t  }\n\t  @media screen and (min-width : 768px) and (max-width 1000px) {\n\t\t.defaultButton {\n\t\t\tfont-size : 5em;\n\t\t}\t  \n\t\t.row {\n\t\t\twidth : 100%;\n\t\t\theight: 2em;\n\t\t}\n\t\t.col {\n\t\t\twidth : 100%;\n\t\t\theight: 2em;\n\t\t}\t\n\t\t.inputDialog {\n\t\t\tfont-size : 6em;\n\t\t}\t\t\n\t  }\t  \n\t  \n\t  "
  *
  * @param Button Name
  *
@@ -125,6 +125,7 @@
  * - Added the button called 'OK'.
  * - Added the button called 'Cancel'.
  * - Removed the feature that can change the background-color of the input dialog.
+ * - Fixed the issue that is not clicking the button in the mobile.
  */
 
 var Imported = Imported || {};
@@ -272,11 +273,11 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.startToConvertInput = function () {
-    Input._shouldPreventDefault = dialog_Input_shouldPreventDefault;
+    // Input._shouldPreventDefault = dialog_Input_shouldPreventDefault;
   };
 
   TextBox.prototype.startToOriginalInput = function () {
-    Input._shouldPreventDefault = original_Input_shouldPreventDefault;
+    // Input._shouldPreventDefault = original_Input_shouldPreventDefault;
   };
 
   TextBox.prototype.createTextBox = function(id) {
@@ -293,8 +294,6 @@ function Scene_InputDialog() {
     ${style}
     .inputDialog {
       direction : ${RS.InputDialog.Params.inputDirection};
-      max-length : ${RS.InputDialog.Params.nMaxLength};
-      max : ${RS.InputDialog.Params.nMaxLength};
     }
     </style>
     <table class="inputDialogContainer">
@@ -350,8 +349,13 @@ function Scene_InputDialog() {
   TextBox.prototype.addAllEventListener = function () {
 
     this._textBox = this.getTextBoxId();
+    this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
+    this._textBox.max = RS.InputDialog.Params.nMaxLength;
+
     this._textBox.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    this._textBox.addEventListener('focus', this.onFocus.bind(this), false);
+    if(!Utils.isMobileDevice()) {
+      this._textBox.addEventListener('focus', this.onFocus.bind(this), false);
+    }
     this._textBox.addEventListener('blur', this.onBlur.bind(this), false);
     this._textBox.addEventListener('autosize', this.onResize.bind(this), false);
 
@@ -361,6 +365,7 @@ function Scene_InputDialog() {
     this.setRect();
     this.startToConvertInput();
     this.onResize();
+    this.show();
 
   };
 
@@ -368,11 +373,16 @@ function Scene_InputDialog() {
     var textBox = this.getTextBoxId();
     var OkButton = this.getDefaultButtonId("inputDialog-OkBtn");
     var CancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
-    textBox.style.fontSize = (2 * Graphics._realScale) + "em";
-    OkButton.style.fontSize = (1 * Graphics._realScale) + "em";
-    CancelButton.style.fontSize = (1 * Graphics._realScale) + "em";
+
+    if(!Utils.isMobileDevice()) {
+      textBox.style.fontSize = (2 * Graphics._realScale) + "em";
+      OkButton.style.fontSize = (1 * Graphics._realScale) + "em";
+      CancelButton.style.fontSize = (1 * Graphics._realScale) + "em";
+    }
+
     textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
     textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
+
   };
 
   TextBox.prototype.prepareElement = function(id) {
@@ -394,8 +404,22 @@ function Scene_InputDialog() {
   TextBox.prototype.setEvent = function(okFunc, cancelFunc) {
     var okButton = this.getDefaultButtonId("inputDialog-OkBtn");
     var cancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
-    okButton.onclick = okFunc;
-    cancelButton.onclick = cancelFunc;
+    okButton.addEventListener('click', function (e) {
+      okFunc();
+      e.preventDefault();
+    }, false);
+    cancelButton.addEventListener('click', function (e) {
+      cancelFunc();
+      e.preventDefault();
+    }, false);
+    okButton.addEventListener('touchend', function (e) {
+      okFunc();
+      e.preventDefault();
+    }, false);
+    cancelButton.addEventListener('touchend', function (e) {
+      cancelFunc();
+      e.preventDefault();
+    }, false);
     this._okFunc = okFunc;
     this._cancelFunc = cancelFunc;
   };
@@ -421,19 +445,20 @@ function Scene_InputDialog() {
 
   };
 
-  TextBox.prototype.onFocus = function () {
+  TextBox.prototype.onFocus = function (e) {
     var text = this.getTextBoxId();
     if(text && Utils.isMobileDevice()) {
       text.style.bottom = RS.InputDialog.getScreenHeight(Graphics.boxHeight / 2) + 'px';
     }
   };
 
-  TextBox.prototype.onBlur = function () {
+  TextBox.prototype.onBlur = function (e) {
     var text = this.getTextBoxId();
     if(text && Utils.isMobileDevice()) {
       text.style.bottom = '0';
       text.focus();
     }
+    e.preventDefault();
   };
 
   TextBox.prototype.onResize = function () {
@@ -504,7 +529,9 @@ function Scene_InputDialog() {
     this._okFunc = null;
 
     this._textBox.removeEventListener('keydown', this.onKeyDown.bind(this));
-    this._textBox.removeEventListener('focus', this.onFocus.bind(this));
+    if(!Utils.isMobileDevice()) {
+      this._textBox.removeEventListener('focus', this.onFocus.bind(this));
+    }
     this._textBox.removeEventListener('blur', this.onBlur.bind(this));
     this._textBox.removeEventListener('autosize', this.onResize.bind(this));
     window.removeEventListener('resize', this.onResize.bind(this), false);
@@ -572,6 +599,7 @@ function Scene_InputDialog() {
     if(text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
     $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
     if(SceneManager._stack.length > 0) {
+      TouchInput.clear();
       Input.clear();
       this.popScene();
     };
@@ -579,6 +607,7 @@ function Scene_InputDialog() {
 
   Scene_InputDialog.prototype.cancelResult = function () {
     if(SceneManager._stack.length > 0) {
+      TouchInput.clear();
       Input.clear();
       this.popScene();
     };
