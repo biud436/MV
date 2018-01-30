@@ -273,11 +273,11 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.startToConvertInput = function () {
-    // Input._shouldPreventDefault = dialog_Input_shouldPreventDefault;
+    Input._shouldPreventDefault = dialog_Input_shouldPreventDefault;
   };
 
   TextBox.prototype.startToOriginalInput = function () {
-    // Input._shouldPreventDefault = original_Input_shouldPreventDefault;
+    Input._shouldPreventDefault = original_Input_shouldPreventDefault;
   };
 
   TextBox.prototype.createTextBox = function(id) {
@@ -375,11 +375,11 @@ function Scene_InputDialog() {
     var CancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
 
     if(!Utils.isMobileDevice()) {
-      textBox.style.fontSize = (2 * Graphics._realScale) + "em";
       OkButton.style.fontSize = (1 * Graphics._realScale) + "em";
       CancelButton.style.fontSize = (1 * Graphics._realScale) + "em";
     }
 
+    textBox.style.fontSize = (2 * Graphics._realScale) + "em";
     textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
     textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
 
