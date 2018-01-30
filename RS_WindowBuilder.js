@@ -121,14 +121,14 @@ RS.WindowBuilder = RS.WindowBuilder || {};
     ix = parseFloat(args[1]) || 0;
     iy = parseFloat(args[2]) || 0;
 
-    text = args.slice(3).join(" ") || "";
+    text = args.slice(3).join("") || "";
 
     bitmap = new Bitmap(1,1);
-    fontSize = bitmap.fontSize + 36;
-    width = bitmap.measureTextWidth(text) + 36;
+    fontSize = Window_Base.prototype.fittingHeight(1);
+    width = bitmap.measureTextWidth(text) + (Window_Base.prototype.standardPadding() * 2);
 
     sx -= width / 2;
-    sy -= fontSize;
+    sy -= fontSize + $gameMap.tileHeight();
 
     new Window_Base(sx, sy, width, fontSize).builder(text, ix, iy);
 
