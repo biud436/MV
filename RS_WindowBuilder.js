@@ -57,6 +57,11 @@ RS.WindowBuilder = RS.WindowBuilder || {};
     var x = 0;
     var y = 0;
 
+    var dest = new Point(this.x, this.y);
+    var starting = new Point(this.width, this.y);
+
+    this.x -= starting.x;
+
     text = arguments[0] || "";
     x = arguments[1] || 0;
     y = arguments[2] || 0;
@@ -78,6 +83,7 @@ RS.WindowBuilder = RS.WindowBuilder || {};
     this._builderState.isDirty = true;
     this._builderState.lifeTime = parseInt(parameters["Life Time"]) || 10000;
     this._builderState.velocity = (this._builderState.lifeTime / 1000);
+    this._builderState.dest = dest;
 
     return this;
 
@@ -98,10 +104,23 @@ RS.WindowBuilder = RS.WindowBuilder || {};
         this._builderState.initTimer = performance.now();
       }
     }
+    var dx = this._builderState.dest.x;
+    var vel = Math.max(this._builderState.velocity, 1);
+
+    var t = (dx - this.x) * 4;
+
     var o = this.opacity;
-    var diff = (255 / this._builderState.velocity ) * SceneManager._deltaTime;
+    var co = this.contentsOpacity;
+    var diff = (255 / vel ) * SceneManager._deltaTime;
     this.opacity = (o > 0) ? o - diff : 0;
-    this.contentsOpacity = (o > 0) ? o - diff : 0;
+    this.contentsOpacity = (co > 0) ? co - diff : 0;
+
+    if(o < 128) {
+      this.x = this.x + diff;
+    } else {
+      this.x = this.x + t * SceneManager._deltaTime;
+    }
+    
   };
 
   //============================================================================
