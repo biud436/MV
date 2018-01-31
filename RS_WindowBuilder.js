@@ -81,7 +81,7 @@ RS.WindowBuilder = RS.WindowBuilder || {};
     this._builderState = {};
     this._builderState.initTimer = performance.now();
     this._builderState.isDirty = true;
-    this._builderState.lifeTime = parseInt(parameters["Life Time"]) || 10000;
+    this._builderState.lifeTime = parseInt(arguments[3]) || (parseInt(parameters["Life Time"]) || 10000);
     this._builderState.velocity = (this._builderState.lifeTime / 1000);
     this._builderState.dest = dest;
 
@@ -120,7 +120,7 @@ RS.WindowBuilder = RS.WindowBuilder || {};
     } else {
       this.x = this.x + t * SceneManager._deltaTime;
     }
-    
+
   };
 
   //============================================================================
