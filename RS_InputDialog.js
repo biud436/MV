@@ -53,7 +53,7 @@
  * @parent Style
  * @type note
  * @desc Edit the css as you want.
- * @default "      .inputDialogContainer {\n        min-width : 10em;\n        max-width : 2.5em;\n        top : 0em;\n        left : 0em;\n        width : 10em;\n        height : 2.5em;\n        display : flex;\n        flex-flow : column wrap;\n        align-items : center;\n        justify-content : center;\n        padding : 0;\n        margin : 0;\n        box-sizing : border-box;\n        resize : both;\n      }\n      .inputDialog {\n        ime-mode : active;\n        top : 0em;\n        left : 0em;\n        right : 0em;\n        bottom : 0em;\n        z-index : 1000;\n        opacity : 0.8;\n        position : relative;\n        background-color : #cff09e;\n        border : 2px solid #3b8686;\n        border-radius : 10px;\n        text-shadow : 0px 1px 3px #a8dba8;\n        font-family : arial;\n        color : #79bd9a;\n        outline : none;\n      }\n      .defaultButton {\n        opacity : 0.8;\n        font-family : arial;\n        border : 1px solid #777;\n        background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%)\n        color : #fff;\n        text-shadow : rgba(0,0,0,.7) 0 1px 0;\n        cursor : pointer;\n        border-radius : 0.5em;\n        box-sizing : border-box;\n        box-shadow : 0 1px 4px rgba(0, 0, 0, .6);\n\t\tfont-size : 1.4em;\n      }\n      .row {\n        width : 70%;\n        height: 1em;\n      }\n      .col {\n        width : 70%;\n        height: 1em;\n      }\n\t  \n\t  @media screen and (min-width : 192px) and (max-width 768px) {\n\t\t.defaultButton {\n\t\t\tfont-size : 6em;\n\t\t}\n\t\t.row {\n\t\t\twidth : 100%;\n\t\t\theight: 2em;\n\t\t}\n\t\t.col {\n\t\t\twidth : 100%;\n\t\t\theight: 2em;\n\t\t}\n\t\t.inputDialog {\n\t\t\tfont-size : 6em;\n\t\t}\n\t  }\n\t  @media screen and (min-width : 768px) and (max-width 1000px) {\n\t\t.defaultButton {\n\t\t\tfont-size : 5em;\n\t\t}\t  \n\t\t.row {\n\t\t\twidth : 100%;\n\t\t\theight: 2em;\n\t\t}\n\t\t.col {\n\t\t\twidth : 100%;\n\t\t\theight: 2em;\n\t\t}\t\n\t\t.inputDialog {\n\t\t\tfont-size : 6em;\n\t\t}\t\t\n\t  }\t  \n\t  \n\t  "
+ * @default ""
  *
  * @param Button Name
  *
@@ -126,6 +126,9 @@
  * - Added the button called 'Cancel'.
  * - Removed the feature that can change the background-color of the input dialog.
  * - Fixed the issue that is not clicking the button in the mobile.
+ * 2018.02.03 (v1.1.10) :
+ * - Fixed the issue that is not working in RMMV 1.5.1
+ * - Fixed the default value of the plugin parameter  called 'CSS'.
  */
 
 var Imported = Imported || {};
@@ -287,11 +290,102 @@ function Scene_InputDialog() {
     var self = this;
     var field = document.getElementById(this._fieldId);
 
-    var style = eval("`" + RS.InputDialog.Params.exStyle + "`");
+    var style = `
+        .inputDialogContainer {
+          min-width : 10em;
+          max-width : 2.5em;
+          top : 0em;
+          left : 0em;
+          width : 10em;
+          height : 2.5em;
+          display : flex;
+          flex-flow : column wrap;
+          align-items : center;
+          justify-content : center;
+          padding : 0;
+          margin : 0;
+          box-sizing : border-box;
+          resize : both;
+        }
+        .inputDialog {
+          ime-mode : active;
+          top : 0em;
+          left : 0em;
+          right : 0em;
+          bottom : 0em;
+          z-index : 1000;
+          opacity : 0.8;
+          position : relative;
+          background-color : #cff09e;
+          border : 2px solid #3b8686;
+          border-radius : 10px;
+          text-shadow : 0px 1px 3px #a8dba8;
+          font-family : arial;
+          color : #79bd9a;
+          outline : none;
+        }
+        .defaultButton {
+          opacity : 0.8;
+          font-family : arial;
+          border : 1px solid #777;
+          background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%)
+          color : #fff;
+          text-shadow : rgba(0,0,0,.7) 0 1px 0;
+          cursor : pointer;
+          border-radius : 0.5em;
+          box-sizing : border-box;
+          box-shadow : 0 1px 4px rgba(0, 0, 0, .6);
+		      font-size : 1.4em;
+        }
+        .row {
+          width : 70%;
+          height: 1em;
+        }
+        .col {
+          width : 70%;
+          height: 1em;
+        }
+
+    	  @media screen and (min-width : 192px) and (max-width 768px) {
+      		.defaultButton {
+      			font-size : 6em;
+      		}
+      		.row {
+      			width : 100%;
+      			height: 2em;
+      		}
+      		.col {
+      			width : 100%;
+      			height: 2em;
+      		}
+      		.inputDialog {
+      			font-size : 6em;
+      		}
+    	  }
+    	  @media screen and (min-width : 768px) and (max-width 1000px) {
+      		.defaultButton {
+      			font-size : 5em;
+      		}
+      		.row {
+      			width : 100%;
+      			height: 2em;
+      		}
+      		.col {
+      			width : 100%;
+      			height: 2em;
+      		}
+      		.inputDialog {
+      			font-size : 6em;
+      		}
+    	  }
+	  `;
+
+    var exStyle = RS.InputDialog.Params.exStyle;
 
     var divInnerHTML = `
     <style>
     ${style}
+    ${exStyle}
     .inputDialog {
       direction : ${RS.InputDialog.Params.inputDirection};
     }
