@@ -1,6 +1,6 @@
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.16) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.17) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -232,6 +232,10 @@
 * @desc 텍스트 효과음의 볼륨을 램덤으로 만듭니다 (0.0 ~ 1.0 사이)
 * @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.7, 1.0)"
 *
+* @param 언어 코드
+* @desc 사용할 텍스트 코드의 언어 코드를 입력하세요
+* @default ko
+*
 * @help
 * 이 플러그인은 복잡한 텍스트 코드가 아닌 한글 단어로 직관적으로 텍스트 코드를 호출하기
 * 위해 개발된 것입니다. 제법 자유로운 라이센스를 따르고 있기 때문에 저작권 자를 따로
@@ -434,6 +438,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2018.02.06 (v0.0.17) : 기본 언어 코드 탐지 방법을 변경했습니다. 이젠 직접 입력하세요.
 * 2018.01.24 (v0.1.16) - 사운드 풀 초기화 관련 문제 수정
 * 2018.01.21 (v0.1.15) :
 * - 텍스트 효과음 처리 방식을 사운드 풀 방식으로 변경했습니다.
@@ -546,7 +551,7 @@
 
 /*:
 * RS_MessageSystem.js
-* @plugindesc (v0.1.16) Hangul Message System <RS_MessageSystem>
+* @plugindesc (v0.1.17) Hangul Message System <RS_MessageSystem>
 * @author biud436
 *
 * @param Font Size
@@ -764,284 +769,16 @@
 * @desc Make the volume of the text sound by the random value that is float between 0.0 and 1.0
 * @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.7, 1.0)"
 *
+* @param Language Code
+* @desc Specify the language code of the text codes.
+* @default ko
+*
 * @help
-* =============================================================================
-* Plugin Commands
-* =============================================================================
-*
-* You can be available the plugin commands as follows.
-*
-* - The speed of the text is the fastest at 0, then you can specify as the frame units.
-* Message textSpeed number
-*
-* Message fontSize number
-* Message minFontSize number
-* Message maxFontSize number
-*
-* - This plugin command allows you to change the color of the gradient text.
-* 'color1' is the color of the start point of the gradient text.
-* 'color2' is the color of the middle point of the gradient text.
-* 'color3' is the color of the ended point of the gradient text.
-* All colors must set as a string type the same as #FFFFFF
-* Message gradient color1 color2 color3
-*
-* - This plugin command allows you to change the number of rows in the message window.
-* Message line number
-*
-* - This plugin command allows you to change the starting x position of the text when using a large face bitmap.
-* Message textStartX number
-*
-* - These plugin commands can set the name window's offset by x, y
-* Message name x number
-* Message name y number
-* Message name padding number
-* Message name windowskin skin_name
-*
-* - These plugin commands can set the large face bitmap's offset by dx, dy
-* Message faceOX dx
-* Message faceOY dy
-*
-* - This plugin command allows you to set whether display a   large face bitmap on the backside of the message window.
-* If you set the 'value' by 0, -1, it will display the bitmap on the backside of the message window.
-* Otherwise, it will display it in a front in case of the 'value' is 1 or more.
-* Message faceZ value
-*
-* - This plugin command allows you to set the maximum width for tabs.
-* Message TabSize number
-*
-* Message backOpacity number
-* Message contentsOpacity number
-*
-* Message windowskin skin_name
-*
-* =============================================================================
-* Large Face Bitmap (Bust Image)
-* =============================================================================
-* Adding prefixes like "Big_" to names is a good way to immediately find out a
-* bitmap for a bust from img/faces folder. So you place the image for a bust
-* in your img/faces folder and then its file name must set up to start with 'Big_'
-* Always make sure your resources name.
-* =============================================================================
-* Text code list (English)
-* =============================================================================
-* To use these text codes, you must set the system language setting as English.
-*
-* \color[color_name] - Specify the color name as you want it.
-* \text_speed[x]
-* \outline_color[color_name]
-* \outline_width[x]
-* \indent[x]
-* \bold!
-* \italic!
-* \name<text> - Shows up the name window over the message window
-* \name<text:left>
-* \name<text:right>
-* \gradient<text>
-* \party_member[x]
-* \player[x]
-* \var[x]
-* \icon[x]
-* \increase!
-* \decrease!
-* \gold
-* \balloon[0] - A balloon is set over the position of this event.
-* \balloon[-1] - A balloon is set over the position of the game player.
-* \balloon[id] - A balloon is set over the position of certain event.
-* \align[0] - left
-* \align[1] - center
-* \align[2] - right
-* \num[x] - formatted number
-* \text_size[x]
-* \tab! - the tab size is to 8
-* \cr!
-* \play_se[name]
-* \show_picture<picid, picname, origin, x, y>
-* \hide_picture[picid]
-* \item[x]
-* \weapon[x]
-* \armor[x]
-* \classes[x]
-* \enemy[x]
-* \state[x]
-* \skill[x]
-* \face<facename, faceindex>
-* \friendly_troops[index]
-* \enemy_troops[index]
-*
-* =============================================================================
-* Color list (English)
-* =============================================================================
-* To use these colors, you must set the language setting as English.
-*
-* Built in color lists are :
-*
-* \color[AQUA]
-*
-* AQUA
-* BLACK
-* BLUE
-* DKGRAY
-* FUCHSIA
-* GRAY
-* GREEN
-* LIME
-* LTGRAY
-* MAROON
-* OLIVE
-* NAVY
-* ORANGE
-* PURPLE
-* RED
-* SILVER
-* TEAL
-* WHITE
-* YELLOW
-* NORMAL
-*
-* The Web colors can use the same as :
-* \color[#FFFFFF]
-*
-* =============================================================================
-* Text code list (Korean)
-* =============================================================================
-* To use these text codes, you must set the language setting as Korean.
-*
-* \색[색상명]
-* \속도[값]
-* \테두리색[색상명]
-* \테두리크기[값]
-* \들여쓰기[값]
-* \굵게!
-* \이탤릭!
-* \이름<이벤트명>
-* \그레디언트<텍스트>
-* \파티원[번호]
-* \주인공[번호]
-* \변수[번호]
-* \아이콘[번호]
-* \확대!
-* \축소!
-* \골드
-* \말풍선[이벤트의 ID]
-* \말풍선[0]
-* \말풍선[-1]
-* \정렬자[1]
-* \정렬자[2]
-* \숫자[숫자]
-* \크기[숫자]
-* \탭! : 탭의 크기는 8 입니다.
-* \캐리지리턴! : X를 시작 위치로 되돌립니다.
-* \효과음<효과음명>
-* \그림표시<그림번호, 그림이름, 원점번호, X좌표, Y좌표>
-* \그림제거[그림번호]
-* \아이템[번호]
-* \무기구[번호]
-* \방어구[번호]
-* \직업[번호]
-* \적군[번호]
-* \상태[번호]
-* \스킬[번호]
-* \얼굴<페이스칩 이름, 페이스칩 인덱스>
-*
-* =============================================================================
-* Color list (Korean)
-* =============================================================================
-* To use these colors, you must set the language setting as Korean.
-*
-* 청록, 청록색, c_aqua
-* 검은색, 검정, c_black
-* 파란색, 파랑, c_blue
-* 짙은회색, c_dkgray
-* 자홍색, 자홍, c_fuchsia
-* 회색, c_gray
-* 녹색, c_green
-* 밝은녹색, 라임, c_lime
-* 밝은회색, c_ltgray
-* 밤색, 마룬, c_maroon
-* 감청색, 네이비, c_navy
-* 황록색, 올리브, c_olive
-* 주황색, 주황, 오렌지, c_orange
-* 보라색, 보라, c_purple
-* 빨간색, 빨강, c_red
-* 은색, 은, c_silver
-* 민트색, c_teal
-* 흰색, 흰, c_white
-* 노란색, 노랑, c_yellow
-* 기본, 기본색, c_normal
-*
-* =============================================================================
-* Text code list (Chinese)
-* =============================================================================
-* To use these text codes, you must set the language setting as Chinese (zh)
-*
-* \色[文本]
-* \速度[值]
-* \大小[值]
-* \轮廓颜色[颜色的名]
-* \轮廓宽度[大小]
-* \缩进[值]
-* \加粗!
-* \倾斜!
-* \名字<文本>
-* \渐变颜色<文本>
-* \队伍成员[号码]
-* \角色[号码]
-* \变量[号码]
-* \图标[号码]
-* \增大!
-* \减少!
-* \金币
-* \对话框[EventID]
-* \对话框[0]
-* \对话框[-1]
-* \对齐[1] (居中对齐)
-* \对齐[2] (右对齐)
-* \数[值]
-* \音效播放<sound name>
-* \显示图像<号码, picture name, origin, x, y>
-* \隐藏图像[号码]
-* \道具[号码]
-* \武器[号码]
-* \装甲[号码]
-* \职业[号码]
-* \敌人[号码]
-* \状态[号码]
-* \技能[号码]
-* \脸<faceName, faceIndex>
-* \TAB!
-* \CR!
-* \我军[号码]
-* \敌人组[号码]
-*
-* =============================================================================
-* Color list (Chinese)
-* =============================================================================
-* To use these colors, you must set the language setting as Chinese.
-*
-* 水色
-* 黑色
-* 蓝色
-* 深灰色
-* 紫红色
-* 灰色
-* 绿色
-* 浅绿色
-* 浅灰色
-* 栗色
-* 绀青色
-* 黄绿色
-* 橙黄色
-* 紫色
-* 红色
-* 银白色
-* 水鸭色
-* 白色
-* 黄色
-* 通常
 *
 * =============================================================================
 * Version Log
 * =============================================================================
+* 2018.02.06 (v0.0.17) : Changed how to detect the default language code.
 * 2018.01.24 (v0.1.16) :
 * - Fixed the issue that doesn't initialize the text sound pool when opening sub windows.
 * 2018.01.21 (v0.1.15) :
@@ -1154,7 +891,7 @@
 
  /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.16) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.17) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param 글꼴 크기
@@ -1425,149 +1162,17 @@
  * @desc 効果音のボリュームをレムドムに設定します。 (0.0~1.0の間)
  * @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.7, 1.0)"
  *
+ * @param 언어 코드
+ * @text Language Code
+ * @desc 制御文字の言語コードを入力してください。
+ * @default ko
+ *
  * @help
- *
- * まだ日本語文書が準備されませんでした。
- *
- * =============================================================================
- * Plugin Commands
- * =============================================================================
- *
- * You can be available the plugin commands as follows.
- *
- * - The speed of the text is the fastest at 0, then you can specify as the frame units.
- * Message textSpeed number
- *
- * Message fontSize number
- * Message minFontSize number
- * Message maxFontSize number
- *
- * - This plugin command allows you to change the color of the gradient text.
- * 'color1' is the color of the start point of the gradient text.
- * 'color2' is the color of the middle point of the gradient text.
- * 'color3' is the color of the ended point of the gradient text.
- * All colors must set as a string type the same as #FFFFFF
- * Message gradient color1 color2 color3
- *
- * - This plugin command allows you to change the number of rows in the message window.
- * Message line number
- *
- * - This plugin command allows you to change the starting x position of the text when using a large face bitmap.
- * Message textStartX number
- *
- * - These plugin commands can set the name window's offset by x, y
- * Message name x number
- * Message name y number
- * Message name padding number
- * Message name windowskin skin_name
- *
- * - These plugin commands can set the large face bitmap's offset by dx, dy
- * Message faceOX dx
- * Message faceOY dy
- *
- * - This plugin command allows you to set whether display a   large face bitmap on the backside of the message window.
- * If you set the 'value' by 0, -1, it will display the bitmap on the backside of the message window.
- * Otherwise, it will display it in a front in case of the 'value' is 1 or more.
- * Message faceZ value
- *
- * - This plugin command allows you to set the maximum width for tabs.
- * Message TabSize number
- *
- * Message backOpacity number
- * Message contentsOpacity number
- *
- * Message windowskin skin_name
- *
- * =============================================================================
- * Large Face Bitmap (Bust Image)
- * =============================================================================
- * Adding prefixes like "Big_" to names is a good way to immediately find out a
- * bitmap for a bust from img/faces folder. So you place the image for a bust
- * in your img/faces folder and then its file name must set up to start with 'Big_'
- * Always make sure your resources name.
- * =============================================================================
- * Text code list
- * =============================================================================
- * To use these text codes, you must set the system language setting as English.
- *
- * \color[color_name] - Specify the color name as you want it.
- * \text_speed[x]
- * \outline_color[color_name]
- * \outline_width[x]
- * \indent[x]
- * \bold!
- * \italic!
- * \name<text> - Shows up the name window over the message window
- * \name<text:left>
- * \name<text:right>
- * \gradient<text>
- * \party_member[x]
- * \player[x]
- * \var[x]
- * \icon[x]
- * \increase!
- * \decrease!
- * \gold
- * \balloon[0] - A balloon is set over the position of this event.
- * \balloon[-1] - A balloon is set over the position of the game player.
- * \balloon[id] - A balloon is set over the position of certain event.
- * \align[0] - left
- * \align[1] - center
- * \align[2] - right
- * \num[x] - formatted number
- * \text_size[x]
- * \tab! - the tab size is to 8
- * \cr!
- * \play_se[name]
- * \show_picture<picid, picname, origin, x, y>
- * \hide_picture[picid]
- * \item[x]
- * \weapon[x]
- * \armor[x]
- * \classes[x]
- * \enemy[x]
- * \state[x]
- * \skill[x]
- * \face<facename, faceindex>
- * \friendly_troops[index]
- * \enemy_troops[index]
- *
- * =============================================================================
- * Color list
- * =============================================================================
- * To use these colors, you must set the language setting as English.
- *
- * Built in color lists are :
- *
- * \color[AQUA]
- *
- * AQUA
- * BLACK
- * BLUE
- * DKGRAY
- * FUCHSIA
- * GRAY
- * GREEN
- * LIME
- * LTGRAY
- * MAROON
- * OLIVE
- * NAVY
- * ORANGE
- * PURPLE
- * RED
- * SILVER
- * TEAL
- * WHITE
- * YELLOW
- * NORMAL
- *
- * The Web colors can use the same as :
- * \color[#FFFFFF]
  *
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.02.06 (v0.0.17) : Changed how to detect the default language code.
  * 2018.01.24 (v0.1.16) :
  * - Fixed the issue that doesn't initialize the text sound pool when opening sub windows.
  * 2018.01.21 (v0.1.15) :
@@ -1785,6 +1390,8 @@ var Color = Color || {};
   RS.MessageSystem.Params.textSoundEval2 = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Volume", "텍스트 효과음 볼륨") || "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)");
   RS.MessageSystem.Params.textSoundPoolSize = parseInt(RS.MessageSystem.popParameter('텍스트 사운드 풀 크기', "Text Sound Pool Size") || 6);
 
+  RS.MessageSystem.Params.langCode = RS.MessageSystem.popParameter('언어 코드', "Language Code") || "ko";
+
   //============================================================================
   // Multiple Language supports
   //============================================================================
@@ -1846,13 +1453,14 @@ var Color = Color || {};
   };
 
   RS.MessageSystem.getTextCode = function (idx) {
-    if(!!navigator.language.match(/ko/)) {
+    var langCode = RS.MessageSystem.Params.langCode;
+    if(!!langCode.match(/ko/)) {
       return RS.MessageSystem.TextCodes['Korean'][idx];
     }
-    if(!!navigator.language.match(/zh/)) {
+    if(!!langCode.match(/zh/)) {
       return RS.MessageSystem.TextCodes['Chinese'][idx];
     }
-    if(!!navigator.language.match(/en/)) {
+    if(!!langCode.match(/en/)) {
       return RS.MessageSystem.TextCodes['English'][idx];
     }
     return RS.MessageSystem.TextCodes['English'][idx];
@@ -1913,7 +1521,7 @@ var Color = Color || {};
   }());
 
   RS.MessageSystem.initSystem = function () {
-    var type = navigator.language;
+    var type = RS.MessageSystem.Params.langCode;
     var ret = false;
     if(type.match(/ko/)) {
       RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Korean;
@@ -2128,7 +1736,7 @@ var Color = Color || {};
   };
 
   Color.gmColor = function(string) {
-    var type = navigator.language;
+    var type = RS.MessageSystem.Params.langCode;
     if(type.match(/ko/)) {
       return RS.MessageSystem.getKoreanColor(string);
     }

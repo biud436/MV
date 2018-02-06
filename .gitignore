@@ -1,8 +1,1 @@
-rmmv.d.ts
-jsconfig.json
-rpg_core.js
-rpg_managers.js
-rpg_objects.js
-rpg_scenes.js
-rpg_sprites.js
-rpg_windows.js
+RS_MemoSystem.js
