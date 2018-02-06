@@ -129,6 +129,8 @@
  * 2018.02.03 (v1.1.10) :
  * - Fixed the issue that is not working in RMMV 1.5.1
  * - Fixed the default value of the plugin parameter  called 'CSS'.
+ * 2018.02.06 (v1.1.11) :
+ * - Fixed the issue that is not working in the battle scene.
  */
 
 var Imported = Imported || {};
@@ -271,6 +273,7 @@ function Scene_InputDialog() {
     this._fieldId = fieldID;
     this._textBoxID = textBoxID;
     this._lastInputTime = performance.now();
+    this._ready = false;
     this.prepareElement(fieldID);
     this.createTextBox(textBoxID);
   };
@@ -406,18 +409,17 @@ function Scene_InputDialog() {
   	</table>
     `;
 
-    field.innerHTML += divInnerHTML;
+    field.innerHTML = divInnerHTML;
 
   };
 
   TextBox.onLoadAfterInnerHTML = function () {
     if(SceneManager._scene) {
-      if( (SceneManager._scene instanceof Scene_InputDialog) ||
-          (SceneManager._scene instanceof Scene_Battle) ) {
+      if( (SceneManager._scene instanceof Scene_InputDialog)) {
           if(SceneManager._scene._textBox) {
             SceneManager._scene._textBox.addAllEventListener();
           }
-        }
+      }
     }
   };
 
@@ -455,11 +457,16 @@ function Scene_InputDialog() {
 
     window.addEventListener('resize', this.onResize.bind(this), false);
 
-    this.getFocus();
-    this.setRect();
     this.startToConvertInput();
+    this.setRect();
     this.onResize();
-    this.show();
+
+    if(SceneManager._scene instanceof Scene_InputDialog) {
+      this.getFocus();
+      this.show();
+    }
+
+    this._ready = true;
 
   };
 
@@ -514,13 +521,18 @@ function Scene_InputDialog() {
       cancelFunc();
       e.preventDefault();
     }, false);
+
     this._okFunc = okFunc;
     this._cancelFunc = cancelFunc;
   };
 
   TextBox.prototype.terminateTextBox = function() {
     var field = document.getElementById(this._fieldId);
-    document.body.removeChild(field);
+
+    if(field) {
+      document.body.removeChild(field);
+    }
+
     this.startToOriginalInput();
   };
 
@@ -557,15 +569,13 @@ function Scene_InputDialog() {
 
   TextBox.prototype.onResize = function () {
     var self = this;
-    if(SceneManager._scene instanceof Scene_InputDialog) {
-      var field = document.getElementById(self._fieldId);
-      var textBox = self.getTextBoxId();
-      var mainContainer = self.getMainContainer();
-      if(field && textBox) {
-          Graphics._centerElement(field);
-          Graphics._centerElement(mainContainer);
-          this.setRect();
-      }
+    var field = document.getElementById(self._fieldId);
+    var textBox = self.getTextBoxId();
+    var mainContainer = self.getMainContainer();
+    if(field && textBox) {
+        Graphics._centerElement(field);
+        Graphics._centerElement(mainContainer);
+        this.setRect();
     }
   };
 
@@ -619,15 +629,13 @@ function Scene_InputDialog() {
   };
 
   TextBox.prototype.removeAllEventListener = function () {
-    this._textBox.onchange = undefined;
     this._okFunc = null;
+    this._cancelFunc = null;
 
-    this._textBox.removeEventListener('keydown', this.onKeyDown.bind(this));
-    if(!Utils.isMobileDevice()) {
-      this._textBox.removeEventListener('focus', this.onFocus.bind(this));
+    if(this._textBox) {
+      this._textBox.outerHTML = this._textBox.outerHTML;
     }
-    this._textBox.removeEventListener('blur', this.onBlur.bind(this));
-    this._textBox.removeEventListener('autosize', this.onResize.bind(this));
+
     window.removeEventListener('resize', this.onResize.bind(this), false);
 
   };
@@ -770,7 +778,10 @@ function Scene_InputDialog() {
     this._textBox.show();
     this._textBox.getFocus();
     this._textBox.setTextHint();
+    this._textBox.setRect();
+    this._textBox.onResize();
     $gameTroop.battleInterpreterTaskLock();
+    this._textBox.addAllEventListener();
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
