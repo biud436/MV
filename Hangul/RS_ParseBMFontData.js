@@ -1,21 +1,19 @@
 //==============================================================================
-// RS_BMFontHangulWangsung.js
+// RS_ParseBMFontData.js
 //==============================================================================
 
 /*:
- * @plugindesc 비트맵 폰트(완성형 한글)
+ * @plugindesc This plugin allows you to process the xml data from BMFont <RS_ParseBMFontData>
  * @author biud436
  * @help
- * 완성형은 조합형보다 비효율적이고 메모리를 많이 사용하지만 만들기가 상당히 쉽다는 게
- * 특징이다.
  * =============================================================================
- * Change Log (개발중)
+ * Change Log
  * =============================================================================
- * 2018.02.15 - 파싱 추가
+ * 2018.02.15 - 2018.02.17
  */
 
 var Imported = Imported || {};
-Imported.RS_BMFontHangulWangsung = true;
+Imported.RS_ParseBMFontData = true;
 
 (function () {
 
