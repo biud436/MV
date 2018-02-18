@@ -5,6 +5,7 @@
  * 비트맵 폰트는 나눔고딕 32px 기반이며 2048 사이즈의 아틀라스 Texture입니다.
  * 필요한 파일은 hangul_0.png 파일과 hangul.xml 파일이며 해당 파일을
  * img/hangul 폴더에 위치시켜주시기 바랍니다.
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -104,6 +105,25 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
     return defaultColor;
   };
 
+  var alias_Bitmap_measureTextWidth = Bitmap.prototype.measureTextWidth;
+  Bitmap.prototype.measureTextWidth = function(text) {
+    if(!RS.HangulBitmapText.Params.init) return alias_Bitmap_measureTextWidth.call(this, c);
+    var data = PIXI.extras.BitmapText.fonts[RS.HangulBitmapText.Params.fontName];
+    var pos = 0;
+    for(var i=0; i<text.length; ++i) {
+      var charCode = text.charCodeAt(i);
+      if(!data) {
+        return alias_Bitmap_measureTextWidth.call(this, c);
+      }
+      var charData = data.chars[charCode];
+      if(!charData) {
+        return alias_Bitmap_measureTextWidth.call(this, c);
+      }
+      pos += charData.xAdvance;
+    }
+    return pos;
+  };
+
   /**
    * @link https://github.com/pixijs/pixi.js/blob/dev/src/extras/BitmapText.js
    */
@@ -120,6 +140,8 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
       });
 
     maxWidth = maxWidth || 0xffffffff;
+
+    bitmapFontText.updateText();
 
     // 비트맵 폰트를 렌더링한 후 비트맵으로 변환
     var bitmap = Bitmap.snapFast(bitmapFontText, maxWidth, fontSize);
