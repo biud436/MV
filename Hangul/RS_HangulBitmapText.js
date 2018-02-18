@@ -10,6 +10,8 @@
  * Change Log
  * =============================================================================
  * 2018.02.18 (v1.0.0) - First Release.
+ * 2018.02.18 (v1.0.1) :
+ * - 화살표 추가
  */
 
 var Imported = Imported || {};
@@ -131,9 +133,13 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
     if(!RS.HangulBitmapText.Params.init) return;
 
-    if(/[^0-9]+/i.test(text) === false) {
-      return alias_Bitmap_drawText.call(this, text, x, y, maxWidth, lineHeight, align);
-    } 
+    // 예외 처리
+    // if(/[^0-9]+/i.test(text) === false) {
+    //   return alias_Bitmap_drawText.call(this, text, x, y, maxWidth, lineHeight, align);
+    // }
+
+    // 문자열로 캐스팅하지 않으면 모든 숫자값이 나오지 않는다.
+    text = String(text);
 
     var fontSize = this.fontSize;
     var textColor = Bitmap.colorToHex(this.textColor);
@@ -149,15 +155,13 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
         tint: textColor
       });
 
-    bitmapFontText.updateText();
-
     maxWidth = maxWidth || this.measureTextWidth(text);
 
-    // 비트맵 폰트를 렌더링한 후 비트맵으로 변환
-    var bitmap = Bitmap.snapFast(bitmapFontText, maxWidth, fontSize );
+    // 비트맵 폰트를 렌더링한 후 비트맵으로 변환 (생각보다 느림)
+    var bitmap = Bitmap.snapFast(bitmapFontText, maxWidth, bitmapFontText.textHeight );
 
     var tx = x;
-    var ty = y + (lineHeight - bitmapFontText.textHeight) / 2;
+    var ty = y + (lineHeight - bitmapFontText.textHeight);
 
     if (align === 'center') {
         tx += (maxWidth - bitmapFontText.textWidth) / 2;
