@@ -119,7 +119,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
       if(!charData) {
         return alias_Bitmap_measureTextWidth.call(this, c);
       }
-      pos += charData.xAdvance;
+      pos += parseInt(charData.xAdvance, 10);
     }
     return pos;
   };
@@ -127,27 +127,38 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   /**
    * @link https://github.com/pixijs/pixi.js/blob/dev/src/extras/BitmapText.js
    */
+  var alias_Bitmap_drawText = Bitmap.prototype.drawText;
   Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
     if(!RS.HangulBitmapText.Params.init) return;
+
+    if(/[^0-9]+/i.test(text) === false) {
+      return alias_Bitmap_drawText.call(this, text, x, y, maxWidth, lineHeight, align);
+    } 
 
     var fontSize = this.fontSize;
     var textColor = Bitmap.colorToHex(this.textColor);
 
+    var data = PIXI.extras.BitmapText.fonts[RS.HangulBitmapText.Params.fontName];
+    if(data) {
+      lineHeight = lineHeight || data.lineHeight;
+    }
+
     var bitmapFontText = new PIXI.extras.BitmapText(text, {
         font: '%1px %2'.format(fontSize, RS.HangulBitmapText.Params.fontName),
-        align: "left",
+        align: align || "left",
         tint: textColor
       });
 
-    maxWidth = maxWidth || 0xffffffff;
-
     bitmapFontText.updateText();
 
+    maxWidth = maxWidth || this.measureTextWidth(text);
+
     // 비트맵 폰트를 렌더링한 후 비트맵으로 변환
-    var bitmap = Bitmap.snapFast(bitmapFontText, maxWidth, fontSize);
+    var bitmap = Bitmap.snapFast(bitmapFontText, maxWidth, fontSize );
 
     var tx = x;
-    var ty = y;
+    var ty = y + (lineHeight - bitmapFontText.textHeight) / 2;
+
     if (align === 'center') {
         tx += (maxWidth - bitmapFontText.textWidth) / 2;
     }
@@ -155,7 +166,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
         tx += (maxWidth - bitmapFontText.textWidth);
     }
 
-    this.blt(bitmap, 0, 0, bitmap.width, bitmap.height, tx, ty);
+    this.blt(bitmap, 0, 0, bitmap.width, bitmap.height, tx, ty, bitmap.width);
 
   };
 
@@ -169,7 +180,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   Window_Base.prototype.getXAdvance = function (c) {
     if(!RS.HangulBitmapText.Params.init) return this.textWidth(c);
     var data = PIXI.extras.BitmapText.fonts[RS.HangulBitmapText.Params.fontName];
-    var charCode = c.charCodeAt();
+    var charCode = c.charCodeAt(0);
     if(!data) {
       return this.textWidth(c);
     }
