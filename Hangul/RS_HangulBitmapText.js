@@ -233,7 +233,9 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   };
 
   Window_Message.prototype.createHangulText = function (text, x, y, maxWidth, lineHeight, align) {
+
     if(!RS.HangulBitmapText.Params.init) return;
+    if(!this._hangulTexts) this.createHangulLayer();
 
     text = String(text);
 
