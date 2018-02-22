@@ -12,6 +12,7 @@
  * 2018.02.18 (v1.0.0) - First Release.
  * 2018.02.18 (v1.0.1) :
  * - 화살표 추가
+ * 2018.02.22 (v1.0.2) - y값 조절
  */
 
 var Imported = Imported || {};
@@ -159,9 +160,10 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
 
     // 비트맵 폰트를 렌더링한 후 비트맵으로 변환 (생각보다 느림)
     var bitmap = Bitmap.snapFast(bitmapFontText, maxWidth, bitmapFontText.textHeight );
+    bitmap.smooth = false;
 
     var tx = x;
-    var ty = y + (lineHeight - bitmapFontText.textHeight);
+    var ty = y + (lineHeight - bitmapFontText.textHeight) * 0.7;
 
     if (align === 'center') {
         tx += (maxWidth - bitmapFontText.textWidth) / 2;
