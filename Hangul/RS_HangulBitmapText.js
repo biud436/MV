@@ -13,6 +13,7 @@
  * 2018.02.18 (v1.0.1) :
  * - 화살표 추가
  * 2018.02.22 (v1.0.2) - y값 조절
+ * 2018.02.22 (v1.0.3) - 메시지 윈도우 최적화
  */
 
 var Imported = Imported || {};
@@ -27,6 +28,8 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   RS.HangulBitmapText.Params.init = false;
   RS.HangulBitmapText.Params.fontName = "나눔고딕";
   RS.HangulBitmapText.Params.fntName = 'img/hangul/hangul.xml';
+
+  RS.HangulBitmapText.Params.isMessageMode = true;
 
   PIXI.loader
       .add(RS.HangulBitmapText.Params.fontName, RS.HangulBitmapText.Params.fntName)
@@ -197,10 +200,98 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
     return charData.xAdvance;
   };
 
-  Window_Base.prototype.processNormalCharacter = function(textState) {
+  //============================================================================
+  // Window_Message
+  //============================================================================
+
+  var alias_Window_Message_newPage = Window_Message.prototype.newPage;
+  Window_Message.prototype.newPage = function(textState) {
+    this.createHangulLayer();
+    alias_Window_Message_newPage.call(this, textState);
+  };
+
+  //============================================================================
+  // Window_Base
+  //============================================================================
+
+  // var alias_Window_Base_initialize = Window_Base.prototype.initialize;
+  // Window_Base.prototype.initialize = function(x, y, width, height) {
+  //   alias_Window_Base_initialize.call(this, x, y, width, height);
+  //   this.createHangulLayer();
+  // };
+
+  Window_Message.prototype.createHangulLayer = function () {
+    if(RS.HangulBitmapText.Params.isMessageMode) {
+      if(this._hangulTexts) {
+        this._windowContentsSprite.removeChild(this._hangulTexts);
+        this._hangulTexts = null;
+      }
+      this._hangulTexts = new Sprite();
+      this._hangulTexts.visible = true;
+      this._windowContentsSprite.addChild( this._hangulTexts );
+    }
+  };
+
+  Window_Message.prototype.createHangulText = function (text, x, y, maxWidth, lineHeight, align) {
+    if(!RS.HangulBitmapText.Params.init) return;
+
+    text = String(text);
+
+    var fontSize = this.standardFontSize();
+    var textColor = Bitmap.colorToHex(this.contents.textColor);
+
+    var data = PIXI.extras.BitmapText.fonts[RS.HangulBitmapText.Params.fontName];
+    if(data) {
+      lineHeight = lineHeight || data.lineHeight;
+    }
+
+    var bitmapFontText = new PIXI.extras.BitmapText(text, {
+        font: '%1px %2'.format(fontSize, RS.HangulBitmapText.Params.fontName),
+        align: align || "left",
+        tint: textColor
+      });
+
+    maxWidth = maxWidth || this.contents.measureTextWidth(text);
+
+    var tx = x;
+    var ty = y + (lineHeight - bitmapFontText.textHeight) * 0.7;
+
+    if (align === 'center') {
+        tx += (maxWidth - bitmapFontText.textWidth) / 2;
+    }
+    if (align === 'right') {
+        tx += (maxWidth - bitmapFontText.textWidth);
+    }
+
+    bitmapFontText.x = tx;
+    bitmapFontText.y = ty;
+
+    if(this._hangulTexts) this._hangulTexts.addChild(bitmapFontText);
+
+  };
+
+  // var alias_Window_Base_drawText = Window_Base.prototype.drawText;
+  // Window_Base.prototype.drawText = function(text, x, y, maxWidth, align) {
+  //   if(RS.HangulBitmapText.Params.isMessageMode) {
+  //     this.createHangulText(text, x, y, maxWidth, this.lineHeight(), align);
+  //   } else {
+  //     alias_Window_Base_drawText.call(this, text, x, y, maxWidth, align);
+  //   }
+  // };
+
+  Window_Message.prototype.processNormalCharacter = function(textState) {
     var c = textState.text[textState.index++];
-    var w = this.getXAdvance(c);
-    this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
+    var w;
+    if(!RS.HangulBitmapText.Params.isMessageMode) {
+      w = this.textWidth(c);
+    } else {
+      w = this.getXAdvance(c);
+    }
+    if(RS.HangulBitmapText.Params.isMessageMode) {
+      this.createHangulText(c, textState.x, textState.y, w * 2, textState.height);
+    } else {
+      this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
+    }
     textState.x += w;
   };
 
