@@ -42,6 +42,9 @@
  * - Displays the name of the screen shot file in the preview window.
  * - Plays the sound when you are taking a screenshot.
  * 2016.12.08 (v1.0.42) - Added code to remove references to URL objects.
+ * 2018.02.27 (v1.0.5) :
+ * - Fixed the getPath function issue in RMMV 1.6.0.
+ * - Changed the source code for RMMV 1.6.0.
  */
 /*:ko
 * RS_ScreenShot.js
@@ -87,6 +90,9 @@
 * - Displays the name of the screen shot file in the preview window.
 * - Plays the sound when you are taking a screenshot.
 * 2016.12.08 (v1.0.42) - Added code to remove references to URL objects.
+* 2018.02.27 (v1.0.5) :
+* - Fixed the getPath function issue in RMMV 1.6.0.
+* - Changed the source code for RMMV 1.6.0.
 */
 
 var Imported = Imported || {};
@@ -103,7 +109,16 @@ RS.ScreenShot = RS.ScreenShot || {};
   $.isPlaySe = Boolean(parameters['Play Se'] === 'true');
   $.seName = parameters['Se Name'] || 'Save';
 
+  $.localFilePath = function (fileName) {
+    if(!Utils.isNwjs()) return '';
+    var path, base;
+    path = require('path');
+    base = path.dirname(process.mainModule.filename);
+    return path.join(base, 'ScreenShots/');
+  };
+
   $.getPath = function () {
+    if(Utils.RPGMAKER_VERSION >= "1.6.0") return $.localFilePath();
     var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, '/ScreenShots/');
     if (path.match(/^\/([A-Z]\:)/)) {
       path = path.slice(1);
@@ -178,7 +193,12 @@ RS.ScreenShot = RS.ScreenShot || {};
       return;
     }
 
-    var gui = require('nw.gui');
+    var gui;
+    if(Utils.RPGMAKER_VERSION >= "1.6.0") {
+      gui = nw;
+    } else {
+      gui = require('nw.gui');
+    }
     var win = gui.Window.get();
     var fs = require('fs');
     var filePath;
