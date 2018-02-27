@@ -50,7 +50,7 @@
  * =============================================================================
  * 2016.01.21 (v1.0.0) - First Release.
  * 2016.12.28 (v1.0.1) - Fixed a bug that a previous tray will remain after reloading the window.
- * 2018.02.27 (v1.0.2) - RMMV 1.6.0
+ * 2018.02.27 (v1.0.2) - Changed the source code for RMMV 1.6.0.
  */
 
 var Imported = Imported || {};
