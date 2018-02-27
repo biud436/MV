@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.0) Wav File Encrypter
+ * @plugindesc (v1.0.2) Wav File Encrypter
  * @author biud436
  *
  * @param key
@@ -31,6 +31,7 @@
  * -----------------------------------------------------------------------------
  * 2016.11.30 (v1.0.0) - First Release.
  * 2016.12.05 (v1.0.1) - Added new plugin command.
+ * 2018.02.27 (v1.0.2) - Fixed the file path for RMMV 1.6.0
  */
 
 var Imported = Imported || {};
@@ -75,7 +76,8 @@ function Encrypter() {
     if(process.versions.node && process.versions.v8) {
         var path = require('path'),
         fs = require('fs'),
-        root = path.join(".", path.dirname(window.location.pathname), 'audio', 'wav');
+        var base = path.dirname(process.mainModule.filename);
+        root = path.join(base, 'audio', 'wav');
         var files = fs.readdirSync(root);
         return files.filter(function(i) {
             var reg = /^[^\.]+$/
@@ -116,10 +118,18 @@ function Encrypter() {
     });
   };
 
+  Encrypter.localFilePath = function(fileName) {
+    if(!Utils.isNwjs()) return '';
+    var path, base;
+    path = require('path');
+    base = path.dirname(process.mainModule.filename);
+    return path.join(base, fileName);
+  };
+
   Encrypter.getCurrentPath = function () {
     if(Utils.isNwjs()) {
       var path = require('path');
-      return path.join(".", path.dirname(window.location.pathname), '/');
+      return path.dirname(process.mainModule.filename) + path.sep;
     } else {
       return window.location.pathname.slice(0, window.location.pathname.lastIndexOf("/")) + "/";
     }
