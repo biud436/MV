@@ -179,7 +179,13 @@ function Tray() {
       type: 'normal',
       label: $.menuString['show_internet'],
       click: function() {
-        var shell = require('nw.gui').Shell;
+        var gui;
+        if(Utils.RPGMAKER_VERSION >= "1.6.0") {
+          gui = nw;
+        } else {
+          gui = require('nw.gui');
+        }
+        var shell = gui.Shell;
         shell.openExternal($.menuString['url']);
       }
     }));
