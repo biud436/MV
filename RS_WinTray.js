@@ -50,6 +50,7 @@
  * =============================================================================
  * 2016.01.21 (v1.0.0) - First Release.
  * 2016.12.28 (v1.0.1) - Fixed a bug that a previous tray will remain after reloading the window.
+ * 2018.02.27 (v1.0.2) - RMMV 1.6.0
  */
 
 var Imported = Imported || {};
@@ -87,7 +88,14 @@ function Tray() {
 
   Tray.prototype.initMembers = function() {
       var self = this;
-      var gui = require('nw.gui');
+      // In RMMV 1.6.0,
+      // All NW specific APIs, including require() is moved into a nw object from the nw.gui library.
+      var gui;
+      if(Utils.RPGMAKER_VERSION >= "1.6.0") {
+        gui = nw;
+      } else {
+        gui = require('nw.gui');
+      }
       this._path = this.setupPath();
       this._win = gui.Window.get();
       this._tray = new gui.Tray({icon: self._path + 'icon.png' });
@@ -121,7 +129,12 @@ function Tray() {
   Tray.prototype.setupMenu = function () {
 
     var self = this;
-    var gui = require('nw.gui');
+    var gui;
+    if(Utils.RPGMAKER_VERSION >= "1.6.0") {
+      gui = nw;
+    } else {
+      gui = require('nw.gui');
+    }
 
     self._menu.append(new gui.MenuItem({
       type: 'normal',
