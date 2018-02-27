@@ -103,7 +103,16 @@ function Tray() {
       this._status = false;
   };
 
+  $.localFilePath = function () {
+    if(!Utils.isNwjs()) return '';
+    var path, base;
+    path = require('path');
+    base = path.dirname(process.mainModule.filename);
+    return path.join(base, 'icon/');
+  };
+
   Tray.prototype.setupPath = function () {
+      if(Utils.RPGMAKER_VERSION >= "1.6.0") return $.localFilePath();
       var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, '/icon/');
       if (path.match(/^\/([A-Z]\:)/)) {
         path = path.slice(1);
