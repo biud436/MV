@@ -58,6 +58,9 @@
  * 2016.08.07 (v1.1.05) - Fixed save bug.
  * 2016.12.08 (v1.1.08) - Added code to remove references to URL objects.
  * 2017.01.08 (v1.1.1) - Converted sources to ES6
+ * 2018.02.27 (v1.1.2) : (RMMV 1.6.0)
+ * - Now that it will be restored as the previous plugins.js file after exiting the game.
+ * (But if the file named plugins.js is already open, it can be failed)
  */
 
 var Imported = Imported || {};
@@ -309,6 +312,36 @@ var RS = RS || {};
       token.text = str || "";
       token.value = num || 0;
       return token;
+    }
+
+    static makeTempPlugins() {
+      let self = this;
+      let path = this.localFilePath(self._savePath);
+      let tempPath = this.localFilePath(self._savePath.replace("plugins", "temp_plugins"));
+      fs.readFile(path, function (err, data) {
+        if (err) throw err;
+        fs.writeFile(tempPath , data, function(err) {
+          if (err) throw err;
+        });
+      });
+    }
+
+    static restoreTempPlugins() {
+      let self = this;
+      let path = this.localFilePath(self._savePath.replace("plugins", "temp_plugins"));
+      let tempPath = this.localFilePath(self._savePath);
+      fs.readFile(path, function (err, data) {
+        if (err) throw err;
+        // 파일이 이미 열려있으면 파일 작성에 실패할 수 있습니다.
+        // if the file is already open, this can be failed.
+        fs.writeFile(tempPath , data, function(err) {
+          if (err) throw err;
+          fs.unlink(path, function (err) {
+            if (err) throw err;
+          });
+        });
+
+      });
     }
 
     static makePlugins(texts) {
@@ -844,9 +877,18 @@ var RS = RS || {};
       Scene_PluginManager.onLoadfileOk(fastLoadFileId);
       document.title = $dataSystem.gameTitle;
     } else {
+      RefreshManager.makeTempPlugins();
       alias_Scene_Boot_start.call(this);
     }
   };
+
+  var _nw = (Utils.RPGMAKER_VERSION >= "1.6.0") ? nw : require('nw.gui');
+  var win = _nw.Window.get();
+  _nw.Window.get().on('close', function () {
+    RefreshManager.restoreTempPlugins();
+    this.hide();
+    this.close(true);
+  });
 
   window.RefreshManager = RefreshManager;
 
