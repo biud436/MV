@@ -332,13 +332,12 @@ var RS = RS || {};
       let tempPath = this.localFilePath(self._savePath);
       fs.readFile(path, function (err, data) {
         if (err) throw err;
-        // 파일이 이미 열려있으면 파일 작성에 실패할 수 있습니다.
-        // if the file is already open, this can be failed.
-        fs.writeFile(tempPath , data, function(err) {
+        fs.writeFile(tempPath , data, { "encoding": "utf8", "mode": 0o666, "flag": "w+" },
+          function(err) {
           if (err) throw err;
           fs.unlink(path, function (err) {
             if (err) throw err;
-          });
+          });          
         });
 
       });
