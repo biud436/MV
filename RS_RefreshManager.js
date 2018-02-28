@@ -60,7 +60,7 @@
  * 2017.01.08 (v1.1.1) - Converted sources to ES6
  * 2018.02.27 (v1.1.2) : (RMMV 1.6.0)
  * - Now that it will be restored as the previous plugins.js file after exiting the game.
- * (But if the file named plugins.js is already open, it can be failed)
+ * - Fixed an encoding of of text in the preview window.
  */
 
 var Imported = Imported || {};
@@ -337,7 +337,7 @@ var RS = RS || {};
           if (err) throw err;
           fs.unlink(path, function (err) {
             if (err) throw err;
-          });          
+          });
         });
 
       });
@@ -348,11 +348,22 @@ var RS = RS || {};
       let path = this.localFilePath(self._savePath);
       fs.writeFile(path , texts, function(err) {
         if(err) throw new Error(err);
-        let blob = new Blob( [texts], {type: 'text/plane'} );
+        let finText = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title></title>
+          </head>
+          <body>
+            <pre>${texts}</pre>
+          </body>
+        </html>
+        `;
+        let blob = new Blob( [finText], {encoding:"utf-8",type:"text/html;charset=utf-8"} );
         let url = URL.createObjectURL(blob);
         if(isPreviewWindow) {
             _previewWindow = window.open(url, '_blank');
-            // Call this method when it doesn't need to keep the reference to URL object any longer.
             URL.revokeObjectURL(url);
         }
         RefreshManager._changed = true;
@@ -509,6 +520,7 @@ var RS = RS || {};
         texts += self._tokens[i].text;
       }
 
+      texts = JSON.parse(JSON.stringify(texts));
       self.makePlugins(texts);
 
     });
