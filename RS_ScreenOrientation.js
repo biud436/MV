@@ -6,7 +6,7 @@
  * @desc Prevent deletion.
  * @default btn_fullscr
  * @require 1
- * @dir img/system
+ * @dir img/pictures
  * @type file
  *
  * @param default orientation
@@ -35,6 +35,7 @@
  * 2018.03.01 (v1.0.1) :
  * - Changed the image and works.
  * - Added the feature that can automatically hide the image when changing the screen orientation is to a landscape.
+ * - Fixed the bug that causes when restarting the game.
  */
 
 var Imported = Imported || {};
@@ -81,7 +82,11 @@ Imported.ScreenOrientation = true;
   };
 
   Scene_Title.prototype.createFullscreenImage = function () {
+
     var div, path, filePath, img, imgName;
+
+    var target_div = document.querySelector("#div_fullscr");
+    if(target_div) document.body.removeChild(target_div);
 
     div = document.createElement("div");
     div.id = "div_fullscr";
@@ -101,6 +106,7 @@ Imported.ScreenOrientation = true;
     img = new Image();
     img.id = "btn_fullscr";
     img.src = filePath;
+    img.hidden = true;
 
     img.width = 96;
     img.height = 96;
@@ -122,6 +128,9 @@ Imported.ScreenOrientation = true;
     var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
     if(orientation) {
       window.addEventListener("orientationchange", Scene_Title.prototype.onorientationchange.bind(this), false);
+      if (!orientation.type.match(/(?:landscape)/)) {
+        img.hidden = false;
+      }
     }
 
     this.on('removed', function () {
