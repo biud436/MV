@@ -3,8 +3,8 @@
  * @author biud436
  *
  * @param Fullscreen Image
- * @desc
- * @default fullscreen
+ * @desc Prevent deletion.
+ * @default fullscreen_button
  * @require 1
  * @dir img/system
  * @type file
@@ -18,14 +18,23 @@
  *
  * @help
  * =============================================================================
+ * Test Devices (테스트 기기)
+ * =============================================================================
+ * Android Chrome (64.0.3282.137) - Supported (지원)
+ * iOS Safari (iPhone8) - Not Supported (미지원)
+ * =============================================================================
  * How to setup an image
  * =============================================================================
- * Download an image from https://github.com/biud436/MV/blob/master/docs/images/fullscreen.png
- * and then place it in your img/system folder.
+ * Download an image from
+ * https://github.com/biud436/MV/blob/master/docs/images/fullscreen_button.png
+ * and then place it in your img/pictures folder.
  * =============================================================================
  * Version Log
  * =============================================================================
  * 2017.02.16 (v1.0.0) - First Release
+ * 2018.03.01 (v1.0.1) :
+ * - Changed the image and works.
+ * - Added the feature that can automatically hide the image when changing the screen orientation is to a landscape.
  */
 
 var Imported = Imported || {};
@@ -47,20 +56,11 @@ Imported.ScreenOrientation = true;
 
   Graphics._convertScreenOrientation = function (event) {
     Graphics._requestFullScreen();
-    if(!!window.screen.orientation) {
-      screen.orientation.lock(parameters["default orientation"]).then(null, function(error) {});
+    var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+    if(orientation) {
+      orientation.lock(parameters["default orientation"]).then(null, function(error) {});
     }
     if(event) event.preventDefault();
-  };
-
-  //============================================================================
-  // Scene_Boot
-  //============================================================================
-
-  var alias_Scene_Boot_loadSystemImagese = Scene_Boot.loadSystemImages;
-  Scene_Boot.loadSystemImages = function() {
-    alias_Scene_Boot_loadSystemImagese.call(this);
-    var preload = ImageManager.loadSystem(parameters['Fullscreen Image']);
   };
 
   //============================================================================
@@ -71,93 +71,77 @@ Imported.ScreenOrientation = true;
   Scene_Title.prototype.create = function () {
     alias_Scene_Title_create.call(this);
     if(Utils.isMobileDevice()) {
-      this.createFullscreenImage();
+      var userAgent = window.navigator.userAgent;
+      if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
+        // A Safari Mobile is not supported in ScreenOrientation API.
+      } else if(userAgent.match(/Chrome/i) || userAgent.match(/Chromium/i) || userAgent.match(/Firefox/i)) {
+        this.createFullscreenImage();
+      }
     }
   };
 
   Scene_Title.prototype.createFullscreenImage = function () {
-    var bitmap = ImageManager.loadSystem(parameters['Fullscreen Image']);
-    var w = bitmap.width / 2;
-    var h = bitmap.height;
-    var pad = 10;
-    this._requestFullscreenButton = new Sprite_FullscreenButton();
-    this._requestFullscreenButton.bitmap = bitmap;
-    this._requestFullscreenButton.setColdFrame(0, 0, w, h);
-    this._requestFullscreenButton.setHotFrame(w, 0, w, h);
-    this._requestFullscreenButton.setClickHandler(function (event) {
-      Graphics._convertScreenOrientation(event);
-    }.bind(this));
-    document.addEventListener('touchstart', this.executeButtonTouches.bind(this));
-    this._requestFullscreenButton.x = Graphics.boxWidth - w - pad;
-    this._requestFullscreenButton.y = pad;
-    this.addChild(this._requestFullscreenButton);
-  };
+    var div, path, filePath, img;
 
-  Scene_Title.prototype.executeButtonTouches = function (event) {
-    this._requestFullscreenButton.callClickHandler(event);
-  };
+    div = document.createElement("div");
+    div.id = "div_fullscr";
 
-  var alias_Scene_Title_terminate = Scene_Title.prototype.terminate;
-  Scene_Title.prototype.terminate = function () {
-    alias_Scene_Title_terminate.call(this);
-    if(this._requestFullscreenButton) {
-      document.removeEventListener('touchstart', this.executeButtonTouches.bind(this));
-      this.removeChild(this._requestFullscreenButton);
+    if (Utils.RPGMAKER_VERSION >= "1.6.0" && Utils.isNwjs()) {
+      path = require('path');
+      var base, root;
+      base = path.dirname(process.mainModule.filename);
+      root = path.join(base, "img", "pictures");
+      filePath = path.join(root, "fullscreen_button.png");
+    } else {
+      filePath = "img/pictures/fullscreen_button.png";
     }
+
+    img = new Image();
+    img.id = "btn_fullscr";
+    img.src = filePath;
+
+    img.width = 96;
+    img.height = 96;
+
+    img.addEventListener("click", function (e) {
+      Graphics._convertScreenOrientation(e);
+    }, false);
+
+    img.addEventListener("touchend", function (e) {
+      Graphics._convertScreenOrientation(e);
+    }, false);
+
+    div.appendChild(img);
+    div.style.zIndex = 98;
+
+    Graphics._centerElement(div);
+    document.body.appendChild(div);
+
+    var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+    if(orientation) {
+      window.addEventListener("orientationchange", Scene_Title.prototype.onorientationchange.bind(this), false);
+    }
+
+    this.on('removed', function () {
+      var target_div = document.querySelector("#div_fullscr");
+      if(target_div) document.body.removeChild(target_div);
+    }, this);
   };
 
-  //============================================================================
-  // Sprite_FullscreenButton
-  //============================================================================
-
-  function Sprite_FullscreenButton() {
-      this.initialize.apply(this, arguments);
-  }
-
-  Sprite_FullscreenButton.prototype = Object.create(Sprite_Button.prototype);
-  Sprite_FullscreenButton.prototype.constructor = Sprite_FullscreenButton;
-
-  Sprite_FullscreenButton.prototype.initialize = function() {
-    Sprite_Button.prototype.initialize.call(this);
-    this._executeCallbck = false;
-  };
-
-  Sprite_FullscreenButton.prototype.destroy = function () {
-    Sprite_Button.prototype.destroy.call(this);
-  };
-
-  Sprite_FullscreenButton.prototype.update = function() {
-    this.updateFrame();
-    this.processTouch();
-  };
-
-  Sprite_FullscreenButton.prototype.processTouch = function() {
-      if (this.isActive()) {
-          if (TouchInput.isTriggered() && this.isButtonTouched()) {
-              this._touching = true;
-              this._executeCallbck = true;
-          }
-          if (this._touching) {
-              if (TouchInput.isReleased() || !this.isButtonTouched()) {
-                  this._touching = false;
-                  if (TouchInput.isReleased()) {
-                      this._executeCallbck = true;
-                  }
-              }
-          }
-      } else {
-          this._touching = false;
-          this._executeCallbck = false;
+  Scene_Title.prototype.onorientationchange = function () {
+    var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+    if(!orientation) return;
+    if (orientation.type.match(/(?:landscape)/)) {
+      var target_div = document.querySelector("#div_fullscr");
+      if(target_div) {
+        target_div.hidden = true;
       }
-  };
-
-  Sprite_FullscreenButton.prototype.callClickHandler = function(event) {
-      setTimeout(function () {
-        if (this._clickHandler && this._executeCallbck) {
-            this._clickHandler(event);
-            this._executeCallbck = false;
-        }
-      }.bind(this), 0);
+    } else {
+      var target_div = document.querySelector("#div_fullscr");
+      if(target_div) {
+        target_div.hidden = false;
+      }
+    }
   };
 
 })();
