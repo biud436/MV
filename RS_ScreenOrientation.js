@@ -26,7 +26,7 @@
  * How to setup an image
  * =============================================================================
  * Download an image from
- * https://github.com/biud436/MV/blob/master/docs/images/fullscreen_button.png
+ * https://github.com/biud436/MV/blob/master/docs/images/btn_fullscr.png
  * and then place it in your img/pictures folder.
  * =============================================================================
  * Version Log
