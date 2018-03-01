@@ -4,7 +4,7 @@
  *
  * @param Image
  * @desc Prevent deletion.
- * @default fullscreen_button
+ * @default btn_fullscr
  * @require 1
  * @dir img/system
  * @type file
