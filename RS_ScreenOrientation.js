@@ -2,7 +2,7 @@
  * @plugindesc <RS_ScreenOrientation>
  * @author biud436
  *
- * @param Fullscreen Image
+ * @param Image
  * @desc Prevent deletion.
  * @default fullscreen_button
  * @require 1
@@ -81,19 +81,21 @@ Imported.ScreenOrientation = true;
   };
 
   Scene_Title.prototype.createFullscreenImage = function () {
-    var div, path, filePath, img;
+    var div, path, filePath, img, imgName;
 
     div = document.createElement("div");
     div.id = "div_fullscr";
+
+    imgName = parameters["Image"] + ".png";
 
     if (Utils.RPGMAKER_VERSION >= "1.6.0" && Utils.isNwjs()) {
       path = require('path');
       var base, root;
       base = path.dirname(process.mainModule.filename);
       root = path.join(base, "img", "pictures");
-      filePath = path.join(root, "fullscreen_button.png");
+      filePath = path.join(root, imgName);
     } else {
-      filePath = "img/pictures/fullscreen_button.png";
+      filePath = "img/pictures/" + imgName;
     }
 
     img = new Image();
