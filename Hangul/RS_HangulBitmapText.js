@@ -14,6 +14,7 @@
  * - 화살표 추가
  * 2018.02.22 (v1.0.2) - y값 조절
  * 2018.02.22 (v1.0.3) - 메시지 윈도우 최적화
+ * 2018.03.02 (v1.0.4) - 'c is not defined" 오류 수정
  */
 
 var Imported = Imported || {};
@@ -113,17 +114,17 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
 
   var alias_Bitmap_measureTextWidth = Bitmap.prototype.measureTextWidth;
   Bitmap.prototype.measureTextWidth = function(text) {
-    if(!RS.HangulBitmapText.Params.init) return alias_Bitmap_measureTextWidth.call(this, c);
+    if(!RS.HangulBitmapText.Params.init) return alias_Bitmap_measureTextWidth.call(this, text);
     var data = PIXI.extras.BitmapText.fonts[RS.HangulBitmapText.Params.fontName];
     var pos = 0;
     for(var i=0; i<text.length; ++i) {
       var charCode = text.charCodeAt(i);
       if(!data) {
-        return alias_Bitmap_measureTextWidth.call(this, c);
+        return alias_Bitmap_measureTextWidth.call(this, text);
       }
       var charData = data.chars[charCode];
       if(!charData) {
-        return alias_Bitmap_measureTextWidth.call(this, c);
+        return alias_Bitmap_measureTextWidth.call(this, text);
       }
       pos += parseInt(charData.xAdvance, 10);
     }
