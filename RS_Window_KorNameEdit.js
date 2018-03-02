@@ -308,16 +308,7 @@ Imported.Window_KorNameEdit = true;
     this._textBox = document.createElement('input');
     this._textBox.type = "text";
     this._textBox.id = "textBox";
-    this._textBox.style.opacity = 0;
     this._textBox.style.zIndex = 8;
-    this._textBox.autofocus = false;
-    this._textBox.multiple = false;
-
-    this._textBox.style.imeMode = 'active';
-
-    if($gameSystem.isJapanese()) {
-      this._textBox.inputmode = 'hiragana';
-    }
 
     this._textBox.style.position = 'absolute';
     this._textBox.style.top = 0;
@@ -326,8 +317,20 @@ Imported.Window_KorNameEdit = true;
     this._textBox.style.bottom = 0;
 
     // For decreasing a layout size
-    this._textBox.style.width = '1px';
-    this._textBox.style.height = '1px';
+    if(Utils.isMobileDevice()) {
+      this._textBox.style.background = "transparent";
+      this._textBox.style.color = "none";
+      this._textBox.style.border = "none";
+      this._textBox.style.width = "70%";
+      this._textBox.style.height = "5%";
+      this._textBox.style.outline = "none";
+      this._textBox.style.overflow = "hidden";
+    } else {
+      this._textBox.style.opacity = 0;
+    }
+
+    this._textBox.style.width = "1px";
+    this._textBox.style.height = "1px";
 
     this._textBox.onkeydown = this.onKeyDown.bind(this);
 
@@ -591,6 +594,9 @@ Imported.Window_KorNameEdit = true;
   Scene_KorName.prototype.constructor = Scene_KorName;
 
   Scene_KorName.prototype.initialize = function() {
+      if(Imported.RS_HangulBitmapText) {
+        $gameTemp.setHangulBitmapText(false);
+      }
       Scene_Name.prototype.initialize.call(this);
   };
 
@@ -621,6 +627,9 @@ Imported.Window_KorNameEdit = true;
   Scene_KorName.prototype.terminate = function() {
     Scene_MenuBase.prototype.terminate.call(this);
     this._textBox.terminate();
+    if(Imported.RS_HangulBitmapText) {
+      $gameTemp.setHangulBitmapText(RS.HangulBitmapText.Params.tempInit);
+    }
   };
 
   Scene_KorName.prototype.create = function () {

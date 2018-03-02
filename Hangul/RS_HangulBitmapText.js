@@ -14,7 +14,9 @@
  * - 화살표 추가
  * 2018.02.22 (v1.0.2) - y값 조절
  * 2018.02.22 (v1.0.3) - 메시지 윈도우 최적화
- * 2018.03.02 (v1.0.4) - 'c is not defined" 오류 수정
+ * 2018.03.02 (v1.0.4) :
+ * - 'c is not defined" 오류 수정
+ * - 한글 비트맵 폰트와의 호환성
  */
 
 var Imported = Imported || {};
@@ -27,6 +29,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
 (function () {
 
   RS.HangulBitmapText.Params.init = false;
+  RS.HangulBitmapText.Params.tempInit = false;
   RS.HangulBitmapText.Params.fontName = "나눔고딕";
   RS.HangulBitmapText.Params.fntName = 'img/hangul/hangul.xml';
 
@@ -136,7 +139,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
    */
   var alias_Bitmap_drawText = Bitmap.prototype.drawText;
   Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
-    if(!RS.HangulBitmapText.Params.init) return;
+    if(!RS.HangulBitmapText.Params.init) return alias_Bitmap_drawText.call(this, text, x, y, maxWidth, lineHeight, align);
 
     // 예외 처리
     // if(/[^0-9]+/i.test(text) === false) {
@@ -282,7 +285,9 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   //   }
   // };
 
+  var alias_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
   Window_Message.prototype.processNormalCharacter = function(textState) {
+    if(!RS.HangulBitmapText.Params.init) return alias_Window_Message_processNormalCharacter.call(this, textState);
     var c = textState.text[textState.index++];
     var w;
     if(!RS.HangulBitmapText.Params.isMessageMode) {
@@ -296,6 +301,15 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
       this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
     }
     textState.x += w;
+  };
+
+  //============================================================================
+  // Game_Temp
+  //============================================================================
+
+  Game_Temp.prototype.setHangulBitmapText = function (is) {
+    RS.HangulBitmapText.Params.tempInit = RS.HangulBitmapText.Params.init;
+    RS.HangulBitmapText.Params.init = is;
   };
 
   //============================================================================
