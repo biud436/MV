@@ -319,10 +319,6 @@
       this.setCursorRect(rect.x, rect.y, rect.width, rect.height);
   };
 
-  //============================================================================
-  // Window_NameEdit
-  //============================================================================
-
   Window_NameEdit.prototype.add = function(ch) {
     var index = Window_KoreanNameInput.KOREAN.indexOf(ch);
     var inputWindow;
@@ -383,39 +379,6 @@
     } else {
       this.setCursorRect(rect.x + (rect.width - 1), rect.y, 1, rect.height);
     }
-  };
-
-  //============================================================================
-  // Scene_Name
-  //============================================================================
-
-  var alias_Scene_Name_createInputWindow = Scene_Name.prototype.createInputWindow;
-  Scene_Name.prototype.createInputWindow = function() {
-    if( navigator.language.match(/ko/i) ) {
-      this._inputWindow = new Window_KoreanNameInput(this._editWindow);
-      this._inputWindow.setHandler('ok', this.onInputOk.bind(this));
-      this.addWindow(this._inputWindow);
-    } else {
-      alias_Scene_Name_createInputWindow.call(this);
-    }
-  };
-
-  //============================================================================
-  // Input
-  //============================================================================
-
-  var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
-  var dialog_Input_shouldPreventDefault = function(keyCode) {
-      switch (keyCode) {
-      case 33:    // pageup
-      case 34:    // pagedown
-      case 37:    // left arrow
-      case 38:    // up arrow
-      case 39:    // right arrow
-      case 40:    // down arrow
-          return true;
-      }
-      return false;
   };
 
   Window_NameEdit.BACK_SPACE = 8;
@@ -535,26 +498,40 @@
 
   };
 
+  //============================================================================
+  // Scene_Name
+  //============================================================================
 
-    //===========================================================================
-    // Game_Interpreter
-    //===========================================================================
+  var alias_Scene_Name_createInputWindow = Scene_Name.prototype.createInputWindow;
+  Scene_Name.prototype.createInputWindow = function() {
+    if( navigator.language.match(/ko/i) ) {
+      this._inputWindow = new Window_KoreanNameInput(this._editWindow);
+      this._inputWindow.setHandler('ok', this.onInputOk.bind(this));
+      this.addWindow(this._inputWindow);
+    } else {
+      alias_Scene_Name_createInputWindow.call(this);
+    }
+  };
 
-    var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function(command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if(command === "OpenKoreanNameInput") {
-          if (!$gameParty.inBattle()) {
-              var leaderId = $gameParty.leader().actorId();
-              var actorId = (args[0] === "leader") ? leaderId : (parseInt(args[0]) || leaderId);
-              var digits = parseInt(args[1]) || 6;
-              if ($dataActors[actorId]) {
-                  SceneManager.push(Scene_Name);
-                  SceneManager.prepareNextScene(actorId, digits);
-              }
-          }
+  //===========================================================================
+  // Game_Interpreter
+  //===========================================================================
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+      alias_Game_Interpreter_pluginCommand.call(this, command, args);
+      if(command === "OpenKoreanNameInput") {
+        if (!$gameParty.inBattle()) {
+            var leaderId = $gameParty.leader().actorId();
+            var actorId = (args[0] === "leader") ? leaderId : (parseInt(args[0]) || leaderId);
+            var digits = parseInt(args[1]) || 6;
+            if ($dataActors[actorId]) {
+                SceneManager.push(Scene_Name);
+                SceneManager.prepareNextScene(actorId, digits);
+            }
         }
-    };
+      }
+  };
 
 })();
 
