@@ -237,14 +237,14 @@
    RS.Admob.Params.bannerAtTop = Boolean(parameters['bannerAtTop'] === 'true');
 
    if(Utils.isNwjs()) {
-     console.error('It is not found AdMob Plugin for Intel XDK');
+     console.error('On platforms such as PC and Mac, they are not supported.');
      return false;
    }
 
    RS.Admob.init = function () {
 
      if(window.plugins && !window.plugins.AdMob) {
-       throw new Error('It is not found AdMob Plugin for Intel XDK');
+       throw new Error('It is not found AdMob Plugin on your devices.');
      }
 
      var admobid = RS.Admob.getAppID();
@@ -277,7 +277,7 @@
    };
 
    RS.Admob.showBanner = function (bannerAtTop) {
-     if(!window.plugins && !window.plugins.AdMob) console.error('It is not found AdMob Plugin for Intel XDK');
+     if(!window.plugins && !window.plugins.AdMob) console.error('It is not found AdMob Plugin on your devices.');
      var options = {
        'publisherId': RS.Admob.getAppID().banner,
        'adSize': window.plugins.AdMob.AD_SIZE.SMART_BANNER,
@@ -291,12 +291,12 @@
    };
 
    RS.Admob.destroyBanner = function () {
-     if(!window.plugins && !window.plugins.AdMob) console.error('It is not found AdMob Plugin for Intel XDK');
+     if(!window.plugins && !window.plugins.AdMob) console.error('It is not found AdMob Plugin on your devices.');
      window.plugins.AdMob.destroyBannerView();
    };
 
    RS.Admob.showInterstitial = function () {
-     if(!window.plugins && !window.plugins.AdMob) console.error('It is not found a AdMob Plugin for Intel XDK');
+     if(!window.plugins && !window.plugins.AdMob) console.error('It is not found AdMob Plugin on your devices.');
      window.plugins.AdMob.createInterstitialView();
      window.plugins.AdMob.requestInterstitialAd();
    };
