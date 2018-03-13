@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.2) Wav File Encrypter
+ * @plugindesc (v1.0.3) Wav File Encrypter
  * @author biud436
  *
  * @param key
@@ -32,6 +32,7 @@
  * 2016.11.30 (v1.0.0) - First Release.
  * 2016.12.05 (v1.0.1) - Added new plugin command.
  * 2018.02.27 (v1.0.2) - Fixed the file path for RMMV 1.6.0
+ * 2018.03.13 (v1.0.3) - Fixed the token error.
  */
 
 var Imported = Imported || {};
@@ -76,7 +77,7 @@ function Encrypter() {
     if(process.versions.node && process.versions.v8) {
         var path = require('path'),
         fs = require('fs'),
-        var base = path.dirname(process.mainModule.filename);
+        base = path.dirname(process.mainModule.filename);
         root = path.join(base, 'audio', 'wav');
         var files = fs.readdirSync(root);
         return files.filter(function(i) {
