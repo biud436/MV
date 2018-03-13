@@ -545,8 +545,8 @@
         alias_Game_Interpreter_pluginCommand.call(this, command, args);
         if(command === "OpenKoreanNameInput") {
           if (!$gameParty.inBattle()) {
-              var leaderId = $gameParty.leader().index();
-              var actorId = (args[0] === "leader") ? $gameParty.leader().index() : (parseInt(args[0]) || leaderId);
+              var leaderId = $gameParty.leader().actorId();
+              var actorId = (args[0] === "leader") ? leaderId : (parseInt(args[0]) || leaderId);
               var digits = parseInt(args[1]) || 6;
               if ($dataActors[actorId]) {
                   SceneManager.push(Scene_Name);
