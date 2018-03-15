@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.7b) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.7c) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
@@ -554,6 +554,7 @@
  * 2017.09.17 (v1.2.6) - Fixed the bug that cause the error when restarting the game.
  * 2017.10.26 (v1.2.7) - This plugin has applied with the new plugin manager features in the plugin parameters.
  * 2017.10.27 (v1.2.7b) - Fixed the issue that has the endless loading when using the custom font.
+ * 2018.03.15 (v1.2.7c) - Removed some event listeners.
  */
 
 var Imported = Imported || {};
@@ -1262,17 +1263,17 @@ RS.HUD.param = RS.HUD.param || {};
     Sprite.prototype.initialize.call(this, bitmap);
     this.alpha = 0;
     this.createItemLayer();
-    this.addEventListener('refresh.rs.hud');
+    // this.addEventListener('refresh.rs.hud');
   };
 
-  RS_HudLayer.prototype.addEventListener = function (type) {
-    document.body.addEventListener(type, this.refresh.bind(this), false);
-  };
+  // RS_HudLayer.prototype.addEventListener = function (type) {
+  //   document.body.addEventListener(type, this.refresh.bind(this), false);
+  // };
 
   var alias_RS_HudLayer_destroy = RS_HudLayer.prototype.destroy;
   RS_HudLayer.prototype.destroy = function () {
     if(alias_RS_HudLayer_destroy) alias_RS_HudLayer_destroy.call(this);
-    document.body.removeEventListener('refresh.rs.hud', this.refresh.bind(this), false);
+    // document.body.removeEventListener('refresh.rs.hud', this.refresh.bind(this), false);
   };
 
   RS_HudLayer.prototype.createItemLayer = function () {
