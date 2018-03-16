@@ -6,53 +6,43 @@
  *
  * @param --- Image Name
  *
+ * @param Texture Atlas
+ * @parent --- Image Name
+ * @desc import texture atlas.
+ * @default config
+ * @require 1
+ * @dir img/rs_hud/
+ * @type file
+ *
  * @param EXP Gauge
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'exr' from img/pictures folder.
+ * @desc Specifies to import file in the path named 'exr'
  * @default exr
- * @require 1
- * @dir img/pictures/
- * @type file
  *
  * @param Empty Gauge
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'gauge' from img/pictures folder.
+ * @desc Specifies to import file in the path named 'gauge'
  * @default gauge
- * @require 1
- * @dir img/pictures/
- * @type file
  *
  * @param HP Gauge
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'hp' from img/pictures folder.
+ * @desc Specifies to import file in the path named 'hp'
  * @default hp
- * @require 1
- * @dir img/pictures/
- * @type file
  *
  * @param MP Gauge
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'mp' from img/pictures folder.
+ * @desc Specifies to import file in the path named 'mp'
  * @default mp
- * @require 1
- * @dir img/pictures/
- * @type file
  *
  * @param HUD Background
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'hud_window_empty' from img/pictures folder.
+ * @desc Specifies to import file in the path named 'hud_window_empty'
  * @default hud_window_empty
- * @require 1
- * @dir img/pictures/
- * @type file
  *
  * @param Masking
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'masking' from img/pictures folder.
+ * @desc Specifies to import file in the path named 'masking'
  * @default masking
- * @require 1
- * @dir img/pictures/
- * @type file
  *
  * @param --- Image Custom Position
  *
@@ -66,49 +56,49 @@
  * @parent --- Image Custom Position
  * @desc Specifies the properties of the hp sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
- * @default 160, 43, true
+ * @default 160, 41, true
  *
  * @param MP Position
  * @parent --- Image Custom Position
  * @desc Specifies the properties of the mp sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
- * @default 160, 69, true
+ * @default 160, 67, true
  *
  * @param EXP Position
  * @parent --- Image Custom Position
  * @desc Specifies the properties of the exp sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
- * @default 83, 91, true
+ * @default 83, 89, true
  *
  * @param HP Text Position
  * @parent --- Image Custom Position
  * @desc Specifies the properties of the hp text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
- * @default 160, 53, true
+ * @default 160, 51, true
  *
  * @param MP Text Position
  * @parent --- Image Custom Position
  * @desc Specifies the properties of the mp text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
- * @default 160, 79, true
+ * @default 160, 77, true
  *
  * @param Level Text Position
  * @parent --- Image Custom Position
  * @desc Specifies the properties of the level text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
- * @default 60, 80, true
+ * @default 60, 78, true
  *
  * @param EXP Text Position
  * @parent --- Image Custom Position
  * @desc Specifies the properties of the exp text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
- * @default 120.5, 93, true
+ * @default 120.5, 91, true
  *
  * @param Name Text Position
  * @parent --- Image Custom Position
  * @desc Specifies the properties of the name text sprite by x, y, visible
  * (Draw it at changing position relative to a background sprite)
- * @default 54, 53, false
+ * @default 54, 51, false
  *
  * @param --- Noraml
  *
