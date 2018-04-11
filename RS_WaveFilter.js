@@ -15,7 +15,7 @@
  *
  *    - wave : The default value is false.
  *    - wave_amp : The default value is to 0.05
- *    - wave_length : The default value is to a maxHeight
+ *    - wave_length : The default value is to a maxHeight (deprecated)
  *    - wave_speed : The default value is to 0.25
  *    - wave_phase : The default value is to 360
  *
@@ -84,6 +84,7 @@
  * 2016.11.26 (v1.5.4) - Added certain code to remove the texture from memory.
  * 2016.11.30 (v1.5.5) - Fixed the issue that has the black border in a filter area.
  * 2017.12.10 (v1.5.6) - Added the plugin command called 'PictureWave' (it is tested on 1.6.0 beta version)
+ * 2018.04.12 (v1.5.7) - Fixed the transparent zone.
  *
  * =============================================================================
  * Terms of Use
@@ -120,8 +121,6 @@ RS.WaveConfig = RS.WaveConfig || {};
   PIXI.WaveFilter = function()
   {
     var vertexSrc = [
-      '#define GLSLIFY 1',
-
       'attribute vec2 aVertexPosition;',
       'attribute vec2 aTextureCoord;',
 
@@ -136,36 +135,38 @@ RS.WaveConfig = RS.WaveConfig || {};
     ].join('\n');
 
      var fragmentSrc = [
-       '#define GLSLIFY 1',
-
        'precision mediump float;',
 
        'varying vec2 vTextureCoord;',
 
+       // 'uniform float waveWidth;',
        'uniform float waveHeight;',
        'uniform float waveFrequency;',
        'uniform float waveTime;',
        'uniform float wavePhase;',
        'uniform float UVSpeed;',
 
+       'uniform vec4 filterArea;',
+       'uniform vec4 filterClamp;',
+
        'uniform sampler2D uSampler;',
 
        'void main(void) {',
-       '   float time = waveFrequency * sin(wavePhase * (mod(waveTime - vTextureCoord.y, waveHeight)));',
+       '   float time = waveFrequency * sin( wavePhase * (waveTime - vTextureCoord.y / (waveHeight / filterArea.y)) );',
        '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);',
-       '   gl_FragColor = texture2D(uSampler, vCoord);',
+       '   gl_FragColor = texture2D(uSampler, clamp(vCoord, filterClamp.xy, filterClamp.zw));',
        '}'
      ].join('\n');
 
      PIXI.Filter.call( this, vertexSrc, fragmentSrc );
 
-     this.padding = 512;
+     this.padding = 0;
 
      this.uniforms.waveHeight = 0.5;
      this.uniforms.waveFrequency = 0.02;
      this.uniforms.waveTime = 0.0;
      this.uniforms.UVSpeed = 0.25;
-     this.uniforms.wavePhase = 6.283185307179586;
+     this.uniforms.wavePhase = 3.141592653589793 * 2;
 
      this.enabled = true;
      this.resolution = 1;
@@ -174,6 +175,13 @@ RS.WaveConfig = RS.WaveConfig || {};
 
   PIXI.WaveFilter.prototype = Object.create( PIXI.Filter.prototype );
   PIXI.WaveFilter.prototype.constructor = PIXI.WaveFilter;
+
+  PIXI.WaveFilter.prototype.apply = function(filterManager, input, output, clear) {
+
+    this.uniforms.waveHeight = input.sourceFrame.height / 4;
+
+    filterManager.applyFilter(this, input, output, clear);
+  };
 
   Object.defineProperties(PIXI.WaveFilter.prototype, {
     waveHeight: {
@@ -240,6 +248,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     this._wavePhase = 360;
     this._waveFilter = new PIXI.WaveFilter();
     this._wave = false;
+    this.filterArea = new PIXI.Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
   };
 
   var alias_Sprite_update = Sprite.prototype.update;
@@ -254,7 +263,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   };
 
   Sprite.prototype.setWaveHeight = function(n) {
-    this._waveHeight = this.height / n;
+    this._waveHeight = this.height;
   }
 
   Sprite.prototype.getWaveHeight = function() {
