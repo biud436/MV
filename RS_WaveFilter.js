@@ -248,7 +248,6 @@ RS.WaveConfig = RS.WaveConfig || {};
     this._wavePhase = 360;
     this._waveFilter = new PIXI.WaveFilter();
     this._wave = false;
-    this.filterArea = new PIXI.Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
   };
 
   var alias_Sprite_update = Sprite.prototype.update;
@@ -340,10 +339,12 @@ RS.WaveConfig = RS.WaveConfig || {};
      },
      set: function(value) {
        this._wave = value;
+
        if(this._wave) {
          if(!this._waveFilter) {
            this._waveFilter = new PIXI.WaveFilter();
          }
+         this.filterArea = new PIXI.Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
          this.filters = [this._waveFilter];
        } else {
          this.filters = [new PIXI.filters.VoidFilter()];
