@@ -71,7 +71,7 @@ RS.LocalServer = RS.LocalServer || {};
             console.log(data);
           });
           process.on('exit', function () {
-            cmdProcess.kill();
+            cmdProcess.exec('taskkill /pid ' + cmdProcess.pid + ' /T /F');
           });
         };
       }

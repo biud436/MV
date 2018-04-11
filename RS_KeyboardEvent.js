@@ -5,6 +5,72 @@
 var Imported = Imported || {};
 Imported.RS_KeyboardEvent = true;
 
+/*:ko
+ * @plugindesc (v1.01) 수동으로 키보드 이벤트를 만들고 브라우저에 키보드 입력 이벤트를 보냅니다.
+ * @author biud436
+ * @help
+ * =============================================================================
+ * 소개
+ * ============================================================================= *
+ * 실제 키를 입력된 것처럼 가상의 키보드 입력 매크로를 만듭니다.
+ *
+ * =============================================================================
+ * 플러그인 커맨드
+ * =============================================================================
+ * - 'keyCode' 인자 값은 0x58 또는 80처럼 16진수 또는 10진수 값이여야 합니다.
+ * - 'keyName' 인자 값은 Input.keyMapper에서 찾을 수없는 문자열 값이어야 합니다.
+ *
+ * - 사용자가 Input 클래스의 주요 로직에 가상 키 코드를 보낼 수있게 하는 명령입니다.
+ * KeyEvent executeString keyName
+ * KeyEvent executeKey keyCode
+ *
+ * - 이 명령은 사용자가 Input 클래스에 새로운 가상 키 코드를 추가 할 수있게합니다.
+ * KeyEvent addNewKey keyCode keyName
+ *
+ * - 예제 코드는 다음과 같습니다.
+ * KeyEvent executeString left
+ * KeyEvent executeString escape
+ * KeyEvent executeKey 0x58
+ * KeyEvent addNewKey 0x50 p
+ * =============================================================================
+ * 스크립트 호출
+ * =============================================================================
+ * 두 가지 자바스크립트 함수가 있습니다.
+ *
+ *  함수는 Input 클래스의 주요 로직에 가상 키 코드를 보낼 수있게합니다.
+ *
+ * Input._makeKeyTiming(keyCode);
+ *
+ * 이 함수는 사용자가 Input 클래스에 새로운 가상 키 코드를 추가 할 수있게 합니다.
+ * Input 클래스의 keyMapper는 JSON 객체이며, 키와 값을 쌍으로 갖습니다.
+ *
+ * - 'keyCode' 인자 값은 0x58 또는 80처럼 16진수 또는 10진수 값이여야 합니다.
+ * - 'keyName' 인자 값은 Input.keyMapper에서 찾을 수없는 문자열 값이어야 합니다.
+ *
+ * 성공하면 키 값과 버튼의 이름을 담고 있는 JSON 객체가 콜백 함수에 전달됩니다.
+ *
+ * Input._executeJson(keyCode, keyName, func);
+ *
+ * - 다음은 예제 코드입니다.
+ * Input._makeKeyTiming('left');
+ * Input._makeKeyTiming('escape');
+ * Input._makeKeyTiming('down');
+ * Input._makeKeyTiming('control');
+ * Input._makeKeyTiming(116);
+ *
+ *
+ * 아래 콜백 함수의 첫 번째 인자 값 retObj은 {0x58: 'p'}입니다.
+ *
+ * Input._executeJson(0x58, 'p', function (retObj) {
+ *   Object.assign(Input.keyMapper, retObj);
+ * });
+ *
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2017.01.02 (v1.0.0) - First Release.
+ * 2017.03.03 (v1.0.1) - Added new function that can add new keyCode.
+ */
 /*:
  * @plugindesc (v1.01) This plugin allows you to send keyboard input events manually.
  * @author biud436

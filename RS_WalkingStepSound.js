@@ -1,166 +1,215 @@
-/*:
- * RS_WalkingStepSound
- * @plugindesc Whenever you are walking in your world, this plugin automatically plays the walking footstep sound.
+/*:ko
+ * @plugindesc 발소리를 자동으로 재생합니다.
  *
- * @author biud436
+ * @author 러닝은빛(biud436)
  *
  * @param --- Sound Range
+ * @text 효과음 범위
  * @desc
  * @default
  *
  * @param Dirt Sound Name
- * @desc Array
+ * @text 진흙
+ * @parent --- Sound Range
+ * @desc 불러올 효과음 파일의 이름을 만들기 위한 배열입니다.
  * @default ['stepdirt_', 1, 8]
  *
  * @param Snow Sound Name
- * @desc Array
+ * @text 눈
+ * @parent --- Sound Range
+ * @desc 불러올 효과음 파일의 이름을 만들기 위한 배열입니다.
  * @default ['stepsnow_', 1, 2]
  *
  * @param Stone Sound Name
- * @desc Array
+ * @text 암석
+ * @parent --- Sound Range
+ * @desc 불러올 효과음 파일의 이름을 만들기 위한 배열입니다.
  * @default ['stepstone_', 1, 8]
  *
  * @param Water Sound Name
- * @desc Array
+ * @text 물
+ * @parent --- Sound Range
+ * @desc 불러올 효과음 파일의 이름을 만들기 위한 배열입니다.
  * @default ['stepwater_', 1 , 2]
  *
  * @param Wood Sound Name
- * @desc Array
+ * @text 나무
+ * @parent --- Sound Range
+ * @desc 불러올 효과음 파일의 이름을 만들기 위한 배열입니다.
  * @default ['stepwood_', 1, 2]
  *
  * @param --- Dirt SE
+ * @text 진흙길 발소리
  * @desc
  * @default
  *
  * @param Audio Assets 1
- * @desc If you have an audio, you must edit this
+ * @parent --- Dirt SE
+ * @text 오디오 에셋 1
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepdirt_1
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 2
- * @desc If you have an audio, you must edit this
+ * @parent --- Dirt SE
+ * @text 오디오 에셋 2
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepdirt_2
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 3
- * @desc If you have an audio, you must edit this
+ * @parent --- Dirt SE
+ * @text 오디오 에셋 3
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepdirt_3
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 4
- * @desc If you have an audio, you must edit this
+ * @parent --- Dirt SE
+ * @text 오디오 에셋 4
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepdirt_4
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 5
- * @desc If you have an audio, you must edit this
+ * @parent --- Dirt SE
+ * @text 오디오 에셋 5
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepdirt_5
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 6
- * @desc If you have an audio, you must edit this
+ * @parent --- Dirt SE
+ * @text 오디오 에셋 6
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepdirt_6
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 7
- * @desc If you have an audio, you must edit this
+ * @parent --- Dirt SE
+ * @text 오디오 에셋 7
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepdirt_7
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 8
- * @desc If you have an audio, you must edit this
+ * @parent --- Dirt SE
+ * @text 오디오 에셋 8
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepdirt_8
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param --- Snow SE
+ * @text 눈길 발소리
  * @desc
  * @default
  *
  * @param Audio Assets 9
- * @desc If you have an audio, you must edit this
+ * @parent --- Snow SE
+ * @text 오디오 에셋 9
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepsnow_1
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 10
- * @desc If you have an audio, you must edit this
+ * @parent --- Snow SE
+ * @text 오디오 에셋 10
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepsnow_2
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param --- Stone SE
+ * @text 암석 SE
  * @desc
  * @default
  *
  * @param Audio Assets 11
- * @desc If you have an audio, you must edit this
+ * @parent --- Stone SE
+ * @text 오디오 에셋 11
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepstone_1
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 12
- * @desc If you have an audio, you must edit this
+ * @parent --- Stone SE
+ * @text 오디오 에셋 12
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepstone_2
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 13
- * @desc If you have an audio, you must edit this
+ * @parent --- Stone SE
+ * @text 오디오 에셋 13
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepstone_3
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 14
- * @desc If you have an audio, you must edit this
+ * @parent --- Stone SE
+ * @text 오디오 에셋 14
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepstone_4
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 15
- * @desc If you have an audio, you must edit this
+ * @parent --- Stone SE
+ * @text 오디오 에셋 15
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepstone_5
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 16
- * @desc If you have an audio, you must edit this
+ * @parent --- Stone SE
+ * @text 오디오 에셋 16
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepstone_6
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 17
- * @desc If you have an audio, you must edit this
+ * @parent --- Stone SE
+ * @text 오디오 에셋 17
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepstone_7
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 18
- * @desc If you have an audio, you must edit this
+ * @parent --- Stone SE
+ * @text 오디오 에셋 18
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepstone_8
  * @require 1
  * @dir audio/wav/
@@ -171,109 +220,157 @@
  * @default
  *
  * @param Audio Assets 19
- * @desc If you have an audio, you must edit this
+ * @parent --- Water SE
+ * @text 오디오 에셋 19
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepwater_1
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 20
- * @desc If you have an audio, you must edit this
+ * @parent --- Water SE
+ * @text 오디오 에셋 20
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepwater_2
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param --- Wood SE
+ * @text 나무 SE
  * @desc
  * @default
  *
  * @param Audio Assets 21
- * @desc If you have an audio, you must edit this
+ * @parent --- Wood SE
+ * @text 오디오 에셋 21
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepwood_1
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param Audio Assets 22
- * @desc If you have an audio, you must edit this
+ * @parent --- Wood SE
+ * @text 오디오 에셋 22
+ * @desc 재생 할 효과음 파일을 지정하십시오.
  * @default stepwood_2
  * @require 1
  * @dir audio/wav/
  * @type file
  *
  * @param --- Sound Tags
+ * @text 효과음 지형 태그
  * @desc
  * @default
  *
  * @param Dirt Terrain Tag
- * @desc
+ * @text 흙길 지형 태그
+ * @desc 발소리를 재생할 지형 태그의 번호를 지정하십시오.
  * @default 1
  *
  * @param Snow Terrain Tag
- * @desc
+ * @text 눈길 지형 태그
+ * @desc 발소리를 재생할 지형 태그의 번호를 지정하십시오.
  * @default 2
  *
  * @param Stone Terrain Tag
- * @desc
+ * @text 암석 지형 태그
+ * @desc 발소리를 재생할 지형 태그의 번호를 지정하십시오.
  * @default 3
  *
  * @param Water Terrain Tag
- * @desc
+ * @text 물, 강, 수중 지형 태그
+ * @desc 발소리를 재생할 지형 태그의 번호를 지정하십시오.
  * @default 4
  *
  * @param Wood Terrain Tag
- * @desc
+ * @text 나무 지형 태그
+ * @desc 발소리를 재생할 지형 태그의 번호를 지정하십시오.
  * @default 5
  *
  * @param --- Settings
+ * @text 설정
  * @desc
  * @default
  *
  * @param Step Interval
- * @desc
+ * @text 걸음 수
+ * @desc 일정 걸음 수에 도달하면 발소리를 재생하게 됩니다.
  * @default 2
  *
  * @param Volume
- * @desc
+ * @text 볼륨
+ * @desc 기본 발소리 효과음 계수
  * @default 30
  *
  * @param Step Sound
- * @desc This is a command name in the menu option.
+ * @text 발걸음 소리
+ * @desc 메뉴에서 옵션에 들어가면 나오는 옵션 버튼의 이름
  * @default Step Sound
  *
  * @help
  *
- * Before you start downloading this plugin, should know that this plugin will require some sound effects.
- * That file type of sound effects is the .wav file. But, Wav types does not supported by RPG Maker MV.
- * However, You can solve it by adding a wav plugin. wav plugin can download via this link.
+ * 타일을 밟을 때 마다 해당 타일에 맞는 발소리를 재생하는 플러그인입니다.
+ * 발소리는 타일에 설정된 지형 태그 값을 읽어 재생하며 파일의 범위를 설정하면
+ * 한 발소리가 아니라 다양한 발소리를 재생할 수 있습니다.
  *
- * 1. First step is to add sound effect files on the audio/wav folder.
- * Sound effects files of YouTube video can download via this link.
+ * 사운드 재생에는 audio/wav 폴더에 .wav 파일이 있어야 합니다.
+ * wav 폴더는 기본 폴더가 아니니 새로 만들어주시기 바랍니다.
+ * 사운드 리소스를 웨이브 파일로 결정한 이유는 찾은 리소스가 웨이브 파일이었기 때문입니다.
  *
- * 2. Second step is to add this plugin file on the js/plugin folder.
+ * 사용된 사운드는 아래와 같습니다(사용 조건에 주의)
+ * http://opengameart.org/content/foot-walking-step-sounds-on-stone-water-snow-wood-and-dirt
  *
- * 3. Third step is to set the following note tag on the database-tileset-note.
+ * 이 플러그인은 발소리를 지역 태그 번호로 구분합니다. 지역 태그 번호가 0 이면 아무 소리가 재생되지 않고 아래 조건에 해당되는 지역 태그가 있으면 해당 타일에 맞는 웨이브 파일이 재생 됩니다.
+ *
+ * 흙 / 1번
+ * 눈 / 2번
+ * 돌 / 3번
+ * 물 / 4번
+ * 나무 / 5번
+ * 발소리는 데이터베이스 타일셋 메모란에 아래와 같은 노트 태그를 추가해야 재생됩니다.
  *
  * <Step Sounds>
  *
- * 4. Fourth step is to set the following terrain tag on the database-tileset.
- * (This plugin distinguishes the footstep sound effects via the terrain tag)
+ * 추가적으로 설정하자면 플러그인 매니저에서 여러가지 유용한 설정들을 할 수 있습니다.
+ * 지형 태그 번호를 다른 번호로 설정하거나 기본적으로 설정되어있는 사운드 파일의 이름을
+ * 바꿀 수도 있으며 발소리가 재생되는 간격도 정할 수 있습니다.
+ * 또한 초기에 정해지는 볼륨값도 플러그인 매니저에서 설정할 수 있음을 참고 하시기 바랍니다.
  *
- * Dirt Terrain / 1
- * Snow Terrain / 2
- * Stone Terrain / 3
- * Water Terrain / 4
- * Wood Terrain / 5
+ * 옵션에서 볼륨 값 등을 조절할 수 있습니다.
  *
- * - Change Log
- * 2015.12.26 (v1.0.0)- First Release.
- * 2016.03.04 (v1.0.1)- Added the comments for include used files.
- * 2016.03.05 (v1.0.2) - Fixed the class structure.
- * 2016.03.10 (v1.0.3) - Fixed the sound option.
- * 2016.09.14 (v1.0.4) - Fixed the issue that the step sound property is initialized to the false in ConfigManager.
- * 2016.12.05 (v1.0.5) - Fixed the value of ConfigManager.stepSound
- * 2017.02.26 (v1.0.6) - Fixed a bug that is not configurable the config value called 'stepSound' as true when starting the game.
+ * =============================================================================
+ * 다운로드
+ * =============================================================================
+ * 기본적으로 필요한 파일
+ * - https://raw.githubusercontent.com/biud436/MV/master/RS_WaveSupport.js
+ * - https://raw.githubusercontent.com/biud436/MV/master/RS_WalkingStepSound.js
+ *
+ * OGG 파일 재생 기반으로 바꾸려면, RS_WalkingStepSound.js 대신 아래를 사용하세요
+ * - https://github.com/biud436/MV/raw/master/RS_WalkingStepSoundForOgg.js
+ *
+ * 어떻게 설정하는 지 모르시는 분들은 아래 링크에서 데모 게임을 다운로드 받으세요 (3.48MB)
+ * https://www.dropbox.com/s/0sphmziuhsawrcl/Footstep%20Sound.zip?dl=1
+ *
+ * 데모 게임에 포함된 사운드 파일의 저작권 정보입니다 (데모 게임의 CREDITS.txt 파일에서도 확인 가능합니다)
+ * - 저작권자 : Jute
+ * - 원 게시물 주소 : http://opengameart.org/content/foot-walking-step-sounds-on-stone-water-snow-wood-and-dirt
+ * - 라이센스 : GPU 2.0 or later (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+ * =============================================================================
+ * 버전 로그
+ * =============================================================================
+ * 2015.12.26 (v1.0.0) - 배포일
+ * 2016.03.04 (v1.0.1) - RPG Maker MV v1.1.0 대응
+ * 2016.03.05 (v1.0.2) - 클래스 구조 수정
+ * 2016.03.10 (v1.0.3) - 사운드 옵션값 수정
+ * 2016.09.14 (v1.0.4) - 옵션에 표시되는 Step Sound 속성이 false로 초기화되는 문제를 해결했습니다.
+ * 2016.12.05 (v1.0.5) - ConfigManager.stepSound 값 수정
+ * 2017.02.26 (v1.0.6) - 게임 옵션 창의 Step Sound 속성이 false 상태로 시작되는 문제를 수정했습니다.
+ * 게임 프로그램이 시작되면 옵션이 저장된 세이브 파일을 가장 먼저 불러오게 되는데
+ * 여기에 관련 옵션이 존재하지 않을 경우 생기는 문제였습니다.
+ * 2018.04.04 - 영어권엔 비슷한 플러그인도 많기 때문에 그냥 한국어(우리말)로 설명을 변경합니다.
  */
 
 var Imported = Imported || {};

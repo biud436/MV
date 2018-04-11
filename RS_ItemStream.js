@@ -1,6 +1,6 @@
-/*:
+/*:ko
  * RS_ItemStream.js
- * @plugindesc This plugin sends an item to the save-file or gets an item from the save-file.
+ * @plugindesc 아이템이나 소유 금액을 다른 세이브 파일로 보내거나 받아올 수 있는 플러그인입니다.
  * @author biud436
  * @date 2016.03.07
  * @version 1.0.1
@@ -10,38 +10,37 @@
  * // Plugin Command
  * //===========================================================================
  *
- * This plugin commands allows you to send the gold to the save-data.
+ * 골드를 보냅니다
  * Stream Send Gold saveFileId gold_value
  *
- * This plugin commands allows you to send the weapon to the save-data.
+ * 무기를 보냅니다.
  * Stream Send Weapon saveFileId weapon_id
  *
- * This plugin commands allows you to send an armor to the save-data.
+ * 방어구를 보냅니다
  * Stream Send Armor saveFileId armor_id
  *
- * This plugin commands allows you to send an item to the save-data.
+ * 아이템을 보냅니다
  * Stream Send Item saveFileId item_id
  *
- * This plugin commands allows you to get the gold from the save-data.
+ * 골드를 가져옵니다
  * Stream Bring Gold saveFileId gold_value
  *
- * This plugin commands allows you to get the weapon from the save-data.
+ * 무기를 가져옵니다
  * Stream Bring WeaponsaveFileId weapon_id
  *
- * This plugin commands allows you to get an armor from the save-data.
+ * 방어구를 가져옵니다
  * Stream Bring Armor saveFileId armor_id
  *
- * This plugin commands allows you to get an item from the save-data.
+ * 아이템을 가져옵니다
  * Stream Bring Item saveFileId item_id
  *
  * //===========================================================================
  * // Change Log
  * //===========================================================================
- * 2016.03.07 (v1.0.0) - First Release
- * 2016.03.22 (v1.0.1) - The simple light plugin was not compatible
- * with this plugin, But Fixed it.
- * 2016.04.24 (v1.0.2) - Fixed a bug
- * 2017.01.23 (v1.0.3) - Converted sources to ES6
+ * 2016.03.07 (v1.0.0) - 공개
+ * 2016.03.22 (v1.0.1) - 심플 라이트 플러그인과 호횐되지 않는 오류를 수정했습니다.
+ * 2016.04.24 (v1.0.2) - 버그를 수정했습니다.
+ * 2017.01.23 (v1.0.3) - 소스 코드를 ES6 기준으로 변경하였습니다.
  */
 
 var Imported = Imported || {};
