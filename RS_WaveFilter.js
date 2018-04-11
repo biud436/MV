@@ -84,7 +84,7 @@
  * 2016.11.26 (v1.5.4) - Added certain code to remove the texture from memory.
  * 2016.11.30 (v1.5.5) - Fixed the issue that has the black border in a filter area.
  * 2017.12.10 (v1.5.6) - Added the plugin command called 'PictureWave' (it is tested on 1.6.0 beta version)
- * 2018.04.12 (v1.5.7) - Fixed the transparent zone.
+ * 2018.04.12 (v1.5.7) - Fixed a cutting issue.
  *
  * =============================================================================
  * Terms of Use
