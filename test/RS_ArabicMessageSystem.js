@@ -1027,25 +1027,39 @@ function ArabicUtils() {
   var alias_Window_Message_newPage = Window_Message.prototype.newPage;
   Window_Message.prototype.newPage = function(textState) {
     if(messageMode === "arabic" || navigator.language.match(/^ar/)) {
+
       if(this._arabicTexts) {
         this._windowContentsSprite.removeChild(this._arabicTexts);
         this._arabicTexts = null;
       }
-      this._windowContentsSprite.pivot.x = this.contentsWidth();
-      this._windowContentsSprite.scale.x = -1;
+
+      // 부모 : _windowContentsSprite(type : ArabicFlipSprite)에 컨텐츠가 묘화된다.
       this._windowContentsSprite._isMessageAracbic = true;
-      document.querySelector('canvas').dir = 'rtl';
+      this._windowContentsSprite.setTransform( -1 * (this._padding * 2) , 0, -1, 1, 0, 0, 0, this.width, 0);
+      
+      // 자식
       this._arabicTexts = new ArabicTextContainer();
       this._arabicTexts.visible = true;
+
       this._windowContentsSprite.addChild( this._arabicTexts );
+
       this._arabicPause = false;
       this.on('arabicPause', this.onArabicPause, this);
-      this.arabic = Object.create(Window_Base.ARAB_BASE);
-      this.arabic.status = Window_Base.ARAB.NEWPAGE;
+
+      if(this.initWithArabic) {
+        this.initWithArabic();
+      }
+
     } else {
-      this._windowContentsSprite.pivot.x = 0;
-      this._windowContentsSprite.scale.x = 1;
+
+      this._windowContentsSprite.setTransform(0 , 0, 1, 1, 0, 0, 0, this.origin.x, this.origin.y);
+
+      if(this.initWithArabic) {
+        this.initWithArabic();
+      }
+
     }
+
     alias_Window_Message_newPage.call(this, textState);
   };
 
@@ -1085,13 +1099,7 @@ function ArabicUtils() {
         sprite.bitmap.blt(bitmap, sx, sy, pw, ph, 0, 0);
       }, 0);
 
-      if(this._arabicTexts) {
-        var box = this.createArabicTextBox();
-        this.arabic.index += 1;
-        box.image = true;
-        this.arabic.texts[this.arabic.index] = box;
-        this._arabicTexts.addChild(sprite);
-      }
+      this.addArabicImage(sprite);
 
     } else {
       alias_Window_Message_drawIcon.call(this, iconIndex, x, y);
@@ -1125,13 +1133,7 @@ function ArabicUtils() {
       sprite.setTransform( x, y, -1, 1, 0, 0, 0, pw, 0 );
       sprite.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy);
 
-      if(this._arabicTexts) {
-        var box = this.createArabicTextBox();
-        this.arabic.index += 1;
-        box.image = true;
-        this.arabic.texts[this.arabic.index] = box;
-        this._arabicTexts.addChild(sprite);
-      }
+      this.addArabicImage(sprite);
 
     } else {
       alias_Window_Message_drawFace.call(this, faceName, faceIndex, x, y, width, height);
