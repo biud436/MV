@@ -83,8 +83,8 @@
  *    <WAVE_AMP x>
  *
  * This note tag allows you to set the speed of the wave effect.
- * the x is a floating-point number between 0 and 2.
- * Default value is to 2.0. But the fragment shader does not use this value.
+ * the x is a floating-point number between 0 and 1.
+ * Default value is to 0.25
  *
  *    <WAVE_SPEED x>
  *
