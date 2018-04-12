@@ -43,28 +43,50 @@
  * The following plugin commands applies the wave effect to Tilemap.
  * This plugin contains these six types the plugin commands.
  *
- * This plugin commands allows you to enable or disable the wave effect
+ * These plugin commands allow you to enable or disable the wave effect
  *
  *    TilemapWave Enable
  *    TilemapWave Disable
  *
- * This plugin commands allows you to set the speed of the wave effect.
+ * This plugin command allows you to set the speed of the wave effect.
  * the x is a floating-point number between 0 and 2.
  * Default value is to 2.0. But the fragment shader does not use this value.
  *
  *    TilemapWave waveSpeed x
  *
- * This plugin commands allows you to set the amplitude of the wave effect.
+ * This plugin command allows you to set the amplitude of the wave effect.
  * the x is a floating-point number between 0 and 1.
  * Default value is to 0.02
  *
  *    TilemapWave waveFrequency x
  *
- * This plugin commands allows you to set the UV speed of the wave effect.
+ * This plugin command allows you to set the UV speed of the wave effect.
  * the x is a floating-point number between 0 and 1.
  * Default value is to 0.25
  *
  *    TilemapWave UVSpeed x
+ *
+ * =============================================================================
+ * Event
+ * =============================================================================
+ *
+ * Notetags :
+ *
+ * These note tags allow you to enable or disable the wave effect.
+ *    <WAVE true>
+ *    <WAVE false>
+ *
+ * This note tag allows you to set the amplitude of the wave effect.
+ * the x is a floating-point number between 0 and 1.
+ * Default value is to 0.02
+ *
+ *    <WAVE_AMP x>
+ *
+ * This note tag allows you to set the speed of the wave effect.
+ * the x is a floating-point number between 0 and 2.
+ * Default value is to 2.0. But the fragment shader does not use this value.
+ *
+ *    <WAVE_SPEED x>
  *
  * =============================================================================
  * Change Log
@@ -85,6 +107,7 @@
  * 2016.11.30 (v1.5.5) - Fixed the issue that has the black border in a filter area.
  * 2017.12.10 (v1.5.6) - Added the plugin command called 'PictureWave' (it is tested on 1.6.0 beta version)
  * 2018.04.12 (v1.5.7) - Fixed a cutting issue.
+ * 2018.04.13 (v1.5.7c) - Added the event note tags that can have the wave effect directly for an event graphic.
  *
  * =============================================================================
  * Terms of Use
@@ -517,6 +540,88 @@ RS.WaveConfig = RS.WaveConfig || {};
 
   Game_System.prototype.getWavePhase = function () {
    return this._waveProp.wavePhase;
+  };
+
+  //============================================================================
+  // Game_CharacterBase
+  //============================================================================
+
+  var alias_Game_CharacterBase_initMembers = Game_CharacterBase.prototype.initMembers;
+  Game_CharacterBase.prototype.initMembers = function() {
+    alias_Game_CharacterBase_initMembers.call(this);
+    this._wave = false;
+    this._waveFrequency = 0.02;
+    this._waveSpeed = 0.25;
+  };
+
+  Game_CharacterBase.prototype.setWave = function (toggle) {
+    this._wave = toggle;
+  };
+
+  Game_CharacterBase.prototype.setWaveFrequency = function (value) {
+    this._waveFrequency = value;
+  };
+
+  Game_CharacterBase.prototype.setWaveSpeed = function (value) {
+    this._waveSpeed = value;
+  };
+
+  Game_CharacterBase.prototype.wave = function () {
+    return this._wave;
+  };
+
+  Game_CharacterBase.prototype.waveFrequency = function () {
+    return this._waveFrequency;
+  };
+
+  Game_CharacterBase.prototype.waveSpeed = function () {
+    return this._waveSpeed;
+  };
+
+  //============================================================================
+  // Sprite_Character
+  //============================================================================
+
+  var alias_Sprite_Character_updatePosition = Sprite_Character.prototype.updatePosition;
+  Sprite_Character.prototype.updatePosition = function() {
+    alias_Sprite_Character_updatePosition.call(this);
+    this.wave = this._character.wave();
+    this.waveFrequency = this._character.waveFrequency();
+    this.waveSpeed = this._character.waveSpeed();
+  };
+
+  //============================================================================
+  // Game_Map
+  //============================================================================
+
+  Game_Event.prototype.updateWaveEffect = function() {
+    var self = this;
+    if(self.findProperPageIndex() < 0) return false;
+    if(self._trigger > 3) return false;
+
+    self.list().forEach(function(list) {
+
+      if(list.code === 108 || list.code === 408) {
+
+        if( list.parameters[0].match(/<(?:WAVE)[ ](.*)>/i) ) {
+            self.setWave( Boolean( RegExp.$1 === "true" ) );
+        }
+        if( list.parameters[0].match(/<(?:WAVE_AMP)[ ](.*)>/i) ) {
+            self.setWaveFrequency( parseFloat(RegExp.$1) || 0.02 );
+        }
+        if( list.parameters[0].match(/<(?:WAVE_SPEED)[ ](.*)>/i) ) {
+            self.setWaveSpeed( parseFloat(RegExp.$1) || 0.25 );
+        }
+
+      }
+    }, this);
+
+  };
+
+  var alias_Game_Event_update = Game_Event.prototype.update;
+  Game_Event.prototype.update = function() {
+    alias_Game_Event_update.call(this);
+    this.updateWaveEffect();
   };
 
   //============================================================================
