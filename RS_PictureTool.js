@@ -10,9 +10,17 @@
  *
  *    RS.PictureTool.runEventCollideWithPicture(picId, eventId);
  *
+ * 특정 그림과 특정 이벤트 eventId가 충돌하면 특정 커먼 이벤트를 실행합니다.
+ *
+ *    RS.PictureTool.runCommonEventCollideWithPicture(picId, eventId, commonEventId);
+ *
  * 그림과 플레이어가 충돌하면 특정 이벤트를 실행합니다.
  *
  *    RS.PictureTool.runEventCollideWithPlayer(picId, eventId);
+ *
+ * 그림과 플레이어가 충돌하면 특정 커먼 이벤트를 실행합니다.
+ *
+ *    RS.PictureTool.runCommonEventCollideWithPlayer(picId, commonEventId);
  *
  * =============================================================================
  * 버전 로그
@@ -56,10 +64,8 @@ RS.PictureTool = RS.PictureTool || {};
     }
   };
 
-  /**
-   * 특정 그림과 특정 이벤트 eventId가 충돌하면 eventId를 실행합니다.
-   */
-  $.runEventCollideWithPicture = function (picId, eventId) {
+  $.isValid = function (picId, eventId) {
+
     var pic = $.findPictureBound(picId);
     if(!pic) return false;
 
@@ -81,9 +87,33 @@ RS.PictureTool = RS.PictureTool || {};
     (sy > ph)) {
       return false;
     }
+    return true;
+  };
+
+  /**
+   * 특정 그림과 특정 이벤트 eventId가 충돌하면 eventId를 실행합니다.
+   */
+  $.runEventCollideWithPicture = function (picId, eventId) {
+
+    if(!$.isValid(picId, eventId) return false;
 
     if(!$gameMap.isEventRunning()) {
       e.start();
+    }
+
+    return true;
+
+  };
+
+  /**
+   * 특정 그림과 특정 이벤트 eventId가 충돌하면 특정 커먼 이벤트를 실행합니다.
+   */
+  $.runCommonEventCollideWithPicture = function (picId, eventId, commonEventId) {
+
+    if(!$.isValid(picId, eventId) return false;
+
+    if(!$gameMap.isEventRunning()) {
+      $gameTemp.reserveCommonEvent(commonEventId);
     }
 
     return true;
@@ -95,30 +125,26 @@ RS.PictureTool = RS.PictureTool || {};
    * 그림과 플레이어가 충돌하면 특정 이벤트를 실행합니다.
    */
   $.runEventCollideWithPlayer = function (picId, eventId) {
-    var pic = $.findPictureBound(picId);
-    if(!pic) return false;
 
-    var px = pic.x;
-    var py = pic.y;
-    var pw = pic.x + pic.width;
-    var ph = pic.y + pic.height;
-
-    var e = $gameMap.event(eventId);
-
-    if(!e) return false;
-
-    var sx = $gamePlayer.screenX();
-    var sy = $gamePlayer.screenY();
-
-    if( (sx < px) ||
-    (sx > pw) ||
-    (sy < py) ||
-    (sy > ph)) {
-      return false;
-    }
+    if(!$.isValid(picId, eventId) return false;
 
     if(!$gameMap.isEventRunning()) {
       e.start();
+    }
+
+    return true;
+
+  };
+
+  /**
+   * 그림과 플레이어가 충돌하면 특정 커먼 이벤트를 실행합니다.
+   */
+  $.runCommonEventCollideWithPlayer = function (picId, eventId, commonEventId) {
+
+    if(!$.isValid(picId, eventId) return false;
+
+    if(!$gameMap.isEventRunning()) {
+      $gameTemp.reserveCommonEvent(commonEventId);
     }
 
     return true;
