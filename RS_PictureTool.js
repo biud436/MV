@@ -1,4 +1,4 @@
-/*:ko
+/*:
  * @plugindesc 이벤트와 그림이 충돌했는 지를 확인하고 이벤트를 실행합니다.
  * @author 러닝은빛(biud436)
  * @help
@@ -29,6 +29,7 @@
  */
 
 var RS = RS || {};
+
 RS.PictureTool = RS.PictureTool || {};
 
 (function ($) {
@@ -63,7 +64,7 @@ RS.PictureTool = RS.PictureTool || {};
     }
   };
 
-  $.isValid = function (picId, eventId) {
+  $.isValid = function (picId, eventId, isPlayer) {
 
     var pic = $.findPictureBound(picId);
     if(!pic) return false;
@@ -72,13 +73,20 @@ RS.PictureTool = RS.PictureTool || {};
     var py = pic.y;
     var pw = pic.x + pic.width;
     var ph = pic.y + pic.height;
+    var sx, sy;
 
-    var e = $gameMap.event(eventId);
+    if(isPlayer) {
+      sx = $gamePlayer.screenX();
+      sy = $gamePlayer.screenY();
+    } else {
+      var e = $gameMap.event(eventId);
 
-    if(!e) return false;
+      if(!e) return false;
 
-    var sx = e.screenX();
-    var sy = e.screenY();
+      sx = e.screenX();
+      sy = e.screenY();
+
+    }
 
     if( (sx < px) ||
     (sx > pw) ||
@@ -94,7 +102,9 @@ RS.PictureTool = RS.PictureTool || {};
    */
   $.runEventCollideWithPicture = function (picId, eventId) {
 
-    if(!$.isValid(picId, eventId) return false;
+    if(!$.isValid(picId, eventId)) return false;
+
+    var e = $gameMap.event(eventId);
 
     if(!$gameMap.isEventRunning()) {
       e.start();
@@ -109,7 +119,7 @@ RS.PictureTool = RS.PictureTool || {};
    */
   $.runCommonEventCollideWithPicture = function (picId, eventId, commonEventId) {
 
-    if(!$.isValid(picId, eventId) return false;
+    if(!$.isValid(picId, eventId)) return false;
 
     if(!$gameMap.isEventRunning()) {
       $gameTemp.reserveCommonEvent(commonEventId);
@@ -125,7 +135,9 @@ RS.PictureTool = RS.PictureTool || {};
    */
   $.runEventCollideWithPlayer = function (picId, eventId) {
 
-    if(!$.isValid(picId, eventId) return false;
+    if(!$.isValid(picId, eventId, true)) return false;
+
+    var e = $gameMap.event(eventId);
 
     if(!$gameMap.isEventRunning()) {
       e.start();
@@ -140,7 +152,7 @@ RS.PictureTool = RS.PictureTool || {};
    */
   $.runCommonEventCollideWithPlayer = function (picId, eventId, commonEventId) {
 
-    if(!$.isValid(picId, eventId) return false;
+    if(!$.isValid(picId, eventId, true)) return false;
 
     if(!$gameMap.isEventRunning()) {
       $gameTemp.reserveCommonEvent(commonEventId);
