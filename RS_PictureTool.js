@@ -65,6 +65,67 @@ RS.PictureTool = RS.PictureTool || {};
 
   $.Params = $.Params || {};
 
+  // ===========================================================================
+  // Game_Character
+  // ===========================================================================
+
+  var alias_Game_Character_initMembers = Game_Character.prototype.initMembers;
+  Game_Character.prototype.initMembers = function() {
+    alias_Game_Character_initMembers.call(this);
+    this._spritePointer = null;
+  };
+
+  Game_Character.prototype.getFrame = function () {
+    var sx = this.screenX();
+    var sy = this.screenY();
+
+    if(this._spritePointer) {
+      return this._spritePointer.getFrame(sx, sy);
+    }
+
+    return new Rectangle(sx, sy, $gameMap.tileWidth(), $gameMap.tileHeight() );
+  };
+
+  // ===========================================================================
+  // Sprite_Character
+  // ===========================================================================
+
+  var alias_Sprite_Character_setCharacter = Sprite_Character.prototype.setCharacter;
+  Sprite_Character.prototype.setCharacter = function(character) {
+    alias_Sprite_Character_setCharacter.call(this, character);
+
+    var self = this;
+
+    this._character._spritePointer = this;
+
+    this.on('removed', function () {
+      self._character._spritePointer = null;
+    }, this);
+
+  };
+
+  Sprite_Character.prototype.getFrame = function (sx, sy) {
+    if (this._tileId > 0) {
+        this.updateTileFrame();
+    } else {
+        this.updateCharacterFrame();
+    }
+
+    var tw = $gameMap.tileWidth();
+    var th = $gameMap.tileHeight();
+
+    if(this.frame) {
+      return this.frame;
+    } else {
+      return new Rectangle(sx - tw / 2, sy - th, this.width, this.height);
+    }
+
+  };
+
+  // ===========================================================================
+  // RS.PictureTool
+  // ===========================================================================
+
   $.isMap = function () {
     return SceneManager._scene instanceof Scene_Map;
   };
@@ -87,10 +148,20 @@ RS.PictureTool = RS.PictureTool || {};
     var pic = $.findPicture(picId);
     if(!pic) return false;
     if(pic.frame) {
-      return pic.frame
+      return pic.frame;
     } else {
       return new Rectangle(pic.x, pic.y, pic.width, pic.height);
     }
+  };
+
+  $.isCheckHit = function (p, q) {
+    var ret = false;
+    if( (p.x + p.width > q.x) && (p.x < q.x + q.width)) {
+      if( (p.y + p.height > q.y) && (p.y < q.y + q.height)) {
+        ret = true;
+      }
+    }
+    return ret;
   };
 
   $.isValid = function (picId, eventId, isPlayer) {
@@ -102,28 +173,16 @@ RS.PictureTool = RS.PictureTool || {};
     var py = pic.y;
     var pw = pic.x + pic.width;
     var ph = pic.y + pic.height;
-    var sx, sy;
+    var frame;
 
     if(isPlayer) {
-      sx = $gamePlayer.screenX();
-      sy = $gamePlayer.screenY();
+      frame = $gamePlayer.getFrame();
     } else {
-      var e = $gameMap.event(eventId);
-
-      if(!e) return false;
-
-      sx = e.screenX();
-      sy = e.screenY();
-
+      frame = $gameMap.event(eventId).getFrame();
     }
 
-    if( (sx < px) ||
-    (sx > pw) ||
-    (sy < py) ||
-    (sy > ph)) {
-      return false;
-    }
-    return true;
+    return $.isCheckHit(frame, pic);
+
   };
 
   /**
