@@ -31,7 +31,6 @@
 var RS = RS || {};
 RS.PictureTool = RS.PictureTool || {};
 
-
 (function ($) {
 
   $.Params = $.Params || {};
