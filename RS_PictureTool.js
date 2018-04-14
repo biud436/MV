@@ -14,11 +14,11 @@
  *
  *    RS.PictureTool.runCommonEventCollideWithPicture(picId, eventId, commonEventId);
  *
- * This command will run a certain event when it collides with a game player:
+ * This command will run a certain event when the picture collides with a game player:
  *
  *    RS.PictureTool.runEventCollideWithPlayer(picId, eventId);
  *
- * This command will run a certain common event when it collides with a game player:
+ * This command will run a certain common event when the picture collides with a game player:
  *
  *    RS.PictureTool.runCommonEventCollideWithPlayer(picId, commonEventId);
  *
