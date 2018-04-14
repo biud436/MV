@@ -169,10 +169,6 @@ RS.PictureTool = RS.PictureTool || {};
     var pic = $.findPictureBound(picId);
     if(!pic) return false;
 
-    var px = pic.x;
-    var py = pic.y;
-    var pw = pic.x + pic.width;
-    var ph = pic.y + pic.height;
     var frame;
 
     if(isPlayer) {
