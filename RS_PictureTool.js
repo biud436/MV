@@ -1,29 +1,29 @@
 /*:
- * @plugindesc 테스트 중입니다. 정상 동작을 보장할 수 없습니다.
- * @author 러닝은빛(biud436)
+ * @plugindesc This plugin allows you to run with two types of events when it collides with some sprites.
+ * @author biud436
  * @help
  * =============================================================================
  * Script Calls
  * =============================================================================
  *
- * 특정 그림과 특정 이벤트 eventId가 충돌하면 eventId를 실행합니다.
+ * This command will run some event when it collides with certain picture:
  *
  *    RS.PictureTool.runEventCollideWithPicture(picId, eventId);
  *
- * 특정 그림과 특정 이벤트 eventId가 충돌하면 특정 커먼 이벤트를 실행합니다.
+ * This command will run the common event when it collides with a picId picture:
  *
  *    RS.PictureTool.runCommonEventCollideWithPicture(picId, eventId, commonEventId);
  *
- * 그림과 플레이어가 충돌하면 특정 이벤트를 실행합니다.
+ * This command will run a certain event when it collides with a game player:
  *
  *    RS.PictureTool.runEventCollideWithPlayer(picId, eventId);
  *
- * 그림과 플레이어가 충돌하면 특정 커먼 이벤트를 실행합니다.
+ * This command will run a certain common event when it collides with a game player:
  *
  *    RS.PictureTool.runCommonEventCollideWithPlayer(picId, commonEventId);
  *
  * =============================================================================
- * 버전 로그
+ * Version Log
  * =============================================================================
  * 2018.04.13 (v1.0.0) - First Release.
  */
