@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin allows you to run with two types of events when it collides with some sprites.
+ * @plugindesc This plugin allows you to run with two types of events when a certain picture collides with some sprites.
  * @author biud436
  * @help
  * =============================================================================
