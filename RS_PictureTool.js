@@ -294,4 +294,24 @@ RS.PictureTool = RS.PictureTool || {};
 
   };
 
+  $.deletePicture = function (picId) {
+    var container;
+    if(!$.isMap()) return false;
+    container = SceneManager._scene._spriteset._pictureContainer;
+    if(!container) return false;
+    var picSprite = $.findPicture(picId);
+    var sprite = new Sprite_Picture(picId);
+    container.addChild(sprite);
+    container.swapChildren(picSprite, sprite);
+    container.removeChild(picSprite);
+    picSprite.destroy({children:true, texture:true, baseTexture:true});
+  };
+
+  Game_Screen.prototype.erasePicture = function(pictureId) {
+    var realPictureId = this.realPictureId(pictureId);
+    this._pictures[realPictureId] = null;
+    $.deletePicture(realPictureId);
+  };
+
+
 })(RS.PictureTool);
