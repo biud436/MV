@@ -1,6 +1,13 @@
 /*:
  * @plugindesc This plugin allows you to run with two types of events when a certain picture collides with some sprites.
  * @author biud436
+ *
+ * @param Delay
+ * @type number
+ * @min 100
+ * @desc if it is less than the time you want a delay to take, it will wait the event to complete.
+ * @default 200
+ *
  * @help
  * =============================================================================
  * Script Calls
@@ -30,6 +37,13 @@
  /*:ko
   * @plugindesc 그림이 특정 캐릭터 스프라이트와 충돌하면 특정 이벤트가 실행됩니다.
   * @author 러닝은빛(biud436)
+  *
+  * @param Delay
+  * @type number
+  * @min 100
+  * @desc 이벤트가 완료될 때 까지 대기합니다.
+  * @default 200
+  *
   * @help
   * =============================================================================
   * 스크립트 호출
@@ -63,7 +77,13 @@ RS.PictureTool = RS.PictureTool || {};
 
 (function ($) {
 
+  var parameters = PluginManager.parameters('RS_PictureTool');
+
   $.Params = $.Params || {};
+  $.Params.frameTime = performance.now();
+
+  // 멈춤 현상 방지를 위한 고정 딜레이 값
+  $.Params.delay = Number(parameters["Delay"] || 200);
 
   // ===========================================================================
   // Game_Character
@@ -187,6 +207,7 @@ RS.PictureTool = RS.PictureTool || {};
 
     var pic = $.findPictureBound(picId);
     if(!pic) return false;
+    if(performance.now() - $.Params.frameTime < $.Params.delay) return;
 
     var frame;
 
@@ -209,9 +230,11 @@ RS.PictureTool = RS.PictureTool || {};
 
     var e = $gameMap.event(eventId);
 
-    if(!$gameMap.isEventRunning()) {
+    if(!$gameMap.isEventRunning() && !e.isStarting()) {
       e.start();
     }
+
+    $.Params.frameTime = performance.now();
 
     return true;
 
@@ -228,6 +251,8 @@ RS.PictureTool = RS.PictureTool || {};
       $gameTemp.reserveCommonEvent(commonEventId);
     }
 
+    $.Params.frameTime = performance.now();
+
     return true;
 
   };
@@ -242,9 +267,11 @@ RS.PictureTool = RS.PictureTool || {};
 
     var e = $gameMap.event(eventId);
 
-    if(!$gameMap.isEventRunning()) {
+    if(!$gameMap.isEventRunning() && !e.isStarting()) {
       e.start();
     }
+
+    $.Params.frameTime = performance.now();
 
     return true;
 
@@ -260,6 +287,8 @@ RS.PictureTool = RS.PictureTool || {};
     if(!$gameMap.isEventRunning()) {
       $gameTemp.reserveCommonEvent(commonEventId);
     }
+
+    $.Params.frameTime = performance.now();
 
     return true;
 

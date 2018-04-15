@@ -536,7 +536,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   var alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
   Sprite_Picture.prototype.update = function() {
     alias_Sprite_Picture_update.call(this);
-    if(this.visible) {
+    if(this.visible && this.wave) {
       this.updateWave();
     }
   };
@@ -782,17 +782,28 @@ RS.WaveConfig = RS.WaveConfig || {};
   var alias_Sprite_Character_updatePosition = Sprite_Character.prototype.updatePosition;
   Sprite_Character.prototype.updatePosition = function() {
     alias_Sprite_Character_updatePosition.call(this);
+    if(!this._character) return;
+    if(!(this._character instanceof Game_Event)) return;
     this.wave = this._character.wave();
-    this.waveFrequency = this._character.waveFrequency();
-    this.waveSpeed = this._character.waveSpeed();
+    if(this.wave) {
+      this.waveFrequency = this._character.waveFrequency();
+      this.waveSpeed = this._character.waveSpeed();
+    }
   };
 
   //============================================================================
   // Game_Map
   //============================================================================
 
+  var alias_Game_Event_initMembers = Game_Event.prototype.initMembers;
+  Game_Event.prototype.initMembers = function() {
+    alias_Game_Event_initMembers.call(this);
+    this._lastPageIndex = -2;
+  };
+
   Game_Event.prototype.updateWaveEffect = function() {
     var self = this;
+    if(this._pageIndex === this._lastPageIndex) return;
     if(self.findProperPageIndex() < 0) return false;
     if(self._trigger > 3) return false;
 
@@ -801,7 +812,7 @@ RS.WaveConfig = RS.WaveConfig || {};
       if(list.code === 108 || list.code === 408) {
 
         if( list.parameters[0].match(/<(?:WAVE)[ ](.*)>/i) ) {
-            self.setWave( Boolean( RegExp.$1 === "true" ) );
+            self.setWave( Boolean( RegExp.$1 == "true" ) );
         }
         if( list.parameters[0].match(/<(?:WAVE_AMP)[ ](.*)>/i) ) {
             self.setWaveFrequency( parseFloat(RegExp.$1) || 0.02 );
@@ -813,11 +824,13 @@ RS.WaveConfig = RS.WaveConfig || {};
       }
     }, this);
 
+    this._lastPageIndex = this._pageIndex;
+
   };
 
-  var alias_Game_Event_update = Game_Event.prototype.update;
-  Game_Event.prototype.update = function() {
-    alias_Game_Event_update.call(this);
+  var alias_Game_Event_refresh = Game_Event.prototype.refresh;
+  Game_Event.prototype.refresh = function() {
+    alias_Game_Event_refresh.call(this);
     this.updateWaveEffect();
   };
 
