@@ -78,15 +78,39 @@
  *
  * This note tag allows you to set the amplitude of the wave effect.
  * the x is a floating-point number between 0 and 1.
- * Default value is to 0.02
+ * the default value is to 0.02
  *
  *    <WAVE_AMP x>
  *
  * This note tag allows you to set the speed of the wave effect.
  * the x is a floating-point number between 0 and 1.
- * Default value is to 0.25
+ * the default value is to 0.25
  *
  *    <WAVE_SPEED x>
+ *
+ * =============================================================================
+ * Battle Notetags
+ * =============================================================================
+ *
+ * These note tags allow you to set the wave effect.
+ * You have to put the note tags in the note area of the map properties.
+ *
+ *    <BATTLEBACK_WAVE : x y>
+ *
+ *    These values must replace by a real value such as 0.02
+ *    - x : the x value is the same as a waveFrequency.
+ *    - y : the y value is the same as a waveSpeed.
+ *
+ *    For Example :
+ *    <BATTLEBACK_WAVE : 0.02 0.25>
+ *
+ * When using Yanfly's Action Sequence Pack 1, you can enable its filter too.
+ * This function has the pointer of the Spriteset_Battle and easy to use.
+ *
+ *    eval: $gameTemp.setBattleBackWaveEffect(cond, waveAmp, waveSpeed);
+ *      - cond : Specify true or false whether the wave effect is used.
+ *      - waveAmp : the default value is to 0.02
+ *      - waveSpeed : the default value is to 0.25
  *
  * =============================================================================
  * Change Log
@@ -108,6 +132,7 @@
  * 2017.12.10 (v1.5.6) - Added the plugin command called 'PictureWave' (it is tested on 1.6.0 beta version)
  * 2018.04.12 (v1.5.7) - Fixed a cutting issue.
  * 2018.04.13 (v1.5.7c) - Added the event note tags that can have the wave effect directly for an event graphic.
+ * 2018.04.15 (v1.5.7e) - Added a new feature that can apply the wave filter in the battle background images
  *
  * =============================================================================
  * Terms of Use
@@ -377,6 +402,127 @@ RS.WaveConfig = RS.WaveConfig || {};
   });
 
   //============================================================================
+  // TilingSprite
+  //============================================================================
+
+  var alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
+  TilingSprite.prototype.initialize = function(bitmap) {
+    alias_TilingSprite_initialize.call(this, bitmap);
+
+    this._waveTime = 0;
+    this._waveHeight = 0.5;
+    this._waveSpeed = 0.25;
+    this._waveFrequency = 0.02;
+    this._wavePhase = 360;
+    this._waveFilter = new PIXI.WaveFilter();
+    this._wave = false;
+
+  };
+
+  var alias_TilingSprite_update = TilingSprite.prototype.update;
+  TilingSprite.prototype.update = function() {
+    alias_TilingSprite_update.call(this);
+    this.waveUpdate();
+  };
+
+  TilingSprite.prototype.getWaveFrameTime = function() {
+    this._waveTime = Date.now() % 10000 / 10000;
+    return this._waveTime;
+  };
+
+  TilingSprite.prototype.setWaveHeight = function(n) {
+    this._waveHeight = this.height;
+  }
+
+  TilingSprite.prototype.getWaveHeight = function() {
+    return this._waveHeight;
+  };
+
+  TilingSprite.prototype.waveUpdate = function() {
+    if(this._wave) {
+      this._waveFilter.waveTime = this.getWaveFrameTime();
+      this._waveFilter.waveHeight = this.getWaveHeight();
+      this._waveFilter.waveSpeed = this._waveSpeed;
+      this._waveFilter.waveFrequency = this._waveFrequency;
+      this._waveFilter.wavePhase = this._wavePhase;
+    }
+  }
+
+  Object.defineProperty(TilingSprite.prototype, 'waveSpeed', {
+     get: function() {
+         return this._waveSpeed;
+     },
+     set: function(value) {
+       this._waveSpeed = value;
+     }
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'waveFrequency', {
+     get: function() {
+         return this._waveFrequency;
+     },
+     set: function(value) {
+       this._waveFrequency = value;
+     }
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave_amp', {
+     get: function() {
+         return this._waveFrequency;
+     },
+     set: function(value) {
+       this._waveFrequency = value;
+     }
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave_length', {
+     get: function() {
+         return this._waveHeight;
+     },
+     set: function(value) {
+       this.setWaveHeight(value);
+     }
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave_speed', {
+     get: function() {
+         return this._waveSpeed;
+     },
+     set: function(value) {
+       this._waveSpeed = value;
+     }
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave_phase', {
+     get: function() {
+         return this._wavePhase;
+     },
+     set: function(value) {
+       this._wavePhase = value;
+     }
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave', {
+     get: function() {
+         return this._wave;
+     },
+     set: function(value) {
+       this._wave = value;
+
+       if(this._wave) {
+         if(!this._waveFilter) {
+           this._waveFilter = new PIXI.WaveFilter();
+         }
+         this.filterArea = new PIXI.Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+         this.filters = [this._waveFilter];
+       } else {
+         this.filters = [new PIXI.filters.VoidFilter()];
+       }
+     },
+     configurable: true
+  });
+
+  //============================================================================
   // Sprite_Picture
   //============================================================================
 
@@ -438,6 +584,41 @@ RS.WaveConfig = RS.WaveConfig || {};
   };
 
   //============================================================================
+  // Spriteset_Battle
+  //============================================================================
+
+  var alias_Spriteset_Battle_createBattleback = Spriteset_Battle.prototype.createBattleback;
+  Spriteset_Battle.prototype.createBattleback = function() {
+    alias_Spriteset_Battle_createBattleback.call(this);
+    this.initWithWaveEffect();
+  };
+
+  Spriteset_Battle.prototype.initWithWaveEffect = function () {
+
+    var note = $dataMap.note.split(/[\r\n]+/);
+    var self = this;
+
+    note.forEach(function (mapNote) {
+
+      if($dataMap.note.match(/<BATTLEBACK_WAVE[ ]:[ ]*(.*)[ ](.*)>/i)) {
+
+        self.changeWaveEffect(true, RegExp.$1, RegExp.$2);
+
+      }
+
+    }, this);
+  };
+
+  Spriteset_Battle.prototype.changeWaveEffect = function (cond, fre, spd) {
+    var backs = [this._back1Sprite, this._back2Sprite];
+    backs.forEach(function (back) {
+      back.wave = cond;
+      back.waveFrequency = parseFloat(fre) || 0.02;
+      back.waveSpeed = parseFloat(spd) || 0.25;
+    }, this);
+  };
+
+  //============================================================================
   // Game_Picture
   //============================================================================
 
@@ -486,6 +667,22 @@ RS.WaveConfig = RS.WaveConfig || {};
     var picture = this.picture(pictureId);
     if (picture) {
         picture.stopWave();
+    }
+  };
+
+  //============================================================================
+  // Game_Temp
+  //============================================================================
+
+  /**
+   * In Action Sequence Pack 1, you can use this function.
+   * eval: $gameTemp.setBattleBackWaveEffect(cond, waveAmp, waveSpeed);
+   */
+  Game_Temp.prototype.setBattleBackWaveEffect = function (cond, fre, spd) {
+    if(!$gameParty.inBattle()) return;
+    var container = SceneManager._scene._spriteset;
+    if(container) {
+      container.changeWaveEffect(cond, fre, spd);
     }
   };
 

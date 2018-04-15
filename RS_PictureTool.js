@@ -164,6 +164,25 @@ RS.PictureTool = RS.PictureTool || {};
     return ret;
   };
 
+  $.isCheckHitWithCircle = function (p, q) {
+    var ret = false;
+    var dx, dy, ar, dist;
+
+    dx = p.x - q.x;
+    dy = p.y - q.y;
+    dist = dx * dx + dy * dy;
+
+    // TODO: 임시로 정한 반지름
+    ar = (p.width / 2) + (q.width / 2);
+
+    if ( dist < ar * ar ) {
+      ret = true;
+    }
+
+    return ret;
+
+  };
+
   $.isValid = function (picId, eventId, isPlayer) {
 
     var pic = $.findPictureBound(picId);
