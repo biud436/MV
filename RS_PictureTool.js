@@ -41,7 +41,7 @@
   * @param Delay
   * @type number
   * @min 100
-  * @desc 이벤트가 완료될 때 까지 대기합니다.
+  * @desc 키보드와 마우스 이벤트 업데이트를 위한 딜레이 시간 (간격이 짧으면 키보드와 마우스가 먹통됩니다, 1000ms = 1초)
   * @default 200
   *
   * @help
@@ -82,7 +82,7 @@ RS.PictureTool = RS.PictureTool || {};
   $.Params = $.Params || {};
   $.Params.frameTime = performance.now();
 
-  // 멈춤 현상 방지를 위한 고정 딜레이 값
+  // 멈춤 현상 방지를 위한 고정 딜레이 값 (마우스와 키보드 입력 업데이트가 선행되고 있으므로)
   $.Params.delay = Number(parameters["Delay"] || 200);
 
   // ===========================================================================
@@ -235,7 +235,7 @@ RS.PictureTool = RS.PictureTool || {};
       setTimeout(function () {
         e.start();
       }, 0);
-      
+
     }
 
     $.Params.frameTime = performance.now();
@@ -310,6 +310,9 @@ RS.PictureTool = RS.PictureTool || {};
 
   };
 
+  /**
+   * 그림의 표시에서 만든 텍스처를 메모리에서 즉각 제거합니다.
+   */
   $.deletePicture = function (picId) {
     var container;
     if(!$.isMap()) return false;
