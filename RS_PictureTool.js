@@ -402,7 +402,7 @@ RS.PictureTool = RS.PictureTool || {};
 
   var alias_Scene_Map_update = Scene_Map.prototype.update;
   Scene_Map.prototype.update = function() {
-    alias_Game_Map_update.call(this);
+    alias_Scene_Map_update.call(this);
     this.updatePictureTool();
   };
 
