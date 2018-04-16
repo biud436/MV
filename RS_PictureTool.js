@@ -207,7 +207,7 @@ RS.PictureTool = RS.PictureTool || {};
 
     var pic = $.findPictureBound(picId);
     if(!pic) return false;
-    if(performance.now() - $.Params.frameTime < $.Params.delay) return;
+    if(performance.now() - $.Params.frameTime < $.Params.delay) return false;
 
     var frame;
 
