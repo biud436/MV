@@ -231,7 +231,11 @@ RS.PictureTool = RS.PictureTool || {};
     var e = $gameMap.event(eventId);
 
     if(!$gameMap.isEventRunning() && !e.isStarting()) {
-      e.start();
+
+      setTimeout(function () {
+        e.start();
+      }, 0);
+      
     }
 
     $.Params.frameTime = performance.now();
@@ -248,7 +252,11 @@ RS.PictureTool = RS.PictureTool || {};
     if(!$.isValid(picId, eventId)) return false;
 
     if(!$gameMap.isEventRunning()) {
-      $gameTemp.reserveCommonEvent(commonEventId);
+
+      setTimeout(function () {
+        $gameTemp.reserveCommonEvent(commonEventId);
+      }, 0);
+
     }
 
     $.Params.frameTime = performance.now();
@@ -268,7 +276,11 @@ RS.PictureTool = RS.PictureTool || {};
     var e = $gameMap.event(eventId);
 
     if(!$gameMap.isEventRunning() && !e.isStarting()) {
-      e.start();
+
+      setTimeout(function () {
+        e.start();
+      }, 0);
+
     }
 
     $.Params.frameTime = performance.now();
@@ -285,7 +297,11 @@ RS.PictureTool = RS.PictureTool || {};
     if(!$.isValid(picId, eventId, true)) return false;
 
     if(!$gameMap.isEventRunning()) {
-      $gameTemp.reserveCommonEvent(commonEventId);
+
+      setTimeout(function () {
+        $gameTemp.reserveCommonEvent(commonEventId);
+      }, 0);
+
     }
 
     $.Params.frameTime = performance.now();
