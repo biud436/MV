@@ -35,6 +35,7 @@
  * 2018.04.13 (v1.0.0) - First Release.
  * 2018.04.16 (v1.0.1) - Fixed a hanging bug.
  * 2018.04.16 (v1.0.2) - Fixed the issue that the save is not working.
+ * 2018.04.16 (v1.0.3) - Fixed the issue when the picture is deleted
  */
  /*:ko
   * @plugindesc 그림이 특정 캐릭터 스프라이트와 충돌하면 특정 이벤트가 실행됩니다.
@@ -73,6 +74,7 @@
   * 2018.04.13 (v1.0.0) - 공개
   * 2018.04.16 (v1.0.1) - 멈춤 버그를 수정하였습니다.
   * 2018.04.16 (v1.0.2) - 세이브 불가 버그를 수정하였습니다.
+  * 2018.04.16 (v1.0.3) - 그림 삭제 불가 버그를 수정하였습니다.
   */
 
 var RS = RS || {};
@@ -145,17 +147,6 @@ RS.PictureTool = RS.PictureTool || {};
     this._character._spriteFrame = frame;
 
   };
-
-  // ===========================================================================
-  // DataManager
-  // ===========================================================================  
-
-  var alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
-  DataManager.makeSaveContents = function() {
-    // A save data does not contain $gameTemp, $gameMessage, and $gameTroop. 
-    var contents = alias_DataManager_makeSaveContents.call(this);
-    return contents;
-};  
 
   // ===========================================================================
   // RS.PictureTool
@@ -362,7 +353,7 @@ RS.PictureTool = RS.PictureTool || {};
     container.addChild(sprite);
     container.swapChildren(picSprite, sprite);
     container.removeChild(picSprite);
-    picSprite.destroy({children:true, texture:true, baseTexture:true});
+    picSprite.destroy({children:true, texture:true});
   };
 
   Game_Screen.prototype.erasePicture = function(pictureId) {
