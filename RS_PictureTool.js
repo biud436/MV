@@ -27,7 +27,7 @@
  *
  * This command will run a certain common event when the picture collides with a game player:
  *
- *    RS.PictureTool.runCommonEventCollideWithPlayer(picId, commonEventId);
+ *    RS.PictureTool.runCommonEventCollideWithPlayer(picId, eventId, commonEventId);
  *
  * =============================================================================
  * Version Log
@@ -63,7 +63,7 @@
   *
   * 그림과 플레이어가 충돌하면 특정 커먼 이벤트를 실행합니다.
   *
-  *    RS.PictureTool.runCommonEventCollideWithPlayer(picId, commonEventId);
+  *    RS.PictureTool.runCommonEventCollideWithPlayer(picId, eventId, commonEventId);
   *
   * =============================================================================
   * 버전 로그
