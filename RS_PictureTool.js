@@ -34,6 +34,7 @@
  * =============================================================================
  * 2018.04.13 (v1.0.0) - First Release.
  * 2018.04.16 (v1.0.1) - Fixed a hanging bug.
+ * 2018.04.16 (v1.0.2) - Fixed the issue that the save is not working.
  */
  /*:ko
   * @plugindesc 그림이 특정 캐릭터 스프라이트와 충돌하면 특정 이벤트가 실행됩니다.
@@ -71,6 +72,7 @@
   * =============================================================================
   * 2018.04.13 (v1.0.0) - 공개
   * 2018.04.16 (v1.0.1) - 멈춤 버그를 수정하였습니다.
+  * 2018.04.16 (v1.0.2) - 세이브 불가 버그를 수정하였습니다.
   */
 
 var RS = RS || {};
@@ -92,8 +94,8 @@ RS.PictureTool = RS.PictureTool || {};
     RUN_COMMONEVENT_COLLIDEWITH_PLAYER: 3
   };
 
-  $.Params.currentFunc = $.Params.FN.NONE;
-  $.Params.funcArgs = [];
+  $.Params.currentFunc = [$.Params.FN.NONE];
+  $.Params.funcArgs = [[]];
   $.Params.isCall = false;
 
   // 멈춤 현상 방지를 위한 고정 딜레이 값 (마우스와 키보드 입력 업데이트가 선행되고 있으므로)
@@ -106,55 +108,54 @@ RS.PictureTool = RS.PictureTool || {};
   var alias_Game_Character_initMembers = Game_Character.prototype.initMembers;
   Game_Character.prototype.initMembers = function() {
     alias_Game_Character_initMembers.call(this);
-    this._spritePointer = null;
+    this._spriteFrame = new Rectangle(0, 0, 48, 48 );
   };
 
   Game_Character.prototype.getFrame = function () {
-    var sx = this.screenX();
-    var sy = this.screenY();
-
-    if(this._spritePointer) {
-      return this._spritePointer.getFrame(sx, sy);
-    }
-
-    return new Rectangle(sx, sy, $gameMap.tileWidth(), $gameMap.tileHeight() );
+    return this._spriteFrame;
   };
 
   // ===========================================================================
   // Sprite_Character
   // ===========================================================================
 
-  var alias_Sprite_Character_setCharacter = Sprite_Character.prototype.setCharacter;
-  Sprite_Character.prototype.setCharacter = function(character) {
-    alias_Sprite_Character_setCharacter.call(this, character);
-
-    var self = this;
-
-    this._character._spritePointer = this;
-
-    this.on('removed', function () {
-      self._character._spritePointer = null;
-    }, this);
-
+  var alias_Sprite_Character_updateFrame = Sprite_Character.prototype.updateFrame;
+  Sprite_Character.prototype.updateFrame = function() {
+    alias_Sprite_Character_updateFrame.call(this);
+    this.getFrame();
   };
+  
+  Sprite_Character.prototype.getFrame = function () {
 
-  Sprite_Character.prototype.getFrame = function (sx, sy) {
-    if (this._tileId > 0) {
-        this.updateTileFrame();
-    } else {
-        this.updateCharacterFrame();
-    }
+    var frame;
+
+    if(!this._character) return;
 
     var tw = $gameMap.tileWidth();
     var th = $gameMap.tileHeight();
+    var sx = this._character.screenX();
+    var sy = this._character.screenY();
 
     if(this.frame) {
-      return this.frame;
+      frame =  this.frame;
     } else {
-      return new Rectangle(sx - tw / 2, sy - th, this.width, this.height);
+      frame = new Rectangle(sx - tw / 2, sy - th, this.width, this.height);
     }
 
+    this._character._spriteFrame = frame;
+
   };
+
+  // ===========================================================================
+  // DataManager
+  // ===========================================================================  
+
+  var alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
+  DataManager.makeSaveContents = function() {
+    // A save data does not contain $gameTemp, $gameMessage, and $gameTroop. 
+    var contents = alias_DataManager_makeSaveContents.call(this);
+    return contents;
+};  
 
   // ===========================================================================
   // RS.PictureTool
@@ -237,26 +238,26 @@ RS.PictureTool = RS.PictureTool || {};
 
   $.runEventCollideWithPicture = function (picId, eventId) {
     $.Params.isCall = true;
-    $.Params.currentFunc = $.Params.FN.RUN_EVENT_COLLIDE_WITH_PICTURE;
-    $.Params.funcArgs = [picId, eventId];    
+    $.Params.currentFunc.push($.Params.FN.RUN_EVENT_COLLIDE_WITH_PICTURE);
+    $.Params.funcArgs.push([picId, eventId]);    
   };
 
   $.runCommonEventCollideWithPicture = function (picId, eventId, commonEventId) {
     $.Params.isCall = true;
-    $.Params.currentFunc = $.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PICTURE;
-    $.Params.funcArgs = [picId, eventId, commonEventId];    
+    $.Params.currentFunc.push($.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PICTURE);
+    $.Params.funcArgs.push([picId, eventId, commonEventId]);    
   };
 
   $.runEventCollideWithPlayer = function (picId, eventId) {
     $.Params.isCall = true;
-    $.Params.currentFunc = $.Params.FN.RUN_EVENT_COLLIDE_WITH_PLAYER;
-    $.Params.funcArgs = [picId, eventId];    
+    $.Params.currentFunc.push($.Params.FN.RUN_EVENT_COLLIDE_WITH_PLAYER);
+    $.Params.funcArgs.push([picId, eventId]);    
   };
 
   $.runCommonEventCollideWithPlayer = function (picId, eventId, commonEventId) {
     $.Params.isCall = true;
-    $.Params.currentFunc = $.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PLAYER;
-    $.Params.funcArgs = [picId, eventId, commonEventId];  
+    $.Params.currentFunc.push($.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PLAYER);
+    $.Params.funcArgs.push([picId, eventId, commonEventId]);    
   };
 
   /**
@@ -377,9 +378,10 @@ RS.PictureTool = RS.PictureTool || {};
   Scene_Map.prototype.updatePictureTool = function () {
     if(!$.Params.isCall) return;
     
-    var args = $.Params.funcArgs;
+    var args = $.Params.funcArgs.shift();
+    var func = $.Params.currentFunc.shift();
 
-    switch ($.Params.currentFunc) {
+    switch (func) {
       case $.Params.FN.RUN_EVENT_COLLIDE_WITH_PICTURE:
         $.runEventCollideWithPictureImpl(args[0], args[1]);
         break;
@@ -395,8 +397,6 @@ RS.PictureTool = RS.PictureTool || {};
     }
 
     $.Params.isCall = false;
-    $.Params.currentFunc = $.Params.FN.NONE;
-    $.Params.funcArgs = [];
 
   };
 
