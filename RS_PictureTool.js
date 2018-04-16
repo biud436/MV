@@ -374,7 +374,7 @@ RS.PictureTool = RS.PictureTool || {};
   // Scene_Map
   //============================================================================
 
-  Game_Map.prototype.updatePictureTool = function () {
+  Scene_Map.prototype.updatePictureTool = function () {
     if(!$.Params.isCall) return;
     
     var args = $.Params.funcArgs;
@@ -387,7 +387,7 @@ RS.PictureTool = RS.PictureTool || {};
         $.runCommonEventCollideWithPictureImpl(args[0], args[1], args[2]);
         break;
       case $.Params.FN.RUN_EVENT_COLLIDE_WITH_PLAYER:
-         $.runEventCollideWithPlayerImpl(args[0], args[1]);
+        $.runEventCollideWithPlayerImpl(args[0], args[1]);
         break;
       case $.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PLAYER:
         $.runCommonEventCollideWithPlayerImpl(args[0], args[1], args[2]);
@@ -400,9 +400,9 @@ RS.PictureTool = RS.PictureTool || {};
 
   };
 
-  var alias_Game_Map_update = Game_Map.prototype.update;
-  Game_Map.prototype.update = function(sceneActive) {
-    alias_Game_Map_update.call(this, sceneActive);
+  var alias_Scene_Map_update = Scene_Map.prototype.update;
+  Scene_Map.prototype.update = function() {
+    alias_Game_Map_update.call(this);
     this.updatePictureTool();
   };
 
