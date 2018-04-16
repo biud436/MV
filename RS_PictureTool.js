@@ -4,7 +4,7 @@
  *
  * @param Delay
  * @type number
- * @min 100
+ * @min 1
  * @desc if it is less than the time you want a delay to take, it will wait the event to complete.
  * @default 200
  *
@@ -33,6 +33,7 @@
  * Version Log
  * =============================================================================
  * 2018.04.13 (v1.0.0) - First Release.
+ * 2018.04.16 (v1.0.1) - Fixed a hanging bug.
  */
  /*:ko
   * @plugindesc 그림이 특정 캐릭터 스프라이트와 충돌하면 특정 이벤트가 실행됩니다.
@@ -40,7 +41,7 @@
   *
   * @param Delay
   * @type number
-  * @min 100
+  * @min 1
   * @desc 키보드와 마우스 이벤트 업데이트를 위한 딜레이 시간 (간격이 짧으면 키보드와 마우스가 먹통됩니다, 1000ms = 1초)
   * @default 200
   *
@@ -69,6 +70,7 @@
   * 버전 로그
   * =============================================================================
   * 2018.04.13 (v1.0.0) - 공개
+  * 2018.04.16 (v1.0.1) - 멈춤 버그를 수정하였습니다.
   */
 
 var RS = RS || {};
@@ -81,6 +83,18 @@ RS.PictureTool = RS.PictureTool || {};
 
   $.Params = $.Params || {};
   $.Params.frameTime = performance.now();
+
+  $.Params.FN = {
+    NONE: -1,
+    RUN_EVENT_COLLIDE_WITH_PICTURE: 0,
+    RUN_COMMONEVENT_COLLIDE_WITH_PICTURE: 1,
+    RUN_EVENT_COLLIDE_WITH_PLAYER: 2,
+    RUN_COMMONEVENT_COLLIDEWITH_PLAYER: 3
+  };
+
+  $.Params.currentFunc = $.Params.FN.NONE;
+  $.Params.funcArgs = [];
+  $.Params.isCall = false;
 
   // 멈춤 현상 방지를 위한 고정 딜레이 값 (마우스와 키보드 입력 업데이트가 선행되고 있으므로)
   $.Params.delay = Number(parameters["Delay"] || 200);
@@ -221,10 +235,34 @@ RS.PictureTool = RS.PictureTool || {};
 
   };
 
+  $.runEventCollideWithPicture = function (picId, eventId) {
+    $.Params.isCall = true;
+    $.Params.currentFunc = $.Params.FN.RUN_EVENT_COLLIDE_WITH_PICTURE;
+    $.Params.funcArgs = [picId, eventId];    
+  };
+
+  $.runCommonEventCollideWithPicture = function (picId, eventId, commonEventId) {
+    $.Params.isCall = true;
+    $.Params.currentFunc = $.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PICTURE;
+    $.Params.funcArgs = [picId, eventId, commonEventId];    
+  };
+
+  $.runEventCollideWithPlayer = function (picId, eventId) {
+    $.Params.isCall = true;
+    $.Params.currentFunc = $.Params.FN.RUN_EVENT_COLLIDE_WITH_PLAYER;
+    $.Params.funcArgs = [picId, eventId];    
+  };
+
+  $.runCommonEventCollideWithPlayer = function (picId, eventId, commonEventId) {
+    $.Params.isCall = true;
+    $.Params.currentFunc = $.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PLAYER;
+    $.Params.funcArgs = [picId, eventId, commonEventId];  
+  };
+
   /**
    * 특정 그림과 특정 이벤트 eventId가 충돌하면 eventId를 실행합니다.
    */
-  $.runEventCollideWithPicture = function (picId, eventId) {
+  $.runEventCollideWithPictureImpl = function (picId, eventId) {
 
     if(!$.isValid(picId, eventId)) return false;
 
@@ -247,7 +285,7 @@ RS.PictureTool = RS.PictureTool || {};
   /**
    * 특정 그림과 특정 이벤트 eventId가 충돌하면 특정 커먼 이벤트를 실행합니다.
    */
-  $.runCommonEventCollideWithPicture = function (picId, eventId, commonEventId) {
+  $.runCommonEventCollideWithPictureImpl = function (picId, eventId, commonEventId) {
 
     if(!$.isValid(picId, eventId)) return false;
 
@@ -269,7 +307,7 @@ RS.PictureTool = RS.PictureTool || {};
   /**
    * 그림과 플레이어가 충돌하면 특정 이벤트를 실행합니다.
    */
-  $.runEventCollideWithPlayer = function (picId, eventId) {
+  $.runEventCollideWithPlayerImpl = function (picId, eventId) {
 
     if(!$.isValid(picId, eventId, true)) return false;
 
@@ -292,7 +330,7 @@ RS.PictureTool = RS.PictureTool || {};
   /**
    * 그림과 플레이어가 충돌하면 특정 커먼 이벤트를 실행합니다.
    */
-  $.runCommonEventCollideWithPlayer = function (picId, eventId, commonEventId) {
+  $.runCommonEventCollideWithPlayerImpl = function (picId, eventId, commonEventId) {
 
     if(!$.isValid(picId, eventId, true)) return false;
 
@@ -332,5 +370,40 @@ RS.PictureTool = RS.PictureTool || {};
     $.deletePicture(realPictureId);
   };
 
+  //============================================================================
+  // Scene_Map
+  //============================================================================
+
+  Game_Map.prototype.updatePictureTool = function () {
+    if(!$.Params.isCall) return;
+    
+    var args = $.Params.funcArgs;
+
+    switch ($.Params.currentFunc) {
+      case $.Params.FN.RUN_EVENT_COLLIDE_WITH_PICTURE:
+        $.runEventCollideWithPictureImpl(args[0], args[1]);
+        break;
+      case $.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PICTURE:
+        $.runCommonEventCollideWithPictureImpl(args[0], args[1], args[2]);
+        break;
+      case $.Params.FN.RUN_EVENT_COLLIDE_WITH_PLAYER:
+         $.runEventCollideWithPlayerImpl(args[0], args[1]);
+        break;
+      case $.Params.FN.RUN_COMMONEVENT_COLLIDE_WITH_PLAYER:
+        $.runCommonEventCollideWithPlayerImpl(args[0], args[1], args[2]);
+        break;
+    }
+
+    $.Params.isCall = false;
+    $.Params.currentFunc = $.Params.FN.NONE;
+    $.Params.funcArgs = [];
+
+  };
+
+  var alias_Game_Map_update = Game_Map.prototype.update;
+  Game_Map.prototype.update = function(sceneActive) {
+    alias_Game_Map_update.call(this, sceneActive);
+    this.updatePictureTool();
+  };
 
 })(RS.PictureTool);
