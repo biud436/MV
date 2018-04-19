@@ -1,1 +1,0 @@
-etc1tool %~1 --encode -o %~n1.etc1
