@@ -78,7 +78,7 @@ RS.ETC1Filter = RS.ETC1Filter || {};
     
         // 알파 스프라이트 생성
         alphaSprite = new Sprite(ImageManager.loadPicture('Actor1-alpha'));
-        SceneManager._scene.addChild(alphaSprite);
+        sprite.addChild(alphaSprite);
         
         // 필터 생성
         filter = new PIXI.ETC1Filter(alphaSprite);
