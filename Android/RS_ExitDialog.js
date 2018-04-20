@@ -50,10 +50,11 @@
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.04.07  - Added plugin parameters.
- * 2016.05.29  - The incorrect character fixed.
- * 2016.12.19  - Removed a functionality that shows up the dialog only in the title scene.
- * 2017.01.13 - Fixed a bug that causing when pressing a back button several times.
+  * 2015.12.26 (v1.0.0) - First Release.
+  * 2016.04.07 (v1.0.1) - Added plugin parameters.
+  * 2016.05.29 (v1.0.2) - The incorrect character fixed.
+  * 2016.12.19 (v1.0.3) - Removed a functionality that shows up the dialog only in the title scene.
+  * 2017.01.13 (v1.0.4) - Fixed a bug that causing when pressing a back button several times.
  */
  /*:ko
   * RS_ExitDialog.js
@@ -126,10 +127,11 @@
   * =============================================================================
   * 변경 사항
   * =============================================================================
-  * 2016.04.07  - Added plugin parameters.
-  * 2016.05.29  - The incorrect character fixed.
-  * 2016.12.19  - Removed a functionality that shows up the dialog only in the title scene.
-  * 2017.01.13 - Fixed a bug that causing when pressing a back button several times.
+  * 2015.12.26 (v1.0.0) - First Release.
+  * 2016.04.07 (v1.0.1) - Added plugin parameters.
+  * 2016.05.29 (v1.0.2) - The incorrect character fixed.
+  * 2016.12.19 (v1.0.3) - Removed a functionality that shows up the dialog only in the title scene.
+  * 2017.01.13 (v1.0.4) - Fixed a bug that causing when pressing a back button several times.
   */
 
 

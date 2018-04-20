@@ -3,9 +3,10 @@
  * @plugindesc Vector2 class
  * @author biud436
  * @help
- * 2016.05.29 - Added Scalar Multiplication
- * 2016.09.04 - Added isEqual function.
- * 2016.10.01 - Added Math Classes
+ * 2016.03.14 (v1.0.0) - First Release.
+ * 2016.05.29 (v1.0.1) - Added Scalar Multiplication
+ * 2016.09.04 (v1.0.2) - Added isEqual function.
+ * 2016.10.01 (v1.0.3) - Added Math Classes
  */
 
 var RS = RS || {};

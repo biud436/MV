@@ -29,8 +29,8 @@
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.10.06(v1.0.0) - First Release.
- * 2017.10.06(v1.0.1) - Fixed the issue that could not set the number after the decimal point.
+ * 2016.10.06 (v1.0.0) - First Release.
+ * 2017.10.06 (v1.0.1) - Fixed the issue that could not set the number after the decimal point.
  */
 
 var Imported = Imported || {};

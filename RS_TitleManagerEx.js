@@ -215,6 +215,7 @@ Imported.RS_TitleManagerEx = true;
  * =============================================================================
  * 변경 기록
  * =============================================================================
+ * 2015.12.21 (v1.0.0) - First Release.
  * 2015.12.22 (v1.0.2) - Fixed a bug about the web local storage.
  * 2016.03.07 (v1.0.3) - Fixed a bug that causes a serious problem when the parameters were set to English.
  * 2017.06.09 (v1.0.4) - Fixed the parameter not to remove the resource when deploying the game.
@@ -417,6 +418,7 @@ Imported.RS_TitleManagerEx = true;
  * =============================================================================
  * Change Log
  * =============================================================================
+ * 2015.12.21 (v1.0.0) - First Release.
  * 2015.12.22 (v1.0.2) - Fixed a bug about the web local storage.
  * 2016.03.07 (v1.0.3) - Fixed a bug that causes a serious problem when the parameters were set to English.
  * 2017.06.09 (v1.0.4) - Fixed the parameter not to remove the resource when deploying the game.

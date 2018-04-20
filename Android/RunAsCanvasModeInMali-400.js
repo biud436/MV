@@ -1,5 +1,7 @@
 /*:
  * @plugindesc This plugin sets the renderer type is to as canvas mode in ARM Mali-400 GPU (Galaxy S2, Galaxy S3)
+ * @help
+ * 2018.03.16 (v1.0.0) - First Release.
  */ 
 (function() {
   

@@ -21,8 +21,9 @@
  * =============================================================================
  * Change Log
  * =============================================================================
- * 2016.02.27 - Fixed a few code (makeCommandList → addOriginalCommands)
- * 2016.03.05 - Fixed the class structure.
+ * 2016.01.04 (v1.0.0) - First Release.
+ * 2016.02.27 (v1.0.1) - Fixed a few code (makeCommandList → addOriginalCommands)
+ * 2016.03.05 (v1.0.1b) - Fixed the class structure.
  * 2017.01.23 (v1.0.2) - Converted sources to ES6.
  * 2017.09.06 (v1.0.3) - Converted sources to ES5.
  */

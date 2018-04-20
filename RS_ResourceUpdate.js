@@ -11,6 +11,8 @@
  * @desc Please enter the currently version.
  * @default 0.1.1
  *
+ * @help
+ * 2016.01.04 (v1.0.0) - First Release.
  */
  /*:ko
   * RS_ResourceUpdate.js
@@ -25,6 +27,8 @@
   * @desc 현재 버전을 입력하세요.
   * @default 0.1.1
   *
+  * @help
+  * 2016.01.04 (v1.0.0) - First Release.
   */
 var Imported = Imported || {};
 Imported.RS_ResourceUpdate = true;
