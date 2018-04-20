@@ -28,7 +28,7 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 |RS_InputDialog.js|2016.08.09 |2018.02.06 (v1.1.11) ||
 |RS_ItemStream.js|2016.03.07 |2017.01.23 (v1.0.3) ||
 |RS_KeyboardEvent.js|2017.01.02 |2017.03.03 (v1.0.1) ||
-|RS_Localization.js|2016.02.20 |2016.10.17 (v1.0.4) ||
+|RS_Localization.js|2016.02.20 |2016.10.17 (v1.0.4) |**unstable**|
 |RS_MemoSystem.js|.|.||
 |RS_MenuInformation.js|2016.01.04 |2017.09.06 (v1.0.3) ||
 |RS_MessageAlign.js|2017.01.25 |2017.10.13 (v1.0.3) ||
@@ -58,9 +58,9 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 |RS_WaveFilter.js|2016.01.14 |2018.04.15 (v1.5.7e) ||
 |RS_WaveSupport.js|2015.12.25 |2015.12.25 (v1.0.0) ||
 |RS_WavFileEncrypter.js|2016.11.30 |2018.03.13 (v1.0.3) ||
-|RS_WindowBuilder.js|2018.03.13 |2018.03.13 (v1.0.0) |**unstable**|
-|RS_Window_KoreanNameInput.js|2015.10.19 |2017.09.15 (v1.6.5) ||
-|RS_Window_KorNameEdit.js|2015.10.19 |2017.09.15 (v1.6.5) ||
+|RS_WindowBuilder.js|2018.01.30 |2018.01.30 (v1.0.0) |**unstable**|
+|RS_Window_KoreanNameInput.js|2018.03.13 |2018.03.13 (v1.0.0) ||
+|RS_Window_KorNameEdit.js|2015.10.19 |2017.09.15 (v1.6.5) |**unstable**|
 |RS_Window_SpanishNameInput.js|2018.02.24 |2018.02.24 (v1.0.0) ||
 |RS_WinTray.js|2016.01.21 |2018.02.27 (v1.0.2) ||
 |RS_YoutubePlayer.js|2016.05.08 |2018.01.08 (v1.0.7) ||
@@ -81,7 +81,7 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 |RS_AnimatedFace.js |2016.04.18 |2017.07.23 (v1.0.1) ||
 |RS_MessageSystem_NameWindow1.js|2017.04.07 |2017.04.07 (v1.0.0) ||
 |RS_ParallaxTitleEx.js |.|2016.11.22 (v1.0.5) ||
-|RS_SimpleProtector.js|.|.|**unstable**|
+|RS_SimpleProtector.js|.|.||
 |RS_StateIconFixes.js|2016.09.05 |2016.09.05 (v1.0.0) ||
 |||||
 
