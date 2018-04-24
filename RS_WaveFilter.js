@@ -133,6 +133,7 @@
  * 2018.04.12 (v1.5.7) - Fixed a cutting issue.
  * 2018.04.13 (v1.5.7c) - Added the event note tags that can have the wave effect directly for an event graphic.
  * 2018.04.15 (v1.5.7e) - Added a new feature that can apply the wave filter in the battle background images
+ * 2018.04.25 (v1.5.7d) - Fixed the note tag error in Battle Test.
  *
  * =============================================================================
  * Terms of Use
@@ -595,6 +596,8 @@ RS.WaveConfig = RS.WaveConfig || {};
 
   Spriteset_Battle.prototype.initWithWaveEffect = function () {
 
+    if(!$dataMap) return;
+
     var note = $dataMap.note.split(/[\r\n]+/);
     var self = this;
 
@@ -607,9 +610,11 @@ RS.WaveConfig = RS.WaveConfig || {};
       }
 
     }, this);
+    this._initWaveFilter = true;
   };
 
   Spriteset_Battle.prototype.changeWaveEffect = function (cond, fre, spd) {
+    if(!this._initWaveFilter) return;
     var backs = [this._back1Sprite, this._back2Sprite];
     backs.forEach(function (back) {
       back.wave = cond;
