@@ -43,7 +43,7 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 |RS_ResourceUpdate.js|2016.01.04 |2016.01.04 (v1.0.0) ||
 |RS_SavefileList.js|2015.12.21 |2017.06.09 (v1.0.2) ||
 |RS_ScreenOrientation.js|2017.02.16 |2018.03.01 (v1.0.1) ||
-|RS_ScreenShot.js|2015.12.22 |2018.02.27 (v1.0.5) ||
+|RS_ScreenShot.js|2015.12.22 |2018.04.25 (v1.0.6) ||
 |RS_SelfVariables.js|2016.07.25 |2017.04.29 (v1.0.1) ||
 |RS_ShopSale.js|2016.01.21 |2016.08.24 (v1.1.0) |**unstable**|
 |RS_SimpleCanvasFilter.js|2016.10.06 |2017.10.06 (v1.0.1) ||
