@@ -55,7 +55,7 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 |RS_VideoControl.js|2016.05.07 |2017.06.10 (v1.0.2) ||
 |RS_WalkingStepSound.js|2015.12.26 |2018.04.04 (v1.0.7) ||
 |RS_WalkingStepSoundForOgg.js|2015.12.26 |2018.04.04 (v1.0.7) ||
-|RS_WaveFilter.js|2016.01.14 |2018.04.15 (v1.5.7e) ||
+|RS_WaveFilter.js|2016.01.14 |2018.04.25 (v1.5.7f) ||
 |RS_WaveSupport.js|2015.12.25 |2015.12.25 (v1.0.0) ||
 |RS_WavFileEncrypter.js|2016.11.30 |2018.03.13 (v1.0.3) ||
 |RS_WindowBuilder.js|2018.01.30 |2018.01.30 (v1.0.0) |**unstable**|

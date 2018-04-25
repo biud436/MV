@@ -10,7 +10,7 @@ RS.ETC1Filter = RS.ETC1Filter || {};
 
 (function() {
 
-    var parameters = $plugin.filter(function(i) {
+    var parameters = $plugins.filter(function(i) {
         return i.description.contains("<RS_ETC1Filter>");
     });
 
@@ -96,89 +96,3 @@ RS.ETC1Filter = RS.ETC1Filter || {};
     window.testETC1 = test;
 
 })();
-
-// (function () {
-    
-//     /**
-//      * @method readProjectDir
-//      */
-//     function readProjectDir() {
-//         if(!Utils.isNwjs()) return '';
-//         var path, fs, base, allFiles, dir;
-//         path = require('path');
-//         fs = require('fs');
-//         base = path.dirname(process.mainModule.filename);
-
-//         allFiles = fs.readdirSync(base);
-//         dir = allFiles.filter(function(path) {
-//             return fs.statSync(path.join(base, path)).isDirectory();
-//         }, this);
-
-//         return dir;
-//     };
-
-//     /**
-//      * @method createExportFolder
-//      */
-//     function getExportFolder(name) {
-//         var fs, path, base, exportPath;
-//         fs = require('fs');
-//         base = path.dirname(process.mainModule.filename);
-//         exportPath = path.join(base, "export");
-//         return path.join(exportPath, name);
-//     };    
-
-//     /**
-//      * @method createExportFolder
-//      */
-//     function createExportFolder() {
-//         var fs, path, base, exportPath;
-//         fs = require('fs');
-//         base = path.dirname(process.mainModule.filename);
-//         exportPath = path.join(base, "export");
-//         return fs.existsSync(exportPath) || fs.mkdirSync(exportPath);
-//     };
-
-//     function extractAlphaChannel(name) {
-//         "use strict";
-
-//         if( !Utils.isNwjs() ) return;
-
-//         createExportFolder();
-//         var targetFileName = getExportFolder(`${name}.png`);
-//         var exportRGBFileName = getExportFolder(`export/${name}.png`);
-//         var exportAlphaFileName = getExportFolder(`export/${name}-alpha.png`);
-//         var commands = [];
-
-//         commands.push(`magick ${targetFileName}.png -flatten -alpha off ${exportRGBFileName}.png`);
-//         commands.push(`magick ${targetFileName}.png -alpha extract ${exportAlphaFileName}-alpha.png`);
-
-//         // etc1 파일 생성
-//         commands.push(`etc1tool ${exportRGBFileName} --encode -o ${exportRGBFileName}.etc1`);
-//         commands.push(`etc1tool ${targetFileName} --encode -o ${targetFileName}.etc1`);
-//     };
-
-//     function startCommandLine(name) {
-//         "use strict";
-
-//         var commands = extractAlphaChannel(name);
-
-//         var terminal = require('child_process').spawn('cmd', ['/K'], { timeout : 1000*60*60*24 });
-//         terminal.stdin.setEncoding = 'utf-8';
-        
-//         for(var i=0; i<commands.length; i++) {
-//             terminal.stdin.write(new Buffer( commands[i] + '\r\n' ) );
-//         }
-
-//         terminal.stdin.write(new Buffer( 'taskkill /pid ' + terminal.pid + ' /T /F' ) );
-        
-//         terminal.stdout.on('data', function (data) {
-//             console.log('stdout: ' + data);
-//         });
-
-//         terminal.on('exit', function (code) {
-//         });
-
-//     };    
-
-// })();
