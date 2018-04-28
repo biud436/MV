@@ -1,5 +1,68 @@
 /*:
  * @plugindesc <RS_ParseWeatherData>
+ * @author biud436
+ *
+ * @param Default Platform
+ * @text Default
+ *
+ * @param URL
+ * @text URL
+ * @parent Default Platform
+ * @desc
+ * @default http://m.kma.go.kr/m/eng/observation/observation_01.jsp
+ *
+ * @param NodeJS
+ *
+ * @param options
+ * @text Options
+ * @parent NodeJS
+ * @type struct<NodeJSOptions>
+ * @desc
+ * @default {"host":"m.kma.go.kr","port":"80","path":"/m/eng/observation/observation_01.jsp"}
+ * 
+ * @help
+ *
+ * ==========================================================================
+ * Script calls
+ * ==========================================================================
+ * This function allows you to parse the html data through callback function.
+ * 
+ *  RS.Weather.parseHTML(function(doc) {
+ * 
+ *    // Find the <div> element in target document
+ *    var inf = doc.querySelector('.inf');
+ * 
+ *    // Set the game title uisng parsing the text for weather
+ *    document.title = inf.firstElementChild.nextElementSibling.textContent;    
+ * 
+ *  });
+ *
+ * ==========================================================================
+ * Version Log
+ * ==========================================================================
+ * 2018.04.28 (v1.0.0) - First Release.
+ */
+ 
+/*~struct~NodeJSOptions:
+ *
+ * @param host
+ * @desc
+ * @default m.kma.go.kr
+ *
+ * @param port
+ * @type number
+ * @desc
+ * @default 80
+ * @min 80
+ * @max 80
+ * 
+ * @param path
+ * @desc
+ * @default /m/observation/observation_01.jsp
+ */ 
+
+/*:ko
+ * @plugindesc <RS_ParseWeatherData>
  * @author 러닝은빛(biud436)
  *
  * @param Default Platform
@@ -38,7 +101,7 @@
  * 2018.04.28 (v1.0.0) - 출시
  */
  
-/*~struct~NodeJSOptions:
+/*~struct~NodeJSOptions:ko
  *
  * @param host
  * @desc
@@ -54,7 +117,7 @@
  * @param path
  * @desc
  * @default /m/observation/observation_01.jsp
- */ 
+ */  
 
 var RS = RS || {};
 RS.Weather = RS.Weather || {};
