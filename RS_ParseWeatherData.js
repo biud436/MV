@@ -58,7 +58,7 @@
  * 
  * @param path
  * @desc
- * @default /m/observation/observation_01.jsp
+ * @default /m/eng/observation/observation_01.jsp
  */ 
 
 /*:ko
