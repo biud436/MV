@@ -27,7 +27,7 @@
  * ==========================================================================
  * 다음과 같이 스크립트를 호출하세요.
  * 
- *  RS.Wheather.parseHTML(function(doc) {
+ *  RS.Weather.parseHTML(function(doc) {
  *    var inf = doc.querySelector('.inf');
  *    document.title = inf.firstElementChild.nextElementSibling.textContent;    
  *  });
