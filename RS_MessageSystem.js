@@ -1,6 +1,6 @@
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.17) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.18) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -438,6 +438,7 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2018.04.25 (v0.0.18) :
 * 2018.02.06 (v0.0.17) : 기본 언어 코드 탐지 방법을 변경했습니다. 이젠 직접 입력하세요.
 * 2018.01.24 (v0.1.16) - 사운드 풀 초기화 관련 문제 수정
 * 2018.01.21 (v0.1.15) :
@@ -2527,21 +2528,41 @@ var Color = Color || {};
     return text;
   };
 
+  Window_Message.prototype.calcBalloonRectHeight = function (text) {
+    var tempFontSize = this.contents.fontSize;
+    var textState = { index: 0, x: 0, y: 0, left: 0, height: 0 };
+    textState.text = this.convertEscapeCharacters(text);
+    textState.height = this.calcTextHeight(textState, false);
+    this.contents.fontSize = tempFontSize;
+    return textState.height;
+  };
+
   Window_Message.prototype.calcBalloonRect = function(text) {
+    var self = this;
     var temp, tempText, height, min, pad;
 
     temp = text;
+
+    // 최대 폭을 구하기 위해 라인을 열거합니다..
     tempText = this.textProcessing(temp);
     tempText = tempText.split(/[\r\n]+/);
     tempText = tempText.sort(function(a, b) {
-      return b.length - a.length;
+      return self.drawTextEx(b, 0, 0) - self.drawTextEx(a, 0, 0);
     }.bind(this));
 
     pad = (this.standardPadding() * 2) + this.textPadding() * 2;
 
-    height = tempText.length * this.lineHeight() + pad;
+    // 최대 폰트 사이즈를 구하여 높이 값을 구합니다.
+    height = this.calcBalloonRectHeight(text.slice(0));
+    if(height <= 0) {
+      height = tempText.length * this.lineHeight() + pad;
+    } else {
+      height = height + pad;
+    }
+
     this._bWidth = (this.textWidth(tempText[0]) + pad) || RS.MessageSystem.Params.WIDTH;
 
+    // 얼굴 이미지가 설정되어있을 때 높이 값
     if($gameMessage.faceName() !== '') {
       min = this.fittingHeight(4);
       this._bWidth += this.newLineX() + pad;

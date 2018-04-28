@@ -83,6 +83,7 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 |RS_ParallaxTitleEx.js |.|2016.11.22 (v1.0.5) ||
 |RS_SimpleProtector.js|.|.||
 |RS_StateIconFixes.js|2016.09.05 |2016.09.05 (v1.0.0) ||
+|RS_ParseWeatherData.js|2018.04.28 |2018.04.28 (v1.0.0) ||
 |||||
 
 ### To send feedback ###

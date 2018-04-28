@@ -197,12 +197,13 @@ RS.WaveConfig = RS.WaveConfig || {};
 
        'uniform vec4 filterArea;',
        'uniform vec4 filterClamp;',
+       'uniform vec2 origin;',
 
        'uniform sampler2D uSampler;',
 
        'void main(void) {',
-       '   float time = waveFrequency * sin( wavePhase * (waveTime - vTextureCoord.y / (waveHeight / filterArea.y)) );',
-       '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);',
+       '   float time = waveFrequency * sin( wavePhase * (waveTime - (vTextureCoord.y + vTextureCoord.x) / (waveHeight / filterArea.y)) );',
+       '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y) - (origin / filterArea.xy);',
        '   gl_FragColor = texture2D(uSampler, clamp(vCoord, filterClamp.xy, filterClamp.zw));',
        '}'
      ].join('\n');
@@ -215,6 +216,7 @@ RS.WaveConfig = RS.WaveConfig || {};
      this.uniforms.waveFrequency = 0.02;
      this.uniforms.waveTime = 0.0;
      this.uniforms.UVSpeed = 0.25;
+     this.uniforms.origin = new PIXI.Point(0, 0);
      this.uniforms.wavePhase = 3.141592653589793 * 2;
 
      this.enabled = true;
@@ -280,6 +282,14 @@ RS.WaveConfig = RS.WaveConfig || {};
       set: function(value) {
           this.uniforms.wavePhase = (Math.PI / 180) * Number(value);
       }
+    },
+    origin: {
+      get: function() {
+          return this.uniforms.origin;
+      },
+      set: function(value) {
+          this.uniforms.origin = value;
+      }
     }
   });
 
@@ -325,6 +335,8 @@ RS.WaveConfig = RS.WaveConfig || {};
       this._waveFilter.waveSpeed = this._waveSpeed;
       this._waveFilter.waveFrequency = this._waveFrequency;
       this._waveFilter.wavePhase = this._wavePhase;
+      this._waveFilter.origin.x = $gameMap.canvasToMapX(this.x);
+      this._waveFilter.origin.x = $gameMap.canvasToMapY(this.y);
     }
   }
 
