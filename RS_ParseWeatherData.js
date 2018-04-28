@@ -32,7 +32,7 @@
  *    // Find the <div> element in target document
  *    var inf = doc.querySelector('.inf');
  * 
- *    // Set the game title uisng parsing the text for weather
+ *    // Set the game title using parsing the text for weather
  *    document.title = inf.firstElementChild.nextElementSibling.textContent;    
  * 
  *  });
