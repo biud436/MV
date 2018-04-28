@@ -57,7 +57,7 @@
  */ 
 
 var RS = RS || {};
-RS.Wheather = RS.Wheather || {};
+RS.Weather = RS.Weather || {};
  
 (function($) {
   
