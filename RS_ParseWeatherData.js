@@ -149,5 +149,5 @@ RS.Weather = RS.Weather || {};
   // Export function
   $.parseHTML = parse;
    
-})(RS.Wheather);
+})(RS.Weather);
   
