@@ -25,6 +25,10 @@
  * =============================================================================
  * 모바일에서 타일맵을 생성하지 않고 화면 바깥 오브젝트를 렌더링하지 않기 위해 도입된
  * 것으로 RMMV 1.6.0 최신 버전에서 잘 동작합니다.
+ * =============================================================================
+ * 버전 로그
+ * =============================================================================
+ * 2018.05.02 - 알파 블렌드 방지
  */
 /*:
  * @plugindesc This plugin is for experimentation purposes. <RS_ViewportCulling>
@@ -216,5 +220,17 @@ Imported.RS_ViewportCulling = true;
     if(isMobile) return;
     alias_Scene_Map_callMenu.call(this);
   };
+
+  //============================================================================
+  // Sprite_Destination
+  //============================================================================
+
+  var alias_Sprite_Destination_createBitmap = Sprite_Destination.prototype.createBitmap;
+  Sprite_Destination.prototype.createBitmap = function() {
+    alias_Sprite_Destination_createBitmap.call(this);
+    // 가산 혼합을 방지하기 위해 노말로 되돌린다.
+    this.blendMode = Graphics.BLEND_NORMAL;
+  };
+
 
   })();
