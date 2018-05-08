@@ -555,10 +555,11 @@
  * 2017.10.26 (v1.2.7) - This plugin has applied with the new plugin manager features in the plugin parameters.
  * 2017.10.27 (v1.2.7b) - Fixed the issue that has the endless loading when using the custom font.
  * 2018.03.15 (v1.2.7c) - Removed some event listeners.
+ * 2018.05.09 (v1.2.8) - Supported a face image that is made using SumRndmDde's CharacterCreatorEX plugin.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.2.7';
+Imported.RS_HUD_4m = '1.2.8';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -1486,7 +1487,15 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.createFace = function() {
     var player = this.getPlayer();
-    this._faceBitmap = RS.HUD.loadFace(player.faceName());
+    if(Imported["SumRndmDde Character Creator EX"]) {
+      if(player.hasSetImage()) {
+        this._faceBitmap = player.getCreatorBitmapFace();
+      } else {
+        this._faceBitmap = RS.HUD.loadFace(player.faceName());
+      }
+    } else {
+      this._faceBitmap = RS.HUD.loadFace(player.faceName());
+    }
     this._maskBitmap = RS.HUD.loadPicture(RS.HUD.param.imgMasking);
     this._maskBitmap.addLoadListener(function() {
         this._faceBitmap.addLoadListener(this.circleClippingMask.bind(this, player.faceIndex()));
