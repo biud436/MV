@@ -134,9 +134,7 @@
  * 2018.04.13 (v1.5.7c) - Added the event note tags that can have the wave effect directly for an event graphic.
  * 2018.04.15 (v1.5.7e) - Added a new feature that can apply the wave filter in the battle background images
  * 2018.04.25 (v1.5.7f) - Fixed the note tag error in Battle Test.
- * 2018.05.09 (v1.5.8) :
- * - Now set the variable called '_initWaveFilter' above the function named
- * 'changeWaveEffect' so that the wave filter can work in battle background.
+ * 2018.05.09 (v1.5.8) - Fixed the bug that is not working the wave filter for the battleback image.
  * =============================================================================
  * Terms of Use
  * =============================================================================
