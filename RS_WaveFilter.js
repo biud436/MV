@@ -134,7 +134,9 @@
  * 2018.04.13 (v1.5.7c) - Added the event note tags that can have the wave effect directly for an event graphic.
  * 2018.04.15 (v1.5.7e) - Added a new feature that can apply the wave filter in the battle background images
  * 2018.04.25 (v1.5.7f) - Fixed the note tag error in Battle Test.
- *
+ * 2018.05.09 (v1.5.8) :
+ * - Now set the variable called '_initWaveFilter' above the function named
+ * 'changeWaveEffect' so that the wave filter can work in battle background.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -202,6 +204,8 @@ RS.WaveConfig = RS.WaveConfig || {};
        'uniform sampler2D uSampler;',
 
        'void main(void) {',
+       // '   float time = waveFrequency * sin( wavePhase * (waveTime - vTextureCoord.y / (waveHeight / filterArea.y)) );',
+       // '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);',
        '   float time = waveFrequency * sin( wavePhase * (waveTime - (vTextureCoord.y + vTextureCoord.x) / (waveHeight / filterArea.y)) );',
        '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y) - (origin / filterArea.xy);',
        '   gl_FragColor = texture2D(uSampler, clamp(vCoord, filterClamp.xy, filterClamp.zw));',
@@ -616,13 +620,11 @@ RS.WaveConfig = RS.WaveConfig || {};
     note.forEach(function (mapNote) {
 
       if($dataMap.note.match(/<BATTLEBACK_WAVE[ ]:[ ]*(.*)[ ](.*)>/i)) {
-
+        this._initWaveFilter = true;
         self.changeWaveEffect(true, RegExp.$1, RegExp.$2);
-
       }
 
     }, this);
-    this._initWaveFilter = true;
   };
 
   Spriteset_Battle.prototype.changeWaveEffect = function (cond, fre, spd) {
