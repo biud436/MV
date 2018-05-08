@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_OptimizedMobile.js
- * @plugindesc (v1.0.0) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.0.1) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
