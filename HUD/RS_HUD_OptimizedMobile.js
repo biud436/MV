@@ -1106,7 +1106,15 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.createFace = function() {
     var player = this.getPlayer();
-    this._faceBitmap = RS.HUD.loadFace(player.faceName());
+    if(Imported["SumRndmDde Character Creator EX"]) {
+      if(player.hasSetImage()) {
+        this._faceBitmap = player.getCreatorBitmapFace();
+      } else {
+        this._faceBitmap = RS.HUD.loadFace(player.faceName());
+      }
+    } else {
+      this._faceBitmap = RS.HUD.loadFace(player.faceName());
+    }
     this._maskBitmap = RS.HUD.loadPicture(RS.HUD.param.imgMasking);
     this._maskBitmap.addLoadListener(function() {
         this._faceBitmap.addLoadListener(this.circleClippingMask.bind(this, player.faceIndex()));
