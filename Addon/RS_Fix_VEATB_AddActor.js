@@ -3,7 +3,7 @@
  * @author biud436
  * @help
  * =============================================================================
- * Installation
+ * Introduction
  * =============================================================================
  * This plugin allows you to refresh the atb memebers when adding a new party member 
  * in Victor Engine - Active Time Battle.
