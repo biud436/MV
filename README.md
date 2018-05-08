@@ -64,8 +64,8 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 |RS_Window_SpanishNameInput.js|2018.02.24 |2018.02.24 (v1.0.0) ||
 |RS_WinTray.js|2016.01.21 |2018.02.27 (v1.0.2) ||
 |RS_YoutubePlayer.js|2016.05.08 |2018.01.08 (v1.0.7) ||
-|RS_HUD_4m.js|2015.10.31 |2018.03.15 (v1.2.7c) ||
-|RS_HUD_4m_InBattle.js|2016.05.21 |2017.10.26 (v1.2.4) ||
+|RS_HUD_4m.js|2015.10.31 |2018.05.09 (v1.2.8b) ||
+|RS_HUD_4m_InBattle.js|2016.05.21 |2018.05.09 (v1.2.5) ||
 |RS_HUD_OptimizedMobile.js|2018.03.16 |2018.03.16 (v1.0.0) ||
 |RS_ScreenManager.js|2016.10.04 |2017.11.24 (v1.0.8) |**unstable**|
 |RS_WindowManager.js |2017.08.29 |2017.08.30 (v1.0.3) ||
@@ -84,6 +84,7 @@ And then In Plugin Manager, Select <b>RS_*.js plugin</b> and add it.
 |RS_SimpleProtector.js|.|.||
 |RS_StateIconFixes.js|2016.09.05 |2016.09.05 (v1.0.0) ||
 |RS_ParseWeatherData.js|2018.04.28 |2018.04.28 (v1.0.0) ||
+|RS_Fix_VEATB_AddActor.js|2018.05.08 |2018.05.08 (v1.0.0) ||
 |||||
 
 ### To send feedback ###
