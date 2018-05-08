@@ -485,10 +485,11 @@
  * Change Log
  * =============================================================================
  * 2018.03.16 (v1.0.0) - First Release (forked in RS_HUD_4m)
+ * 2018.05.09 (v1.0.1) - Supported a face image that is made using SumRndmDde's CharacterCreatorEX plugin.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_OptimizedMobile = '1.0.0';
+Imported.RS_HUD_OptimizedMobile = '1.0.1';
 
 var $gameHud = null;
 var RS = RS || {};
