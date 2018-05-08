@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc (v1.2.4) This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.2.5) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
