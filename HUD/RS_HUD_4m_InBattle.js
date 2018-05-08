@@ -174,10 +174,11 @@
  * 2017.06.22 (v1.2.2) - Extended as the ATB gauge bar to support Victor Engine ATB or Ellye ATB plugins.
  * 2017.09.17 (v1.2.3) - Fixed the bug that cause the error when restarting the game.
  * 2017.10.26 (v1.2.4) - This plugin has applied with the new plugin manager features in the plugin parameters.
+ * 2018.05.09 (v1.2.5) - Fixed an issue that is not showing the image after it has been added.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.2.4';
+Imported.RS_HUD_4m_InBattle = '1.2.5';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -186,7 +187,7 @@ RS.HUD.param = RS.HUD.param || {};
 
 (function() {
 
-  if(!Imported.RS_HUD_4m || Imported.RS_HUD_4m < '1.2.2') {
+  if(!Imported.RS_HUD_4m || Imported.RS_HUD_4m < '1.2.8') {
     throw new Error("HUD core's version is lower");
   }
 
@@ -307,10 +308,10 @@ RS.HUD.param = RS.HUD.param || {};
     this.addChild(this._hud);
   };
 
-  HUD.prototype.createExp = function() {
+  HUD.prototype.createExp = function(dirty) {
     var name = ( this.inBattle() && $dataSystem.optDisplayTp ) ? RS.HUD.param.imgTP : RS.HUD.param.imgEXP;
     this._exp = new Sprite(RS.HUD.loadPicture(name));
-    this.addChild(this._exp);
+    this.addImage(this._exp, this.createExp.bind(this), dirty);
   };
 
   HUD.prototype.getTextParams = function(src) {

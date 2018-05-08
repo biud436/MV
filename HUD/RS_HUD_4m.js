@@ -556,6 +556,7 @@
  * 2017.10.27 (v1.2.7b) - Fixed the issue that has the endless loading when using the custom font.
  * 2018.03.15 (v1.2.7c) - Removed some event listeners.
  * 2018.05.09 (v1.2.8) - Supported a face image that is made using SumRndmDde's CharacterCreatorEX plugin.
+ * 2018.05.09 (v1.2.8b) - Fixed an issue that is not showing the image after it has been added.
  */
 
 var Imported = Imported || {};
@@ -1478,10 +1479,12 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.setMemberIndex = function(index) {
     this._memberIndex = index;
+    this._dirty = false;
   }
 
   HUD.prototype.createHud = function() {
     this._hud = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgEmptyHUD));
+    this._hud.z = 0;
     this.addChild(this._hud);
   };
 
@@ -1524,19 +1527,38 @@ RS.HUD.param = RS.HUD.param || {};
 
   };
 
-  HUD.prototype.createHp = function() {
+  HUD.prototype.refreshAllSprites = function () {
+    if(this._dirty) {
+      this.setPosition();
+      this._dirty = false;
+    }
+  };
+
+  HUD.prototype.addImage = function (sprite, cb, dirty) {
+    if(sprite.bitmap.width <= 0) {
+      return setTimeout(function () {
+        cb(true);
+      }, 0);
+    }
+    this.addChild(sprite);
+    if(dirty) this.setPosition();
+  };
+
+  HUD.prototype.createHp = function(dirty) {
+    var self = this;
     this._hp = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgHP));
-    this.addChild(this._hp);
+    this.addImage(this._hp, this.createHp.bind(this), dirty);
   };
 
-  HUD.prototype.createMp = function() {
+  HUD.prototype.createMp = function(dirty) {
+    var self = this;
     this._mp = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgMP));
-    this.addChild(this._mp);
+    this.addImage(this._mp, this.createMp.bind(this), dirty);
   };
 
-  HUD.prototype.createExp = function() {
+  HUD.prototype.createExp = function(dirty) {
     this._exp = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgEXP));
-    this.addChild(this._exp);
+    this.addImage(this._exp, this.createExp.bind(this), dirty);
   };
 
   HUD.prototype.getTextParams = function(src) {
@@ -1566,15 +1588,16 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.setPosition = function() {
     var param = RS.HUD.param;
-    if(this._face) this.setCoord(this._face, param.ptFace);
-    this.setCoord(this._hp, param.ptHP);
-    this.setCoord(this._mp, param.ptMP);
-    this.setCoord(this._exp, param.ptEXP);
-    this.setCoord(this._hpText, param.ptHPText);
-    this.setCoord(this._mpText, param.ptMPText);
-    this.setCoord(this._levelText, param.ptLevelText);
-    this.setCoord(this._expText, param.ptEXPText);
-    this.setCoord(this._nameText, param.ptNameText);
+    if(this._face) this.setCoord(this._face, param.ptFace, 1);
+    this.setCoord(this._hp, param.ptHP, 2);
+    this.setCoord(this._mp, param.ptMP, 3);
+    this.setCoord(this._exp, param.ptEXP, 4);
+    this.setCoord(this._hpText, param.ptHPText, 5);
+    this.setCoord(this._mpText, param.ptMPText, 6);
+    this.setCoord(this._levelText, param.ptLevelText, 7);
+    this.setCoord(this._expText, param.ptEXPText, 8);
+    this.setCoord(this._nameText, param.ptNameText, 9);
+    this.children.sort(Tilemap.prototype._compareChildOrder.bind(this));
   };
 
   HUD.prototype.addText = function(strFunc, params) {
@@ -1689,10 +1712,11 @@ RS.HUD.param = RS.HUD.param || {};
     return value;
   };
 
-  HUD.prototype.setCoord = function(s,obj) {
+  HUD.prototype.setCoord = function(s,obj, z) {
     var oy = (s._callbackFunction instanceof Function) ? (s.bitmap.height / 2) : 0;
     s.x = this._hud.x + obj.x;
     s.y = this._hud.y + obj.y - oy;
+    s.z = z;
     s.visible = obj.visible;
   };
 
