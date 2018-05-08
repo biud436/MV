@@ -1479,7 +1479,6 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.setMemberIndex = function(index) {
     this._memberIndex = index;
-    this._dirty = false;
   }
 
   HUD.prototype.createHud = function() {
@@ -1525,13 +1524,6 @@ RS.HUD.param = RS.HUD.param || {};
     this.addChild(this._face);
     this.setCoord(this._face, RS.HUD.param.ptFace);
 
-  };
-
-  HUD.prototype.refreshAllSprites = function () {
-    if(this._dirty) {
-      this.setPosition();
-      this._dirty = false;
-    }
   };
 
   HUD.prototype.addImage = function (sprite, cb, dirty) {
