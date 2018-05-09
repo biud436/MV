@@ -26,6 +26,7 @@
  * 2017.06.25 (v1.0.1) - Fixed an issue that resets a font setting at each line
  * 2017.07.23 (v1.0.2) - Fixed a bug that the alignment is not processing in a newly line
  * 2017.10.13 (v1.0.3) - Fixed the class name.
+ * 2018.05.09 (v1.0.4) - Fixed the 
  */
 
 
@@ -42,15 +43,17 @@
    Game_Message.prototype.clear = function() {
      alias_Game_Message_clear.call(this);
      this._align = [];
+     this._alignLast = 0;
    };
 
    Game_Message.prototype.setAlign = function(n) {
      this._align = this._align || [];
+     this._alignLast = n;
      this._align.push(n);
    };
 
    Game_Message.prototype.getAlign = function(n) {
-     return this._align.shift() || 0;
+     return this._align.shift() || this._alignLast;
    };
 
    //============================================================================
