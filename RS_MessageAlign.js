@@ -26,7 +26,7 @@
  * 2017.06.25 (v1.0.1) - Fixed an issue that resets a font setting at each line
  * 2017.07.23 (v1.0.2) - Fixed a bug that the alignment is not processing in a newly line
  * 2017.10.13 (v1.0.3) - Fixed the class name.
- * 2018.05.09 (v1.0.4) - Fixed the 
+ * 2018.05.09 (v1.0.4) - Added a variable that stores a last alignment value.
  */
 
 
