@@ -88,47 +88,49 @@ RS.ETC1Filter = RS.ETC1Filter || {};
 
     };
 
-    PIXI.ETC1ForceAlphaFilter = function()
-    {
-        var vertexSrc = PIXI.Filter.defaultVertexSrc.slice(0);
+    function getImgPath() {
+      var path;
 
-        var fragmentSrc = [
-        'varying vec2 vTextureCoord;'
-        ,
-        'uniform sampler2D uSampler;',
-        'uniform vec3 alphaColor;'
+      if(Utils.isNwjs()) {
+        path = StorageManager.localFileDirectoryPath();
+        path = path.replace("save", "img");
+      } else {
+        path = window.location.pathname.slice(0, window.location.pathname.lastIndexOf("/")) + "/img/";
+      }
 
-        'void main(void)',
-        '{',
-        '   vec3 texColor = texture2D(uSampler, vTextureCoord).rgb;',
-        '   if(alphaColor == textColor)'
-        '   {'
-        '     texColor.rgb *= 0.0;',
-        '     gl_FragColor = vec4(texColor, 0.0);',
-        '   }'
-        '   else'
-        '   {'
-        '     texColor.rgb *= 1.0;',
-        '     gl_FragColor = vec4(texColor, 1.0);',
-        '   }'
-        '}        '
-        ].join('\n');
-
-        PIXI.Filter.call( this, vertexSrc, fragmentSrc );
-
-        this.uniforms.alphaColor = [1.0, 0.0, 1.0];
+      return path;
 
     };
 
-    PIXI.ETC1ForceAlphaFilter.prototype = Object.create( PIXI.Filter.prototype );
-    PIXI.ETC1ForceAlphaFilter.prototype.constructor = PIXI.ETC1ForceAlphaFilter;
+    function test2(name) {
+      "use strict";
+      var scene, alphaSprite, sprite, filter, path;
+
+      scene = SceneManager._scene;
+      path = getImgPath();
+            
+      sprite = PIXI.Sprite.fromImage(path + `pictures/${name}.jpg`);
+
+      // 씬에 추가
+      SceneManager._scene.addChild(sprite);
+
+      // 알파 스프라이트 생성
+      alphaSprite = PIXI.Sprite.fromImage(path + `pictures/${name}_alpha.jpg`);
+      sprite.addChild(alphaSprite);
+
+      // 필터 생성
+      filter = new PIXI.ETC1Filter(alphaSprite);
+
+      // 필터 설정
+      sprite.filters = [filter];
+    }
 
     //==================================================================================
     // Sprite
     //==================================================================================
 
     window.PIXI.ETC1Filter = PIXI.ETC1Filter;
-    window.PIXI.ETC1ForceAlphaFilter = PIXI.ETC1ForceAlphaFilter;
-    window.testETC1 = test;
+    window.testCretingAlphaTextureWithPNG = test;
+    window.testCretingAlphaTextureWithJPG = test2;
 
 })();
