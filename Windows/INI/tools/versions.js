@@ -17,9 +17,10 @@ function getRPGMV(basePath) {
 };
 
 var processname = 'python';
-var args = ['./get_steam_path.py'];
+var args = [];
+args.push( path.join(__dirname, "get_steam_path.py") );
 
-cp.execFile('python', args, {env: process.env}, function(err, stdout) {
+var child = cp.execFile('python', args, {encoding: 'utf8'}, function(err, stdout, stderr) {
     if(err) {
         console.warn(err);
         console.log("error");
@@ -30,21 +31,21 @@ cp.execFile('python', args, {env: process.env}, function(err, stdout) {
     var filePath = path.normalize(path.win32.join(rmmvPath, "RPGMV.exe"));
 
     var fullPath = filePath.split("\\");
-    var driveName = fullPath.shift();
+    var driveName = fullPath.shift(); // process.env.SystemRoot
     fullPath = fullPath.join("/");
     filePath = driveName + "///" + fullPath;    
 
     var version = vi(filePath);
     version = String(version["ProductVersion"]);
     if(version >= "1.6.1") {
-        process.stdout.write("v10.0.0");
         console.log("v10.0.0");
     } else {
-        process.stdout.write("v1.2.0");
         console.log("v1.2.0");
     }    
 
 });
+
+child.stdin.end(); 
 
 // var processname = 'python';
 // var args = [];
