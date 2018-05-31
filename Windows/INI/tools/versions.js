@@ -16,36 +16,39 @@ function getRPGMV(basePath) {
     return filePath;
 };
 
-var processname = 'python';
-var args = [];
-args.push( path.join(__dirname, "get_steam_path.py") );
+if(process.platform.includes("win") >= 0) {
 
-var child = cp.execFile('python', args, {encoding: 'utf8'}, function(err, stdout, stderr) {
-    if(err) {
-        console.warn(err);
-        console.log("error");
-        return;
-    }
+    var processname = 'python';
+    var args = [];
+    args.push( path.join(__dirname, "get_steam_path.py") );
+    
+    var child = cp.execFile('python', args, {encoding: 'utf8'}, function(err, stdout, stderr) {
+        if(err) {
+            console.log("error");
+            return;
+        }
+    
+        var rmmvPath = stdout.replace("\r\n", "");
+        var filePath = path.normalize(path.win32.join(rmmvPath, "RPGMV.exe"));
+    
+        var fullPath = filePath.split("\\");
+        var driveName = fullPath.shift(); // process.env.SystemRoot
+        fullPath = fullPath.join("/");
+        filePath = driveName + "///" + fullPath;    
+    
+        var version = vi(filePath);
+        version = String(version["ProductVersion"]);
+        if(version >= "1.6.1") {
+            console.log("v10.0.0");
+        } else {
+            console.log("v1.2.0");
+        }    
+    
+    });
+    
+    child.stdin.end(); 
 
-    var rmmvPath = stdout.replace("\r\n", "");
-    var filePath = path.normalize(path.win32.join(rmmvPath, "RPGMV.exe"));
-
-    var fullPath = filePath.split("\\");
-    var driveName = fullPath.shift(); // process.env.SystemRoot
-    fullPath = fullPath.join("/");
-    filePath = driveName + "///" + fullPath;    
-
-    var version = vi(filePath);
-    version = String(version["ProductVersion"]);
-    if(version >= "1.6.1") {
-        console.log("v10.0.0");
-    } else {
-        console.log("v1.2.0");
-    }    
-
-});
-
-child.stdin.end(); 
+} else {
 
 // var processname = 'python';
 // var args = [];
@@ -91,3 +94,5 @@ child.stdin.end();
 //         console.log(code);
 //     }
 //   });
+
+}
