@@ -81,7 +81,7 @@ ECHO .
 :BUILD
 CHOICE /C YN -M "Do you want to build the library?"
 IF %ERRORLEVEL%==1 (
-	nw-gyp build --target=%MV_VERSION% --arch=%ARCH%
+	cmd /c nw-gyp build --target=%MV_VERSION% --arch=%ARCH%
 	ECHO .
 	PAUSE >NUL
 ) ELSE (
