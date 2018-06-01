@@ -1,0 +1,11 @@
+{
+  "name": "resolutions",
+  "version": "1.0.0",
+  "description": ".",
+  "dependencies": {
+    "nan": "^2.10.0",
+    "node-gyp": "^3.6.2",
+    "win-version-info": "^2.0.0"
+  },
+  "author": ""
+}

@@ -309,7 +309,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       "Aspect Ratio": "Aspect Ratio",
       "Display Resolutions": "Display Resolutions",
       "Full Screen": "Full Screen",
-      "NotFoundError": "Couldn't find the program needed to set the resolution",
+      "NotFoundError": "Couldn't find the node library needed to set the resolution",
       "MobileResolutions" : ["Low", "Medium", "High", "Very High"]
     },
     "ko": {
@@ -317,7 +317,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       "Aspect Ratio": "종횡비",
       "Display Resolutions": "해상도 목록",
       "Full Screen": "전체 화면",
-      "NotFoundError": "해상도 설정에 필요한 프로그램을 찾지 못했습니다",
+      "NotFoundError": "해상도 설정에 필요한 라이브러리를 찾지 못했습니다",
       "MobileResolutions" : ["낮음", "보통", "높음", "매우 높음"]
     },
     "get": function (type) {
@@ -328,55 +328,40 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
   $.localization = new PrivateLocalization();
 
-  //============================================================================
-  // 새로운 자식 프로세스 생성
-  //============================================================================
-
   (function(){
     "use strict";
 
     if( Utils.isNwjs() ) {
 
-      var path = require('path'),
-          fs = require('fs'),
-          child_process = require('child_process');
+      var path = require('path')
+          , fs = require('fs');
 
       var base = path.dirname(process.mainModule.filename);
 
       if(process && process.platform && process.platform === 'win32') {
 
-        var fileName = path.join(base,"js/libs/DisplaySettings.exe");
+        var fileVersion = "v1.2.0";
+        var processArch = process.arch;
+        if(Utils.RPGMAKER_VERSION >= "1.6.1") {
+          fileVersion = "v10.0.0";
+        }
+
+        var fileName = path.join(base,`js/libs/${fileVersion}-winDisplaySettings-${processArch}.node`);
 
         // 파일이 존재한다면
         if(fs.existsSync(fileName)) {
-          // 프로젝트명을 읽는다.
-          var projectName = document.querySelector('title').text;
-          // 자식 프로세스를 실행한다.
-          var cmdProcess = child_process.exec(`cmd.exe /K ${fileName} /c`);
 
-          settings.pcGraphicsArray = settings.pcGraphicsTempArray;
+          var display = require(fileName);
 
-          cmdProcess.stderr.on('data', function (data) {
-            console.log(cmdProcess + " : " + data);
+          // 해상도가 hz으로 같은 것도 나오기 때문에 중복 제거를 해야 한다.
+          var items = display.GetDisplaySettings();
+          items = items.filter(function(i, idx, item) {
+            return item.indexOf(i) === idx;
           });
 
-          cmdProcess.stdout.on('data', function(data) {
-            settings.pcGraphicsArray = data.split('\n').filter(function(i, idx, item) {
-              return item.indexOf(i) === idx;
-            });
-            settings.state = "initialized";
-          });
+          settings.pcGraphicsArray = items;
 
-          process.on('exit', function () {
-            cmdProcess.exec('taskkill /pid ' + cmdProcess.pid + ' /T /F');
-          });
-
-          // 페이지를 떠날 때 물어보는 것. 주석을 해제하면 정말 물어본다.
-          window.addEventListener('beforeunload', function (ev) {
-            cmdProcess.kill();
-            // ev.returnValue = "페이지를 정말 떠나시겠습니까?";
-            return "\o/";
-          }, false);
+          settings.state = "initialized";
 
         } else {
           window.alert($.localization.get("NotFoundError"));
