@@ -61,11 +61,11 @@ RS.MSGBOX = RS.MSGBOX || {};
     };
 
     $.writeString = function (appName, keyName, str, fileName) {
-
+        $.module.WriteString(appName, keyName, str, fileName);
     };
 
     $.readString = function (appName, keyName, fileName) {
-
+        $.module.ReadString(appName, keyName, fileName);
     };
 
     __msg.MB_TYPE = {
