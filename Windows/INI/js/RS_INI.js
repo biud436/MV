@@ -123,7 +123,7 @@ RS.MSGBOX = RS.MSGBOX || {};
         if(!$.module) return;
         titleName = titleName || document.title;
         content = content || "";        
-        var id = $.module.MessageBox(titleName, content, type);
+        var id = $.module.MessageBox(content, titleName, type);
         return id;
     };
 
@@ -133,7 +133,7 @@ RS.MSGBOX = RS.MSGBOX || {};
         titleName = titleName || document.title;
         content = content || "";
 
-        var id = $.module.MessageBox(titleName, content, __msg.MB_YESNO);
+        var id = $.module.MessageBox(content, titleName,__msg.MB_YESNO);
         var ret = (id === __msg.IDYES) ? true : false;
 
         return ret;
