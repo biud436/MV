@@ -11,7 +11,7 @@
 	#define _UNICODE
 #endif
 
-namespace demo {
+namespace INI {
 
 using v8::FunctionCallbackInfo;
 using v8::Isolate;
@@ -19,6 +19,8 @@ using v8::Local;
 using v8::Object;
 using v8::String;
 using v8::Value;
+
+HWND g_hWnd = NULL;
 
 #if defined(_WIN32) || defined(WIN32)
 
@@ -165,11 +167,60 @@ using v8::Value;
 			info.GetReturnValue().Set(Nan::EmptyString());
 		}
 
-	}	
+	}
+
+	BOOL CALLBACK EnumWindowProc(HWND hWnd, LPARAM lParam)
+	{
+		DWORD dwPID = 0;
+
+		GetWindowThreadProcessId(hWnd, &dwPID);
+
+		if (dwPID == (DWORD)lParam)
+		{
+			g_hWnd = hWnd;
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	HWND GetWindowHandleFromPID(DWORD dwPID)
+	{
+		EnumWindows(EnumWindowProc, dwPID);
+		
+		return g_hWnd;
+	}
+
+	void RSCreateMessageBox(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+		
+	if (info.Length() < 3) {
+	 	Nan::ThrowTypeError("Wrong number of arguments");
+	 	return;
+	}
+
+	if (!info[0]->IsString() || !info[1]->IsString() || 
+	 	!info[2]->IsNumber()) {
+	 	Nan::ThrowTypeError("Wrong arguments");
+	 	return;
+	}		
+
+	HWND hWnd = GetWindowHandleFromPID(GetCurrentProcessId());
+	LPCWSTR lpText = ConvertUtf8ToUnicode(info[0]);
+	LPCWSTR lpCaption = ConvertUtf8ToUnicode(info[1]);
+	UINT uType = static_cast<int>(info[2]->NumberValue());
+
+	int nIdValue = MessageBoxW(hWnd, lpText, lpCaption, uType);
+
+	v8::Local<v8::Number> value = Nan::New(nIdValue);
+
+	info.GetReturnValue().Set(value);
+
+	}
 
 	void Init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
 		exports->Set(Nan::New("WriteString").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(WriteInitializationFile)->GetFunction());
 		exports->Set(Nan::New("ReadString").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(ReadInitializationFile)->GetFunction());
+		exports->Set(Nan::New("MessageBox").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(RSCreateMessageBox)->GetFunction());
 	}
 
 #else
