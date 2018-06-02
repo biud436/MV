@@ -45,7 +45,7 @@ RS.MSGBOX = RS.MSGBOX || {};
             var path = require('path');
             var version = process.versions.node;
             var arch = process.arch;
-            var rootDir = path.join(process.mainModule.filename, "..", "js", "libs", `${version}-INI-${arch}`);
+            var rootDir = path.join(process.mainModule.filename, "..", "js", "libs", `v${version}-INI-${arch}`);
             rootDir = rootDir.split("\\");
             var driveName = rootDir.shift();
             rootDir = rootDir.join("/");
@@ -133,7 +133,7 @@ RS.MSGBOX = RS.MSGBOX || {};
         titleName = titleName || document.title;
         content = content || "";
 
-        var id = $.module.MessageBox(content, titleName,__msg.MB_YESNO);
+        var id = $.module.MessageBox(content, titleName, __msg.MB_TYPE.MB_YESNO);
         var ret = (id === __msg.IDYES) ? true : false;
 
         return ret;
