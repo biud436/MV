@@ -99,7 +99,7 @@ HWND g_hWnd = NULL;
 		return szUtf8;
 	}
 
-	void WriteInitializationFile(const Nan::FunctionCallbackInfo<v8::Value>& info) {	
+	NAN_METHOD(WriteInitializationFile) {
 
 		if (info.Length() < 4) {
 			Nan::ThrowTypeError("Wrong number of arguments");
@@ -132,7 +132,7 @@ HWND g_hWnd = NULL;
 
 	}
 
-	void ReadInitializationFile(const Nan::FunctionCallbackInfo<v8::Value>& info) {	
+	NAN_METHOD(ReadInitializationFile) {
 
 		if (info.Length() < 3) {
 			Nan::ThrowTypeError("Wrong number of arguments");
@@ -164,7 +164,7 @@ HWND g_hWnd = NULL;
 			info.GetReturnValue().Set(value);
 		}
 		else {
-			info.GetReturnValue().Set(Nan::EmptyString());
+			info.GetReturnValue().SetEmptyString();
 		}
 
 	}
@@ -191,8 +191,8 @@ HWND g_hWnd = NULL;
 		return g_hWnd;
 	}
 
-	void RSCreateMessageBox(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-		
+	NAN_METHOD(RSCreateMessageBox) {
+
 	if (info.Length() < 3) {
 	 	Nan::ThrowTypeError("Wrong number of arguments");
 	 	return;
@@ -209,7 +209,7 @@ HWND g_hWnd = NULL;
 	LPCWSTR lpCaption = ConvertUtf8ToUnicode(info[1]);
 	UINT uType = static_cast<int>(info[2]->NumberValue());
 
-	int nIdValue = MessageBoxW(hWnd, lpText, lpCaption, uType);
+	int nIdValue = MessageBoxW(hWnd, lpText, lpCaption, uType | MB_TOPMOST);
 
 	v8::Local<v8::Number> value = Nan::New(nIdValue);
 
@@ -217,10 +217,16 @@ HWND g_hWnd = NULL;
 
 	}
 
-	void Init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
-		exports->Set(Nan::New("WriteString").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(WriteInitializationFile)->GetFunction());
-		exports->Set(Nan::New("ReadString").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(ReadInitializationFile)->GetFunction());
-		exports->Set(Nan::New("MessageBox").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(RSCreateMessageBox)->GetFunction());
+	//void Init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
+	//	exports->Set(Nan::New("WriteString").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(WriteInitializationFile)->GetFunction());
+	//	exports->Set(Nan::New("ReadString").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(ReadInitializationFile)->GetFunction());
+	//	exports->Set(Nan::New("MessageBox").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(RSCreateMessageBox)->GetFunction());
+	//}
+
+	NAN_MODULE_INIT(Init) {
+		Export(target, "WriteString", WriteInitializationFile); // instead of NAN_EXPORT
+		Export(target, "ReadString", ReadInitializationFile);
+		Export(target, "MessageBox", RSCreateMessageBox);
 	}
 
 #else
