@@ -232,10 +232,13 @@ HWND g_hWnd = NULL;
 #else
 
 	void EmptyFunction(const Nan::FunctionCallbackInfo<v8::Value>& info) {	
-		info.GetReturnValue().Set(Nan::Undefined());
+		info.GetReturnValue().SetUndefined();
 	}
 
-	void Init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
+	NAN_MODULE_INIT(Init) {
+		Export(target, "WriteString", EmptyFunction);
+		Export(target, "ReadString", EmptyFunction);
+		Export(target, "MessageBox", EmptyFunction);
 	}
 
 #endif
