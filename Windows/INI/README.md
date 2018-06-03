@@ -17,7 +17,7 @@ These functions simply create an INI file in Windows OS.
 
 ```javascript
 RS.INI.writeString("Font", "size", "28", "./font.ini");
-var fontSize = RS.INI.readString("Font", "size", , "./font.ini");
+var fontSize = RS.INI.readString("Font", "size", "./font.ini");
 
 // Characters with UTF-8 format are also OK.
 RS.INI.writeString("폰트 설정", "크기", "28", "./폰트 설정.ini");
