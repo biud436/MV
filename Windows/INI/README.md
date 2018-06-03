@@ -19,3 +19,6 @@ These functions simply create an INI file in Windows OS.
 RS.INI.writeString("appName", "keyName", "str", "fileName.ini");
 var value = RS.INI.readString("appName", "keyName", "fileName.ini");
 ```
+
+# Supports
+This plugin works fine only in RPG Maker MV 1.6.1 or above. and then this is just one platform in mind.
