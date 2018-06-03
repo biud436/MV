@@ -13,3 +13,11 @@ if(ret === RS.MSGBOX.MB_TYPE.IDYES) {
     RS.MSGBOX.open("안내", "아니오(NO) 버튼을 눌렀습니다.", iconType);
 }
 ```
+
+These functions simply create an INI file in Windows OS.
+
+```javascript
+RS.INI.initModule();
+RS.INI.writeString("appName", "keyName", "str", "fileName.ini");
+var value = RS.INI.readString("appName", "keyName", "fileName.ini");
+```
