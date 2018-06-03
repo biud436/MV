@@ -1,4 +1,4 @@
-# MessageBox
+# Descriptions
 ![msgbox](test/msgbox_test_161.PNG)
 
 The preceding screenshot shows the message box such as RPG Maker VX Ace. These functions simply create the message box and check which of the button is clicked. put this script in your game's script command.
