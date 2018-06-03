@@ -134,7 +134,7 @@ RS.MSGBOX = RS.MSGBOX || {};
         content = content || "";
 
         var id = $.module.MessageBox(content, titleName, __msg.MB_TYPE.MB_YESNO);
-        var ret = (id === __msg.IDYES) ? true : false;
+        var ret = (id === __msg.MB_TYPE.IDYES) ? true : false;
 
         return ret;
     };
