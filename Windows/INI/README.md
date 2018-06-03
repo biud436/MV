@@ -4,7 +4,6 @@
 The preceding screenshot shows the message box such as RPG Maker VX Ace. These functions simply create the message box and check which of the button is clicked. put this script in your game's script command.
 
 ```javascript
-RS.INI.initModule();
 var ret = RS.MSGBOX.yesno("안내", "게임을 종료하시겠습니까?");
 var iconType = RS.MSGBOX.MB_TYPE.MB_OK | RS.MSGBOX.MB_TYPE.MB_ICONINFORMATION;
 if(ret === RS.MSGBOX.MB_TYPE.IDYES) {
@@ -17,7 +16,6 @@ if(ret === RS.MSGBOX.MB_TYPE.IDYES) {
 These functions simply create an INI file in Windows OS.
 
 ```javascript
-RS.INI.initModule();
 RS.INI.writeString("appName", "keyName", "str", "fileName.ini");
 var value = RS.INI.readString("appName", "keyName", "fileName.ini");
 ```

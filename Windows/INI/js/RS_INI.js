@@ -139,4 +139,6 @@ RS.MSGBOX = RS.MSGBOX || {};
         return ret;
     };
 
+    $.initModule();
+
 })(RS.INI, RS.MSGBOX);
