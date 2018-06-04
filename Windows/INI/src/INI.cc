@@ -191,6 +191,24 @@ HWND g_hWnd = NULL;
 		return g_hWnd;
 	}
 
+	HWND FindWindowHandle() {
+
+		// Find Window
+		HWND hWnd = ::FindWindow("Chrome_RenderWidgetHostHWND", NULL);
+		if(hWnd == NULL) {
+			hWnd = ::FindWindow("Chrome_WidgetWin_0", NULL);
+		}		
+		if(hWnd == NULL) {
+			hWnd = GetWindowHandleFromPID(GetCurrentProcessId());
+		}
+		if(hWnd == NULL) {
+			Nan::ThrowError("Cannot find the window handle");
+			return NULL;
+		}
+
+		return hWnd;
+	}
+
 	NAN_METHOD(RSCreateMessageBox) {
 
 		if (info.Length() < 3) {
@@ -204,15 +222,7 @@ HWND g_hWnd = NULL;
 			return;
 		}		
 
-		HWND hWnd = ::FindWindow("Chrome_RenderWidgetHostHWND", NULL);
-		if(hWnd == NULL) {
-			hWnd = GetWindowHandleFromPID(GetCurrentProcessId());
-		}
-
-		if(hWnd == NULL) {
-			Nan::ThrowError("Cannot find the window handle");
-			return;
-		}	
+		HWND hWnd = FindWindowHandle();
 
 		LPCWSTR lpText = ConvertUtf8ToUnicode(info[0]);
 		LPCWSTR lpCaption = ConvertUtf8ToUnicode(info[1]);
@@ -246,15 +256,7 @@ HWND g_hWnd = NULL;
 		}
 		
 		// Find Window
-		HWND hWnd = ::FindWindow("Chrome_RenderWidgetHostHWND", NULL);
-		if(hWnd == NULL) {
-			hWnd = GetWindowHandleFromPID(GetCurrentProcessId());
-		}
-
-		if(hWnd == NULL) {
-			Nan::ThrowError("Cannot find the window handle");
-			return;
-		}
+		HWND hWnd = FindWindowHandle();
 			
 		::SetWindowLong(hWnd, GWL_EXSTYLE, ::GetWindowLong(0, GWL_EXSTYLE) | WS_EX_LAYERED);
 		::SetLayeredWindowAttributes(hWnd, 0, static_cast<int>(value), LWA_ALPHA);

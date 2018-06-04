@@ -25,6 +25,7 @@ gui.on('close', function() {
 if you might want to create the message box simply, you will check these belows.
 
 ```javascript
+// It is the same as alert() function.
 Utils.msgbox("Hello");
 
 Utils.yesno("Do you want to download the help file?", function() {
