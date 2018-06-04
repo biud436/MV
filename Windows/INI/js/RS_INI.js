@@ -173,6 +173,15 @@ RS.MSGBOX = RS.MSGBOX || {};
     };
 
     /**
+     * Create the error msg.
+     * @param {String} content 
+     */
+    Utils.errorMsg = function (content) {
+        var title = document.title;
+        return __msg.open(title, content,  __msg.MB_TYPE.MB_OK | __msg.MB_TYPE.MB_ICONERROR);
+    };
+
+    /**
      * Create the message box that has yes and no buttons and show up it on window.
      * @param {String} content 
      * @param {Function} yes 
