@@ -328,6 +328,15 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
   $.localization = new PrivateLocalization();
 
+  Utils.getAbsolutePath = function(defaultPath) {
+    var fileName = defaultPath.split("\\");
+    var driveName = fileName.shift();
+    fileName = driveName + "//" + fileName.join("/");
+
+    return fileName;
+
+  };
+
   (function(){
     "use strict";
 
@@ -336,7 +345,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       var path = require('path')
           , fs = require('fs');
 
-      var base = path.dirname(process.mainModule.filename);
+      var base = process.mainModule.filename;
 
       if(process && process.platform && process.platform === 'win32') {
 
@@ -352,10 +361,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
           fs.copyFile(process.execPath, targetName, "utf8", function(err, data) {});
         }
 
-        var fileName = path.join(base, ".." ,`js/libs/${fileVersion}-winDisplaySettings-${processArch}`);
-        fileName = fileName.split("\\");
-        var driveName = fileName.shift();
-        fileName = driveName + "//" + fileName.join("/");
+        var fileName = path.join(base, ".." ,`js/libs/${fileVersion}-winDisplaySettings-${processArch}.node`);
+        fileName = Utils.getAbsolutePath(fileName);
 
         // 파일이 존재한다면
         if(fs.existsSync(fileName)) {
@@ -364,9 +371,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
           // 해상도가 hz으로 같은 것도 나오기 때문에 중복 제거를 해야 한다.
           var items = display.GetDisplaySettings();
-          items = items.filter(function(i, idx, item) {
-            return item.indexOf(i) === idx;
-          });
 
           settings.pcGraphicsArray = items;
 
@@ -517,11 +521,20 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     // Set a custom aspect ratio
     config = new CustomScreenConfig(settings.customAspectRatio[0], settings.customAspectRatio[1]);
 
+    if( Array.isArray(data) ) {
+      data = data.map(function(i) {
+        return i[0] + " x " + i[1];
+      }, this);
+      data = data.filter(function(i, idx, item) {
+        return item.indexOf(i) === idx;
+      });      
+    }
+
     data.forEach(function (i) {
       if(i.match(getTargetRegex)) {
-
-        tw = Number(RegExp.$1);
-        th = Number(RegExp.$2);
+        
+          tw = Number(RegExp.$1);
+          th = Number(RegExp.$2);
 
         if(type === 'portrait') {
           if(maxSW > maxSH) {
