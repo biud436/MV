@@ -236,41 +236,10 @@ HWND g_hWnd = NULL;
 
 	}
 
-	NAN_METHOD(SetAlpha) {
-
-		v8::Isolate* isolate = info.GetIsolate();
-		
-		if (info.Length() < 1) {
-			Nan::ThrowTypeError("Wrong number of arguments");
-			return;
-		}
-
-		double value = info[0]->NumberValue();
-		
-		if(value > 255) {
-			value = 255.0f;
-		}
-		
-		if(value < 0) {
-			value = 0.0f;
-		}
-		
-		// Find Window
-		HWND hWnd = FindWindowHandle();
-			
-		::SetWindowLong(hWnd, GWL_EXSTYLE, ::GetWindowLong(0, GWL_EXSTYLE) | WS_EX_LAYERED);
-		::SetLayeredWindowAttributes(hWnd, 0, static_cast<int>(value), LWA_ALPHA);
-		::ShowWindow(hWnd, SW_SHOWNORMAL);
-
-		info.GetReturnValue().Set(value);
-
-	}	
-
 	NAN_MODULE_INIT(Init) {
 		Export(target, "WriteString", WriteInitializationFile); // instead of NAN_EXPORT
 		Export(target, "ReadString", ReadInitializationFile);
 		Export(target, "MessageBox", RSCreateMessageBox);
-		NAN_EXPORT(target, SetAlpha);
 	}
 
 #else
@@ -283,7 +252,6 @@ HWND g_hWnd = NULL;
 		Export(target, "WriteString", EmptyFunction);
 		Export(target, "ReadString", EmptyFunction);
 		Export(target, "MessageBox", EmptyFunction);
-		NAN_EXPORT(target, SetAlpha);
 	}
 
 #endif

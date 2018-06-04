@@ -196,15 +196,6 @@ RS.MSGBOX = RS.MSGBOX || {};
         }
     };
 
-    /**
-     * Allows you to set the window opacity sets it between 0 and 255.
-     * @param {Number} alpha set
-     */
-    Graphics.setAlpha = function(alpha) {
-        if(!$.module) return;
-        $.module.SetAlpha(alpha);
-    };
-
     $.initModule();
 
 })(RS.INI, RS.MSGBOX);

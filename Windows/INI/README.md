@@ -47,11 +47,5 @@ var fontSize = RS.INI.readString("폰트 설정", "크기", "./폰트 설정.ini
 
 ```
 
-This function sets the window opacity. it allows you to set the window opacity sets it between 0 and 255.
-
-```javascript
-Graphics.setAlpha(128);
-```
-
 # Supports
 This plugin works fine only in RPG Maker MV 1.6.1 or above. and then this is just one platform in mind.
