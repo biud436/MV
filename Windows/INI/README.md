@@ -22,11 +22,13 @@ gui.on('close', function() {
 });
 ```
 
+![errorMsg](test/errorMsg.PNG)
+
 if you might want to create the message box simply, you will check these belows.
 
 ```javascript
-// It is the same as alert() function.
-Utils.msgbox("Hello");
+
+Utils.errorMsg("에러가 발생하였습니다. 개발자에게 문의하세요");
 
 Utils.yesno("Do you want to download the help file?", function() {
     // this callback function listens for the 'yes' button being pressed.
