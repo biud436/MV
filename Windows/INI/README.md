@@ -28,6 +28,7 @@ if you might want to create the message box simply, you will check these belows.
 
 ```javascript
 
+// The title of message box is set as a game title automatically.
 Utils.errorMsg("에러가 발생하였습니다. 개발자에게 문의하세요");
 
 Utils.yesno("Do you want to download the help file?", function() {
@@ -48,6 +49,17 @@ RS.INI.writeString("폰트 설정", "크기", "28", "./폰트 설정.ini");
 var fontSize = RS.INI.readString("폰트 설정", "크기", "./폰트 설정.ini");
 
 ```
+
+# How to setup?
+Run the file called 'latest.cmd', then the main library will be located at **./bin/v10.0.0-INI-x64.node**
+
+Or you can use prebuilt libraries!
+
+[v10.0.0-INI-ia32.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v10.0.0-INI-ia32.node)
+[v10.0.0-INI-x64.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v10.0.0-INI-x64.node)
+
+if you have the library called *.node already, please place it under your **/js/libs directory** and then
+insert the plugin called **"RS_INI.js"** in your Plugin Manager.
 
 # Supports
 This plugin works fine only in RPG Maker MV 1.6.1 or above. and then this is just one platform in mind.
