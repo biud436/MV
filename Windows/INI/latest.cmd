@@ -3,25 +3,20 @@
 
 cmd /c npm install
 
-REM set FILENAME=%~f0
 set ARGS1=%1
+set TOOl=nw-gyp
 
 if "%ARGS1%" == ""  (
     set ARGS1="0.30.2"
+) else (
+    set ARGS1=v1.2.0
+    set TOOl=node-gyp 
 )
 
-cmd /c nw-gyp configure --target=%ARGS1% --arch=x64
-cmd /c nw-gyp build --target=%ARGS1% --arch=x64
-cmd /c nw-gyp configure --target=%ARGS1% --arch=ia32
-cmd /c nw-gyp build --target=%ARGS1% --arch=ia32
-
-REM if "%ARGS1%" == "0.30.2"  (
-REM     set ARGS1="0.12.3"
-REM ) else (
-REM     set ARGS1="0.30.2"
-REM )
-
-REM FILENAME ARGS1
+cmd /c %TOOl% configure --target=%ARGS1% --arch=x64
+cmd /c %TOOl% build --target=%ARGS1% --arch=x64
+cmd /c %TOOl% configure --target=%ARGS1% --arch=ia32
+cmd /c %TOOl% build --target=%ARGS1% --arch=ia32
 
 @ENDLOCAL
 GOTO :EOF

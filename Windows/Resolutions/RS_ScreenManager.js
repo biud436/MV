@@ -346,7 +346,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
           fileVersion = "v10.0.0";
         }
 
-        if(process.versions.nw == "0.12.3" && process.execPath.contains("Game.exe")) {
+        if(process.versions.node == "1.2.0" && process.execPath.contains("Game.exe")) {
           window.alert(`Please you must change the name of the executable file to nw.exe`);
           var targetName = path.join(process.execPath, "..", "nw.exe");
           fs.copyFile(process.execPath, targetName, "utf8", function(err, data) {});
