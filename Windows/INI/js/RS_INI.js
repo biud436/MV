@@ -43,6 +43,7 @@ RS.MSGBOX = RS.MSGBOX || {};
             
             "use strict";
             var path = require('path');
+            var fs = require('fs');
             var version = process.versions.node;
             var arch = process.arch;
             var rootDir = path.join(process.mainModule.filename, "..", "js", "libs", `v${version}-INI-${arch}`);
@@ -50,6 +51,13 @@ RS.MSGBOX = RS.MSGBOX || {};
             var driveName = rootDir.shift();
             rootDir = rootDir.join("/");
             rootDir = driveName + "//" + rootDir;
+
+            if(process.versions.node == "1.2.0" && process.execPath.contains("Game.exe")) {
+                window.alert(`Please you must change the name of the executable file to nw.exe`);
+                var targetName = path.join(process.execPath, "..", "nw.exe");
+                fs.copyFile(process.execPath, targetName, "utf8", function(err, data) {});
+                return;
+            }            
 
             $.module  = require(rootDir);
             $.state = "initialized";
