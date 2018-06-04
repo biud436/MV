@@ -193,40 +193,82 @@ HWND g_hWnd = NULL;
 
 	NAN_METHOD(RSCreateMessageBox) {
 
-	if (info.Length() < 3) {
-	 	Nan::ThrowTypeError("Wrong number of arguments");
-	 	return;
+		if (info.Length() < 3) {
+			Nan::ThrowTypeError("Wrong number of arguments");
+			return;
+		}
+
+		if (!info[0]->IsString() || !info[1]->IsString() || 
+			!info[2]->IsNumber()) {
+			Nan::ThrowTypeError("Wrong arguments");
+			return;
+		}		
+
+		HWND hWnd = ::FindWindow("Chrome_RenderWidgetHostHWND", NULL);
+		if(hWnd == NULL) {
+			hWnd = GetWindowHandleFromPID(GetCurrentProcessId());
+		}
+
+		if(hWnd == NULL) {
+			Nan::ThrowError("Cannot find the window handle");
+			return;
+		}	
+
+		LPCWSTR lpText = ConvertUtf8ToUnicode(info[0]);
+		LPCWSTR lpCaption = ConvertUtf8ToUnicode(info[1]);
+		UINT uType = static_cast<int>(info[2]->NumberValue());
+
+		int nIdValue = MessageBoxW(hWnd, lpText, lpCaption, uType | MB_TOPMOST);
+
+		v8::Local<v8::Number> value = Nan::New(nIdValue);
+
+		info.GetReturnValue().Set(value);
+
 	}
 
-	if (!info[0]->IsString() || !info[1]->IsString() || 
-	 	!info[2]->IsNumber()) {
-	 	Nan::ThrowTypeError("Wrong arguments");
-	 	return;
-	}		
+	NAN_METHOD(SetAlpha) {
 
-	HWND hWnd = GetWindowHandleFromPID(GetCurrentProcessId());
-	LPCWSTR lpText = ConvertUtf8ToUnicode(info[0]);
-	LPCWSTR lpCaption = ConvertUtf8ToUnicode(info[1]);
-	UINT uType = static_cast<int>(info[2]->NumberValue());
+		v8::Isolate* isolate = info.GetIsolate();
+		
+		if (info.Length() < 1) {
+			Nan::ThrowTypeError("Wrong number of arguments");
+			return;
+		}
 
-	int nIdValue = MessageBoxW(hWnd, lpText, lpCaption, uType | MB_TOPMOST);
+		double value = info[0]->NumberValue();
+		
+		if(value > 255) {
+			value = 255.0f;
+		}
+		
+		if(value < 0) {
+			value = 0.0f;
+		}
+		
+		// Find Window
+		HWND hWnd = ::FindWindow("Chrome_RenderWidgetHostHWND", NULL);
+		if(hWnd == NULL) {
+			hWnd = GetWindowHandleFromPID(GetCurrentProcessId());
+		}
 
-	v8::Local<v8::Number> value = Nan::New(nIdValue);
+		if(hWnd == NULL) {
+			Nan::ThrowError("Cannot find the window handle");
+			return;
+		}
+			
+		::SetWindowLong(hWnd, GWL_EXSTYLE, ::GetWindowLong(0, GWL_EXSTYLE) | WS_EX_LAYERED);
+		::SetLayeredWindowAttributes(hWnd, 0, static_cast<int>(value), LWA_ALPHA);
+		::ShowWindow(hWnd, SW_SHOWNORMAL);
 
-	info.GetReturnValue().Set(value);
+		info.GetReturnValue().Set(value);
 
-	}
-
-	//void Init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
-	//	exports->Set(Nan::New("WriteString").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(WriteInitializationFile)->GetFunction());
-	//	exports->Set(Nan::New("ReadString").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(ReadInitializationFile)->GetFunction());
-	//	exports->Set(Nan::New("MessageBox").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(RSCreateMessageBox)->GetFunction());
-	//}
+	}	
 
 	NAN_MODULE_INIT(Init) {
 		Export(target, "WriteString", WriteInitializationFile); // instead of NAN_EXPORT
 		Export(target, "ReadString", ReadInitializationFile);
 		Export(target, "MessageBox", RSCreateMessageBox);
+		NAN_EXPORT(target, SetAlpha);
 	}
 
 #else
@@ -239,6 +281,7 @@ HWND g_hWnd = NULL;
 		Export(target, "WriteString", EmptyFunction);
 		Export(target, "ReadString", EmptyFunction);
 		Export(target, "MessageBox", EmptyFunction);
+		NAN_EXPORT(target, SetAlpha);
 	}
 
 #endif

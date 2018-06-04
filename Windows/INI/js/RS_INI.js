@@ -60,10 +60,23 @@ RS.MSGBOX = RS.MSGBOX || {};
 
     };
 
+    /**
+     * Write the ini file.
+     * @param {String} appName 
+     * @param {String} keyName 
+     * @param {String} str 
+     * @param {String} fileName The file extension must end with .ini
+     */
     $.writeString = function (appName, keyName, str, fileName) {
         $.module.WriteString(appName, keyName, str, fileName);
     };
 
+    /**
+     * Read the ini file.
+     * @param {String} appName 
+     * @param {String} keyName  
+     * @param {String} fileName The file extension must end with .ini
+     */
     $.readString = function (appName, keyName, fileName) {
         $.module.ReadString(appName, keyName, fileName);
     };
@@ -117,8 +130,14 @@ RS.MSGBOX = RS.MSGBOX || {};
         IDTRYAGAIN: 10,
         IDCONTINUE: 11,
         IDTIMEOUT: 32000                   
-    }
+    };
 
+    /**
+     * Create the message box that has an OK button and show up it on window.
+     * @param {String} titleName 
+     * @param {String} content 
+     * @param {Number} type 
+     */
     __msg.open = function (titleName, content, type) {
         if(!$.module) return;
         titleName = titleName || document.title;
@@ -127,6 +146,11 @@ RS.MSGBOX = RS.MSGBOX || {};
         return id;
     };
 
+    /**
+     * Create the message box that has yes and no buttons and show up it on window.
+     * @param {String} titleName 
+     * @param {String} content 
+     */
     __msg.yesno = function (titleName, content) {
         if(!$.module) return;
         
@@ -137,6 +161,39 @@ RS.MSGBOX = RS.MSGBOX || {};
         var ret = (id === __msg.MB_TYPE.IDYES) ? true : false;
 
         return ret;
+    };
+
+    /**
+     * Create the message box that has an OK button and show up it on window.
+     * @param {String} content 
+     */
+    Utils.msgbox = function (content) {
+        var title = document.title;
+        return __msg.open(title, content,  __msg.MB_TYPE.MB_OK);
+    };
+
+    /**
+     * Create the message box that has yes and no buttons and show up it on window.
+     * @param {String} content 
+     * @param {Function} yes 
+     * @param {Function} no 
+     */
+    Utils.yesno = function(content, yes, no) {
+        var title = document.title;
+        if(__msg.yesno(title, content)) {
+            yes();
+        } else {
+            no();
+        }
+    };
+
+    /**
+     * Allows you to set the window opacity sets it between 0 and 255.
+     * @param {Number} alpha set
+     */
+    Graphics.setAlpha = function(alpha) {
+        if(!$.module) return;
+        $.module.SetAlpha(alpha);
     };
 
     $.initModule();

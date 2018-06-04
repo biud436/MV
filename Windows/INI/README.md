@@ -4,8 +4,10 @@
 The preceding screenshot shows the message box such as RPG Maker VX Ace. These functions simply create the message box and check which of the button is clicked. put this script in your game's script command.
 
 ```javascript
-
+// In RPG Maker MV 1.6.0 version or above, it can use 'nw' instead of require('nw.gui')
 var gui = nw.Window.get();
+
+// This callback function listens for the exit button being pressed.
 gui.on('close', function() {
 
     var ret = RS.MSGBOX.yesno("안내", "게임을 종료하시겠습니까?");
@@ -20,6 +22,18 @@ gui.on('close', function() {
 });
 ```
 
+if you might want to create the message box simply, you will check these belows.
+
+```javascript
+Utils.msgbox("Hello");
+
+Utils.yesno("Do you want to download the help file?", function() {
+    // this callback function listens for the 'yes' button being pressed.
+}, function() {
+    // this callback function listens for the 'no' button being pressed.
+});
+```
+
 These functions simply create or read an INI file in Windows OS.
 
 ```javascript
@@ -30,6 +44,12 @@ var fontSize = RS.INI.readString("Font", "size", "./font.ini");
 RS.INI.writeString("폰트 설정", "크기", "28", "./폰트 설정.ini");
 var fontSize = RS.INI.readString("폰트 설정", "크기", "./폰트 설정.ini");
 
+```
+
+This function sets the window opacity. it allows you to set the window opacity sets it between 0 and 255.
+
+```javascript
+Graphics.setAlpha(128);
 ```
 
 # Supports
