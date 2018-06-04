@@ -352,7 +352,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
           fs.copyFile(process.execPath, targetName, "utf8", function(err, data) {});
         }
 
-        var fileName = path.join(base, ".." ,`js/libs/${fileVersion}-winDisplaySettings-${processArch}.node`);
+        var fileName = path.join(base, ".." ,`js/libs/${fileVersion}-winDisplaySettings-${processArch}`);
         fileName = fileName.split("\\");
         var driveName = fileName.shift();
         fileName = driveName + "//" + fileName.join("/");
