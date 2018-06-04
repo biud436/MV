@@ -61,6 +61,10 @@ latest.cmd "0.12.3"
 
 Or you can use prebuilt libraries!
 
+[v1.2.0-INI-ia32.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v1.2.0-INI-ia32.node)
+
+[v1.2.0-INI-x64.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v1.2.0-INI-x64.node)
+
 [v10.0.0-INI-ia32.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v10.0.0-INI-ia32.node)
 
 [v10.0.0-INI-x64.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v10.0.0-INI-x64.node)
