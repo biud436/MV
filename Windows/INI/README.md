@@ -56,6 +56,7 @@ Run the file called 'latest.cmd', then the main library will be located at **./b
 Or you can use prebuilt libraries!
 
 [v10.0.0-INI-ia32.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v10.0.0-INI-ia32.node)
+
 [v10.0.0-INI-x64.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v10.0.0-INI-x64.node)
 
 if you have the library called *.node already, please place it under your **/js/libs directory** and then
