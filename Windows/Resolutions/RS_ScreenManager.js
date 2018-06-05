@@ -362,10 +362,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   var langCode = navigator.language.slice(0, 2);
 
   PrivateLocalization.prototype = {
-    "code": newLocalization.Language,
+    "code": eval(newLocalization.Language),
     "get": function (type) {
-      var code = navigator.language.slice(0, 2);
-      var lang = this[code];
+      var code = this.code;
+      var lang = PrivateLocalization[code];
       return (lang) ? lang[type] : PrivateLocalization.en[type];
     }    
   };
