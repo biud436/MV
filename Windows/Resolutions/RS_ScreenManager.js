@@ -6,14 +6,14 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.8) <RS_ScreenManager>
+ * @plugindesc (v1.0.9) <RS_ScreenManager>
  * @author biud436
  *
  * @param TEST OPTION (TEST ONLY)
- * @text 테스트 옵션
+ * @text Options
  *
  * @param options.resize
- * @text 그래픽 리사이징 옵션
+ * @text options.resize
  * @type boolean
  * @parent TEST OPTION (TEST ONLY)
  * @desc This is the parameter for resizing the graphics renderer
@@ -22,7 +22,7 @@ Imported.RS_ScreenManager = true;
  * @off false
  *
  * @param options.autoScaling
- * @text 오토 스케일링
+ * @text options.autoScaling
  * @type boolean
  * @parent TEST OPTION (TEST ONLY)
  * @desc This is the parameter for scaling the graphics objects.
@@ -31,7 +31,7 @@ Imported.RS_ScreenManager = true;
  * @off false
  *
  * @param options.minWidth
- * @text 최소 폭 유지
+ * @text options.minWidth
  * @parent TEST OPTION (TEST ONLY)
  * @type boolean
  * @desc Set whether it can not set the width is less than minimum width
@@ -40,7 +40,7 @@ Imported.RS_ScreenManager = true;
  * @off true
  *
  * @param options.minHeight
- * @text 최소 높이 유지
+ * @text options.minHeight
  * @parent TEST OPTION (TEST ONLY)
  * @type boolean
  * @desc Set whether it can not set the width is less than minimum height
@@ -49,31 +49,31 @@ Imported.RS_ScreenManager = true;
  * @off true
  *
  * @param Scene Options
- * @text 장면 옵션
+ * @text Scene Options
  *
  * @param Recreate Scene
- * @text 장면 재생성
+ * @text Recreate Scene
  * @parent Scene Options
  * @type boolean
  * @desc To set as true, the current scene will recreate after changing screen size
  * @default true
  *
  * @param Use All Resolutions
- * @text 모든 해상도 표시
+ * @text Use All Resolutions
  * @parent Scene Options
  * @type boolean
  * @desc Sets whether resolution gets even if the resolution of your device is not supported.
  * @default false
  *
  * @param Enable Custom Aspect Ratio
- * @text 커스텀 화면 종횡비 사용
+ * @text Enable Custom Aspect Ratio
  * @parent Scene Options
  * @type boolean
  * @desc In case of true, the screen size will convert to fit a custom aspect ratio.
  * @default false
  *
  * @param Custom Aspect Ratio
- * @text 커스텀 화면 종횡비
+ * @text Custom Aspect Ratio
  * @parent Scene Options
  * @type select
  * @desc Specify the aspect ratio as you want.
@@ -84,10 +84,10 @@ Imported.RS_ScreenManager = true;
  * @value 4:3
  *
  * @param Screen Size
- * @text 화면 크기
+ * @text Screen Size
  *
  * @param Default Screen Size
- * @text 기본 화면 크기
+ * @text Default Screen Size
  * @parent Screen Size
  * @type select
  * @desc This parameter allows you to change your default game screen size
@@ -139,7 +139,7 @@ Imported.RS_ScreenManager = true;
  * @value 2560 x 1600
  *
  * @param Default Graphics Size
- * @text 기본 그래픽 객체 크기
+ * @text Default Graphics Size
  * @parent Screen Size
  * @type select
  * @desc This parameter allows you to change your default graphics size
@@ -188,15 +188,34 @@ Imported.RS_ScreenManager = true;
  * @value 2560 x 1440
  * @option 2560 x 1600 (8:5)
  * @value 2560 x 1600
- *
+ * 
+ * @param Temp
+ * 
+ * @param PC
+ * @parent Temp
+ * @type struct<ScreenSize>[]
+ * @desc Set as this automatically when it doesn't find the resolution from the library.
+ * @default ["{\"width\":\"640\",\"height\":\"480\"}","{\"width\":\"800\",\"height\":\"600\"}","{\"width\":\"1024\",\"height\":\"768\"}","{\"width\":\"1152\",\"height\":\"864\"}","{\"width\":\"1280\",\"height\":\"720\"}","{\"width\":\"1280\",\"height\":\"800\"}","{\"width\":\"1280\",\"height\":\"960\"}","{\"width\":\"1360\",\"height\":\"768\"}","{\"width\":\"1360\",\"height\":\"768\"}","{\"width\":\"1366\",\"height\":\"768\"}","{\"width\":\"1400\",\"height\":\"1050\"}","{\"width\":\"1440\",\"height\":\"900\"}","{\"width\":\"1600\",\"height\":\"900\"}","{\"width\":\"1600\",\"height\":\"1200\"}","{\"width\":\"1680\",\"height\":\"1050\"}","{\"width\":\"1920\",\"height\":\"1080\"}","{\"width\":\"1920\",\"height\":\"1200\"}","{\"width\":\"2048\",\"height\":\"1152\"}","{\"width\":\"2560\",\"height\":\"1440\"}","{\"width\":\"2560\",\"height\":\"1600\"}"]
+ * 
+ * @param Mobile
+ * @parent Temp
+ * @type struct<ScreenSize>[]
+ * @desc Set as the resolution list automatically in the mobile device.
+ * @default ["{\"width\":\"120\",\"height\":\"160\"}","{\"width\":\"160\",\"height\":\"240\"}","{\"width\":\"240\",\"height\":\"320\"}","{\"width\":\"240\",\"height\":\"400\"}","{\"width\":\"320\",\"height\":\"480\"}","{\"width\":\"480\",\"height\":\"800\"}","{\"width\":\"640\",\"height\":\"960\"}","{\"width\":\"640\",\"height\":\"1136\"}","{\"width\":\"720\",\"height\":\"1280\"}","{\"width\":\"750\",\"height\":\"1334\"}","{\"width\":\"768\",\"height\":\"1024\"}","{\"width\":\"768\",\"height\":\"1280\"}","{\"width\":\"800\",\"height\":\"1280\"}","{\"width\":\"1080\",\"height\":\"1920\"}","{\"width\":\"1200\",\"height\":\"1920\"}","{\"width\":\"1242\",\"height\":\"2208\"}","{\"width\":\"1440\",\"height\":\"2560\"}","{\"width\":\"1536\",\"height\":\"2048\"}","{\"width\":\"1600\",\"height\":\"2560\"}","{\"width\":\"2048\",\"height\":\"2732\"}"]
+ * 
+ * @param Mobile Simple
+ * @parent Temp
+ * @type struct<ScreenSize>[]
+ * @desc Set the list for display resolution.
+ * @default ["{\"width\":\"320\",\"height\":\"480\"}","{\"width\":\"480\",\"height\":\"800\"}","{\"width\":\"720\",\"height\":\"1280\"}","{\"width\":\"1080\",\"height\":\"1920\"}"]
+ * 
+ * @param Localization
+ * @type struct<Localization>
+ * @desc Set texts that required a localization.
+ * @default {"Language":"navigator.language.slice(0, 2)","Localization":"[\"{\\\"lang\\\":\\\"en\\\",\\\"Resolutions\\\":\\\"Resolutions\\\",\\\"Aspect Ratio\\\":\\\"Aspect Ratio\\\",\\\"Display Resolutions\\\":\\\"Display Resolutions\\\",\\\"Full Screen\\\":\\\"Full Screen\\\",\\\"NotFoundError\\\":\\\"Couldn't find the node library needed to set the resolution\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"Low\\\\\\\", \\\\\\\"Medium\\\\\\\", \\\\\\\"High\\\\\\\", \\\\\\\"Very High\\\\\\\"]\\\"}\",\"{\\\"lang\\\":\\\"ko\\\",\\\"Resolutions\\\":\\\"해상도\\\",\\\"Aspect Ratio\\\":\\\"종횡비\\\",\\\"Display Resolutions\\\":\\\"해상도 목록\\\",\\\"Full Screen\\\":\\\"전체 화면\\\",\\\"NotFoundError\\\":\\\"해상도 설정에 필요한 라이브러리를 찾지 못했습니다\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"낮음\\\\\\\",\\\\\\\"보통\\\\\\\",\\\\\\\"높음\\\\\\\",\\\\\\\"매우 높음\\\\\\\"]\\\"}\"]"}
+ * 
  * @help
- * =============================================================================
- * Installations
- * =============================================================================
- * Step1. Download the plugin and the extension program for Win32
- * Step2. Put displaySettings.exe file in your project ./js/libs folder.
- * Step3. Open the Plugin Managers and then set up this plugin.
- * Step4. Deploy your project by Windows platform.
+ * 
  * =============================================================================
  * Plugin Commands
  * =============================================================================
@@ -225,6 +244,67 @@ Imported.RS_ScreenManager = true;
  * 2017.11.24 (v1.0.8) :
  * - Fixed some issues that are not working in RMMV 1.6.0 (Beta)
  * - Now this plugin doesn't use the node webkit extension.
+ * 2018.06.05 (v1.0.9) :
+ * - Updated and Fixed the library correctly for getting the all resolutions.
+ * - Added plugin parameters for setting the size of the screen (RPG Maker MV 1.5.0 Features)
+ */
+/*~struct~ScreenSize:
+ *
+ * @param width
+ * @type number
+ * @min 0
+ * @desc Specify the desired width
+ * @default 320
+ *
+ * @param height
+ * @type number
+ * @min 0
+ * @desc Specify the desired height
+ * @default 240
+ * 
+ */
+/*~struct~Localization:
+ * @param Language
+ * @desc Extract the language code.
+ * @default navigator.language.slice(0, 2)
+ * 
+ * @param Localization
+ * @type struct<PrivateLocalization>[]
+ * @desc Set the struct about the localization.
+ * @default ["{\"lang\":\"en\",\"Resolutions\":\"Resolutions\",\"Aspect Ratio\":\"Aspect Ratio\",\"Display Resolutions\":\"Display Resolutions\",\"Full Screen\":\"Full Screen\",\"NotFoundError\":\"Couldn't find the node library needed to set the resolution\",\"MobileResolutions\":\"[\\\"Low\\\", \\\"Medium\\\", \\\"High\\\", \\\"Very High\\\"]\"}","{\"lang\":\"ko\",\"Resolutions\":\"해상도\",\"Aspect Ratio\":\"종횡비\",\"Display Resolutions\":\"해상도 목록\",\"Full Screen\":\"전체 화면\",\"NotFoundError\":\"해상도 설정에 필요한 라이브러리를 찾지 못했습니다\",\"MobileResolutions\":\"[\\\"낮음\\\",\\\"보통\\\",\\\"높음\\\",\\\"매우 높음\\\"]\"}"]
+ * 
+ */
+/*~struct~PrivateLocalization:
+ *
+ * @param lang
+ * @desc Specify the lang code
+ * @default en
+ * 
+ * @param Resolutions
+ * @desc Specify the text for resolution.
+ * @default Resolutions
+ * 
+ * @param Aspect Ratio
+ * @desc Specify the text for aspect ratio.
+ * @default Aspect Ratio
+ * 
+ * @param Display Resolutions
+ * @desc Specify the text that indicates a diplay resolution.
+ * @default Display Resolutions
+ * 
+ * @param Full Screen
+ * @desc Specify the text that indicates a fullscreen option.
+ * @default Full Screen
+ * 
+ * @param NotFoundError
+ * @desc Specify the error text that being found the node library in your game directory.
+ * @default Couldn't find the node library needed to set the resolution
+ * 
+ * @param MobileResolutions
+ * @type string[]
+ * @desc Specify four resolution types in mobile device.
+ * @default ["Low", "Medium", "High", "Very High"]
+ * 
  */
 
 var RS = RS || {};
@@ -238,6 +318,13 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   });
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
+
+  $.jsonParse = function (str) {
+    var retData = JSON.parse(str, function (k, v) {
+      try { return $.jsonParse(v); } catch (e) { return v; }
+    });
+    return retData;
+  };  
 
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
   var options = {};
@@ -257,41 +344,9 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     (parseInt(settings.ptCustomScreenSize[0]) || 1280),
     (parseInt(settings.ptCustomScreenSize[1]) || 720));
   settings.pcGraphicsArray = [];
-  settings.pcGraphicsTempArray = [
-  "640 x 480", "800 x 600", "1024 x 768", "1152 x 864",
-  "1280 x 720", "1280 x 800", "1280 x 960", "1360 x 768",
-  "1360 x 768", "1366 x 768", "1400 x 1050", "1440 x 900",
-  "1600 x 900", "1600 x 1200", "1680 x 1050", "1920 x 1080",
-  "1920 x 1200", "2048 x 1152", "2560 x 1440", "2560 x 1600"
-  ];
-  settings.mobileGraphicsArray = [
-  "120 x 160",
-  "160 x 240",
-  "240 x 320",
-  "240 x 400",
-  "320 x 480", // 매우 낮음 (!)
-  "480 x 800", // 낮음 (!)
-  "640 x 960",
-  "640 x 1136",
-  "720 x 1280", // Galaxy S3 높음 (!)
-  "750 x 1334", // iPhone6, iPhone6S
-  "768 x 1024",
-  "768 x 1280",
-  "800 x 1280",
-  "1080 x 1920", // iPhone6+, iPhone6S+, Galaxy S4, Galaxy S5 매우 높음(!)
-  "1200 x 1920",
-  "1242 x 2208",
-  "1440 x 2560", // Galaxy S6, Galaxy S7
-  "1536 x 2048",
-  "1600 x 2560",
-  "2048 x 2732", // iPadPro
-  ];
-  settings.resolutionQualityOnMobile = [
-    "320 x 480", // 매우 낮음 (!)
-    "480 x 800", // 낮음 (!)
-    "720 x 1280", // Galaxy S3 높음 (!)
-    "1080 x 1920" // iPhone6+, iPhone6S+, Galaxy S4, Galaxy S5 매우 높음(!)
-  ];
+  settings.pcGraphicsTempArray = $.jsonParse(parameters["PC"]);
+  settings.mobileGraphicsArray = $.jsonParse(parameters["Mobile"]);
+  settings.resolutionQualityOnMobile = $.jsonParse(parameters["Mobile Simple"]);
   settings.state = "ready";
 
   $.Params.settings = settings;
@@ -302,29 +357,23 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   //============================================================================
 
   var PrivateLocalization = function () {};
+
+  var newLocalization = $.jsonParse(parameters["Localization"]);
+  var langCode = navigator.language.slice(0, 2);
+
   PrivateLocalization.prototype = {
-    "code": navigator.language.slice(0, 2),
-    "en": {
-      "Resolutions": "Resolutions",
-      "Aspect Ratio": "Aspect Ratio",
-      "Display Resolutions": "Display Resolutions",
-      "Full Screen": "Full Screen",
-      "NotFoundError": "Couldn't find the node library needed to set the resolution",
-      "MobileResolutions" : ["Low", "Medium", "High", "Very High"]
-    },
-    "ko": {
-      "Resolutions": "해상도",
-      "Aspect Ratio": "종횡비",
-      "Display Resolutions": "해상도 목록",
-      "Full Screen": "전체 화면",
-      "NotFoundError": "해상도 설정에 필요한 라이브러리를 찾지 못했습니다",
-      "MobileResolutions" : ["낮음", "보통", "높음", "매우 높음"]
-    },
+    "code": newLocalization.Language,
     "get": function (type) {
-        var lang = this[this.code];
-        return (lang) ? lang[type] : this.en[type];
-    }
+      var code = navigator.language.slice(0, 2);
+      var lang = this[code];
+      return (lang) ? lang[type] : PrivateLocalization.en[type];
+    }    
   };
+
+  newLocalization["Localization"].forEach(function(i) {
+    var lang = i.lang;
+    PrivateLocalization[lang] = i;
+  });
 
   $.localization = new PrivateLocalization();
 
@@ -495,6 +544,26 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   // Graphics
   //============================================================================
 
+  /**
+   * https://stackoverflow.com/a/20339709
+   * @param {Array} data 
+   */
+  $.uniqArray = function(data) {
+    var uniqData = [];
+    var foundData = {};
+
+    data.forEach(function(i) {
+      var packData = JSON.stringify(i);
+      if(!foundData[packData]) {
+        uniqData.push(i);
+        foundData[packData] = true;
+      }
+    }, this);
+
+    return uniqData;    
+
+  }
+
   Graphics.getAvailGraphicsArray = function (returnType) {
     var data, tw, th, pt, gArray, result, maxSW, maxSH, type;
     var orientation, config, aspectRatio;
@@ -521,32 +590,38 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     // Set a custom aspect ratio
     config = new CustomScreenConfig(settings.customAspectRatio[0], settings.customAspectRatio[1]);
 
-    if( Array.isArray(data) ) {
-      data = data.map(function(i) {
-        return i[0] + " x " + i[1];
-      }, this);
-      data = data.filter(function(i, idx, item) {
-        return item.indexOf(i) === idx;
-      });      
-    }
+    data = $.uniqArray(data);
 
     data.forEach(function (i) {
-      if(i.match(getTargetRegex)) {
-        
-          tw = Number(RegExp.$1);
-          th = Number(RegExp.$2);
 
-        if(type === 'portrait') {
-          if(maxSW > maxSH) {
-            var temp = tw;
-            tw = th;
-            th = temp;
-          }
+      tw = Number(i[0]);
+      th = Number(i[1]);
+
+      // Swap
+      if(type === 'portrait' && (maxSW > maxSH) ) {
+        var temp = tw;
+        tw = th;
+        th = temp;
+      }
+
+      if(tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
+
+        // Convert the screen using an Aspect Ratio
+        if(options.aspectRatio) {
+          temp = config.getSize(tw);
+          tw = temp[0];
+          th = temp[1];
         }
 
-        if(tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
+        pt = new Point(tw, th);
+        gArray.push(pt);
+        result.push(pt.toString());
 
-          // The screen size will convert to fit an aspect ratio of the wide screen.
+      } else {
+
+        if(options.allResolutions) {
+
+          // Convert the screen using an Aspect Ratio
           if(options.aspectRatio) {
             temp = config.getSize(tw);
             tw = temp[0];
@@ -557,25 +632,9 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
           gArray.push(pt);
           result.push(pt.toString());
 
-        } else {
-
-          if(options.allResolutions) {
-
-            // The screen size will convert to fit an aspect ratio of the wide screen.
-            if(options.aspectRatio) {
-              temp = config.getSize(tw);
-              tw = temp[0];
-              th = temp[1];
-            }
-
-            pt = new Point(tw, th);
-            gArray.push(pt);
-            result.push(pt.toString());
-
-          }
-
         }
       }
+
     }, this);
 
     return (returnType === 'String')? result : gArray;
