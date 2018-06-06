@@ -353,9 +353,9 @@ RS.HUD.param = RS.HUD.param || {};
 
     if(this.inBattle()) {
       // Set the offset
-      anchor["LeftTop"].x += Graphics.boxWidth * 0.125;
+      anchor["LeftTop"].x += Graphics.boxWidth / 8;
       anchor["LeftTop"].y = Graphics.boxHeight - RS.HUD.param.nHeight * 2 - RS.HUD.param.nPD;
-      anchor["RightBottom"].x -= Graphics.boxWidth * 0.125;
+      anchor["RightBottom"].x -= Graphics.boxWidth / 8;
       anchor["LeftBottom"].y = Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD;
       anchor["RightTop"].y = Graphics.boxHeight - RS.HUD.param.nHeight * 2 - RS.HUD.param.nPD;
       anchor["RightBottom"].y = Graphics.boxHeight - RS.HUD.param.nHeight - RS.HUD.param.nPD;
@@ -391,7 +391,7 @@ RS.HUD.param = RS.HUD.param || {};
   HUD.prototype.drawActorIcons = function(actor, x, y, width) {
     if(this._Iconlayer) this._Iconlayer.bitmap.clear();
     width = width || 144;
-    var icons = actor.allIcons().slice(0, Math.floor(width * 0.03125));
+    var icons = actor.allIcons().slice(0, Math.floor(width / 32));
     for (var i = 0; i < icons.length; i++) {
         this.drawIcon(icons[i], x + 32 * i, y + 2);
     }
@@ -402,7 +402,7 @@ RS.HUD.param = RS.HUD.param || {};
     var pw = Window_Base._iconWidth;
     var ph = Window_Base._iconHeight;
     var sx = iconIndex % 16 * pw;
-    var sy = Math.floor(iconIndex * 0.0625) * ph;
+    var sy = Math.floor(iconIndex / 16) * ph;
     this._Iconlayer.bitmap.blt(bitmap, sx, sy, pw, ph, x, y);
   };
 
@@ -476,7 +476,7 @@ RS.HUD.param = RS.HUD.param || {};
     if(RS.HUD.param.isWndsAlignment) {
       this._windowLayer.children.forEach(function (i) {
         if( !(i === this._logWindow || i === this._helpWindow)) {
-          i.y = (Graphics.boxHeight * 0.5) - (i.height * 0.5);
+          i.y = Graphics.boxHeight / 2 - i.height / 2;
         }
       }, this);
     }
@@ -598,7 +598,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.convertRad = function(degree) {
-    return HUD.RAD * degree;
+    return (Math.PI / 180.0) * degree;
   };
 
   HUD.prototype.updateBattleHud = function () {
