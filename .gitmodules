@@ -1,0 +1,3 @@
+[submodule "RGSS3"]
+	path = RGSS3
+	url = https://github.com/biud436/RGSS3.git
