@@ -1438,10 +1438,27 @@ RS.HUD.param = RS.HUD.param || {};
   HUD.prototype = Object.create(Stage.prototype);
   HUD.prototype.constructor = HUD;
 
-  HUD.MOUSE_EVENT = new Vector2( Graphics.boxWidth / 2, Graphics.boxHeight / 2 );
+  HUD.MOUSE_EVENT = new Vector2( Graphics.boxWidth * 0.5, Graphics.boxHeight * 0.5 );
+
+  HUD.ZINDEX = {
+    "HUD": 0,
+    "FACE": 1,
+    "HP": 2,
+    "MP": 3,
+    "EXP": 4,
+    "HP_TEXT": 5,
+    "MP_TEXT": 6,
+    "LEVEL_TEXT": 7,
+    "EXP_TEXT": 8,
+    "NAME_TEXT": 9
+  };
+
+  HUD.StringRenderer = "%1 / %2";
+  HUD.StringMakeZero = "0 / 0";
 
   HUD.prototype.initialize = function(config) {
       Stage.prototype.initialize.call(this);
+      this.initWithFixedVariable();
       this.createHud();
       this.setAnchor(config.szAnchor || "LeftBottom");
       this.setMemberIndex(parseInt(config.nIndex) || 0);
@@ -1455,10 +1472,35 @@ RS.HUD.param = RS.HUD.param || {};
       this.paramUpdate();
   };
 
+  HUD.prototype.initWithFixedVariable = function () {
+    var player = this.getPlayer();
+    if(!player) return;
+    this._maxParams = {
+      'mhp' : 1.0 / player.mhp,
+      'mmp' : 1.0 / player.mmp,
+      'maxExp' : 1.0 / player.relativeMaxExp(),
+      'maxTp' : 1.0 / player.maxTp(),
+      'level' : player.level,
+    };
+  };
+
+  HUD.prototype.updateWithFixedVariable = function () {
+    var player = this.getPlayer();
+    if(!player) return;
+    if(!this._maxParams) return;
+    if(player.level === this._maxParams.level) return;
+    this._maxParams = {
+      'mhp' : 1.0 / player.mhp,
+      'mmp' : 1.0 / player.mmp,
+      'maxExp' : 1.0 / player.relativeMaxExp(),
+      'maxTp' : 1.0 / player.maxTp(),
+      'level' : player.level,
+    };
+  };
+
   HUD.prototype.getAnchor = function(magnet) {
     var anchor = RS.HUD.getDefaultHUDAnchor();
 
-    // Add Custom Anchor
     for(var i = 0; i < RS.HUD.param.nMaxMembers; i++) {
       var idx = parseInt(i + 1);
       anchor['Custom Pos ' + idx] = RS.HUD.param.ptCustormAnchor[i];
@@ -1483,7 +1525,7 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.createHud = function() {
     this._hud = new Sprite(RS.HUD.loadPicture(RS.HUD.param.imgEmptyHUD));
-    this._hud.z = 0;
+    this._hud.z = HUD.ZINDEX.HUD;
     this.addChild(this._hud);
   };
 
@@ -1580,15 +1622,15 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.setPosition = function() {
     var param = RS.HUD.param;
-    if(this._face) this.setCoord(this._face, param.ptFace, 1);
-    this.setCoord(this._hp, param.ptHP, 2);
-    this.setCoord(this._mp, param.ptMP, 3);
-    this.setCoord(this._exp, param.ptEXP, 4);
-    this.setCoord(this._hpText, param.ptHPText, 5);
-    this.setCoord(this._mpText, param.ptMPText, 6);
-    this.setCoord(this._levelText, param.ptLevelText, 7);
-    this.setCoord(this._expText, param.ptEXPText, 8);
-    this.setCoord(this._nameText, param.ptNameText, 9);
+    if(this._face) this.setCoord(this._face, param.ptFace, HUD.ZINDEX.FACE);
+    this.setCoord(this._hp, param.ptHP, HUD.ZINDEX.HP);
+    this.setCoord(this._mp, param.ptMP, HUD.ZINDEX.MP);
+    this.setCoord(this._exp, param.ptEXP, HUD.ZINDEX.EXP);
+    this.setCoord(this._hpText, param.ptHPText, HUD.ZINDEX.HP_TEXT);
+    this.setCoord(this._mpText, param.ptMPText, HUD.ZINDEX.MP_TEXT);
+    this.setCoord(this._levelText, param.ptLevelText, HUD.ZINDEX.LEVEL_TEXT);
+    this.setCoord(this._expText, param.ptEXPText, HUD.ZINDEX.EXP_TEXT);
+    this.setCoord(this._nameText, param.ptNameText, HUD.ZINDEX.NAME_TEXT);
     this.children.sort(Tilemap.prototype._compareChildOrder.bind(this));
   };
 
@@ -1605,48 +1647,48 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.getHp = function() {
-    var player = this.getPlayer();
-    if(!player) return "0 / 0";
+    var player = $gameParty.members()[this._memberIndex];
+    if(!player) return HUD.StringMakeZero;
     if(RS.HUD.param.showComma) {
-      return "%1 / %2".appendComma(player.hp, player.mhp);
+      return HUD.StringRenderer.appendComma(player.hp, player.mhp);
     } else {
-      return "%1 / %2".format(player.hp, player.mhp);
+      return HUD.StringRenderer.format(player.hp, player.mhp);
     }
   };
 
   HUD.prototype.getMp = function() {
-    var player = this.getPlayer();
-    if(!player) return "0 / 0";
+    var player = $gameParty.members()[this._memberIndex];
+    if(!player) return HUD.StringMakeZero;
     if(RS.HUD.param.showComma) {
-      return "%1 / %2".appendComma(player.mp, player.mmp);
+      return HUD.StringRenderer.appendComma(player.mp, player.mmp);
     } else {
-      return "%1 / %2".format(player.mp, player.mmp);
+      return HUD.StringRenderer.format(player.mp, player.mmp);
     }
   };
 
   HUD.prototype.getExp = function() {
-    var player = this.getPlayer();
-    if(!player) return "0 / 0";
+    var player = $gameParty.members()[this._memberIndex];
+    if(!player) return HUD.StringMakeZero;
     if(player.isMaxLevel()) return RS.HUD.param.maxExpText;
     if(RS.HUD.param.showComma) {
-      return "%1 / %2".appendComma(player.relativeExp(), player.relativeMaxExp());
+      return HUD.StringRenderer.appendComma(player.relativeExp(), player.relativeMaxExp());
     } else {
-      return "%1 / %2".format(player.relativeExp(), player.relativeMaxExp());
+      return HUD.StringRenderer.format(player.relativeExp(), player.relativeMaxExp());
     }
   };
 
   HUD.prototype.getLevel = function() {
-    var player = this.getPlayer();
+    var player = $gameParty.members()[this._memberIndex];
     if(!player) return "0";
     if(RS.HUD.param.showComma) {
-      return "%1".appendComma(player.level);
+      return HUD.StringRenderer.appendComma(player.level);
     } else {
-      return "%1".format(player.level);
+      return HUD.StringRenderer.format(player.level);
     }
   };
 
   HUD.prototype.getName = function() {
-    var player = this.getPlayer();
+    var player = $gameParty.members()[this._memberIndex];
     if(!player) return "";
     var name = player && player.name();
     if(name) {
@@ -1657,30 +1699,30 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.getHpRate = function() {
-    var player = this.getPlayer();
+    var player = $gameParty.members()[this._memberIndex];
     if(!player) return 0;
-    return this._hp.bitmap.width * (player.hp / player.mhp);
+    return this._hp.bitmap.width * (player.hp * this._maxParams.mhp);
   };
 
   HUD.prototype.getMpRate = function() {
-    var player = this.getPlayer();
+    var player = $gameParty.members()[this._memberIndex];
     if(!player) return 0;
-    return this._mp.bitmap.width * (player.mp / player.mmp);
+    return this._mp.bitmap.width * (player.mp * this._maxParams.mmp);
   };
 
   HUD.prototype.getExpRate = function() {
-    var player = this.getPlayer();
+    var player = $gameParty.members()[this._memberIndex];
     if(!player) return 0;
-    return this._exp.bitmap.width * (player.relativeExp() / player.relativeMaxExp());
+    return this._exp.bitmap.width * (player.relativeExp() * this._maxParams.maxExp);
   };
 
   HUD.prototype.getRealExpRate = function () {
-    var player = this.getPlayer();
+    var player = $gameParty.members()[this._memberIndex];
     if(!player) return 0;
     if(this.inBattle() && $dataSystem.optDisplayTp) {
-      return ( player.tp / player.maxTp() );
+      return ( player.tp * this._maxParams.maxTp );
     } else {
-      return ( player.relativeExp() / player.relativeMaxExp() );
+      return ( player.relativeExp() * this._maxParams.maxExp );
     }
   };
 
@@ -1705,7 +1747,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.setCoord = function(s,obj, z) {
-    var oy = (s._callbackFunction instanceof Function) ? (s.bitmap.height / 2) : 0;
+    var oy = (s._callbackFunction instanceof Function) ? (s.bitmap.height * 0.5) : 0;
     s.x = this._hud.x + obj.x;
     s.y = this._hud.y + obj.y - oy;
     s.z = z;
@@ -1713,6 +1755,7 @@ RS.HUD.param = RS.HUD.param || {};
   };
 
   HUD.prototype.update = function() {
+    this.updateWithFixedVariable();
     this.paramUpdate();
     this.updateOpacity();
     this.updateToneForAll();
@@ -1739,20 +1782,22 @@ RS.HUD.param = RS.HUD.param || {};
 
   HUD.prototype.checkHitToMouse = function(object, n) {
     var middle = Vector2.empty();
-    middle.x = object.width / 2 + object.x;
-    middle.y = object.height / 2 + object.y;
+    middle.x = (object.width * 0.5) + object.x;
+    middle.y = (object.height * 0.5) + object.y;
     return Vector2.distance(middle, HUD.MOUSE_EVENT) < n;
   };
 
+  HUD.CONVERT_DELTA_TIME = 1 / 100.0;
+
   HUD.prototype.checkForToneUpdate = function (obj, cond) {
     if(obj instanceof Sprite && cond) {
-      var t = Date.now() % 1000 / 1000;
+      var t = Graphics._renderer.plugins.interaction._deltaTime * HUD.CONVERT_DELTA_TIME;
       var vt = Vector2.quadraticBezier(this._vtA, this._vtB, this._vtA, t);
       obj.setColorTone([vt.x, vt.x, vt.x, 0]);
     } else {
       if(obj) obj.setColorTone([this._vtA.x, this._vtA.x, this._vtA.x, 0]);
     }
-  }
+  };
 
   HUD.prototype.updateToneForAll = function () {
     if(!this.getPlayer()) return false;
@@ -1814,10 +1859,22 @@ RS.HUD.param = RS.HUD.param || {};
   var alias_Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
     alias_Scene_Map_createDisplayObjects.call(this);
-    if(RS.HUD.param.battleOnly || ($dataMap && $dataMap.meta.DISABLE_HUD) ) {
+    var isEmpty = false;
 
-      $gameHud = new RS_EmptyHudLayer();
+    // Is the current scene is an event test?
+    if(DataManager.isEventTest()) isEmpty = true;
 
+    // Is the current scene is a battle test?
+    if(RS.HUD.param.battleOnly) isEmpty = true;
+
+    // need to activate the hud?
+    if( ($dataMap && $dataMap.meta && $dataMap.meta.DISABLE_HUD) ) isEmpty = true;
+
+    if( isEmpty ) {
+      this._hudLayer = new RS_EmptyHudLayer();
+      $gameHud = this._hudLayer;
+      this.addChild(this._hudLayer);
+      this.swapChildren(this._windowLayer, this._hudLayer);
     } else {
 
       this._hudLayer = new RS_HudLayer();
