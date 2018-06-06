@@ -75,7 +75,7 @@
  *    DisableArabicTextAnimation
  *
  * =============================================================================
- * Compatibility List
+ * Compatibility List (to-do-list 2018.05.29 ~ 동작 확인을 해야 한다)
  * -----------------------------------------------------------------------------
  * These are some compatible plugin list that are showing up properly Arabic so
  * if it does not have in this list, it may not work properly.
@@ -1036,7 +1036,7 @@ function ArabicUtils() {
       // 부모 : _windowContentsSprite(type : ArabicFlipSprite)에 컨텐츠가 묘화된다.
       this._windowContentsSprite._isMessageAracbic = true;
       this._windowContentsSprite.setTransform( -1 * (this._padding * 2) , 0, -1, 1, 0, 0, 0, this.width, 0);
-      
+
       // 자식
       this._arabicTexts = new ArabicTextContainer();
       this._arabicTexts.visible = true;
