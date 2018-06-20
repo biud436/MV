@@ -1,7 +1,6 @@
 /*:
  * RS_EventTouch.js
- * @plugindesc This plugin allows you to execute the event when you are clicking
- * the event.
+ * @plugindesc This plugin allows you to execute the event when you are clicking the event.
  * @author biud436
  *
  * @param Event Regex
@@ -17,6 +16,7 @@
  * 2016.07.03 (v1.0.0) - First Release
  * 2017.01.30 (v1.0.1) - Fixed the bug that is not working when using event starting conditions
  * 2017.01.31 (v1.0.2) - Fixed the bug is not working this plugin properly
+ * 2018.06.20 (v1.0.3) - Fixed the issue that wouldn't check the event has the invalid page.
  */
 
 var Imported = Imported || {};
@@ -37,6 +37,7 @@ Imported.RS_EventTouch = true;
       lEvent = this.event(id);
       if(!lEvent) return false;
       if(lEvent.findProperPageIndex() < 0) return false;
+      if(!lEvent.page()) return false;
       lEvent.list().forEach(function(i) {
         if(i.code === 108 || i.code === 408) {
           if( i.parameters[0].match(regex) ) {
@@ -44,7 +45,6 @@ Imported.RS_EventTouch = true;
           }
         }
       }, this);
-
     }
   };
 
