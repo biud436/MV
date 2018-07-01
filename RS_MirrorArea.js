@@ -116,6 +116,10 @@ function Sprite_Mirror() {
   // Game_Map
   //============================================================================
 
+  /**
+   * 
+   * @param {Number} eventId 
+   */
   Game_Map.prototype.findEventInMap = function (eventId) {
       var events = [];
       if(eventId === 0) return $gamePlayer;
@@ -126,6 +130,10 @@ function Sprite_Mirror() {
       return events[0];
   };
 
+  /**
+   * 이벤트 목록 반환
+   * @return {Array} result
+   */
   Game_Map.prototype.getRealEvents = function () {
       var events = this._events;
       var last = events.slice(-1);
@@ -166,7 +174,6 @@ function Sprite_Mirror() {
   };
 
   Sprite_Mirror.prototype.updatePosition = function() {
-      //  graphics's height.
       var maskY = parseInt(this._offset['h']);
       this.x = this._character.screenX();
       this.y = this._character.screenY() - maskY - parseInt(this._offset['char_oy'] / 2);
@@ -255,6 +262,9 @@ function Sprite_Mirror() {
       this._mirrorInitialized = false;
   };
 
+  /**
+   * Bitmap.snap 호출 시 캐릭터 스프라이트를 숨긴다.
+   */
   var alias_Spriteset_Map_hideCharacters = Spriteset_Map.prototype.hideCharacters;
   Spriteset_Map.prototype.hideCharacters = function() {
       alias_Spriteset_Map_hideCharacters.call(this);
@@ -266,37 +276,59 @@ function Sprite_Mirror() {
       }
   };
 
+  /**
+   * 마스크를 많이 사용하면 성능이 하락할 수 있다는 단점이 있다.
+   * @param {Number} x 
+   * @param {Number} y 
+   * @param {Number} w 
+   * @param {Number} h 
+   */
+  RS.MirrorArea.makeRoundedRect = function (x, y, w, h) {
+    var graphics = new PIXI.Graphics();
+    graphics.beginFill(0xffffff, 0.9 );
+    graphics.x = x;
+    graphics.y = y;
+    graphics.drawRoundedRect( 0, 0, w, h, 1 );
+    graphics.endFill();
+
+    return graphics;
+  };
+
+  Spriteset_Map.prototype.addChildMirrorImage = function(target, graphics, event, offset) {
+    if(!this._mirrorCharacters) return false; // 객체 풀이 없으면
+    if(!this._tilemap) return false; // 타일맵이 없으면
+
+    // 좌우 반전 캐릭터 스프라이트를 생성한다.
+    var child = new Sprite_Mirror( target );
+    child.setProperties( graphics, event, offset );    
+
+    // 캐릭터 객체 풀과 타일맵에 추가한다.
+    this._mirrorCharacters.push( child );
+    this._tilemap.addChild( child );
+
+    return child;
+    
+  };
+
   Spriteset_Map.prototype.createMirrorImage = function (event, type, id) {
 
       var offset = type;
-      var target = $gameMap.findEventInMap(id);
-
-      // if(type === 'mirror') offset = $.oMirror;
-      // if(type === 'dresser') offset = $.oDresser;
+      var target = $gameMap.findEventInMap(id); // 이벤트를 찾는다.
 
       var x = event.screenX() - parseInt(offset['mask_ox']);
       var y = event.screenY() - parseInt(offset['mask_oy']);
       var w = parseInt(offset['w']);
       var h = parseInt(offset['h']);
 
-      var graphics = new PIXI.Graphics();
-      graphics.beginFill(0xffffff, 0.9 );
-      graphics.x = x;
-      graphics.y = y;
-      graphics.drawRoundedRect( 0, 0, w, h, 1 );
-      graphics.endFill();
+      // 마스크 영역을 생성한다.
+      var graphics = RS.MirrorArea.makeRoundedRect(x, y, w, h);
 
-      var mirrorCharacter = new Sprite_Mirror( target );
-      mirrorCharacter.setProperties( graphics, event, offset );
-      this._mirrorCharacters.push( mirrorCharacter );
-      this._tilemap.addChild( mirrorCharacter );
+      this.addChildMirrorImage( target, graphics, event, offset, mirrorCharacter );
 
+      // 게임 플레이어라면 followers까지 모두 감안한다.
       if(target instanceof Game_Player) {
         $gamePlayer._followers.forEach(function (e, i, a) {
-          mirrorCharacter = new Sprite_Mirror( e );
-          mirrorCharacter.setProperties( graphics, event, offset );
-          this._mirrorCharacters.push( mirrorCharacter );
-          this._tilemap.addChild( mirrorCharacter );
+            this.addChildMirrorImage( e, graphics, event, offset, mirrorCharacter );
         }, this);
       }
 
@@ -307,19 +339,24 @@ function Sprite_Mirror() {
       var id = -1;
 
       $gameMap.getRealEvents().forEach(function (event) {
-        if(event === null || event === undefined) return false;
-        if(event._erased) return false;
-        if(!(event.findProperPageIndex() > -1)) return false;
+          
+        if(event === null || event === undefined) return false; // 이벤트가 정의되었는가
+        if(event._erased) return false; // 이벤트 일시 삭제
+        if(event.findProperPageIndex() < 0) return false; // 이벤트 시간 조건
+        if(!event.page()) return false; // 페이지 존재 여부
         var eventlist = event.list();
-        if(!eventlist) return false;
-        eventlist.forEach(function (list, i ,a) {
+        if(!eventlist) return false; // 이벤트 목록 존재 여부
 
+        // 전체 이벤트 목록을 검색한다.
+        eventlist.forEach(function (list, i ,a) {
           if(list.code === 108 || list.code === 408) {
             $.allMirrors.forEach(function (mirror) {
               var data = JSON.parse(mirror);
+              // 노트 태그를 검색하고 ID 값을 추출한다.
               if(typeof data === 'object' && data.hasOwnProperty('note')) {
                 if(list.parameters[0].match(new RegExp(`<(?:${data.note}).W*\:.\W*(.+?)>`, 'gi'))) {
                   id = parseInt(RegExp.$1);
+                  // 유효한 ID라면 이미지 생성 성공.
                   if(id >= 0) self.createMirrorImage(event, data, id);
                 }
               }
