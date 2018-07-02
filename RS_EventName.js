@@ -1,7 +1,7 @@
 /*:
  * RS_EventName.js
  *
- * @plugindesc (v1.3.7) This plugin displays an event's name above a head.
+ * @plugindesc (v1.3.8) This plugin displays an event's name above a head.
  * @author biud436
  *
  * @param text Size
@@ -31,14 +31,64 @@
  * @default AirShip
  *
  * @help
+ * More details for information, 
+ * Please see this post - http://biud436.tistory.com/31
+ * ==================================================================================
+ * Change Log
+ * ==================================================================================
+ * 2016.03.25 (v1.3.0) - Added New Function called updateScale();
+ * 2016.03.26 (v1.3.1) - Added Vehicle
+ * 2016.05.05 (v1.3.2) - Updated Vector2 Class
+ * 2016.05.20 (v1.3.3) - Fixed issues that can cause an increase of opacity and the memory leak.
+ * 2016.05.21 (v1.3.4) - Fixed issue that causes the memory leak.
+ * 2016.05.28 (v1.3.5) - Fixed Color Bug.
+ * 2016.08.20 (v1.3.6) - Fixed the issue that was not working the name toggle function.
+ * 2016.09.27 (v1.3.7) - The visible setting sets as the false before calling the battle.
+ * 2016.09.28 (V1.3.8) - Fixed the issue that occurs when the player is not existed.
+ */
+/*:ko
+ * RS_EventName.js
+ * 
+ * @plugindesc (v1.3.8) 이벤트 이름 표시 플러그인
+ * @author 러닝은빛
  *
- * If it sets the note, you can show an event's name above a head.
- * you can set the various color by using the note.
+ * @param text Size
+ * @text 텍스트 크기
+ * @type number
+ * @desc 텍스트 크기를 변경합니다.
+ * @default 16
+ * @min 4
+ * @decimals 0
  *
- * You can display the name of an event above a head by using the following format.
- * @color[red, green, blue]
+ * @param Show Player Text
+ * @text 플레이어 텍스트 표시
+ * @type boolean
+ * @desc 플레이어 텍스트를 머리 위에 표시합니다.
+ * @default true
+ * @on 표시함
+ * @off 표시하지 않음
  *
- * - Change Log
+ * @param Boat
+ * @text 보트
+ * @desc 탈것 - 보트의 이름을 설정합니다.
+ * @default 보트
+ *
+ * @param Ship
+ * @text 배
+ * @desc 탈것 - 배의 이름을 설정합니다.
+ * @default 배
+ *
+ * @param AirShip
+ * @text 비행선
+ * @desc 탈것 - 비행선의 이름을 설정합니다.
+ * @default 비행선
+ *
+ * @help
+ * 자세한 정보는 네이버 블로그 포스트 쪽 내용을 읽어주시기 바랍니다.
+ * 링크 - http://biud436.blog.me/220535434256
+ * ==================================================================================
+ * Change Log
+ * ==================================================================================
  * 2016.03.25 (v1.3.0) - Added New Function called updateScale();
  * 2016.03.26 (v1.3.1) - Added Vehicle
  * 2016.05.05 (v1.3.2) - Updated Vector2 Class
