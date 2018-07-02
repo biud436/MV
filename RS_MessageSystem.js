@@ -217,7 +217,7 @@
 * @parent 효과음 재생
 * @type note
 * @desc 텍스트 효과음이 재생될 확률을 만듭니다.
-* @default "Math.randomInt(100) < 90"
+* @default "Math.randomInt(100) < 45"
 *
 * @param 텍스트 사운드 풀 크기
 * @parent 효과음 재생
@@ -761,7 +761,7 @@
 * @parent Sound Effects
 * @type note
 * @desc Make the probability to play the text sound.
-* @default "Math.randomInt(100) < 90"
+* @default "Math.randomInt(100) < 45"
 *
 * @param Text Sound Pool Size
 * @parent Sound Effects
@@ -1158,7 +1158,7 @@
  * @parent 効果音再生
  * @type note
  * @desc 効果音が再生される確率を作ります。
- * @default "Math.randomInt(100) < 90"
+ * @default "Math.randomInt(100) < 45"
  *
  * @param Text Sound Pool Size
  * @text サウンドプルの大きさ
