@@ -155,7 +155,7 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         for(var i=0; i<len; i++) { // 만억조경 붙일 자리 찾기
             if(there = $.Params.WHERE_DIGITS[i]) { // 자릿수를 찾았다면 배열을 늘린다.
                 var index = $.Params.WHERE_DIGITS_INDEX[there];
-                digits.splice(len - index, 0, $.Params.WHERE_DIGITS[i], "X");
+                digits.splice(len - index, 0, there, "X");
             }
         }
 
