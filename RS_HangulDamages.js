@@ -1,5 +1,5 @@
 /*:
- * @plugindesc <RS_HangulDamages>
+ * @plugindesc This plugin allows you to change the damage digits for Korean <RS_HangulDamages>
  * @author biud436
  * 
  * @param damageBitmapName
@@ -148,7 +148,7 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
      */
     Sprite_Damage.prototype.whereDigits = function(strings) {
         
-        var digits = strings.split(/\.*/); // 배열로 변경
+        var digits = strings.split(""); // 배열로 변경
         var there = "";
         var len = strings.length;
         
