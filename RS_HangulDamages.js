@@ -88,6 +88,18 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         });
         return retData;
     };
+
+    String.prototype.toArray = function() {
+        return this.split("");
+      };
+    
+    String.prototype.reverse = function() {
+        return this.toArray().reverse().join("");
+    };
+
+    String.prototype.toCommaAlpha = function(){
+        return this.reverse().match(/.{1,4}/g).join(",").reverse();
+    };    
     
     $.Params.WHERE_DIGITS_INDEX = {
         "천": 3,
@@ -122,7 +134,7 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         this._duration = 90;
         this._flashColor = [0, 0, 0, 0];
         this._flashDuration = 0;
-        this._damageBitmap = ImageManager.loadSystem(RS.HangulDamages.Params.damageBitmapName);
+        this._damageBitmap = ImageManager.reserveSystem(RS.HangulDamages.Params.damageBitmapName);
     };
 
     Sprite_Damage.prototype.digitWidth = function(n) {
@@ -159,9 +171,22 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
             }
         }
 
+        // // 좀 더 심플하지만 공백이 없는 것.
+        // var wheredigits = "만억조경";    
+        // var pointer = 0;
+        // digits = strings.toCommaAlpha().split("").reverse().map(function(e,i,a) {
+        //     if(e === ",") {
+        //       return wheredigits[pointer++] || "";
+        //     } else {
+        //       return e;
+        //     }
+        // }).reverse();
+
         return digits; // 늘린 배열을 반환한다.
 
     };
+
+
     
     Sprite_Damage.prototype.createDigits = function(baseRow, value) {
         var string = Math.abs(value).toString();
