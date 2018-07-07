@@ -89,7 +89,7 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         return retData;
     };
     
-    Sprite_Damage.WHERE_DIGITS_INDEX = {
+    $.Params.WHERE_DIGITS_INDEX = {
         "천": 3,
         "만": 4,
         "억": 8,
@@ -97,7 +97,7 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         "경": 16
     };
 
-    Sprite_Damage.WHERE_DIGITS = {
+    $.Params.WHERE_DIGITS = {
         3: "천",
         4: "만",
         8: "억",
@@ -105,7 +105,7 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         16: "경"
     };
 
-    Sprite_Damage.HANGUL_DIGITS_INDEX = $.jsonParse(parameters["hangulDigitsTable"]) || {
+    $.Params.HANGUL_DIGITS_INDEX = $.jsonParse(parameters["hangulDigitsTable"]) || {
         "천": 0,
         "만": 1,
         "억": 2,
@@ -114,8 +114,8 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         "X": 6
     };
 
-    Sprite_Damage.HANGUL_BASE_ROW = Number(parameters["hangulBaseRow"]) || 5;
-    Sprite_Damage.MISS_BASE_ROW = Number(parameters["missBaseRow"]) || 4;
+    $.Params.HANGUL_BASE_ROW = Number(parameters["hangulBaseRow"]) || 5;
+    $.Params.MISS_BASE_ROW = Number(parameters["missBaseRow"]) || 4;
 
     Sprite_Damage.prototype.initialize = function() {
         Sprite.prototype.initialize.call(this);
@@ -138,7 +138,7 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         var w = this.digitWidth();
         var h = this.digitHeight();
         var sprite = this.createChildSprite();
-        sprite.setFrame(0, Sprite_Damage.MISS_BASE_ROW * h, 4 * w, h);
+        sprite.setFrame(0, $.Params.MISS_BASE_ROW * h, 4 * w, h);
         sprite.dy = 0;
     };
 
@@ -147,15 +147,15 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
      * @param {String} strings
      */
     Sprite_Damage.prototype.whereDigits = function(strings) {
-        var whereDigits = Sprite_Damage.WHERE_DIGITS; // 자릿수 찾기
+        
         var digits = strings.split(/\.*/); // 배열로 변경
         var there = "";
         var len = strings.length;
         
         for(var i=0; i<len; i++) { // 만억조경 붙일 자리 찾기
-            if(there = whereDigits[i]) { // 자릿수를 찾았다면 배열을 늘린다.
-                var index = Sprite_Damage.WHERE_DIGITS_INDEX[there];
-                digits.splice(len - index, 0, whereDigits[i], "X");
+            if(there = $.Params.WHERE_DIGITS[i]) { // 자릿수를 찾았다면 배열을 늘린다.
+                var index = $.Params.WHERE_DIGITS_INDEX[there];
+                digits.splice(len - index, 0, $.Params.WHERE_DIGITS[i], "X");
             }
         }
 
@@ -177,8 +177,8 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
             var n = Number(string[i]);
             row = baseRow + (value < 0 ? 1 : 0);
             if(isNaN(n)) { // 만, 억, 조, 경
-                row = Sprite_Damage.HANGUL_BASE_ROW;
-                n = Sprite_Damage.HANGUL_DIGITS_INDEX[string[i]]; 
+                row = $.Params.HANGUL_BASE_ROW;
+                n = $.Params.HANGUL_DIGITS_INDEX[string[i]]; 
             }
             sprite.setFrame(n * w, row * h, w, h);
             sprite.x = (i - (string.length - 1) / 2) * w;
