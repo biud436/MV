@@ -194,16 +194,16 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
             if((len - 1) !== i) { // 천 단위 생략
                 switch(i) {
                     case (len - 2):
-                    digits.push("만");
+                    digits.push("만"); // 만(萬) means 10,000 (10^4)
                     break;
                     case (len - 3):
-                    digits.push("억");
+                    digits.push("억"); // 억(億) means 100,000,000 (10^8)
                     break;
                     case (len - 4):
-                    digits.push("조");
+                    digits.push("조"); // 조(兆) means 10,00,000,000,000 (10^12)
                     break;
                     case (len - 5):
-                    digits.push("경");
+                    digits.push("경"); // 경(京) means 100,000,00,000,000,000 (10^16)
                     break;
                 }
                 digits.push("X"); // 띄어쓰기 추가
