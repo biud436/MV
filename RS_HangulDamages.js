@@ -200,10 +200,10 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
                     digits.push("억"); // 억(億) means 100,000,000 (10^8)
                     break;
                     case (len - 4):
-                    digits.push("조"); // 조(兆) means 10,00,000,000,000 (10^12)
+                    digits.push("조"); // 조(兆) means 1,000,000,000,000 (10^12)
                     break;
                     case (len - 5):
-                    digits.push("경"); // 경(京) means 100,000,00,000,000,000 (10^16)
+                    digits.push("경"); // 경(京) means 10,000,000,000,000,000 (10^16)
                     break;
                 }
                 digits.push("X"); // 띄어쓰기 추가
