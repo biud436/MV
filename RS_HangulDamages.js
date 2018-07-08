@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin allows you to change the damage digits for Korean <RS_HangulDamages>
+ * @plugindesc This plugin allows you to indicate the damage digits using Korean language <RS_HangulDamages>
  * @author biud436
  * 
  * @param damageBitmapName
