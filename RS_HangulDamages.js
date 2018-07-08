@@ -4,7 +4,7 @@
  * 
  * @param damageBitmapName
  * @text Damage bitmap name 
- * @desc
+ * @desc When you are deploying the game, we need to that doesn't remove the image that this plugin uses.
  * @require 1
  * @dir img/system/
  * @type file
@@ -76,10 +76,6 @@
  * @default 4
  * 
  * @help
- * ===================================================================
- * 소개
- * ===================================================================
- * 
  * ===================================================================
  * 테스트 스크립트
  * ===================================================================
