@@ -46,7 +46,7 @@
  * - 표기법을 수 표기법 맞춤법에 맞춰 수정하였습니다.
  */
 /*:ko
- * @plugindesc <RS_HangulDamages>
+ * @plugindesc 데미지를 수 표기법에 맞춰서 표시합니다 <RS_HangulDamages>
  * @author biud436
  * 
  * @param damageBitmapName
