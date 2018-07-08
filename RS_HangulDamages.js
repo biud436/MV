@@ -13,23 +13,37 @@
  * @param hangulDigitsTable
  * @text Hangul digits table
  * @type note
- * @desc 
+ * @desc allows you to consist of Hangul Digits Table.
  * @default ""
  * 
  * @param hangulBaseRow
  * @text Hangul base row
  * @type number
- * @desc
+ * @desc Specify the line index of the numeral adjective for Korean Hangul in the default image.
  * @default 5
  * 
  * @param missBaseRow
  * @text Miss base row
  * @type number
- * @desc
+ * @desc Specify the line index of image for MISS in the default image.
  * @default 4
  * 
  * @help
+ * ===================================================================
+ * Test Sripts
+ * ===================================================================
+ * var target = $gameTroop._enemies[0];
+ * target.gainHp(-100101150);
+ * BattleManager._logWindow.clear()
+ * BattleManager._logWindow.displayHpDamage(target);
+ * target.startDamagePopup();
+ * ===================================================================
+ * Change Log
+ * ===================================================================
  * 2018.07.07 (v1.0.0) - First Release
+ * 2018.07.08 (v1.0.1) : 
+ * - 데미지 비트맵을 미리 불러옵니다.
+ * - 표기법을 수 표기법 맞춤법에 맞춰 수정하였습니다.
  */
 /*:ko
  * @plugindesc <RS_HangulDamages>
@@ -37,7 +51,7 @@
  * 
  * @param damageBitmapName
  * @text 데미지 표시 비트맵 이름
- * @desc
+ * @desc 데미지 표시 비트맵을 설정하여 게임 배포 시 제거되지 않게 합니다.
  * @require 1
  * @dir img/system/
  * @type file
@@ -46,23 +60,42 @@
  * @param hangulDigitsTable
  * @text 한글 숫자 테이블
  * @type note
- * @desc 
+ * @desc 커스텀 한글 숫자 테이블을 설정할 수 있습니다. 지정하지 않으면 기본 값.
  * @default ""
  * 
  * @param hangulBaseRow
  * @text Hangul base row
  * @type number
- * @desc
+ * @desc 한국어 수사(數詞)가 있는 라인을 설정합니다. (만,억,조,경)
  * @default 5
  * 
  * @param missBaseRow
  * @text Miss base row
  * @type number
- * @desc
+ * @desc 미스 스프라이트가 있는 라인을 설정합니다.
  * @default 4
  * 
  * @help
+ * ===================================================================
+ * 소개
+ * ===================================================================
+ * 
+ * ===================================================================
+ * 테스트 스크립트
+ * ===================================================================
+ * var target = $gameTroop._enemies[0];
+ * target.gainHp(-100101150);
+ * BattleManager._logWindow.clear()
+ * BattleManager._logWindow.displayHpDamage(target);
+ * target.startDamagePopup();
+ * 
+ * ===================================================================
+ * Change Log
+ * ===================================================================
  * 2018.07.07 (v1.0.0) - First Release
+ * 2018.07.08 (v1.0.1) : 
+ * - 데미지 비트맵을 미리 불러옵니다.
+ * - 표기법을 수 표기법 맞춤법에 맞춰 수정하였습니다.
  */
 
 var Imported = Imported || {};
@@ -101,24 +134,8 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         return this.reverse().match(/.{1,4}/g).join(",").reverse();
     };    
     
-    $.Params.WHERE_DIGITS_INDEX = {
-        "천": 3,
-        "만": 4,
-        "억": 8,
-        "조": 12,
-        "경": 16
-    };
-
-    $.Params.WHERE_DIGITS = {
-        3: "천",
-        4: "만",
-        8: "억",
-        12: "조",
-        16: "경"
-    };
-
     $.Params.HANGUL_DIGITS_INDEX = $.jsonParse(parameters["hangulDigitsTable"]) || {
-        "천": 0,
+        // "천": 0,
         "만": 1,
         "억": 2,
         "조": 3,
@@ -134,7 +151,7 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         this._duration = 90;
         this._flashColor = [0, 0, 0, 0];
         this._flashDuration = 0;
-        this._damageBitmap = ImageManager.reserveSystem(RS.HangulDamages.Params.damageBitmapName);
+        this._damageBitmap = ImageManager.loadSystem(RS.HangulDamages.Params.damageBitmapName);
     };
 
     Sprite_Damage.prototype.digitWidth = function(n) {
@@ -160,34 +177,43 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
      */
     Sprite_Damage.prototype.whereDigits = function(strings) {
         
-        var digits = strings.split(""); // 배열로 변경
-        var there = "";
-        var len = strings.length;
+        var digits = [];
+        var ret = [];
+        var len = 0;
+
+        ret = strings.toCommaAlpha().split(",");
+        len = ret.length;
         
-        for(var i=0; i<len; i++) { // 만억조경 붙일 자리 찾기
-            if(there = $.Params.WHERE_DIGITS[i]) { // 자릿수를 찾았다면 배열을 늘린다.
-                var index = $.Params.WHERE_DIGITS_INDEX[there];
-                digits.splice(len - index, 0, there, "X");
+        for(var i = 0; i < len; i++) {
+            var n = Number(ret[i]);
+            // '한글 맞춤법' 제5장 띄어쓰기, 제2절, 제44항에 의하면, 수를 표기할 때,
+            // '12억 3456만 7898', '3243조 7867억 8927만 6354'와 같이 표기해야 한다.
+            // '12억 7898'에서 만 단위가 없을 수도 있다.
+            if(n === 0 || !n) continue;
+            digits.push(n);            
+            if((len - 1) !== i) { // 천 단위 생략
+                switch(i) {
+                    case (len - 2):
+                    digits.push("만");
+                    break;
+                    case (len - 3):
+                    digits.push("억");
+                    break;
+                    case (len - 4):
+                    digits.push("조");
+                    break;
+                    case (len - 5):
+                    digits.push("경");
+                    break;
+                }
+                digits.push("X"); // 띄어쓰기 추가
             }
         }
 
-        // // 좀 더 심플하지만 공백이 없는 것.
-        // var wheredigits = "만억조경";    
-        // var pointer = 0;
-        // digits = strings.toCommaAlpha().split("").reverse().map(function(e,i,a) {
-        //     if(e === ",") {
-        //       return wheredigits[pointer++] || "";
-        //     } else {
-        //       return e;
-        //     }
-        // }).reverse();
-
-        return digits; // 늘린 배열을 반환한다.
+        return digits.join(""); // 문자열로 변환
 
     };
 
-
-    
     Sprite_Damage.prototype.createDigits = function(baseRow, value) {
         var string = Math.abs(value).toString();
         var row = baseRow + (value < 0 ? 1 : 0);
@@ -209,6 +235,16 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
             sprite.x = (i - (string.length - 1) / 2) * w;
             sprite.dy = -i;             
         }
+    };
+
+    //===================================================================
+    // Scene_Boot
+    //===================================================================
+
+    var alias_Scene_Boot_loadSystemImages = Scene_Boot.loadSystemImages;
+    Scene_Boot.loadSystemImages = function() {
+        alias_Scene_Boot_loadSystemImages.call(this);
+        ImageManager.reserveSystem($.Params.damageBitmapName);
     };
 
 })(RS.HangulDamages);
