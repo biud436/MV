@@ -29,7 +29,7 @@
 * 2018.05.09 (v1.0.4) - Added a variable that stores a last alignment value.
 * 2018.07.09 (v1.0.5) :
 * - Fixed the text padding for left, center, right alignment.
-* - Now it is worked fine without YEP Message Core.
+* - Now it is worked fine even without YEP Message Core.
 */
 
 
