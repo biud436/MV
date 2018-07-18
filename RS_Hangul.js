@@ -481,6 +481,6 @@ function HangulIME() {
 
 })(RS.Hangul);
 
-if(!!process || !Utils) {
+if(!!process || !Utils) { // node.js에서 테스트하기 위해
     module.exports = HangulIME;
 }
