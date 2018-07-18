@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin allows you to type the Korean Character Input <RS_Hangul>
+ * @plugindesc This plugin allows you to type the Korean Characters called 'Hangul' <RS_Hangul>
  * @author biud436
  * @help
  * =================================================================
