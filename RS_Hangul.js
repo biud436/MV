@@ -443,7 +443,7 @@ function HangulIME() {
 
             // 중성인가?
             if(idx >= 0) {
-                this.setMiddle(idx); // 종성 설정
+                this.setMiddle(idx); // 중성 설정
 
                 // 초성이 없는 상태라면
                 if(this._currentStep < HangulIME.STEP21) {
