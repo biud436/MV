@@ -621,7 +621,7 @@ function HangulIME() {
         var pos = this._cursorIndex;
         this._texts = this._texts.split("");
         // 마지막 글자가 한글 범위이고 종성이 비어있으면 스페이스바 두 번
-        if(RS.Hangul.isFinal(text) <= 0) { 
+        if(RS.Hangul.isFinal(text) <= 0 && this._keyboardMode === "ko") { 
             this._texts.splice(pos, 0, " ");
             this._texts.splice(pos, 0, " ");
             this._cursorIndex++;
@@ -644,20 +644,25 @@ function HangulIME() {
     };
 
     VirtualKeyboardMV.prototype.processHangul = function(text) {
-        this._lastTexts = text; // 텍스트 복제 후 임시 저장
+        this._lastTexts = text; // 조합된 텍스트 저장
     };    
 
     VirtualKeyboardMV.prototype.getTexts = function() {
         return this._lastTexts.slice(0);
     };        
 
+    VirtualKeyboardMV.prototype.clear = function() {
+        var temp = this._isValid;
+        this.initMembers();
+        this._isValid = temp;
+    };
+
     VirtualKeyboardMV.prototype.lastKeyCode = function() {
         return this._lastKeyCode;
     };
 
     VirtualKeyboardMV.prototype.addText = function(text) {
-        // var texts = RS.Hangul.decompress(this._texts);  // 자모 수준으로 분해
-        var texts = this._texts.split("");
+        var texts = this._texts.split(""); // 자모 수준으로 분해
         var pos = this.currentCursorPosition();
         this._texts = texts;
         this._texts.splice(pos, 0, text);
