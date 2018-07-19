@@ -36,12 +36,13 @@ Imported.RS_Hangul = true;
 
 var RS = RS || {};
 RS.Hangul = RS.Hangul || {};
+RS.Keyboard = RS.Keyboard || {};
 
 function HangulIME() {
     this.initialize.apply(this, arguments);
 };
 
-(function($) {
+(function() {
     
     // 한글 음절표 19 * 21 * (27 + 1) = 11172;
 
@@ -504,9 +505,315 @@ function HangulIME() {
         
     };
 
+    RS.Hangul = new HangulIME();
 
-})(RS.Hangul);
+})();
 
-if(!!process || !Utils) { // node.js에서 테스트하기 위해
-    module.exports = HangulIME;
-}
+(function() {
+
+    function VirtualKeyboardMV() {
+        this.initialize.apply(this, arguments);
+    };    
+
+    VirtualKeyboardMV.prototype.constructor = VirtualKeyboardMV;
+
+    VirtualKeyboardMV.BACK_SPACE = 8;
+    VirtualKeyboardMV.ENTER = 13;
+    VirtualKeyboardMV.IS_NOT_CHAR = 32; // SPACE_BAR와 동일
+    VirtualKeyboardMV.KEYS_ARRAY = 255;   
+    VirtualKeyboardMV.HAN_EN = 21; // 한영키
+
+    VirtualKeyboardMV.KEYS = {
+        "ko": {
+            8: [""],
+            21: [""],
+            32: [" "],
+            49: ["1", "!"],
+            50: ["2", "@"],
+            51: ["3", "#"],
+            52: ["4", "$"],
+            53: ["5", "%"],
+            54: ["6", "^"],
+            55: ["7", "&"],
+            56: ["8", "*"],
+            57: ["9", "("],
+            48: ["0", ")"],
+            65: ["ㅁ"],
+            66: ["ㅠ"],
+            67: ["ㅊ"],
+            68: ["ㅇ"],
+            69: ["ㄷ", "ㄸ"],
+            70: ["ㄹ"],
+            71: ["ㅎ"],
+            72: ["ㅗ"],
+            73: ["ㅑ"],
+            74: ["ㅓ"],
+            75: ["ㅏ"],
+            76: ["ㅣ"],
+            77: ["ㅡ"],
+            78: ["ㅜ"],
+            79: ["ㅐ", "ㅒ"],
+            80: ["ㅔ", "ㅖ"],
+            81: ["ㅂ", "ㅃ"],
+            82: ["ㄱ", "ㄲ"],
+            83: ["ㄴ"],
+            84: ["ㅅ", "ㅆ"],
+            85: ["ㅕ"],
+            86: ["ㅍ"],
+            87: ["ㅈ", "ㅉ"],
+            88: ["ㅌ"],
+            89: ["ㅛ"],
+            90: ["ㅋ"],
+            188: [",", "<"],
+            190: [".", ">"],
+            191: ["/", "?"]
+        },
+        "en": {
+            8: [""],
+            21: [""],
+            32: [" "],
+            49: ["1", "!"],
+            50: ["2", "@"],
+            51: ["3", "#"],
+            52: ["4", "$"],
+            53: ["5", "%"],
+            54: ["6", "^"],
+            55: ["7", "&"],
+            56: ["8", "*"],
+            57: ["9", "("],
+            48: ["0", ")"],
+            65: ["a", "A"],
+            66: ["b", "B"],
+            67: ["c", "C"],
+            68: ["d", "D"],
+            69: ["e", "E"],
+            70: ["f", "F"],
+            71: ["g", "G"],
+            72: ["h", "H"],
+            73: ["i", "I"],
+            74: ["j", "J"],
+            75: ["k", "K"],
+            76: ["l", "L"],
+            77: ["m", "M"],
+            78: ["n", "M"],
+            79: ["o", "O"],
+            80: ["p", "P"],
+            81: ["q", "Q"],
+            82: ["r", "R"],
+            83: ["s", "S"],
+            84: ["t", "T"],
+            85: ["u", "U"],
+            86: ["v", "V"],
+            87: ["w", "W"],
+            88: ["x", "X"],
+            89: ["y", "Y"],
+            90: ["z", "Z"],            
+            188: [",", "<"],
+            190: [".", ">"],
+            191: ["/", "?"]
+        }
+    };    
+    
+    VirtualKeyboardMV.prototype.initialize = function() {
+        this.initMembers();
+    };
+
+    VirtualKeyboardMV.prototype.initMembers = function() {
+        this._texts = "";
+        this._lastTexts = "";
+        this._cursorIndex = 0;
+        this._isValid = false;
+        this._keyboardMode = "ko";
+        this._composeMode = false;
+        this._stackLevel = 0;
+        this._lastKeyCode = 0;
+    };    
+
+    VirtualKeyboardMV.prototype.processSpacebar = function() {
+        var han = RS.Hangul.decompress(this._texts);
+        var text = han.pop();
+        var pos = this._cursorIndex;
+        this._texts = this._texts.split("");
+        // 마지막 글자가 한글 범위이고 종성이 비어있으면 스페이스바 두 번
+        if(RS.Hangul.isFinal(text) <= 0) { 
+            this._texts.splice(pos, 0, " ");
+            this._texts.splice(pos, 0, " ");
+            this._cursorIndex++;
+        } else { // 그게 아니라면 한 번만 띄어쓰기를 한다.
+            this._texts.splice(pos, 0, " ");
+        }
+        this._texts = this._texts.join("");
+        this._cursorIndex++;
+    };
+
+    VirtualKeyboardMV.prototype.processBackspace = function() {
+        var texts = RS.Hangul.decompress(this._texts);
+        var pos = this.currentCursorPosition() - 1;
+        if(pos < 0) pos = 0;
+
+        this._texts = texts;
+        this._texts.splice(pos, 1);
+        this._texts = this._texts.join("");
+        this._cursorIndex = pos;
+    };
+
+    VirtualKeyboardMV.prototype.processHangul = function(text) {
+        this._lastTexts = text; // 텍스트 복제 후 임시 저장
+    };    
+
+    VirtualKeyboardMV.prototype.getTexts = function() {
+        return this._lastTexts.slice(0);
+    };        
+
+    VirtualKeyboardMV.prototype.lastKeyCode = function() {
+        return this._lastKeyCode;
+    };
+
+    VirtualKeyboardMV.prototype.addText = function(text) {
+        // var texts = RS.Hangul.decompress(this._texts);  // 자모 수준으로 분해
+        var texts = this._texts.split("");
+        var pos = this.currentCursorPosition();
+        this._texts = texts;
+        this._texts.splice(pos, 0, text);
+        this._texts = this._texts.join("");
+        this._cursorIndex++;
+        this._stackLevel++;
+    };
+
+    VirtualKeyboardMV.prototype.valid = function() {
+        this._isValid = true; // 포커스를 가진다면
+    };    
+
+    VirtualKeyboardMV.prototype.inValid = function() {
+        this._isValid = false; // 포커스를 가지지 않는다면
+    };        
+
+    VirtualKeyboardMV.prototype.isValid = function() {
+        return this._isValid;
+    };
+
+    VirtualKeyboardMV.prototype.moveLeft = function() {
+        var min = 0;
+        var max = this._texts.length;
+
+        this._cursorIndex--;
+        
+        if(this._cursorIndex < 0) {
+            this._cursorIndex = 0;
+        }
+
+        if(this._cursorIndex > max) {
+            this._cursorIndex = max;
+        }
+
+        return this._cursorIndex;
+    };
+
+    VirtualKeyboardMV.prototype.moveRight = function() {
+        var min = 0;
+        var max = this._texts.length; // 한 글자 기준.
+
+        this._cursorIndex++;
+        
+        if(this._cursorIndex < 0) {
+            this._cursorIndex = 0;
+        }
+
+        if(this._cursorIndex > max) {
+            this._cursorIndex = max;
+        }
+
+        return this._cursorIndex;
+    };    
+
+    VirtualKeyboardMV.prototype.currentCursorPosition = function(offset) {
+
+        var min = 0;
+        var max = this._texts.length; // 한 글자 기준.
+
+        offset = offset || 0;
+        var pos = this._cursorIndex + offset;
+
+        if(pos < 0) {
+            pos = 0;
+        }
+
+        if(pos > max) {
+            pos = max;
+        }
+
+        return pos;
+    };
+
+    /**
+     * 
+     * @param {KeyboardEvent} event 
+     */
+    VirtualKeyboardMV.prototype.onKeyDown = function(event) {
+        var keyCode = event.which;
+        var lang = this._keyboardMode;
+        var keys = VirtualKeyboardMV.KEYS[lang];
+        var hans = Object.keys(keys);
+
+        this._lastKeyCode = keyCode;
+    
+        var c = keys[keyCode]; // 입력된 텍스트       
+        var text = "";
+
+        if(hans.indexOf(String(keyCode)) >= 0) {
+            text = (event.shiftKey && c.length > 1) ? c[1] : c[0];            
+        }
+
+        // 한영 키 처리
+        if(VirtualKeyboardMV.HAN_EN === keyCode) {
+            this._keyboardMode = this._keyboardMode === "ko"? "en":"ko";
+            return;
+        }
+
+        // 왼쪽 방향키
+        if(37 === keyCode) {
+            this.moveLeft();
+            return;
+        }        
+
+        // 오른쪽 방향키
+        if(39 === keyCode) {
+            this.moveRight();
+            return;
+        }               
+
+        if(!this.isValid()) return; // 키보드 포커스가 없다면 입력 실패
+        
+        // 띄어쓰기 처리
+        if(VirtualKeyboardMV.IS_NOT_CHAR === keyCode) { 
+            this.processSpacebar();
+            return;
+        }
+
+        // 백스페이스 처리
+        if(VirtualKeyboardMV.BACK_SPACE === keyCode) { 
+            this.processBackspace();
+            RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
+            console.log(keyCode, " - ", this._lastTexts);
+            return;
+        }        
+
+        if(text === "") {
+            return;
+        }
+
+        // 입력 처리
+        this.addText(text);
+        
+        // 조합 처리
+        RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
+        console.log(keyCode, " - ", this._lastTexts);
+    
+    };
+
+    RS.Keyboard = new VirtualKeyboardMV();
+    RS.Keyboard.valid();
+
+    document.addEventListener('keydown', RS.Keyboard.onKeyDown.bind(RS.Keyboard), false);
+
+})();
