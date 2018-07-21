@@ -548,8 +548,8 @@ function HangulIME() {
             this.visible = true;
             if(RS.Keyboard.lastKeyCode() === 13) { // Enter가 눌렸나?
                 if(Imported.RS_MessageSystem) {
-                    // $gameMessage.add("\x1b말풍선[-1]" + RS.Keyboard.getTexts());
                     if($gameSystem._chatList.length > 10) $gameSystem._chatList.shift();
+                    $gameMessage.add("\x1b말풍선[-1]" + RS.Keyboard.getTexts());
                     $gameSystem._chatList.push("\x1bC[2][일반]\x1bC[0] " +RS.Keyboard.getTexts());
                     this._chatViewWindow.select($gameSystem._chatList.length - 1);
                     this._chatViewWindow.refresh();
@@ -640,6 +640,9 @@ function HangulIME() {
         var innerHeight = this.height - this.padding * 2;
         return Math.floor(innerHeight / this.numVisibleRows());
     };
+
+    Window_HangulChatView.prototype.processCursorMove = function() {
+    };
     
     Window_HangulChatView.prototype.drawItem = function(index) {
         var rect = this.itemRect(index);
@@ -661,7 +664,7 @@ function HangulIME() {
         this._chatView = new Window_HangulChatView();
         this._chatView.y = this._hangul.y - this._chatView.height;
         this._hangul.setChatView(this._chatView);
-        this._chatView.deactivate();
+        this._chatView.activate();
         this.addWindow(this._hangul);
         this.addWindow(this._chatView);
     };
