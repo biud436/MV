@@ -145,6 +145,12 @@ function HangulIME() {
         return pattern.test(text);
     };
 
+    HangulIME.prototype.isWansungHangul = function(text) {
+        // U+AC00 ~ U+D7AF 한글 글자 마디
+        var pattern = /[\uAC00-\uD7AF]/;
+        return pattern.test(text);
+    };    
+
     /**
      * 한글 자모 분리
      * @param {String}} text 
@@ -497,6 +503,78 @@ function HangulIME() {
 
 (function() {
 
+    if(!Utils) return;
+
+    function Window_Hangul() {
+        this.initialize.apply(this, arguments);
+    };
+    
+    Window_Hangul.prototype = Object.create(Window_Base.prototype);
+    Window_Hangul.prototype.constructor = Window_Hangul;
+    
+    Window_Hangul.prototype.initialize = function() {
+        var width = this.windowWidth();
+        var height = this.windowHeight();   
+        Window_Base.prototype.initialize.call(this, 0, 0, width, height);
+        this.refresh();
+        RS.Keyboard.valid();
+        this.on('removed', function() { RS.Keyboard.inValid(); } ,this)
+    };
+
+    Window_Hangul.prototype.windowWidth = function() {
+        return Graphics.boxWidth;
+    };
+
+    Window_Hangul.prototype.windowHeight = function() {
+        return this.fittingHeight(1);
+    };      
+
+    Window_Hangul.prototype.update = function() {
+        Window_Base.prototype.update.call(this);
+        if(RS.Keyboard.isValid()) {
+            $gameSystem.disableMenu();
+            this.visible = true;
+            if(RS.Keyboard.lastKeyCode() === 13) { // Enter가 눌렸나?
+                if(Imported.RS_MessageSystem) {
+                    $gameMessage.add("\x1b말풍선[-1]" + RS.Keyboard.getTexts());
+                }
+                RS.Keyboard.clear();
+            }
+        } else {
+            $gameSystem.enableMenu();
+            this.visible = false;
+        }
+        this.refresh();
+    };
+
+    Window_Hangul.prototype.standardFontSize = function() {
+        return 24;
+    };
+
+    Window_Hangul.prototype.refresh = function() {
+        this.contents.clear();
+        this.changeTextColor(this.normalColor());
+        var text = RS.Keyboard.getTexts();
+        var pos = RS.Keyboard.currentCursorPosition();
+        var textWidth = this.contents.measureTextWidth(text.slice(0, pos));
+        this.drawText(text, this.textPadding(), 0, this.contentsWidth());
+        if(Graphics.frameCount % 15 === 0) {
+            this.contents.fillRect(textWidth + 1, 0, 2, this.contentsHeight(), 'white');
+        }
+    };
+
+    var alias_Scene_Map_start = Scene_Map.prototype.start;
+    Scene_Map.prototype.start = function() {
+        alias_Scene_Map_start.call(this);
+        this._hangul = new Window_Hangul();
+        this._hangul.y = Graphics.boxHeight - this._hangul.windowHeight();
+        this.addWindow(this._hangul);
+    };
+
+})();
+
+(function() {
+
     function VirtualKeyboardMV() {
         this.initialize.apply(this, arguments);
     };    
@@ -514,6 +592,7 @@ function HangulIME() {
             8: [""],
             21: [""],
             32: [" "],
+            96: ["`", "~"],
             49: ["1", "!"],
             50: ["2", "@"],
             51: ["3", "#"],
@@ -524,6 +603,8 @@ function HangulIME() {
             56: ["8", "*"],
             57: ["9", "("],
             48: ["0", ")"],
+            45: ["-", "_"],
+            43: ["+", "="],            
             65: ["ㅁ"],
             66: ["ㅠ"],
             67: ["ㅊ"],
@@ -558,6 +639,7 @@ function HangulIME() {
             8: [""],
             21: [""],
             32: [" "],
+            96: ["`", "~"],            
             49: ["1", "!"],
             50: ["2", "@"],
             51: ["3", "#"],
@@ -568,6 +650,8 @@ function HangulIME() {
             56: ["8", "*"],
             57: ["9", "("],
             48: ["0", ")"],
+            45: ["-", "_"],
+            43: ["+", "="],
             65: ["a", "A"],
             66: ["b", "B"],
             67: ["c", "C"],
@@ -611,8 +695,13 @@ function HangulIME() {
         this._isValid = false;
         this._keyboardMode = "ko";
         this._composeMode = false;
-        this._stackLevel = 0;
+        this._prevComposeCursorIndex = 0;
         this._lastKeyCode = 0;
+        this._composeCursorIndex = 0;
+        this._cursor = {
+            curIndex: 0,
+            savedIndex : 0
+        };
     };    
 
     VirtualKeyboardMV.prototype.processSpacebar = function() {
@@ -645,7 +734,17 @@ function HangulIME() {
 
     VirtualKeyboardMV.prototype.processHangul = function(text) {
         this._lastTexts = text; // 조합된 텍스트 저장
-    };    
+
+        // 글자 길이가 조합 이전과 같다면 조합 모드로 판단한다.
+        this._composeMode = (this._prevComposeCursorIndex === this._lastTexts.length)? true : false;
+        // 조합 모드가 아니면 인덱스를 저장한다.
+        if(!this._composeMode) {
+            this._composeCursorIndex = this._lastTexts.length;
+            this._cursor.savedIndex = this._cursor.curIndex; // 이전 인덱스 저장
+            this._cursor.curIndex = this._cursorIndex; // 갱신            
+        }
+
+    };
 
     VirtualKeyboardMV.prototype.getTexts = function() {
         return this._lastTexts.slice(0);
@@ -668,7 +767,6 @@ function HangulIME() {
         this._texts.splice(pos, 0, text);
         this._texts = this._texts.join("");
         this._cursorIndex++;
-        this._stackLevel++;
     };
 
     VirtualKeyboardMV.prototype.valid = function() {
@@ -680,15 +778,18 @@ function HangulIME() {
     };        
 
     VirtualKeyboardMV.prototype.isValid = function() {
-        return this._isValid;
+        return this._isValid && !$gameMessage.isBusy();
     };
 
     VirtualKeyboardMV.prototype.moveLeft = function() {
         var min = 0;
         var max = this._texts.length;
+        var cur = this._texts[this._cursorIndex - 1];
 
-        this._cursorIndex--;
-        
+        while(this._cursor.savedIndex < this._cursorIndex) {
+            this._cursorIndex--;
+        }
+
         if(this._cursorIndex < 0) {
             this._cursorIndex = 0;
         }
@@ -696,6 +797,8 @@ function HangulIME() {
         if(this._cursorIndex > max) {
             this._cursorIndex = max;
         }
+
+        this._cursor.curIndex = this._cursorIndex;
 
         return this._cursorIndex;
     };
@@ -746,6 +849,10 @@ function HangulIME() {
         var keys = VirtualKeyboardMV.KEYS[lang];
         var hans = Object.keys(keys);
 
+        if(!this.isValid()) { // 키보드 포커스가 없다면 입력 실패        
+            return event.preventDefault();
+        }
+
         this._lastKeyCode = keyCode;
     
         var c = keys[keyCode]; // 입력된 텍스트       
@@ -772,20 +879,25 @@ function HangulIME() {
             this.moveRight();
             return;
         }               
-
-        if(!this.isValid()) return; // 키보드 포커스가 없다면 입력 실패
         
         // 띄어쓰기 처리
         if(VirtualKeyboardMV.IS_NOT_CHAR === keyCode) { 
             this.processSpacebar();
+            this._prevComposeCursorIndex = this._lastTexts.length; 
+            RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
             return;
         }
 
         // 백스페이스 처리
         if(VirtualKeyboardMV.BACK_SPACE === keyCode) { 
             this.processBackspace();
+            this._prevComposeCursorIndex = this._lastTexts.length; 
             RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
-            console.log(keyCode, " - ", this._lastTexts);
+            return;
+        }        
+
+        // 엔터 처리
+        if(VirtualKeyboardMV.ENTER === keyCode) { 
             return;
         }        
 
@@ -795,15 +907,16 @@ function HangulIME() {
 
         // 입력 처리
         this.addText(text);
+
+        // 조합 이후 글자 길이 체크를 위해 임시 저장
+        this._prevComposeCursorIndex = this._lastTexts.length; 
         
         // 조합 처리
         RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
-        console.log(keyCode, " - ", this._lastTexts);
     
     };
 
     RS.Keyboard = new VirtualKeyboardMV();
-    RS.Keyboard.valid();
 
     document.addEventListener('keydown', RS.Keyboard.onKeyDown.bind(RS.Keyboard), false);
 
