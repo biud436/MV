@@ -75,6 +75,10 @@ function HangulIME() {
         this._currentStep = HangulIME.STEP11; 
     };
 
+    HangulIME.prototype.clear = function() {
+        this.initMembers();
+    };
+
     // 1.0. 키가 입력되면 커서가 조합 중으로 변경된다 (얇은 커서가 왼쪽 굵은 커서가 오른쪽)
     HangulIME.prototype.startWithComposite = function(texts, func) {
         this.initMembers();
@@ -505,6 +509,10 @@ function HangulIME() {
 
     if(!Utils) return;
 
+    //===============================================================
+    // Window_Hangul
+    //===============================================================       
+
     function Window_Hangul() {
         this.initialize.apply(this, arguments);
     };
@@ -522,12 +530,16 @@ function HangulIME() {
     };
 
     Window_Hangul.prototype.windowWidth = function() {
-        return Graphics.boxWidth;
+        return Math.floor(Graphics.boxWidth / 2);
     };
 
     Window_Hangul.prototype.windowHeight = function() {
         return this.fittingHeight(1);
     };      
+
+    Window_Hangul.prototype.setChatView = function(window) {
+        this._chatViewWindow = window;
+    }
 
     Window_Hangul.prototype.update = function() {
         Window_Base.prototype.update.call(this);
@@ -536,7 +548,11 @@ function HangulIME() {
             this.visible = true;
             if(RS.Keyboard.lastKeyCode() === 13) { // Enter가 눌렸나?
                 if(Imported.RS_MessageSystem) {
-                    $gameMessage.add("\x1b말풍선[-1]" + RS.Keyboard.getTexts());
+                    // $gameMessage.add("\x1b말풍선[-1]" + RS.Keyboard.getTexts());
+                    if($gameSystem._chatList.length > 10) $gameSystem._chatList.shift();
+                    $gameSystem._chatList.push("\x1bC[2][일반]\x1bC[0] " +RS.Keyboard.getTexts());
+                    this._chatViewWindow.select($gameSystem._chatList.length - 1);
+                    this._chatViewWindow.refresh();
                 }
                 RS.Keyboard.clear();
             }
@@ -563,12 +579,91 @@ function HangulIME() {
         }
     };
 
+    //===============================================================
+    // Game_System
+    //===============================================================        
+
+    var alias_Game_System_initialize = Game_System.prototype.initialize;
+    Game_System.prototype.initialize = function() {
+        alias_Game_System_initialize.call(this);
+        this._chatList = [];
+    };
+
+    Game_System.prototype.chatList = function() {
+        return this._chatList;
+    };
+
+    //===============================================================
+    // Window_HangulChatView
+    //===============================================================    
+
+    function Window_HangulChatView() {
+        this.initialize.apply(this, arguments);
+    };
+    
+    Window_HangulChatView.prototype = Object.create(Window_Selectable.prototype);
+    Window_HangulChatView.prototype.constructor = Window_HangulChatView;
+    
+    Window_HangulChatView.prototype.initialize = function() {
+        var width = this.windowWidth();
+        var height = this.windowHeight();   
+        Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);  
+        this._pendingIndex = -1;
+        this.refresh();             
+    };
+
+    Window_HangulChatView.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth / 2);
+    };
+
+    Window_HangulChatView.prototype.windowHeight = function() {
+        return this.fittingHeight(4);
+    };          
+
+    Window_HangulChatView.prototype.maxItems = function() {
+        return $gameSystem._chatList.length;
+    };    
+
+    Window_HangulChatView.prototype.standardFontSize = function() {
+        return 14;
+    };        
+
+    Window_HangulChatView.prototype.numVisibleRows = function() {
+        return 5;
+    };    
+
+    Window_HangulChatView.prototype.itemWidth = function() {
+        return this.contentsWidth();
+    };
+
+    Window_HangulChatView.prototype.itemHeight = function() {
+        var innerHeight = this.height - this.padding * 2;
+        return Math.floor(innerHeight / this.numVisibleRows());
+    };
+    
+    Window_HangulChatView.prototype.drawItem = function(index) {
+        var rect = this.itemRect(index);
+        var color = this.pendingColor();
+        this.changePaintOpacity(false);
+        this.drawTextEx($gameSystem._chatList[index], rect.x, rect.y);
+        this.changePaintOpacity(true);
+    };
+
+    //===============================================================
+    // Scene_Map
+    //===============================================================
+    
     var alias_Scene_Map_start = Scene_Map.prototype.start;
     Scene_Map.prototype.start = function() {
         alias_Scene_Map_start.call(this);
         this._hangul = new Window_Hangul();
         this._hangul.y = Graphics.boxHeight - this._hangul.windowHeight();
+        this._chatView = new Window_HangulChatView();
+        this._chatView.y = this._hangul.y - this._chatView.height;
+        this._hangul.setChatView(this._chatView);
+        this._chatView.deactivate();
         this.addWindow(this._hangul);
+        this.addWindow(this._chatView);
     };
 
 })();
@@ -631,6 +726,21 @@ function HangulIME() {
             88: ["ㅌ"],
             89: ["ㅛ"],
             90: ["ㅋ"],
+            96: ["0"],
+            97: ["1"],
+            98: ["2"],
+            99: ["3"],
+            100: ["4"],
+            101: ["5"],
+            102: ["6"],
+            103: ["7"],
+            104: ["8"],
+            105: ["9"],
+            106: ["*"],
+            107: ["+"],
+            109: ["-"],
+            110: ["."],
+            111: ["/"],
             188: [",", "<"],
             190: [".", ">"],
             191: ["/", "?"]
@@ -677,7 +787,22 @@ function HangulIME() {
             87: ["w", "W"],
             88: ["x", "X"],
             89: ["y", "Y"],
-            90: ["z", "Z"],            
+            90: ["z", "Z"],      
+            96: ["0"],
+            97: ["1"],
+            98: ["2"],
+            99: ["3"],
+            100: ["4"],
+            101: ["5"],
+            102: ["6"],
+            103: ["7"],
+            104: ["8"],
+            105: ["9"],
+            106: ["*"],
+            107: ["+"],
+            109: ["-"],
+            110: ["."],
+            111: ["/"],                  
             188: [",", "<"],
             190: [".", ">"],
             191: ["/", "?"]
@@ -719,6 +844,7 @@ function HangulIME() {
         }
         this._texts = this._texts.join("");
         this._cursorIndex++;
+
     };
 
     VirtualKeyboardMV.prototype.processBackspace = function() {
@@ -730,6 +856,7 @@ function HangulIME() {
         this._texts.splice(pos, 1);
         this._texts = this._texts.join("");
         this._cursorIndex = pos;
+
     };
 
     VirtualKeyboardMV.prototype.processHangul = function(text) {
