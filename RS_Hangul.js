@@ -6,6 +6,7 @@
  * Change Log
  * =================================================================
  * 2018.07.18 (v1.0.0) - First Release.
+ * 2018.07.27 (v1.0.1) - Fixed the issue that couldn't type the character called '~' (Tilde)
  */
 /*:ko
  * @plugindesc 한글 조합 입력 기능을 제공합니다. <RS_Hangul>
@@ -15,6 +16,7 @@
  * Change Log
  * =================================================================
  * 2018.07.18 (v1.0.0) - First Release.
+ * 2018.07.27 (v1.0.1) - Fixed the issue that couldn't type the character called '~' (Tilde)
  */
 
 var Imported = Imported || {};
@@ -526,6 +528,7 @@ function HangulIME() {
         Window_Base.prototype.initialize.call(this, 0, 0, width, height);
         this.refresh();
         RS.Keyboard.valid();
+        // Window_Hangul이 제거될 때, 실행되어야 하는 콜백 함수
         this.on('removed', function() { RS.Keyboard.inValid(); } ,this)
     };
 
@@ -593,6 +596,12 @@ function HangulIME() {
         return this._chatList;
     };
 
+    Game_System.prototype.addChat = function(text) {
+        if($gameSystem._chatList) {
+            if($gameSystem._chatList) $gameSystem._chatList.push(text);
+        }        
+    };
+
     //===============================================================
     // Window_HangulChatView
     //===============================================================    
@@ -651,7 +660,7 @@ function HangulIME() {
         this.drawTextEx($gameSystem._chatList[index], rect.x, rect.y);
         this.changePaintOpacity(true);
     };
-
+ 
     //===============================================================
     // Scene_Map
     //===============================================================
@@ -690,7 +699,7 @@ function HangulIME() {
             8: [""],
             21: [""],
             32: [" "],
-            96: ["`", "~"],
+            192: ["`", "~"],
             49: ["1", "!"],
             50: ["2", "@"],
             51: ["3", "#"],
@@ -752,7 +761,7 @@ function HangulIME() {
             8: [""],
             21: [""],
             32: [" "],
-            96: ["`", "~"],            
+            192: ["`", "~"],            
             49: ["1", "!"],
             50: ["2", "@"],
             51: ["3", "#"],
@@ -805,7 +814,7 @@ function HangulIME() {
             107: ["+"],
             109: ["-"],
             110: ["."],
-            111: ["/"],                  
+            111: ["/"],                           
             188: [",", "<"],
             190: [".", ">"],
             191: ["/", "?"]
