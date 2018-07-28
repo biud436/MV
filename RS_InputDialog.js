@@ -831,6 +831,16 @@ function Scene_InputDialog() {
     }
   };
 
+  RS.InputDialog.isEqual = function(eq) {
+    var data = String($gameVariables.value(RS.InputDialog.Params.variableID));
+    eq = String(eq);
+    return (data === eq);
+  };
+
+  Game_Interpreter.prototype.isEqualInputData = function(eq) {
+    return RS.InputDialog.isEqual(eq);
+  };
+
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
       alias_Game_Interpreter_pluginCommand.call(this, command, args);
