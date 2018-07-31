@@ -133,7 +133,16 @@ RS.InputKeyCodeEx = RS.InputKeyCodeEx || {};
         "ㅉ": "W",
         "ㅌ": "x",
         "ㅛ": "y",
-        "ㅋ": "z"
+        "ㅋ": "z",
+        "q": 'pageup',   // Q
+        "w": 'pagedown', // W
+        "x": 'escape',   // X
+        "z": 'ok',       // Z
+        "0": 'escape',   // numpad 0
+        "2": 'down',     // numpad 2
+        "4": 'left',    // numpad 4
+        "6": 'right',   // numpad 6
+        "8": 'up'      // numpad 8                
     };
 
     Input.getButtonName = function(event) {
