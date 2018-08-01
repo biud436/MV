@@ -9,6 +9,28 @@
  * @author 러닝은빛(biud436)
  * @help
  * 
+ * 전체키 입력을 지원하는 플러그인입니다. 
+ * 
+ * 이 플러그인은 알만툴의 기본 키를 제외한 나머지 모든 키 입력을 지원합니다. 
+ * 
+ * 사용 예는 다음과 같습니다.
+ * 
+ * Input.isTriggered(keyCode)
+ * 
+ * 특정 키가 눌렸는 지 확인하는 방법은 다음과 같습니다.
+ * 
+ *  Input.isTriggered('a')
+ * 
+ * 한글로도 입력이 가능합니다. 쌍자음도 지원합니다.
+ * 
+ *  Input.isTriggered('ㄲ')
+ * 
+ * F1 ~ F9까지의 기능 키를 지원합니다.
+ * 
+ *  Input.isTriggered('F1')
+ * 
+ * 조건 분기의 스크립트 란에 위 코드를 채워넣으면 true 또는 false 값을 돌려받을 수 있습니다.
+ * 
  */
 
 var Imported = Imported || {};
