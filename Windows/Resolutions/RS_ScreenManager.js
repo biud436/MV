@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.9) <RS_ScreenManager>
+ * @plugindesc (v1.0.10) <RS_ScreenManager>
  * @author biud436
  *
  * @param TEST OPTION (TEST ONLY)
@@ -247,6 +247,7 @@ Imported.RS_ScreenManager = true;
  * 2018.06.05 (v1.0.9) :
  * - Updated and Fixed the library correctly for getting the all resolutions.
  * - Added plugin parameters for setting the size of the screen (RPG Maker MV 1.5.0 Features)
+ * 2018.08.01 (v1.0.10) - Added the try-catch statement.
  */
 /*~struct~ScreenSize:
  *
