@@ -405,7 +405,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         var fileVersion = "v1.2.0";
         var processArch = process.arch;
         if(Utils.RPGMAKER_VERSION >= "1.6.1") {
-          fileVersion = "v10.0.0";
+          fileVersion = "v10.4.1";
         }
 
         if(process.versions.node == "1.2.0" && process.execPath.contains("Game.exe")) {
