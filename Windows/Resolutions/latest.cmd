@@ -7,7 +7,7 @@ set ARGS1=%1
 set TOOl=nw-gyp
 
 if "%ARGS1%" == ""  (
-    set ARGS1="0.30.2"
+    set ARGS1="0.31.2"
 ) else (
     set ARGS1=v1.2.0
     set TOOl=node-gyp 
