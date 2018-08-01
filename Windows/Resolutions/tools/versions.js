@@ -39,9 +39,7 @@ if(process.platform.includes("win") >= 0) {
         var version = vi(filePath);
         version = String(version["ProductVersion"]);
         if(version >= "1.6.1") {
-             // Why this is changed to v10.4.1 in RPG Maker MV v1.6.1?
-            // That is because it is suddenly changed to v10.4.1
-            console.log("v10.4.1");
+            console.log("v10.0.0");
         } else {
             console.log("v1.2.0");
         }    

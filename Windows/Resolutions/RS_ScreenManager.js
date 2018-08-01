@@ -393,54 +393,63 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   (function(){
     "use strict";
 
-    if( Utils.isNwjs() ) {
+    try {
+     
+      if( Utils.isNwjs() ) {
 
-      var path = require('path')
-          , fs = require('fs');
-
-      var base = process.mainModule.filename;
-
-      if(process && process.platform && process.platform === 'win32') {
-
-        var fileVersion = "v1.2.0";
-        var processArch = process.arch;
-        if(Utils.RPGMAKER_VERSION >= "1.6.1") {
-          fileVersion = "v10.4.1";
-        }
-
-        if(process.versions.node == "1.2.0" && process.execPath.contains("Game.exe")) {
-          window.alert($.localization.get("NotFoundNwExe"));
-          var targetName = path.join(process.execPath, "..", "nw.exe");
-          fs.copyFile(process.execPath, targetName, "utf8", function(err, data) {});
-        }
-
-        var fileName = path.join(base, ".." ,`js/libs/${fileVersion}-winDisplaySettings-${processArch}.node`);
-        fileName = Utils.getAbsolutePath(fileName);
-
-        // 파일이 존재한다면
-        if(fs.existsSync(fileName)) {
-
-          var display = require(fileName);
-
-          // 해상도가 hz으로 같은 것도 나오기 때문에 중복 제거를 해야 한다.
-          var items = display.GetDisplaySettings();
-
-          settings.pcGraphicsArray = items;
-
-          settings.state = "initialized";
-
+        var path = require('path')
+            , fs = require('fs');
+  
+        var base = process.mainModule.filename;
+  
+        if(process && process.platform && process.platform === 'win32') {
+  
+          var fileVersion = "v1.2.0";
+          var processArch = process.arch;
+          if(Utils.RPGMAKER_VERSION >= "1.6.1") {
+            fileVersion = "v10.0.0";
+          }
+  
+          // It must change the filename as 'nw.exe' in RPG Maker MV 1.5.2 or less, 
+          // due to the dynamic library load bug of the node webkit.
+          if(process.versions.node == "1.2.0" && process.execPath.contains("Game.exe")) {
+            window.alert($.localization.get("NotFoundNwExe"));
+            var targetName = path.join(process.execPath, "..", "nw.exe");
+            fs.copyFile(process.execPath, targetName, "utf8", function(err, data) {});
+          }
+  
+          var fileName = path.join(base, ".." ,`js/libs/${fileVersion}-winDisplaySettings-${processArch}.node`);
+          fileName = Utils.getAbsolutePath(fileName);
+  
+          // if the library file exists?
+          if(fs.existsSync(fileName)) {
+  
+            var display = require(fileName);
+  
+            // 해상도가 hz으로 같은 것도 나오기 때문에 중복 제거를 해야 한다.
+            var items = display.GetDisplaySettings();
+  
+            settings.pcGraphicsArray = items;
+  
+            settings.state = "initialized";
+  
+          } else {
+            window.alert($.localization.get("NotFoundError"));
+            settings.state = "failed";
+            // 기본 해상도로 설정
+            settings.pcGraphicsArray = settings.pcGraphicsTempArray;
+          }
+  
         } else {
-          window.alert($.localization.get("NotFoundError"));
-          settings.state = "failed";
-          // 기본 해상도로 설정
+          // in case of Mac OS
           settings.pcGraphicsArray = settings.pcGraphicsTempArray;
+  
         }
+      }      
 
-      } else {
-        // in case of Mac OS
-        settings.pcGraphicsArray = settings.pcGraphicsTempArray;
-
-      }
+    } catch (error) {
+      console.warn(error);
+      settings.pcGraphicsArray = settings.pcGraphicsTempArray;
     }
 
   })();
