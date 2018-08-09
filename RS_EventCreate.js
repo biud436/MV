@@ -1,9 +1,7 @@
 /*:
- * RS_EventCreate.js
- * @plugindesc (v1.0.7) This plugin allows you to create or copy or delete an event
+ * @plugindesc (v1.0.8) This plugin allows you to create or copy or delete an event
  *
  * @author biud436
- * @since 2015.10.16
  *
  * @param Default Event Data
  * @desc Specify the default event data
@@ -27,7 +25,7 @@
  * =============================================================================
  * Script Calls
  * =============================================================================
- * RS.Event.instanceCopy(x, y, mapID, eventID, customData);
+ * RS.Event.instanceCopy(x, y, mapID, eventId, customData);
  * customData : if its value sets to null, it will use existing event data.
  *
  * RS.Event.instanceDestroy($gameMap.events().last);
@@ -46,6 +44,8 @@
  * 2017.12.05 (v1.0.7) :
  * - Added the default value in the plugin parameter called 'Default Event Data'.
  * - Removed the code that is creating a testing message in an event create command.
+ * 2018.08.09 (v1.0.8) :
+ * - Now the eventId is set to equal the index of $gameMap._events.
  */
 
  /*~struct~EventData:
@@ -383,8 +383,8 @@ RS.Event = RS.Event || {};
     return $gameMap.events().length + 1;
   };
 
-  $.makeEventName = function (eventID) {
-    return "EV" + String(eventID).padZero(3);
+  $.makeEventName = function (eventId) {
+    return "EV" + String(eventId).padZero(3);
   };
 
   $.jsonParse = function (str) {
@@ -394,9 +394,9 @@ RS.Event = RS.Event || {};
     return retData;
   };
 
-  $.makeEventData = function (x, y, charName, charIdx, eventID, eventName) {
+  $.makeEventData = function (x, y, charName, charIdx, eventId, eventName) {
     var defaultEventData = $.jsonParse(parameters["Default Event Data"]);
-    defaultEventData.id = eventID;
+    defaultEventData.id = eventId;
     defaultEventData.name = eventName;
     defaultEventData.x = x;
     defaultEventData.y = y;
@@ -412,24 +412,24 @@ RS.Event = RS.Event || {};
   };
 
   $.instanceCreate = function(x, y, charName, charIdx) {
-    var eventID = $.makeEventId();
-    var eventName = $.makeEventName(eventID);
-    var newEvent = $.makeEventData(x, y, charName, charIdx, eventID, eventName);
+    var eventId = $.makeEventId();
+    var eventName = $.makeEventName(eventId);
+    var newEvent = $.makeEventData(x, y, charName, charIdx, eventId, eventName);
 
     $.applyEventOnMap(newEvent);
 
-    return $.instanceCopy(x, y, $gameMap.mapId(), eventID, newEvent);
+    return $.instanceCopy(x, y, $gameMap.mapId(), eventId, newEvent);
 
   };
 
-  $.instanceCopy = function(x, y, mapID, eventID ) {
+  $.instanceCopy = function(x, y, mapID, eventId ) {
     var eventData, scene;
 
     // Check that the map ID is the same.
     if($gameMap.mapId() === mapID) {
 
       // Create a new event.
-      var eventData = new Game_Event(mapID || $gameMap.mapId(), eventID || 1);
+      var eventData = new Game_Event(mapID || $gameMap.mapId(), eventId || 1);
 
       // Set up the position of the event itself.
       eventData.locate(x, y);
@@ -441,8 +441,8 @@ RS.Event = RS.Event || {};
       eventData.refresh();
 
       // Added the event to event elements.
-      $gameMap._events.push(eventData);
-
+      $gameMap._events[eventId] = eventData;
+      
       // Check whether the user is on the map.
       scene = SceneManager._scene;
       if(scene instanceof Scene_Map) {
@@ -454,11 +454,11 @@ RS.Event = RS.Event || {};
 
       return $gameMap._events.last;
     } else {
-      return this.getMapData(x, y, mapID, eventID);
+      return this.getMapData(x, y, mapID, eventId);
     }
   };
 
-  $.getMapData = function(x, y, mapID, eventID) {
+  $.getMapData = function(x, y, mapID, eventId) {
       var self = this;
       var xhr = new XMLHttpRequest();
       var url = $.getParentFolder() + defaultFolder + mapID.padZero(3) + ".json";
@@ -467,7 +467,7 @@ RS.Event = RS.Event || {};
       xhr.onload = function() {
           if (xhr.status < 400) {
               var item = JSON.parse(xhr.responseText);
-              var event = item.events[eventID];
+              var event = item.events[eventId];
               event.id = $.makeEventId();
               $.applyEventOnMap(event);
               self.instanceCopy(x, y, $gameMap.mapId(), event.id).setCustomData(event);
