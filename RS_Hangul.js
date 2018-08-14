@@ -1042,6 +1042,7 @@ function HangulIME() {
             this.processBackspace();
             this._prevComposeCursorIndex = this._lastTexts.length; 
             RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
+            event.preventDefault();
             return;
         }        
 

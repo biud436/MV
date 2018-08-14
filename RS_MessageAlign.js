@@ -1,5 +1,5 @@
 /*:
-* @plugindesc This plugin allows you to align the text in the message system
+* @plugindesc (v1.0.6) This plugin allows you to align the text in the message system.
 * @author biud436
 * @help
 * =============================================================================
@@ -30,6 +30,7 @@
 * 2018.07.09 (v1.0.5) :
 * - Fixed the text padding for left, center, right alignment.
 * - Now it is worked fine even without YEP Message Core.
+* 2018.08.14 (v1.0.6) - Fixed the LF(line feed) and CR(carriage return)
 */
 
 
@@ -114,7 +115,7 @@ Imported.RS_MessageAlign = true;
     
     Window_Message.prototype.calcTextWidth = function(text) {
         
-        var tempText = text; tempText = tempText.split(/[\n]+/);
+        var tempText = text; tempText = tempText.split(/[\r\n]+/);
         var textWidth;
 
         // This makes it easier to get the text width.
