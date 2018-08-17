@@ -42,6 +42,45 @@ Imported.RS_Game_Variables = true;
  * @default 999
  *
  */
+/*:ko
+ * @plugindesc 특정 변수 값에 최소, 최대 범위를 설정합니다. <RS_GameVariables>
+ * @author 러닝은빛(biud436)
+ *
+ * @param Settings
+ * @type struct<GameVariable>[]
+ * @desc 범위를 적용 할 변수 목록을 새로 만들 수 있습니다.
+ * @default ["{\"variableId\":\"1\",\"min\":\"0\",\"max\":\"999\"}","{\"variableId\":\"2\",\"min\":\"0\",\"max\":\"999\"}"]
+ *
+ * @help
+ * =============================================================================
+ * 변동 사항
+ * =============================================================================
+ * 2016.02.23 (v1.0.0) - First Release
+ * 2016.07.11 (v1.0.1) - In pluginCommand, Wrong Character Fixes.
+ * 2017.02.03 (v1.0.2) - Fixed the variable name.
+ * 2017.12.28 (v1.0.3) - Added a feature that can set them in the certain game variable only.
+ */
+/*~struct~GameVariable:ko
+ *
+ * @param variableId
+ * @text Variable ID
+ * @type variable
+ * @desc 범위를 적용 할 변수의 ID 값입니다.
+ * @default 1
+ *
+ * @param min
+ * @text 최소 값
+ * @type number
+ * @desc 최소 값을 설정하십시오.
+ * @default 0
+ *
+ * @param max
+ * @text 최대 값
+ * @type number
+ * @desc 최대 값을 설정하십시오.
+ * @default 999
+ *
+ */
 
 var RS = RS || {};
 RS.Utils = RS.Utils || {};

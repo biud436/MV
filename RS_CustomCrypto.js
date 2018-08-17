@@ -1,10 +1,24 @@
 /*:
- * RS_CustomCrypto.js
  * @plugindesc This plugin allows you to compress a string by using the secret key.
  * @date 2015.12.29
  * @author biud436
  *
  * @param UserKey
+ * @desc UserKey
+ * @default Secret Passphrase
+ *
+ * @param  script_url
+ * @desc script_url
+ * @default http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/tripledes.js
+ *
+ */
+/*:ko
+ * @plugindesc 비밀키를 사용하여 세이브 파일을 AES 방식으로 암호화합니다.
+ * @date 2015.12.29
+ * @author biud436
+ *
+ * @param UserKey
+ * @text 비밀 키
  * @desc UserKey
  * @default Secret Passphrase
  *

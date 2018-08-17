@@ -7,9 +7,7 @@ Imported.RS_FollowerPassable = true;
 
 /*:
  * RS_FollowerPassable.js
- * @plugindesc If you are using this plugin, the player will be impossible
- * to pass other party members.
- *
+ * @plugindesc If you are using this plugin, the player will be impossible to pass other party members.
  * @author biud436
  *
  * @param Enabled
@@ -43,7 +41,57 @@ Imported.RS_FollowerPassable = true;
  * 2016.09.01 (v1.0.4) - Added Plugin Commands
  * 2016.09.01 (v1.0.5) - Fixed the bug.
  */
-
+/*:ko
+ * @plugindesc 플레이어가 파티원을 통과할 수 없게 됩니다.
+ * @author 러닝은빛(biud436)
+ *
+ * @param Enabled
+ * @text 활성화 여부
+ * @type boolean
+ * @desc 플러그인을 시작부터 활성화할 지 여부를 설정합니다. 나중에 바꿀 수 있습니다.
+ * @default true
+ *
+ * @param Separate Mode
+ * @text 세퍼레이츠 모드 적용
+ * @type boolean
+ * @desc 플레이어의 이동 타입, 이동 유형, 투명도를 물려받지 않고 개별적으로 설정합니다.
+ * @default false
+ *
+ * @help
+ * =============================================================================
+ * 플러그인 명령에 대해
+ * =============================================================================
+ * 
+ * 플레이어가 파티원을 통과할 수 없게 설정할 수 있습니다. 
+ * 
+ * FollowerPassable passable false
+ * 
+ * 파티원들은 플레이어의 이동 타입, 이동 유형, 투명도를 물려받아서 플레이어와 같은 속도로
+ * 이동합니다. 
+ * 
+ * 이 플러그인 명령으로 세퍼레이츠 모드를 적용하면 따로 놀게 만들 수 있습니다.
+ * 
+ * FollowerPassable SeparateMode true
+ *
+ * 다음 플러그인 명령은 세퍼레이츠 모드가 적용되었을 때에만 실행됩니다.
+ * index는 Follower 배열 상의 파티원 인덱스이며, x는 숫자 값입니다.
+ *
+ * FollowerPassable setOpacity index x
+ * FollowerPassable setBlendMode index x
+ * FollowerPassable setMoveSpeed index x
+ * 
+ * index는 Follower 배열 상의 파티원 인덱스이며, x는 부울(true 또는 false) 값입니다.
+ * 
+ * FollowerPassable setDirectionFix index x
+ * FollowerPassable setTransparent index x
+ * 
+ * =============================================================================
+ * 변동 사항
+ * =============================================================================
+ * 2016.06.01 (v1.0.0) - First Release.
+ * 2016.09.01 (v1.0.4) - Added Plugin Commands
+ * 2016.09.01 (v1.0.5) - Fixed the bug.
+ */
 
 (function() {
 

@@ -135,6 +135,7 @@ Imported.RS_GraphicsMenu = true;
   * @author biud436
   *
   * @param Menu Image
+  * @text 메뉴 이미지
   * @type file
   * @dir img/pictures/
   * @require 1
@@ -142,46 +143,66 @@ Imported.RS_GraphicsMenu = true;
   * @default inter
   *
   * @param Starting Position
+  * @text 시작 위치
   *
   * @param Start X
+  * @text 시작 X
   * @parent Starting Position
   * @type string
   * @desc 메뉴 이미지의 시작 위치 X 값을 설정하세요
   * @default Graphics.boxWidth / 2 - ((W * RECT.length) / 2)
   *
   * @param Start Y
+  * @text 시작 Y
   * @parent Starting Position
   * @type string
   * @desc 메뉴 이미지의 시작 위치 Y 값을 설정하세요
   * @default Graphics.boxHeight / 2 - H / 2
   *
-  * @param Rect
-  *
   * @param W
+  * @text 버튼의 가로 크기
   * @type number
   * @desc 버튼의 크기를 픽셀 단위로 설정하세요.
   * @default 78
   * @min 1
   *
   * @param H
+  * @text 버튼의 세로 크기
   * @type number
   * @desc 버튼의 크기를 픽셀 단위로 설정하세요.
   * @default 78
   * @min 1
   *
+  * @param Rect
+  * @text 영역
+  * 
   * @param Menu Rect
+  * @text 메뉴 영역
   * @parent Rect
   * @type struct<MenuRect>[]
   * @desc 메뉴 영역을 설정하세요
   * @default ["{\"x\":\"0\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"78\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"156\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"234\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"312\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}"]
   *
   * @param Menu Index
+  * @text 메뉴 인덱스
   * @type note[]
   * @desc Scene 함수(클래스)의 이름를 정확하게 입력하세요.
   * :exit라고 적으면 게임을 즉각 종료할 수 있습니다.
   * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
   *
   * @help
+  * =============================================================================
+  * 사용법
+  * -----------------------------------------------------------------------------
+  * 메뉴 인덱스 값에 씬 이름 대신 :exit가 설정되어있으면, 메뉴 씬을 종료하는 기능을
+  * 넣을 수 있습니다.
+  * 
+  * 이외에도 EVAL 구문으로 자바스크립트를 실행할 수 있습니다.
+  * 
+  * EVAL : x
+  * 
+  * 문법은 위와 같습니다. 
+  * 
   * =============================================================================
   * 크레딧 (이미지)
   * -----------------------------------------------------------------------------

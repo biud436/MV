@@ -1,5 +1,5 @@
 /*:
- * @plugindesc 이동 속도를 보간하여 느린 하드웨어에서 움직임이 튀는 것을 방지합니다.
+ * @plugindesc This plugin allows you to prevent the movement of the character from splashing in the slow mobile device.
  * @author biud436
  * @help
  * ===========================================================================

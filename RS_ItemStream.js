@@ -1,5 +1,45 @@
+/*:
+ * @plugindesc This plugin allows you to send a certain item or gold to certain save file.
+ * @author biud436
+ *
+ * @help
+ * ===========================================================================
+ * Plugin Command
+ * ===========================================================================
+ *
+ * Send the gold to certain save file. 
+ *  Stream Send Gold saveFileId gold_value
+ *
+ * Send the weapon item to certain save file. 
+ *  Stream Send Weapon saveFileId weapon_id
+ *
+ * Send the armor item to certain save file. 
+ *  Stream Send Armor saveFileId armor_id
+ *
+ * Send the item to certain save file. 
+ *  Stream Send Item saveFileId item_id
+ *
+ * Get the gold in the certain save file. 
+ *  Stream Bring Gold saveFileId gold_value
+ *
+ * Get the weapon item in the certain save file. 
+ *  Stream Bring WeaponsaveFileId weapon_id
+ *
+ * Get the armor item in the certain save file. 
+ *  Stream Bring Armor saveFileId armor_id
+ *
+ * Get the item in the certain save file. 
+ *  Stream Bring Item saveFileId item_id
+ *
+ * ===========================================================================
+ * Change Log
+ * ===========================================================================
+ * 2016.03.07 (v1.0.0) - First Release.
+ * 2016.03.22 (v1.0.1) - Compatibility fixes.
+ * 2016.04.24 (v1.0.2) - Fixed the bug.
+ * 2017.01.23 (v1.0.3) - Fixed the source code to ES6.
+ */
 /*:ko
- * RS_ItemStream.js
  * @plugindesc 아이템이나 소유 금액을 다른 세이브 파일로 보내거나 받아올 수 있는 플러그인입니다.
  * @author biud436
  * @date 2016.03.07
@@ -38,7 +78,7 @@
  * // Change Log
  * //===========================================================================
  * 2016.03.07 (v1.0.0) - 공개
- * 2016.03.22 (v1.0.1) - 심플 라이트 플러그인과 호횐되지 않는 오류를 수정했습니다.
+ * 2016.03.22 (v1.0.1) - 심플 라이트 플러그인과 호환되지 않는 오류를 수정했습니다.
  * 2016.04.24 (v1.0.2) - 버그를 수정했습니다.
  * 2017.01.23 (v1.0.3) - 소스 코드를 ES6 기준으로 변경하였습니다.
  */
