@@ -52,6 +52,69 @@
  * 2016.12.28 (v1.0.1) - Fixed a bug that a previous tray will remain after reloading the window.
  * 2018.02.27 (v1.0.2) - Changed the source code for RMMV 1.6.0.
  */
+/*:ko
+ * @plugindesc nw.js의 Tray 메뉴 기능을 플러그인으로 구현하였습니다.
+ * @author 러닝은빛(biud436)
+ *
+ * @param url
+ * @text 주소
+ * @desc 링크 버튼이 눌리면 여기 입력된 주소를 시스템 기본 브라우저로 띄웁니다.
+ * @default http://www.google.com/
+ *
+ * @param --- Tray Menu
+ * @text 트레이 메뉴
+ *
+ * @param Open
+ * @type text
+ * @text 열기
+ * @parent --- Tray Menu
+ * @desc '열기' 버튼의 이름을 수정합니다. (열기 버튼을 누르면 게임 창이 뜹니다)
+ * @default 열기
+ *
+ * @param tooltip
+ * @type text
+ * @text 툴팁
+ * @parent --- Tray Menu
+ * @desc 트레이 아이콘에 마우스를 올렸을 때 표시될 툴팁 메시지를 적으세요.
+ * @default 더블 클릭하면 창을 띄울 수 있습니다.
+ *
+ * @param Minimize To Tray
+ * @type text
+ * @text 트레이로 최소화
+ * @parent --- Tray Menu
+ * @desc 트레이로 최소화 버튼의 이름을 수정합니다.
+ * @default 트레이로 최소화
+ *
+ * @param Window Always On Top
+ * @type text
+ * @text 항상 위에
+ * @parent --- Tray Menu
+ * @desc 항상 위에 버튼의 이름을 수정합니다.
+ * @default 항상 위에
+ *
+ * @param Show Internet
+ * @type text
+ * @text 링크
+ * @parent --- Tray Menu
+ * @desc 링크 버튼의 이름을 수정합니다.
+ * @default 버그 문의 및 공식 카페
+ *
+ * @param Exit
+ * @type text
+ * @text 종료
+ * @parent --- Tray Menu
+ * @desc 게임 종료 버튼의 이름을 수정합니다.
+ * @default 게임 종료
+ *
+ * @help
+ * =============================================================================
+ * 변동 사항
+ * =============================================================================
+ * 2016.01.21 (v1.0.0) - First Release.
+ * 2016.12.28 (v1.0.1) - Fixed a bug that a previous tray will remain after reloading the window.
+ * 2018.02.27 (v1.0.2) - Changed the source code for RMMV 1.6.0.
+ */
+
 
 var Imported = Imported || {};
 var RS = RS || {};

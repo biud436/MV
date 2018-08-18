@@ -141,6 +141,165 @@
  * Free for commercial and non-commercial use
  *
  */
+/*:ko
+ * @plugindesc 셰이더로 맵이나 특정 그림에 웨이브 효과를 만듭니다.
+ * @author 러닝은빛(biud436)
+ *
+ * @help
+ * 이 플러그인은 GLSL를 이용하여 삼각함수로 간단한 파동 효과를 만들어냅니다.
+ * 렌더링 파이프라인에 따라 모든 픽셀은 기본 적인 프레그먼트 셰이더를 거칩니다. 
+ * 파동 효과가 ON 상태이면, 파동 효과에 대한 셰이더도 같이 거칩니다.
+ * 크로미움 기반 브라우저에서는 ANGLE 라이브러리를 통해 GLSL에서 HLSL로 변경됩니다.
+ * 
+ * =============================================================================
+ * 스프라이트(Sprite)에 웨이브 효과 만들기
+ * =============================================================================
+ * 
+ * 스프라이트 생성 후 바로 웨이브 속성에 접근하여 파동 효과를 만들 수 있습니다.
+ * 
+ * 자바스크립트는 카멜 표기법(Camel Case)를 사용하지만, 
+ * 
+ * 속성 명은 RPG Maker VX Ace와 동일하게 스네이크 표기법(Snake Case)을 따릅니다.
+ * 
+ * 다룰 수 있는 속성은 다음과 같습니다.
+ * 
+ *    - wave : 기본 값은 false 입니다.
+ *    - wave_amp : 기본 값은 0.05 입니다.
+ *    - wave_length : 기본 값은 비트맵의 최대 높이 값입니다. (폐지됨)
+ *    - wave_speed : 기본 값은 0.25
+ *    - wave_phase : 기본 값은 360 입니다.
+ * 
+ * 스네이크 표기법(Snake Case)을 따르는 이유는, 
+ * 
+ * 처음부터 그렇게 만들었기 때문입니다. 갑자기 변경하면 혼란스러울 수 있으니까요.
+ *
+ * =============================================================================
+ * 그림에 웨이브 효과 만들기
+ * =============================================================================
+ * 
+ * 그림 이미지에 웨이브 효과를 만드려면 플러그인 명령을 사용하면 됩니다.
+ * 
+ * 웨이브 효과를 활성화하고, 제거하는 두 가지 명령이 있습니다.
+ *
+ *    PictureWave Start picture_id wave_speed wave_amp
+ *      - picture_id : 그림의 ID 값 (숫자입니다)
+ *      - wave_speed : 사용할 수 있는 값은 0 ~ 1 사이의 부동소수점 실수값입니다.
+ *                    (기본 값은 0.25 입니다)
+ *      - wave_amp : 사용할 수 있는 값은 0 ~ 1 사이의 부동소수점 실수값입니다.
+ *                   (기본 값은 0.25 입니다)
+ *
+ * 다음 명령은 웨이브 효과를 제거합니다.
+ *
+ *    PictureWave Stop picture_id
+ *      - picture_id : 그림의 ID 값 (숫자입니다)
+ *
+ * =============================================================================
+ * 맵에 웨이브 효과 주기
+ * =============================================================================
+ *
+ * 맵에 웨이브 효과를 주려면 타일맵 웨이브 명령을 사용하면 됩니다.
+ * 
+ * 아래는 웨이브 효과를 활성화하고 비활성화하는 명령입니다.
+ *
+ *    TilemapWave Enable
+ *    TilemapWave Disable
+ *
+ * 웨이브 효과의 속도를 조절하는 명령입니다.
+ * x는 부동 소수점 실수로 0에서 2 사이의 값입니다.
+ * 기본 값은 2.0 입니다만, 셰이더에선 이 값이 사용되지 않습니다.
+ *
+ *    TilemapWave waveSpeed x
+ *
+ * 이 명령은 파동의 진폭을 설정하는 명령입니다. 
+ * x는 부동 소수점 실수로 0에서 1 사이의 값입니다.
+ * 기본 값은 0.02입니다. 
+ *
+ *    TilemapWave waveFrequency x
+ *
+ * 다음 명령은 텍스쳐(Texture)의 UV 속도를 설정할 수 있는 명령입니다.
+ * UV라는 텍스쳐 내부의 좌표로 0과 1사이의 부동 소수점 실수 값을 가집니다.
+ * 기본 값은 0.25 입니다. 0.25는 1/4 속도입니다.
+ *
+ *    TilemapWave UVSpeed x
+ *
+ * =============================================================================
+ * 이벤트 노트 태그
+ * =============================================================================
+ *
+ * 이벤트에 웨이브 효과를 주려면 노트 태그를 사용하면 됩니다. 
+ * 메모(Comment) 커맨드에서 사용할 수 있습니다.
+ * 
+ * 노트 태그 :
+ *
+ * 웨이브 효과를 활성화하고 비활성화하는 노트 태그입니다.
+ *    <WAVE true>
+ *    <WAVE false>
+ *
+ * 이 노트 태그는 파동의 진폭을 설정하는 명령입니다.
+ * x는 부동 소수점 실수로 0에서 1 사이의 값입니다.
+ * 기본 값은 0.02입니다. 
+ *
+ *    <WAVE_AMP x>
+ *
+ * 다음 노트 태그는 텍스쳐(Texture)의 UV 속도를 설정할 수 있는 명령입니다.
+ * UV라는 텍스쳐 내부의 좌표로 0과 1사이의 부동 소수점 실수 값을 가집니다.
+ * 기본 값은 0.25 입니다. 0.25는 1/4 속도입니다.
+ *
+ *    <WAVE_SPEED x>
+ *
+ * =============================================================================
+ * 전투 노트 태그
+ * =============================================================================
+ *
+ * 다음 노트 태그들은 맵 속성의 메모 란에 설정할 수 있습니다.
+ * 
+ * 전투 원경에 웨이브 효과를 주려면 다음 노트 태그를 사용하세요.
+ *
+ *    <BATTLEBACK_WAVE : x y>
+ *
+ *    - x : x는 웨이브 효과의 진폭 값입니다. (0.02가 기본 값입니다)
+ *    - y : y는 웨이브 효과의 UV 속도 값입니다. (0.25가 기본 값입니다)
+ *
+ *    For Example :
+ *    <BATTLEBACK_WAVE : 0.02 0.25>
+ *
+ * Yanfly님의 액션 시퀀스 팩 1(Action Sequence Pack 1)을 사용하고 있으시다면 
+ * 다음 명령을 사용할 수 있습니다 (모든 오브젝트에 웨이브 효과를 줍니다!)
+ *
+ *    eval: $gameTemp.setBattleBackWaveEffect(cond, waveAmp, waveSpeed);
+ *      - cond : 웨이브 효과 활성화 여부. true 또는 false를 입력하세요.
+ *      - waveAmp : 진폭. 기본 값은 0.02입니다.
+ *      - waveSpeed : UV 속도. 기본 값은 0.25입니다.
+ *
+ * =============================================================================
+ * 변동 사항
+ * =============================================================================
+ * 2016.01.14 (v1.0.0) - First Release.
+ * 2016.01.16 (v1.0.1) - Added the function to remove the filter.
+ * 2016.01.18 (v1.1.0) - Added the plugin command.
+ * 2016.01.22 (v1.2.0) - Fixed the Save and Load bug
+ * 2016.02.16 (v1.3.0) - Fixed Bug (After the player came back to Menu, you had to set the wave effect again)
+ * 2016.02.26 (v1.3.1) - Fixed the default padding value of the sprite. (default value is to 512)
+ * 2016.03.03 (v1.3.2) - Added new Sprite Properties (wave_amp, wave_speed, wave_length, wave_phase)
+ * 2016.08.17 (v1.4.0) - Fixed the issue that is not working in RMMV 1.3.0 (This filter does not support for the time being in Tile-map)
+ * 2016.08.18 (v1.5.0) - Supports a wave filter in ShaderTilemap.
+ * 2016.10.20 (v1.5.1) - Fixed the issue that is not working in RMMV 1.3.2
+ * 2016.11.10 (v1.5.2) - Fixed the issue that is not working in Orange Overlay plugin.
+ * 2016.11.18 (v1.5.3) - Fixed an issue where the original tilemap is rendered when using Orange Overlay plugin.
+ * 2016.11.26 (v1.5.4) - Added certain code to remove the texture from memory.
+ * 2016.11.30 (v1.5.5) - Fixed the issue that has the black border in a filter area.
+ * 2017.12.10 (v1.5.6) - Added the plugin command called 'PictureWave' (it is tested on 1.6.0 beta version)
+ * 2018.04.12 (v1.5.7) - Fixed a cutting issue.
+ * 2018.04.13 (v1.5.7c) - Added the event note tags that can have the wave effect directly for an event graphic.
+ * 2018.04.15 (v1.5.7e) - Added a new feature that can apply the wave filter in the battle background images
+ * 2018.04.25 (v1.5.7f) - Fixed the note tag error in Battle Test.
+ * 2018.05.09 (v1.5.8) - Fixed the bug that is not working the wave filter for the battleback image.
+ * =============================================================================
+ * Terms of Use
+ * =============================================================================
+ * Free for commercial and non-commercial use
+ *
+ */
 
 var Imported = Imported || {};
 Imported.RS_WaveFilter = true;

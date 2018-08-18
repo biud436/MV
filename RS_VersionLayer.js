@@ -83,6 +83,106 @@
  * 2016.08.23 (v1.0.1) - Fixed and Added Parameters.
  * 2016.08.23 (v1.0.2) - Added position parameter.
  */
+/*:ko
+ * @plugindesc (v1.0.2) 버전 텍스트를 화면에 표시합니다.
+ * @author 러닝은빛(biud436)
+ *
+ * @param Version
+ * @text 버전
+ * @desc 버전을 기입하세요.
+ * @default 1.0
+ *
+ * @param visible
+ * @text 초기화 시 표시 여부
+ * @type boolean
+ * @desc 화면에 버전을 표시 할 지 여부를 설정합니다.
+ * @default true
+ *
+ * @param --- Font
+ * @text 폰트
+ *
+ * @param textSize
+ * @text 폰트 크기
+ * @parent --- Font
+ * @desc 버전 텍스트의 폰트 크기를 설정하세요.
+ * @default 14
+ *
+ * @param textColor
+ * @text 텍스트 색상
+ * @parent --- Font
+ * @desc 버전 텍스트의 색상을 설정합니다.
+ * @default rgb(56, 150, 119)
+ *
+ * @param outlineColor
+ * @text 테두리 색상
+ * @parent --- Font
+ * @desc 버전 텍스트의 텍스트 테두리 색상을 설정합니다.
+ * @default rgb(255, 255, 255)
+ *
+ * @param outlineWidth
+ * @text 테두리 굵기
+ * @parent --- Font
+ * @desc 버전 텍스트의 텍스트 테두리 굵기를 설정합니다.
+ * @default 2
+ *
+ * @param defaultText
+ * @text 기본 텍스트
+ * @parent --- Font
+ * @desc 버전 텍스트 보다 먼저 표시될 머릿말을 설정합니다.
+ * @default Version :
+ *
+ * @param textAlign
+ * @text 텍스트 정렬 방향
+ * @parent --- Font
+ * @type select
+ * @desc 텍스트 정렬 방향을 left, center, right 중에 하나를 선택할 수 있습니다.
+ * @default right
+ * @option left
+ * @option center
+ * @option right
+ *
+ * @param opacity
+ * @text 투명도
+ * @parent --- Font
+ * @type number
+ * @desc 텍스트의 투명도를 설정합니다.
+ * @default 255
+ * @min 0
+ * @max 255
+ *
+ * @param -- Position
+ * @text 위치 설정
+ *
+ * @param Position
+ * @text 위치
+ * @parent -- Position
+ * @type select
+ * @desc 버전 레이어의 위치 값을 설정합니다. (y 값 자동 계산)
+ * @default Bottom
+ * @option Bottom
+ * @value 바닥
+ * @option Top
+ * @value 위
+ *
+ * @help
+ * -----------------------------------------------------------------------------
+ * 플러그인 명령에 대해...
+ * -----------------------------------------------------------------------------
+ *
+ * 다음 명령으로 버전 텍스트를 화면에 표시할 수 있습니다. 초기화 시 나타나지 않게
+ * 해놓으신 분들은 이 명령을 사용하여 활성화 할 수 있을 것입니다.
+ *    VersionLayer true
+ *
+ * 다음 명령은 버전 레이어를 화면에서 감춰 렌더링되지 않게 합니다.
+ *    VersionLayer false
+ *
+ * -----------------------------------------------------------------------------
+ * 변동 사항
+ * -----------------------------------------------------------------------------
+ * 2015.12.13 (v1.0.0) - First Release
+ * 2016.08.23 (v1.0.1) - Fixed and Added Parameters.
+ * 2016.08.23 (v1.0.2) - Added position parameter.
+ */
 
 var Imported = Imported || {};
 Imported.RS_VersionLayer = true;

@@ -1,9 +1,18 @@
 /*:
- * @plugindesc <RS_Window_SpanishNameInput>
+ * @plugindesc This plugin allows you to type the Spanish name in the Name Input <RS_Window_SpanishNameInput>
  * @author biud436
  * @help
  * =============================================================================
  * Change Log
+ * =============================================================================
+ * 2018.02.24 (v1.0.0) - First Release.
+ */
+/*:ko
+ * @plugindesc 이 플러그인은 이름 입력에서 스페인어를 입력할 수 있게 해줍니다. <RS_Window_SpanishNameInput>
+ * @author 러닝은빛(biud436)
+ * @help
+ * =============================================================================
+ * 변동 사항
  * =============================================================================
  * 2018.02.24 (v1.0.0) - First Release.
  */

@@ -1,10 +1,8 @@
 /*:
  * RS_WaveSupport.js
  *
- * @plugindesc This can be used to control playback of .wav files.
- * (AudioManager supports addtional playing the wav file)
+ * @plugindesc This can be used to control playback of .wav files.(AudioManager supports addtional playing the wav file)
  * @author biud436
- * @date 2015.12.25
  *
  * @param Wave Volume Text
  * @desc
@@ -22,6 +20,32 @@
  * AudioManager.stopWav();
  *
  * - Change Log
+ * 2015.12.25 (v1.0.0) - First Release Date.
+ */
+/*:ko
+ * @plugindesc This can be used to control playback of .wav files.
+ * (AudioManager supports addtional playing the wav file)
+ * @author biud436
+ *
+ * @param Wave Volume Text
+ * @text 웨이브 볼륨 텍스트
+ * @desc 옵션 창에 볼륨 조절 기능이 추가됩니다. 버튼명을 수정하세요.
+ * @default 웨이브 볼륨
+ *
+ * @help
+ * ===============================================================
+ * 소개
+ * ===============================================================
+ * audio/wav 폴더에 웨이브 파일을 넣고 스크립트 코드로 웨이브 파일을 재생할 수 있습니다.
+ * 
+ * AudioManager.playWav('file_name');
+ * AudioManager.stopWav();
+ * 
+ * 게임 배포 시, 웨이브 파일을 암호화하려면 RS_WavFileEncrypter (웨이브 파일 인크립터)가 필요합니다.
+ *
+ * ===============================================================
+ * 변동 사항
+ * ===============================================================
  * 2015.12.25 (v1.0.0) - First Release Date.
  */
 
