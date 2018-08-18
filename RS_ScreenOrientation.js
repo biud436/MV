@@ -18,10 +18,10 @@
  *
  * @help
  * =============================================================================
- * Test Devices (테스트 기기)
+ * Test Devices
  * =============================================================================
- * Android Chrome (64.0.3282.137) - Supported (지원)
- * iOS Safari (iPhone8) - Not Supported (미지원)
+ * Android Chrome (64.0.3282.137) - Supported 
+ * iOS Safari (iPhone8) - Not Supported
  * =============================================================================
  * How to setup an image
  * =============================================================================
@@ -30,6 +30,61 @@
  * and then place it in your img/pictures folder.
  * =============================================================================
  * Version Log
+ * =============================================================================
+ * 2017.02.16 (v1.0.0) - First Release
+ * 2018.03.01 (v1.0.1) :
+ * - Changed the image and works.
+ * - Added the feature that can automatically hide the image when changing the screen orientation is to a landscape.
+ * - Fixed the bug that causes when restarting the game.
+ */
+/*:ko
+ * @plugindesc <RS_ScreenOrientation>
+ * @author biud436
+ *
+ * @param Image
+ * @text 이미지
+ * @desc Prevent deletion.
+ * @default btn_fullscr
+ * @require 1
+ * @dir img/pictures
+ * @type file
+ *
+ * @param default orientation
+ * @text 기본 화면 방향
+ * @type select
+ * @desc 기본 화면 방향을 설정합니다.
+ * @default landscape
+ * @option landscape (가로)
+ * @value landscape
+ * @option portrait (세로)
+ * @value portrait
+ *
+ * @help
+ * 
+ * 플러그인 안드로이드 크롬 웹 브라우저 전용입니다. (홈에 추가한 상태가 아닐 때)
+ * 
+ * 화면 방향 변경에 대한 권한은 보통 버튼을 누르는 것과 같은 실제 상호 작용이 있을 때에만 
+ * 얻을 수 있습니다.
+ * 
+ * 그래서 전체 화면 변경 버튼을 눌러야만 화면 방향을 변경되게 만들 수 밖에 없었습니다.
+ * 
+ * =============================================================================
+ * 테스트 기기
+ * =============================================================================
+ * 
+ * Android Chrome (64.0.3282.137) - 크롬 브라우저에서만 지원합니다.
+ * iOS Safari (iPhone8) - 사파리는 이 기능을 지원하지 않습니다.
+ * 
+ * =============================================================================
+ * 이미지 설정 방법
+ * =============================================================================
+ * 
+ * 이미지를 다음 링크에서 다운로드 받은 후 img/pictures 폴더에 추가하세요.
+ * 
+ * 링크 - https://github.com/biud436/MV/blob/master/docs/images/btn_fullscr.png
+ * 
+ * =============================================================================
+ * 변동 사항
  * =============================================================================
  * 2017.02.16 (v1.0.0) - First Release
  * 2018.03.01 (v1.0.1) :

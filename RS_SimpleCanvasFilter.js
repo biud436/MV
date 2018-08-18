@@ -5,7 +5,7 @@
  * =============================================================================
  * Plugin Command
  * =============================================================================
- *
+ * 
  * CanvasFilter Whole blur 5px
  * CanvasFilter Whole brightness 0.5
  * CanvasFilter Whole contrast 150%
@@ -19,6 +19,9 @@
  * CanvasFilter Whole setMultipleFlag true
  * CanvasFilter Whole setMultipleFlag false
  * CanvasFilter Whole clear
+ * 
+ * For more information, please see the link below : 
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/filter
  *
  * =============================================================================
  * Script Calls
@@ -28,6 +31,86 @@
  * Graphics.setCanvasInvert(activate, isMultipleFilters, target);
  * =============================================================================
  * Change Log
+ * =============================================================================
+ * 2016.10.06 (v1.0.0) - First Release.
+ * 2017.10.06 (v1.0.1) - Fixed the issue that could not set the number after the decimal point.
+ */
+/*:ko
+ * @plugindesc 게임 캔버스에 CSS 필터를 적용하는 플러그인입니다.
+ * @author 러닝은빛(biud436)
+ * @help
+ * 
+ * <div> 같은 DOM 요소에 적용할 수 있으나, 
+ * RPG Maker MV의 DOM 요소는 동영상이나 FPS 표시, 게임 캔버스 밖에 없으므로 
+ * 게임 캔버스 자체에만 적용됩니다.
+ * 
+ * =============================================================================
+ * 플러그인 명령에 대해...
+ * =============================================================================
+ * 
+ * CanvasFilter Whole <효과명> <인자1, ...>
+ * 
+ * 자세한 CSS 필터에 대한 자세한 정보는
+ * 
+ * https://developer.mozilla.org/ko/docs/Web/CSS/filter
+ * 
+ * 위 링크를 참고 하시기 바랍니다. 위 정보를 바탕으로 제작되었기 때문입니다.
+ * 
+ * 흐리게 : 이미지에 가우시안 블러를 적용합니다. 픽셀 단위입니다.
+ * CanvasFilter Whole blur 5px
+ * 
+ * 밝기 조절 : 값이 0이면 완전히 검은 색 이미지가 생성됩니다. 
+ * 1.0 값은 이미지를 변경하지 않고, 
+ * 1.0 이상의 수치를 사용하면 더 밝게 변합니다.
+ * 본래는 퍼센트도 사용할 수 있지만 예제에 있는 것을 그대로 적용했기 때문에 실수만 사용 가능합니다.
+ * CanvasFilter Whole brightness 0.5
+ * 
+ * 명도 조절 : <퍼센트>
+ * 값이 0%면 검은색 이미지가 되고, 100%이면 이미지가 변하지 않습니다.
+ * 100%가 넘는 값도 설정이 가능합니다.
+ * CanvasFilter Whole contrast 150%
+ * 
+ * 그림자 : <offset-x> <offset-y> <blur-radius> <spread-radius> <color> 
+ * CanvasFilter Whole dropShadow 16px 16px 20px gray
+ * 
+ * 그레이 스케일 : <퍼센트> 0%면 이미지가 변경되지 않습니다.
+ * CanvasFilter Whole grayscale 50%
+ * 
+ * 채도 : 이미지에 색조를 적용합니다. 
+ * 색상원의 각도(degree)를 변경합니다.
+ * CanvasFilter Whole hueRotate 50deg
+ * 
+ * 색상 반전 : 
+ * CanvasFilter Whole invert true
+ * 
+ * 투명도 조절 : <퍼센트> 100%면 투명도가 변경되지 않습니다.
+ * CanvasFilter Whole opacity 25%
+ * 
+ * 색상 강조 : <퍼센트>, 100%면 이미지가 변경되지 않습니다.
+ * CanvasFilter Whole saturate 30%
+ * 
+ * 세피아 효과 : <퍼센트> 0%면 값이 적용되지 않습니다.
+ * CanvasFilter Whole sepia 60%
+ * 
+ * 다양한 효과를 적용하고 싶다면 다음 명령을 호출하십시오.
+ * CanvasFilter Whole setMultipleFlag true
+ * 
+ * 효과를 단일로 적용하려면 다음 명령을 사용하십시오.
+ * CanvasFilter Whole setMultipleFlag false
+ * 
+ * 모든 효과를 제거하려면 다음 명령을 사용하십시오.
+ * CanvasFilter Whole clear
+ *
+ * =============================================================================
+ * 스크립트 호출에 대해...
+ * =============================================================================
+ * 
+ * Graphics.setCanvasFilter(filterName, amount, isMultipleFilters, target);
+ * Graphics.setCanvasDropShadowFilter(hShadow, hShadow, blur, color, isMultipleFilters, target));
+ * Graphics.setCanvasInvert(activate, isMultipleFilters, target);
+ * 
+ * =============================================================================
+ * 변동 사항
  * =============================================================================
  * 2016.10.06 (v1.0.0) - First Release.
  * 2017.10.06 (v1.0.1) - Fixed the issue that could not set the number after the decimal point.

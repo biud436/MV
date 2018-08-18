@@ -62,6 +62,96 @@
  * - Now that it will be restored as the previous plugins.js file after exiting the game.
  * - Fixed an encoding of of text in the preview window.
  */
+/*:ko
+ * @plugindesc 플러그인을 즉각적으로 사용 중지합니다.
+ * @author 러닝은빛(biud436)
+ *
+ * @param Save File ID
+ * @text 세이브 파일 ID
+ * @type number
+ * @desc 자동 저장을 위한 슬롯을 지정하세요. 플러그인 설정 파일 변경 후 빠른 불러오기를 위함입니다.
+ * @default 1
+ * @min 1
+ *
+ * @param Show Preview Window
+ * @text 미리보기 창 보기
+ * @type boolean
+ * @desc 설정 변경 이후 미리보기 창에 js/plugins.js 내용을 표시합니다.
+ * @default false
+ *
+ * @param Auto Reload
+ * @text 자동으로 다시 불러오기
+ * @type boolean
+ * @desc 설정 변경 이후, 게임을 재시작하고 자동으로 동일한 지점으로 복귀합니다.
+ * @default true
+ *
+ * @param Auto closing time
+ * @text 미리보기 창 닫기 딜레이
+ * @type number
+ * @desc 미리보기 창이 자동으로 닫힐 때 까지 걸리는 시간을 밀리초 단위로 지정하세요.
+ * @default 2500
+ *
+ * @param Target Path
+ * @text 타겟 경로
+ * @desc 타겟 경로에 있는 설정 파일을 가져와서 저장 경로에 저장합니다.
+ * @default /js/plugins.js
+ *
+ * @param Save Path
+ * @text 저장 경로
+ * @desc 타겟 경로에 있는 설정 파일을 가져와서 저장 경로에 저장합니다.
+ * @default /js/plugins.js
+ *
+ * @help
+ * =============================================================================
+ * 플러그인 소개
+ * =============================================================================
+ * 플러그인들은 스크립트를 로드하는 방식으로 일시적으로 중단할 수 없습니다.
+ * 이 플러그인을 사용하면 플러그인 설정 파일을 변경한 후 게임을 재시작하여 해당
+ * 플러그인 사용을 정확히 정지시킬 수 있습니다.
+ * 
+ * 높은 호환성을 제공하지만 플러그인 설정 파일을 직접적으로 변경하므로,
+ * 설정 파일 직접 변경은 개발사에서 하지 말라고 권고하는 행위입니다. 
+ * 따라서 필요한 경우에만 사용하시기 바랍니다.
+ * 
+ * 이 플러그인은 파일 시스템 API를 필요로 하므로 PC 환경에서만 사용할 수 있습니다.
+ * 
+ * 물론 모바일에서도 cordova의 파일 시스템 API가 있습니다. 
+ * 하지만 플러그인 설정 파일이 파일 쓰기 권한이 없는 경로에 있기 때문에 
+ * 모바일에서는 사용할 수 없습니다.
+ * 
+ * 또한 이 플러그인은 정규표현식으로 일일히 검출하지 않고 인터프리터 소스를 이용하여
+ * 구문 분석을 거치고 직접적으로 모든 토큰을 추출하여 재조합합니다. 
+ * 
+ * 따라서 종종 사용할 수 없는 문자로 인해 구문 분석에 실패할 수 있습니다.
+ * 그런 문제가 생긴다면 개발자에게 알려주시면 감사하겠습니다.
+ * 
+ * =============================================================================
+ * 플러그인 명령에 대해...
+ * =============================================================================
+ * 다음 플러그인 명령을 호출하면 RefreshManager가 열립니다.
+ * 
+ * RefreshManager open
+ * 
+ * 플러그인 설정 변경은 RefreshManager에서 가능합니다.
+ *
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2016.05.16 (v0.0.1) - Beta
+ * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
+ * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
+ * window that could be able to show the json file.
+ * 2016.07.12 (v1.1.01) - Added two plugin parameters about File Path.
+ * 2016.07.20 (v1.1.02) - Added hyphen(-) and three plugin parameters.
+ * 2016.07.21 (v1.1.03) - Fixed the bug that is separating wrong identifier.
+ * 2016.07.25 (v1.1.04) - Fixed default save file id.
+ * 2016.08.07 (v1.1.05) - Fixed save bug.
+ * 2016.12.08 (v1.1.08) - Added code to remove references to URL objects.
+ * 2017.01.08 (v1.1.1) - Converted sources to ES6
+ * 2018.02.27 (v1.1.2) : (RMMV 1.6.0)
+ * - Now that it will be restored as the previous plugins.js file after exiting the game.
+ * - Fixed an encoding of of text in the preview window.
+ */
 
 var Imported = Imported || {};
  Imported.RS_RefreshManager = true;

@@ -89,7 +89,7 @@
  *
  * @param Version
  * @text 버전
- * @desc 버전을 기입하세요.
+ * @desc 버전을 기입하세요 (eval 구문으로 실행된 후 문자열화 됩니다.)
  * @default 1.0
  *
  * @param visible
@@ -191,7 +191,7 @@ Imported.RS_VersionLayer = true;
 
   var parameters = PluginManager.parameters("RS_VersionLayer");
   var params = [
-    String(parameters["Version"] || '1.0'),
+    String(eval(parameters["Version"] || '1.0')),
     Number(parameters['fontSize'] || 14),
     String(parameters['textColor'] || "rgb(56, 150, 119)"),
     String(parameters['outlineColor'] || "rgb(255, 255, 255)"),
