@@ -144,6 +144,171 @@
  * - Added a feature that changes a text direction in the Game Option.
  * - Added a feature that saves the config of the text direction as file.
  */
+/*:ko
+ * @plugindesc 텍스트 방향을 오른쪽에서 왼쪽으로 읽는 방식으로 변경합니다 <RS_ArabicMessageSystem>
+ * @author 러닝은빛(biud436)
+ *
+ * @param Message Mode
+ * @text 메시지 모드
+ * @type select
+ * @desc 아랍어 모드와 일반 모드 중 하나를 선택할 수 있습니다.
+ * default : arabic
+ * @default arabic
+ * @option Arabic Mode
+ * @value arabic
+ * @option Normal Mode
+ * @value normal
+ *
+ * @param Arabic Font
+ * @text 아랍어 폰트
+ * @desc Choose your font that can indicate Arabic text from your system font folder.
+ * @default Simplified Arabic, Times New Roman, Segoe UI
+ *
+ * @param Font Size
+ * @text 폰트 크기
+ * @type number
+ * @desc Specifies up the text size as integer type.
+ * (default : 28)
+ * @default 28
+ *
+ * @param Text Animation
+ * @text 텍스트 지연 묘화
+ *
+ * @param Text Wait Time
+ * @text 대기 시간
+ * @parent Text Animation
+ * @type number
+ * @desc 한 글자를 그리고 다음 글자를 그릴 때 까지의 지연 시간 간격
+ * (1000 Millisecond = 1 초)
+ * @default 10
+ *
+ * @param Animated Text
+ * @text 텍스트 지연 묘화 사용
+ * @parent Text Animation
+ * @type boolean
+ * @desc 아랍어 문자를 한 번에 그리지 않고 한 글자, 또는 몇 글자씩 천천히 그리고 싶다면 설정하세요.
+ * (Important : The performance may be lower in the mobile)
+ * @default false
+ * @on 사용한다
+ * @off 사용하지 않는다
+ *
+ * @param Binder
+ * @text 스크립트 입력창
+ * @type note[]
+ * @desc 특정 플러그인와의 호환성을 맞추기 위한 스크립트 입력 기능입니다.
+ * @default ["\"  // YEP_MessageCore\\n  if(Imported.YEP_MessageCore) {\\n\\n    Window_Message.prototype.standardFontFace = function () {\\n      return Window_Base.prototype.standardFontFace.call(this);\\n    };\\n\\n    var alias_Window_NameBox_initialize = Window_NameBox.prototype.initialize;\\n    Window_NameBox.prototype.initialize = function(parentWindow) {\\n      alias_Window_NameBox_initialize.call(this, parentWindow);\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      RS.ArabicMessageSystem.defineProtoype(Window_NameBox);\\n    };\\n\\n    Window_NameBox.prototype.standardFontFace = function() {\\n      return Window_Base.prototype.standardFontFace.call(this);\\n    };\\n\\n    Window_NameBox.prototype.refresh = function(text, position) {\\n      this.show();\\n      this._lastNameText = text;\\n      this._text = Yanfly.Param.MSGNameBoxText + text;\\n      this._position = position;\\n      this.width = this.windowWidth();\\n      this.createContents();\\n      this.contents.clear();\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      this.resetFontSettings();\\n      this.changeTextColor(this.textColor(Yanfly.Param.MSGNameBoxColor));\\n      var padding = eval(Yanfly.Param.MSGNameBoxPadding) / 2;\\n      this.drawTextEx(this._text, padding, 0);\\n      this._parentWindow.adjustWindowSettings();\\n      this._parentWindow.updatePlacement();\\n      this.adjustPositionX();\\n      this.adjustPositionY();\\n      this.open();\\n      this.activate();\\n      this._closeCounter = 4;\\n      return '';\\n    };\\n  };\"","\"  // YEP_EventMiniLabel\\n  if(Imported.YEP_EventMiniLabel) {\\n    RS.ArabicMessageSystem.defineInitialize(Window_EventMiniLabel);\\n    Window_EventMiniLabel.prototype.textWidthEx = function(text) {\\n      var temp = messageMode.slice(0);\\n      messageMode = 'normal';\\n      var result = Window_Base.prototype.drawTextEx.call(this, text, 0, this.contents.height);\\n      messageMode = temp;\\n      return result;\\n    };\\n  }\\n\"","\"  // YEP_GabWindow\\n  if(Imported.YEP_GabWindow) {\\n    var alias_Window_Gab_initialize = Window_Gab.prototype.initialize;\\n    Window_Gab.prototype.initialize = function(battle) {\\n      alias_Window_Gab_initialize.call(this, battle);\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      RS.ArabicMessageSystem.defineRefresh(Window_Gab);\\n      RS.ArabicMessageSystem.defineProtoype(Window_Gab);\\n    };\\n\\n    Window_Gab.prototype.standardFontFace = function() {\\n      return Window_Base.prototype.standardFontFace.call(this);\\n    };\\n  }\"","\"  // YEP_ItemCore\\n  if(Imported.YEP_ItemCore) {\\n    var alias_Window_ItemActionCommand_initialize = Window_ItemActionCommand.prototype.initialize;\\n    Window_ItemActionCommand.prototype.initialize = function(x, y) {\\n      alias_Window_ItemActionCommand_initialize.call(this, x, y);\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n    };\\n    Window_ItemActionCommand.prototype.drawAllItems = function() {\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      var topIndex = this.topIndex();\\n      for (var i = 0; i < this.maxPageItems(); i++) {\\n          var index = topIndex + i;\\n          if (index < this.maxItems()) {\\n              this.drawItem(index);\\n          }\\n      }\\n    };\\n  }\"","\"  // YEP_SaveCore\\n\\n  if(Imported.YEP_SaveCore) {\\n\\n    Window_Base.prototype.drawSvActor = function(actor, x, y) {\\n      var filename = actor.battlerName();\\n      var bitmap = ImageManager.loadSvActor(filename);\\n      var pw = bitmap.width / 9;\\n      var ph = bitmap.height / 6;\\n      var sx = 0;\\n      var sy = 0;\\n      this.contents.RTLblt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);\\n    };\\n\\n    Window_Base.prototype.textWidthEx = function(text) {\\n      var temp = messageMode.slice(0);\\n      messageMode = 'normal';\\n      var result = this.drawTextEx.call(this, text, 0, this.contents.height);\\n      messageMode = temp;\\n      return result;\\n    };\\n\\n    var alias_Window_SaveInfo_initialize = Window_SaveInfo.prototype.initialize;\\n    Window_SaveInfo.prototype.initialize = function(x, y, width, height, mode) {\\n      alias_Window_SaveInfo_initialize.call(this, x, y, width, height, mode);\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n    };\\n\\n    Window_SaveInfo.prototype.refresh = function() {\\n      this.contents.clear();\\n      RS.ArabicMessageSystem.createArabicLayer.call(this);\\n      this.resetFontSettings();\\n      var dy = 0;\\n      dy = this.drawGameTitle(dy);\\n      if (!this._valid) return this.drawInvalidText(dy);\\n      this._saveContents = StorageManager.load(this.savefileId());\\n      this.drawContents(dy);\\n    };\\n\\n    RS.ArabicMessageSystem.defineInitialize(Window_SaveConfirm);\\n\\n  }\"","\"// Specify the symbol name\\nrtlWindowButtonSymbol = \\\"Right to Left\\\";\""]
+ *
+ * @help
+ * =============================================================================
+ * 플러그인을 사용하기 전에 읽어주십시오.
+ * -----------------------------------------------------------------------------
+ * 아랍어는 오른쪽에서 왼쪽으로 읽는 언어입니다.
+ * 
+ * 다른 언어와의 호환성이 좋지 않기 때문에 지원하지 않는 것이 현실입니다.
+ * 
+ * 유튜브 강의로 아랍어에 대한 설명을 수강한 결과,
+ * 아랍어는 모든 문자를 연결할 수 있고 연결 형태에 따라 문자가 세 가지로 나뉩니다.
+ * 
+ * 따라서 텍스트 코드 기능을 위해 한 글자씩 자르게 되면, 아랍어를 읽을 수 없게 됩니다.
+ * 
+ * 내부에서 반드시 재연결을 해줘야 하며 텍스트 방향도 바꿔야 하기 때문에 각종 트릭을
+ * 사용하였습니다.
+ * 
+ * 다른 메시지 플러그인과의 호환성 문제가 생길 수 있으니 아랍어 사용 국가에서 
+ * 게임을 서비스하려는 게 아니라면 플러그인을 사용하지 마십시오.
+ * 
+ * 플러그인 개선에 좋은 아이디어가 있으신 분은 깃허브 이슈 게시판을 통해 알려주세요.
+ * 
+ * =============================================================================
+ * 텍스트 코드
+ * -----------------------------------------------------------------------------
+ * 아랍어를 지원하기 위해 유니코드 포맷 문자로 텍스트의 방향을 강제로 바꾸고 있는데요.
+ * 다음 텍스트 코드를 사용하면 왼쪽에서 오른쪽으로 읽게 할 수 있습니다.
+ * 
+ * \LTR<Hello, World!>
+ * 
+ * =============================================================================
+ * 플러그인 명령에 대해...
+ * -----------------------------------------------------------------------------
+ *
+ * 다음 명령은 텍스트가 한 글자씩 지연 묘화되는 것처럼 보이게 해줍니다.
+ *
+ *    EnableArabicTextAnimation
+ *
+ * 지연 시간 없이 한 번에 그려지게 합니다.
+ *
+ *    DisableArabicTextAnimation
+ *
+ * =============================================================================
+ * 호환성 목록
+ * -----------------------------------------------------------------------------
+ * 아랍어의 특수성과 이 플러그인에서 사용한 트릭이 기본 메시지 시스템과 맞지 않기 때문에, 
+ * 대부분 플러그인과의 호환성은 맞지 않습니다. 따라서 직접 호환을 맞춰줘야 하고, 일부
+ * 플러그인은 이 작업 조차 힘들 수 있습니다.
+ * 
+ * 아래는 호환이 된다고 확인한 플러그인입니다.
+ *
+ * Window_Help
+ * Window_Status
+ * Window_BattleLog
+ * Window_MapName
+ * Window_Message
+ * Window_Command
+ * Window_ScrollText
+ * Window_ChoiceList
+ * YEP_ItemCore >=1.26
+ * YEP_X_ItemUpgradeSlots >=1.07
+ * YEP_X_ItemDurability >=1.02
+ * YEP_MessageCore >=1.15
+ * YEP_X_ExtMesPack1 >=1.10
+ * YEP_EventMiniLabel
+ * YEP_GabWindow
+ * YEP_StatusMenuCore >=1.01a
+ *
+ * 하지만 호환을 맞출 수 있는 경우에는 최대한 맞추려고 하고 있습니다. 만약 호환이 맞지 
+ * 않는 플러그인을 발견하신다면 아래 링크로 알려주시기 바랍니다. 호환을 맞출 수 있는 지 
+ * 확인하고 작업을 하겠습니다.
+ *
+ * 링크 - http://biud436.tistory.com/62
+ *
+ * =============================================================================
+ * 변동 사항
+ * -----------------------------------------------------------------------------
+ * 2016.09.19 (v1.0.0) - First Release.
+ * 2016.09.19 (v1.0.1) - Fixed DrawIcon, DrawFace function.
+ * 2016.09.20 (v1.1.0) - Fixed Arabic text sturcture.
+ * 2016.09.21 (v1.1.1) - Fixed processNormalCharacter function.
+ * 2016.09.23 (v1.1.2) - Fixed the window classes that could be displaying
+ * the battle log and map name windows, which have used a drawTextEx function in Arabic.
+ * 2016.10.02 (v1.1.3) - Fixed the Arabic compatibility issues with the name box for YEP Message Core.
+ * 2016.10.23 (v1.1.4) : Fixed the bug that is not working in RMMV 1.3.2 or more.
+ * - Fixed the issue that the scrolling text is not working.
+ * - Fixed the issue that YEP Message Core is not working.
+ * 2016.10.24 (v1.1.5) - Fixed the renderCanvas function in Scroll Text
+ * 2016.11.26 (v1.1.6) - Added certain code to remove the texture from memory.
+ * 2017.01.06 (v1.1.7) :
+ * - Supported YEP_GabWindow plugin
+ * - Supported YEP_EventMiniLabel plugin
+ * - Fixed the processNormalCharacter method.
+ * 2017.05.05 (v1.1.8) - Fixed the issue that does not properly show up Arabic when using a choice window.
+ * 2017.06.03 (v1.1.9) - Fixed an issue that is incorrectly displayed a non-character word : !, @, #, $, dot.
+ * 2017.06.14 (v1.2.0) :
+ * - Added a new feature that can draw the text one by one.
+ * 2017.06.14 (v1.2.1) :
+ * - Fixed to appear the text slowly at the right to left.
+ * - Added plugin commands for animating text.
+ * - Fixed an incorrect text padding in command button.
+ * 2017.07.13 (v1.2.2) :
+ * - When painting the normal text without processing a text code, Fixed an issue that is incorrectly displayed a non-character word : !, @, #, $, dot
+ * 2017.08.03 (v1.2.3) :
+ * - Fixed the bug that didn't show up a icon when using a text animation option.
+ * - Added a feature that can shows up texts fast.
+ * 2017.10.29 (v1.2.4) - Added the scripts binder.
+ * 2017.12.12 (v1.2.5) :
+ * - Fixed the bug of the swap code that changes the message mode as the normal mode when calculating the text width.
+ * - Added a feature that changes a text direction in the Game Option.
+ * - Added a feature that saves the config of the text direction as file.
+ */
 
 var Imported = Imported || {};
 Imported.RS_ArabicMessageSystem = '1.2.5';
