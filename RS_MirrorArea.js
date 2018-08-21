@@ -43,6 +43,7 @@
  * 2016.12.10 (v0.0.7) - Fixed the problem that could not find event ID of an event when you loaded saved file.
  * 2016.12.16 (v0.0.8) - Fixed a scale and the scale mode in the mirror sprite.
  * 2017.06.10 (v0.0.9) - Fixed the bug that is not working fine on RMMV 1.5.0 or more
+ * 2018.08.21 (v0.0.10) - Fixed the bug that causes a new error after dissecting a long method as small pieces of code.
  */
  /*~struct~MirrorBase:
   *
@@ -131,6 +132,7 @@
  * 2016.12.10 (v0.0.7) - 저장된 파일을 불러올 때 이벤트의 이벤트 ID를 찾을 수없는 문제가 수정되었습니다.
  * 2016.12.16 (v0.0.8) - 거울 스프라이트의 스케일 및 스케일 모드가 수정되었습니다.
  * 2017.06.10 (v0.0.9) - RMMV 1.5.0 이상에서 제대로 작동하지 않는 버그가 수정되었습니다.
+ * 2018.08.21 (v0.0.10) - 긴 메소드를 작은 메소드로 분리하는 리팩토링 과정에서 문제가 있었는데 수정되었습니다.
  */
  /*~struct~MirrorBase:ko
   *
@@ -418,12 +420,12 @@ function Sprite_Mirror() {
       // 마스크 영역을 생성한다.
       var graphics = RS.MirrorArea.makeRoundedRect(x, y, w, h);
 
-      this.addChildMirrorImage( target, graphics, event, offset, mirrorCharacter );
+      this.addChildMirrorImage( target, graphics, event, offset);
 
       // 게임 플레이어라면 followers까지 모두 감안한다.
       if(target instanceof Game_Player) {
         $gamePlayer._followers.forEach(function (e, i, a) {
-            this.addChildMirrorImage( e, graphics, event, offset, mirrorCharacter );
+            this.addChildMirrorImage( e, graphics, event, offset);
         }, this);
       }
 
