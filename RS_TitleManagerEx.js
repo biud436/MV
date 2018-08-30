@@ -220,7 +220,7 @@ Imported.RS_TitleManagerEx = true;
  * 2016.03.07 (v1.0.3) - Fixed a bug that causes a serious problem when the parameters were set to English.
  * 2017.06.09 (v1.0.4) - Fixed the parameter not to remove the resource when deploying the game.
  * 2017.07.23 (v1.0.5) - Fixed the incorrect description
- * 2018.08.28 (v1.0.6) - Fixed the inccorect plugin parameter's name
+ * 2018.08.28 (v1.0.6) - Fixed the incorrect plugin parameter's name.
  */
 /*:
  * @plugindesc This plugin allows player to change resources of the title scene after the user has been ended a certain epilogue.
