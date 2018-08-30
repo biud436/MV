@@ -236,11 +236,11 @@ RS.MoreEnemies = RS.MoreEnemies || {};
     Spriteset_Battle.prototype.setPositionForEnemies = function() {
         
         let id = 0;
-        const WIDTH = enemyReposition.width || 6;
-        const HEIGHT = enemyReposition.height || 4;
+        const WIDTH = enemyReposition.width || 4;
+        const HEIGHT = enemyReposition.height || 6;
 
-        for(let y = 0; y < 6; y++) {
-            for(let x = 0; x < 4; x++) {
+        for(let y = 0; y < HEIGHT; y++) {
+            for(let x = 0; x < WIDTH; x++) {
                 let mx = eval(enemyReposition.x) || (96 + (96 * x));
                 let my = eval(enemyReposition.y) || (Graphics.boxHeight / 3 + (96 * y));
                 if(this._enemySprites[id]) this._enemySprites[id].setHome(mx, my);
