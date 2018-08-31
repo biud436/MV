@@ -1143,36 +1143,37 @@
  * =============================================================================
  * 업데이트 로그
  * =============================================================================
- * 2015.10.31 (v1.0.0) - First Release Date
- * 2016.02.24 (v1.0.1) - Added the Plugin Command.
- * 2016.03.04 (v1.0.2) - Added the comments for include used files.
- * 2016.03.18 (v1.0.3) - Added the parameter called 'Arrangement'
- * 2016.03.26 (v1.0.4) - Fixed a bug that the HUD is always displayed regardless
- * of the setting whenever transferring the player to the other map.
- * 2016.05.05 (v1.0.5) - Fixed a bug that the text does not change.
- * 2016.05.17 (v1.0.6) - Fixed a structure of the class.
- * 2016.05.21 (v1.0.7) - Added the plugin parameter that can be able to display
- * the plugin in battle mode only.
- * 2016.05.21 (v1.0.8) - Fixed a bug of the opacity.
- * 2016.06.30 (v1.0.9) - Added the parameter that displays the values with commas every three digits.
- * 2016.07.30 (v1.1.0) - Added the parameter for setting fonts.
- * 2016.09.05 (v1.1.1) - Now you can change the image file name, and can also be used the option called 'exclude the unused files'.
- * 2016.09.13 (v1.1.2) - Added Max Exp Text and Fixed the exp rate.
+ * 2015.10.31 (v1.0.0) - 플러그인 배포 시작
+ * 2016.02.24 (v1.0.1) - 플러그인 커맨드를 추가했습니다
+ * 2016.03.04 (v1.0.2) - (RPG Maker MV v1.1.0 패치 시) 게임 배포시, 이 플러그인에 사용된 리소스 파일이 자동으로 포함됩니다
+ * 2016.03.18 (v1.0.3) - Arrangement 매개변수 추가.
+ * 2016.03.26 (v1.0.4) - 특정 상황(멤버 추가, 게임 저장 후 로드할 때, 다른 맵으로 이동할 때)에서 show 변수가 false 로 설정되어있어도 HUD 가 화면에 표시되는 현상이 수정되었습니다.
+ * 2016.05.05 (v1.0.5) - 텍스트가 변경되지 않는 버그 수정
+ * 2016.05.17 (V1.0.6) - 코드 정리
+ * 2016.05.21 (v1.0.7) - 전투 화면에서만 HUD를 표시하는 기능이 추가 되었습니다 (애드온 추가 필요)
+ * 2016.05.21 (v1.0.8) - 투명도 값이 저장되지 않는 버그가 수정되었습니다.
+ * 2016.06.30 (v1.0.9) - 세 자릿수 마다 쉼표를 찍을 수 있는 플러그인 매개변수를 추가했습니다. 
+ * 2016.07.30 (v1.1.0) - 플러그인 매개변수를 통해 HUD의 폰트, 텍스트의 색상, 크기 등을 바꿀 수 있습니다.
+ * 2016.09.05 (v1.1.1) - 이제 이미지 파일의 이름을 변경할 수 있으며, 사용하지 않는 파일 제외 옵션도 선택할 수 있습니다.
+ * 2016.09.13 (v1.1.2) - 누적된 수치로 나오는 경험치 게이지바를 수정했습니다.
  * 2016.09.26 (v1.1.3) :
- * - Added the function that could be repositioning with all the components,
- * - Added the glittering gauge-bar effects in lower HP or MP value.
- * - Added the function that can display the name.
- * - HUD's opacity will decrease if the player is colliding with HUD.
- * - the huds opacity will be decreased if the party member is dead.
+ * - 이름을 표시할 수 있는 기능을 추가했습니다.
+ * - HUD에 대한 각 UI의 상대 좌표 수정이 가능합니다.
+ * - HUD가 표시되는 위치를 사용자가 마음대로 수정할 수 있습니다. (Custom HUD Anchor 기능)
+ * - 체력과 마력이 일정 비율 이하 또는 이상이라면 게이지 바가 반짝이게 되는 UI 피드백 효과를 추가했습니다.
+ * - 파티원이 죽었을 때 해당 파티원의 HUD가 반투명 처리 됩니다.
+ * - 플레이어가 HUD에 가려지지 않게 근처에 있으면 반투명 처리 됩니다. 반투명 상태일 때 마우스 포인트가 근처에 있거나 플레이어가 근처에 없다면 투명도가 다시 원래대로 돌아올 수 있습니다.
+ * - (Battle HUD Addon) HUD가 표시되는 위치를 수정할 수 있습니다. (이 위치는 일반 필드와는 별도이며 절대 좌표라서 화면 해상도에 상대적이지 않습니다)
+ * - (Battle HUD Addon) 애니메이션 이징 수식 적용으로 인해 선택된 상태를 나타내는 색상 톤 적용 이펙트가 더 자연스러워졌습니다.
  * 2016.09.27 (v1.1.4) :
- * - The visible setting sets as the false before calling the battle.
- * - Added the function that allows all plugin parameters to import or export.
- * 2016.10.08 (v1.1.5) - Fixed a bug that happens in battle.
+ * - 배경이 설정되지 않은 맵에서 전투 시작 시, 전투 배경 화면에 HUD가 그려져 있는 문제를 수정했습니다.
+ * - 매개변수 설정 파일을 데이터 폴더로 내보내거나 가져올 수 있습니다.
+ * 2016.10.08 (v1.1.5) :
+ * - 전투에서 발생하는 여러가지 버그를 수정했습니다.
  * 2016.10.11 (v1.1.6) :
- * - Fixed the bug that happens when certain party member is removed.
- * - Fixed the bug that is not controlled the opacity of HUD.
- * 2016.10.14 (v1.1.7) - Fixed the bug that causes the error called 'undefined
- * bitmap' when you are adding certain party member.
+ *  - 파티원을 파티에서 제거할 때 생기는 오류를 수정했습니다.
+ *  - 플러그인 커맨드 또는 전역 변수를 통해 HUD의 투명도가 변경되지 않는 버그를 수정하였습니다.
+ * 2016.10.14 (v1.1.7) - 특정 파티원을 추가할 때 생기는 정의되지 않은 비트맵 오류를 수정했습니다.
  * 2016.11.16 (v1.1.8) - Fixed a bug with the Battle Background.
  * 2016.12.19 (v1.1.8b) - Fixed a bug that is not set up the coordinates of the face image.
  * 2016.12.22 (v1.1.9) :
