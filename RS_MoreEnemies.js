@@ -99,6 +99,7 @@
  * @author biud436
  * 
  * @param Troop Settings
+ * @text 적 그룹 설정
  * @type struct<Troop>[]
  * @desc 적 그룹을 설정하십시오.
  * @default []
@@ -113,17 +114,20 @@
 /*~struct~Troop:ko
  * 
  * @param troopId
+ * @text 적 그룹 ID
  * @type troop
  * @min 1
  * @desc 적 군단(적 그룹)의 ID 값을 선택하십시오.
  * @default 1
  * 
  * @param moreEnemies
+ * @text 새로운 에너미 생성
  * @type struct<Enemy>[]
  * @desc 새로운 적을 생성하십시오.
  * @default ["{\"enemyId\":\"1\",\"x\":\"300\",\"y\":\"200\",\"hidden\":\"false\"}"]
  * 
  * @param enemyReposition
+ * @text 에너미 위치 설정
  * @type struct<EnemyReposition>
  * @desc 에너미의 위치를 바둑판 형식으로 재정렬합니다.
  * @default {"reposition":"false","width":"4","height":"6","x":"96 + (96 * x);","y":"Graphics.boxHeight / 3 + (96 * y);"}
@@ -132,6 +136,7 @@
  /*~struct~Enemy:ko
   *
   * @param enemyId
+  * @text 에너미 ID
   * @text enemyId
   * @type enemy
   * @desc ID 값을 설정합니다
@@ -152,16 +157,18 @@
   * @default 200
   * 
   * @param hidden
+  * @text 숨김 여부
   * @type boolean
   * @desc 숨어있다가 중간에 나타날 지 여부를 설정합니다.
   * @default false
-  * @on true
-  * @off false
+  * @on 숨긴다
+  * @off 표시한다
   * 
   */
   /*~struct~EnemyReposition:ko
   *
   * @param reposition
+  * @text 위치 재설정 여부
   * @type boolean
   * @desc 위치를 바둑판으로 재설정하는 기능을 사용하시겠습니까? (기본값 = 사용하지 않는다)
   * @default false
@@ -169,23 +176,25 @@
   * @off 사용하지 않는다.
   * 
   * @param width
+  * @text 폭
   * @type number
-  * @desc 바둑판 배열 계산에 필요한 폭 값 (바둑판의 폭)
+  * @desc 바둑판 배열 계산에 필요한 폭 값 (바둑판의 폭). 이중 루프를 사용하여 배치합니다.
   * @default 4
   * @min 3
   * 
   * @param height
+  * @text 높이
   * @type number
-  * @desc 바둑판 배열 계산에 필요한 높이 값 (바둑판의 높이)
+  * @desc 바둑판 배열 계산에 필요한 높이 값 (바둑판의 높이). 이중 루프를 사용하여 배치합니다.
   * @default 6
   * @min 3
   * 
   * @param x
-  * @desc 좌표 계산식을 입력하세요.
+  * @desc 좌표 계산식을 입력하세요. (x는 이중 루프로 구성한 2차원 셀에서의 인덱스 값입니다)
   * @default 96 + (96 * x);
   * 
   * @param y
-  * @desc 좌표 계산식을 입력하세요.
+  * @desc 좌표 계산식을 입력하세요. (y는 이중 루프로 구성한 2차원 셀에서의 인덱스 값입니다)
   * @default Graphics.boxHeight / 3 + (96 * y);
   * 
   */
