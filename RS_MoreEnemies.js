@@ -93,7 +93,6 @@
   * @desc make it possible for the game to place enemies' y position when initializing the combat.
   * @default Graphics.boxHeight / 3 + (96 * y);
   * 
-  * 
   */ 
 /*:ko
  * @plugindesc <RS_MoreEnemies>
