@@ -4,32 +4,34 @@
  * 
  * @param Troop Settings
  * @type struct<Troop>[]
- * @desc
+ * @desc Add the more enemies settings as you want!
  * @default []
- * 
- * @param Enemy Reposition
- * @type struct<EnemyReposition>
- * @desc 
- * @default {"reposition":"false","width":"4","height":"6","x":"96 + (96 * x);","y":"Graphics.boxHeight / 3 + (96 * y);"}
  * 
  * @help
  * ======================================================
  * Change Log
  * ======================================================
  * 2018.08.31 (v1.0.0) - First Release.
+ * 2018.08.31 (v1.0.1) : 
+ * - Now this plugin will be included the struct named Enemy Reposition in the plugin parameter called Troop Settings.
  */
 /*~struct~Troop:
  * 
  * @param troopId
  * @type troop
  * @min 1
- * @desc
+ * @desc Specify troop's ID.
  * @default 1
  * 
  * @param moreEnemies
  * @type struct<Enemy>[]
- * @desc
- * @default
+ * @desc Add a new enemy in their troop and set up the position.
+ * @default ["{\"enemyId\":\"1\",\"x\":\"300\",\"y\":\"200\",\"hidden\":\"false\"}"]
+ * 
+ * @param enemyReposition
+ * @type struct<EnemyReposition>
+ * @desc if you need to set up enemies' location automatically? it is here.
+ * @default {"reposition":"false","width":"4","height":"6","x":"96 + (96 * x);","y":"Graphics.boxHeight / 3 + (96 * y);"}
  * 
  */
  /*~struct~Enemy:
@@ -37,26 +39,26 @@
   * @param enemyId
   * @text enemyId
   * @type enemy
-  * @desc 
+  * @desc Specify the ID for enemy.
   * @default 1
   * 
   * @param x
   * @text x
   * @type number
   * @min 0
-  * @desc
+  * @desc Specify the screen x position for enemy
   * @default 300
   *
   * @param y
   * @text y
   * @type number
   * @min 0
-  * @desc
+  * @desc Specify the screen y position for enemy
   * @default 200
   * 
   * @param hidden
   * @type boolean
-  * @desc
+  * @desc Visible or hidden settings. this sets up as the hiding state basically. This state can be changed later
   * @default false
   * @on true
   * @off false
@@ -66,20 +68,20 @@
   *
   * @param reposition
   * @type boolean
-  * @desc
+  * @desc if you are added a lot of monsters to your game? to use this, it could set the location automatically.
   * @default false
   * @on true
   * @off false
   * 
   * @param width
   * @type number
-  * @desc
+  * @desc The field is represented by a two-dimensional array. I used a double loop to set its location in the entries.
   * @default 4
   * @min 3
   * 
   * @param height
   * @type number
-  * @desc
+  * @desc The field is represented by a two-dimensional array. I used a double loop to set its location in the entries.
   * @default 6
   * @min 3
   * 
@@ -92,17 +94,13 @@
  * @type struct<Troop>[]
  * @desc 적 그룹을 설정하십시오.
  * @default []
- * 
- * @param Enemy Reposition
- * @type struct<EnemyReposition>
- * @desc 에너미의 위치를 바둑판 형식으로 재정렬합니다.
- * @default {"reposition":"false","width":"4","height":"6","x":"96 + (96 * x);","y":"Graphics.boxHeight / 3 + (96 * y);"}
- * 
+ *
  * @help
  * ======================================================
  * Change Log
  * ======================================================
  * 2018.08.31 (v1.0.0) - First Release.
+ * 2018.08.31 (v1.0.1) - 적 그룹 매개변수 안에 위치 재설정 기능이 포함되게 수정하였습니다.
  */
 /*~struct~Troop:ko
  * 
@@ -115,7 +113,12 @@
  * @param moreEnemies
  * @type struct<Enemy>[]
  * @desc 새로운 적을 생성하십시오.
- * @default 
+ * @default ["{\"enemyId\":\"1\",\"x\":\"300\",\"y\":\"200\",\"hidden\":\"false\"}"]
+ * 
+ * @param enemyReposition
+ * @type struct<EnemyReposition>
+ * @desc 에너미의 위치를 바둑판 형식으로 재정렬합니다.
+ * @default {"reposition":"false","width":"4","height":"6","x":"96 + (96 * x);","y":"Graphics.boxHeight / 3 + (96 * y);"}
  * 
  */
  /*~struct~Enemy:ko
@@ -208,11 +211,6 @@ RS.MoreEnemies = RS.MoreEnemies || {};
         troopSettings = $.jsonParse(parameters["Troop Settings"]);
     }
 
-    var enemyReposition;
-    if(parameters["Enemy Reposition"]) {
-        enemyReposition = $.jsonParse(parameters["Enemy Reposition"]);
-    }
-
     $.createMoreEnemies = function() {
         troopSettings.forEach(function(settings) {
             var troopId = settings.troopId;
@@ -230,10 +228,26 @@ RS.MoreEnemies = RS.MoreEnemies || {};
     var alias_Spriteset_Battle_createEnemies = Spriteset_Battle.prototype.createEnemies;
     Spriteset_Battle.prototype.createEnemies = function() {
         alias_Spriteset_Battle_createEnemies.call(this);
-        if(enemyReposition && enemyReposition.reposition) this.setPositionForEnemies();
+        this.setPositionForEnemies();
     };
 
     Spriteset_Battle.prototype.setPositionForEnemies = function() {
+
+        let troopId = $gameTroop._troopId;
+
+        if(!troopSettings) return;
+
+        // if there has troop settings?
+        var enemyReposition = troopSettings.filter(function(settings) {
+            return settings.troopId === $gameTroop._troopId;
+        });
+        
+        if(Array.isArray(enemyReposition) && enemyReposition.length <=0) return;
+
+        enemyReposition = enemyReposition[0].enemyReposition;
+
+        // if the reposition is enabled?
+        if(!enemyReposition.reposition) return;
         
         let id = 0;
         const WIDTH = enemyReposition.width || 4;
