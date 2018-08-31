@@ -250,13 +250,13 @@ RS.MoreEnemies = RS.MoreEnemies || {};
 
     Spriteset_Battle.prototype.setPositionForEnemies = function() {
 
-        let troopId = $gameTroop._troopId;
+        const troopId = $gameTroop._troopId;
 
         if(!troopSettings) return;
 
         // if there has troop settings?
-        var enemyReposition = troopSettings.filter(function(settings) {
-            return settings.troopId === $gameTroop._troopId;
+        let enemyReposition = troopSettings.filter(function(settings) {
+            return settings.troopId === troopId;
         });
         
         if(Array.isArray(enemyReposition) && enemyReposition.length <=0) return;
