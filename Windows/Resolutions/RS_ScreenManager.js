@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.10) <RS_ScreenManager>
+ * @plugindesc (v1.0.11) <RS_ScreenManager>
  * @author biud436
  *
  * @param TEST OPTION (TEST ONLY)
@@ -248,6 +248,7 @@ Imported.RS_ScreenManager = true;
  * - Updated and Fixed the library correctly for getting the all resolutions.
  * - Added plugin parameters for setting the size of the screen (RPG Maker MV 1.5.0 Features)
  * 2018.08.01 (v1.0.10) - Added the try-catch statement.
+ * 2018.09.02 (v1.0.11) - Fixed the method name called 'rescaleSprite' is to 'requestStretch' due to a crash.
  */
 /*~struct~ScreenSize:
  *
@@ -317,6 +318,8 @@ RS.ScreenManager = RS.ScreenManager || {};
 RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
 (function ($) {
+
+  "use strict";
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_ScreenManager>');
@@ -1167,9 +1170,11 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   // Scene_Base
   //============================================================================
 
-  Scene_Base.prototype.rescaleSprite = function (sprite) {
+  Scene_Base.prototype.requestStretch = function (sprite) {
     if(!sprite.bitmap) return;
     var bitmap = sprite.bitmap;
+    if(bitmap.width <= 0) return;
+    if(bitmap.height <= 0) return;
     var scaleX = Graphics.boxWidth / bitmap.width;
     var scaleY = Graphics.boxHeight / bitmap.height;
     sprite.scale.x = (scaleX > 1.0) ? scaleX : 1.0;
@@ -1187,7 +1192,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   var alias_Scene_MenuBase_start = Scene_MenuBase.prototype.start;
   Scene_MenuBase.prototype.start = function() {
     alias_Scene_MenuBase_start.call(this);
-    this.rescaleSprite(this._backgroundSprite);
+    this.requestStretch(this._backgroundSprite);
   };
 
   //============================================================================
@@ -1197,8 +1202,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   var alias_Scene_Title_start = Scene_Title.prototype.start;
   Scene_Title.prototype.start = function() {
     alias_Scene_Title_start.call(this);
-    this.rescaleSprite(this._backSprite1);
-    this.rescaleSprite(this._backSprite2);
+    this.requestStretch(this._backSprite1);
+    this.requestStretch(this._backSprite2);
   };
 
   //============================================================================
@@ -1208,7 +1213,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   var alias_Scene_Gameover_start = Scene_Gameover.prototype.start;
   Scene_Gameover.prototype.start = function() {
     alias_Scene_Gameover_start.call(this);
-    this.rescaleSprite(this._backSprite);
+    this.requestStretch(this._backSprite);
   };
 
   //============================================================================
