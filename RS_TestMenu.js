@@ -1,12 +1,31 @@
 /*:
- * @plugindesc <RS_TestMenu>
+ * @plugindesc This plugin adds some features in menu, for testing. <RS_TestMenu>
  * @author biud436
+ * 
+ * @param uiCurrentPosition
+ * @text Current Position
+ * @desc Specify the name of the Location window.
+ * @default 위치
+ * 
+ * @param uiTime
+ * @text Time
+ * @desc Specify the name of the Time window.
+ * @default 시간
+ * 
+ * @help
+ * 
  */
 
 (function() {
 
-  var uiCurrentPosition = "위치";
-  var uiTime = "시간";
+  var parameters = $plugins.filter(function(i) {
+    return i.description.contains("<RS_TestMenu>");
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
+  var uiCurrentPosition = parameters["uiCurrentPosition"] || "위치";
+  var uiTime = parameters["uiTime"] || "시간";
 
   //============================================================
   // Scene_Menu
