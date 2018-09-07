@@ -308,22 +308,22 @@ var $gameInventory;
             let w = this._size.width;
             let h = this._size.height;
 
+            // 그리드 좌표를 구함
             let gridX = Math.floor(this.x / w);
             let gridY = Math.floor(this.y / h);
             
+            // 그리드에서의 인덱스를 찾는다.
             let index = ((8 * gridY) + gridX) - 8;
 
-            // 해당 슬롯에 아이템이 있는지 확인합니다.            
-            if($gameInventory.isEmpty(index)) {
+            // 해당 슬롯에 아이템이 있는지 확인       
+            if(!$gameInventory.isExist(index)) {
                 this.x = gridX * w;
                 this.y = (gridY * h).clamp(h, 256 - h);
                 
                 let prevIndex = this._index;
                 this._index = index;
 
-                let temp = $gameInventory._slots[prevIndex];
-                $gameInventory._slots[prevIndex] = $gameInventory._slots[index];
-                $gameInventory._slots[index] = $gameInventory._slots[prevIndex];
+                $gameInventory.moveTo(prevIndex, index);
 
             } else {
                 // 아이템이 있는 위치에는 옮길 수 없다.
@@ -549,23 +549,23 @@ var $gameInventory;
     }
 
     //==========================================================
-    // InventoryManager
+    // Game_Inventory
     //==========================================================       
 
-    function InventoryManager() {
+    function Game_Inventory() {
         this.initialize.apply(this, arguments);
     };
     
-    InventoryManager.prototype.constructor = InventoryManager;
+    Game_Inventory.prototype.constructor = Game_Inventory;
     
-    InventoryManager.prototype.initialize = function() {
+    Game_Inventory.prototype.initialize = function() {
         // 멤버 변수 생성
         this.initMembers();
         // 인벤토리 준비
         this.prepareInventory();
     };
 
-    InventoryManager.prototype.initMembers = function() {
+    Game_Inventory.prototype.initMembers = function() {
         // 열
         this._cols = 8;
         // 행
@@ -580,14 +580,14 @@ var $gameInventory;
         this._id = 0;        
     };
 
-    InventoryManager.prototype.slots = function() {
+    Game_Inventory.prototype.slots = function() {
         return this._slots;
     };
 
     /**
      * 인벤토리 시스템에 맞는 아이템 오브젝트를 생성한다.
      */
-    InventoryManager.prototype.prepareInventory = function() {
+    Game_Inventory.prototype.prepareInventory = function() {
         // 모든 아이템을 가져온다
         var data = $gameParty.allItems();
         // 아이템 오브젝트를 차례대로 읽는다.
@@ -602,19 +602,19 @@ var $gameInventory;
         this._prepared = true;
     };
 
-    InventoryManager.prototype.removeAllSlots = function() {
+    Game_Inventory.prototype.removeAllSlots = function() {
         // 멤버 변수를 다시 생성한다.
         this.initMembers();
     };
 
-    InventoryManager.prototype.updateInventory = function() {
+    Game_Inventory.prototype.updateInventory = function() {
         // 모든 슬롯을 제거한다.
         this.removeAllSlots();
         // 인벤토리를 다시 준비한다.
         this.prepareInventory();
     };
 
-    InventoryManager.prototype.newItem = function(slotId, item) {
+    Game_Inventory.prototype.newItem = function(slotId, item) {
 
         var newItem = {};
 
@@ -636,15 +636,15 @@ var $gameInventory;
         return newItem;
     };
 
-    InventoryManager.prototype.isEmpty = function(slotId) {
+    Game_Inventory.prototype.isExist = function(slotId) {
         // 슬롯 목록에서 아이템을 찾는다. 
         var item = this._slots.filter(function(i) {
-            return i.slotId === slotId;
+            return i && (i.slotId === slotId);
         });
-        return item[i];
+        return item[0];
     };
 
-    InventoryManager.prototype.nextId = function() {
+    Game_Inventory.prototype.nextId = function() {
 
         // 인덱스 값을 1 늘린다.
         this._id = (this._id + 1) % this._maxSlots;
@@ -657,7 +657,7 @@ var $gameInventory;
      * 빈 슬롯에 새로운 아이템을 추가합니다.
      * @param {Object} item 
      */
-    InventoryManager.prototype.createItem = function(item) {
+    Game_Inventory.prototype.createItem = function(item) {
         // 아이템을 특정 슬롯에 설정한다.
         var newItem = this.newItem(this._id, item);
 
@@ -671,18 +671,23 @@ var $gameInventory;
     /**
      * 더 이상 추가할 수 없습니다.
      */
-    InventoryManager.prototype.alert = function() {
+    Game_Inventory.prototype.alert = function() {
         
     };
 
-    InventoryManager.prototype.getIndex = function(slotId1) {
+    Game_Inventory.prototype.getIndex = function(slotId1) {
 
     };
 
-    InventoryManager.prototype.swapItem = function(slotId1, slotId2) {
+    /**
+     * 아이템을 교체합니다.
+     * @param {Number} slotId1 
+     * @param {Number} slotId2 
+     */
+    Game_Inventory.prototype.swapItem = function(slotId1, slotId2) {
         // 인덱스를 찾는다.
-        var item1 = this._slots.indexOf(this.isEmpty(slotId1));
-        var item2 = this._slots.indexOf(this.isEmpty(slotId2));
+        var item1 = this._slots.indexOf(this.isExist(slotId1));
+        var item2 = this._slots.indexOf(this.isExist(slotId2));
         // 인덱스를 못찾으면 -1이 나오므로, 0 이상을 조건으로 찾아낸다.
         if(item1 >= 0 && item2 >= 0) {
             // 스왑 코드
@@ -692,9 +697,27 @@ var $gameInventory;
         }
     };
 
-    InventoryManager.prototype.removeItem = function(slotId) {
+    /**
+     * 
+     * @param {Number} prev 기존 슬롯
+     * @param {Number} newTo 새로운 슬롯 (비어있어야 함)
+     */
+    Game_Inventory.prototype.moveTo = function(prev, newTo) {
+        // 인덱스를 찾는다.
+        var item1 = this._slots.indexOf(this.isExist(prev));
+        var item2 = this._slots.indexOf(this.isExist(newTo));
+        // 인덱스를 못찾으면 -1이 나오므로, 0 이상을 조건으로 찾아낸다.
+        if(item1 >= 0 && item2 === -1) {
+            // 스왑 코드
+            var temp = JsonEx.parse(JsonEx.stringify(this._slots[item1]));
+            this._slots[item1] = this._slots[item2];
+            this._slots[item2] = temp;
+        }        
+    };
+
+    Game_Inventory.prototype.removeItem = function(slotId) {
         // 삭제할 요소를 찾는다.
-        let deleteItem = this.isEmpty(slotId);
+        let deleteItem = this.isExist(slotId);
         var deleteIndex = this._slots.indexOf(deleteItem);
         if(deleteIndex >= 0) {
             // 해당 인덱스의 원소를 삭제한다.
@@ -702,7 +725,7 @@ var $gameInventory;
         }
     };
 
-    InventoryManager.prototype.sort = function() {
+    Game_Inventory.prototype.sort = function() {
         // 정렬한다.
         this._slots.sort(function(a, b) {
             return a.slotId - a.slotId;
@@ -711,7 +734,7 @@ var $gameInventory;
         this.refresh();
     };
 
-    InventoryManager.prototype.refresh = function() {
+    Game_Inventory.prototype.refresh = function() {
         $gameMap.requestRefresh();
     };
 
@@ -722,7 +745,7 @@ var $gameInventory;
     var alias_DataManager_createGameObjects = DataManager.createGameObjects;
     DataManager.createGameObjects = function() {
         alias_DataManager_createGameObjects.call(this);
-        $gameInventory = new InventoryManager();
+        $gameInventory = new Game_Inventory();
     };
 
     //==========================================================
