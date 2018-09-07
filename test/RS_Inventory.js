@@ -335,6 +335,7 @@ var $gameInventory;
         }
         
         onDragStart(event) {
+            this._isDragEnd = false;
             this.savePosition();
             super.onDragStart(event, true);
         }
@@ -342,7 +343,8 @@ var $gameInventory;
         onDragEnd(event) {
             super.onDragEnd(event, true);                      
             // 그리드에 정렬합니다.
-            this.setGrid();
+            if(!this._isDragEnd) this.setGrid();
+            this._isDragEnd = true;
         }
 
         onDragMove(event) {
@@ -690,10 +692,8 @@ var $gameInventory;
         var item2 = this._slots.indexOf(this.isExist(slotId2));
         // 인덱스를 못찾으면 -1이 나오므로, 0 이상을 조건으로 찾아낸다.
         if(item1 >= 0 && item2 >= 0) {
-            // 스왑 코드
-            var temp = JsonEx.parse(JsonEx.stringify(this._slots[item1]));
-            this._slots[item1] = this._slots[item2];
-            this._slots[item2] = temp;
+            this._slots[item1].slotId = slotId2;
+            this._slots[item2].slotId = slotId1;
         }
     };
 
@@ -706,13 +706,15 @@ var $gameInventory;
         // 인덱스를 찾는다.
         var item1 = this._slots.indexOf(this.isExist(prev));
         var item2 = this._slots.indexOf(this.isExist(newTo));
+
+        console.log(item1, item2);
+
         // 인덱스를 못찾으면 -1이 나오므로, 0 이상을 조건으로 찾아낸다.
         if(item1 >= 0 && item2 === -1) {
             // 스왑 코드
-            var temp = JsonEx.parse(JsonEx.stringify(this._slots[item1]));
-            this._slots[item1] = this._slots[item2];
-            this._slots[item2] = temp;
-        }        
+            var temp = this._slots[item1].slotId;
+            this._slots[item1].slotId = newTo;
+        }
     };
 
     Game_Inventory.prototype.removeItem = function(slotId) {
@@ -778,6 +780,7 @@ var $gameInventory;
     var alias_Scene_Map_start = Scene_Map.prototype.start;
     Scene_Map.prototype.start = function() { 
         alias_Scene_Map_start.call(this);
+        $gameInventory.updateInventory();        
         this.on('refreshInventory', this.refreshInventory, this);
     };
 
