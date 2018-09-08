@@ -263,7 +263,8 @@ var $gameInventory;
             this._divideAreaForHeight = 1;
             this._isOnTooltip = false;
             this._startX = this.x;
-            this._startY = this.y;            
+            this._startY = this.y;    
+            this._lastButton = 0;        
         }        
 
         initBitmaps() {
@@ -356,11 +357,12 @@ var $gameInventory;
         onDragEnd(event) {
             super.onDragEnd(event, true);                      
             // 그리드에 정렬합니다.
-            if(!this._isDragEnd && event.button === 0) {
+            if(!this._isDragEnd && event.button === 0 && this._lastButton !== 2) {
                 this.setGrid();
             }
             // 이 플래그가 없으면 그리드 함수가 6번 연속으로 실행되면서 버그를 일으킨다.
             this._isDragEnd = true;
+            this._lastButton = event.button;
         }
 
         onDragMove(event) {
