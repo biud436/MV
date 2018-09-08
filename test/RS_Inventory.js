@@ -1,6 +1,17 @@
 /*:
  * @plugindesc <RS_Inventory>
  * @author biud436
+ * @help
+ * ==============================================================
+ * Comment
+ * ==============================================================
+ * 이 플러그인은 아직 개발 중에 있습니다.
+ * 깃허브에는 오류 발생 시 다시 예전 버전으로 돌아가기 위한 용도로 기록을 남기고 있습니다.
+ * 
+ * 완성도가 너무 낮은 플러그인은 블로그에 올리지 않습니다.
+ * 하지만 깃허브에는 과정이 남아있을 수도 있습니다.
+ * 블로그에 제대로 올라오기 전까지는 사용을 권장하지 않으므로,
+ * 별도의 사용법도 따로 없으며 지원도 없습니다.
  */
 
 var Imported = Imported || {};
@@ -345,7 +356,7 @@ var $gameInventory;
         onDragEnd(event) {
             super.onDragEnd(event, true);                      
             // 그리드에 정렬합니다.
-            if(!this._isDragEnd) {
+            if(!this._isDragEnd && event.button === 0) {
                 this.setGrid();
             }
             // 이 플래그가 없으면 그리드 함수가 6번 연속으로 실행되면서 버그를 일으킨다.
@@ -355,7 +366,7 @@ var $gameInventory;
         onDragMove(event) {
             this.updatePosition();
             super.onDragMove(event, true);
-            if(this.dragging) {
+            if(this.dragging && event.button === 0) {
                 // 밖으로 드래그 못하게 합니다.
                 this.checkRestorePosition();                                   
             }
@@ -414,12 +425,14 @@ var $gameInventory;
 
         initMembers() {
             super.initMembers();
+            // 하드코딩된 숫자들은 전부 나중에 데이터 대입식으로 바꿔야 한다.
             this._size = new PIXI.Rectangle(0, 0, 256, 256);
             this._backgroundBitmap = new Bitmap(this._size.width, this._size.height);
             this._background = new Sprite();   
             this._divideAreaForHeight = 8;
             this._data = $gameInventory.slots();
             this._itemLayer = [];
+            this._itemIndex = 0;
         }
 
         refresh() {
@@ -450,23 +463,16 @@ var $gameInventory;
             this.addChild(this._background);            
         }
 
-        initSlots() {
-            // 슬롯과 슬롯 사이의 간격
-            const pad = 2;
-
-            const width = this._size.width;
-            const height = this._size.height;
-            // 슬롯 한 칸의 폭
-            const itemWidth = Math.floor(width / 8);
-            // 슬롯 한 칸의 높이
-            const itemHeight = Math.floor(height / 8);
-
-            let index = 0;
+        resetIndex() {
+            this._itemIndex = 0;
             this._itemLayer = [];
+        }
 
-            this._backgroundBitmap.drawText("Grid Inventory", 1, 0, 200, 32, "left");
-        
-            // 8x8 인벤토리, 첫 번째 칸은 창 제목이 온다.
+        setInventoryTitle(text) {
+            this._backgroundBitmap.drawText(text, 1, 0, 200, 32, "left");
+        }
+
+        createTable(itemWidth, itemHeight) {
             for (let y = 0; y < 8; y++) {
                 for (let x = 0; x < 8; x++) {
                     let mx = (itemWidth * x);
@@ -477,27 +483,51 @@ var $gameInventory;
                     
                     // 0부터
                     var data = $gameInventory.slots();
-                    const item = data[index];
+                    const item = data[this._itemIndex];
 
-                    // 이 부분은 나중에 메소드로 분리한다.
-                    if(item) {
-                        const itemSprite = new Inventory_Item(item.slotId, index);
-                        
-                        mx = itemWidth * (item.slotId % 8);
-                        my = 32 + (itemHeight * Math.floor(item.slotId / 8));                   
-
-                        itemSprite.x = mx;
-                        itemSprite.y = my;
-
-                        this._itemLayer.push(itemSprite);
-                            
-                        this.addChild(itemSprite);
-                    
-                        index += 1;
-                    }
+                    if(item) this.addItem(item, mx, my, itemWidth, itemHeight);
 
                 }
             }
+        }
+
+        addItem(item, mx, my, itemWidth, itemHeight) {
+
+            const itemSprite = new Inventory_Item(item.slotId, this._itemIndex);
+            
+            mx = itemWidth * (item.slotId % 8);
+            my = 32 + (itemHeight * Math.floor(item.slotId / 8));                   
+
+            itemSprite.x = mx;
+            itemSprite.y = my;
+
+            this._itemLayer.push(itemSprite);
+                
+            this.addChild(itemSprite);
+        
+            this._itemIndex += 1;
+        }
+
+        initSlots() {
+
+            // 슬롯과 슬롯 사이의 간격
+            const pad = 2;
+
+            // 전체 테이블의 크기
+            const width = this._size.width;
+            const height = this._size.height;
+
+            // 아이템 슬롯의 크기
+            const itemWidth = Math.floor(width / 8);
+            const itemHeight = Math.floor(height / 8);
+
+            this.resetIndex();
+
+            // 타이틀 설정
+            this.setInventoryTitle("Grid Inventory");
+
+            // 테이블 생성
+            this.createTable(itemWidth, itemHeight);
 
         }
 
