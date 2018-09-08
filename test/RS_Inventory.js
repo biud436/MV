@@ -372,6 +372,7 @@ var $gameInventory;
                 // 밖으로 드래그 못하게 합니다.
                 this.checkRestorePosition();                                   
             }
+            
         }        
 
         /**
@@ -429,12 +430,16 @@ var $gameInventory;
             super.initMembers();
             // 하드코딩된 숫자들은 전부 나중에 데이터 대입식으로 바꿔야 한다.
             this._size = new PIXI.Rectangle(0, 0, 256, 256);
-            this._backgroundBitmap = new Bitmap(this._size.width, this._size.height);
+            this._backgroundBitmap = new Bitmap(this._size.width, this._size.height + 32);
             this._background = new Sprite();   
             this._divideAreaForHeight = 8;
             this._data = $gameInventory.slots();
             this._itemLayer = [];
             this._itemIndex = 0;
+
+            this._mousePos = new PIXI.Point(0, 0);
+            this._currentState = "NONE";
+            this._mouseButtonReleased = false;
         }
 
         refresh() {
@@ -474,8 +479,13 @@ var $gameInventory;
             this._backgroundBitmap.drawText(text, 1, 0, 200, 32, "left");
         }
 
+        drawGold() {
+            let text = `${$gameParty.gold()} ${TextManager.currencyUnit}`;
+            this._backgroundBitmap.drawText(text, 0, 32 * 8, 256, 32, "right");
+        }
+
         createTable(itemWidth, itemHeight) {
-            for (let y = 0; y < 8; y++) {
+            for (let y = 0; y < 7; y++) {
                 for (let x = 0; x < 8; x++) {
                     let mx = (itemWidth * x);
                     let my = 32 + (itemHeight * y);                         
@@ -531,6 +541,49 @@ var $gameInventory;
             // 테이블 생성
             this.createTable(itemWidth, itemHeight);
 
+            // 골드 값 표시
+            this.drawGold();
+
+        }
+
+        update() {
+            super.update();
+            this.updateState();
+        }
+
+        updateState() {
+            if(this._mousePos.x < (this.x + this._size.width)
+            && this._mousePos.x > this.x
+            && this._mousePos.y < (this.y + this._size.height + 32)
+            && this._mousePos.y > this.y) {
+                if(this.dragging && this._mouseButtonReleased) {
+                    this._currentState = "CLICKED";
+                    this._mouseButtonReleased = false;
+                    // this.emit("onButtonTriggered");
+                    if(this._background) this._background.setColorTone([60, 60, 60, 60]);
+                } else if(!this.dragging) {
+                    this._mouseButtonReleased = true;
+                    this._currentState = "MOUSE_OVER";
+                    // this.emit("onButtonEnter");
+                    if(this._background) this._background.setColorTone([30, 30, 30, 30]);
+                }
+            } else {
+                this._currentState = "MOUSE_OUT";
+                // this.emit("onButtonExit");
+                if(this._background) this._background.setColorTone([0, 0, 0, 0]);
+            }
+        }
+
+        isMouseOut() {
+            return this._currentState === "MOUSE_OUT";
+        }
+
+        isMouseOver() {
+            return this._currentState === "MOUSE_OVER";            
+        }
+
+        isMouseClicked() {
+            return this._currentState === "CLICKED";
         }
 
         drawAllItems() {
@@ -550,6 +603,12 @@ var $gameInventory;
 
         onDragMove(event) {
             super.onDragMove(event, false);
+            if(this._mousePos) {
+                this._mousePos = new PIXI.Point(
+                    Graphics.pageToCanvasX(event.pageX), 
+                    Graphics.pageToCanvasY(event.pageY)
+                );    
+            }   
         }        
 
     }    
@@ -569,7 +628,7 @@ var $gameInventory;
         }
 
         initMembers() {
-            this._size = new Rectangle(0, 0, 256, 256);            
+            this._size = new Rectangle(0, 0, 256, 256);  
         }
 
         initView() {
