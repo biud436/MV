@@ -62,7 +62,6 @@ var $gameInventory;
         emitOnDragStart(event) {
             if(this.children != null) {
                 this.children.forEach(function(e) {
-                    console.log("emitOnDragStart : ", e);
                     e.emit("onDragStart", event);
                     e.emit("onButtonTriggered", event);
                 }, this);
@@ -238,11 +237,12 @@ var $gameInventory;
          * @param {Number} index the index into an inventory.
          * @param {Object} item the object contains the information for the item. 
          */
-        constructor(index, item) {
+        constructor(index, slotIndex) {
             super();
             this._index = index;
-            this._item = item;        
+            this._slotIndex = slotIndex;        
             this.pivot.set(0.5, 0.5);
+            this._item = null;            
             this.initBitmaps();
         }
 
@@ -252,10 +252,12 @@ var $gameInventory;
             this._divideAreaForHeight = 1;
             this._isOnTooltip = false;
             this._startX = this.x;
-            this._startY = this.y;
+            this._startY = this.y;            
         }        
 
         initBitmaps() {
+
+            this._item = $gameInventory._slots[this._slotIndex];
 
             let bitmap = ImageManager.loadSystem('IconSet');
             let iconIndex = this._item.iconIndex;
@@ -308,17 +310,17 @@ var $gameInventory;
             let w = this._size.width;
             let h = this._size.height;
 
-            // 그리드 좌표를 구함
-            let gridX = Math.floor(this.x / w);
-            let gridY = Math.floor(this.y / h);
+            // 그리드 좌표를 구함 (32등분)
+            let gridX = Math.floor(this.x / w).clamp(0, 7);
+            let gridY = Math.floor(this.y / h).clamp(0, 7);
             
-            // 그리드에서의 인덱스를 찾는다.
+            // 그리드에서의 인덱스를 찾는다 (0 ~ 63)
             let index = ((8 * gridY) + gridX) - 8;
 
             // 해당 슬롯에 아이템이 있는지 확인       
             if(!$gameInventory.isExist(index)) {
                 this.x = gridX * w;
-                this.y = (gridY * h).clamp(h, 256 - h);
+                this.y = gridY * h;
                 
                 let prevIndex = this._index;
                 this._index = index;
@@ -343,7 +345,10 @@ var $gameInventory;
         onDragEnd(event) {
             super.onDragEnd(event, true);                      
             // 그리드에 정렬합니다.
-            if(!this._isDragEnd) this.setGrid();
+            if(!this._isDragEnd) {
+                this.setGrid();
+            }
+            // 이 플래그가 없으면 그리드 함수가 6번 연속으로 실행되면서 버그를 일으킨다.
             this._isDragEnd = true;
         }
 
@@ -375,7 +380,8 @@ var $gameInventory;
                 this.scale.x = 1.0;
                 this.scale.y = 1.0;               
                 this._fire = false;
-                // Game Action 추가
+                // 아이템 사용 코드가 여기에 온다.
+                // Game Action의 인스턴스를 만들어야 한다. 하지만 왜 이렇게 해야 하는 걸까?
             }
         }        
     }
@@ -418,15 +424,22 @@ var $gameInventory;
 
         refresh() {
             if(!this._backgroundBitmap) return;
+            // 인벤토리에서 슬롯을 가지고 온다.
             this._data = $gameInventory.slots();
+            // 비트맵을 비운다
             this._backgroundBitmap.clear();
+            // 아이템 스프라이트를 모두 제거한다.
             this.removeChild.apply(this, this._itemLayer);
+            // 비트맵 재생성
             this.initBitmaps();
+            // 슬롯 재생성
             this.initSlots();
+            // 비트맵 재할당
             this._background.bitmap = this._backgroundBitmap;
         }
 
         initBitmaps() {
+            // 인벤토리를 검은색으로 채운다.
             this._backgroundBitmap.fillAll("black");    
             this._backgroundBitmap.fontSize = 14;        
         }
@@ -438,31 +451,41 @@ var $gameInventory;
         }
 
         initSlots() {
+            // 슬롯과 슬롯 사이의 간격
             const pad = 2;
+
             const width = this._size.width;
             const height = this._size.height;
+            // 슬롯 한 칸의 폭
             const itemWidth = Math.floor(width / 8);
+            // 슬롯 한 칸의 높이
             const itemHeight = Math.floor(height / 8);
+
             let index = 0;
             this._itemLayer = [];
+
+            this._backgroundBitmap.drawText("Grid Inventory", 1, 0, 200, 32, "left");
         
+            // 8x8 인벤토리, 첫 번째 칸은 창 제목이 온다.
             for (let y = 0; y < 8; y++) {
-                if(y === 0) {
-                    this._backgroundBitmap.drawText("테스트 창", 1, 0, 200, 32, "left");
-                    continue;
-                }
                 for (let x = 0; x < 8; x++) {
                     let mx = (itemWidth * x);
-                    let my = (itemHeight * y);
-                    let color = `rgba(${ Math.round(Math.random() * 255)}, ${ Math.round(Math.random() * 255)}, ${ Math.round(Math.random() * 255)}, 0.6)`;
+                    let my = 32 + (itemHeight * y);                         
+                    // 슬롯 색상 값을 램덤으로 한다. (다시 그려진다는 것을 효과적으로 확인하기 위해)
+                    let color = 'rgba(30,30,30,0.75)';
                     this._backgroundBitmap.fillRect(mx, my, itemWidth - 2, itemHeight - 2, color );
                     
                     // 0부터
                     var data = $gameInventory.slots();
                     const item = data[index];
 
+                    // 이 부분은 나중에 메소드로 분리한다.
                     if(item) {
-                        const itemSprite = new Inventory_Item(index, item);
+                        const itemSprite = new Inventory_Item(item.slotId, index);
+                        
+                        mx = itemWidth * (item.slotId % 8);
+                        my = 32 + (itemHeight * Math.floor(item.slotId / 8));                   
+
                         itemSprite.x = mx;
                         itemSprite.y = my;
 
@@ -476,24 +499,11 @@ var $gameInventory;
                 }
             }
 
-
-
         }
 
         drawAllItems() {
             const max = this._data.length;
         };
-
-        drawItem(item, x, y) {
-            let index = item.iconIndex;
-            let name = item.name;
-            let number = $gameParty.numItems(item);
-            let description = item.description;
-            let price = item.price;
-            let consumable = item.consumable;
-            let speed = item.speed;
-            let successRate = item.successRate;
-        }
 
         onDragStart(event) {
             super.onDragStart(event, false);
@@ -501,6 +511,7 @@ var $gameInventory;
 
         onDragEnd(event) {
             super.onDragEnd(event, false);
+            // 메뉴 진입 시 인벤토리 위치를 기억한다.
             $gameTemp.inventoryX = this.x;
             $gameTemp.inventoryY = this.y;                  
         }
@@ -561,21 +572,21 @@ var $gameInventory;
     Game_Inventory.prototype.constructor = Game_Inventory;
     
     Game_Inventory.prototype.initialize = function() {
-        // 멤버 변수 생성
+        // 복구용 슬롯
+        this._restoreSlots = [];
+        // 멤버 변수 생성        
         this.initMembers();
+        // 저장
+        this.save();        
         // 인벤토리 준비
         this.prepareInventory();
     };
 
     Game_Inventory.prototype.initMembers = function() {
-        // 열
-        this._cols = 8;
-        // 행
-        this._rows = 8;
         // 최대 슬롯수
-        this._maxSlots = 64 - 8;
+        this._maxSlots = 64;
         // 슬롯
-        this._slots = [];
+        this._slots = [];        
         // 준비 여부
         this._prepared = false;
         // 슬롯 아이디
@@ -590,8 +601,12 @@ var $gameInventory;
      * 인벤토리 시스템에 맞는 아이템 오브젝트를 생성한다.
      */
     Game_Inventory.prototype.prepareInventory = function() {
-        // 모든 아이템을 가져온다
-        var data = $gameParty.allItems();
+        
+        var data;
+
+        // 모든 아이템을 가져온다            
+        data = $gameParty.allItems();
+        
         // 아이템 오브젝트를 차례대로 읽는다.
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
@@ -600,8 +615,39 @@ var $gameInventory;
                 this.createItem(item);
             }
         }
+
+        // 슬롯 복구
+        this.restore();
+
         // 준비 완료
         this._prepared = true;
+
+    };
+
+    Game_Inventory.prototype.save = function() {
+        // 슬롯의 인덱스만 추출한다.
+        var newList = this._slots.map(function(i) {
+            return i.slotId;
+        })
+        // 해당 슬롯의 인덱스를 세이브 파일에 저장한다.
+        $gameSystem.saveSlots(JsonEx.stringify(newList));
+    };
+
+    Game_Inventory.prototype.restore = function() {
+        // 인덱스 값이 배열로 저장되어있다.
+        this._restoreSlots = JsonEx.parse($gameSystem._invSlots);
+        if(typeof(this._restoreSlots) === "array") {
+            console.warn("인덱스 배열을 찾지 못했습니다");
+            return;
+        }
+        this._restoreSlots.forEach(function(e, i, a) {
+            var item = this._slots[i];
+            if(item && item.hasOwnProperty("slotId")) {
+                let prev = this._slots[i].slotId;
+                this._slots[i].slotId = e;
+            }
+        }, this);
+        this._id = this._restoreSlots.length;
     };
 
     Game_Inventory.prototype.removeAllSlots = function() {
@@ -612,6 +658,8 @@ var $gameInventory;
     Game_Inventory.prototype.updateInventory = function() {
         // 모든 슬롯을 제거한다.
         this.removeAllSlots();
+        // 인덱스 복구
+        this.restore();
         // 인벤토리를 다시 준비한다.
         this.prepareInventory();
     };
@@ -671,17 +719,6 @@ var $gameInventory;
     };        
 
     /**
-     * 더 이상 추가할 수 없습니다.
-     */
-    Game_Inventory.prototype.alert = function() {
-        
-    };
-
-    Game_Inventory.prototype.getIndex = function(slotId1) {
-
-    };
-
-    /**
      * 아이템을 교체합니다.
      * @param {Number} slotId1 
      * @param {Number} slotId2 
@@ -707,8 +744,6 @@ var $gameInventory;
         var item1 = this._slots.indexOf(this.isExist(prev));
         var item2 = this._slots.indexOf(this.isExist(newTo));
 
-        console.log(item1, item2);
-
         // 인덱스를 못찾으면 -1이 나오므로, 0 이상을 조건으로 찾아낸다.
         if(item1 >= 0 && item2 === -1) {
             // 스왑 코드
@@ -718,22 +753,15 @@ var $gameInventory;
     };
 
     Game_Inventory.prototype.removeItem = function(slotId) {
-        // 삭제할 요소를 찾는다.
+        // // 삭제할 요소를 찾는다.
         let deleteItem = this.isExist(slotId);
         var deleteIndex = this._slots.indexOf(deleteItem);
         if(deleteIndex >= 0) {
             // 해당 인덱스의 원소를 삭제한다.
+            $gameParty.loseItem(deleteItem.item, -1, true);
             this._slots.splice(deleteIndex, 1);
+            this.save();
         }
-    };
-
-    Game_Inventory.prototype.sort = function() {
-        // 정렬한다.
-        this._slots.sort(function(a, b) {
-            return a.slotId - a.slotId;
-        });
-        // 다시 그린다.
-        this.refresh();
     };
 
     Game_Inventory.prototype.refresh = function() {
@@ -741,7 +769,7 @@ var $gameInventory;
     };
 
     //==========================================================
-    // Game_System
+    // DataManager
     //==========================================================        
 
     var alias_DataManager_createGameObjects = DataManager.createGameObjects;
@@ -749,6 +777,24 @@ var $gameInventory;
         alias_DataManager_createGameObjects.call(this);
         $gameInventory = new Game_Inventory();
     };
+
+    //==========================================================
+    // Game_System
+    //==========================================================    
+
+    var alias_Game_System_initialize = Game_System.prototype.initialize;
+    Game_System.prototype.initialize = function() {
+        alias_Game_System_initialize.call(this);
+        this._invSlots = "";
+    };
+
+    Game_System.prototype.saveSlots = function(data) {
+        this._invSlots = data;
+    };
+
+    Game_System.prototype.restoreSlots = function() {
+        return this._invSlots || "";
+    };    
 
     //==========================================================
     // Game_Map
@@ -781,12 +827,23 @@ var $gameInventory;
     Scene_Map.prototype.start = function() { 
         alias_Scene_Map_start.call(this);
         $gameInventory.updateInventory();        
-        this.on('refreshInventory', this.refreshInventory, this);
+        this.on('refreshInventory', this.refreshInventory, this);   
+    };
+
+    Scene_Map.prototype.saveInventory = function() {
+        $gameInventory.save();
+    };    
+
+    var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
+    Scene_Map.prototype.terminate = function() {
+        alias_Scene_Map_terminate.call(this);
+        this.saveInventory();
     };
 
     Scene_Map.prototype.refreshInventory = function() {
         if(!this._spriteset) return;
         return setTimeout(function() {
+            $gameInventory.save();            
             let inventory = this._spriteset._inventory;
             inventory.refresh();
         }.bind(this), 5);
