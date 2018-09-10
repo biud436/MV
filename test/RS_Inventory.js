@@ -440,6 +440,12 @@ var $gameInventory;
             this._mousePos = new PIXI.Point(0, 0);
             this._currentState = "NONE";
             this._mouseButtonReleased = false;
+
+            this._velocityX = 0;
+            this._velocityY = 0;
+
+            this._paddingX = 0;
+            this._paddingY = 0;
         }
 
         refresh() {
@@ -475,13 +481,56 @@ var $gameInventory;
             this._itemLayer = [];
         }
 
-        setInventoryTitle(text) {
-            this._backgroundBitmap.drawText(text, 1, 0, 200, 32, "left");
+        setInventoryTitle(titleValue) {
+            // https://pixijs.io/pixi-text-style/#%7B%22style%22%3A%7B%22align%22%3A%22center%22%2C%22dropShadow%22%3Atrue%2C%22dropShadowBlur%22%3A1%2C%22dropShadowColor%22%3A%22%23585858%22%2C%22dropShadowDistance%22%3A0%2C%22fill%22%3A%5B%22%23dd863e%22%2C%22%23fef7da%22%5D%2C%22fontSize%22%3A16%2C%22strokeThickness%22%3A1%7D%2C%22text%22%3A%22text%22%2C%22background%22%3A%22%23252525%22%7D
+            const style = new PIXI.TextStyle({
+                dropShadow: true,
+                dropShadowBlur: 1,
+                dropShadowColor: "#585858",
+                dropShadowDistance: 0,
+                fill: [
+                    "#dd863e",
+                    "#fef7da"
+                ],
+                fontSize: 16,
+                fontWeight: "bold",
+                strokeThickness: 1
+            });
+            
+            const text = new PIXI.Text(titleValue, style);
+            text.x = 1;
+            this._itemLayer.push(text);
+            this.addChild(text);
         }
 
         drawGold() {
-            let text = `${$gameParty.gold()} ${TextManager.currencyUnit}`;
-            this._backgroundBitmap.drawText(text, 0, 32 * 8, 256, 32, "right");
+            
+            let goldValue = `${$gameParty.gold()} ${TextManager.currencyUnit}`;
+
+            const style = new PIXI.TextStyle({
+                align: "right",
+                breakWords: true,
+                dropShadow: true,
+                dropShadowBlur: 1,
+                dropShadowColor: "#585858",
+                dropShadowDistance: 0,
+                fill: [
+                    "#af8f45",
+                    "#4b4943"
+                ],
+                fontSize: 16,
+                fontWeight: "bold",
+                stroke: "#d3d3d3",
+                strokeThickness: 2,
+                wordWrap: true,
+                wordWrapWidth: 300
+            });
+            
+            const text = new PIXI.Text(goldValue, style);
+            text.x = this._size.width - text.width;
+            text.y = 32 * 8;
+            this._itemLayer.push(text);
+            this.addChild(text);
         }
 
         createTable(itemWidth, itemHeight) {
@@ -549,6 +598,20 @@ var $gameInventory;
         update() {
             super.update();
             this.updateState();
+            // this.updateVelocity();
+        }
+
+        updateVelocity() {
+            if(!this._mousePos) return;
+            if(!this.isMouseClicked()) return;
+            this._velocityX = this._mousePos.x - (this.x + this._paddingX);
+            this._velocityY = this._mousePos.y - (this.y + this._paddingY);
+
+            this._velocityX = this._velocityX / 50;
+            this._velocityY = this._velocityY / 50;
+
+            this.x += this._velocityX;
+            this.y += this._velocityY;
         }
 
         updateState() {
@@ -591,14 +654,18 @@ var $gameInventory;
         };
 
         onDragStart(event) {
-            super.onDragStart(event, false);
+            super.onDragStart(event, false);    
+            if(this.isMouseOver()) {
+                this._paddingX = this._mousePos.x - this.x;
+                this._paddingY = this._mousePos.y - this.y;
+            }
         }
 
         onDragEnd(event) {
             super.onDragEnd(event, false);
             // 메뉴 진입 시 인벤토리 위치를 기억한다.
             $gameTemp.inventoryX = this.x;
-            $gameTemp.inventoryY = this.y;                  
+            $gameTemp.inventoryY = this.y;         
         }
 
         onDragMove(event) {
