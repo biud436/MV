@@ -39,7 +39,9 @@ if(process.platform.includes("win") >= 0) {
         var version = vi(filePath);
         version = String(version["ProductVersion"]);
         if(version >= "1.6.1") {
-            console.log("v10.0.0");
+            // node-webkit: "0.29.4"
+            // node: "9.11.1"
+            console.log("v9.11.1");
         } else {
             console.log("v1.2.0");
         }    

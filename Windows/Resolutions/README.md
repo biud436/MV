@@ -14,9 +14,9 @@ Or you can use prebuilt libraries!
 
 [v1.2.0-winDisplaySettings-x64.node](https://github.com/biud436/MV/raw/master/Windows/Resolutions/bin/v1.2.0-winDisplaySettings-x64.node)
 
-[v10.0.0-winDisplaySettings-ia32.node](https://github.com/biud436/MV/raw/master/Windows/Resolutions/bin/v10.0.0-winDisplaySettings-ia32.node)
+[v9.11.1-winDisplaySettings-ia32.node](https://github.com/biud436/MV/raw/master/Windows/Resolutions/bin/v9.11.1-winDisplaySettings-ia32.node)
 
-[v10.0.0-winDisplaySettings-x64.node](https://github.com/biud436/MV/raw/master/Windows/Resolutions/bin/v10.0.0-winDisplaySettings-x64.node)
+[v9.11.1-winDisplaySettings-x64.node](https://github.com/biud436/MV/raw/master/Windows/Resolutions/bin/v9.11.1-winDisplaySettings-x64.node)
 
 if you have the library called *.node already, please place it under your **/js/libs directory** and then
 insert the plugin called **"RS_ScreenManager.js"** in your Plugin Manager.

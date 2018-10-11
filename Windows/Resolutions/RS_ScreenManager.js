@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.11) <RS_ScreenManager>
+ * @plugindesc (v1.0.12) <RS_ScreenManager>
  * @author biud436
  *
  * @param TEST OPTION (TEST ONLY)
@@ -249,6 +249,9 @@ Imported.RS_ScreenManager = true;
  * - Added plugin parameters for setting the size of the screen (RPG Maker MV 1.5.0 Features)
  * 2018.08.01 (v1.0.10) - Added the try-catch statement.
  * 2018.09.02 (v1.0.11) - Fixed the method name called 'rescaleSprite' is to 'requestStretch' due to a crash.
+ * 2018.10.11 (v1.0.12) :
+ * - In RPG Maker MV 1.6.1, Fixed a nw-version of the node module is to 9.11.1
+ * - Fixed the bug that the screen does not align properly to center.
  */
 /*~struct~ScreenSize:
  *
@@ -411,7 +414,50 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
           var fileVersion = "v1.2.0";
           var processArch = process.arch;
           if(Utils.RPGMAKER_VERSION >= "1.6.1") {
-            fileVersion = "v10.0.0";
+            /**
+             * Original Versions in RMMV 1.6.1 : 
+              ares: "1.13.0"
+              chromium: "65.0.3325.181"
+              cldr: "32.0"
+              http_parser: "2.8.0"
+              icu: "60.1"
+              modules: "59"
+              napi: "3"
+              nghttp2: "1.29.0"
+              node: "9.11.1"
+              node-webkit: "0.29.4"
+              nw: "0.29.4"
+              nw-commit-id: "6a254fe-1c00f31-b892847-deb9bc6"
+              nw-flavor: "sdk"
+              openssl: "1.0.2o"
+              tz: "2017c"
+              unicode: "10.0"
+              uv: "1.19.2"
+              v8: "6.5.254.41"
+              zlib: "1.2.11"
+
+            * Node Webkit Version in My Computer:
+              ares: "1.14.0"
+              chromium: "69.0.3497.100"
+              cldr: "33.1"
+              http_parser: "2.8.0"
+              icu: "62.1"
+              modules: "64"
+              napi: "3"
+              nghttp2: "1.33.0"
+              node: "10.11.0"
+              node-webkit: "0.33.4"
+              nw: "0.33.4"
+              nw-commit-id: "3d7302c-de9606e-577bc92-58acf98"
+              nw-flavor: "sdk"
+              openssl: "1.1.0i"
+              tz: "2018e"
+              unicode: "11.0"
+              uv: "1.23.0"
+              v8: "6.9.427.23"
+              zlib: "1.2.11"              
+             */
+            fileVersion = `v${process.versions.node}`;
           }
   
           // It must change the filename as 'nw.exe' in RPG Maker MV 1.5.2 or less, 
@@ -721,13 +767,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     window.resizeTo(newScr.x + xPadding, newScr.y + yPadding);
     window.moveTo(cx, cy);
 
-    // 중앙으로 위치를 변경한다.
-    if(Utils.isNwjs()) {
-      if(!nw) var nw = require("nw.gui");
-      var win = nw.Window.get();
-      win.setPosition("center");
-    }
-
     // 해상도 최소값 & 최대값 설정 부분, 자동으로 조절하는 것에 맞겼다면.
     if(options.autoScaling && (tw/th >= 1.0) && tw >= 48) {
 
@@ -919,8 +958,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     }
   };
 
-  Window_Options.prototype.statusText = function(index) {
-    var symbol = this.commandSymbol(index);
+  Window_Options.prototype.statusText = function(idx) {
+    var symbol = this.commandSymbol(idx);
     var value = this.getConfigValue(symbol);
     if (this.isVolumeSymbol(symbol)) {
         return this.volumeStatusText(value);
