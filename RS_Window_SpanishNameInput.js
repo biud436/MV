@@ -18,10 +18,14 @@
  * @desc Specify the default button width.
  * @default 42
  * 
+ * @param Center Spacing
+ * @desc Specify the spacing value in the middle space.
+ * @default 0
+ * 
  * @param Button Type
  * @type boolean
  * @desc Sets the button width how to calculate the width.
- * @default true
+ * @default false
  * @on Crop
  * @off Expand
  * 
@@ -57,10 +61,14 @@
  * @desc Specify the default button width.
  * @default 42
  * 
+ * @param Center Spacing
+ * @desc Specify the spacing value in the middle space.
+ * @default 0
+ * 
  * @param Button Type
  * @type boolean
  * @desc Sets the button width how to calculate the width.
- * @default true
+ * @default false
  * @on Crop
  * @off Expand
  * 
@@ -97,6 +105,8 @@
   RS.Window_SpanishNameInput.Params.lineHeight = parseInt(parameters["Line Height"] || 36);
   RS.Window_SpanishNameInput.Params.buttonWidth = parseInt(parameters["Default Button Width"] || 42);
   RS.Window_SpanishNameInput.Params.isCropped = Boolean(parameters["Button Type"] === "true");
+
+  RS.Window_SpanishNameInput.Params.centerSpacing = parseInt(parameters["Center Spacing"] || 0);
 
   function Window_SpanishNameInput() {
     this.initialize.apply(this, arguments);
@@ -309,7 +319,7 @@
 
   Window_SpanishNameInput.prototype.itemRect = function(index) {
     var w = RS.Window_SpanishNameInput.Params.buttonWidth;
-    var c = 24;
+    var c = RS.Window_SpanishNameInput.Params.centerSpacing;
     var lineHeight = this.lineHeight();
 
     if(!RS.Window_SpanishNameInput.Params.isCropped) {
