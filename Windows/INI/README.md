@@ -4,7 +4,7 @@
 The preceding screenshot shows the message box such as RPG Maker VX Ace. These functions simply create the message box and check which of the button is clicked. put this script in your game's script command.
 
 ```javascript
-// In RPG Maker MV 1.6.0 version or above, it can use 'nw' instead of require('nw.gui')
+// In RPG Maker MV 1.6.1 version or above, it can use 'nw' instead of require('nw.gui')
 var gui = nw.Window.get();
 
 // This callback function listens for the exit button being pressed.
@@ -51,7 +51,7 @@ var fontSize = RS.INI.readString("폰트 설정", "크기", "./폰트 설정.ini
 ```
 
 # How to setup?
-Run the file called 'latest.cmd', then the main library will be located at **./bin/v10.0.0-INI-x64.node**
+Run the file called 'latest.cmd', then the main library will be located at **./bin/v9.11.1-INI-x64.node**
 
 if you are a versions of the RPG Maker MV is to 1.5.2 or less, you can call below code so you change the build config.
 
@@ -65,9 +65,9 @@ Or you can use prebuilt libraries!
 
 [v1.2.0-INI-x64.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v1.2.0-INI-x64.node)
 
-[v10.0.0-INI-ia32.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v10.0.0-INI-ia32.node)
+[v9.11.1-INI-ia32.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v9.11.1-INI-ia32.node)
 
-[v10.0.0-INI-x64.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v10.0.0-INI-x64.node)
+[v9.11.1-INI-x64.node](https://github.com/biud436/MV/raw/master/Windows/INI/bin/v9.11.1-INI-x64.node)
 
 if you have the library called *.node already, please place it under your **/js/libs directory** and then
 insert the plugin called **"RS_INI.js"** in your Plugin Manager.

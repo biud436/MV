@@ -1,6 +1,6 @@
 
 # How to setup?
-Run the file called 'latest.cmd', then the main library will be located at **./bin/v10.0.0-winDisplaySettings-x64.node**
+Run the file called 'latest.cmd', then the main library will be located at **./bin/v9.11.1-winDisplaySettings-x64.node**
 
 if you are a versions of the RPG Maker MV is to 1.5.2 or less, you can call below code so you change the build config.
 
