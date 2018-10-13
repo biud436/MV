@@ -10,13 +10,17 @@
  * @desc Specify the line height for window.
  * @default 36
  * 
+ * @param Window Width
+ * @desc Calculate the window width.
+ * @default 480
+ * 
  * @param Window Height
  * @desc Calculate the window height.
  * @default this.fittingHeight(6);
  * 
  * @param Default Button Width
  * @desc Specify the default button width.
- * @default 42
+ * @default Math.floor(this.width/this.maxCols());
  * 
  * @param Center Spacing
  * @desc Specify the spacing value in the middle space.
@@ -53,13 +57,17 @@
  * @desc Specify the line height for window.
  * @default 36
  * 
+ * @param Window Width
+ * @desc Calculate the window width.
+ * @default 480
+ * 
  * @param Window Height
  * @desc Calculate the window height.
  * @default this.fittingHeight(6);
  * 
  * @param Default Button Width
  * @desc Specify the default button width.
- * @default 42
+ * @default Math.floor(this.width/this.maxCols());
  * 
  * @param Center Spacing
  * @desc Specify the spacing value in the middle space.
@@ -101,11 +109,11 @@
   parameters = (parameters.length > 0) && parameters[0].parameters;  
 
   RS.Window_SpanishNameInput.Params.fontSize = parseInt(parameters["Font Size"] || 28);
+  RS.Window_SpanishNameInput.Params.windowWidthEval = parameters["Window Width"] || "480";
   RS.Window_SpanishNameInput.Params.windowHeightEval = parameters["Window Height"] || "this.fittingHeight(6);";
   RS.Window_SpanishNameInput.Params.lineHeight = parseInt(parameters["Line Height"] || 36);
-  RS.Window_SpanishNameInput.Params.buttonWidth = parseInt(parameters["Default Button Width"] || 42);
+  RS.Window_SpanishNameInput.Params.buttonWidth = parameters["Default Button Width"] || "42";
   RS.Window_SpanishNameInput.Params.isCropped = Boolean(parameters["Button Type"] === "true");
-
   RS.Window_SpanishNameInput.Params.centerSpacing = parseInt(parameters["Center Spacing"] || 0);
 
   function Window_SpanishNameInput() {
@@ -318,7 +326,7 @@
   };
 
   Window_SpanishNameInput.prototype.itemRect = function(index) {
-    var w = RS.Window_SpanishNameInput.Params.buttonWidth;
+    var w = eval(RS.Window_SpanishNameInput.Params.buttonWidth);
     var c = RS.Window_SpanishNameInput.Params.centerSpacing;
     var lineHeight = this.lineHeight();
 
@@ -385,6 +393,10 @@
   //============================================================================
   // Window_NameEdit
   //============================================================================
+
+  Window_NameEdit.prototype.windowWidth = function() {
+      return eval(RS.Window_SpanishNameInput.Params.windowWidthEval);
+  };  
 
   Window_NameEdit.prototype.faceWidth = function() {
       return 0;
