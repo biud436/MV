@@ -49,7 +49,7 @@ CHOICE /C YN -M "Is RPG Maker MV version 1.5.2 or less?"
 IF %ERRORLEVEL%==1 (
 SET MV_VERSION=v1.2.0
 ) ELSE (
-SET MV_VERSION=v10.0.0
+SET MV_VERSION=v9.11.1
 )
 
 ECHO .

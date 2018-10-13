@@ -49,7 +49,7 @@ CHOICE /C YN -M "Is RPG Maker MV version 1.5.2 or less?"
 IF %ERRORLEVEL%==1 (
 SET MV_VERSION="0.12.3"
 ) ELSE (
-SET MV_VERSION="0.30.2"
+SET MV_VERSION="0.29.4"
 )
 
 ECHO .
@@ -81,7 +81,7 @@ ECHO .
 :BUILD
 CHOICE /C YN -M "Do you want to build the library?"
 IF %ERRORLEVEL%==1 (
-	cmd /c nw-gyp build --target=%MV_VERSION% --arch=%ARCH%
+	nw-gyp build --target=%MV_VERSION% --arch=%ARCH%
 	ECHO .
 	PAUSE >NUL
 ) ELSE (
