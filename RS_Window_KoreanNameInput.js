@@ -1,6 +1,38 @@
 /*:
  * @plugindesc <RS_Window_KoreanNameInput>
  * @author biud436
+ * 
+ * @param Font Size
+ * @desc Specify the font size in name processing.
+ * @default 28
+ * 
+ * @param Line Height
+ * @desc Specify the line height for window.
+ * @default 36
+ * 
+ * @param Window Width
+ * @desc Calculate the window width.
+ * @default 480
+ * 
+ * @param Window Height
+ * @desc Calculate the window height.
+ * @default this.fittingHeight(6);
+ * 
+ * @param Default Button Width
+ * @desc Specify the default button width.
+ * @default Math.floor(this.width/this.maxCols());
+ * 
+ * @param Center Spacing
+ * @desc Specify the spacing value in the middle space.
+ * @default 0
+ * 
+ * @param Button Type
+ * @type boolean
+ * @desc Sets the button width how to calculate the width.
+ * @default false
+ * @on Crop
+ * @off Expand
+ * 
  * @help
  * =============================================================================
  * Pliugin Commands
@@ -18,6 +50,45 @@
 /*:ko
  * @plugindesc <RS_Window_KoreanNameInput>
  * @author biud436
+ * 
+ * @param Font Size
+ * @text 폰트 크기
+ * @desc Specify the font size in name processing.
+ * @default 28
+ * 
+ * @param Line Height
+ * @text 라인 크기
+ * @desc Specify the line height for window.
+ * @default 36
+ * 
+ * @param Window Width
+ * @text 창 폭
+ * @desc Calculate the window width.
+ * @default 480
+ * 
+ * @param Window Height
+ * @text 창 높이
+ * @desc Calculate the window height.
+ * @default this.fittingHeight(6);
+ * 
+ * @param Default Button Width
+ * @text 기본 버튼 폭
+ * @desc Specify the default button width.
+ * @default Math.floor(this.width/this.maxCols());
+ * 
+ * @param Center Spacing
+ * @text 중간 간격
+ * @desc Specify the spacing value in the middle space.
+ * @default 0
+ * 
+ * @param Button Type
+ * @text 버튼 형식
+ * @type boolean
+ * @desc Sets the button width how to calculate the width.
+ * @default false
+ * @on 자르기(Crop)
+ * @off 확장(Expand)
+ * 
  * @help
  * =============================================================================
  * 플러그인 명령
@@ -35,7 +106,25 @@
  var Imported = Imported || {};
  Imported.RS_Window_KoreanNameInput = true;
 
+ var RS = RS || {};
+ RS.Window_KoreanNameInput = RS.Window_KoreanNameInput || {};
+ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
+
 (function () {
+
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_Window_KoreanNameInput>');
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;    
+
+  RS.Window_KoreanNameInput.Params.fontSize = parseInt(parameters["Font Size"] || 28);
+  RS.Window_KoreanNameInput.Params.windowWidthEval = parameters["Window Width"] || "480";
+  RS.Window_KoreanNameInput.Params.windowHeightEval = parameters["Window Height"] || "this.fittingHeight(6);";
+  RS.Window_KoreanNameInput.Params.lineHeight = parseInt(parameters["Line Height"] || 36);
+  RS.Window_KoreanNameInput.Params.buttonWidth = parameters["Default Button Width"] || "42";
+  RS.Window_KoreanNameInput.Params.isCropped = Boolean(parameters["Button Type"] === "true");
+  RS.Window_KoreanNameInput.Params.centerSpacing = parseInt(parameters["Center Spacing"] || 0);  
 
   function Window_KoreanNameInput() {
     this.initialize.apply(this, arguments);
@@ -60,6 +149,18 @@
     this._dataFromTable.backIndex = Window_KoreanNameInput.KOREAN.indexOf("백스페이스");
     this._dataFromTable.spaceIndex = Window_KoreanNameInput.KOREAN.indexOf("띄어쓰기");
     Window_NameInput.prototype.initialize.call(this, editWindow);
+  };
+
+  Window_KoreanNameInput.prototype.windowHeight = function() {
+    return eval(RS.Window_KoreanNameInput.Params.windowHeightEval);
+};
+
+  Window_KoreanNameInput.prototype.standardFontSize = function() {
+    return RS.Window_KoreanNameInput.Params.fontSize;
+  };
+
+  Window_KoreanNameInput.prototype.lineHeight = function() {
+    return RS.Window_KoreanNameInput.Params.lineHeight;
   };
 
   Window_KoreanNameInput.prototype.windowHeight = function() {
@@ -239,27 +340,32 @@
   };
 
   Window_KoreanNameInput.prototype.itemRect = function(index) {
-    var w = 42;
-    var c = 24;
-    if(index === this._dataFromTable.spaceIndex ||
-      index === this._dataFromTable.backIndex ||
-      index === this._dataFromTable.okIndex
-    ) {
-      w = this.contentsWidth() / 6;
-      return {
-          x: this.contentsWidth() / 2 + (index % 3) * w,
-          y: Math.floor(index / 10) * this.lineHeight(),
-          width: w,
-          height: this.lineHeight()
-      };
+    var w = eval(RS.Window_KoreanNameInput.Params.buttonWidth);
+    var c = RS.Window_KoreanNameInput.Params.centerSpacing;
+    var lineHeight = this.lineHeight();
+
+    if(!RS.Window_KoreanNameInput.Params.isCropped) {
+      if(index === this._dataFromTable.spaceIndex ||
+        index === this._dataFromTable.backIndex ||
+        index === this._dataFromTable.okIndex
+      ) {
+        w = this.contentsWidth() / 6;
+        return {
+            x: this.contentsWidth() / 2 + (index % 3) * w,
+            y: Math.floor(index / 10) * lineHeight,
+            width: w,
+            height: lineHeight
+        };
+      }
     }
 
     return {
         x: index % 10 * w + Math.floor(index % 10 / 5) * c,
-        y: Math.floor(index / 10) * this.lineHeight(),
+        y: Math.floor(index / 10) * lineHeight,
         width: w,
-        height: this.lineHeight()
+        height: lineHeight
     };
+
 
   };
 
@@ -302,6 +408,10 @@
   //============================================================================
   // Window_NameEdit
   //============================================================================
+
+  Window_NameEdit.prototype.windowWidth = function() {
+    return eval(RS.Window_KoreanNameInput.Params.windowWidthEval);
+};  
 
   Window_NameEdit.prototype.faceWidth = function() {
       return 0;
@@ -463,6 +573,11 @@
     return scene._inputWindow;
   };
 
+  Window_NameEdit.ARROW_LEFT = 37;
+  Window_NameEdit.ARROW_UP = 38;
+  Window_NameEdit.ARROW_RIGHT = 39;
+  Window_NameEdit.ARROW_DOWN = 40;
+
   Window_NameEdit.prototype.onKeyDown = function(e) {
     var keyCode = e.which;
     var self = this;
@@ -471,7 +586,7 @@
 
     if (keyCode < Window_NameEdit.IS_NOT_CHAR) {
 
-      if(inputWindow = this.isValidInputWindow()) inputWindow.active = true;
+      if(inputWindow = this.isValidInputWindow()) inputWindow.active = true;            
       if(keyCode === Window_NameEdit.BACK_SPACE) {
 
         setTimeout(function () {
@@ -486,8 +601,8 @@
         e.preventDefault();
       }
 
-    } else if (keyCode < Window_NameEdit.KEYS_ARRAY) {
-      if(inputWindow = this.isValidInputWindow()) inputWindow.active = false;
+    } else if (keyCode < Window_NameEdit.KEYS_ARRAY) {  
+      if(inputWindow = this.isValidInputWindow()) inputWindow.active = false;    
       var c = "";
       if(c = Window_NameEdit.HANGUL_KEYS[keyCode]) {
         c = (e.shiftKey && c.length > 1) ? c[1] : c[0];
@@ -501,7 +616,7 @@
   //============================================================================
   // Scene_Name
   //============================================================================
-
+  
   var alias_Scene_Name_createInputWindow = Scene_Name.prototype.createInputWindow;
   Scene_Name.prototype.createInputWindow = function() {
     if( navigator.language.match(/ko/i) ) {
