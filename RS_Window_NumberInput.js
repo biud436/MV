@@ -3,7 +3,7 @@
  * @author biud436
  * 
  * @param Font Size
- * @desc Specify the font size in name processing.
+ * @desc Specify the font size in number input processing.
  * @default 28
  * 
  * @param Line Height
@@ -19,6 +19,17 @@
  * @desc Calculate the window height.
  * (this parameter evaluates JavaScript code)
  * @default this.fittingHeight(6);
+ * 
+ * @param Window Background Type
+ * @type select
+ * @desc Specify the background type for window.
+ * @default 2
+ * @option Normal
+ * @value 0
+ * @option Dimness
+ * @value 1
+ * @option None
+ * @value 2
  * 
  * @param Default Button Width
  * @desc Specify the default button width.
@@ -44,6 +55,82 @@
  * Usage
  * =============================================================================
  * You need to add the plugin command called StartNumberInput.
+ * 
+ * StartNumberInput varId:1 maxLength:8 isNumber:true
+ * 
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2018.10.15 (v1.0.0) - First Release.
+ */
+/*:ko
+ * @plugindesc 숫자 입력 패드입니다. <RS_Window_NumberInput>
+ * @author biud436
+ * 
+ * @param Font Size
+ * @text 폰트 크기
+ * @desc 숫자 입력 패드에서의 폰트 크기입니다.
+ * @default 28
+ * 
+ * @param Line Height
+ * @text 라인 크기
+ * @desc 라인 크기를 지정하세요.
+ * @default 36
+ * 
+ * @param Window Width
+ * @text 창 폭
+ * @desc 창의 폭을 계산합니다.
+ * (이 매개변수 값은 자바스크립트 코드로 취급됩니다)
+ * @default 480
+ * 
+ * @param Window Height
+ * @text 창 높이
+ * @desc 창의 높이를 계산합니다.
+ * (이 매개변수 값은 자바스크립트 코드로 취급됩니다)
+ * @default this.fittingHeight(6);
+ * 
+ * @param Window Background Type
+ * @text 창 배경 형식
+ * @type select
+ * @desc 창의 배경 형식을 고르십시오.
+ * @default 2
+ * @option 일반 창
+ * @value 0
+ * @option 희미한 창
+ * @value 1
+ * @option 없음
+ * @value 2
+ * 
+ * @param Default Button Width
+ * @text 기본 버튼 크기
+ * @desc 버튼 크기를 계산합니다.
+ * (이 매개변수 값은 자바스크립트 코드로 취급됩니다)
+ * @default Math.floor(this.width/this.maxCols());
+ * 
+ * @param Number Map
+ * @text 숫자 값 매핑
+ * @desc 숫자를 콤마를 기준으로 구분합니다. 백스페이스와 확인 키는 고정 값입니다.
+ * @default 7, 8, 9, 4, 5, 6, 1, 2, 3, -, 0, ., 백스페이스, 확인
+ * 
+ * @param --- Image Name
+ *
+ * @param Background Image
+ * @text 배경 이미지
+ * @parent --- Image Name
+ * @desc img/titles1 폴더에서 배경으로 쓸 이미지를 찾으세요.
+ * @default World
+ * @require 1
+ * @dir img/titles1
+ * @type file
+ * 
+ * @help
+ * =============================================================================
+ * 사용법
+ * =============================================================================
+ * 숫자 입력 패드는 플러그인 명령으로 띄울 수 있습니다.
+ * 
+ * isNumber가 true이면 숫자로 취급하고, 
+ * isNumber가 false면 문자열로 취급합니다.
  * 
  * StartNumberInput varId:1 maxLength:8 isNumber:true
  * 
@@ -83,6 +170,7 @@
   RS.Window_NumberInputImpl.Params.lineHeight = parseInt(parameters["Line Height"] || 36);
   RS.Window_NumberInputImpl.Params.buttonWidth = parameters["Default Button Width"] || "42";
   RS.Window_NumberInputImpl.Params.backgroundImage = parameters["Background Image"];
+  RS.Window_NumberInputImpl.Params.backgroundType = parseInt(parameters["Window Background Type"] || 2);
 
   function Window_NumberInputImpl() {
     this.initialize.apply(this, arguments);
@@ -109,6 +197,7 @@
     this._dataFromTable.okIndex = Window_NumberInputImpl.DATA.okIndex;
     this._dataFromTable.backIndex = Window_NumberInputImpl.DATA.backSpaceIndex;
     Window_NameInput.prototype.initialize.call(this, editWindow);
+    this.setBackgroundType(RS.Window_NumberInputImpl.Params.backgroundType);
   };
 
   Window_NumberInputImpl.prototype.windowHeight = function() {
@@ -312,7 +401,8 @@
     this._isNumber = isNumber;
     this._defaultName = this._name;
     this.deactivate();
-    this.refresh();        
+    this.refresh();     
+    this.setBackgroundType(RS.Window_NumberInputImpl.Params.backgroundType);
   };
 
   Window_NumberEditImpl.prototype.isNumber = function() {
