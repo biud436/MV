@@ -22,18 +22,8 @@
  * 
  * @param Default Button Width
  * @desc Specify the default button width.
+ * (this parameter evaluates JavaScript code)
  * @default Math.floor(this.width/this.maxCols());
- * 
- * @param Center Spacing
- * @desc Specify the spacing value in the middle space.
- * @default 0
- * 
- * @param Button Type
- * @type boolean
- * @desc Sets the button width how to calculate the width.
- * @default false
- * @on Crop
- * @off Expand
  * 
  * @param Number Map
  * @desc Specify the number map.
@@ -80,13 +70,18 @@
 
   parameters = (parameters.length > 0) && parameters[0].parameters;  
 
+  RS.Window_NumberInputImpl.jsonParse = function (str) {
+    var retData = JSON.parse(str, function (k, v) {
+      try { return RS.Window_NumberInputImpl.jsonParse(v); } catch (e) { return v; }
+    });
+    return retData;
+  };  
+
   RS.Window_NumberInputImpl.Params.fontSize = parseInt(parameters["Font Size"] || 28);
   RS.Window_NumberInputImpl.Params.windowWidthEval = parameters["Window Width"] || "480";
   RS.Window_NumberInputImpl.Params.windowHeightEval = parameters["Window Height"] || "this.fittingHeight(6);";
   RS.Window_NumberInputImpl.Params.lineHeight = parseInt(parameters["Line Height"] || 36);
   RS.Window_NumberInputImpl.Params.buttonWidth = parameters["Default Button Width"] || "42";
-  RS.Window_NumberInputImpl.Params.isCropped = Boolean(parameters["Button Type"] === "true");
-  RS.Window_NumberInputImpl.Params.centerSpacing = parseInt(parameters["Center Spacing"] || 0);
   RS.Window_NumberInputImpl.Params.backgroundImage = parameters["Background Image"];
 
   function Window_NumberInputImpl() {
@@ -106,8 +101,6 @@
     _data.backSpaceIndex = _data.maps.length - 2;
     return _data;
   })();
-
-  console.log(Window_NumberInputImpl.DATA);
 
   Window_NumberInputImpl.prototype.initialize = function(editWindow) {
     var self = this;
@@ -169,7 +162,6 @@
   Window_NumberInputImpl.prototype.character = function() {
     var isNumber = this._editWindow.isNumber();
     var str = this.table()[this._page][this._index];
-
     if(this._index < 9) {
       return str;
     }
@@ -179,7 +171,6 @@
     if([9, 11].contains(this._index) && !isNumber) { 
       return str;      
     }    
-
     return '';
 
 };
