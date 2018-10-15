@@ -12,10 +12,12 @@
  * 
  * @param Window Width
  * @desc Calculate the window width.
+ * (this parameter evaluates JavaScript code)
  * @default 480
  * 
  * @param Window Height
  * @desc Calculate the window height.
+ * (this parameter evaluates JavaScript code)
  * @default this.fittingHeight(6);
  * 
  * @param Default Button Width
@@ -35,7 +37,7 @@
  * 
  * @param Number Map
  * @desc Specify the number map.
- * @default 7, 8, 9, 4, 5, 6, 1, 2, 3, -, 0, ., Borrar, Listo
+ * @default 7, 8, 9, 4, 5, 6, 1, 2, 3, -, 0, ., Backspace, Ok
  * 
  * @param --- Image Name
  *
