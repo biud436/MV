@@ -23,7 +23,7 @@
  * @param Window Background Type
  * @type select
  * @desc Specify the background type for window.
- * @default 2
+ * @default 0
  * @option Normal
  * @value 0
  * @option Dimness
@@ -93,7 +93,7 @@
  * @text 창 배경 형식
  * @type select
  * @desc 창의 배경 형식을 고르십시오.
- * @default 2
+ * @default 0
  * @option 일반 창
  * @value 0
  * @option 희미한 창
