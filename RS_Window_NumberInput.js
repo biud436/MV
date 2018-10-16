@@ -38,6 +38,7 @@
  * 
  * @param Number Map
  * @desc Specify the number map.
+ * (Each character are separated with comma!)
  * @default 7, 8, 9, 4, 5, 6, 1, 2, 3, -, 0, ., Backspace, Ok
  * 
  * @param --- Image Name
