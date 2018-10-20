@@ -215,10 +215,32 @@ Imported.RS_ScreenManager = true;
  * @default {"Language":"navigator.language.slice(0, 2)","Localization":"[\"{\\\"lang\\\":\\\"en\\\",\\\"Resolutions\\\":\\\"Resolutions\\\",\\\"Aspect Ratio\\\":\\\"Aspect Ratio\\\",\\\"Display Resolutions\\\":\\\"Display Resolutions\\\",\\\"Full Screen\\\":\\\"Full Screen\\\",\\\"NotFoundError\\\":\\\"Couldn't find the node library needed to set the resolution\\\",\\\"NotFoundNwExe\\\":\\\"Please you must change the name of the executable file to nw.exe\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"Low\\\\\\\", \\\\\\\"Medium\\\\\\\", \\\\\\\"High\\\\\\\", \\\\\\\"Very High\\\\\\\"]\\\"}\",\"{\\\"lang\\\":\\\"ko\\\",\\\"Resolutions\\\":\\\"해상도\\\",\\\"Aspect Ratio\\\":\\\"종횡비\\\",\\\"Display Resolutions\\\":\\\"해상도 목록\\\",\\\"Full Screen\\\":\\\"전체 화면\\\",\\\"NotFoundError\\\":\\\"해상도 설정에 필요한 라이브러리를 찾지 못했습니다\\\",\\\"NotFoundNwExe\\\":\\\"실행 파일명을 nw.exe로 변경하시기 바랍니다.\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"낮음\\\\\\\",\\\\\\\"보통\\\\\\\",\\\\\\\"높음\\\\\\\",\\\\\\\"매우 높음\\\\\\\"]\\\"}\"]"}
  * 
  * @help
+ * =============================================================================
+ * Introduction
+ * =============================================================================
+ * The ScreenManager plugin provides for more resolutions using a native addon written in C++.
+ * However, In case of the native addon, it is only available yet in Windows OS x64 or ia32.
+ * 
+ * =============================================================================
+ * Execution Environment
+ * =============================================================================
+ * In these execution environments, The native addons written in C++ have to need.
+ * Native addon files must place it in your js/libs folder. (the file name ends with *.node)
+ * 
+ * RPG Maker MV v1.6.1 (nwjs : 0.29.4, Windows 10 x64)
+ * RPG Maker MV v1.6.1 (nwjs : 0.33.4, Windows 10 x64)
+ * RPG Maker MV v1.5.2 (nwjs : 0.12.3, Windows 10 x64)
+ * 
+ * However, Mac, iOS, Android, linux platforms don't need it.
+ * Currently, They get the resolution from pre-written array, which includes width and height values.
+ * it can be modified using plugin parameters if you want.
  * 
  * =============================================================================
  * Plugin Commands
  * =============================================================================
+ * The ScreenManager scene already included in the game option.
+ * But you can call its scene by using the plugin command if you want.
+ * 
  * ScreenManager Start
  *
  * =============================================================================
