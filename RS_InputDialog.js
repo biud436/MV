@@ -69,6 +69,12 @@
  * @desc Specify the name of the Cancel Button.
  * @default Cancel
  *
+ * @param Position
+ * @text Initial Position
+ * @desc Specify the position of the input dialog.
+ * ('center' or '0, 0')
+ * @default center
+ *
  * @help
  * =============================================================================
  * Plugin Commands
@@ -90,6 +96,10 @@
  *
  * - Specifies the maximum number of character for an input field
  * InputDialog maxLength 10
+ *
+ * - This plugin commands decide how to set the position of the input dialog.
+ * InputDialog pos center
+ * InputDialog pos 0 0
  *
  * =============================================================================
  * Change Log
@@ -131,6 +141,11 @@
  * - Fixed the default value of the plugin parameter  called 'CSS'.
  * 2018.02.06 (v1.1.11) :
  * - Fixed the issue that is not working in the battle scene.
+ * 2018.10.22 (v1.1.15) :
+ * - Added a plugin command that sets the position of the input dialog.
+ * - Added a feature that the keyboard layout is displayed again if you touch the text box from android devices.
+ * - On the mobile device, the font size is now set to 1rem (16px).
+ * - Fixed the default UI-theme is to black.
  */
 /*:ko
  * @plugindesc 화면에 텍스트 에디터 띄워 텍스트 값을 변수로 받습니다 <RS_InputDialog>
@@ -211,13 +226,20 @@
  * @desc 취소 버튼의 이름을 지정합니다.
  * @default 취소
  *
+ * @param Position
+ * @text 초기 위치
+ * @desc 초기 위치를 지정하세요.
+ * ('center' 또는 '0, 0')
+ * @default center
+ *
  * @help
  * =============================================================================
  * 플러그인 명령에 대해...
  * =============================================================================
  * 텍스트 입력창을 열려면 다음 플러그인 명령을 호출해야 합니다. 이 명령은 맵이나 전투
- * 에서 호출이 가능합니다. 전투일 경우에는 동작이 약간 달라집니다. 전투에서 쓰려면 얀
- * 플라이님의 배틀 코어 엔진과 같이 사용하면 편리할 것입니다.
+ * 에서 호출이 가능합니다. 전투일 경우에는 동작이 약간 달라집니다. 
+ *
+ * 전투 장면에서는 Yanfly님의 Battle Core Engine과 같이 사용하면 편리합니다.
  * 
  * InputDialog open
  *
@@ -241,6 +263,34 @@
  * 텍스트 입력창에 입력할 수 있는 최대 텍스트 길이를 변경할 수 있습니다.
  * 
  * InputDialog maxLength 10
+ *
+ * 텍스트 입력 상자의 위치를 바꾸려면 pos 명령을 사용해야 합니다.
+ * 첫번째 인자에 "center"라는 문자열을 넘기면 화면 중앙에 텍스트 입력 상자가 정렬됩니다.
+ * 모바일에서는 중앙 정렬을 되도록이면 사용하지 않는 것이 좋습니다.
+ * 키보드 레이아웃에 의해 텍스트 입력 상자가 가려질 가능성이 있습니다.
+ * 
+ * 문자열이 아닌 좌표 x, y 값을 지정하면 해당 화면 좌표에 텍스트 입력 상자를 설정하게 됩니다.
+ * 
+ * InputDialog pos center
+ * InputDialog pos 0 0
+ * 
+ * =============================================================================
+ * UI 수정에 대해
+ * =============================================================================
+ * CSS 매개변수에서 CSS를 이용하여 UI를 수정할 수 있습니다. 
+ * 주로 색상 값과 폰트 크기를 조절할 수 있으며, 모바일 장치에서만 바뀌게 할 수도 있습니다.
+ * 
+ * 또한 텍스트 입력 상자는 화면 중앙에만 고정되는 것이 아닙니다. 플러그인 명령을 통해 손 쉽게 바꿀 수 있고,
+ * UI도 CSS를 편집하면 바꿀 수 있습니다. 
+ * (플러그인 파일을 텍스트 에디터로 열어서 직접 편집하는 것이 더 좋습니다)
+ *
+ * 스크립트 명령어로 위치를 수정하려면, 먼저 아래 변수 값을 false로 설정해야 합니다.
+ * RS.InputDialog.Params.isCenterAlignment = false;
+ *
+ * 그 후, 포인트 값을 수정하여 위치를 조절할 수 있습니다.
+ *
+ * RS.InputDialog.Params.pos.x = 0;
+ * RS.InputDialog.Params.pos.y = 0;
  *
  * =============================================================================
  * 변동 사항
@@ -282,8 +332,12 @@
  * - Fixed the default value of the plugin parameter  called 'CSS'.
  * 2018.02.06 (v1.1.11) :
  * - Fixed the issue that is not working in the battle scene.
+ * 2018.10.22 (v1.1.15) :
+ * - 텍스트 입력 상자의 위치를 정확히 조절할 수 있는 플러그인 커맨드가 추가되었습니다.
+ * - 모바일에서 키보드 레이아웃이 사라졌을 때 텍스트 입력 상자를 터치하면 키보드 레이아웃을 다시 표시할 수 있습니다.
+ * - 모바일에서의 폰트 크기를 1rem(16px)로 설정하였습니다.
+ * - 기본 디자인을 초록색 테마에서 검정색 테마로 변경하였습니다. 
  */
-
 
 var Imported = Imported || {};
 Imported.RS_InputDialog = true;
@@ -337,6 +391,24 @@ function Scene_InputDialog() {
 
   RS.InputDialog.Params.exStyle = RS.Utils.jsonParse(parameters['CSS']);
 
+  RS.InputDialog.Params.pos = new PIXI.Point(0, 0);
+  RS.InputDialog.Params.isCenterAlignment = (function() {
+    
+    var position = parameters['Position'];
+    position = position.trim();
+    if(position === "center") {
+      return true;
+    }
+    var reg = /(.*)[ ]*,[ ]*(.*)/i;
+    if(reg.exec(position)) {
+      if(RS.InputDialog.Params.pos) {
+        RS.InputDialog.Params.pos.x = parseFloat(RegExp.$1);
+        RS.InputDialog.Params.pos.y = parseFloat(RegExp.$2);
+      }
+    }
+    return false;
+  })();
+
   //============================================================================
   // public methods in RS.InputDialog
   //============================================================================
@@ -365,13 +437,13 @@ function Scene_InputDialog() {
     CancelButton = document.querySelector(query);
 
     if(textBox) {
-      textBox.style.fontSize = (2 * Graphics._realScale) + "em";
+      textBox.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(2 * Graphics._realScale) + "em";      
       textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
       textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
     }
 
-    if(OkButton) OkButton.style.fontSize = (1 * Graphics._realScale) + "em";
-    if(CancelButton) CancelButton.style.fontSize = (1 * Graphics._realScale) + "em";
+    if(OkButton) OkButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(1 * Graphics._realScale) + "em";
+    if(CancelButton) CancelButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(1 * Graphics._realScale) + "em";
 
   };
 
@@ -446,93 +518,99 @@ function Scene_InputDialog() {
     var field = document.getElementById(this._fieldId);
 
     var style = `
-        .inputDialogContainer {
-          min-width : 10em;
-          max-width : 2.5em;
-          top : 0em;
-          left : 0em;
-          width : 10em;
-          height : 2.5em;
-          display : flex;
-          flex-flow : column wrap;
-          align-items : center;
-          justify-content : center;
-          padding : 0;
-          margin : 0;
-          box-sizing : border-box;
-          resize : both;
-        }
-        .inputDialog {
-          ime-mode : active;
-          top : 0em;
-          left : 0em;
-          right : 0em;
-          bottom : 0em;
-          z-index : 1000;
-          opacity : 0.8;
-          position : relative;
-          background-color : #cff09e;
-          border : 2px solid #3b8686;
-          border-radius : 10px;
-          text-shadow : 0px 1px 3px #a8dba8;
-          font-family : arial;
-          color : #79bd9a;
-          outline : none;
-        }
-        .defaultButton {
-          opacity : 0.8;
-          font-family : arial;
-          border : 1px solid #777;
-          background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%)
-          color : #fff;
-          text-shadow : rgba(0,0,0,.7) 0 1px 0;
-          cursor : pointer;
-          border-radius : 0.5em;
-          box-sizing : border-box;
-          box-shadow : 0 1px 4px rgba(0, 0, 0, .6);
-		      font-size : 1.4em;
-        }
-        .row {
-          width : 70%;
-          height: 1em;
-        }
-        .col {
-          width : 70%;
-          height: 1em;
-        }
-
-    	  @media screen and (min-width : 192px) and (max-width 768px) {
-      		.defaultButton {
-      			font-size : 6em;
-      		}
-      		.row {
-      			width : 100%;
-      			height: 2em;
-      		}
-      		.col {
-      			width : 100%;
-      			height: 2em;
-      		}
-      		.inputDialog {
-      			font-size : 6em;
-      		}
-    	  }
-    	  @media screen and (min-width : 768px) and (max-width 1000px) {
-      		.defaultButton {
-      			font-size : 5em;
-      		}
-      		.row {
-      			width : 100%;
-      			height: 2em;
-      		}
-      		.col {
-      			width : 100%;
-      			height: 2em;
-      		}
-      		.inputDialog {
-      			font-size : 6em;
-      		}
-    	  }
+    .inputDialogContainer {
+      min-width : 10em;
+      max-width : 2.5em;
+      top : 0em;
+      left : 0em;
+      width : 10em;
+      height : 2.5em;
+      display : flex;
+      flex-flow : column wrap;
+      align-items : left;
+      justify-content : left;
+      padding : 0;
+      margin : 0;
+      box-sizing : border-box;
+      resize : both;
+      font-size: 16px!important;
+  }
+  
+  .inputDialog {
+      top : 0em;
+      left : 0em;
+      right : 0em;
+      bottom : 0em;
+      z-index : 1000;
+      opacity : 0.8;
+      position : relative;
+      background-color : #ffffff;
+      border : 2px solid #414141;
+      border-radius : 10px;
+      text-shadow : 0px 1px 3px #696969;
+      font-family : arial;
+      color : #1a1a1a;
+      outline : none;
+      font-size: 1rem!important;
+  }
+  
+  .defaultButton {
+      opacity : 0.8;
+      font-family : arial;
+      border : 1px solid rgb(73, 73, 73);
+      background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%);
+      color : rgb(19, 19, 19);
+      text-shadow : rgba(105, 105, 105, 0.7) 0 1px 0;
+      cursor : pointer;
+      border-radius : 0.5em;
+      box-sizing : border-box;
+      box-shadow : 0 1px 4px rgba(78, 78, 78, 0.6);
+      font-size : 1rem!important;
+  }
+  
+  .row {
+      width : 70%;
+      height: 1rem;
+  }
+  
+  .col {
+      width : 70%;
+      height: 1rem;
+  }
+  
+  @media screen and (min-width : 192px) and (max-width : 768px) {
+      .defaultButton {
+          font-size : 1rem!important;
+      }
+      .row {
+          width : 100%;
+          height: 2rem;
+      }
+      .col {
+          width : 100%;
+          height: 2rem;
+      }
+      .inputDialog {
+          font-size : 1rem!important;
+      }
+  }
+  
+  @media screen and (min-width : 768px) and (max-width : 1000px) {
+      .defaultButton {
+          font-size : 1rem!important;
+      }
+      .row {
+          width : 100%;
+          height: 2rem;
+      }
+      .col {
+          width : 100%;
+          height: 2rem;
+      }
+      .inputDialog {
+          font-size : 1rem!important;
+      }
+  }
 	  `;
 
     var exStyle = RS.InputDialog.Params.exStyle;
@@ -605,6 +683,7 @@ function Scene_InputDialog() {
       this._textBox.addEventListener('focus', this.onFocus.bind(this), false);
     }
     this._textBox.addEventListener('blur', this.onBlur.bind(this), false);
+    this._textBox.addEventListener('touchstart', this.getFocus.bind(this), false);
     this._textBox.addEventListener('autosize', this.onResize.bind(this), false);
 
     window.addEventListener('resize', this.onResize.bind(this), false);
@@ -627,12 +706,10 @@ function Scene_InputDialog() {
     var OkButton = this.getDefaultButtonId("inputDialog-OkBtn");
     var CancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
 
-    if(!Utils.isMobileDevice()) {
-      OkButton.style.fontSize = (1 * Graphics._realScale) + "em";
-      CancelButton.style.fontSize = (1 * Graphics._realScale) + "em";
-    }
+    if(OkButton) OkButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(1 * Graphics._realScale) + "em";
+    if(CancelButton) CancelButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(1 * Graphics._realScale) + "em";
 
-    textBox.style.fontSize = (2 * Graphics._realScale) + "em";
+    textBox.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(2 * Graphics._realScale) + "em";
     textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
     textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
 
@@ -650,7 +727,9 @@ function Scene_InputDialog() {
     field.style.height = '100%';
     field.style.zIndex = "0";
     document.body.appendChild(field);
-    Graphics._centerElement(field);
+    if(RS.InputDialog.Params.isCenterAlignment) {
+      Graphics._centerElement(field);
+    }
     return field;
   };
 
@@ -718,6 +797,31 @@ function Scene_InputDialog() {
     }
     e.preventDefault();
   };
+  
+  TextBox.prototype.setPosition = function(x, y) {
+    var self = this;
+    var field = document.getElementById(self._fieldId);
+    var textBox = self.getTextBoxId();
+    var mainContainer = self.getMainContainer();
+    if(field) {
+      field.style.margin = "0";
+      mainContainer.style.margin = "0";
+      if(x < 0) {
+        x = 0;
+      }
+      if(x > Graphics.boxWidth - RS.InputDialog.Params.textBoxWidth) {
+        x = Graphics.boxWidth - RS.InputDialog.Params.textBoxWidth;
+      }
+      if(y < 0) {
+        y = 0;
+      }
+      if(y > Graphics.boxHeight - RS.InputDialog.Params.textBoxHeight) {
+        y = Graphics.boxHeight - RS.InputDialog.Params.textBoxHeight;
+      }
+      mainContainer.style.left = Graphics._canvas.getBoundingClientRect().left + x + "px";
+      mainContainer.style.top = Graphics._canvas.getBoundingClientRect().top + y + "px";
+    }
+  };
 
   TextBox.prototype.onResize = function () {
     var self = this;
@@ -726,8 +830,16 @@ function Scene_InputDialog() {
     var mainContainer = self.getMainContainer();
     if(field && textBox) {
         Graphics._centerElement(field);
-        Graphics._centerElement(mainContainer);
-        this.setRect();
+        Graphics._centerElement(mainContainer);          
+        this.setRect();  
+        
+        if(RS.InputDialog.Params.isCenterAlignment) {
+          var px = (Graphics.boxWidth / 2) - (RS.InputDialog.Params.textBoxWidth / 2);
+          var py = (Graphics.boxHeight / 2) - (RS.InputDialog.Params.textBoxHeight / 2);
+          this.setPosition(px, py);
+        } else {
+          this.setPosition(RS.InputDialog.Params.pos.x, RS.InputDialog.Params.pos.y);
+        }
     }
   };
 
@@ -1017,6 +1129,15 @@ function Scene_InputDialog() {
           case 'maxLength':
             RS.InputDialog.Params.nMaxLength  = Number(args[1] || 255);
             RS.InputDialog.setRect();
+            break;
+          case 'pos':
+            if(args[1] === "center") {
+              RS.InputDialog.Params.isCenterAlignment = true;
+            } else {
+              RS.InputDialog.Params.isCenterAlignment = false;
+              RS.InputDialog.Params.pos.x = parseFloat(args[1] || 0);
+              RS.InputDialog.Params.pos.y = parseFloat(args[2] || 0);              
+            }
             break;
         }
       }
