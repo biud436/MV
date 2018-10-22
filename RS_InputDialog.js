@@ -146,6 +146,7 @@
  * - Added a feature that the keyboard layout is displayed again if you touch the text box from android devices.
  * - On the mobile device, the font size is now set to 1rem (16px).
  * - Fixed the default UI-theme is to black.
+ * - In the chromium 69+ more over, The input element is always displayed even though <canvas>'s z-index is large than <input> element's z-index. so I've fixed that.
  */
 /*:ko
  * @plugindesc 화면에 텍스트 에디터 띄워 텍스트 값을 변수로 받습니다 <RS_InputDialog>
@@ -337,6 +338,7 @@
  * - 모바일에서 키보드 레이아웃이 사라졌을 때 텍스트 입력 상자를 터치하면 키보드 레이아웃을 다시 표시할 수 있습니다.
  * - 모바일에서의 폰트 크기를 1rem(16px)로 설정하였습니다.
  * - 기본 디자인을 초록색 테마에서 검정색 테마로 변경하였습니다. 
+ * - 크로미움 69+ 버전에서 <input> 태그의 z-index가 <canvas> 태그의 z-index보다 낮더라도 화면에 표시되는 버그가 있었습니다.
  */
 
 var Imported = Imported || {};
@@ -726,6 +728,7 @@ function Scene_InputDialog() {
     field.style.width = '100%';
     field.style.height = '100%';
     field.style.zIndex = "0";
+    field.style.display = "none"; // there is a bug occurs in nwjs 0.33.4
     document.body.appendChild(field);
     if(RS.InputDialog.Params.isCenterAlignment) {
       Graphics._centerElement(field);
@@ -875,11 +878,13 @@ function Scene_InputDialog() {
   TextBox.prototype.hide = function () {
     var field = document.getElementById(this._fieldId);
     field.style.zIndex = 0;
+    field.style.display = "none"; // for 0.33.4 
   };
 
   TextBox.prototype.show = function () {
     var field = document.getElementById(this._fieldId);
     field.style.zIndex = 1000;
+    field.style.display = "block"; // for 0.33.4 
   };
 
   TextBox.prototype.setTextHint = function () {
