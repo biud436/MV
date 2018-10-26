@@ -123,6 +123,8 @@
  * - Now it does not get the focus of a text editor unless pressing the edit button.
  * 2017.09.15 (v1.6.5) :
  * - Added a new feature that pre-sets the default name when the name processing.
+ * 2018.10.26 (v1.6.6) :
+ * - Added the alert window. 
  */
  /*:ko
   * RS_Window_KorNameEdit.js
