@@ -77,7 +77,19 @@
  * @param Default Cancel Button
  * @desc Specify the button name that would return to previous map.
  * @default Cancel
- *
+ * 
+ * @param Error Message
+ * 
+ * @param didnt_type_anytext
+ * @parent Error Message
+ * @desc Write here a warning message to be displayed when no letters are entered.
+ * @default Cannot an empty name
+ * 
+ * @param cant_type_same_name
+ * @parent Error Message
+ * @desc Write here a warning message to be displayed when texts are the same name.
+ * @default Cannot set as the same name
+ * 
  * @help
  * This plugin provides a keyboard that allows you to type in korean
  * or other native language in the Name Input Proccessing.
@@ -116,20 +128,23 @@
   * RS_Window_KorNameEdit.js
   * @plugindesc 한글 이름 입력 처리 플러그인입니다. <RS_Window_KorNameEdit>
   * @author 러닝은빛(biud436)
-  *
-  * @since 2015.10.19
-  *
+  * 
   * @param windowWidth
+  * @text 창 폭 (가로 크기)
   * @desc 숫자값을 입력하세요.
   * ('auto'로 설정하면 자동으로 설정됩니다)
   * @default auto
   *
   * @param windowCenter
+  * @text 화면 중앙 정렬
   * @type boolean
   * @desc true 또는 false를 입력하세요.
   * @default false
+  * @on 참
+  * @off 거짓
   *
   * @param editWindow_Opacity
+  * @text 투명도
   * @type number
   * @desc 이름 윈도우의 투명도 값으로 0 ~ 255 사이의 숫자 값을 입력하세요.
   * @default 225
@@ -137,42 +152,52 @@
   * @max 255
   *
   * @param askingText
+  * @text 안내 텍스트
   * @desc 텍스트 힌트
   * @default 이름을 입력하세요.
   *
   * @param outlineWidth
+  * @text 기본 테두리 굵기
   * @desc 테두리 두께
   * @default 1
   *
   * @param outlineColor
+  * @text 기본 테두리 색상
   * @desc 테두리 색상
   * @default black
   *
   * @param fontColor
+  * @text 기본 폰트 색상
   * @desc 폰트 색상
   * @default white
   *
   * @param standardFontSize
+  * @text 기본 폰트 크기
   * @desc 기본 폰트 크기
   * @default 28
   *
   * @param Chinese Fonts
+  * @text 중국어 폰트
   * @desc 중국어 폰트
   * @default SimHei, Heiti TC, sans-serif
   *
   * @param Korean Fonts
+  * @text 한글 폰트
   * @desc 한국어 폰트
-  * @default Noto Sans, Dotum, AppleGothic, sans-serif
+  * @default 나눔고딕, Dotum, AppleGothic, sans-serif
   *
   * @param Default Fonts
-  * @desc 기본 폰트
+  * @text 기본 폰트명
+  * @desc 기본 폰트명은 fonts/gamefont.css에 GameFont로 설정되어있습니다.
   * @default GameFont
   *
   * @param Default CharWidth
+  * @text 기본 문자 폭 (영어)
   * @desc 시스템 언어가 영어인 경우, 여기 설정된 텍스트를 사용하여 폭을 계산합니다.
   * @default A
   *
   * @param Default Background
+  * @text 기본 배경 이미지
   * @desc 기본 배경으로 쓸 이미지 파일을 설정하세요
   * 'auto' : 맵을 배경 화면으로 사용합니다
   * @default auto
@@ -181,17 +206,35 @@
   * @type file
   *
   * @param Default Edit Button
+  * @text 기본 수정 키 이름
   * @desc 에디트 윈도우를 활성화 할 수 있는 버튼의 이름입니다
   * @default 수정
   *
   * @param Default OK Button
+  * @text 기본 결정 키 이름
   * @desc 이름 입력을 끝내고 맵으로 돌아갈 수 있는 버튼의 이름입니다
   * @default 결정
   *
   * @param Default Cancel Button
+  * @text 기본 취소 키 이름
   * @desc 이름 입력을 취소하고 맵으로 돌아갈 수 있는 버튼의 이름입니다
   * @default 돌아가기
-  *
+  * 
+  * @param Error Message
+  * @text 오류 메시지
+  * 
+  * @param didnt_type_anytext
+  * @text 이름을 적지 않았을 때
+  * @parent Error Message
+  * @desc 아무 글자도 입력하지 않았을 때 띄울 메시지를 적으십시오.
+  * @default 아무 글자도 입력하지 않았습니다!
+  * 
+  * @param cant_type_same_name
+  * @text 이름이 같을 때
+  * @parent Error Message
+  * @desc 같은 이름으로 설정하려 할 때 띄울 메시지를 적으십시오.
+  * @default 같은 이름으로 설정할 수 없습니다!
+  * 
   * @help
   *
   * 안드로이드 기기에서 상태바 관련 버그가 있으신 분들은 다음 플러그인으로
@@ -236,17 +279,20 @@
   * - 이제 수정 버튼을 누르지 않으면 포커스를 얻을 수 없습니다.
   * 2017.09.15 (v1.6.5) :
   * - 이름 입력 시작 시 기본 이름을 미리 설정하는 기능이 추가되었습니다.
+  * 2018.10.26 (v1.6.6) :
+  * - 오류 메시지를 띄우는 창을 추가했습니다.
+  * - 매개변수 명을 한국어로 변경하였습니다.
   */
 
 var Imported = Imported || {};
 Imported.Window_KorNameEdit = true;
 
-(function() {
+var RS = RS || {};
+RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
 
-  // private static class
-  function RSMatch() {
-      throw new Error('This is a static class');
-  }
+(function($) {
+
+  $.Params = RS.Window_KorNameEdit.Params || {};
 
   // private class
   function TextBox() {
@@ -263,25 +309,28 @@ Imported.Window_KorNameEdit = true;
 
   parameters = (parameters.length > 0) && parameters[0].parameters;
 
-  RSMatch.windowWidth = parameters['windowWidth'];
-  RSMatch.windowCenter = String(parameters['windowCenter'] || 'false');
-  RSMatch.outlineWidth = Number(parameters['outlineWidth'] || 1);
-  RSMatch.outlineColor = String(parameters['outlineColor'] || 'black');
-  RSMatch.fontColor = String(parameters['fontColor'] || 'white');
-  RSMatch.opacity = Number(parameters['editWindow_Opacity'] || 225);
-  RSMatch.askText = String(parameters['askingText'] || 'Please enter the name');
-  RSMatch.standardFontSize = Number(parameters['standardFontSize'] || 28);
-  RSMatch.fonts = {
+  $.Params.windowWidth = parameters['windowWidth'];
+  $.Params.windowCenter = String(parameters['windowCenter'] || 'false');
+  $.Params.outlineWidth = Number(parameters['outlineWidth'] || 1);
+  $.Params.outlineColor = String(parameters['outlineColor'] || 'black');
+  $.Params.fontColor = String(parameters['fontColor'] || 'white');
+  $.Params.opacity = Number(parameters['editWindow_Opacity'] || 225);
+  $.Params.askText = String(parameters['askingText'] || 'Please enter the name');
+  $.Params.standardFontSize = Number(parameters['standardFontSize'] || 28);
+  $.Params.fonts = {
     'ChineseFonts': parameters['Chinese Fonts'] || 'SimHei, Heiti TC, sans-serif',
     'KoreanFonts': parameters['Korean Fonts'] || 'Dotum, AppleGothic, sans-serif',
     'DefaultFonts': parameters['Default Fonts'] || 'GameFont',
   };
-  RSMatch.defaultCharWidth = parameters['Default CharWidth'] || 'A';
-  RSMatch.defaultBackground = parameters["Default Background"] || 'auto';
+  $.Params.defaultCharWidth = parameters['Default CharWidth'] || 'A';
+  $.Params.defaultBackground = parameters["Default Background"] || 'auto';
 
-  RSMatch.defaultEditButtonName = parameters["Default Edit Button"] || 'Edit';
-  RSMatch.defaultOKButtonName = parameters["Default OK Button"] || 'OK';
-  RSMatch.defaultCancelButtonName = parameters["Default Cancel Button"] || 'Cancel';
+  $.Params.defaultEditButtonName = parameters["Default Edit Button"] || 'Edit';
+  $.Params.defaultOKButtonName = parameters["Default OK Button"] || 'OK';
+  $.Params.defaultCancelButtonName = parameters["Default Cancel Button"] || 'Cancel';
+
+  $.Params.didnt_type_anytext = "아무 글자도 입력하지 않았습니다";
+  $.Params.cant_type_same_name = "같은 이름으로 설정할 수 없습니다.";
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -326,6 +375,12 @@ Imported.Window_KorNameEdit = true;
     this._textBox.style.right = 0;
     this._textBox.style.bottom = 0;
 
+    // 자동 완성 off
+    var chrome_versions_ = navigator.userAgent.split(/(?:Chrome\/)(.{2})/);
+    if(chrome_versions_ && chrome_versions_[1] >= '69') {
+      this._textBox.autocomplete = "off";
+    }
+
     // For decreasing a layout size
     if(Utils.isMobileDevice()) {
       this._textBox.style.background = "transparent";
@@ -344,6 +399,9 @@ Imported.Window_KorNameEdit = true;
 
     this._textBox.onkeydown = this.onKeyDown.bind(this);
 
+    this._alertFunc = function() {};
+    this._defaultName = "";
+
     document.body.appendChild(this._textBox);
   };
 
@@ -358,10 +416,14 @@ Imported.Window_KorNameEdit = true;
 
   TextBox.prototype.setEvent = function(func) {
     this._textBox.onchange = func;
-  };
+  };  
 
   TextBox.prototype.removeEvent = function() {
     this._textBox.onchange = null;
+  };
+
+  TextBox.prototype.setAlertWindow = function(alert_) {
+    this._alertFunc = alert_;
   };
 
   TextBox.prototype.removeElement = function () {
@@ -388,7 +450,10 @@ Imported.Window_KorNameEdit = true;
       } else if(keyCode === TextBox.ENTER) {
         if(this.getTextLength() <= 0) {
           e.preventDefault();
-          // console.error("아무 글자도 입력하지 않았습니다");
+          this._alertFunc($.Params.didnt_type_anytext);
+        } else if( this._defaultName === this._textBox.value ) {
+          e.preventDefault();
+          this._alertFunc($.Params.cant_type_same_name);
         }
       }
     } else if (keyCode < TextBox.KEYS_ARRAY) {
@@ -437,6 +502,7 @@ Imported.Window_KorNameEdit = true;
 
   TextBox.prototype.setDefaultName = function (name) {
     this._textBox.value = name || '';
+    this._defaultName = name;
     this.refreshNameEdit();
   };
 
@@ -458,18 +524,18 @@ Imported.Window_KorNameEdit = true;
 
   Window_KorNameEdit.prototype.standardFontFace = function() {
       if ($gameSystem.isChinese()) {
-          return RSMatch.fonts.ChineseFonts;
+          return $.Params.fonts.ChineseFonts;
       } else if ($gameSystem.isKorean()) {
-          return RSMatch.fonts.KoreanFonts;
+          return $.Params.fonts.KoreanFonts;
       } else {
-          return RSMatch.fonts.DefaultFonts;
+          return $.Params.fonts.DefaultFonts;
       }
   };
 
   Window_KorNameEdit.prototype.charWidth = function () {
     // TODO: This code has a bug that 'navigator.language' has always returned
     // 'en-US' due to a bug of crosswalk-10.39.235.16 xwalk library.
-    var text = RSMatch.defaultCharWidth;
+    var text = $.Params.defaultCharWidth;
     if (navigator.language.match(/^zh/)) { // isChinese
         text = '\u4E00';
     } else if (navigator.language.match(/^ko/)) { // isKorean
@@ -483,7 +549,7 @@ Imported.Window_KorNameEdit = true;
   Window_KorNameEdit.prototype.drawActorFace = function(actor, x, y, width, height) {
       this.drawFace(actor.faceName(), actor.faceIndex(), x, y, width, height);
       this.changeTextColor(this.hpColor(actor));
-      this.drawText(RSMatch.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
+      this.drawText($.Params.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
   };
 
   Window_KorNameEdit.prototype.itemRect = function(index) {
@@ -502,25 +568,25 @@ Imported.Window_KorNameEdit = true;
   Window_KorNameEdit.prototype.updateWindowWidth = function () {
     var padding = this.padding * 2;
     var faceWidth = this.faceWidth();
-    var textWidth = this.textWidth(RSMatch.askText) + this.textPadding() * 2;
-    if(RSMatch.windowWidth === 'auto') {
+    var textWidth = this.textWidth($.Params.askText) + this.textPadding() * 2;
+    if($.Params.windowWidth === 'auto') {
       this.width = Math.max(Math.min(padding + faceWidth + textWidth, Graphics.boxWidth - padding), 580);
     } else {
-      this.width = Number(RSMatch.windowWidth || 580);
+      this.width = Number($.Params.windowWidth || 580);
     }
   };
 
   Window_KorNameEdit.prototype.drawChar = function (index) {
     var rect = this.itemRect(index);
     this.resetTextColor();
-    this.contents.outlineWidth = RSMatch.outlineWidth;
-    this.contents.outlineColor = RSMatch.outlineColor;
-    this.contents.fontColor = RSMatch.fontColor;
+    this.contents.outlineWidth = $.Params.outlineWidth;
+    this.contents.outlineColor = $.Params.outlineColor;
+    this.contents.fontColor = $.Params.fontColor;
     this.drawText(this._name[index] || '', rect.x, rect.y)
   };
 
   Window_KorNameEdit.prototype.standardFontSize = function() {
-      return RSMatch.standardFontSize;
+      return $.Params.standardFontSize;
   };
 
   Window_KorNameEdit.prototype.refresh = function() {
@@ -572,9 +638,9 @@ Imported.Window_KorNameEdit = true;
   };
 
   Window_KorNameInput.prototype.makeCommandList = function() {
-    this.addCommand(RSMatch.defaultEditButtonName, 'edit');
-    this.addCommand(RSMatch.defaultOKButtonName, 'ok');
-    this.addCommand(RSMatch.defaultCancelButtonName, 'cancel');
+    this.addCommand($.Params.defaultEditButtonName, 'edit');
+    this.addCommand($.Params.defaultOKButtonName, 'ok');
+    this.addCommand($.Params.defaultCancelButtonName, 'cancel');
   };
 
   Window_KorNameInput.prototype.itemTextAlign = function() {
@@ -612,7 +678,7 @@ Imported.Window_KorNameEdit = true;
 
   Scene_KorName.prototype.createBackground = function() {
     var bitmap = SceneManager.backgroundBitmap();
-    var customBackgroundImageName = RSMatch.defaultBackground;
+    var customBackgroundImageName = $.Params.defaultBackground;
     this._backgroundSprite = new Sprite();
     if(customBackgroundImageName === 'auto') {
       this._backgroundSprite.bitmap = bitmap;
@@ -648,10 +714,30 @@ Imported.Window_KorNameEdit = true;
     this.createEditWindow();
     this.createTextBox();
     this.createCommandWindow();
+    this.createHelpWindow();
     this._textBox.setEvent( this.onInputOk.bind(this) );
+    this._textBox.setAlertWindow( this.onAlert.bind(this) );
     if(window.cordova && window.StatusBar) {
       window.StatusBar.show();
     }
+  };
+
+  Scene_KorName.prototype.onAlert = function(text) {
+    if(!this._helpWindow) return;
+    this._helpWindow.show();
+    this._helpWindow.setText(text);
+    setTimeout(function() {
+      this._helpWindow.hide();
+    }.bind(this), 2000);  
+  };
+
+  Scene_KorName.prototype.createHelpWindow = function() {
+    this._helpWindow = new Window_Help(1);
+    this._helpWindow.x = 0;
+    this._helpWindow.y = Graphics.boxHeight - Math.ceil(Graphics.boxHeight / 6) - this._helpWindow.height;
+    this._helpWindow.opacity = 0;
+    this._helpWindow.hide();
+    this.addWindow(this._helpWindow);
   };
 
   Scene_KorName.prototype.createEditWindow = function() {
@@ -678,7 +764,8 @@ Imported.Window_KorNameEdit = true;
    * @method commandInput
    */
   Scene_KorName.prototype.commandInput = function () {
-    if(this._editWindow._name === undefined) {
+    var name = this._editWindow._name;
+    if(name === undefined || name === this._initialName) {    
       this.commandEdit();
       return;
     }
@@ -705,11 +792,15 @@ Imported.Window_KorNameEdit = true;
 
   Scene_KorName.prototype.createTextBox =  function() {
     this._textBox = new TextBox(this._editWindow);
-    if(this._actor) this._textBox.setDefaultName(this._actor.name());
-    if(RSMatch.windowCenter === "true") {
+    this._initialName = "";
+    if(this._actor) { 
+      this._textBox.setDefaultName(this._actor.name());
+      this._initialName = this._actor.name();
+    }
+    if($.Params.windowCenter === "true") {
       this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
     }
-    this._editWindow.opacity = RSMatch.opacity;
+    this._editWindow.opacity = $.Params.opacity;
   };
 
   Scene_Name.prototype.onInputOk = function() {
@@ -753,42 +844,42 @@ Imported.Window_KorNameEdit = true;
           case 'width':
           case '폭':
             if(args[1] !== 'auto') {
-              RSMatch.windowWidth = Number(args[1] || 580);
+              $.Params.windowWidth = Number(args[1] || 580);
             } else {
-              RSMatch.windowWidth = 'auto';
+              $.Params.windowWidth = 'auto';
             }
             break;
           case 'center':
           case '중앙정렬':
-            RSMatch.windowCenter = String(args[1] || 'false');
+            $.Params.windowCenter = String(args[1] || 'false');
             break;
           case 'outlineWidth':
           case '테두리크기':
-            RSMatch.outlineWidth = Number(args[1] || 1);
+            $.Params.outlineWidth = Number(args[1] || 1);
             break;
           case 'outlineColor':
           case '테두리색상':
-            RSMatch.outlineColor = String(args[1] || 'black');
+            $.Params.outlineColor = String(args[1] || 'black');
             break;
           case 'fontColor':
           case '폰트색상':
-            RSMatch.fontColor = String(args[1] || 'white');
+            $.Params.fontColor = String(args[1] || 'white');
             break;
           case 'fontSize':
           case '폰트크기':
-            RSMatch.standardFontSize = Number(args[1] || 28);
+            $.Params.standardFontSize = Number(args[1] || 28);
             break;
           case 'opacity':
           case '투명도':
             var _opacity = Number(args[1] || 1);
-            RSMatch.opacity = _opacity.clamp(0, 255);
+            $.Params.opacity = _opacity.clamp(0, 255);
             break;
           case 'askText':
           case '텍스트':
-            RSMatch.askText = String(args.slice(1).join(""));
+            $.Params.askText = String(args.slice(1).join(""));
             break;
         }
       }
   };
 
-})();
+})(RS.Window_KorNameEdit);
