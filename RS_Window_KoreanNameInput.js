@@ -693,7 +693,9 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
         this._isOnAlertWindowWhenTyping = "mouse:on";
       }
       var inputWindow = this.isValidInputWindow();
-      inputWindow.active = true;
+      if(inputWindow) {
+        inputWindow.active = true;
+      }
     }
     
     Window_KoreanNameEdit.prototype.bindAlert = function(_alertFunc_) {
