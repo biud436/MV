@@ -19,8 +19,9 @@ using v8::Value;
 
 
 	NAN_METHOD(RSChangeDisplaySettings) {
-	//void RSChangeDisplaySettings(const Nan::FunctionCallbackInfo<v8::Value>& args) {	
-
+		
+		// Apps that you design to target Windows 8 and later can no longer query or set display modes that are less than 32 bits per pixel (bpp); these operations will fail.
+		
 		HDC hDC = CreateDC("DISPLAY", NULL, NULL, NULL);
 		bool bFullscreen = false;
 	
@@ -62,6 +63,8 @@ using v8::Value;
 	}
 
 	NAN_METHOD(GetDisplaySettings) {
+		
+		// RS.ScreenManager.Params.settings.pcGraphicsArray;
 	
 		v8::Isolate* isolate = info.GetIsolate();
 		v8::Local<v8::Array> retArray = Nan::New<v8::Array>();
@@ -78,6 +81,8 @@ using v8::Value;
 				v8::Local<v8::Array> newItem = Nan::New<v8::Array>();
 				Nan::Set(newItem, 0, Nan::New<v8::Number>(dm.dmPelsWidth));
 				Nan::Set(newItem, 1, Nan::New<v8::Number>(dm.dmPelsHeight));
+				Nan::Set(newItem, 2, Nan::New<v8::Number>(dm.dmDisplayFrequency));
+				Nan::Set(newItem, 3, Nan::New<v8::Number>(dm.dmBitsPerPel));
 
 				// Add
 				Nan::Set(retArray, i, newItem);
@@ -92,12 +97,6 @@ using v8::Value;
 		#endif 
 	}
 	
-	//void Init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
-	//	
-	//	exports->Set(Nan::New("GetDisplaySettings").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(GetDisplaySettings)->GetFunction());
-	//	exports->Set(Nan::New("ChangeDisplaySettings").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(RSChangeDisplaySettings)->GetFunction());
-	//}
-
 	NAN_MODULE_INIT(Init) {
 		NAN_EXPORT(target, GetDisplaySettings);
 		NAN_EXPORT(target, RSChangeDisplaySettings);

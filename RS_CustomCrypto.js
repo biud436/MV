@@ -44,7 +44,7 @@ RS.CustomCrypto = RS.CustomCrypto || {};
   RS.CustomCrypto.loadScript = function() {
     if(this.isSetup()) return;
     var _script = document.createElement('script');
-    _script.url = this.URL;
+    _script.src = this.URL;
     document.body.appendChild(_script);
   };
 

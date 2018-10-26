@@ -6,16 +6,16 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.12) <RS_ScreenManager>
+ * @plugindesc (v1.0.13) <RS_ScreenManager>
  * @author biud436
  *
- * @param TEST OPTION (TEST ONLY)
+ * @param Test Options
  * @text Options
  *
  * @param options.resize
  * @text options.resize
  * @type boolean
- * @parent TEST OPTION (TEST ONLY)
+ * @parent Test Options
  * @desc This is the parameter for resizing the graphics renderer
  * @default false
  * @on true
@@ -24,7 +24,7 @@ Imported.RS_ScreenManager = true;
  * @param options.autoScaling
  * @text options.autoScaling
  * @type boolean
- * @parent TEST OPTION (TEST ONLY)
+ * @parent Test Options
  * @desc This is the parameter for scaling the graphics objects.
  * @default false
  * @on true
@@ -32,21 +32,21 @@ Imported.RS_ScreenManager = true;
  *
  * @param options.minWidth
  * @text options.minWidth
- * @parent TEST OPTION (TEST ONLY)
+ * @parent Test Options
  * @type boolean
  * @desc Set whether it can not set the width is less than minimum width
  * @default true
  * @on true
- * @off true
+ * @off false
  *
  * @param options.minHeight
  * @text options.minHeight
- * @parent TEST OPTION (TEST ONLY)
+ * @parent Test Options
  * @type boolean
  * @desc Set whether it can not set the width is less than minimum height
  * @default true
  * @on true
- * @off true
+ * @off false
  *
  * @param Scene Options
  * @text Scene Options
@@ -82,6 +82,15 @@ Imported.RS_ScreenManager = true;
  * @value 16:9
  * @option 4:3
  * @value 4:3
+ * 
+ * @param Auto Sync Manifest file
+ * @text Auto Sync Manifest file
+ * @parent Scene Options
+ * @type boolean
+ * @desc if true, it can be changed the manifest file when resizing the window in RPG Maker MV v1.6.1 with NwJs
+ * @default true
+ * @on true
+ * @off false
  *
  * @param Screen Size
  * @text Screen Size
@@ -212,7 +221,7 @@ Imported.RS_ScreenManager = true;
  * @param Localization
  * @type struct<Localization>
  * @desc Set texts that required a localization.
- * @default {"Language":"navigator.language.slice(0, 2)","Localization":"[\"{\\\"lang\\\":\\\"en\\\",\\\"Resolutions\\\":\\\"Resolutions\\\",\\\"Aspect Ratio\\\":\\\"Aspect Ratio\\\",\\\"Display Resolutions\\\":\\\"Display Resolutions\\\",\\\"Full Screen\\\":\\\"Full Screen\\\",\\\"NotFoundError\\\":\\\"Couldn't find the node library needed to set the resolution\\\",\\\"NotFoundNwExe\\\":\\\"Please you must change the name of the executable file to nw.exe\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"Low\\\\\\\", \\\\\\\"Medium\\\\\\\", \\\\\\\"High\\\\\\\", \\\\\\\"Very High\\\\\\\"]\\\"}\",\"{\\\"lang\\\":\\\"ko\\\",\\\"Resolutions\\\":\\\"해상도\\\",\\\"Aspect Ratio\\\":\\\"종횡비\\\",\\\"Display Resolutions\\\":\\\"해상도 목록\\\",\\\"Full Screen\\\":\\\"전체 화면\\\",\\\"NotFoundError\\\":\\\"해상도 설정에 필요한 라이브러리를 찾지 못했습니다\\\",\\\"NotFoundNwExe\\\":\\\"실행 파일명을 nw.exe로 변경하시기 바랍니다.\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"낮음\\\\\\\",\\\\\\\"보통\\\\\\\",\\\\\\\"높음\\\\\\\",\\\\\\\"매우 높음\\\\\\\"]\\\"}\"]"}
+ * @default {"Language":"navigator.language.slice(0, 2)","Localization":"[\"{\\\"lang\\\":\\\"en\\\",\\\"Resolutions\\\":\\\"Resolutions\\\",\\\"Aspect Ratio\\\":\\\"Aspect Ratio\\\",\\\"Display Resolutions\\\":\\\"Display Resolutions\\\",\\\"Full Screen\\\":\\\"Full Screen\\\",\\\"NotFoundError\\\":\\\"Couldn't find the node library needed to set the resolution\\\",\\\"NotFoundNwExe\\\":\\\"Please you must change the name of the executable file to nw.exe\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"Low\\\\\\\", \\\\\\\"Medium\\\\\\\", \\\\\\\"High\\\\\\\", \\\\\\\"Very High\\\\\\\"]\\\",\\\"Windowed Mode\\\":\\\"Windowed Mode\\\"}\",\"{\\\"lang\\\":\\\"ko\\\",\\\"Resolutions\\\":\\\"해상도\\\",\\\"Aspect Ratio\\\":\\\"종횡비\\\",\\\"Display Resolutions\\\":\\\"해상도 목록\\\",\\\"Full Screen\\\":\\\"전체 화면\\\",\\\"NotFoundError\\\":\\\"해상도 설정에 필요한 라이브러리를 찾지 못했습니다\\\",\\\"NotFoundNwExe\\\":\\\"실행 파일명을 nw.exe로 변경하시기 바랍니다.\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"낮음\\\\\\\",\\\\\\\"보통\\\\\\\",\\\\\\\"높음\\\\\\\",\\\\\\\"매우 높음\\\\\\\"]\\\",\\\"Windowed Mode\\\":\\\"창 모드\\\"}\"]"}
  * 
  * @help
  * =============================================================================
@@ -274,6 +283,9 @@ Imported.RS_ScreenManager = true;
  * 2018.10.11 (v1.0.12) :
  * - In RPG Maker MV 1.6.1, Fixed a nw-version of the node module is to 9.11.1
  * - Fixed the bug that the screen does not align properly to center.
+ * 2018.10.23 (v1.0.13) :
+ * - Added the feature that would save the option to a manifest file when closing the window in RPG Maker MV v1.6.1.
+ * - Added the localization text for 'Windowed Mode'.
  */
 /*~struct~ScreenSize:
  *
@@ -336,6 +348,10 @@ Imported.RS_ScreenManager = true;
  * @desc Specify four resolution types in mobile device.
  * @default ["Low", "Medium", "High", "Very High"]
  * 
+ * @param Windowed Mode
+ * @desc Specify the text that indicates a Windowed Mode option.
+ * @default Windowed Mode
+ * 
  */
 
 var RS = RS || {};
@@ -370,6 +386,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   options.recreate = Boolean(parameters['isMaintainingMinimumHeight'] === 'true');
   options.allResolutions = Boolean(parameters['Use All Resolutions'] === 'true');
   options.aspectRatio = Boolean(parameters['Enable Custom Aspect Ratio'] === 'true');
+  options.isAutoSyncManifest = Boolean(parameters['Auto Sync Manifest file'] === 'true');
   settings.customAspectRatio = parameters['Custom Aspect Ratio'] || "16:9";
   settings.customAspectRatio = settings.customAspectRatio.trim().split(":");
   settings.ptCustomScreenSize = String(parameters["Default Screen Size"] || '1280 x 720').split(' x ');
@@ -384,6 +401,84 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
   $.Params.settings = settings;
   $.Params.options = options;
+
+  $.Params.fullscreenFlag = false;
+
+  $.readManifestFile = function() {
+    if(Utils.RPGMAKER_VERSION < '1.6.1') return;
+    if(!Utils.isNwjs()) return;    
+    if(!$.Params.options.isAutoSyncManifest) return;
+    var fs = require('fs');
+    var path = require('path');
+    var dirname = path.dirname(process.mainModule.filename);
+    var packageJsonPath = path.join(dirname, "package.json");
+    if(fs.existsSync(packageJsonPath)) {
+      var packageConfig = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+      var config = packageConfig.window;
+      if(config && config.fullscreen) {
+        RS.ScreenManager.Params.fullscreenFlag = config.fullscreen;
+        settings.defaultScreenSize.x = config.width;
+        settings.defaultScreenSize.y = config.height;
+        settings.ptCustomScreenSize = settings.defaultScreenSize.toString();
+      }
+    }    
+
+    var win = nw.Window.get();
+
+    win.on('resize', function(width, height) {
+      var f = $.isFullscreen();
+      RS.ScreenManager.changeManifestFile(width, height, f);
+    });
+
+  };
+
+  $.switchFullScreen = function() {
+    if(Utils.isNwjs()) {
+      var gui = require('nw.gui');
+      var win = gui.Window.get(); 
+      win.toggleFullscreen();
+    } else {
+      Graphics._switchFullScreen();;
+    }
+  };
+
+  $.isFullscreen = function() {
+    if(Utils.isNwjs()) {
+      var gui = require('nw.gui');
+      var win = gui.Window.get();
+      return win.appWindow.isFullscreen();
+    } else {
+     return Graphics._isFullScreen();
+    }
+  };
+
+  $.changeManifestFile = function(width, height, fullscreen) {
+
+    if(Utils.RPGMAKER_VERSION < '1.6.1') return;
+    var fs = require('fs');
+    var path = require('path');
+    var dirname = path.dirname(process.mainModule.filename);
+    var packageJsonPath = path.join(dirname, "package.json");
+
+    var templatePackageConfig = {"name":"mytest","main":"index.html","js-flags":"--expose-gc","crhomium-args":"--disable-sync","window":{"title":"","toolbar":false,"width":settings.defaultScreenSize.x,"height":settings.defaultScreenSize.y, "icon":"icon/icon.png"}};    
+
+    // if the config file exists?
+    if(fs.existsSync(packageJsonPath)) {
+      var packageConfig = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+      packageConfig.window.width = width;
+      packageConfig.window.height = height;
+      packageConfig.window.fullscreen = fullscreen;
+
+      fs.writeFileSync(packageJsonPath, JSON.stringify(packageConfig));
+
+    } else {
+
+      fs.writeFileSync(packageJsonPath, JSON.stringify(templatePackageConfig));
+      return $.changeManifestFile(width, height, fullscreen);
+
+    }    
+    
+  };
 
   //============================================================================
   // PrivateLocalization
@@ -409,6 +504,15 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   });
 
   $.localization = new PrivateLocalization();
+  
+  $.restartGame = function() {
+    var childProcess = require("child_process");
+    var path = require('path');
+    var projectPath = path.dirname(process.mainModule.filename);
+    childProcess.execFile(process.execPath, [projectPath], function(err) {
+    if(err) console.warn(err);
+    });
+  };
 
   Utils.getAbsolutePath = function(defaultPath) {
     var fileName = defaultPath.split("\\");
@@ -487,7 +591,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
           if(process.versions.node == "1.2.0" && process.execPath.contains("Game.exe")) {
             window.alert($.localization.get("NotFoundNwExe"));
             var targetName = path.join(process.execPath, "..", "nw.exe");
-            fs.copyFile(process.execPath, targetName, "utf8", function(err, data) {});
+            fs.copyFile(process.execPath, targetName, "utf8", function(err, data) {});            
           }
   
           var fileName = path.join(base, ".." ,`js/libs/${fileVersion}-winDisplaySettings-${processArch}.node`);
@@ -874,6 +978,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var maxSW, maxSH;
     var defScrWidth, defScrHeight;
 
+    $.readManifestFile();
+
     maxSW = window.innerWidth;
     maxSH = window.innerHeight;
 
@@ -980,6 +1086,24 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     }
   };
 
+  var alias_Window_Options_cursorRight = Window_Options.prototype.cursorRight;
+  Window_Options.prototype.cursorRight = function(wrap) {
+    var index = this.index();
+    var symbol = this.commandSymbol(index);
+    if(!this.isResolution(symbol) || !this.isAspectRatio(symbol)) {
+      return alias_Window_Options_cursorRight.call(this, wrap);
+    }
+  };
+
+  var alias_Window_Options_cursorLeft = Window_Options.prototype.cursorLeft;  
+  Window_Options.prototype.cursorLeft = function(wrap) {
+    var index = this.index();
+    var symbol = this.commandSymbol(index);
+    if(!this.isResolution(symbol) || !this.isAspectRatio(symbol)) {
+      return alias_Window_Options_cursorLeft.call(this, wrap);
+    }      
+  };  
+
   Window_Options.prototype.statusText = function(idx) {
     var symbol = this.commandSymbol(idx);
     var value = this.getConfigValue(symbol);
@@ -994,24 +1118,28 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         // PC라면 해상도 표시
         if(Utils.isNwjs()) {
           item = Graphics.getAvailGraphicsArray('String');
-          item.push($.localization.get("Full Screen"));
+          if(!$.isFullscreen()) {
+            item.push($.localization.get("Full Screen"));
+          } else {
+            item.push($.localization.get("Windowed Mode"));            
+          }
         } else {
           // 그외 플랫폼은 낮음, 보통, 높음, 매우 높음으로 표시
           item = $.localization.get("MobileResolutions");
         }
 
         // index 값이 없으면 현재 해상도 값만 표시
-        if(!idx) {
-          return String(Graphics.boxWidth + " x " + Graphics.boxHeight);
-        } else {
-          // 전체 화면이 아니라면,
-          if(!Graphics._isFullScreen()) {
-            return $.localization.get("Full Screen");
-          } else {
-            this._lastIndex = idx;
-            return item[idx || 0];
-          }
-        }
+        // if(!idx) {
+        return String(Graphics.boxWidth + " x " + Graphics.boxHeight);
+        // } else {
+        //   // 전체 화면이 아니라면,
+        //   if(!$.isFullscreen()) {
+        //     return $.localization.get("Full Screen");
+        //   } else {
+        //     this._lastIndex = idx;
+        //     return item[idx || 0];
+        //   }
+        // }
 
       // 종횡비 표시
       } else {
@@ -1135,7 +1263,11 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   Window_ResolutionList.prototype.makeItemList = function() {
     this._data = Graphics.getAvailGraphicsArray('String');
     if(options.aspectRatio) this._data = this.uniq(this._data.slice(0));
-    this._data.push($.localization.get("Full Screen"));
+    if(!$.isFullscreen()) {
+      this._data.push($.localization.get("Full Screen"));
+    } else {
+      this._data.push($.localization.get("Windowed Mode"));
+    }
   };
 
   Window_ResolutionList.prototype.isCurrentItemEnabled = function() {
@@ -1159,12 +1291,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var text = this._data[index];
 
     this.resetTextColor();
-
-    if(text === $.localization.get("Full Screen") && !Graphics._isFullScreen()) {
-
-        this.changeTextColor(this.deathColor());
-
-    }
 
     this.drawText(text, rect.x, rect.y, rect.width, 'center');
 
@@ -1384,19 +1510,14 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var scr = this._availGraphicsList.getCurrentItemToPoint();
 
     if(scr) {
-
       Graphics.setScreenResize(scr);
-
     } else {
-
       this.convertWithAspectRatio();
-
     }
 
-    if(this._availGraphicsList.item() === $.localization.get("Full Screen")) {
-
-      Graphics._switchFullScreen();
-
+    if(this._availGraphicsList.item() === $.localization.get("Full Screen") ||
+    this._availGraphicsList.item() === $.localization.get("Windowed Mode")) {
+      $.switchFullScreen();
     }
 
   };
