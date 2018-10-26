@@ -331,8 +331,8 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
   $.Params.defaultOKButtonName = parameters["Default OK Button"] || 'OK';
   $.Params.defaultCancelButtonName = parameters["Default Cancel Button"] || 'Cancel';
 
-  $.Params.didnt_type_anytext = "아무 글자도 입력하지 않았습니다";
-  $.Params.cant_type_same_name = "같은 이름으로 설정할 수 없습니다.";
+  $.Params.didnt_type_anytext = parameters["didnt_type_anytext"] || "아무 글자도 입력하지 않았습니다";
+  $.Params.cant_type_same_name = parameters["cant_type_same_name"] || "같은 이름으로 설정할 수 없습니다.";
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -675,6 +675,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
       if(Imported.RS_HangulBitmapText) {
         $gameTemp.setHangulBitmapText(false);
       }
+      this._nowTime = Date.now();      
       Scene_Name.prototype.initialize.call(this);
   };
 
@@ -699,6 +700,13 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
       this._textBox.getFocus();
     }
     this._textBox.update();
+    if( Date.now() - this._nowTime >= 1000) {
+      this._helpWindowLife--;
+      if(this._helpWindowLife <= 0) {
+        this._helpWindow.hide();
+      }
+      this._nowTime = Date.now();
+    }    
     Scene_MenuBase.prototype.update.call(this);
   };
 
@@ -728,9 +736,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     if(!this._helpWindow) return;
     this._helpWindow.show();
     this._helpWindow.setText(text);
-    setTimeout(function() {
-      this._helpWindow.hide();
-    }.bind(this), 2000);  
+    this._helpWindowLife = 3;    
   };
 
   Scene_KorName.prototype.createHelpWindow = function() {
@@ -738,6 +744,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     this._helpWindow.x = 0;
     this._helpWindow.y = Graphics.boxHeight - Math.ceil(Graphics.boxHeight / 6) - this._helpWindow.height;
     this._helpWindow.opacity = 0;
+    this._helpWindowLife = 0;    
     this._helpWindow.hide();
     this.addWindow(this._helpWindow);
   };
