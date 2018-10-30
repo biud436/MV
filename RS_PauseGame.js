@@ -29,6 +29,9 @@
  * -----------------------------------------------------------------------------
  * 2017.05.06 (v1.0.0) - First Release.
  * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
+ * 2018.10.30 (v1.0.2) : 
+ * - Fixed the issue that is not working in RPG Maker MV 1.6.1
+ * - Added the chromium notification.
  */
 /*:
  * @plugindesc This plugin allows user to pause the game.
@@ -51,6 +54,9 @@
  * ------------------------------------------------------------------------------
  * 2017.05.06 (v1.0.0) - First Release.
  * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
+ * 2018.10.30 (v1.0.2) : 
+ * - Fixed the issue that is not working in RPG Maker MV 1.6.1
+ * - Added the chromium notification.
  */
 
 var Imported = Imported || {};
@@ -117,6 +123,14 @@ Imported.RS_PauseGame = true;
     ctx.save();
     ctx.drawImage(self._pauseImage, mx, my);
     ctx.restore();
+
+    if(Utils.isNwjs() && Utils.RPGMAKER_VERSION >= '1.6.1') {
+      var t = new Notification("Pause", {body: 'The game has been paused.', icon:'icon/icon.png'});
+      setTimeout(function() {
+        t.close();
+      }, 3000);
+    }
+
   };
 
   Graphics.hidePause = function() {
@@ -137,6 +151,12 @@ Imported.RS_PauseGame = true;
   // Setting the main framework with pause scene
   //=========================================================================
 
+  if(Utils.RPGMAKER_VERSION < '1.6.1') {
+    SceneManager._getTimeInMsWithoutMobileSafari = function() {
+      return performance.now();
+    };    
+  }
+
   SceneManager.updateMain = function() {
     var self = this;
 
@@ -145,7 +165,7 @@ Imported.RS_PauseGame = true;
         this.changeScene();
         this.updateScene();
       } else {
-        var newTime = this._getTimeInMs();
+        var newTime = this._getTimeInMsWithoutMobileSafari();
         var fTime = (newTime - this._currentTime) / 1000;
         if (fTime > 0.25) fTime = 0.25;
         this._currentTime = newTime;
