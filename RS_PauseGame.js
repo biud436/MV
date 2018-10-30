@@ -14,6 +14,32 @@
  * @require 1
  * @dir img/pictures/
  * @type file
+ * 
+ * @param Notification
+ * @text 알림 (v1.6.1 이상)
+ *
+ * @param Title Text
+ * @text 타이틀
+ * @parent Notification
+ * @desc 크로미움 알림 창에 적을 타이틀 메시지를 지정하십시오.
+ * @default 일시 정지 알림
+ *  
+ * @param Body Text
+ * @parent Notification
+ * @desc 크로미움 알림 창에 적을 메시지를 지정하십시오.
+ * @default 게임이 일시적으로 중지되었습니다.
+ *
+ * @param Icon
+ * @parent Notification
+ * @desc 아이콘 폴더에 있는 아이콘의 이름을 지정하십시오 (확장자 생략)
+ * @default icon
+ * 
+ * @param Time
+ * @text 시간
+ * @type number
+ * @parent Notification
+ * @desc 알림 창이 떠있는 시간을 지정하세요 (밀리세컨드 단위)
+ * @default 2000
  *
  * @help
  * =============================================================================
@@ -31,7 +57,7 @@
  * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
  * 2018.10.30 (v1.0.2) : 
  * - Fixed the issue that is not working in RPG Maker MV 1.6.1
- * - Added the chromium notification.
+ * - Added the chromium notification (>= v1.6.1+)
  */
 /*:
  * @plugindesc This plugin allows user to pause the game.
@@ -47,6 +73,30 @@
  * @require 1
  * @dir img/pictures/
  * @type file
+ * 
+ * @param Notification
+ * @text Notification (>= v1.6.1+)
+ *
+ * @param Title Text
+ * @parent Notification
+ * @desc Specify the text for the chromium notification.
+ * @default Pause
+ *  
+ * @param Body Text
+ * @parent Notification
+ * @desc Specify the text for the chromium notification.
+ * @default The game has been paused.
+ *
+ * @param Icon
+ * @parent Notification
+ * @desc Specify the icon image for the chromium notification from icon folder.
+ * @default icon
+ * 
+ * @param Time
+ * @type number
+ * @parent Notification
+ * @desc Specify the time that shows up the chromium notification.
+ * @default 2000
  *
  * @help
  * ==============================================================================
@@ -56,7 +106,7 @@
  * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
  * 2018.10.30 (v1.0.2) : 
  * - Fixed the issue that is not working in RPG Maker MV 1.6.1
- * - Added the chromium notification.
+ * - Added the chromium notification (>= v1.6.1+)
  */
 
 var Imported = Imported || {};
@@ -64,9 +114,15 @@ Imported.RS_PauseGame = true;
 
 (function() {
 
+  "use strict";
+
   var parameters = PluginManager.parameters('RS_PauseGame');
   var keyCode = parseInt(parameters['keyCode'] || 0x50);
   var imageSrc = parameters['Pause Image Src'] || 'pause';
+  var titleText = parameters["Title Text"] || 'Pause';
+  var bodyText = parameters["Body Text"] || 'The game has been paused.';
+  var iconPath = parameters["Icon"] || 'icon';
+  var time = parseInt(parameters["Time"]) || 2000;
 
   SceneManager.pause = false;
 
@@ -125,10 +181,10 @@ Imported.RS_PauseGame = true;
     ctx.restore();
 
     if(Utils.isNwjs() && Utils.RPGMAKER_VERSION >= '1.6.1') {
-      var t = new Notification("Pause", {body: 'The game has been paused.', icon:'icon/icon.png'});
+      var t = new Notification(titleText, {body: bodyText, icon:`icon/${iconPath}.png`});
       setTimeout(function() {
         t.close();
-      }, 3000);
+      }, time);
     }
 
   };
