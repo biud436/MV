@@ -2127,7 +2127,7 @@ var Color = Color || {};
   };
 
   Window_Base.prototype.standardFontFace = function() {
-    var langCode = navigator.language.slice(0, 2);
+    var langCode = RS.MessageSystem.Params.langCode || navigator.language.slice(0, 2);
     var fonts = RS.MessageSystem.Params.fonts[langCode];
     if(fonts) {
       return fonts;
