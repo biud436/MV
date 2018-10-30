@@ -253,7 +253,7 @@
  * 2018.10.30 (v1.0.2) : 
  * - Fixed the issue that is not working in RPG Maker MV 1.6.1
  * - Added the chromium notification (>= v1.6.1+)
- * - Added a lots of virtual keys.
+ * - Added the keycode converter.
  */
 /*:
  * @plugindesc This plugin allows user to pause the game.
@@ -498,7 +498,7 @@
  * 2018.10.30 (v1.0.2) : 
  * - Fixed the issue that is not working in RPG Maker MV 1.6.1
  * - Added the chromium notification (>= v1.6.1+)
- * - Added a lots of virtual keys.
+ * - Added the keycode converter.
  */
 
 var Imported = Imported || {};
