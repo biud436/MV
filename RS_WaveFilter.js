@@ -135,6 +135,8 @@
  * 2018.04.15 (v1.5.7e) - Added a new feature that can apply the wave filter in the battle background images
  * 2018.04.25 (v1.5.7f) - Fixed the note tag error in Battle Test.
  * 2018.05.09 (v1.5.8) - Fixed the bug that is not working the wave filter for the battleback image.
+ * 2018.11.01 (v1.5.9) : 
+ * - Fixed the issue that the wave filter is not working in the game picture.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -294,6 +296,8 @@
  * 2018.04.15 (v1.5.7e) - Added a new feature that can apply the wave filter in the battle background images
  * 2018.04.25 (v1.5.7f) - Fixed the note tag error in Battle Test.
  * 2018.05.09 (v1.5.8) - Fixed the bug that is not working the wave filter for the battleback image.
+ * 2018.11.01 (v1.5.9) : 
+ * - Fixed the issue that the wave filter is not working in the game picture.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -361,10 +365,10 @@ RS.WaveConfig = RS.WaveConfig || {};
        'uniform sampler2D uSampler;',
 
        'void main(void) {',
-       // '   float time = waveFrequency * sin( wavePhase * (waveTime - vTextureCoord.y / (waveHeight / filterArea.y)) );',
-       // '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);',
-       '   float time = waveFrequency * sin( wavePhase * (waveTime - (vTextureCoord.y + vTextureCoord.x) / (waveHeight / filterArea.y)) );',
-       '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y) - (origin / filterArea.xy);',
+       '   float time = waveFrequency * sin( wavePhase * (waveTime - vTextureCoord.y / (waveHeight / filterArea.y)) );',
+       '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);',
+      //  '   float time = waveFrequency * sin( wavePhase * (waveTime - (vTextureCoord.y + vTextureCoord.x) / (waveHeight / filterArea.y)) );',
+      //  '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y) - (origin / filterArea.xy);',
        '   gl_FragColor = texture2D(uSampler, clamp(vCoord, filterClamp.xy, filterClamp.zw));',
        '}'
      ].join('\n');
@@ -710,7 +714,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   var alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
   Sprite_Picture.prototype.update = function() {
     alias_Sprite_Picture_update.call(this);
-    if(this.visible && this.wave) {
+    if(this.visible) {
       this.updateWave();
     }
   };
@@ -835,14 +839,14 @@ RS.WaveConfig = RS.WaveConfig || {};
   Game_Screen.prototype.startWave = function(pictureId, waveSpeed, waveAmp) {
     var picture = this.picture(pictureId);
     if (picture) {
-        picture.startWave(waveSpeed, waveAmp);
+      picture.startWave(waveSpeed, waveAmp);
     }
   };
 
   Game_Screen.prototype.stopWave = function(pictureId) {
     var picture = this.picture(pictureId);
     if (picture) {
-        picture.stopWave();
+      picture.stopWave();
     }
   };
 
