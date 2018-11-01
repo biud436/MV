@@ -137,6 +137,7 @@
  * 2018.05.09 (v1.5.8) - Fixed the bug that is not working the wave filter for the battleback image.
  * 2018.11.01 (v1.5.9) : 
  * - Fixed the issue that the wave filter is not working in the game picture.
+ * - Fixed the issue that the wave effect do a horizontal looping likes as Tiling Sprite.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -298,6 +299,7 @@
  * 2018.05.09 (v1.5.8) - Fixed the bug that is not working the wave filter for the battleback image.
  * 2018.11.01 (v1.5.9) : 
  * - Fixed the issue that the wave filter is not working in the game picture.
+ * - Fixed the issue that the wave effect do a horizontal looping likes as Tiling Sprite.
  * =============================================================================
  * Terms of Use
  * =============================================================================
