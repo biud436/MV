@@ -3,12 +3,20 @@
  * @author biud436
  * @help
  * This plugin unifies all of javascript files except library file to one javascript file.
+ * ===============================================================
+ * Version Log
+ * ===============================================================
+ * 2018.11.02 (v1.0.0) - First Release.
  */
 /*:ko
  * @plugindesc <RS_UnifyAllPlugins>
  * @author biud436
  * @help
  * 이 플러그인은 플러그인 파일을 포함한 모든 자바스크립트 파일을 단일 자바스크립트 파일로 통합합니다.
+ * ===============================================================
+ * Version Log
+ * ===============================================================
+ * 2018.11.02 (v1.0.0) - First Release.
  */
    
 var Imported = Imported || {};
