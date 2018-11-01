@@ -2,7 +2,13 @@
  * @plugindesc <RS_UnifyAllPlugins>
  * @author biud436
  * @help
- * 모든 자바스크립트 파일을 하나로 통합합니다.
+ * This plugin unifies all of javascript files except library file to one javascript file.
+ */
+/*:ko
+ * @plugindesc <RS_UnifyAllPlugins>
+ * @author biud436
+ * @help
+ * 이 플러그인은 플러그인 파일을 포함한 모든 자바스크립트 파일을 단일 자바스크립트 파일로 통합합니다.
  */
    
 var Imported = Imported || {};
@@ -14,6 +20,10 @@ RS.UnifyAllPlugins = RS.UnifyAllPlugins || {};
 (function(_plugins) {
   
   "use strict";
+  
+  if(!Utils.isNwjs() || !Utils.isOptionValid('test')) {
+    return;
+  }
   
   var fs = require('fs');
   var childProcess = require("child_process");
@@ -104,7 +114,7 @@ DataManager._errorUrl       = null;
   RS.UnifyAllPlugins.readyFiles = function() {
     var _rpg_header = RS.UnifyAllPlugins.getPath("js/rpg_header.js");
     var _rpg_tail = RS.UnifyAllPlugins.getPath("js/rpg_tail.js");
-    var _convert_rpg_managers = RS.UnifyAllPlugins.getPath("js/convert_rpg_managers.js");
+    var _convert_rpg_managers = RS.UnifyAllPlugins.getPath("js/convert_rpg_managers.js");    
     fs.writeFileSync(_rpg_header, `
 var $dataActors       = null;
 var $dataClasses      = null;
@@ -151,7 +161,9 @@ PluginManager.setup = function(plugins) {
 
     `, "utf8");
     
-    fs.writeFileSync(_rpg_tail, "})();\r\n", "utf8");
+    fs.writeFileSync(_rpg_tail, `
+    PluginManager.setup($plugins);
+    })();\r\n`, "utf8");
     
     RS.UnifyAllPlugins.modifyRPGManagersFile();
     
