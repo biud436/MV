@@ -3,6 +3,8 @@
  * @author biud436
  * @help
  * This plugin unifies all of javascript files except library file to one javascript file.
+ * also it couldn't access global variables in the developer tool. 
+ * that is because the game will be executed the sandbox mode.
  * ===============================================================
  * Version Log
  * ===============================================================
@@ -64,7 +66,7 @@ RS.UnifyAllPlugins = RS.UnifyAllPlugins || {};
     var lines = data.split(/[\r\n]+/);
     var lineNumber = 0;
     lines.forEach(function(e, i, a) {
-      if(e.indexOf("DataManager._databaseFiles = [") >= 0) {
+      if(e.indexOf("DataManager.loadMapData = function(mapId) {") >= 0) {
         lineNumber = i;
         return;
       }
@@ -73,6 +75,7 @@ RS.UnifyAllPlugins = RS.UnifyAllPlugins || {};
     lines = lines.slice(lineNumber);
     
     var header = `
+
 //=============================================================================
 // rpg_managers.js v1.6.1
 //=============================================================================
@@ -84,16 +87,78 @@ RS.UnifyAllPlugins = RS.UnifyAllPlugins || {};
 
 function DataManager() {
     throw new Error('This is a static class');
-}    
+}
 
 DataManager._globalId       = 'RPGMV';
 DataManager._lastAccessedId = 1;
 DataManager._errorUrl       = null;
 
+DataManager._databaseFiles = [
+    { name: '$dataActors',       src: 'Actors.json'       },
+    { name: '$dataClasses',      src: 'Classes.json'      },
+    { name: '$dataSkills',       src: 'Skills.json'       },
+    { name: '$dataItems',        src: 'Items.json'        },
+    { name: '$dataWeapons',      src: 'Weapons.json'      },
+    { name: '$dataArmors',       src: 'Armors.json'       },
+    { name: '$dataEnemies',      src: 'Enemies.json'      },
+    { name: '$dataTroops',       src: 'Troops.json'       },
+    { name: '$dataStates',       src: 'States.json'       },
+    { name: '$dataAnimations',   src: 'Animations.json'   },
+    { name: '$dataTilesets',     src: 'Tilesets.json'     },
+    { name: '$dataCommonEvents', src: 'CommonEvents.json' },
+    { name: '$dataSystem',       src: 'System.json'       },
+    { name: '$dataMapInfos',     src: 'MapInfos.json'     }
+];
+
+DataManager.loadDatabase = function() {
+    var test = this.isBattleTest() || this.isEventTest();
+    var prefix = test ? 'Test_' : '';
+    for (var i = 0; i < this._databaseFiles.length; i++) {
+        var name = this._databaseFiles[i].name;
+        var src = this._databaseFiles[i].src;
+        this.loadDataFile(name, prefix + src);
+    }
+    if (this.isEventTest()) {
+        this.loadDataFile('$testEvent', prefix + 'Event.json');
+    }
+};
+
+DataManager.loadDataFile = function(name, src) {
+  var xhr = new XMLHttpRequest();
+  var url = 'data/' + src;
+  xhr.open('GET', url);
+  xhr.overrideMimeType('application/json');
+  xhr.onload = function() {
+      if (xhr.status < 400) {
+        eval(name + " = JSON.parse(xhr.responseText);");
+        eval("DataManager.onLoad(" + name + ")");
+      }
+  };
+  xhr.onerror = this._mapLoader || function() {
+      DataManager._errorUrl = DataManager._errorUrl || url;
+  };
+  eval(name + " = null;");
+  xhr.send();
+};
+
+DataManager.isDatabaseLoaded = function() {
+    this.checkError();
+    for (var i = 0; i < this._databaseFiles.length; i++) {
+        var isFile = eval(this._databaseFiles[i].name);
+        if (!isFile) {
+            return false;
+        }
+    }
+    return true;
+};
+
     `;
+
     var body = lines.join("\r\n");
+
     fs.writeFileSync(_optimization_rpg_managers, header.concat(body), "utf8");
     if(fs.existsSync(_test_rpg_managers)) fs.unlinkSync(_test_rpg_managers);
+
   };
   
   RS.UnifyAllPlugins.unifyAllRPGMakerCoreFiles = function(corePath) {
@@ -124,36 +189,41 @@ DataManager._errorUrl       = null;
     var _rpg_tail = RS.UnifyAllPlugins.getPath("js/rpg_tail.js");
     var _convert_rpg_managers = RS.UnifyAllPlugins.getPath("js/convert_rpg_managers.js");    
     fs.writeFileSync(_rpg_header, `
-var $dataActors       = null;
-var $dataClasses      = null;
-var $dataSkills       = null;
-var $dataItems        = null;
-var $dataWeapons      = null;
-var $dataArmors       = null;
-var $dataEnemies      = null;
-var $dataTroops       = null;
-var $dataStates       = null;
-var $dataAnimations   = null;
-var $dataTilesets     = null;
-var $dataCommonEvents = null;
-var $dataSystem       = null;
-var $dataMapInfos     = null;
-var $dataMap          = null;
-var $gameTemp         = null;
-var $gameSystem       = null;
-var $gameScreen       = null;
-var $gameTimer        = null;
-var $gameMessage      = null;
-var $gameSwitches     = null;
-var $gameVariables    = null;
-var $gameSelfSwitches = null;
-var $gameActors       = null;
-var $gameParty        = null;
-var $gameTroop        = null;
-var $gameMap          = null;
-var $gamePlayer       = null;
-var $testEvent        = null;    
-    (function() {\r\n`, "utf8");
+(function() {
+
+  var $dataActors       = null;
+  var $dataClasses      = null;
+  var $dataSkills       = null;
+  var $dataItems        = null;
+  var $dataWeapons      = null;
+  var $dataArmors       = null;
+  var $dataEnemies      = null;
+  var $dataTroops       = null;
+  var $dataStates       = null;
+  var $dataAnimations   = null;
+  var $dataTilesets     = null;
+  var $dataCommonEvents = null;
+  var $dataSystem       = null;
+  var $dataMapInfos     = null;
+  var $dataMap          = null;
+  var $gameTemp         = null;
+  var $gameSystem       = null;
+  var $gameScreen       = null;
+  var $gameTimer        = null;
+  var $gameMessage      = null;
+  var $gameSwitches     = null;
+  var $gameVariables    = null;
+  var $gameSelfSwitches = null;
+  var $gameActors       = null;
+  var $gameParty        = null;
+  var $gameTroop        = null;
+  var $gameMap          = null;
+  var $gamePlayer       = null;
+  var $testEvent        = null;    
+
+  var ____self = this;
+  
+  `, "utf8");
     
     fs.writeFileSync(_convert_rpg_managers, `
     
