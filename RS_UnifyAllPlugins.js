@@ -169,6 +169,36 @@ PluginManager.setup = function(plugins) {
     
   };
   
+  RS.UnifyAllPlugins.makeIndexHtmlFile = function() {
+    var htmlText = `
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="viewport" content="user-scalable=no">
+        <link rel="icon" href="icon/icon.png" type="image/png">
+        <link rel="apple-touch-icon" href="icon/icon.png">
+        <link rel="stylesheet" type="text/css" href="fonts/gamefont.css">
+        <title>Game Title</title>
+    </head>
+    <body style="background-color: black">
+        <script type="text/javascript" src="js/libs/pixi.js"></script>
+        <script type="text/javascript" src="js/libs/pixi-tilemap.js"></script>
+        <script type="text/javascript" src="js/libs/pixi-picture.js"></script>
+        <script type="text/javascript" src="js/libs/fpsmeter.js"></script>
+        <script type="text/javascript" src="js/libs/lz-string.js"></script>
+        <script type="text/javascript" src="js/libs/iphone-inline-video.browser.js"></script>
+		<script type="text/javascript" src="js/core.js"></script>
+    </body>
+</html>    
+    `;
+    
+    var htmlPath = RS.UnifyAllPlugins.getPath("index_test.html");
+    fs.writeFileSync(htmlPath, htmlPath, 'utf8');
+  };
+  
   RS.UnifyAllPlugins.unifyAllPluginFiles = function() {
     
     if(fs.existsSync(corePath)) {
@@ -187,6 +217,7 @@ PluginManager.setup = function(plugins) {
     
     fs.writeFileSync(corePath, data, "utf8");    
     RS.UnifyAllPlugins.unifyAllRPGMakerCoreFiles(corePath);
+    RS.UnifyAllPlugins.makeIndexHtmlFile();
     window.alert("파일 통합이 완료되었습니다");
   };
   
