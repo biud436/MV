@@ -249,28 +249,35 @@ PluginManager.setup = function(plugins) {
   
   RS.UnifyAllPlugins.makeIndexHtmlFile = function() {
     var htmlText = `
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-        <meta name="viewport" content="user-scalable=no">
-        <link rel="icon" href="icon/icon.png" type="image/png">
-        <link rel="apple-touch-icon" href="icon/icon.png">
-        <link rel="stylesheet" type="text/css" href="fonts/gamefont.css">
-        <title>Game Title</title>
-    </head>
-    <body style="background-color: black">
-        <script type="text/javascript" src="js/libs/pixi.js"></script>
-        <script type="text/javascript" src="js/libs/pixi-tilemap.js"></script>
-        <script type="text/javascript" src="js/libs/pixi-picture.js"></script>
-        <script type="text/javascript" src="js/libs/fpsmeter.js"></script>
-        <script type="text/javascript" src="js/libs/lz-string.js"></script>
-        <script type="text/javascript" src="js/libs/iphone-inline-video.browser.js"></script>
-		<script type="text/javascript" src="js/core.js"></script>
-    </body>
-</html>    
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+            <meta name="viewport" content="user-scalable=no">
+            <link rel="icon" href="icon/icon.png" type="image/png">
+            <link rel="apple-touch-icon" href="icon/icon.png">
+            <link rel="stylesheet" type="text/css" href="fonts/gamefont.css">
+            <title>Game Title</title>
+        </head>
+        <body style="background-color: black">
+            <script type="text/javascript" >
+            (function() {
+                var path = require('path');
+                var mainPath = path.join(process.mainModule.filename, "..");
+                nw.Window.get().evalNWBin(null, path.join(mainPath, 'js/libs/pixi.bin'));
+                nw.Window.get().evalNWBin(null, path.join(mainPath, 'js/libs/pixi-tilemap.bin'));
+                nw.Window.get().evalNWBin(null, path.join(mainPath, 'js/libs/pixi-picture.bin'));
+                nw.Window.get().evalNWBin(null, path.join(mainPath, 'js/libs/fpsmeter.bin'));
+                nw.Window.get().evalNWBin(null, path.join(mainPath, 'js/libs/lz-string.bin'));
+                nw.Window.get().evalNWBin(null, path.join(mainPath, 'js/libs/iphone-inline-video.browser.bin'));
+                nw.Window.get().evalNWBin(null, path.join(mainPath, 'js/core.bin'));		
+            })();			
+            </script>
+        </body>
+    </html>
+    
     `;
     
     var htmlPath = RS.UnifyAllPlugins.getPath("index_test.html");
