@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.25) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.27) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -204,7 +204,7 @@
  * @param 텍스트 코드
  * @type struct<TextCode>
  * @desc 텍스트 코드 변경
- * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","Japanese":"[\"色\",\"テキストスピード\",\"輪郭の色\",\"輪郭のサイズ\",\"インデント\",\"太字!\",\"斜体!\",\"名前\",\"グラデーション\",\"パーティーメンバー\",\"アクタ\",\"変数\",\"アイコン\",\"INCREASE!\",\"DECREASE!\",\"通貨単位表示\",\"フキダシ\",\"整列\",\"数字\",\"テキストのサイズ\",\"TAB!\",\"CR!\",\"効果音\",\"ピクチャの表示\",\"ピクチャの消去\",\"アイテム\",\"武器\",\"防具\",\"職業\",\"敵キャラ\",\"ステート\",\"スキル\",\"顔\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]"}
+ * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS굵게!\",\"AE굵게!\",\"AS이탤릭!\",\"AE이탤릭!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS加粗!\",\"AE加粗!\",\"AS倾斜!\",\"AE倾斜!\",\"左\",\"中間\",\"右\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"ASBOLD!\",\"AEBOLD!\",\"ASITALIC!\",\"AEITALIC!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","Japanese":"[\"色\",\"テキストスピード\",\"輪郭の色\",\"輪郭のサイズ\",\"インデント\",\"太字!\",\"斜体!\",\"名前\",\"グラデーション\",\"パーティーメンバー\",\"アクタ\",\"変数\",\"アイコン\",\"INCREASE!\",\"DECREASE!\",\"通貨単位表示\",\"フキダシ\",\"整列\",\"数字\",\"テキストのサイズ\",\"TAB!\",\"CR!\",\"効果音\",\"ピクチャの表示\",\"ピクチャの消去\",\"アイテム\",\"武器\",\"防具\",\"職業\",\"敵キャラ\",\"ステート\",\"スキル\",\"顔\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS太字!\",\"AE太字!\",\"AS斜体!\",\"AE斜体!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]"}
  *
  * @param 효과음 재생
  *
@@ -235,7 +235,14 @@
  * @desc 사운드 풀의 크기를 지정합니다.
  * @default 2
  * @min 1
- *
+ * 
+ * @param 텍스트 사운드 재생 간격
+ * @parent 효과음 재생
+ * @type number
+ * @desc 사운드 재생 간격를 설정합니다.
+ * @default 2
+ * @min 1
+ * 
  * @param 텍스트 효과음 볼륨
  * @parent 효과음 재생
  * @type note
@@ -304,13 +311,81 @@
  * 텍스트 코드(Text Code)
  * =============================================================================
  *
- * 다양한 색상 코드를 사용할 수 있습니다. 미리 입력된 색을 사용할 수도 있고 웹 색상을
- * 설정할 수도 있습니다. 이것은 최상위 클래스에 정의되므로 어느 창에서나 사용할 수 있습니다.
+ * 다양한 색상 코드를 사용할 수 있습니다. 
+ * 미리 입력된 색을 사용할 수도 있고 웹 색상을 설정할 수도 있습니다. 
+ * 이것은 최상위 클래스에 정의되므로 어느 창에서나 사용할 수 있습니다.
  * 다만 텍스트 코드를 처리하는 창에서만 사용해야 합니다:
  *
  *   \색[색상명]
  *   \테두리색[색상명]
- *
+ * 
+ * 사용 가능한 색상은 다음과 같습니다.
+ * 
+ * \색[기본색] - 이 색은 기본 윈도우 스킨 하단 색상 테이블에 위치한 0번 색과 같습니다.
+ * \색[청록]
+ * \색[검은색]
+ * \색[파란색]
+ * \색[짙은회색]
+ * \색[자홍색]
+ * \색[회색]
+ * \색[녹색]
+ * \색[밝은녹색]
+ * \색[밝은회색]
+ * \색[밤색]
+ * \색[감청색]
+ * \색[황록색]
+ * \색[주황색]
+ * \색[보라색]
+ * \색[빨간색]
+ * \색[은색]
+ * \색[민트색]
+ * \색[흰색]
+ * \색[노란색]
+ * \색[기본]
+ * \색[청록색]
+ * \색[검정]
+ * \색[파랑]
+ * \색[c_dkgray]
+ * \색[자홍]
+ * \색[c_gray]
+ * \색[c_green]
+ * \색[라임]
+ * \색[c_ltgray]
+ * \색[마룬]
+ * \색[네이비]
+ * \색[올리브]
+ * \색[주황]
+ * \색[보라]
+ * \색[빨강]
+ * \색[은]
+ * \색[c_teal]
+ * \색[흰]
+ * \색[노랑]
+ * \색[오렌지]
+ * \색[c_orange]
+ * \색[c_aqua]
+ * \색[c_black]
+ * \색[c_blue]
+ * \색[c_fuchsia]
+ * \색[c_lime]
+ * \색[c_maroon]
+ * \색[c_navy]
+ * \색[c_olive]
+ * \색[c_purple]
+ * \색[red]
+ * \색[c_red]
+ * \색[c_silver]
+ * \색[white]
+ * \색[c_white]
+ * \색[c_yellow]
+ * \색[c_normal]
+ * 
+ * 미리 정의한 색상 말고도 다른 색상을 사용하려면 이렇게 하면 됩니다.
+ * 
+ * \색[#ffffff] 과 \색[white]는 흰색입니다.
+ * \색[rgb(255, 0, 0)]과 \색[red] 그리고 \색[#ff0000]은 빨강색입니다.
+ * \색[aqua], \색[lime] 등 브라우저에 기본 정의된 색상 테이블에서도 가져올 수 있습니다.
+ * 
  * 텍스트 출력 속도를 조절하려면 이것을 쓰면 되는데, 값은 대기 프레임 단위입니다
  * 가장 빠른 속도는 0프레임입니다:
  
@@ -323,10 +398,11 @@
  *   \이름<이벤트명>
  *   \이름<이벤트명:right>
  *   \이름<이벤트명:left>
+ *   \이름<\색[red]이벤트명>
+ *   \이름<\색[주황]러닝은빛>
  *
  * 그레디언트 텍스트를 만드는 텍스트 코드입니다. 기본 색상 값은 플러그인 매개변수에서
- * 변경이 가능합니다. 다만 세밀한 설정은 코드 상에 하드코딩되어있으므로 디자인이 좋지 않아
- * 보여도 수정할 수가 없을 수 있습니다.
+ * 변경이 가능합니다. 세밀한 설정은 불가능합니다.
  *
  *   \그레디언트<텍스트>
  *
@@ -339,13 +415,22 @@
  *   \변수[번호]
  *   \아이콘[번호]
  *
- * 텍스트를 굵게 하거나, 기울임 꼴로 바꿀 수 있는 텍스트 코드입니다.
- * HTML의 <B>와 <I>에서 아이디어를 얻었기 때문에 "\굵게!텍스트\굵게!"와 같은 식으로
- * 작성해야 다음 글자가 일반적으로 표시됩니다.
+ * 지금까지 텍스트를 굵게 하는 명령과 기울이는 명령은 다음과 같았습니다.
  *
  *   \굵게!
  *   \이탤릭!
- *
+ * 
+ * 하지만 너무 가독성이 좋지 않았기 때문에 태그처럼 사용할 수 있게 했습니다.
+ * 
+ * 예를 들면 :)
+ * 
+ * <B>유령의 저택</B>에 함부로 들어가선 안돼.
+ * <I>정신력</I> 문제는 아니야.
+ * 
+ * 이렇게 간단히 쓸 수 있게 되었습니다. 
+ * 하지만 왜 영어일까요?
+ * 태그는 만국 공통이자 일종의 약속이므로 한글로 번역하지 않았습니다.
+ * 
  * 글자의 크기를 확대하거나 축소하는 기능입니다 (\{, \}와 같습니다):
  *   \확대!
  *   \축소!
@@ -355,18 +440,32 @@
  *   \골드
  *
  * 말풍선 메시지 창을 만들 수 있는 기능입니다. 0은 이 이벤트, -1은 플레이어입니다:
+ * 기본 전투에서는 \말풍선[인덱스] 대신 \아군[인덱스], \적그룹[인덱스]을 사용하세요.
  *
  *   \말풍선[이벤트의 ID]
  *   \말풍선[0]
  *   \말풍선[-1]
  *
- * 왼쪽, 중앙 또는 오른쪽에 텍스트를 정렬할 수 있습니다. 기본적으로 스택이 쌓이므로,
- * 각 라인 마다 한 번씩만 사용하시기 바랍니다.
- *
+ * 왼쪽, 중앙 또는 오른쪽에 텍스트를 정렬할 수 있습니다. 
+ * 정렬은 각 라인이 시작될 때 한 번씩 이뤄집니다.
+ * 정렬자는 스택 방식이므로 각 라인에 하나씩 사용 바랍니다.
+ * 
  *   \정렬자[0]
  *   \정렬자[1]
  *   \정렬자[2]
- *
+ * 
+ * 조금 어렵게 느껴진다면 태그를 사용해보세요.
+ * 
+ * <left>안녕하세요?</left>
+ * <right>식사는 하셨나요?</right>
+ * <center>지금 저녁 식사를 먹으려고 합니다. </center>
+ * 
+ * 태그는 대화가 시작되면 실제 텍스트 코드로 변환됩니다.
+ * 예를 들어, <left>는 \정렬자[0]으로 변경됩니다.
+ * 
+ * HTML 태그는 만국 공통이므로 우리말로 번역하지 않았습니다.
+ * 유사한 기능일 뿐 실제 HTML 태그와는 다릅니다.
+ * 
  * 숫자 값에 엑셀 통화 서식 문자를 적용합니다: (예: 10,000)
  *
  *   \숫자[숫자]
@@ -376,6 +475,7 @@
  *   \크기[숫자]
  *
  * 탭과 캐리지 리턴 기능입니다.
+ * 캐리지리턴을 사용하면 겹침 글자를 사용할 수 있습니다.
  *
  *   \탭! : 탭의 크기는 8 입니다.
  *   \캐리지리턴! : X를 시작 위치로 되돌립니다.
@@ -418,36 +518,13 @@
  * 대화 중에 배틀러가 전투 불능 상태가 되면 일반 대화창으로 표시됩니다.
  *
  * =============================================================================
- * 색상(Colors)
- * =============================================================================
- * 미리 작성된 색상 목록입니다. 이 목록에 없는 경우에는 웹 색상으로 색상 값을 찾습니다.
- * 따라서 기본적으로 많은 색상 값을 사용할 수 있습니다. 커스텀 색상을 추가하고 편하게
- * 변경할 수도 있습니다.
- *
- * 청록, 청록색, c_aqua
- * 검은색, 검정, c_black
- * 파란색, 파랑, c_blue
- * 짙은회색, c_dkgray
- * 자홍색, 자홍, c_fuchsia
- * 회색, c_gray
- * 녹색, c_green
- * 밝은녹색, 라임, c_lime
- * 밝은회색, c_ltgray
- * 밤색, 마룬, c_maroon
- * 감청색, 네이비, c_navy
- * 황록색, 올리브, c_olive
- * 주황색, 주황, 오렌지, c_orange
- * 보라색, 보라, c_purple
- * 빨간색, 빨강, c_red
- * 은색, 은, c_silver
- * 민트색, c_teal
- * 흰색, 흰, c_white
- * 노란색, 노랑, c_yellow
- * 기본, 기본색, c_normal
- *
- * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.11.05 (v0.1.27) :
+ * - 태그처럼 쓸 수 있는 텍스트 코드를 지원합니다.
+ * - 이스케이프 코드에서 한글 + 영어 혼용이 가능합니다.
+ * - 한글이 아닌 텍스트 코드 사용 시, RegExp 객체에서 특정 유니코드(아스키코드)가 처리되지 않는 문제를 수정하였습니다.
+ * - 텍스트 사운드 재생 간격을 설정할 수 있는 기능을 추가하였습니다.
  * 2018.09.04 (v0.1.25) : 
  * - 시스템 폰트로 설정하는 폰트 관련 매개변수를 추가하였습니다.
  * - 일본어 지원
@@ -513,23 +590,22 @@
  * @param Korean
  * @type string[]
  * @desc 시스템 언어가 한국어(우리나라 말)일 경우에만 동작합니다.
- * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴"]
+ * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴","아군","적그룹","[.]","[|]","[!]","[<]","[>]","[\\^]","AS굵게!","AE굵게!","AS이탤릭!","AE이탤릭!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  *
  * @param Chinese
  * @type string[]
  * @desc 시스템 언어가 중국어로 설정되어있을 때에만 동작합니다
- * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸"]
+ * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸","我军","敌人组","[.]","[|]","[!]","[<]","[>]","[\\^]","AS加粗!","AE加粗!","AS倾斜!","AE倾斜!","左","中間","右","B","B","I","I","AEND"]
  *
  * @param English
  * @type string[]
  * @desc 시스템 언어가 '영어'로 설정되어있을 때에만 동작합니다.
- * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE"]
+ * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","ASBOLD!","AEBOLD!","ASITALIC!","AEITALIC!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  *
  * @param Japanese
  * @type string[]
  * @desc 시스템 언어가 '일본어'일 때에만 동작합니다.
- * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]"]
- * 
+ * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","AS太字!","AE太字!","AS斜体!","AE斜体!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  * 
  */
 /*~struct~TextColor:ko
@@ -598,7 +674,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.25) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.27) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -789,7 +865,7 @@
  * @param Text Code
  * @type struct<TextCode>
  * @desc Can change with desired text codes
- * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","Japanese":"[\"色\",\"テキストスピード\",\"輪郭の色\",\"輪郭のサイズ\",\"インデント\",\"太字!\",\"斜体!\",\"名前\",\"グラデーション\",\"パーティーメンバー\",\"アクタ\",\"変数\",\"アイコン\",\"INCREASE!\",\"DECREASE!\",\"通貨単位表示\",\"フキダシ\",\"整列\",\"数字\",\"テキストのサイズ\",\"TAB!\",\"CR!\",\"効果音\",\"ピクチャの表示\",\"ピクチャの消去\",\"アイテム\",\"武器\",\"防具\",\"職業\",\"敵キャラ\",\"ステート\",\"スキル\",\"顔\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]"}
+ * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS굵게!\",\"AE굵게!\",\"AS이탤릭!\",\"AE이탤릭!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS加粗!\",\"AE加粗!\",\"AS倾斜!\",\"AE倾斜!\",\"左\",\"中間\",\"右\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"ASBOLD!\",\"AEBOLD!\",\"ASITALIC!\",\"AEITALIC!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","Japanese":"[\"色\",\"テキストスピード\",\"輪郭の色\",\"輪郭のサイズ\",\"インデント\",\"太字!\",\"斜体!\",\"名前\",\"グラデーション\",\"パーティーメンバー\",\"アクタ\",\"変数\",\"アイコン\",\"INCREASE!\",\"DECREASE!\",\"通貨単位表示\",\"フキダシ\",\"整列\",\"数字\",\"テキストのサイズ\",\"TAB!\",\"CR!\",\"効果音\",\"ピクチャの表示\",\"ピクチャの消去\",\"アイテム\",\"武器\",\"防具\",\"職業\",\"敵キャラ\",\"ステート\",\"スキル\",\"顔\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS太字!\",\"AE太字!\",\"AS斜体!\",\"AE斜体!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]"}
  *
  * @param Sound Effects
  *
@@ -818,6 +894,13 @@
  * @desc Specify the size of the text sound pool.
  * @default 2
  * @min 1
+ * 
+ * @param Text Sound Interval
+ * @parent Sound Effects
+ * @type number
+ * @desc Specify the text sound interval.
+ * @default 2
+ * @min 1
  *
  * @param Text Sound Volume
  * @parent Sound Effects
@@ -834,6 +917,11 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.05 (v0.1.27) :
+ * - Added text codes that use like as the html tag.
+ * - You can now use Hangul (Korean) and English in escape codes. (Google Translate)
+ * - Fixed an issue where the RegExp object does not handle Unicode in the range of ASCII codes. (Google Translate)
+ * - Added a feature that the text sound interval can set.
  * 2018.09.04 (v0.1.25) : 
  * - Added the parameters called 'System Font' using system font settings.
  * - Supported Japanese
@@ -902,24 +990,24 @@
  * @type string[]
  * @desc Can specify the desired text code as Korean.
  * (This will be used when the system language is in Korean)
- * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴"]
+ * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴","아군","적그룹","[.]","[|]","[!]","[<]","[>]","[\\^]","AS굵게!","AE굵게!","AS이탤릭!","AE이탤릭!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  *
  * @param Chinese
  * @type string[]
  * @desc Can specify the desired text code as Chinese
  * (This will be used when the system language is in Chinese)
- * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸"]
+ * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸","我军","敌人组","[.]","[|]","[!]","[<]","[>]","[\\^]","AS加粗!","AE加粗!","AS倾斜!","AE倾斜!","左","中間","右","B","B","I","I","AEND"]
  *
  * @param English
  * @type string[]
  * @desc Can specify the desired text code as English
  * (This will be used when the system language is to English)
- * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE"]
+ * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","ASBOLD!","AEBOLD!","ASITALIC!","AEITALIC!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  *
  * @param Japanese
  * @type string[]
  * @desc To work this, Note that you can set the system lanuage is to Japanese.
- * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]"]
+ * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","AS太字!","AE太字!","AS斜体!","AE斜体!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  * 
  */
 /*~struct~TextColor:
@@ -982,7 +1070,7 @@
  */  
 /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.24) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.27) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1219,7 +1307,7 @@
  * @text 制御文字
  * @type struct<TextCode>
  * @desc 制御文字を他の文字に変更します。
- * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]","Japanese":"[\"色\",\"テキストスピード\",\"輪郭の色\",\"輪郭のサイズ\",\"インデント\",\"太字!\",\"斜体!\",\"名前\",\"グラデーション\",\"パーティーメンバー\",\"アクタ\",\"変数\",\"アイコン\",\"INCREASE!\",\"DECREASE!\",\"通貨単位表示\",\"フキダシ\",\"整列\",\"数字\",\"テキストのサイズ\",\"TAB!\",\"CR!\",\"効果音\",\"ピクチャの表示\",\"ピクチャの消去\",\"アイテム\",\"武器\",\"防具\",\"職業\",\"敵キャラ\",\"ステート\",\"スキル\",\"顔\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\"]"}
+ * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS굵게!\",\"AE굵게!\",\"AS이탤릭!\",\"AE이탤릭!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS加粗!\",\"AE加粗!\",\"AS倾斜!\",\"AE倾斜!\",\"左\",\"中間\",\"右\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"ASBOLD!\",\"AEBOLD!\",\"ASITALIC!\",\"AEITALIC!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]","Japanese":"[\"色\",\"テキストスピード\",\"輪郭の色\",\"輪郭のサイズ\",\"インデント\",\"太字!\",\"斜体!\",\"名前\",\"グラデーション\",\"パーティーメンバー\",\"アクタ\",\"変数\",\"アイコン\",\"INCREASE!\",\"DECREASE!\",\"通貨単位表示\",\"フキダシ\",\"整列\",\"数字\",\"テキストのサイズ\",\"TAB!\",\"CR!\",\"効果音\",\"ピクチャの表示\",\"ピクチャの消去\",\"アイテム\",\"武器\",\"防具\",\"職業\",\"敵キャラ\",\"ステート\",\"スキル\",\"顔\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS太字!\",\"AE太字!\",\"AS斜体!\",\"AE斜体!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\"]"}
  *
  * @param 効果音再生
  *
@@ -1256,6 +1344,13 @@
  * @default 2
  * @min 1
  *
+ * @param Text Sound Interval
+ * @parent ボリューム
+ * @type number
+ * @desc テキスト·サウンド·インターバル設定
+ * @default 2
+ * @min 1
+ * 
  * @param Text Sound Volume
  * @text ボリューム
  * @parent 効果音再生
@@ -1339,10 +1434,20 @@
  * \顔<face_name, face_index> - 顔グラフィックを表示します。
  * \FRIENDLY_TROOPS[n]
  * \ENEMY_TROOPS[n]
+ * <CENTER></CENTER>
+ * <RIGHT></RIGHT>
+ * <LEFT></LEFT>
+ * <B></B>
+ * <I></I>
  * =============================================================================
  * Version Log
  * =============================================================================
- * 2018.09.04 (v0.1.25) : コンピュータにインストールされた書体に設定できるようになりました。
+* 2018.11.05 (v0.1.27):
+ * - タグのように使えるテキストコードを支援します。(パパゴ翻訳)
+ * - イスケープ コードでハングル+英語の混用が可能です。
+ * - ハングルではないテキストコードを使用する際,RegExpオブジェクトから特定ユニコード(アスキーコード)が処理されない問題を修正しました。 (パーパゴ翻訳)
+ * - テキストサウンド再生間隔を設定できる機能を追加しました。 (パーパゴ翻訳)
+ * 2018.09.04 (v0.1.25) : コンピュータにインストールされた書体に設定できるようになりました。(パーパゴ翻訳)
  * 2018.07.02 (v0.1.23) : 
  * - 他のメッセージプラグインと互換されていないdependencyモジュールを除去しました。
  * - Fixed the issue that didn't regonize the text size in the ballon message mode.
@@ -1407,22 +1512,22 @@
  * @param Korean
  * @type string[]
  * @desc システム言語が韓国語である場合にのみ動作します。
- * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴","아군","적그룹","[.]","[|]","[!]","[<]","[>]","[\\^]"]
+ * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴","아군","적그룹","[.]","[|]","[!]","[<]","[>]","[\\^]","AS굵게!","AE굵게!","AS이탤릭!","AE이탤릭!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  *
  * @param Chinese
  * @type string[]
  * @desc システム言語が英語に設定されているときだけ動作します。
- * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸","我军","敌人组","[.]","[|]","[!]","[<]","[>]","[\\^]"]
+ * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸","我军","敌人组","[.]","[|]","[!]","[<]","[>]","[\\^]","AS加粗!","AE加粗!","AS倾斜!","AE倾斜!","左","中間","右","B","B","I","I","AEND"]
  *
  * @param English
  * @type string[]
  * @desc システム言語が英語に設定されているときだけ動作します。
- * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]"]
+ * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","ASBOLD!","AEBOLD!","ASITALIC!","AEITALIC!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  * 
  * @param Japanese
  * @type string[]
  * @desc システム言語が日本語に設定されているときのみ動作します。
- * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]"]
+ * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","AS太字!","AE太字!","AS斜体!","AE斜体!","LEFT","CENTER","RIGHT","B","B","I","I","AEND"]
  * 
  */
  /*~struct~TextColor:ja
@@ -1618,6 +1723,7 @@ var Color = Color || {};
   RS.MessageSystem.Params.pathTextSound = String(RS.MessageSystem.popParameter('Text Sound', "텍스트 효과음") || "Cursor1.ogg");
   RS.MessageSystem.Params.textSoundEval1 = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Execution Condition", "텍스트 효과음 실행 조건") || "Math.randomInt(100) < 45");
   RS.MessageSystem.Params.textSoundEval2 = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Volume", "텍스트 효과음 볼륨") || "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)");
+  RS.MessageSystem.Params.textSoundInterval = parseInt(RS.MessageSystem.popParameter("Text Sound Interval", "텍스트 사운드 재생 간격"));
   RS.MessageSystem.Params.textSoundPoolSize = parseInt(RS.MessageSystem.popParameter('텍스트 사운드 풀 크기', "Text Sound Pool Size") || 6);
   
   RS.MessageSystem.Params.langCode = RS.MessageSystem.popParameter('언어 코드', "Language Code") || "ko";
@@ -1629,11 +1735,11 @@ var Color = Color || {};
   // Multiple Language supports
   //============================================================================
     
-  RS.MessageSystem.Reg.KoreanEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[가-ퟻ]+[!]*/i;
-  RS.MessageSystem.Reg.ChineseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[一-鼣]+[!]*/i;
-  RS.MessageSystem.Reg.EnglishEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[A-Z]+[!]*/i;
-  RS.MessageSystem.Reg.JapaneseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[\u3040-\u309F\u30A0-\u30FF\u3300-\u33FF\u4E00-\u9FFF\uFF00-\uFFEF]+[!]*/i;
-  RS.MessageSystem.Reg.defaultEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+|^[가-ퟻ]+[!]*/i;
+  RS.MessageSystem.Reg.KoreanEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-ퟻ]+[!]*/i;
+  RS.MessageSystem.Reg.ChineseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z一-鼣]+[!]*/i;
+  RS.MessageSystem.Reg.EnglishEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+[!]*/i;
+  RS.MessageSystem.Reg.JapaneseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z\u3040-\u309F\u30A0-\u30FF\u3300-\u33FF\u4E00-\u9FFF\uFF00-\uFFEF]+[!]*/i;
+  RS.MessageSystem.Reg.defaultEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z가-ퟻ]+[!]*/i;
     
   RS.MessageSystem.TextCodes = (function() {
     'use strict';
@@ -1690,7 +1796,20 @@ var Color = Color || {};
     START_PAUSE: 38, // !
     LINE_SHOW_FAST_LT: 39, // <
     LINE_SHOW_FAST_GT: 40, // >
-    PAUSE_SKIP: 41 // ^
+    PAUSE_SKIP: 41, // ^
+    BOLD_START: 42, // <B>
+    BOLD_END: 43, // </B>
+    ITALIC_START: 44,
+    ITALIC_END: 45,
+    ALIGN_LEFT: 46,
+    ALIGN_CENTER: 47,
+    ALIGN_RIGHT: 48,
+    BOLD_START_CV: 49,
+    BOLD_END_CV: 50,
+    ITALIC_START_CV: 51,
+    ITALIC_END_CV: 52,
+    ALIGN_CLEAR: 53, // AEND
+    CHANGE_WINDOWSKIN: 54
   };
     
   RS.MessageSystem.getTextCode = function (idx) {
@@ -1720,7 +1839,12 @@ var Color = Color || {};
         var data = [];
         var ret = "";
         for (var str of e) {
-          data.push('\\u' + str.charCodeAt().toString(16));
+          if(/[a-zA-Z]/i) {
+            data.push(str);
+            continue;
+          }
+          var text = str.charCodeAt().toString(16);
+          data.push('\\u' + "{" + text + "}");
         }
         ret = data.join("");
         return ret;
@@ -1762,12 +1886,29 @@ var Color = Color || {};
       RS.MessageSystem.Reg[e][34] = new RegExp(`(?:\x1b${tcGroup[34]})\\[(\\d+)\\]`, 'gi'); // 아군
       RS.MessageSystem.Reg[e][35] = new RegExp(`(?:\x1b${tcGroup[35]})\\[(\\d+)\\]`, 'gi'); // 적군
       
-      RS.MessageSystem.Reg[e][36] = new RegExp(`\x1b${tcGroup[36]}`, 'gi');
-      RS.MessageSystem.Reg[e][37] = new RegExp(`\x1b${tcGroup[37]}`, 'gi');
-      RS.MessageSystem.Reg[e][38] = new RegExp(`\x1b${tcGroup[38]}`, 'gi');
-      RS.MessageSystem.Reg[e][39] = new RegExp(`\x1b${tcGroup[39]}`, 'gi');
-      RS.MessageSystem.Reg[e][40] = new RegExp(`\x1b${tcGroup[40]}`, 'gi');
-      RS.MessageSystem.Reg[e][41] = new RegExp(`\x1b${tcGroup[41]}`, 'gi');
+      RS.MessageSystem.Reg[e][36] = new RegExp(`\x1b${tcGroup[36]}`, 'gi'); // [.]
+      RS.MessageSystem.Reg[e][37] = new RegExp(`\x1b${tcGroup[37]}`, 'gi'); // [|]
+      RS.MessageSystem.Reg[e][38] = new RegExp(`\x1b${tcGroup[38]}`, 'gi'); // [!]
+      RS.MessageSystem.Reg[e][39] = new RegExp(`\x1b${tcGroup[39]}`, 'gi'); // [<]
+      RS.MessageSystem.Reg[e][40] = new RegExp(`\x1b${tcGroup[40]}`, 'gi'); // [>]
+      RS.MessageSystem.Reg[e][41] = new RegExp(`\x1b${tcGroup[41]}`, 'gi'); // [\^]
+
+      RS.MessageSystem.Reg[e][42] = new RegExp(`\x1b${tcGroup[42]}`, 'ugi'); // AS굵게!
+      RS.MessageSystem.Reg[e][43] = new RegExp(`\x1b${tcGroup[43]}`, 'ugi'); // AE굵게!
+      RS.MessageSystem.Reg[e][44] = new RegExp(`\x1b${tcGroup[44]}`, 'ugi'); // AS이탤릭!
+      RS.MessageSystem.Reg[e][45] = new RegExp(`\x1b${tcGroup[45]}`, 'ugi'); // AE이탤릭!
+
+      RS.MessageSystem.Reg[e][46] = new RegExp(`(?:<${tcGroup[46]}>)`, 'ugi'); // LEFT
+      RS.MessageSystem.Reg[e][47] = new RegExp(`(?:<${tcGroup[47]}>)`, 'ugi'); // CENTER
+      RS.MessageSystem.Reg[e][48] = new RegExp(`(?:<${tcGroup[48]}>)`,'ugi'); // RIGHT
+
+      RS.MessageSystem.Reg[e][49] = new RegExp(`(?:<[${tcGroup[49]}]>)`, 'ugi'); // B
+      RS.MessageSystem.Reg[e][50] = new RegExp(`(?:<\/[${tcGroup[50]}]>)`, 'ugi'); // B
+      RS.MessageSystem.Reg[e][51] = new RegExp(`(?:<[${tcGroup[51]}]>)`, 'ugi'); // I
+      RS.MessageSystem.Reg[e][52] = new RegExp(`(?:<\/[${tcGroup[52]}]>)`, 'ugi'); // I
+      RS.MessageSystem.Reg[e][53] = new RegExp(`\x1b${tcGroup[53]}`, 'gi'); // AEND : ALIGN_CLEAR
+      RS.MessageSystem.Reg[e][54] = new RegExp(`\x1b${tcGroup[54]}\\<(.+?)\\>`, 'gi'); // 스킨변경
+
     }, this);
   }());
     
@@ -2292,8 +2433,16 @@ var Color = Color || {};
   };
   
   Game_Message.prototype.getAlign = function(n) {
-    return this._align.shift() || this._lastAlign;
+    var n = this._align.shift();
+    if(n === undefined) {
+      return this._lastAlign;
+    }
+    return n;
   };
+
+  Game_Message.prototype.clearAlignLast = function(n) {
+    this._lastAlign = 0;
+  };      
   
   Game_Message.prototype.setBalloonPatternHeight = function (value) {
     this._balloonPatternHeight = value;
@@ -2372,9 +2521,21 @@ var Color = Color || {};
       case textCode[tcGroup.BOLD]:
       this.setTextBold(!this.contents.fontBold);
       break;
+      case textCode[tcGroup.BOLD_START]:
+      this.setTextBold(true);
+      break;
+      case textCode[tcGroup.BOLD_END]:
+      this.setTextBold(false);
+      break;      
       case textCode[tcGroup.ITALIC]:
       this.setTextItalic(!this.contents.fontItalic);
       break;
+      case textCode[tcGroup.ITALIC_START]:
+      this.setTextItalic(true);
+      break;      
+      case textCode[tcGroup.ITALIC_END]:
+      this.setTextItalic(false);
+      break;            
       case textCode[tcGroup.GRADIENT]:
       this.setTextGradient(textState);
       break;
@@ -2401,11 +2562,14 @@ var Color = Color || {};
       this.redrawFaceImage(textState, params[0], params[1], 0, 0);
       this.startWait(1);
       break;
+      case textCode[tcGroup.ALIGN_CLEAR]:
+      $gameMessage.clearAlignLast();
+      break;
       default:
       alias_Window_Message_processEscapeCharacter.call(this, code, textState);
     }
   };
-  
+
   Window_Message.prototype.setTextItalic = function() {
     this.contents.fontItalic = arguments[0];
   };
@@ -2570,6 +2734,7 @@ var Color = Color || {};
     var alias_Window_Message_convertEscapeCharacters = Window_Message.prototype.convertEscapeCharacters;
     Window_Message.prototype.convertEscapeCharacters = function(text) {
       var tcGroup = RS.MessageSystem.TextCodes.ENUM;
+      var textCode = RS.MessageSystem.TextCodes.Main;
       var regGroup = RS.MessageSystem.Reg.Group;
       text = alias_Window_Message_convertEscapeCharacters.call(this, text);
       text = text.replace(regGroup[tcGroup.NAME], function() {
@@ -2601,10 +2766,35 @@ var Color = Color || {};
         $gameMessage.setBalloon( 'ENEMIES : ' + value );
         return '';
       }.bind(this));
+      text = text.replace(regGroup[tcGroup.ALIGN_LEFT], function() {
+        return '\x1b' + textCode[tcGroup.ALIGN] + "[0]";
+      }.bind(this));      
+      text = text.replace(regGroup[tcGroup.ALIGN_CENTER], function() {
+        return '\x1b' + textCode[tcGroup.ALIGN] + "[1]";
+      }.bind(this));        
+      text = text.replace(regGroup[tcGroup.ALIGN_RIGHT], function() {
+        return '\x1b' + textCode[tcGroup.ALIGN] + "[2]";
+      }.bind(this));      
       text = text.replace(regGroup[tcGroup.ALIGN], function() {
         $gameMessage.setAlign(Number(arguments[1] || 0));
         return '';
       }.bind(this));
+      text = text.replace(/<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi, function() {
+        return regGroup[tcGroup.ALIGN_CLEAR].source;
+      }.bind(this)); 
+      text = text.replace(regGroup[tcGroup.BOLD_START_CV], function() {
+        return regGroup[tcGroup.BOLD_START].source;
+      }.bind(this));   
+      text = text.replace(regGroup[tcGroup.BOLD_END_CV], function() {
+        return regGroup[tcGroup.BOLD_END].source;
+      }.bind(this));        
+      text = text.replace(regGroup[tcGroup.ITALIC_START_CV], function() {
+        return regGroup[tcGroup.ITALIC_START].source;
+      }.bind(this));   
+      text = text.replace(regGroup[tcGroup.ITALIC_END_CV], function() {
+        return regGroup[tcGroup.ITALIC_END].source;
+      }.bind(this));
+
       return text;
     };
     
@@ -3595,7 +3785,7 @@ var Color = Color || {};
     
     this._soundPool = {};
     // 풀에 대기 할 사운드 최대 갯수
-    this._soundPool.maxPool = RS.MessageSystem.Params.textSoundPoolSize ;
+    this._soundPool.maxPool = RS.MessageSystem.Params.textSoundPoolSize;
     // 가져올 ID
     this._soundPool.currentId = 0;
     // 기본 사운드 엘리먼트 이름
@@ -3722,7 +3912,7 @@ var Color = Color || {};
   var alias_TextSound_Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
   Window_Message.prototype.processNormalCharacter = function(textState) {
     alias_TextSound_Window_Message_processNormalCharacter.call(this, textState);
-    this._requestTextSound();
+    if((textState.index % RS.MessageSystem.Params.textSoundInterval) === 0) this._requestTextSound();
   };
   
   //============================================================================
@@ -3879,7 +4069,12 @@ var Color = Color || {};
               ImageManager.loadFace(faceName);
               return '';
             });
-          }
+          }      
+          data = text.match(regGroup[tcGroup.CHANGE_WINDOWSKIN]);
+          if(data) {
+            var windowskinName = RegExp.$1.trim();
+            ImageManager.loadSystem(windowskinName);
+          }                       
           break;
         };
       });
