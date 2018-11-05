@@ -94,22 +94,19 @@ RS.MessageAlign = RS.MessageAlign || {};
         text = alias_Window_Message_convertEscapeCharacters.call(this, text);
         text = text.replace(/\\/g, '\x1b');
         text = text.replace(/\x1b\x1b/g, '\\');        
+        text = text.replace(/(?:<LEFT>)/gi, function() {
+            return '\x1bTA[0]';
+          }.bind(this));      
+        text = text.replace(/(?:<CENTER>)/gi, function() {
+            return '\x1bTA[1]';
+        }.bind(this));       
+        text = text.replace(/(?:<RIGHT>)/gi, function() {
+            return '\x1bTA[2]';
+        }.bind(this));              
         text = text.replace(/\x1bTA\[(\d+)\]/gi, function() {
             $gameMessage.setAlign(Number(arguments[1] || 0));
             return "";
-        }.bind(this));
-        text = text.replace(/(?:<LEFT>)/gi, function() {
-            $gameMessage.setAlign(0);
-            return '';
-          }.bind(this));      
-        text = text.replace(/(?:<CENTER>)/gi, function() {
-            $gameMessage.setAlign(1);
-            return '';
-        }.bind(this));       
-        text = text.replace(/(?:<RIGHT>)/gi, function() {
-            $gameMessage.setAlign(2);
-            return '';
-        }.bind(this));       
+        }.bind(this)); 
         text = text.replace(/<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi, function() {
             return '\x1bAEND';
         }.bind(this));              
