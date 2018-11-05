@@ -78,7 +78,11 @@ RS.MessageAlign = RS.MessageAlign || {};
     };
     
     Game_Message.prototype.getAlign = function(n) {
-        return this._align.shift() || this._alignLast;
+        var n = this._align.shift();
+        if(n === undefined) {
+            return this._alignLast;
+        }
+        return n;
     };
 
     Game_Message.prototype.clearAlignLast = function(n) {
