@@ -6,7 +6,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.13) <RS_ScreenManager>
+ * @plugindesc (v1.0.14) <RS_ScreenManager>
  * @author biud436
  *
  * @param Test Options
@@ -286,6 +286,8 @@ Imported.RS_ScreenManager = true;
  * 2018.10.23 (v1.0.13) :
  * - Added the feature that would save the option to a manifest file when closing the window in RPG Maker MV v1.6.1.
  * - Added the localization text for 'Windowed Mode'.
+ * 2018.11.08 (v1.0.14) :
+ * - Fixed the issue that is not set the size of the Graphics object with an aspect ratio when initializing.
  */
 /*~struct~ScreenSize:
  *
@@ -994,7 +996,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     // 모바일에서는 비율 값에 따라 해상도를 변경한다.
     size = config.getSize(defScrWidth);
 
-    mobile = !Utils.isNwjs();
+    mobile = !Utils.isNwjs() || options.aspectRatio;
     sw = (mobile === true) ? size[0] : defScrWidth;
     sh = (mobile === true) ? size[1] : defScrHeight;
     bw = (mobile === true) ? size[0] : defScrWidth;

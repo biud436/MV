@@ -284,6 +284,10 @@
   * 2018.10.26 (v1.6.6) :
   * - 오류 메시지를 띄우는 창을 추가했습니다.
   * - 매개변수 명을 한국어로 변경하였습니다.
+  * 2018.11.08 (v1.6.7) :
+  * - 같은 이름으로 설정할 수 있게 변경하였습니다.
+  * - 수정, 확인, 취소 칸은 모바일 디바이스에서만 뜨게 변경하였습니다.
+  * - 에디트 윈도우의 좌표를 모든 해상도에 대응할 수 있게 상대 좌표로 수정하였습니다.
   */
 
 var Imported = Imported || {};
@@ -402,6 +406,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     this._textBox.onkeydown = this.onKeyDown.bind(this);
 
     this._alertFunc = function() {};
+    this._okFunc = function() {};
     this._defaultName = "";
 
     document.body.appendChild(this._textBox);
@@ -418,10 +423,12 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
 
   TextBox.prototype.setEvent = function(func) {
     this._textBox.onchange = func;
+    this._okFunc = func;
   };  
 
   TextBox.prototype.removeEvent = function() {
     this._textBox.onchange = null;
+    this._okFunc = null;
   };
 
   TextBox.prototype.setAlertWindow = function(alert_) {
@@ -454,8 +461,9 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
           e.preventDefault();
           this._alertFunc($.Params.didnt_type_anytext);
         } else if( this._defaultName === this._textBox.value ) {
-          e.preventDefault();
-          this._alertFunc($.Params.cant_type_same_name);
+          // e.preventDefault();
+          // this._alertFunc($.Params.cant_type_same_name);
+          if(this._okFunc) this._okFunc();
         }
       }
     } else if (keyCode < TextBox.KEYS_ARRAY) {
@@ -672,17 +680,20 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
   Scene_KorName.prototype.constructor = Scene_KorName;
 
   Scene_KorName.prototype.initialize = function() {
-      if(Imported.RS_HangulBitmapText) {
-        $gameTemp.setHangulBitmapText(false);
-      }
-      this._nowTime = Date.now();      
-      Scene_Name.prototype.initialize.call(this);
+    // 한글 비트맵 폰트 사용을 잠시 중단한다.
+    if(Imported.RS_HangulBitmapText) {
+      $gameTemp.setHangulBitmapText(false);
+    }
+    this._nowTime = Date.now();      
+    Scene_Name.prototype.initialize.call(this);
   };
 
   Scene_KorName.prototype.createBackground = function() {
     var bitmap = SceneManager.backgroundBitmap();
     var customBackgroundImageName = $.Params.defaultBackground;
     this._backgroundSprite = new Sprite();
+
+    // 배경 설정이 auto면 이전 장면의 스냅샷을 배경 화면으로 사용한다.
     if(customBackgroundImageName === 'auto') {
       this._backgroundSprite.bitmap = bitmap;
     } else {
@@ -692,27 +703,85 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     this.addChild(this._backgroundSprite);
 
   };
-
-  Scene_KorName.prototype.update = function() {
-    if(this._commandWindow.active) {
-      this._textBox.blur();
+  
+  Scene_KorName.prototype.createPlatformFeatures = function() {
+    if(Utils.isMobileDevice()) {
+      this.createCommandWindow();
     } else {
       this._textBox.getFocus();
     }
+  };
+
+  Scene_KorName.prototype.updatePlatformFeatures = function() {
+    if(Utils.isMobileDevice()) {
+      if(this._commandWindow.active) {
+        this._textBox.blur();
+      } else {
+        this._textBox.getFocus();
+      }
+    } else {
+      this._textBox.getFocus();
+    }
+  };  
+
+  Scene_KorName.prototype.onInputOkPlatformFeatures = function() {
+    if(Utils.isMobileDevice()) {    
+
+      // Lose Focus
+      this._editWindow.deactivate();
+      this._textBox.blur();
+
+      // Select symbol.
+      this._commandWindow.selectSymbol('ok');
+      this._commandWindow.activate();    
+      
+    } else {
+      var name = this._editWindow._name;
+  
+      this._editWindow.deactivate();
+      this._textBox.blur();
+      if(window.cordova && window.StatusBar) {
+        window.StatusBar.hide();
+      }
+      this._actor.setName(this._editWindow.name());
+      this.popScene();
+    }
+  };
+
+  Scene_KorName.prototype.terminatePlatformFeatures = function() {
+    if(Utils.isMobileDevice()) {
+      
+    } else {
+      this._textBox.blur();
+      if(window.cordova && window.StatusBar) {
+        window.StatusBar.hide();
+      }
+    }
+  };    
+
+  Scene_KorName.prototype.update = function() {
+    this.updatePlatformFeatures();
     this._textBox.update();
+    this.updateHelpWindow();
+    Scene_MenuBase.prototype.update.call(this);
+  };
+
+  Scene_KorName.prototype.updateHelpWindow = function() {
+    // 1초가 경과했을 경우, 도움말의 라이프를 1 줄인다.
     if( Date.now() - this._nowTime >= 1000) {
       this._helpWindowLife--;
       if(this._helpWindowLife <= 0) {
         this._helpWindow.hide();
       }
       this._nowTime = Date.now();
-    }    
-    Scene_MenuBase.prototype.update.call(this);
+    }
   };
 
   Scene_KorName.prototype.terminate = function() {
     Scene_MenuBase.prototype.terminate.call(this);
+    this.terminatePlatformFeatures();
     this._textBox.terminate();
+    // 한글 비트맵 폰트 사용을 재개한다.
     if(Imported.RS_HangulBitmapText) {
       $gameTemp.setHangulBitmapText(RS.HangulBitmapText.Params.tempInit);
     }
@@ -723,7 +792,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     this._actor = $gameActors.actor(this._actorId);
     this.createEditWindow();
     this.createTextBox();
-    this.createCommandWindow();
+    this.createPlatformFeatures();
     this.createHelpWindow();
     this._textBox.setEvent( this.onInputOk.bind(this) );
     this._textBox.setAlertWindow( this.onAlert.bind(this) );
@@ -751,11 +820,19 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
 
   Scene_KorName.prototype.createEditWindow = function() {
     this._editWindow = new Window_KorNameEdit(this._actor, this._maxLength);
+    var self = this._editWindow;
+    var width = self.windowWidth();
+    var height = self.windowHeight();    
+    var x = (Graphics.boxWidth - width) / 2;
+    var y = Math.floor(Graphics.boxHeight / 6);
+    this._editWindow.x = x;
+    this._editWindow.y = y;
     this.addWindow(this._editWindow);
   };
 
   Scene_KorName.prototype.createCommandWindow = function () {
     this._commandWindow = new Window_KorNameInput(this._editWindow);
+    this._commandWindow.y = this._editWindow.y + this._editWindow.height;
     this._commandWindow.setHandler('edit', this.commandEdit.bind(this));
     this._commandWindow.setHandler('ok', this.commandInput.bind(this));
     this._commandWindow.setHandler('cancel', this.commandCancel.bind(this));
@@ -774,10 +851,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
    */
   Scene_KorName.prototype.commandInput = function () {
     var name = this._editWindow._name;
-    if(name === undefined || name === this._initialName) {    
-      this.commandEdit();
-      return;
-    }
+
     this._editWindow.deactivate();
     this._textBox.blur();
     if(window.cordova && window.StatusBar) {
@@ -812,15 +886,8 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     this._editWindow.opacity = $.Params.opacity;
   };
 
-  Scene_Name.prototype.onInputOk = function() {
-
-    // Lose Focus
-    this._editWindow.deactivate();
-    this._textBox.blur();
-
-    // Select symbol.
-    this._commandWindow.selectSymbol('ok');
-    this._commandWindow.activate();
+  Scene_KorName.prototype.onInputOk = function() {
+    this.onInputOkPlatformFeatures();
 
     Input.clear();
 
