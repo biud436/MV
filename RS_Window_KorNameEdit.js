@@ -125,6 +125,10 @@
  * - Added a new feature that pre-sets the default name when the name processing.
  * 2018.10.26 (v1.6.6) :
  * - Added the alert window. 
+ * 2018.11.08 (v1.6.7) :
+ * - Actor's name can change the same as previous name. 
+ * - Now command buttons are show up only in mobile devices. 
+ * - Fixed the position of the edit window.
  */
  /*:ko
   * RS_Window_KorNameEdit.js
@@ -290,672 +294,673 @@
   * - 에디트 윈도우의 좌표를 모든 해상도에 대응할 수 있게 상대 좌표로 수정하였습니다.
   */
 
-var Imported = Imported || {};
-Imported.Window_KorNameEdit = true;
-
-var RS = RS || {};
-RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
-
-(function($) {
-
-  $.Params = RS.Window_KorNameEdit.Params || {};
-
-  // private class
-  function TextBox() {
-    this.initialize.apply(this, arguments);
-  };
-
-  //===========================================================================
-  // Private Members
-  //===========================================================================
-
-  var parameters = $plugins.filter(function (i) {
-    return i.description.contains('<RS_Window_KorNameEdit>');
-  });
-
-  parameters = (parameters.length > 0) && parameters[0].parameters;
-
-  $.Params.windowWidth = parameters['windowWidth'];
-  $.Params.windowCenter = String(parameters['windowCenter'] || 'false');
-  $.Params.outlineWidth = Number(parameters['outlineWidth'] || 1);
-  $.Params.outlineColor = String(parameters['outlineColor'] || 'black');
-  $.Params.fontColor = String(parameters['fontColor'] || 'white');
-  $.Params.opacity = Number(parameters['editWindow_Opacity'] || 225);
-  $.Params.askText = String(parameters['askingText'] || 'Please enter the name');
-  $.Params.standardFontSize = Number(parameters['standardFontSize'] || 28);
-  $.Params.fonts = {
-    'ChineseFonts': parameters['Chinese Fonts'] || 'SimHei, Heiti TC, sans-serif',
-    'KoreanFonts': parameters['Korean Fonts'] || 'Dotum, AppleGothic, sans-serif',
-    'DefaultFonts': parameters['Default Fonts'] || 'GameFont',
-  };
-  $.Params.defaultCharWidth = parameters['Default CharWidth'] || 'A';
-  $.Params.defaultBackground = parameters["Default Background"] || 'auto';
-
-  $.Params.defaultEditButtonName = parameters["Default Edit Button"] || 'Edit';
-  $.Params.defaultOKButtonName = parameters["Default OK Button"] || 'OK';
-  $.Params.defaultCancelButtonName = parameters["Default Cancel Button"] || 'Cancel';
-
-  $.Params.didnt_type_anytext = parameters["didnt_type_anytext"] || "아무 글자도 입력하지 않았습니다";
-  $.Params.cant_type_same_name = parameters["cant_type_same_name"] || "같은 이름으로 설정할 수 없습니다.";
-
-  var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
-  var dialog_Input_shouldPreventDefault = function(keyCode) {
-      switch (keyCode) {
-      case 33:    // pageup
-      case 34:    // pagedown
-      case 37:    // left arrow
-      case 38:    // up arrow
-      case 39:    // right arrow
-      case 40:    // down arrow
-          return true;
-      }
-      return false;
-  };
-
-
-  //===========================================================================
-  // TextBox Class
-  //===========================================================================
-
-  TextBox.BACK_SPACE = 8;
-  TextBox.ENTER = 13;
-  TextBox.IS_NOT_CHAR = 32;
-  TextBox.KEYS_ARRAY = 255;
-
-  TextBox.prototype.initialize = function(_editWindow)  {
-    this._editWindow = _editWindow;
-    this.createTextBox();
-    this.startToConvertInput();
-    this.blur();
-  };
-
-  TextBox.prototype.createTextBox = function() {
-    this._textBox = document.createElement('input');
-    this._textBox.type = "text";
-    this._textBox.id = "textBox";
-    this._textBox.style.zIndex = 8;
-
-    this._textBox.style.position = 'absolute';
-    this._textBox.style.top = 0;
-    this._textBox.style.left = 0;
-    this._textBox.style.right = 0;
-    this._textBox.style.bottom = 0;
-
-    // 자동 완성 off
-    var chrome_versions_ = navigator.userAgent.split(/(?:Chrome\/)(.{2})/);
-    if(chrome_versions_ && chrome_versions_[1] >= '69') {
-      this._textBox.autocomplete = "off";
-    }
-
-    // For decreasing a layout size
-    if(Utils.isMobileDevice()) {
-      this._textBox.style.background = "transparent";
-      this._textBox.style.color = "none";
-      this._textBox.style.border = "none";
-      this._textBox.style.width = "70%";
-      this._textBox.style.height = "5%";
-      this._textBox.style.outline = "none";
-      this._textBox.style.overflow = "hidden";
-    } else {
-      this._textBox.style.opacity = 0;
-    }
-
-    this._textBox.style.width = "1px";
-    this._textBox.style.height = "1px";
-
-    this._textBox.onkeydown = this.onKeyDown.bind(this);
-
-    this._alertFunc = function() {};
-    this._okFunc = function() {};
-    this._defaultName = "";
-
-    document.body.appendChild(this._textBox);
-  };
-
-  TextBox.prototype.startToConvertInput = function () {
-    Input._shouldPreventDefault = dialog_Input_shouldPreventDefault;
-  };
-
-  TextBox.prototype.startToOriginalInput = function () {
-    Input._shouldPreventDefault = original_Input_shouldPreventDefault;
-  };
-
-
-  TextBox.prototype.setEvent = function(func) {
-    this._textBox.onchange = func;
-    this._okFunc = func;
-  };  
-
-  TextBox.prototype.removeEvent = function() {
-    this._textBox.onchange = null;
-    this._okFunc = null;
-  };
-
-  TextBox.prototype.setAlertWindow = function(alert_) {
-    this._alertFunc = alert_;
-  };
-
-  TextBox.prototype.removeElement = function () {
-    this._textBox.style.display = 'none';
-    document.body.removeChild(this._textBox);
-  };
-
-  TextBox.prototype.terminateTextBox = function() {
-    this.removeEvent();
-    this.removeElement();
-    this.startToOriginalInput();
-  };
-
-  TextBox.prototype.onKeyDown = function(e) {
-    var keyCode = e.which;
-
-    // TODO: It may be performance down because recalculating a style and layout.
-    // link : https://goo.gl/29Q9wD
-    this.getFocus();
-
-    if (keyCode < TextBox.IS_NOT_CHAR) {
-      if(keyCode === TextBox.BACK_SPACE) {
-        // if(e && e.preventDefault) e.preventDefault();
-      } else if(keyCode === TextBox.ENTER) {
-        if(this.getTextLength() <= 0) {
-          e.preventDefault();
-          this._alertFunc($.Params.didnt_type_anytext);
-        } else if( this._defaultName === this._textBox.value ) {
-          // e.preventDefault();
-          // this._alertFunc($.Params.cant_type_same_name);
-          if(this._okFunc) this._okFunc();
-        }
-      }
-    } else if (keyCode < TextBox.KEYS_ARRAY) {
-      //
-    }
-  }
-
-  TextBox.prototype.getTextLength = function() {
-    return this._textBox.value.length;
-  };
-
-  TextBox.prototype.getMaxLength = function() {
-    return this._editWindow._maxLength;
-  };
-
-  TextBox.prototype.backSpace = function() {
-    this._editWindow._name = this._editWindow._name.slice(0, this._textBox.value.length - 1);
-    this._editWindow._index = this._textBox.value.length;
-    this._textBox.value = this._editWindow._name;
-    this._editWindow.refresh();
-  };
-
-  TextBox.prototype.refreshNameEdit = function()  {
-    this._editWindow._name = this._textBox.value.toString();
-    this._editWindow._index = this._textBox.value.length || 0;
-    this._editWindow.refresh();
-  };
-
-  TextBox.prototype.update = function() {
-    if(this.getTextLength() <= this._editWindow._maxLength) {
-      this.refreshNameEdit();
-    }
-  };
-
-  TextBox.prototype.getFocus = function() {
-    this._textBox.focus();
-  };
-
-  TextBox.prototype.blur = function() {
-    this._textBox.blur();
-  };
-
-  TextBox.prototype.terminate =  function() {
-    this.terminateTextBox();
-  };
-
-  TextBox.prototype.setDefaultName = function (name) {
-    this._textBox.value = name || '';
-    this._defaultName = name;
-    this.refreshNameEdit();
-  };
-
-  //===========================================================================
-  // Window_NameEdit Class
-  //===========================================================================
-
-  function Window_KorNameEdit() {
+ var Imported = Imported || {};
+ Imported.Window_KorNameEdit = true;
+ 
+ var RS = RS || {};
+ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
+ 
+ (function($) {
+ 
+   $.Params = RS.Window_KorNameEdit.Params || {};
+ 
+   // private class
+   function TextBox() {
      this.initialize.apply(this, arguments);
-  }
-
-  Window_KorNameEdit.prototype = Object.create(Window_NameEdit.prototype);
-  Window_KorNameEdit.prototype.constructor = Window_KorNameEdit;
-
-  Window_KorNameEdit.prototype.initialize = function(actor, maxLength) {
-    Window_NameEdit.prototype.initialize.call(this, actor, maxLength);
-    this.updateWindowWidth();
-  };
-
-  Window_KorNameEdit.prototype.standardFontFace = function() {
-      if ($gameSystem.isChinese()) {
-          return $.Params.fonts.ChineseFonts;
-      } else if ($gameSystem.isKorean()) {
-          return $.Params.fonts.KoreanFonts;
-      } else {
-          return $.Params.fonts.DefaultFonts;
-      }
-  };
-
-  Window_KorNameEdit.prototype.charWidth = function () {
-    // TODO: This code has a bug that 'navigator.language' has always returned
-    // 'en-US' due to a bug of crosswalk-10.39.235.16 xwalk library.
-    var text = $.Params.defaultCharWidth;
-    if (navigator.language.match(/^zh/)) { // isChinese
-        text = '\u4E00';
-    } else if (navigator.language.match(/^ko/)) { // isKorean
-        text = '\uAC00';
-    } else if (navigator.language.match(/^ja/)) { // isJapanese
-        text = '\u3042';
-    }
-    return this.textWidth(text);
-  };
-
-  Window_KorNameEdit.prototype.drawActorFace = function(actor, x, y, width, height) {
-      this.drawFace(actor.faceName(), actor.faceIndex(), x, y, width, height);
-      this.changeTextColor(this.hpColor(actor));
-      this.drawText($.Params.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
-  };
-
-  Window_KorNameEdit.prototype.itemRect = function(index) {
-      return {
-          x: this.left() + index * this.charWidth(),
-          y: this.fittingHeight(1),
-          width: this.charWidth(),
-          height: this.lineHeight()
-      };
-  };
-
-  Window_KorNameEdit.prototype.windowWidth = function () {
-    return 580;
-  };
-
-  Window_KorNameEdit.prototype.updateWindowWidth = function () {
-    var padding = this.padding * 2;
-    var faceWidth = this.faceWidth();
-    var textWidth = this.textWidth($.Params.askText) + this.textPadding() * 2;
-    if($.Params.windowWidth === 'auto') {
-      this.width = Math.max(Math.min(padding + faceWidth + textWidth, Graphics.boxWidth - padding), 580);
-    } else {
-      this.width = Number($.Params.windowWidth || 580);
-    }
-  };
-
-  Window_KorNameEdit.prototype.drawChar = function (index) {
-    var rect = this.itemRect(index);
-    this.resetTextColor();
-    this.contents.outlineWidth = $.Params.outlineWidth;
-    this.contents.outlineColor = $.Params.outlineColor;
-    this.contents.fontColor = $.Params.fontColor;
-    this.drawText(this._name[index] || '', rect.x, rect.y)
-  };
-
-  Window_KorNameEdit.prototype.standardFontSize = function() {
-      return $.Params.standardFontSize;
-  };
-
-  Window_KorNameEdit.prototype.refresh = function() {
-    this.contents.clear();
-    this.drawActorFace(this._actor, 0, 0);
-
-    var rect = this.itemRect(Math.max(this._index - 1, 0));
-
-    for (var i = 0; i < this._maxLength; i++) {
-        this.drawUnderline(i);
-    }
-    for (var j = 0; j < this._name.length; j++) {
-        this.drawChar(j);
-    }
-
-    if(this._index === 0) {
-      this.setCursorRect(rect.x, rect.y, 1, rect.height);
-    } else {
-      this.setCursorRect(rect.x + (rect.width - 1), rect.y, 1, rect.height);
-    }
-
-  };
-
-  //===========================================================================
-  // Window_NameOK
-  //===========================================================================
-  function Window_KorNameInput() {
+   };
+ 
+   //===========================================================================
+   // Private Members
+   //===========================================================================
+ 
+   var parameters = $plugins.filter(function (i) {
+     return i.description.contains('<RS_Window_KorNameEdit>');
+   });
+ 
+   parameters = (parameters.length > 0) && parameters[0].parameters;
+ 
+   $.Params.windowWidth = parameters['windowWidth'];
+   $.Params.windowCenter = String(parameters['windowCenter'] || 'false');
+   $.Params.outlineWidth = Number(parameters['outlineWidth'] || 1);
+   $.Params.outlineColor = String(parameters['outlineColor'] || 'black');
+   $.Params.fontColor = String(parameters['fontColor'] || 'white');
+   $.Params.opacity = Number(parameters['editWindow_Opacity'] || 225);
+   $.Params.askText = String(parameters['askingText'] || 'Please enter the name');
+   $.Params.standardFontSize = Number(parameters['standardFontSize'] || 28);
+   $.Params.fonts = {
+     'ChineseFonts': parameters['Chinese Fonts'] || 'SimHei, Heiti TC, sans-serif',
+     'KoreanFonts': parameters['Korean Fonts'] || 'Dotum, AppleGothic, sans-serif',
+     'DefaultFonts': parameters['Default Fonts'] || 'GameFont',
+   };
+   $.Params.defaultCharWidth = parameters['Default CharWidth'] || 'A';
+   $.Params.defaultBackground = parameters["Default Background"] || 'auto';
+ 
+   $.Params.defaultEditButtonName = parameters["Default Edit Button"] || 'Edit';
+   $.Params.defaultOKButtonName = parameters["Default OK Button"] || 'OK';
+   $.Params.defaultCancelButtonName = parameters["Default Cancel Button"] || 'Cancel';
+ 
+   $.Params.didnt_type_anytext = parameters["didnt_type_anytext"] || "아무 글자도 입력하지 않았습니다";
+   $.Params.cant_type_same_name = parameters["cant_type_same_name"] || "같은 이름으로 설정할 수 없습니다.";
+ 
+   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
+   var dialog_Input_shouldPreventDefault = function(keyCode) {
+       switch (keyCode) {
+       case 33:    // pageup
+       case 34:    // pagedown
+       case 37:    // left arrow
+       case 38:    // up arrow
+       case 39:    // right arrow
+       case 40:    // down arrow
+           return true;
+       }
+       return false;
+   };
+ 
+ 
+   //===========================================================================
+   // TextBox Class
+   //===========================================================================
+ 
+   TextBox.BACK_SPACE = 8;
+   TextBox.ENTER = 13;
+   TextBox.IS_NOT_CHAR = 32;
+   TextBox.KEYS_ARRAY = 255;
+ 
+   TextBox.prototype.initialize = function(_editWindow)  {
+     this._editWindow = _editWindow;
+     this.createTextBox();
+     this.startToConvertInput();
+     this.blur();
+   };
+ 
+   TextBox.prototype.createTextBox = function() {
+     this._textBox = document.createElement('input');
+     this._textBox.type = "text";
+     this._textBox.id = "textBox";
+     this._textBox.style.zIndex = 8;
+ 
+     this._textBox.style.position = 'absolute';
+     this._textBox.style.top = 0;
+     this._textBox.style.left = 0;
+     this._textBox.style.right = 0;
+     this._textBox.style.bottom = 0;
+ 
+     // 자동 완성 off
+     var chrome_versions_ = navigator.userAgent.split(/(?:Chrome\/)(.{2})/);
+     if(chrome_versions_ && chrome_versions_[1] >= '69') {
+       this._textBox.autocomplete = "off";
+     }
+ 
+     // For decreasing a layout size
+     if(Utils.isMobileDevice()) {
+       this._textBox.style.background = "transparent";
+       this._textBox.style.color = "none";
+       this._textBox.style.border = "none";
+       this._textBox.style.width = "70%";
+       this._textBox.style.height = "5%";
+       this._textBox.style.outline = "none";
+       this._textBox.style.overflow = "hidden";
+     } else {
+       this._textBox.style.opacity = 0;
+     }
+ 
+     this._textBox.style.width = "1px";
+     this._textBox.style.height = "1px";
+ 
+     this._textBox.onkeydown = this.onKeyDown.bind(this);
+ 
+     this._alertFunc = function() {};
+     this._okFunc = function() {};
+     this._defaultName = "";
+ 
+     document.body.appendChild(this._textBox);
+   };
+ 
+   TextBox.prototype.startToConvertInput = function () {
+     Input._shouldPreventDefault = dialog_Input_shouldPreventDefault;
+   };
+ 
+   TextBox.prototype.startToOriginalInput = function () {
+     Input._shouldPreventDefault = original_Input_shouldPreventDefault;
+   };
+ 
+ 
+   TextBox.prototype.setEvent = function(func) {
+     this._textBox.onchange = func;
+     this._okFunc = func;
+   };  
+ 
+   TextBox.prototype.removeEvent = function() {
+     this._textBox.onchange = null;
+     this._okFunc = null;
+   };
+ 
+   TextBox.prototype.setAlertWindow = function(alert_) {
+     this._alertFunc = alert_;
+   };
+ 
+   TextBox.prototype.removeElement = function () {
+     this._textBox.style.display = 'none';
+     document.body.removeChild(this._textBox);
+   };
+ 
+   TextBox.prototype.terminateTextBox = function() {
+     this.removeEvent();
+     this.removeElement();
+     this.startToOriginalInput();
+   };
+ 
+   TextBox.prototype.onKeyDown = function(e) {
+     var keyCode = e.which;
+ 
+     // TODO: It may be performance down because recalculating a style and layout.
+     // link : https://goo.gl/29Q9wD
+     this.getFocus();
+ 
+     if (keyCode < TextBox.IS_NOT_CHAR) {
+       if(keyCode === TextBox.BACK_SPACE) {
+         // if(e && e.preventDefault) e.preventDefault();
+       } else if(keyCode === TextBox.ENTER) {
+         if(this.getTextLength() <= 0) {
+           e.preventDefault();
+           this._alertFunc($.Params.didnt_type_anytext);
+         } else if( this._defaultName === this._textBox.value ) {
+           // e.preventDefault();
+           // this._alertFunc($.Params.cant_type_same_name);
+           if(this._okFunc) this._okFunc();
+         }
+       }
+     } else if (keyCode < TextBox.KEYS_ARRAY) {
+       //
+     }
+   }
+ 
+   TextBox.prototype.getTextLength = function() {
+     return this._textBox.value.length;
+   };
+ 
+   TextBox.prototype.getMaxLength = function() {
+     return this._editWindow._maxLength;
+   };
+ 
+   TextBox.prototype.backSpace = function() {
+     this._editWindow._name = this._editWindow._name.slice(0, this._textBox.value.length - 1);
+     this._editWindow._index = this._textBox.value.length;
+     this._textBox.value = this._editWindow._name;
+     this._editWindow.refresh();
+   };
+ 
+   TextBox.prototype.refreshNameEdit = function()  {
+     this._editWindow._name = this._textBox.value.toString();
+     this._editWindow._index = this._textBox.value.length || 0;
+     this._editWindow.refresh();
+   };
+ 
+   TextBox.prototype.update = function() {
+     if(this.getTextLength() <= this._editWindow._maxLength) {
+       this.refreshNameEdit();
+     }
+   };
+ 
+   TextBox.prototype.getFocus = function() {
+     this._textBox.focus();
+   };
+ 
+   TextBox.prototype.blur = function() {
+     this._textBox.blur();
+   };
+ 
+   TextBox.prototype.terminate =  function() {
+     this.terminateTextBox();
+   };
+ 
+   TextBox.prototype.setDefaultName = function (name) {
+     this._textBox.value = name || '';
+     this._defaultName = name;
+     this.refreshNameEdit();
+   };
+ 
+   //===========================================================================
+   // Window_NameEdit Class
+   //===========================================================================
+ 
+   function Window_KorNameEdit() {
       this.initialize.apply(this, arguments);
-  }
-
-  Window_KorNameInput.prototype = Object.create(Window_Command.prototype);
-  Window_KorNameInput.prototype.constructor = Window_KorNameInput;
-
-  Window_KorNameInput.prototype.initialize = function(editWindow) {
-    this._editWindow = editWindow;
-    this.clearCommandList();
-    this.makeCommandList();
-    var width = this.windowWidth();
-    var height = this.windowHeight();
-    Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
-    this.updatePlacement();
-    this.refresh();
-    this.select(0);
-    this.activate();
-  };
-
-  Window_KorNameInput.prototype.maxCols = function () {
-    return 3;
-  };
-
-  Window_KorNameInput.prototype.makeCommandList = function() {
-    this.addCommand($.Params.defaultEditButtonName, 'edit');
-    this.addCommand($.Params.defaultOKButtonName, 'ok');
-    this.addCommand($.Params.defaultCancelButtonName, 'cancel');
-  };
-
-  Window_KorNameInput.prototype.itemTextAlign = function() {
-      return 'center';
-  };
-
-  Window_KorNameInput.prototype.updatePlacement = function() {
-    var width = 0;
-    for (var i = 0; i < this.maxItems(); i++) {
-      width += this.textWidth(this._list[i].name) + this.textPadding() * 2;
-    }
-    width += this.padding * 2 + this.spacing();
-    this.width = width;
-    this.x = this._editWindow.x + this._editWindow.width - width;
-    this.y = this._editWindow.y + this._editWindow.height + 10;
-  };
-
-  //===========================================================================
-  // Scene_Name Class
-  //===========================================================================
-
-  function Scene_KorName() {
-      this.initialize.apply(this, arguments);
-  }
-
-  Scene_KorName.prototype = Object.create(Scene_Name.prototype);
-  Scene_KorName.prototype.constructor = Scene_KorName;
-
-  Scene_KorName.prototype.initialize = function() {
-    // 한글 비트맵 폰트 사용을 잠시 중단한다.
-    if(Imported.RS_HangulBitmapText) {
-      $gameTemp.setHangulBitmapText(false);
-    }
-    this._nowTime = Date.now();      
-    Scene_Name.prototype.initialize.call(this);
-  };
-
-  Scene_KorName.prototype.createBackground = function() {
-    var bitmap = SceneManager.backgroundBitmap();
-    var customBackgroundImageName = $.Params.defaultBackground;
-    this._backgroundSprite = new Sprite();
-
-    // 배경 설정이 auto면 이전 장면의 스냅샷을 배경 화면으로 사용한다.
-    if(customBackgroundImageName === 'auto') {
-      this._backgroundSprite.bitmap = bitmap;
-    } else {
-      this._backgroundSprite.bitmap = ImageManager.loadPicture(customBackgroundImageName || '');
-    }
-
-    this.addChild(this._backgroundSprite);
-
-  };
-  
-  Scene_KorName.prototype.createPlatformFeatures = function() {
-    if(Utils.isMobileDevice()) {
-      this.createCommandWindow();
-    } else {
-      this._textBox.getFocus();
-    }
-  };
-
-  Scene_KorName.prototype.updatePlatformFeatures = function() {
-    if(Utils.isMobileDevice()) {
-      if(this._commandWindow.active) {
-        this._textBox.blur();
-      } else {
-        this._textBox.getFocus();
-      }
-    } else {
-      this._textBox.getFocus();
-    }
-  };  
-
-  Scene_KorName.prototype.onInputOkPlatformFeatures = function() {
-    if(Utils.isMobileDevice()) {    
-
-      // Lose Focus
-      this._editWindow.deactivate();
-      this._textBox.blur();
-
-      // Select symbol.
-      this._commandWindow.selectSymbol('ok');
-      this._commandWindow.activate();    
-      
-    } else {
-      var name = this._editWindow._name;
-  
-      this._editWindow.deactivate();
-      this._textBox.blur();
-      if(window.cordova && window.StatusBar) {
-        window.StatusBar.hide();
-      }
-      this._actor.setName(this._editWindow.name());
-      this.popScene();
-    }
-  };
-
-  Scene_KorName.prototype.terminatePlatformFeatures = function() {
-    if(Utils.isMobileDevice()) {
-      
-    } else {
-      this._textBox.blur();
-      if(window.cordova && window.StatusBar) {
-        window.StatusBar.hide();
-      }
-    }
-  };    
-
-  Scene_KorName.prototype.update = function() {
-    this.updatePlatformFeatures();
-    this._textBox.update();
-    this.updateHelpWindow();
-    Scene_MenuBase.prototype.update.call(this);
-  };
-
-  Scene_KorName.prototype.updateHelpWindow = function() {
-    // 1초가 경과했을 경우, 도움말의 라이프를 1 줄인다.
-    if( Date.now() - this._nowTime >= 1000) {
-      this._helpWindowLife--;
-      if(this._helpWindowLife <= 0) {
-        this._helpWindow.hide();
-      }
-      this._nowTime = Date.now();
-    }
-  };
-
-  Scene_KorName.prototype.terminate = function() {
-    Scene_MenuBase.prototype.terminate.call(this);
-    this.terminatePlatformFeatures();
-    this._textBox.terminate();
-    // 한글 비트맵 폰트 사용을 재개한다.
-    if(Imported.RS_HangulBitmapText) {
-      $gameTemp.setHangulBitmapText(RS.HangulBitmapText.Params.tempInit);
-    }
-  };
-
-  Scene_KorName.prototype.create = function () {
-    Scene_MenuBase.prototype.create.call(this);
-    this._actor = $gameActors.actor(this._actorId);
-    this.createEditWindow();
-    this.createTextBox();
-    this.createPlatformFeatures();
-    this.createHelpWindow();
-    this._textBox.setEvent( this.onInputOk.bind(this) );
-    this._textBox.setAlertWindow( this.onAlert.bind(this) );
-    if(window.cordova && window.StatusBar) {
-      window.StatusBar.show();
-    }
-  };
-
-  Scene_KorName.prototype.onAlert = function(text) {
-    if(!this._helpWindow) return;
-    this._helpWindow.show();
-    this._helpWindow.setText(text);
-    this._helpWindowLife = 3;    
-  };
-
-  Scene_KorName.prototype.createHelpWindow = function() {
-    this._helpWindow = new Window_Help(1);
-    this._helpWindow.x = 0;
-    this._helpWindow.y = Graphics.boxHeight - Math.ceil(Graphics.boxHeight / 6) - this._helpWindow.height;
-    this._helpWindow.opacity = 0;
-    this._helpWindowLife = 0;    
-    this._helpWindow.hide();
-    this.addWindow(this._helpWindow);
-  };
-
-  Scene_KorName.prototype.createEditWindow = function() {
-    this._editWindow = new Window_KorNameEdit(this._actor, this._maxLength);
-    var self = this._editWindow;
-    var width = self.windowWidth();
-    var height = self.windowHeight();    
-    var x = (Graphics.boxWidth - width) / 2;
-    var y = Math.floor(Graphics.boxHeight / 6);
-    this._editWindow.x = x;
-    this._editWindow.y = y;
-    this.addWindow(this._editWindow);
-  };
-
-  Scene_KorName.prototype.createCommandWindow = function () {
-    this._commandWindow = new Window_KorNameInput(this._editWindow);
-    this._commandWindow.y = this._editWindow.y + this._editWindow.height;
-    this._commandWindow.setHandler('edit', this.commandEdit.bind(this));
-    this._commandWindow.setHandler('ok', this.commandInput.bind(this));
-    this._commandWindow.setHandler('cancel', this.commandCancel.bind(this));
-    this.addWindow(this._commandWindow);
-  };
-
-  Scene_KorName.prototype.commandEdit = function () {
-    this._commandWindow.deactivate();
-    this._editWindow.activate();
-    this._textBox.getFocus();
-  };
-
-  /**
-   * specify the name on your actor and then a currently scene ends up
-   * @method commandInput
-   */
-  Scene_KorName.prototype.commandInput = function () {
-    var name = this._editWindow._name;
-
-    this._editWindow.deactivate();
-    this._textBox.blur();
-    if(window.cordova && window.StatusBar) {
-      window.StatusBar.hide();
-    }
-    this._actor.setName(this._editWindow.name());
-    this.popScene();
-  };
-
-  /**
-   * A currently scene ends up
-   * @method commandCancel
-   */
-  Scene_KorName.prototype.commandCancel = function () {
-    this._textBox.blur();
-    if(window.cordova && window.StatusBar) {
-      window.StatusBar.hide();
-    }
-    this.popScene();
-  };
-
-  Scene_KorName.prototype.createTextBox =  function() {
-    this._textBox = new TextBox(this._editWindow);
-    this._initialName = "";
-    if(this._actor) { 
-      this._textBox.setDefaultName(this._actor.name());
-      this._initialName = this._actor.name();
-    }
-    if($.Params.windowCenter === "true") {
-      this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
-    }
-    this._editWindow.opacity = $.Params.opacity;
-  };
-
-  Scene_KorName.prototype.onInputOk = function() {
-    this.onInputOkPlatformFeatures();
-
-    Input.clear();
-
-  };
-
-  //===========================================================================
-  // Game_Interpreter
-  //===========================================================================
-
-  // Name Input Processing
-  Game_Interpreter.prototype.command303 = function() {
-      if (!$gameParty.inBattle()) {
-          if ($dataActors[this._params[0]]) {
-              SceneManager.push(Scene_KorName);
-              SceneManager.prepareNextScene(this._params[0], this._params[1]);
-          }
-      }
-      return true;
-  };
-
-  //===========================================================================
-  // Game_Interpreter
-  //===========================================================================
-
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_Game_Interpreter_pluginCommand.call(this, command, args);
-      if(command === "KNE") {
-        switch(args[0]) {
-          case 'width':
-          case '폭':
-            if(args[1] !== 'auto') {
-              $.Params.windowWidth = Number(args[1] || 580);
-            } else {
-              $.Params.windowWidth = 'auto';
-            }
-            break;
-          case 'center':
-          case '중앙정렬':
-            $.Params.windowCenter = String(args[1] || 'false');
-            break;
-          case 'outlineWidth':
-          case '테두리크기':
-            $.Params.outlineWidth = Number(args[1] || 1);
-            break;
-          case 'outlineColor':
-          case '테두리색상':
-            $.Params.outlineColor = String(args[1] || 'black');
-            break;
-          case 'fontColor':
-          case '폰트색상':
-            $.Params.fontColor = String(args[1] || 'white');
-            break;
-          case 'fontSize':
-          case '폰트크기':
-            $.Params.standardFontSize = Number(args[1] || 28);
-            break;
-          case 'opacity':
-          case '투명도':
-            var _opacity = Number(args[1] || 1);
-            $.Params.opacity = _opacity.clamp(0, 255);
-            break;
-          case 'askText':
-          case '텍스트':
-            $.Params.askText = String(args.slice(1).join(""));
-            break;
-        }
-      }
-  };
-
-})(RS.Window_KorNameEdit);
+   }
+ 
+   Window_KorNameEdit.prototype = Object.create(Window_NameEdit.prototype);
+   Window_KorNameEdit.prototype.constructor = Window_KorNameEdit;
+ 
+   Window_KorNameEdit.prototype.initialize = function(actor, maxLength) {
+     Window_NameEdit.prototype.initialize.call(this, actor, maxLength);
+     this.updateWindowWidth();
+   };
+ 
+   Window_KorNameEdit.prototype.standardFontFace = function() {
+       if ($gameSystem.isChinese()) {
+           return $.Params.fonts.ChineseFonts;
+       } else if ($gameSystem.isKorean()) {
+           return $.Params.fonts.KoreanFonts;
+       } else {
+           return $.Params.fonts.DefaultFonts;
+       }
+   };
+ 
+   Window_KorNameEdit.prototype.charWidth = function () {
+     // TODO: This code has a bug that 'navigator.language' has always returned
+     // 'en-US' due to a bug of crosswalk-10.39.235.16 xwalk library.
+     var text = $.Params.defaultCharWidth;
+     if (navigator.language.match(/^zh/)) { // isChinese
+         text = '\u4E00';
+     } else if (navigator.language.match(/^ko/)) { // isKorean
+         text = '\uAC00';
+     } else if (navigator.language.match(/^ja/)) { // isJapanese
+         text = '\u3042';
+     }
+     return this.textWidth(text);
+   };
+ 
+   Window_KorNameEdit.prototype.drawActorFace = function(actor, x, y, width, height) {
+       this.drawFace(actor.faceName(), actor.faceIndex(), x, y, width, height);
+       this.changeTextColor(this.hpColor(actor));
+       this.drawText($.Params.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
+   };
+ 
+   Window_KorNameEdit.prototype.itemRect = function(index) {
+       return {
+           x: this.left() + index * this.charWidth(),
+           y: this.fittingHeight(1),
+           width: this.charWidth(),
+           height: this.lineHeight()
+       };
+   };
+ 
+   Window_KorNameEdit.prototype.windowWidth = function () {
+     return 580;
+   };
+ 
+   Window_KorNameEdit.prototype.updateWindowWidth = function () {
+     var padding = this.padding * 2;
+     var faceWidth = this.faceWidth();
+     var textWidth = this.textWidth($.Params.askText) + this.textPadding() * 2;
+     if($.Params.windowWidth === 'auto') {
+       this.width = Math.max(Math.min(padding + faceWidth + textWidth, Graphics.boxWidth - padding), 580);
+     } else {
+       this.width = Number($.Params.windowWidth || 580);
+     }
+   };
+ 
+   Window_KorNameEdit.prototype.drawChar = function (index) {
+     var rect = this.itemRect(index);
+     this.resetTextColor();
+     this.contents.outlineWidth = $.Params.outlineWidth;
+     this.contents.outlineColor = $.Params.outlineColor;
+     this.contents.fontColor = $.Params.fontColor;
+     this.drawText(this._name[index] || '', rect.x, rect.y)
+   };
+ 
+   Window_KorNameEdit.prototype.standardFontSize = function() {
+       return $.Params.standardFontSize;
+   };
+ 
+   Window_KorNameEdit.prototype.refresh = function() {
+     this.contents.clear();
+     this.drawActorFace(this._actor, 0, 0);
+ 
+     var rect = this.itemRect(Math.max(this._index - 1, 0));
+ 
+     for (var i = 0; i < this._maxLength; i++) {
+         this.drawUnderline(i);
+     }
+     for (var j = 0; j < this._name.length; j++) {
+         this.drawChar(j);
+     }
+ 
+     if(this._index === 0) {
+       this.setCursorRect(rect.x, rect.y, 1, rect.height);
+     } else {
+       this.setCursorRect(rect.x + (rect.width - 1), rect.y, 1, rect.height);
+     }
+ 
+   };
+ 
+   //===========================================================================
+   // Window_NameOK
+   //===========================================================================
+   function Window_KorNameInput() {
+       this.initialize.apply(this, arguments);
+   }
+ 
+   Window_KorNameInput.prototype = Object.create(Window_Command.prototype);
+   Window_KorNameInput.prototype.constructor = Window_KorNameInput;
+ 
+   Window_KorNameInput.prototype.initialize = function(editWindow) {
+     this._editWindow = editWindow;
+     this.clearCommandList();
+     this.makeCommandList();
+     var width = this.windowWidth();
+     var height = this.windowHeight();
+     Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+     this.updatePlacement();
+     this.refresh();
+     this.select(0);
+     this.activate();
+   };
+ 
+   Window_KorNameInput.prototype.maxCols = function () {
+     return 3;
+   };
+ 
+   Window_KorNameInput.prototype.makeCommandList = function() {
+     this.addCommand($.Params.defaultEditButtonName, 'edit');
+     this.addCommand($.Params.defaultOKButtonName, 'ok');
+     this.addCommand($.Params.defaultCancelButtonName, 'cancel');
+   };
+ 
+   Window_KorNameInput.prototype.itemTextAlign = function() {
+       return 'center';
+   };
+ 
+   Window_KorNameInput.prototype.updatePlacement = function() {
+     var width = 0;
+     for (var i = 0; i < this.maxItems(); i++) {
+       width += this.textWidth(this._list[i].name) + this.textPadding() * 2;
+     }
+     width += this.padding * 2 + this.spacing();
+     this.width = width;
+     this.x = this._editWindow.x + this._editWindow.width - width;
+     this.y = this._editWindow.y + this._editWindow.height + 10;
+   };
+ 
+   //===========================================================================
+   // Scene_Name Class
+   //===========================================================================
+ 
+   function Scene_KorName() {
+       this.initialize.apply(this, arguments);
+   }
+ 
+   Scene_KorName.prototype = Object.create(Scene_Name.prototype);
+   Scene_KorName.prototype.constructor = Scene_KorName;
+ 
+   Scene_KorName.prototype.initialize = function() {
+     // 한글 비트맵 폰트 사용을 잠시 중단한다.
+     if(Imported.RS_HangulBitmapText) {
+       $gameTemp.setHangulBitmapText(false);
+     }
+     this._nowTime = Date.now();      
+     Scene_Name.prototype.initialize.call(this);
+   };
+ 
+   Scene_KorName.prototype.createBackground = function() {
+     var bitmap = SceneManager.backgroundBitmap();
+     var customBackgroundImageName = $.Params.defaultBackground;
+     this._backgroundSprite = new Sprite();
+ 
+     // 배경 설정이 auto면 이전 장면의 스냅샷을 배경 화면으로 사용한다.
+     if(customBackgroundImageName === 'auto') {
+       this._backgroundSprite.bitmap = bitmap;
+     } else {
+       this._backgroundSprite.bitmap = ImageManager.loadPicture(customBackgroundImageName || '');
+     }
+ 
+     this.addChild(this._backgroundSprite);
+ 
+   };
+   
+   Scene_KorName.prototype.createPlatformFeatures = function() {
+     if(Utils.isMobileDevice()) {
+       this.createCommandWindow();
+     } else {
+       this._textBox.getFocus();
+     }
+   };
+ 
+   Scene_KorName.prototype.updatePlatformFeatures = function() {
+     if(Utils.isMobileDevice()) {
+       if(this._commandWindow.active) {
+         this._textBox.blur();
+       } else {
+         this._textBox.getFocus();
+       }
+     } else {
+       this._textBox.getFocus();
+     }
+   };  
+ 
+   Scene_KorName.prototype.onInputOkPlatformFeatures = function() {
+     if(Utils.isMobileDevice()) {    
+ 
+       // Lose Focus
+       this._editWindow.deactivate();
+       this._textBox.blur();
+ 
+       // Select symbol.
+       this._commandWindow.selectSymbol('ok');
+       this._commandWindow.activate();    
+       
+     } else {
+       var name = this._editWindow._name;
+   
+       this._editWindow.deactivate();
+       this._textBox.blur();
+       if(window.cordova && window.StatusBar) {
+         window.StatusBar.hide();
+       }
+       this._actor.setName(this._editWindow.name());
+       this.popScene();
+     }
+   };
+ 
+   Scene_KorName.prototype.terminatePlatformFeatures = function() {
+     if(Utils.isMobileDevice()) {
+       
+     } else {
+       this._textBox.blur();
+       if(window.cordova && window.StatusBar) {
+         window.StatusBar.hide();
+       }
+     }
+   };    
+ 
+   Scene_KorName.prototype.update = function() {
+     this.updatePlatformFeatures();
+     this._textBox.update();
+     this.updateHelpWindow();
+     Scene_MenuBase.prototype.update.call(this);
+   };
+ 
+   Scene_KorName.prototype.updateHelpWindow = function() {
+     // 1초가 경과했을 경우, 도움말의 라이프를 1 줄인다.
+     if( Date.now() - this._nowTime >= 1000) {
+       this._helpWindowLife--;
+       if(this._helpWindowLife <= 0) {
+         this._helpWindow.hide();
+       }
+       this._nowTime = Date.now();
+     }
+   };
+ 
+   Scene_KorName.prototype.terminate = function() {
+     Scene_MenuBase.prototype.terminate.call(this);
+     this.terminatePlatformFeatures();
+     this._textBox.terminate();
+     // 한글 비트맵 폰트 사용을 재개한다.
+     if(Imported.RS_HangulBitmapText) {
+       $gameTemp.setHangulBitmapText(RS.HangulBitmapText.Params.tempInit);
+     }
+   };
+ 
+   Scene_KorName.prototype.create = function () {
+     Scene_MenuBase.prototype.create.call(this);
+     this._actor = $gameActors.actor(this._actorId);
+     this.createEditWindow();
+     this.createTextBox();
+     this.createPlatformFeatures();
+     this.createHelpWindow();
+     this._textBox.setEvent( this.onInputOk.bind(this) );
+     this._textBox.setAlertWindow( this.onAlert.bind(this) );
+     if(window.cordova && window.StatusBar) {
+       window.StatusBar.show();
+     }
+   };
+ 
+   Scene_KorName.prototype.onAlert = function(text) {
+     if(!this._helpWindow) return;
+     this._helpWindow.show();
+     this._helpWindow.setText(text);
+     this._helpWindowLife = 3;    
+   };
+ 
+   Scene_KorName.prototype.createHelpWindow = function() {
+     this._helpWindow = new Window_Help(1);
+     this._helpWindow.x = 0;
+     this._helpWindow.y = Graphics.boxHeight - Math.ceil(Graphics.boxHeight / 6) - this._helpWindow.height;
+     this._helpWindow.opacity = 0;
+     this._helpWindowLife = 0;    
+     this._helpWindow.hide();
+     this.addWindow(this._helpWindow);
+   };
+ 
+   Scene_KorName.prototype.createEditWindow = function() {
+     this._editWindow = new Window_KorNameEdit(this._actor, this._maxLength);
+     var self = this._editWindow;
+     var width = self.windowWidth();
+     var height = self.windowHeight();    
+     var x = (Graphics.boxWidth - width) / 2;
+     var y = Math.floor(Graphics.boxHeight / 6);
+     this._editWindow.x = x;
+     this._editWindow.y = y;
+     this.addWindow(this._editWindow);
+   };
+ 
+   Scene_KorName.prototype.createCommandWindow = function () {
+     this._commandWindow = new Window_KorNameInput(this._editWindow);
+     this._commandWindow.y = this._editWindow.y + this._editWindow.height;
+     this._commandWindow.setHandler('edit', this.commandEdit.bind(this));
+     this._commandWindow.setHandler('ok', this.commandInput.bind(this));
+     this._commandWindow.setHandler('cancel', this.commandCancel.bind(this));
+     this.addWindow(this._commandWindow);
+   };
+ 
+   Scene_KorName.prototype.commandEdit = function () {
+     this._commandWindow.deactivate();
+     this._editWindow.activate();
+     this._textBox.getFocus();
+   };
+ 
+   /**
+    * specify the name on your actor and then a currently scene ends up
+    * @method commandInput
+    */
+   Scene_KorName.prototype.commandInput = function () {
+     var name = this._editWindow._name;
+ 
+     this._editWindow.deactivate();
+     this._textBox.blur();
+     if(window.cordova && window.StatusBar) {
+       window.StatusBar.hide();
+     }
+     this._actor.setName(this._editWindow.name());
+     this.popScene();
+   };
+ 
+   /**
+    * A currently scene ends up
+    * @method commandCancel
+    */
+   Scene_KorName.prototype.commandCancel = function () {
+     this._textBox.blur();
+     if(window.cordova && window.StatusBar) {
+       window.StatusBar.hide();
+     }
+     this.popScene();
+   };
+ 
+   Scene_KorName.prototype.createTextBox =  function() {
+     this._textBox = new TextBox(this._editWindow);
+     this._initialName = "";
+     if(this._actor) { 
+       this._textBox.setDefaultName(this._actor.name());
+       this._initialName = this._actor.name();
+     }
+     if($.Params.windowCenter === "true") {
+       this._editWindow.y = Graphics.boxHeight / 2 - this._editWindow.height / 2;
+     }
+     this._editWindow.opacity = $.Params.opacity;
+   };
+ 
+   Scene_KorName.prototype.onInputOk = function() {
+     this.onInputOkPlatformFeatures();
+ 
+     Input.clear();
+ 
+   };
+ 
+   //===========================================================================
+   // Game_Interpreter
+   //===========================================================================
+ 
+   // Name Input Processing
+   Game_Interpreter.prototype.command303 = function() {
+       if (!$gameParty.inBattle()) {
+           if ($dataActors[this._params[0]]) {
+               SceneManager.push(Scene_KorName);
+               SceneManager.prepareNextScene(this._params[0], this._params[1]);
+           }
+       }
+       return true;
+   };
+ 
+   //===========================================================================
+   // Game_Interpreter
+   //===========================================================================
+ 
+   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+   Game_Interpreter.prototype.pluginCommand = function(command, args) {
+       alias_Game_Interpreter_pluginCommand.call(this, command, args);
+       if(command === "KNE") {
+         switch(args[0]) {
+           case 'width':
+           case '폭':
+             if(args[1] !== 'auto') {
+               $.Params.windowWidth = Number(args[1] || 580);
+             } else {
+               $.Params.windowWidth = 'auto';
+             }
+             break;
+           case 'center':
+           case '중앙정렬':
+             $.Params.windowCenter = String(args[1] || 'false');
+             break;
+           case 'outlineWidth':
+           case '테두리크기':
+             $.Params.outlineWidth = Number(args[1] || 1);
+             break;
+           case 'outlineColor':
+           case '테두리색상':
+             $.Params.outlineColor = String(args[1] || 'black');
+             break;
+           case 'fontColor':
+           case '폰트색상':
+             $.Params.fontColor = String(args[1] || 'white');
+             break;
+           case 'fontSize':
+           case '폰트크기':
+             $.Params.standardFontSize = Number(args[1] || 28);
+             break;
+           case 'opacity':
+           case '투명도':
+             var _opacity = Number(args[1] || 1);
+             $.Params.opacity = _opacity.clamp(0, 255);
+             break;
+           case 'askText':
+           case '텍스트':
+             $.Params.askText = String(args.slice(1).join(""));
+             break;
+         }
+       }
+   };
+ 
+ })(RS.Window_KorNameEdit);
+ 
