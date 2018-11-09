@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.27) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.28) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -520,6 +520,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.11.09 (v0.1.28) :
+ * - 이름 윈도우에서도 희미한 배경 이미지 지원
  * 2018.11.05 (v0.1.27) :
  * - 태그처럼 쓸 수 있는 텍스트 코드를 지원합니다.
  * - 이스케이프 코드에서 한글 + 영어 혼용이 가능합니다.
@@ -674,7 +676,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.27) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.28) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -917,6 +919,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.09 (v0.1.28) :
+ * - Added a feature that can use the dim background in the name window.
  * 2018.11.05 (v0.1.27) :
  * - Added text codes that use like as the html tag.
  * - You can now use Hangul (Korean) and English in escape codes. (Google Translate)
@@ -1070,7 +1074,7 @@
  */  
 /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.27) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.28) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1442,7 +1446,9 @@
  * =============================================================================
  * Version Log
  * =============================================================================
-* 2018.11.05 (v0.1.27):
+ * 2018.11.09 (v0.1.28) :
+ * - 名前のウィンドウに薄い背景が使える機能を追加しました(パパゴ翻訳)
+ * 2018.11.05 (v0.1.27):
  * - タグのように使えるテキストコードを支援します。(パパゴ翻訳)
  * - イスケープ コードでハングル+英語の混用が可能です。
  * - ハングルではないテキストコードを使用する際,RegExpオブジェクトから特定ユニコード(アスキーコード)が処理されない問題を修正しました。 (パーパゴ翻訳)
@@ -3491,6 +3497,11 @@ var Color = Color || {};
     this.translucentOpacity = RS.MessageSystem.Params.translucentOpacity;
     this._isWindow = false;
   };
+
+  RS.Window_Name.prototype.updateBackground = function() {
+    this._background = $gameMessage.background();
+    this.setBackgroundType(this._background);
+  };  
   
   RS.Window_Name.prototype.windowWidth = function() {
     return RS.MessageSystem.Params.nameWindowWidth;
@@ -3603,6 +3614,7 @@ var Color = Color || {};
     this.width = this.windowWidth();
     this.contents.fontSize = RS.MessageSystem.Params.fontSize;
     this.getWidth(this.text);
+    this.updateBackground();
     this.open();
   };
   
