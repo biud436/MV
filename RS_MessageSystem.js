@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.29) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.30) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -222,7 +222,7 @@
  * @desc 텍스트 처리 시 특정 사운드를 같이 재생합니다.
  * @default Cursor1
  * @require 1
- *
+ * 
  * @param 텍스트 효과음 실행 조건
  * @parent 효과음 재생
  * @type note
@@ -252,6 +252,14 @@
  * @param 언어 코드
  * @desc 사용할 텍스트 코드의 언어 코드를 입력하세요
  * @default ko
+ * 
+ * @param preload windowskin
+ * @text 윈도우스킨 프리로드
+ * @require 1
+ * @dir img/system/
+ * @type file[]
+ * @desc 윈도우 스킨을 프리 로드합니다.
+ * @default
  *
  * @help
  * 이 플러그인은 복잡한 텍스트 코드가 아닌 한글 단어로 직관적으로 텍스트 코드를 호출하기
@@ -294,6 +302,8 @@
  * 메시지 탭크기 number
  * 메시지 배경투명도 number
  * 메시지 컨텐츠투명도 number
+ * 
+ * 윈도우 스킨 노트 태그의 경우, 프리로드 기능을 사용해야만 정상적으로 폰트 색상이 설정됩니다.
  *
  * 메시지 윈도우스킨 skin_name
  *
@@ -312,6 +322,8 @@
  * =============================================================================
  * 문장의 표시가 시작되기 전에 메시지 설정을 노트 태그로 바꾸는 기능입니다.
  * ※유의사항 : 문장의 표시 바로 위에 있는 노트 커맨드 2개만 읽어옵니다.
+ * 
+ * 윈도우 스킨 노트 태그의 경우, 프리로드 기능을 사용해야만 정상적으로 폰트 색상이 설정됩니다.
  * 
  * <윈도우 스킨:Window>
  * <이름 윈도우 스킨:Window>
@@ -539,9 +551,11 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
- * 2018.11.09 (v0.1.29) :
+ * 2018.11.10 (v0.1.30) :
  * - 이름 윈도우에서도 희미한 배경 이미지 지원
  * - 노트 태그 기능을 추가하였습니다.
+ * - 시스템 이미지 프리 로드 기능을 추가하였습니다.
+ * - 윈도우스킨을 변경하는 한글 플러그인 명령이 제대로 되어있지 않았던 걸 수정하였습니다.
  * 2018.11.05 (v0.1.27) :
  * - 태그처럼 쓸 수 있는 텍스트 코드를 지원합니다.
  * - 이스케이프 코드에서 한글 + 영어 혼용이 가능합니다.
@@ -696,7 +710,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.29) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.30) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -934,14 +948,22 @@
  * @desc Specify the language code of the text codes.
  * @default en
  *
+ * @param preload windowskin
+ * @require 1
+ * @dir img/system/
+ * @type file[]
+ * @desc preload windowskin files
+ * @default
+ * 
  * @help
  *
  * =============================================================================
  * Version Log
  * =============================================================================
- * 2018.11.09 (v0.1.29) :
+ * 2018.11.09 (v0.1.30) :
  * - Added a feature that can use the dim background in the name window.
  * - Added a lot of Note Tags.
+ * - Added a feature that preloads system image files.
  * 2018.11.05 (v0.1.27) :
  * - Added text codes that use like as the html tag.
  * - You can now use Hangul (Korean) and English in escape codes. (Google Translate)
@@ -1095,7 +1117,7 @@
  */  
 /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.29) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.30) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1387,6 +1409,13 @@
  * @text Language Code
  * @desc 制御文字の言語コードを入力してください。
  * @default ja
+ * 
+ * @param preload windowskin
+ * @require 1
+ * @dir img/system/
+ * @type file[]
+ * @desc preload windowskin files
+ * @default
  *
  * @help
  * 
@@ -1467,9 +1496,10 @@
  * =============================================================================
  * Version Log
  * =============================================================================
- * 2018.11.09 (v0.1.29) :
+ * 2018.11.09 (v0.1.30) :
  * - 名前のウィンドウに薄い背景が使える機能を追加しました(パパゴ翻訳)
  * - ノートタグを追加しました。(パパゴ翻訳)
+ * - Added a feature that preloads system image files.
  * 2018.11.05 (v0.1.27):
  * - タグのように使えるテキストコードを支援します。(パパゴ翻訳)
  * - イスケープ コードでハングル+英語の混用が可能です。
@@ -1758,6 +1788,8 @@ var Color = Color || {};
   
   RS.MessageSystem.Params.lineHeight = 36;
   RS.MessageSystem.Params.fontSmoothingEnabled = true;
+
+  RS.MessageSystem.Params.preloadWindowskins = RS.MessageSystem.jsonParse(parameters["preload windowskin"]) || [];
     
   //============================================================================
   // Multiple Language supports
@@ -2929,12 +2961,32 @@ var Color = Color || {};
       this.setHeight(RS.MessageSystem.Params.numVisibleRows);
       this.createFaceContents();
     };
+
+    Window_Message.prototype.textColor = function(n) {
+      var windowskin = this.windowskin;
+      var px = 96 + (n % 8) * 12 + 6;
+      var py = 144 + Math.floor(n / 8) * 12 + 6;
+      return windowskin.getPixel(px, py);
+    };    
     
     Window_Message.prototype.loadWindowskin = function() {
-      this.windowskin = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
-      this.windowskin.addLoadListener(function() {
-        Color.baseColor = this.textColor(0); // 기본색 설정
-      }.bind(this));
+      var self = this;
+      var bitmap = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
+      if(bitmap !== this.windowskin) {
+        this.windowskin = bitmap;
+        this.windowskin.addLoadListener(function() {
+          self.createContents();
+          self.contents.clear();
+          self.resetFontSettings();
+          self.changeTextColor(Color.baseColor);
+          Color.baseColor = self.textColor(0);
+        });
+        if(!this.windowskin.isReady()) {
+          return setTimeout(function() {
+            return self.loadWindowskin();
+          }, 10);
+        }
+      }
     };
     
     Window_Message.prototype.needsNewPage = function(textState) {
@@ -3048,11 +3100,12 @@ var Color = Color || {};
     Window_Message.prototype.newPage = function(textState) {
       this.setFaceZIndex();
       this.clearFaceBitmap();
+      this.loadWindowskin();      
       this.openBalloon( $gameMessage.getBalloon() );
       alias_Window_Message_newPage.call( this, textState );
     };
     
-    Window_Message.prototype.startMessage = function() {
+    Window_Message.prototype.startMessage = function() {      
       this._textState = {};
       this._textState.index = 0;
       this._textState.text = this.convertEscapeCharacters($gameMessage.allText());
@@ -3490,13 +3543,15 @@ var Color = Color || {};
   // Game_Interpreter
   //============================================================================
 
-  Game_Interpreter.prototype.processMessageParams = function() {
-    var meta = RS.MessageSystem.getEventComments(this._eventId, this._index - 1);
+  Game_Interpreter.prototype.processMessageParams = function(eventId, index) {
+    var meta = RS.MessageSystem.getEventComments(eventId, index - 1);
     if(meta["윈도우 스킨"]) {
       RS.MessageSystem.Params.windowskin = meta["윈도우 스킨"].trim() || "Window";
+      ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
     }
     if(meta["이름 윈도우 스킨"]) {
       RS.MessageSystem.Params.windowskinForNameWindow = meta["이름 윈도우 스킨"].trim() || "Window";
+      ImageManager.loadSystem(RS.MessageSystem.Params.windowskinForNameWindow);
     }    
     if(meta["라인 높이"]) {
       RS.MessageSystem.Params.lineHeight = parseInt(meta["라인 높이"]);
@@ -3537,7 +3592,7 @@ var Color = Color || {};
       $gameMessage.setBackground(this._params[2]);
       $gameMessage.setPositionType(this._params[3]);
       
-      this.processMessageParams();
+      this.processMessageParams(this._eventId, this._index);
 
       if(this.isMultiLine()) {
         this.multiLineAddMessage();
@@ -3743,6 +3798,7 @@ var Color = Color || {};
   };
   
   RS.Window_Name.prototype.open = function() {
+    this.loadWindowskin();    
     this.refresh();
     Window_Base.prototype.open.call(this);
   };
@@ -3753,7 +3809,19 @@ var Color = Color || {};
   };
   
   RS.Window_Name.prototype.loadWindowskin = function() {
+    var self = this;
     this.windowskin = ImageManager.loadSystem(RS.MessageSystem.Params.windowskinForNameWindow);
+    this.windowskin.addLoadListener(function() {
+      self.createContents();
+      self.contents.clear();
+      self.resetFontSettings();
+      self.changeTextColor(Color.baseColor);
+    });
+    if(!this.windowskin.isReady()) {
+      return setTimeout(function() {
+        return self.loadWindowskin();
+      }, 0);
+    }
   };
   
   //============================================================================
@@ -4190,7 +4258,7 @@ var Color = Color || {};
     Game_Interpreter.requestImages = function(list, commonList) {
       alias_Game_Interpreter_requestImages.call(this, list, commonList);
       if(!list) return;
-      list.forEach(function(command) { // 이벤트 리스트를 읽는다.
+      list.forEach(function(command, index) { // 이벤트 리스트를 읽는다.
         var params = command.parameters;
         switch(command.code){
           case 401: // 문장의 표시의 텍스트 부분
@@ -4210,12 +4278,22 @@ var Color = Color || {};
           if(data) {
             var windowskinName = RegExp.$1.trim();
             ImageManager.loadSystem(windowskinName);
-          }                       
+          }  
           break;
         };
       });
     };
   }
+
+  var _Scene_Boot_loadSystemWindowImage = Scene_Boot.prototype.loadSystemWindowImage;
+  Scene_Boot.prototype.loadSystemWindowImage = function() {
+    _Scene_Boot_loadSystemWindowImage.call(this);
+    RS.MessageSystem.Params.preloadWindowskins.forEach(function(i) {
+      if(typeof(i) === "string") {
+        ImageManager.reserveSystem(i);
+      }
+    });
+  };  
             
   var alias_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
@@ -4267,6 +4345,7 @@ var Color = Color || {};
           break;
           case 'windowskin': case '윈도우스킨':
           RS.MessageSystem.Params.windowskinForNameWindow = args.slice(2, args.length).join('');
+          ImageManager.loadSystem(RS.MessageSystem.Params.windowskinForNameWindow);
           break;
         }
         break;
@@ -4296,8 +4375,9 @@ var Color = Color || {};
         case 'contentsOpacity': case '컨텐츠투명도':
         RS.MessageSystem.Params.contentsOpacity = Number(args[1]);
         break;
-        case 'windowskin':
+        case 'windowskin': case '윈도우스킨':
         RS.MessageSystem.Params.windowskin = args.slice(1, args.length).join('');
+        ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
         break;
         // End main switch
       }
