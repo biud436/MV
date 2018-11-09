@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.28) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.29) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -308,6 +308,25 @@
  * - 페이스칩이 메시지 창에 가려지게 설정하려면 플러그인 매개변수 값을 바꾸세요.
  *
  * =============================================================================
+ * 노트 태그(Note Tags)
+ * =============================================================================
+ * 문장의 표시가 시작되기 전에 메시지 설정을 노트 태그로 바꾸는 기능입니다.
+ * ※유의사항 : 문장의 표시 바로 위에 있는 노트 커맨드 2개만 읽어옵니다.
+ * 
+ * <윈도우 스킨:Window>
+ * <이름 윈도우 스킨:Window>
+ * <라인 높이:36>
+ * <폰트 크기:28>
+ * <라인:4>
+ * <텍스트 시작 X:256>
+ * <큰 페이스칩 OX:0>
+ * <큰 페이스칩 OY:0>
+ * <대화창 뒤에 얼굴 표시:true>
+ * <대화창 투명도:255>
+ * <텍스트 효과음 재생 여부:true>
+ * <기본 텍스트 출력 속도:0>
+ * 
+ * =============================================================================
  * 텍스트 코드(Text Code)
  * =============================================================================
  *
@@ -520,6 +539,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.11.09 (v0.1.29) :
+ * - 노트 태그 기능을 추가하였습니다.
  * 2018.11.09 (v0.1.28) :
  * - 이름 윈도우에서도 희미한 배경 이미지 지원
  * 2018.11.05 (v0.1.27) :
@@ -676,7 +697,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.28) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.29) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -919,6 +940,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.09 (v0.1.29) :
+ * - Added a lot of Note Tags
  * 2018.11.09 (v0.1.28) :
  * - Added a feature that can use the dim background in the name window.
  * 2018.11.05 (v0.1.27) :
@@ -1074,7 +1097,7 @@
  */  
 /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.28) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.29) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1446,6 +1469,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.09 (v0.1.29) :
+ * - ノートタグを追加しました。(パパゴ翻訳)
  * 2018.11.09 (v0.1.28) :
  * - 名前のウィンドウに薄い背景が使える機能を追加しました(パパゴ翻訳)
  * 2018.11.05 (v0.1.27):
@@ -1834,7 +1859,67 @@ var Color = Color || {};
     }
     return RS.MessageSystem.TextCodes['English'][idx];
   };
-    
+
+  /**
+   * @memberof RS.MessageSystem
+   * @param {Number} eventId
+   * @return {Object} meta
+   */
+  RS.MessageSystem.getEventComments = function(eventId, index) {
+    var data = {note: "", meta: {}}; 
+    try {
+
+      // 리스트를 가져옵니다.
+      var list = $gameMap.event(eventId).list();
+      
+      // 바로 이전 인덱스에 노트 태그가 있었는 지 확인합니다.
+      var param = list[index];
+
+      while(param.code === 408) {
+        data.note += param.parameters[0] + "\r\n";
+        index--;
+        param = list[index];        
+      }
+
+      if(param.code === 108) {
+        data.note += param.parameters[0] + "\r\n";
+
+        index--;
+        param = list[index];   
+        
+        while(param.code === 408) {
+          data.note += param.parameters[0] + "\r\n";
+          index--;
+          param = list[index];        
+        }        
+ 
+        if(param.code === 108) {
+          data.note += param.parameters[0] + "\r\n";
+        }
+
+      }
+
+      // 노트 태그를 추출합니다 (DataManager.extractMetadata의 변형입니다)
+      var re = /<([^<>:]+)(:?)([^>]*)>/g;
+      data.meta = {};
+      for (;;) {
+          var match = re.exec(data.note);
+          if (match) {
+              if (match[2] === ':') {
+                  data.meta[match[1].trim()] = match[3];
+              } else {
+                  data.meta[match[1].trim()] = true;
+              }
+          } else {
+              break;
+          }
+      }
+    } catch(e) {
+      return {note: "", meta: {}};
+    }
+    return data.meta;
+  };
+
   (function() {
     'use strict';
     var regData = ["Korean", "English", "Chinese", "Japanese"];
@@ -3407,6 +3492,46 @@ var Color = Color || {};
   //============================================================================
   // Game_Interpreter
   //============================================================================
+
+  Game_Interpreter.prototype.processMessageParams = function() {
+    var meta = RS.MessageSystem.getEventComments(this._eventId, this._index - 1);
+    if(meta["윈도우 스킨"]) {
+      RS.MessageSystem.Params.windowskin = meta["윈도우 스킨"].trim() || "Window";
+    }
+    if(meta["이름 윈도우 스킨"]) {
+      RS.MessageSystem.Params.windowskinForNameWindow = meta["이름 윈도우 스킨"].trim() || "Window";
+    }    
+    if(meta["라인 높이"]) {
+      RS.MessageSystem.Params.lineHeight = parseInt(meta["라인 높이"]);
+    }
+    if(meta["폰트 크기"]) {
+      RS.MessageSystem.Params.fontSize = parseInt(meta["폰트 크기"]);
+    }    
+    if(meta["라인"]) {
+      RS.MessageSystem.Params.numVisibleRows = parseInt(meta["라인"]);
+    }
+    if(meta["텍스트 시작 X"]) {
+      RS.MessageSystem.Params.textStartX = parseInt(meta["텍스트 시작 X"]);
+    }   
+    if(meta["큰 페이스칩 OX"]) {
+      RS.MessageSystem.Params.faceOX = Number(meta["큰 페이스칩 OX"]);
+    }
+    if(meta["큰 페이스칩 OY"]) {
+      RS.MessageSystem.Params.faceOY = Number(meta["큰 페이스칩 OY"]);
+    }
+    if(meta["대화창 뒤에 얼굴 표시"]) {
+      RS.MessageSystem.Params.faceSide = Boolean(meta["대화창 뒤에 얼굴 표시"] === "true");     
+    }
+    if(meta["대화창 투명도"]) {
+      RS.MessageSystem.Params.defaultOpacity = parseInt(meta["대화창 투명도"]);      
+    }
+    if(meta["텍스트 효과음 재생 여부"]) {
+      RS.MessageSystem.Params.isPlayTextSound = Boolean(meta["텍스트 효과음 재생 여부"] === "true");     
+    }    
+    if(meta["기본 텍스트 출력 속도"]) {
+      RS.MessageSystem.Params.textSpeed = Number(meta["기본 텍스트 출력 속도"]);
+    }
+  };
   
   Game_Interpreter.prototype.command101 = function() {
     if (!$gameMessage.isBusy()) {
@@ -3415,6 +3540,8 @@ var Color = Color || {};
       $gameMessage.setBackground(this._params[2]);
       $gameMessage.setPositionType(this._params[3]);
       
+      this.processMessageParams();
+
       if(this.isMultiLine()) {
         this.multiLineAddMessage();
       } else {
