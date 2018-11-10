@@ -70,7 +70,7 @@ Imported.RS_ScreenManager = true;
  * @parent Scene Options
  * @type boolean
  * @desc In case of true, the screen size will convert to fit a custom aspect ratio.
- * @default false
+ * @default true
  *
  * @param Custom Aspect Ratio
  * @text Custom Aspect Ratio
