@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.30) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.31) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -551,6 +551,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.11.10 (v0.1.31) :
+ * - 프리 로드 함수에 아무것도 설정하지 않으면 오류가 나는 문제를 수정하였습니다.
  * 2018.11.10 (v0.1.30) :
  * - 이름 윈도우에서도 희미한 배경 이미지 지원
  * - 노트 태그 기능을 추가하였습니다.
@@ -710,7 +712,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.30) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.31) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -960,6 +962,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.10 (v0.1.31) :
+ * - 프리 로드 함수에 아무것도 설정하지 않으면 오류가 나는 문제를 수정하였습니다.
  * 2018.11.09 (v0.1.30) :
  * - Added a feature that can use the dim background in the name window.
  * - Added a lot of Note Tags.
@@ -1496,6 +1500,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.10 (v0.1.31) :
+ * - 프리 로드 함수에 아무것도 설정하지 않으면 오류가 나는 문제를 수정하였습니다.
  * 2018.11.09 (v0.1.30) :
  * - 名前のウィンドウに薄い背景が使える機能を追加しました(パパゴ翻訳)
  * - ノートタグを追加しました。(パパゴ翻訳)
@@ -1789,7 +1795,7 @@ var Color = Color || {};
   RS.MessageSystem.Params.lineHeight = 36;
   RS.MessageSystem.Params.fontSmoothingEnabled = true;
 
-  RS.MessageSystem.Params.preloadWindowskins = RS.MessageSystem.jsonParse(parameters["preload windowskin"]) || [];
+  RS.MessageSystem.Params.preloadWindowskins = JSON.parse(parameters["preload windowskin"] || "[]");
     
   //============================================================================
   // Multiple Language supports
