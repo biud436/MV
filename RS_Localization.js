@@ -23,19 +23,10 @@
 * ============================================================================
 * pluginCommand
 * ============================================================================
+* At the moment, supported languages type see Language Type.
+* You should type the language name without a quotation marks when using plugin command.
+*
 * Localization Change type
-*
-* ============================================================================
-* Script
-* ============================================================================
-*
-* - Check Language
-* $gameSystem.isLangType('en');
-* $gameSystem.isLangType('english');
-* $gameSystem.isLangType('English');
-*
-* - Change Language
-* RS.Localization.changeSystemLanguage('japanese');
 *
 * ============================================================================
 * Language Type
@@ -279,6 +270,29 @@
 * 'Chinese_T'
 * 'Zulu'
 * 'Zulu_South_Africa'
+*
+* Although not every languages did not add, you can define a new language, 
+* need to call the script code, as follows. 
+* 
+* RS.Localization.lang["Language Name"] = "Language code";
+*
+* ============================================================================
+* Script
+* ============================================================================
+* In this section, We'll take you through a practical technique for changing the language.
+* There is a one function, which checks the language type. 
+* This piece of code has a function to check whether the English language type is. 
+* its function returns the value true or false.
+*
+* $gameSystem.isLangType('en');
+* $gameSystem.isLangType('english');
+* $gameSystem.isLangType('English');
+*
+* Next, This code change a game language with other language. 
+* To use this script, you must create each languages' code folder, like data/ja, data/ko
+* also database file, too.
+* 
+* RS.Localization.changeSystemLanguage('japanese');
 *
 * ============================================================================
 * Change Log
