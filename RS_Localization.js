@@ -1,6 +1,6 @@
 /*:
 * RS_Localization.js
-* @plugindesc This plugin provides the solution to change the game language.
+* @plugindesc This plugin provides the solution to change the game language. <RS_Localization>
 * @author biud436
 *
 * @param Default Language
@@ -293,6 +293,338 @@
 * - Now it would be reloaded the map and data base when calling the function called 'RS.Localization.changeSystemLanguage'
 * - Added the scene for loading database files.
 */
+/*:ko
+* RS_Localization.js
+* @plugindesc 언어 변경 플러그인입니다. <RS_Localization>
+* @author biud436
+*
+* @param Default Language
+* @text 기본 언어
+* @desc 기본 언어를 설정하십시오.
+* (default : English)
+* @default English
+*
+* @param Use System Language
+* @text 시스템 언어 사용
+* @type boolean
+* @desc 이 값이 참이면 기본 언어 설정에 상관 없이, 시스템 언어로 시작됩니다.
+* @default true
+* @on 참
+* @off 거짓
+*
+* @param Supported Languages
+* @text 지원 언어 코드
+* @desc 지원하는 언어 코드를 입력하세요 (각 언어 코드는 공백으로 구분합니다)
+* 예:) en ko ja pt_BR
+* @default ko en
+*
+* @help
+* ============================================================================
+* 플러그인 명령
+* ============================================================================
+* 언어 타입은 Korean, English 등을 
+* 
+* 언어설정 변경 언어타입
+* Localization Change type
+* 
+* 지원하는 언어 타입은 다음과 같습니다.
+* 플러그인 명령 사용 시엔 작은 따옴표 없이 입력하세요.
+*
+* 'Afrikaans'
+* 'Afrikaans_South_Africa'
+* 'Arabic'
+* 'Arabic_UAE'
+* 'Arabic_Bahrain'
+* 'Arabic_Algeria'
+* 'Arabic_Egypt'
+* 'Arabic_Iraq'
+* 'Arabic_Jordan'
+* 'Arabic_Kuwait'
+* 'Arabic_Lebanon'
+* 'Arabic_Libya'
+* 'Arabic_Morocco'
+* 'Arabic_Oman'
+* 'Arabic_Qatar'
+* 'Arabic_Saudi_Arabia'
+* 'Arabic_Syria'
+* 'Arabic_Tunisia'
+* 'Arabic_Yemen'
+* 'Azeri_Latin'
+* 'Azeri_Latin_Azerbaijan'
+* 'Azeri_Cyrillic_Azerbaijan'
+* 'Belarusian'
+* 'Belarusian_Belarus'
+* 'Bulgarian'
+* 'Bulgarian_Bulgaria'
+* 'Bosnian_Bosnia_and_Herzegovina'
+* 'Catalan'
+* 'Catalan_Spain'
+* 'Czech'
+* 'Czech_Czech_Republic'
+* 'Welsh'
+* 'Welsh_United_Kingdom'
+* 'Danish'
+* 'Danish_Denmark'
+* 'German'
+* 'German_Austria'
+* 'German_Switzerland'
+* 'German_Germany'
+* 'German_Liechtenstein'
+* 'German_Luxembourg'
+* 'Divehi'
+* 'Divehi_Maldives'
+* 'Greek'
+* 'Greek_Greece'
+* 'English'
+* 'English_Australia'
+* 'English_Belize'
+* 'English_Canada'
+* 'English_Caribbean'
+* 'English_United_Kingdom'
+* 'English_Ireland'
+* 'English_Jamaica'
+* 'English_New_Zealand'
+* 'English_Republic_of_the_Philippines'
+* 'English_Trinidad_and_Tobago'
+* 'English_United_States'
+* 'English_South_Africa'
+* 'English_Zimbabwe'
+* 'Esperanto'
+* 'Spanish'
+* 'Spanish_Argentina'
+* 'Spanish_Bolivia'
+* 'Spanish_Chile'
+* 'Spanish_Colombia'
+* 'Spanish_Costa_Rica'
+* 'Spanish_Dominican_Republic'
+* 'Spanish_Ecuador'
+* 'Spanish_Castilian'
+* 'Spanish_Spain'
+* 'Spanish_Guatemala'
+* 'Spanish_Honduras'
+* 'Spanish_Mexico'
+* 'Spanish_Nicaragua'
+* 'Spanish_Panama'
+* 'Spanish_Peru'
+* 'Spanish_Puerto_Rico'
+* 'Spanish_Paraguay'
+* 'Spanish_El_Salvador'
+* 'Spanish_Uruguay'
+* 'Spanish_Venezuela'
+* 'Estonian'
+* 'Estonian_Estonia'
+* 'Basque'
+* 'Basque_Spain'
+* 'Farsi'
+* 'Farsi_Iran'
+* 'Finnish'
+* 'Finnish_Finland'
+* 'Faroese'
+* 'Faroese_Faroe_Islands'
+* 'French'
+* 'French_Belgium'
+* 'French_Canada'
+* 'French_Switzerland'
+* 'French_France'
+* 'French_Luxembourg'
+* 'French_Principality_of_Monaco'
+* 'Galician'
+* 'Galician_Spain'
+* 'Gujarati'
+* 'Gujarati_India'
+* 'Hebrew'
+* 'Hebrew_Israel'
+* 'Hindi'
+* 'Hindi_India'
+* 'Croatian'
+* 'Croatian_Bosnia_and_Herzegovina'
+* 'Croatian_Croatia'
+* 'Hungarian'
+* 'Hungarian_Hungary'
+* 'Armenian'
+* 'Armenian_Armenia'
+* 'Indonesian'
+* 'Indonesian_Indonesia'
+* 'Icelandic'
+* 'Icelandic_Iceland'
+* 'Italian'
+* 'Italian_Switzerland'
+* 'Italian_Italy'
+* 'Japanese'
+* 'Japanese_Japan'
+* 'Georgian'
+* 'Georgian_Georgia'
+* 'Kazakh'
+* 'Kazakh_Kazakhstan'
+* 'Kannada'
+* 'Kannada_India'
+* 'Korean'
+* 'Korean_Korea'
+* 'Konkani'
+* 'Konkani_India'
+* 'Kyrgyz'
+* 'Kyrgyz_Kyrgyzstan'
+* 'Lithuanian'
+* 'Lithuanian_Lithuania'
+* 'Latvian'
+* 'Latvian_Latvia'
+* 'Maori'
+* 'Maori_New_Zealand'
+* 'FYRO_Macedonian'
+* 'FYRO_Macedonian_Former_Yugoslav_Republic_of_Macedonia'
+* 'Mongolian'
+* 'Mongolian_Mongolia'
+* 'Marathi'
+* 'Marathi_India'
+* 'Malay'
+* 'Malay_Brunei_Darussalam'
+* 'Malay_Malaysia'
+* 'Maltese'
+* 'Maltese_Malta'
+* 'Norwegian_Bokmal'
+* 'Norwegian_Bokmal_Norway'
+* 'Dutch'
+* 'Dutch_Belgium'
+* 'Dutch_Netherlands'
+* 'Norwegian_Nynorsk_Norway'
+* 'Northern_Sotho'
+* 'Northern_Sotho_South_Africa'
+* 'Punjabi'
+* 'Punjabi_India'
+* 'Polish'
+* 'Polish_Poland'
+* 'Pashto'
+* 'Pashto_Afghanistan'
+* 'Portuguese'
+* 'Portuguese_Brazil'
+* 'Portuguese_Portugal'
+* 'Quechua'
+* 'Quechua_Bolivia'
+* 'Quechua_Ecuador'
+* 'Quechua_Peru'
+* 'Romanian'
+* 'Romanian_Romania'
+* 'Russian'
+* 'Russian_Russia'
+* 'Sanskrit'
+* 'Sanskrit_India'
+* 'Sami_Northern'
+* 'Sami_Northern_Finland'
+* 'Sami_Skolt_Finland'
+* 'Sami_Inari_Finland'
+* 'Sami_Northern_Norway'
+* 'Sami_Lule_Norway'
+* 'Sami_Southern_Norway'
+* 'Sami_Northern_Sweden'
+* 'Sami_Lule_Sweden'
+* 'Sami_Southern_Sweden'
+* 'Slovak'
+* 'Slovak_Slovakia'
+* 'Slovenian'
+* 'Slovenian_Slovenia'
+* 'Albanian'
+* 'Albanian_Albania'
+* 'Serbian_Latin_Bosnia_and_Herzegovina'
+* 'Serbian_Cyrillic_Bosnia_and_Herzegovina'
+* 'Serbian_Latin_Serbia_and_Montenegro'
+* 'Serbian_Cyrillic_Serbia_and_Montenegro'
+* 'Swedish'
+* 'Swedish_Finland'
+* 'Swedish_Sweden'
+* 'Swahili'
+* 'Swahili_Kenya'
+* 'Syriac'
+* 'Syriac_Syria'
+* 'Tamil'
+* 'Tamil_India'
+* 'Telugu'
+* 'Telugu_India'
+* 'Thai'
+* 'Thai_Thailand'
+* 'Tagalog'
+* 'Tagalog_Philippines'
+* 'Tswana'
+* 'Tswana_South_Africa'
+* 'Turkish'
+* 'Turkish_Turkey'
+* 'Tatar'
+* 'Tatar_Russia'
+* 'Tsonga'
+* 'Ukrainian'
+* 'Ukrainian_Ukraine'
+* 'Urdu'
+* 'Urdu_Islamic_Republic_of_Pakistan'
+* 'Uzbek_Latin'
+* 'Uzbek_Latin_Uzbekistan'
+* 'Uzbek_Cyrillic_Uzbekistan'
+* 'Vietnamese'
+* 'Vietnamese_Viet_Nam'
+* 'Xhosa'
+* 'Xhosa_South_Africa'
+* 'Chinese'
+* 'Chinese_S'
+* 'Chinese_Hong_Kong'
+* 'Chinese_Macau'
+* 'Chinese_Singapore'
+* 'Chinese_T'
+* 'Zulu'
+* 'Zulu_South_Africa'
+*
+* 위 목록에 지원하는 언어가 없을 경우, 스크립트로 직접 추가할 수도 있습니다.
+*
+* RS.Localization.lang[언어명] = 언어 코드;
+*
+* ============================================================================
+* 스크립트 호출
+* ============================================================================
+*
+* 게임 언어를 체크할 수 있는 함수입니다. true 또는 false 값을 반환하게 됩니다.
+* 다음 코드를 조건 분기 스크립트 란에 설정하면 게임 언어가 영어로 설정되어있는지 
+* 간단하게 확인할 수 있습니다.
+* 
+* $gameSystem.isLangType('en');
+* $gameSystem.isLangType('english');
+* $gameSystem.isLangType('English');
+*
+* 게임 실행 도중 언어를 변경할 수도 있습니다. 
+* 이 메소드가 호출되면 데이터베이스 파일과 맵 파일이 새로 로드됩니다. 
+* 
+* RS.Localization.changeSystemLanguage('korean');
+*
+* 이때 데이터 파일은 data/ko 폴더 등에서 가져오게 됩니다. 
+* 
+* 일본어의 경우, 
+*
+* RS.Localization.changeSystemLanguage('japanese'); 라고 적으면, 
+* 데이터 파일을 data/ja 폴더에서 찾게 됩니다.
+*
+* 지원 언어 코드 매개변수에 ko ja 등이 기입되어있어야 성공적으로 로드하게 됩니다.
+* 적혀있지 않으면 지원 언어가 아닌 것으로 판단하고 기본 언어로 보여주게 됩니다.
+* 기본 언어는 영어가 기본이어야 합니다.
+* 
+* 즉, data 폴더 안에 기본 데이터 파일들은 영어로 되어있어야 하며,
+* ko 폴더에는 한국어로 번역된 파일들이 위치해야 합니다.
+*
+* 언어 코드 설정에 따라 언어 코드로된 폴더가 다수 필요하게 될 수 있습니다.
+*
+* 시스템 언어로 자동으로 보여주는 기능을 사용하면 자동으로 컴퓨터 언어에 맞는 
+* 파일을 보여주게 됩니다. 
+*
+* 물론 파일이 있어야 합니다.
+*
+* ============================================================================
+* 변경 사항
+* ============================================================================
+* 2016.02.20 (v1.0.0) - First Release
+* 2016.03.05 (v1.0.1) - Added new function.
+* 2016.08.01 (v1.0.2) - Added a function that could be able to load a map of
+* being configure for each language.
+* 2016.10.17 (v1.0.3) - Added the function that loads the database for your system language.
+* 2016.10.17 (v1.0.4) - Added the function that could check the supported languages.
+* 2018.11.13 (v1.0.5) :
+* - RS.Localization.changeSystemLanguage 함수 호출 시 해당 언어에 맞는 맵과 데이터베이스를 새로 가져옵니다.
+* - 데이터베이스 파일을 안전하게 로드하기 위한 장면을 새로 추가하였습니다.
+*/
 
 var Imported = Imported || {};
 Imported.RS_Localization = true;
@@ -310,7 +642,11 @@ function Scene_LoadDatabase() {
   
   "use strict";
   
-  var parameters = PluginManager.parameters('RS_Localization');
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_Localization>');
+  });
+  
+  parameters = (parameters.length > 0) && parameters[0].parameters;
 
   $.parent.Params = $.parent.Params || {};
 
