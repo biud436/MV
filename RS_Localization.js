@@ -1,366 +1,327 @@
 /*:
- * RS_Localization.js
- * @plugindesc You can change the language settings via this plugin.
- * @author biud436
- * @date 2016.02.20
- *
- * @param Default Language
- * @desc (default : English)
- * @default English
- *
- * @param Auto
- * @type boolean
- * @desc Automatically Load through your system language.
- * @default true
- * @on can load
- * @off can't load
- *
- * @param Enabled Switch ID
- * @type switch
- * @desc if its switch value is the same as status called 'ON',
- * you could be able to load a map of being configure for each language.
- * @default 11
- *
- * @param Supported Languages
- * @type select
- * @desc 
- * @default en
- * @option English
- * @value en
- * @option Korean
- * @value ko
- * @option Portuguese
- * @value pt
- * @option Portuguese(Brazil)
- * @value pt_BR
- * @option Japanese
- * @value ja
- * @option Chinese(Simplified)
- * @value zh
- * @option Chinese(Taditional)
- * @value zh_TW
- * @option German
- * @value de
- * @option Russian
- * @value ru
- * @option Danish
- * @value da
- * @option Italian
- * @value it
- * @option French
- * @value ft
- * @option Swedish
- * @value sv
- * @option Arabic
- * @value ar
- * @option Estonian
- * @value et
- * @option Turkish
- * @value tr
- *
- * @param Load Database
- * @type boolean
- * @desc
- * @default true
- * @on Can Load
- * @off Can't Load
- *
- * @help
- * The following command calls Localization-Change-function using the plugin command function.
- * For example, If your game offers users the ability to change the language,
- * you can change your game language into many languages by using this plugin command.
- *
- * //---------------------------------------------------------------------------
- * // pluginCommand
- * //---------------------------------------------------------------------------
- * Localization Change type
- *
- * //---------------------------------------------------------------------------
- * // Script
- * //---------------------------------------------------------------------------
- *
- * - Check Language
- * $gameSystem.isLangType('en');
- * $gameSystem.isLangType('english');
- * $gameSystem.isLangType('English');
- *
- * - Change Language
- * RS.Localization.changeSystemLanguage('japanese');
- *
- * //---------------------------------------------------------------------------
- * // Language Type
- * //---------------------------------------------------------------------------
- * 'Afrikaans'
- * 'Afrikaans_South_Africa'
- * 'Arabic'
- * 'Arabic_UAE'
- * 'Arabic_Bahrain'
- * 'Arabic_Algeria'
- * 'Arabic_Egypt'
- * 'Arabic_Iraq'
- * 'Arabic_Jordan'
- * 'Arabic_Kuwait'
- * 'Arabic_Lebanon'
- * 'Arabic_Libya'
- * 'Arabic_Morocco'
- * 'Arabic_Oman'
- * 'Arabic_Qatar'
- * 'Arabic_Saudi_Arabia'
- * 'Arabic_Syria'
- * 'Arabic_Tunisia'
- * 'Arabic_Yemen'
- * 'Azeri_Latin'
- * 'Azeri_Latin_Azerbaijan'
- * 'Azeri_Cyrillic_Azerbaijan'
- * 'Belarusian'
- * 'Belarusian_Belarus'
- * 'Bulgarian'
- * 'Bulgarian_Bulgaria'
- * 'Bosnian_Bosnia_and_Herzegovina'
- * 'Catalan'
- * 'Catalan_Spain'
- * 'Czech'
- * 'Czech_Czech_Republic'
- * 'Welsh'
- * 'Welsh_United_Kingdom'
- * 'Danish'
- * 'Danish_Denmark'
- * 'German'
- * 'German_Austria'
- * 'German_Switzerland'
- * 'German_Germany'
- * 'German_Liechtenstein'
- * 'German_Luxembourg'
- * 'Divehi'
- * 'Divehi_Maldives'
- * 'Greek'
- * 'Greek_Greece'
- * 'English'
- * 'English_Australia'
- * 'English_Belize'
- * 'English_Canada'
- * 'English_Caribbean'
- * 'English_United_Kingdom'
- * 'English_Ireland'
- * 'English_Jamaica'
- * 'English_New_Zealand'
- * 'English_Republic_of_the_Philippines'
- * 'English_Trinidad_and_Tobago'
- * 'English_United_States'
- * 'English_South_Africa'
- * 'English_Zimbabwe'
- * 'Esperanto'
- * 'Spanish'
- * 'Spanish_Argentina'
- * 'Spanish_Bolivia'
- * 'Spanish_Chile'
- * 'Spanish_Colombia'
- * 'Spanish_Costa_Rica'
- * 'Spanish_Dominican_Republic'
- * 'Spanish_Ecuador'
- * 'Spanish_Castilian'
- * 'Spanish_Spain'
- * 'Spanish_Guatemala'
- * 'Spanish_Honduras'
- * 'Spanish_Mexico'
- * 'Spanish_Nicaragua'
- * 'Spanish_Panama'
- * 'Spanish_Peru'
- * 'Spanish_Puerto_Rico'
- * 'Spanish_Paraguay'
- * 'Spanish_El_Salvador'
- * 'Spanish_Uruguay'
- * 'Spanish_Venezuela'
- * 'Estonian'
- * 'Estonian_Estonia'
- * 'Basque'
- * 'Basque_Spain'
- * 'Farsi'
- * 'Farsi_Iran'
- * 'Finnish'
- * 'Finnish_Finland'
- * 'Faroese'
- * 'Faroese_Faroe_Islands'
- * 'French'
- * 'French_Belgium'
- * 'French_Canada'
- * 'French_Switzerland'
- * 'French_France'
- * 'French_Luxembourg'
- * 'French_Principality_of_Monaco'
- * 'Galician'
- * 'Galician_Spain'
- * 'Gujarati'
- * 'Gujarati_India'
- * 'Hebrew'
- * 'Hebrew_Israel'
- * 'Hindi'
- * 'Hindi_India'
- * 'Croatian'
- * 'Croatian_Bosnia_and_Herzegovina'
- * 'Croatian_Croatia'
- * 'Hungarian'
- * 'Hungarian_Hungary'
- * 'Armenian'
- * 'Armenian_Armenia'
- * 'Indonesian'
- * 'Indonesian_Indonesia'
- * 'Icelandic'
- * 'Icelandic_Iceland'
- * 'Italian'
- * 'Italian_Switzerland'
- * 'Italian_Italy'
- * 'Japanese'
- * 'Japanese_Japan'
- * 'Georgian'
- * 'Georgian_Georgia'
- * 'Kazakh'
- * 'Kazakh_Kazakhstan'
- * 'Kannada'
- * 'Kannada_India'
- * 'Korean'
- * 'Korean_Korea'
- * 'Konkani'
- * 'Konkani_India'
- * 'Kyrgyz'
- * 'Kyrgyz_Kyrgyzstan'
- * 'Lithuanian'
- * 'Lithuanian_Lithuania'
- * 'Latvian'
- * 'Latvian_Latvia'
- * 'Maori'
- * 'Maori_New_Zealand'
- * 'FYRO_Macedonian'
- * 'FYRO_Macedonian_Former_Yugoslav_Republic_of_Macedonia'
- * 'Mongolian'
- * 'Mongolian_Mongolia'
- * 'Marathi'
- * 'Marathi_India'
- * 'Malay'
- * 'Malay_Brunei_Darussalam'
- * 'Malay_Malaysia'
- * 'Maltese'
- * 'Maltese_Malta'
- * 'Norwegian_Bokmal'
- * 'Norwegian_Bokmal_Norway'
- * 'Dutch'
- * 'Dutch_Belgium'
- * 'Dutch_Netherlands'
- * 'Norwegian_Nynorsk_Norway'
- * 'Northern_Sotho'
- * 'Northern_Sotho_South_Africa'
- * 'Punjabi'
- * 'Punjabi_India'
- * 'Polish'
- * 'Polish_Poland'
- * 'Pashto'
- * 'Pashto_Afghanistan'
- * 'Portuguese'
- * 'Portuguese_Brazil'
- * 'Portuguese_Portugal'
- * 'Quechua'
- * 'Quechua_Bolivia'
- * 'Quechua_Ecuador'
- * 'Quechua_Peru'
- * 'Romanian'
- * 'Romanian_Romania'
- * 'Russian'
- * 'Russian_Russia'
- * 'Sanskrit'
- * 'Sanskrit_India'
- * 'Sami_Northern'
- * 'Sami_Northern_Finland'
- * 'Sami_Skolt_Finland'
- * 'Sami_Inari_Finland'
- * 'Sami_Northern_Norway'
- * 'Sami_Lule_Norway'
- * 'Sami_Southern_Norway'
- * 'Sami_Northern_Sweden'
- * 'Sami_Lule_Sweden'
- * 'Sami_Southern_Sweden'
- * 'Slovak'
- * 'Slovak_Slovakia'
- * 'Slovenian'
- * 'Slovenian_Slovenia'
- * 'Albanian'
- * 'Albanian_Albania'
- * 'Serbian_Latin_Bosnia_and_Herzegovina'
- * 'Serbian_Cyrillic_Bosnia_and_Herzegovina'
- * 'Serbian_Latin_Serbia_and_Montenegro'
- * 'Serbian_Cyrillic_Serbia_and_Montenegro'
- * 'Swedish'
- * 'Swedish_Finland'
- * 'Swedish_Sweden'
- * 'Swahili'
- * 'Swahili_Kenya'
- * 'Syriac'
- * 'Syriac_Syria'
- * 'Tamil'
- * 'Tamil_India'
- * 'Telugu'
- * 'Telugu_India'
- * 'Thai'
- * 'Thai_Thailand'
- * 'Tagalog'
- * 'Tagalog_Philippines'
- * 'Tswana'
- * 'Tswana_South_Africa'
- * 'Turkish'
- * 'Turkish_Turkey'
- * 'Tatar'
- * 'Tatar_Russia'
- * 'Tsonga'
- * 'Ukrainian'
- * 'Ukrainian_Ukraine'
- * 'Urdu'
- * 'Urdu_Islamic_Republic_of_Pakistan'
- * 'Uzbek_Latin'
- * 'Uzbek_Latin_Uzbekistan'
- * 'Uzbek_Cyrillic_Uzbekistan'
- * 'Vietnamese'
- * 'Vietnamese_Viet_Nam'
- * 'Xhosa'
- * 'Xhosa_South_Africa'
- * 'Chinese'
- * 'Chinese_S'
- * 'Chinese_Hong_Kong'
- * 'Chinese_Macau'
- * 'Chinese_Singapore'
- * 'Chinese_T'
- * 'Zulu'
- * 'Zulu_South_Africa'
- *
- * //---------------------------------------------------------------------------
- * // Change Log
- * //---------------------------------------------------------------------------
- * 2016.02.20 (v1.0.0) - First Release
- * 2016.03.05 (v1.0.1) - Added new function.
- * 2016.08.01 (v1.0.2) - Added a function that could be able to load a map of
- * being configure for each language.
- * 2016.10.17 (v1.0.3) - Added the function that loads the database for your system language.
- * 2016.10.17 (v1.0.4) - Added the function that could check the supported languages.
- */
+* RS_Localization.js
+* @plugindesc This plugin provides the solution to change the game language.
+* @author biud436
+*
+* @param Default Language
+* @desc Specify the default language.
+* (default : English)
+* @default English
+*
+* @param Use System Language
+* @type boolean
+* @desc if true, the game language is set as user's system language automatically.
+* @default true
+*
+* @param Supported Languages
+* @desc Specify language codes. They are separated by a white space.
+* ex:) en ko ja pt_BR
+* @default en
+*
+* @help
+*
+* ============================================================================
+* pluginCommand
+* ============================================================================
+* Localization Change type
+*
+* ============================================================================
+* Script
+* ============================================================================
+*
+* - Check Language
+* $gameSystem.isLangType('en');
+* $gameSystem.isLangType('english');
+* $gameSystem.isLangType('English');
+*
+* - Change Language
+* RS.Localization.changeSystemLanguage('japanese');
+*
+* ============================================================================
+* Language Type
+* ============================================================================
+* 'Afrikaans'
+* 'Afrikaans_South_Africa'
+* 'Arabic'
+* 'Arabic_UAE'
+* 'Arabic_Bahrain'
+* 'Arabic_Algeria'
+* 'Arabic_Egypt'
+* 'Arabic_Iraq'
+* 'Arabic_Jordan'
+* 'Arabic_Kuwait'
+* 'Arabic_Lebanon'
+* 'Arabic_Libya'
+* 'Arabic_Morocco'
+* 'Arabic_Oman'
+* 'Arabic_Qatar'
+* 'Arabic_Saudi_Arabia'
+* 'Arabic_Syria'
+* 'Arabic_Tunisia'
+* 'Arabic_Yemen'
+* 'Azeri_Latin'
+* 'Azeri_Latin_Azerbaijan'
+* 'Azeri_Cyrillic_Azerbaijan'
+* 'Belarusian'
+* 'Belarusian_Belarus'
+* 'Bulgarian'
+* 'Bulgarian_Bulgaria'
+* 'Bosnian_Bosnia_and_Herzegovina'
+* 'Catalan'
+* 'Catalan_Spain'
+* 'Czech'
+* 'Czech_Czech_Republic'
+* 'Welsh'
+* 'Welsh_United_Kingdom'
+* 'Danish'
+* 'Danish_Denmark'
+* 'German'
+* 'German_Austria'
+* 'German_Switzerland'
+* 'German_Germany'
+* 'German_Liechtenstein'
+* 'German_Luxembourg'
+* 'Divehi'
+* 'Divehi_Maldives'
+* 'Greek'
+* 'Greek_Greece'
+* 'English'
+* 'English_Australia'
+* 'English_Belize'
+* 'English_Canada'
+* 'English_Caribbean'
+* 'English_United_Kingdom'
+* 'English_Ireland'
+* 'English_Jamaica'
+* 'English_New_Zealand'
+* 'English_Republic_of_the_Philippines'
+* 'English_Trinidad_and_Tobago'
+* 'English_United_States'
+* 'English_South_Africa'
+* 'English_Zimbabwe'
+* 'Esperanto'
+* 'Spanish'
+* 'Spanish_Argentina'
+* 'Spanish_Bolivia'
+* 'Spanish_Chile'
+* 'Spanish_Colombia'
+* 'Spanish_Costa_Rica'
+* 'Spanish_Dominican_Republic'
+* 'Spanish_Ecuador'
+* 'Spanish_Castilian'
+* 'Spanish_Spain'
+* 'Spanish_Guatemala'
+* 'Spanish_Honduras'
+* 'Spanish_Mexico'
+* 'Spanish_Nicaragua'
+* 'Spanish_Panama'
+* 'Spanish_Peru'
+* 'Spanish_Puerto_Rico'
+* 'Spanish_Paraguay'
+* 'Spanish_El_Salvador'
+* 'Spanish_Uruguay'
+* 'Spanish_Venezuela'
+* 'Estonian'
+* 'Estonian_Estonia'
+* 'Basque'
+* 'Basque_Spain'
+* 'Farsi'
+* 'Farsi_Iran'
+* 'Finnish'
+* 'Finnish_Finland'
+* 'Faroese'
+* 'Faroese_Faroe_Islands'
+* 'French'
+* 'French_Belgium'
+* 'French_Canada'
+* 'French_Switzerland'
+* 'French_France'
+* 'French_Luxembourg'
+* 'French_Principality_of_Monaco'
+* 'Galician'
+* 'Galician_Spain'
+* 'Gujarati'
+* 'Gujarati_India'
+* 'Hebrew'
+* 'Hebrew_Israel'
+* 'Hindi'
+* 'Hindi_India'
+* 'Croatian'
+* 'Croatian_Bosnia_and_Herzegovina'
+* 'Croatian_Croatia'
+* 'Hungarian'
+* 'Hungarian_Hungary'
+* 'Armenian'
+* 'Armenian_Armenia'
+* 'Indonesian'
+* 'Indonesian_Indonesia'
+* 'Icelandic'
+* 'Icelandic_Iceland'
+* 'Italian'
+* 'Italian_Switzerland'
+* 'Italian_Italy'
+* 'Japanese'
+* 'Japanese_Japan'
+* 'Georgian'
+* 'Georgian_Georgia'
+* 'Kazakh'
+* 'Kazakh_Kazakhstan'
+* 'Kannada'
+* 'Kannada_India'
+* 'Korean'
+* 'Korean_Korea'
+* 'Konkani'
+* 'Konkani_India'
+* 'Kyrgyz'
+* 'Kyrgyz_Kyrgyzstan'
+* 'Lithuanian'
+* 'Lithuanian_Lithuania'
+* 'Latvian'
+* 'Latvian_Latvia'
+* 'Maori'
+* 'Maori_New_Zealand'
+* 'FYRO_Macedonian'
+* 'FYRO_Macedonian_Former_Yugoslav_Republic_of_Macedonia'
+* 'Mongolian'
+* 'Mongolian_Mongolia'
+* 'Marathi'
+* 'Marathi_India'
+* 'Malay'
+* 'Malay_Brunei_Darussalam'
+* 'Malay_Malaysia'
+* 'Maltese'
+* 'Maltese_Malta'
+* 'Norwegian_Bokmal'
+* 'Norwegian_Bokmal_Norway'
+* 'Dutch'
+* 'Dutch_Belgium'
+* 'Dutch_Netherlands'
+* 'Norwegian_Nynorsk_Norway'
+* 'Northern_Sotho'
+* 'Northern_Sotho_South_Africa'
+* 'Punjabi'
+* 'Punjabi_India'
+* 'Polish'
+* 'Polish_Poland'
+* 'Pashto'
+* 'Pashto_Afghanistan'
+* 'Portuguese'
+* 'Portuguese_Brazil'
+* 'Portuguese_Portugal'
+* 'Quechua'
+* 'Quechua_Bolivia'
+* 'Quechua_Ecuador'
+* 'Quechua_Peru'
+* 'Romanian'
+* 'Romanian_Romania'
+* 'Russian'
+* 'Russian_Russia'
+* 'Sanskrit'
+* 'Sanskrit_India'
+* 'Sami_Northern'
+* 'Sami_Northern_Finland'
+* 'Sami_Skolt_Finland'
+* 'Sami_Inari_Finland'
+* 'Sami_Northern_Norway'
+* 'Sami_Lule_Norway'
+* 'Sami_Southern_Norway'
+* 'Sami_Northern_Sweden'
+* 'Sami_Lule_Sweden'
+* 'Sami_Southern_Sweden'
+* 'Slovak'
+* 'Slovak_Slovakia'
+* 'Slovenian'
+* 'Slovenian_Slovenia'
+* 'Albanian'
+* 'Albanian_Albania'
+* 'Serbian_Latin_Bosnia_and_Herzegovina'
+* 'Serbian_Cyrillic_Bosnia_and_Herzegovina'
+* 'Serbian_Latin_Serbia_and_Montenegro'
+* 'Serbian_Cyrillic_Serbia_and_Montenegro'
+* 'Swedish'
+* 'Swedish_Finland'
+* 'Swedish_Sweden'
+* 'Swahili'
+* 'Swahili_Kenya'
+* 'Syriac'
+* 'Syriac_Syria'
+* 'Tamil'
+* 'Tamil_India'
+* 'Telugu'
+* 'Telugu_India'
+* 'Thai'
+* 'Thai_Thailand'
+* 'Tagalog'
+* 'Tagalog_Philippines'
+* 'Tswana'
+* 'Tswana_South_Africa'
+* 'Turkish'
+* 'Turkish_Turkey'
+* 'Tatar'
+* 'Tatar_Russia'
+* 'Tsonga'
+* 'Ukrainian'
+* 'Ukrainian_Ukraine'
+* 'Urdu'
+* 'Urdu_Islamic_Republic_of_Pakistan'
+* 'Uzbek_Latin'
+* 'Uzbek_Latin_Uzbekistan'
+* 'Uzbek_Cyrillic_Uzbekistan'
+* 'Vietnamese'
+* 'Vietnamese_Viet_Nam'
+* 'Xhosa'
+* 'Xhosa_South_Africa'
+* 'Chinese'
+* 'Chinese_S'
+* 'Chinese_Hong_Kong'
+* 'Chinese_Macau'
+* 'Chinese_Singapore'
+* 'Chinese_T'
+* 'Zulu'
+* 'Zulu_South_Africa'
+*
+* ============================================================================
+* Change Log
+* ============================================================================
+* 2016.02.20 (v1.0.0) - First Release
+* 2016.03.05 (v1.0.1) - Added new function.
+* 2016.08.01 (v1.0.2) - Added a function that could be able to load a map of
+* being configure for each language.
+* 2016.10.17 (v1.0.3) - Added the function that loads the database for your system language.
+* 2016.10.17 (v1.0.4) - Added the function that could check the supported languages.
+* 2018.11.13 (v1.0.5) :
+* - Now it would be reloaded the map and data base when calling the function called 'RS.Localization.changeSystemLanguage'
+* - Added the scene for loading database files.
+*/
 
- var Imported = Imported || {};
- Imported.RS_Localization = true;
+var Imported = Imported || {};
+Imported.RS_Localization = true;
 
- var RS = RS || {};
- RS.Localization = RS.Localization || {};
- RS.Localization.lang = RS.Localization.lang || {};
+var RS = RS || {};
+RS.Localization = RS.Localization || {};
+RS.Localization.lang = RS.Localization.lang || {};
+RS.Localization.lang.parent = RS.Localization;
 
- (function($){
+function Scene_LoadDatabase() {
+  this.initialize.apply(this, arguments);
+}
 
+(function($) {
+  
+  "use strict";
+  
   var parameters = PluginManager.parameters('RS_Localization');
-  var __defaultLang = parameters['Default Language'] || "English";
-  var enabledSwitchID = Number(parameters['Enabled Switch ID'] || 11);
-  var isAutomaticallyLoaded = Boolean(parameters['Auto'] === 'true');
-  var isloadedDatabase = Boolean(parameters['Load Database'] === 'true');
 
+  $.parent.Params = $.parent.Params || {};
+
+  $.parent.Params.__defaultLang = parameters['Default Language'] || "English";
+  $.parent.Params.isUsedSystemLanguage = Boolean(parameters['Use System Language'] === 'true');
+  
   // All Supported Languages
-  var supportedLanguages = (function () {
-    return parameters['Supported Languages'].split(/\W+/) || ['en'];
+  $.parent.Params.supportedLanguages = (function () {
+    return parameters['Supported Languages'].split(" ") || ['en'];
   })();
-
+  
   $['afrikaans'] = 'af';
   $['afrikaans_south_africa'] = 'af_ZA';
   $['arabic'] = 'ar';
@@ -601,11 +562,19 @@
   $['zulu'] = 'zu';
   $['zulu_south_africa'] = 'zu_ZA';
 
+  // Set up the default language code.
+  $.parent.Params.locale = (function() {
+    var type = $.parent.Params.__defaultLang.toLowerCase();
+    var languageCollection = $[type];
+    return languageCollection || 'en';
+  })();
+
+  $.parent.Params.isDirty = false;
+  
   //============================================================================
   // RS.Localization
-  //
-  //
-
+  //============================================================================
+  
   RS.Localization.createSwapLangList = function () {
     var typeArray = Object.keys(this.lang);
     var temp = [];
@@ -615,11 +584,11 @@
     }, this);
     return temp;
   };
-
+  
   RS.Localization.hasOwnLanguage = function(langType) {
     return this.lang.hasOwnProperty(langType.toLowerCase());
   };
-
+  
   RS.Localization.findLanguage = function(reg) {
     try {
       var arr = Object.keys(this.lang);
@@ -629,96 +598,200 @@
       throw new Error("Cannot find Language Type");
     }
   };
-
+  
   RS.Localization.setSL = function(value) {
-    $dataSystem.locale = value;
+    if($dataSystem) {
+      $dataSystem.locale = value;
+    }
+    $.parent.Params.locale = value;
   };
-
+  
   RS.Localization.changeSystemLanguage = function(reg) {
     var lang = RS.Localization.findLanguage(reg.toLowerCase());
     this.setSL(RS.Localization.lang[lang]);
+    SceneManager.push(Scene_LoadDatabase);
   };
-
+  
   //============================================================================
   // Game_System
-  //
-  //
-
+  //============================================================================
+  
   var alias_Game_System_initialize = Game_System.prototype.initialize;
   Game_System.prototype.initialize = function() {
-      alias_Game_System_initialize.call(this);
-      RS.Localization.changeSystemLanguage(__defaultLang.toLowerCase());
+    alias_Game_System_initialize.call(this);
+    RS.Localization.changeSystemLanguage($.parent.Params.__defaultLang.toLowerCase());
   };
-
+  
   Game_System.prototype.isEnglish = function() {
-      return $dataSystem.locale.match(/^en/);
+    return $dataSystem.locale.match(/^en/);
   };
-
+  
   Game_System.prototype.isLangType = function(lang) {
-      var lang = RS.Localization.findLanguage(new RegExp("^" + lang, "ig"));
-      return $dataSystem.locale.match(RS.Localization.lang[lang]);
+    var lang = RS.Localization.findLanguage(new RegExp("^" + lang, "ig"));
+    return $dataSystem.locale.match(RS.Localization.lang[lang]);
   };
-
+  
   Game_System.prototype.isSupportedLanguage = function (locale) {
-    return supportedLanguages.indexOf(locale) !== -1;
-  }
-
-  Game_System.prototype.isLangMap = function () {
-    return $gameSwitches.value(enabledSwitchID);
+    return $.parent.Params.supportedLanguages.indexOf(locale) !== -1;
+  };
+  
+  //============================================================================
+  // DataManager
+  //============================================================================
+  
+  /**
+   * @override
+   * @method loadDataFile
+   * @param {String} name
+   * @param {String} src
+   */  
+  DataManager.loadDataFile = function(name, src) {
+    var xhr = new XMLHttpRequest();
+    var url = 'data/' + src;
+    var locale = $.parent.Params.locale.slice(0, 2);
+    if($.parent.Params.isUsedSystemLanguage) {
+      locale = navigator.language.slice(0, 2);
+    }
+    if($.parent.Params.supportedLanguages.indexOf(locale) !== -1) {
+      if(!src.contains('Test_') && !locale.contains('en')) {
+        url = 'data/' + locale + '/' + src;
+      } else if(locale.contains('en')) {
+        url = 'data/' + src;
+      }
+    }
+    xhr.open('GET', url);
+    xhr.overrideMimeType('application/json');
+    xhr.onload = function() {
+      if (xhr.status < 400) {
+        if(Imported.RS_UnifyAllPlugins) {
+          // RS_UnifyAllPlugins do not use global variables and then it is used inside an unique scope.
+          eval(name + " = JSON.parse(xhr.responseText);");
+          eval("DataManager.onLoad(" + name + ")");          
+        } else {
+          window[name] = JSON.parse(xhr.responseText);
+          DataManager.onLoad(window[name]);
+        }
+      }
+    };
+    xhr.onerror = function() {
+      DataManager._errorUrl = DataManager._errorUrl || url;
+    };
+    if(Imported.RS_UnifyAllPlugins) {
+      eval(name + " = null;");
+    } else {
+      window[name] = null;      
+    }
+    xhr.send();
   };
 
   //============================================================================
-  // DataManager
-  //
-  //
+  // Scene_Boot
+  //============================================================================  
 
-  DataManager.loadMapData = function(mapId) {
-      if (mapId > 0) {
-          var filename = 'Map%1.json'.format(mapId.padZero(3));
-          var locale = $dataSystem.locale;
-          if( $gameSystem.isLangMap() && supportedLanguages.indexOf(locale) !== -1 ) {
-              this.loadDataFile('$dataMap', '/' + locale + '/' + filename);
-            } else {
-              this.loadDataFile('$dataMap', filename);
-          }
-      } else {
-          this.makeEmptyMap();
-      }
+  var _Scene_Boot_isReady = Scene_Boot.prototype.isReady;
+  Scene_Boot.prototype.isReady = function() {
+    var ret = _Scene_Boot_isReady.call(this);
+    if(ret) {
+      $dataSystem.locale = $.parent.Params.locale;
+    }
+    return ret;
   };
 
-  DataManager.loadDataFile = function(name, src) {
-      var xhr = new XMLHttpRequest();
-      var url = 'data/' + src;
-      var defaultLang = __defaultLang.toLowerCase();
-      var locale = $[__defaultLang.toLowerCase()] || 'en';
-      if(isAutomaticallyLoaded) {
-        locale = navigator.language;
+  //============================================================================
+  // Scene_LoadDatabase
+  //============================================================================
+
+  Scene_LoadDatabase.prototype = Object.create(Scene_Base.prototype);
+  Scene_LoadDatabase.prototype.constructor = Scene_LoadDatabase;
+
+  Scene_LoadDatabase.prototype.initialize = function() {
+    Scene_Base.prototype.initialize.call(this);
+    this._startDate = Date.now();
+    if($dataSystem) {
+      $dataSystem.changeLanguage = true;
+    }
+  };
+
+  Scene_LoadDatabase.prototype.create = function() {
+    Scene_Base.prototype.create.call(this);
+    this.createBackground();
+    $dataActors       = null;
+    $dataClasses      = null;
+    $dataSkills       = null;
+    $dataItems        = null;
+    $dataWeapons      = null;
+    $dataArmors       = null;
+    $dataEnemies      = null;
+    $dataTroops       = null;
+    $dataStates       = null;
+    $dataAnimations   = null;
+    $dataTilesets     = null;
+    $dataCommonEvents = null;
+    $dataSystem       = null;
+    $dataMapInfos     = null;
+    $dataMap          = null;
+    DataManager.loadDatabase();
+  };
+
+  Scene_LoadDatabase.prototype.createBackground = function() {
+    this._backgroundSprite = new Sprite();
+    this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
+    this.addChild(this._backgroundSprite);
+  };
+
+  Scene_LoadDatabase.prototype.isReady = function() {
+    if (Scene_Base.prototype.isReady.call(this)) {
+        return DataManager.isDatabaseLoaded();
+    } else {
+        return false;
+    }
+  };
+
+  Scene_LoadDatabase.prototype.start = function() {
+    Scene_Base.prototype.start.call(this);
+    if($dataSystem) {
+      $dataSystem.locale = $.parent.Params.locale;
+      if(!$dataSystem.changeLanguage) {
+        $.parent.Params.isDirty = true;
       }
-      if(supportedLanguages.indexOf(locale) !== -1) {
-        if(!src.contains('Test_') && !locale.contains('en') && isloadedDatabase ) {
-          url = 'data/' + locale + '/' + src;
-        }
+    }
+    this.updateDocumentTitle();
+    SceneManager.pop();
+  };
+
+  Scene_LoadDatabase.prototype.updateDocumentTitle = function() {
+    document.title = $dataSystem.gameTitle;
+  };  
+
+  var alias_Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
+  Scene_Map.prototype.onMapLoaded = function() {
+    if (!this._transfer) {
+      if($.parent.Params.isDirty) {
+        $gameMap.setup($gameMap._mapId);
+        $gameParty.onChangeLanguage();
+        $.parent.Params.isDirty = false;
       }
-      xhr.open('GET', url);
-      xhr.overrideMimeType('application/json');
-      xhr.onload = function() {
-          if (xhr.status < 400) {
-              window[name] = JSON.parse(xhr.responseText);
-              DataManager.onLoad(window[name]);
-          }
-      };
-      xhr.onerror = function() {
-          DataManager._errorUrl = DataManager._errorUrl || url;
-      };
-      window[name] = null;
-      xhr.send();
+    }
+    alias_Scene_Map_onMapLoaded.call(this);
+  };
+
+  Game_Party.prototype.onChangeLanguage = function() {
+    this.members().forEach(function(member) {
+      member.onChangeLanguage(member.actorId());
+    }, this);
+  }
+
+  Game_Actor.prototype.onChangeLanguage = function(actorId) {
+    var actor = $dataActors[actorId];
+    this._name = actor.name;    
+    this._nickname = actor.nickname;
+    this._profile = actor.profile;    
   };
 
   //============================================================================
   // Game_Interpreter
-  //
-  //
-
+  //============================================================================
+  
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
@@ -726,13 +799,12 @@
       switch (args[0].toLowerCase()) {
         case 'change':
         case '변경':
-          RS.Localization.changeSystemLanguage(args[1]);
-          break;
+        RS.Localization.changeSystemLanguage(args[1]);
+        break;
         default:
-          RS.Localization.changeSystemLanguage(args[1]);
+        RS.Localization.changeSystemLanguage(args[1]);
       }
     }
   };
 
-
- })(RS.Localization.lang);
+})(RS.Localization.lang);
