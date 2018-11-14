@@ -1,6 +1,12 @@
 /*:
  * @plugindesc <RS_Fog>
  * @author biud436
+ * 
+ * @param fog
+ * @type struct<Fog>[]
+ * @desc
+ * @default
+ * 
  * @help
  * ============================================================================
  * Note Tags
@@ -16,16 +22,124 @@
  * <fogBlend:20>
  * <fogSX:1>
  * <fogSY:1>
+ * <fogSwitchId:1>
  * 
  * all images must be placed in img/fogs folder.
  * 
  * Blend type 20 means a subtract blend.
  * Once created, the fog image will not be removed until the map is changed.
  * 
+ * if switch #1 is ON, the fog will show up on the screen.
+ * 
+ * ============================================================================
+ * Note Tags (Short)
+ * ============================================================================
+ * 
+ * <MAP FOG : id>
+ * 
  * ============================================================================
  * Change Log
  * ============================================================================
  * 2018.11.14 (v1.0.0) - First Release.
+ */
+/*~struct~Fog:
+ *
+ * @param fogId
+ * @text Id
+ * @type number
+ * @desc 
+ * @default 1
+ * 
+ * @param fogName
+ * @text Name
+ * @desc 
+ * @default 001-Fog01
+ * @require 1
+ * @dir img/fogs/
+ * @type file
+ * 
+ * @param fogOpacity
+ * @text Opacity
+ * @type number
+ * @desc 
+ * @default 64
+ * @min 0
+ * @max 255
+ * 
+ * @param fogZoom
+ * @text Zoom
+ * @type number
+ * @desc 
+ * @default 100
+ * @min 0
+ * @max 100
+ * 
+ * @param fogBlend
+ * @text Blend Type
+ * @type select
+ * @desc
+ * @default 20
+ * @option NORMAL
+ * @value 0
+ * @option ADD
+ * @value 1
+ * @option MULTIPLY
+ * @value 2
+ * @option SCREEN
+ * @value 3
+ * @option OVERLAY
+ * @value 4
+ * @option DARKEN
+ * @value 5
+ * @option LIGHTEN
+ * @value 6
+ * @option COLOR_DODGE
+ * @value 7
+ * @option COLOR_BURN
+ * @value 8
+ * @option HARD_LIGHT
+ * @value 9
+ * @option SOFT_LIGHT
+ * @value 10
+ * @option DIFFERENCE
+ * @value 11
+ * @option EXCLUSION
+ * @value 12
+ * @option HUE
+ * @value 13
+ * @option SATURATION
+ * @value 14
+ * @option COLOR
+ * @value 15
+ * @option LUMINOSITY
+ * @value 16
+ * @option NORMAL_NPM
+ * @value 17
+ * @option ADD_NPM
+ * @value 18
+ * @option SCREEN_NPM
+ * @value 19
+ * @option SUBTRACT
+ * @value 20
+ * 
+ * @param fogSX
+ * @text SX
+ * @type number
+ * @desc 
+ * @default 1
+ * 
+ * @param fogSY
+ * @text SY
+ * @type number
+ * @desc 
+ * @default 1
+ * 
+ * @param fogSwitchId
+ * @text Switch
+ * @type switch
+ * @desc
+ * @default 1
+ * 
  */
 
 var Imported = Imported || {};
@@ -46,11 +160,22 @@ function Scene_LoadFog() {
         return i.description.contains('<RS_Fog>');
     });
 
-    parameters = (parameters.length > 0) && parameters[0].parameters;
+    parameters = (parameters.length > 0) && parameters[0].parameters;  
+
+    $.jsonParse = function (str) {
+        var retData = JSON.parse(str, function (k, v) {
+          try { return $.jsonParse(v); } catch (e) { return v; }
+        });
+        return retData;
+    };
+
+    $.Params = $.Params || {};
+
+    $.Params.fogs = [null].concat($.jsonParse(parameters["fog"]));
 
     //============================================================================
     // RS.Fog
-    //============================================================================     
+    //============================================================================       
 
     $.parseInt = function(value) {
         return parseInt(value) || 0;
@@ -136,13 +261,31 @@ function Scene_LoadFog() {
             }
         }
 
+        re = /<(?:MAP FOG)[ ]*:[ ]*(\d+)>/mgi;
+
+        for(;;) {
+            var match = re.exec(data.note);
+            if (match) {
+                data.meta["mapFogId"] = parseInt(match[1]);
+            } else {
+                break;
+            }
+        }
+
         this.meta = data.meta;
 
+        if(this.meta["mapFogId"]) {
+            var _tempId = this.meta["mapFogId"];
+            var mapFogData = $.Params.fogs[_tempId];
+            this.meta = mapFogData;
+        } 
+
         var fogName = this.meta["fogName"];
-        var fogId = this.meta["fogId"];
+        var fogId = this.meta["fogId"];        
 
         if(!this._initFog && fogName && fogId) {            
             $gameTemp.addFog(fogName);
+
             this._initFog = parseInt(this.meta.fogId);
         }
 
@@ -308,19 +451,30 @@ function Scene_LoadFog() {
          * <fogSY : 0>
          */
         $gameMap.events().forEach(function(event) {
-            if(event.meta && event.meta.fogName) {
+            if(event.meta && (event.meta.fogName || event.meta.mapFogId)) {
                 var sprite = new TilingSprite();
                 sprite.move(0, 0, Graphics.width, Graphics.height);
                 sprite.bitmap = $.loadFog(event.meta.fogName);
+                sprite.visible = false;
+
+                var meta = event.meta;
+
+                if(event.meta.mapFogId) {
+                    var data = $.Params.fogs[event.meta.mapFogId];
+                    meta = data;
+                }
+
                 sprite.fog = {
-                    id: $.parseInt(event.meta.fogId),
-                    name: event.meta.fogName,
-                    opacity: $.parseInt(event.meta.fogOpacity),
-                    zoom: $.parseInt(event.meta.fogZoom),
-                    blend: $.parseInt(event.meta.fogBlend),
-                    sx: $.parseInt(event.meta.fogSX),
-                    sy: $.parseInt(event.meta.fogSY)
+                    id: $.parseInt(meta.fogId),
+                    name: meta.fogName,
+                    opacity: $.parseInt(meta.fogOpacity),
+                    zoom: $.parseInt(meta.fogZoom),
+                    blend: $.parseInt(meta.fogBlend),
+                    sx: $.parseInt(meta.fogSX),
+                    sy: $.parseInt(meta.fogSY),
+                    switcheId: $.parseInt(meta.fogSwitchId)
                 };
+
                 this._fogContainer.addChild(sprite);
                 $gameMap.addFog(sprite.fog.id, sprite.fog.sx, sprite.fog.sy);                
             }
@@ -345,6 +499,8 @@ function Scene_LoadFog() {
         this._fogContainer.children.forEach(function(sprite, i, a) {
             
             var meta = sprite.fog;
+
+            sprite.visible = $gameSwitches.value(meta.switcheId); 
 
             sprite.opacity = meta.opacity.clamp(0, 255);
 
