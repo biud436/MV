@@ -17,7 +17,7 @@
  * <fogSX:1>
  * <fogSY:1>
  * 
- * Blend type's number is 20 means a subtract blend.
+ * Blend type 20 means a subtract blend.
  * Once created, the fog image will not be removed until the map is changed.
  * 
  * ============================================================================
