@@ -17,6 +17,8 @@
  * <fogSX:1>
  * <fogSY:1>
  * 
+ * all images must be placed in img/fogs folder.
+ * 
  * Blend type 20 means a subtract blend.
  * Once created, the fog image will not be removed until the map is changed.
  * 
