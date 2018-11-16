@@ -97,7 +97,8 @@ Imported.RS_GraphicsMenu = true;
  * 2017.07.11 (v1.0.0) - First Release
  * 2017.12.19 (v1.0.1) - Added a new feature that can exit the game.
  * 2017.12.29 (v1.0.2) - Fixed the issue that is not changed the button index when using a button index is six or above.
- * 2018.01.29 (v1.0.3) - Added a new feature that runs the eval code when pressing certain menu button
+ * 2018.01.29 (v1.0.3) - Added a new feature that runs the eval code when pressing certain menu button.
+ * 2018.11.16 (v1.0.4) - Open Menu Screen command is not supported.
  */
 
 /*~struct~MenuRect:
@@ -217,6 +218,7 @@ Imported.RS_GraphicsMenu = true;
   * 2017.12.19 (v1.0.1) - 게임 종료 기능 추가
   * 2017.12.29 (v1.0.2) - 메뉴 버튼이 6개 이상일 때, 5개까지만 선택되는 버그 수정
   * 2018.01.29 (v1.0.3) - 스크립트 실행 기능 추가
+  * 2018.11.16 (v1.0.4) - 메뉴 화면 열기 기능으로도 열 수 있습니다.
   */
 
  /*~struct~MenuRect:ko
@@ -524,5 +526,14 @@ RS.Utils = RS.Utils || {};
     this._mapNameWindow.hide();
     this._waitCount = 2;
   };
+
+  Game_Interpreter.prototype.command351 = function() {
+    if (!$gameParty.inBattle()) {
+        SceneManager.push(Scene_LinearMenu);
+        Window_MenuCommand.initCommandPosition();
+    }
+    return true;
+  };
+
 
 })();
