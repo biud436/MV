@@ -5,7 +5,7 @@
  * 비트맵 폰트는 나눔고딕 32px 기반이며 2048 사이즈의 아틀라스 Texture입니다.
  * 필요한 파일은 hangul_0.png 파일과 hangul.xml 파일이며 해당 파일을
  * img/hangul 폴더에 위치시켜주시기 바랍니다.
- *
+ * 
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -28,6 +28,9 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
 
 (function () {
 
+  // CanvasRenderingContext2D CanvasRenderingContext2D drawTextInternal를 나중에 참고할 것.
+  // https://chromium.googlesource.com/chromium/blink/+/master/Source/modules/canvas2d/CanvasRenderingContext2D.cpp#1942
+
   RS.HangulBitmapText.Params.init = false;
   RS.HangulBitmapText.Params.tempInit = false;
   RS.HangulBitmapText.Params.fontName = "나눔고딕";
@@ -44,6 +47,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   };
 
   // https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes
+  // Original Hex code is to at https://chromium.googlesource.com/chromium/blink/+/master/Source/platform/ColorData.gperf
   function colourNameToHex(colour)
   {
       var colours = {"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
