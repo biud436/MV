@@ -23,6 +23,7 @@
  * <fogSX:1> - if the positive value is, it will move to left.
  * <fogSY:1> - if the positive value is, it will move to up.
  * <fogSwitchId:1>
+ * <fogVariableId:1>
  * 
  * all images must be placed in img/fogs folder.
  * 
@@ -41,6 +42,7 @@
  * Change Log
  * ============================================================================
  * 2018.11.14 (v1.0.0) - First Release.
+ * 2018.11.16 (v1.0.1) - Added the opacity mode.
  */
 /*~struct~Fog:
  *
@@ -142,6 +144,12 @@
  * @desc We must turn on the switch to active the fog. Specify the switch id.
  * @default 1
  * 
+ * @param fogVariableId
+ * @text Variable
+ * @type variable
+ * @desc Specify the variableId
+ * @default 1
+ * 
  */
 /*:ko
  * @plugindesc 포그 플러그인 <RS_Fog>
@@ -171,6 +179,7 @@
  * <fogSX:1> - 주의 : 양수 값이면 위쪽으로 이동합니다. 
  * <fogSY:1> - 주의 : 양수 값이면 왼쪽으로 이동합니다.
  * <fogSwitchId:1>
+ * <fogVariableId:1>
  * 
  * 모든 이미지는 img/fogs 폴더에 위치해야 합니다.
  * 
@@ -201,6 +210,7 @@
  * 버전 로그 / Change Log
  * ============================================================================
  * 2018.11.14 (v1.0.0) - First Release.
+ * 2018.11.16 (v1.0.1) - Added the opacity mode.
  */
 /*~struct~Fog:ko
  *
@@ -298,6 +308,12 @@
  * @text 포그 활성 스위치
  * @type switch
  * @desc 포그를 활성화 하려면 특정 스위치를 켜야 합니다. 스위치 ID 값을 지정하세요.
+ * @default 1
+ * 
+ * @param fogVariableId
+ * @text 포그 제어 변수
+ * @type variable
+ * @desc Specify the variable that contorls the opacity
  * @default 1
  * 
  */
@@ -632,7 +648,8 @@ function Scene_LoadFog() {
                     blend: $.parseInt(meta.fogBlend),
                     sx: $.parseInt(meta.fogSX),
                     sy: $.parseInt(meta.fogSY),
-                    switcheId: $.parseInt(meta.fogSwitchId)
+                    switcheId: $.parseInt(meta.fogSwitchId),
+                    variableId: $.parseInt(meta.fogVariableId)
                 };
 
                 this._fogContainer.addChild(sprite);
@@ -659,10 +676,47 @@ function Scene_LoadFog() {
         this._fogContainer.children.forEach(function(sprite, i, a) {
             
             var meta = sprite.fog;
+            var mode = $gameVariables.value(meta.variableId);
+            var opacity = meta.opacity.clamp(0, 255);
 
-            sprite.visible = $gameSwitches.value(meta.switcheId); 
+            if(mode === 0) {
+                sprite.opacity = opacity;
 
-            sprite.opacity = meta.opacity.clamp(0, 255);
+            } else if(mode === 1) {
+
+                if(sprite.opacity > 0) {
+                    sprite.opacity--;
+                }
+                if(sprite.opacity <= 0) {
+                    sprite.opacity = 0;
+                    $gameSwitches.setValue(meta.switcheId, false);  
+                    $gameVariables.setValue(meta.variableId, 0);
+                }                
+
+            } else if(mode === 2) {
+
+                if(sprite._opacityDirty) {
+
+                    if(sprite.opacity < opacity) {
+                        sprite.opacity++;
+                    }                
+
+                    if(sprite.opacity >= opacity) {
+                        sprite.opacity = opacity;
+                        $gameVariables.setValue(meta.variableId, 0);
+                        sprite._opacityDirty = false;
+                    }
+
+                } else {
+
+                    sprite.opacity = 0;
+                    $gameSwitches.setValue(meta.switcheId, true);
+                    sprite._opacityDirty = true;                    
+
+                }
+            }
+
+            sprite.visible = $gameSwitches.value(meta.switcheId);             
 
             if(!sprite.bitmap || sprite.bitmap.width <= 0) {
                 sprite.bitmap = $.loadFog(meta.fogName);
