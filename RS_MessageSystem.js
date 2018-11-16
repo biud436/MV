@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.31) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.32) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -551,6 +551,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.11.16 (v0.1.32) :
+ * - 1.6.1 버전이 아닌 MV에서 동작하지 않는 문제 수정
  * 2018.11.10 (v0.1.31) :
  * - 프리 로드 함수에 아무것도 설정하지 않으면 오류가 나는 문제를 수정하였습니다.
  * 2018.11.10 (v0.1.30) :
@@ -962,6 +964,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.16 (v0.1.32) :
+ * - 1.6.1 버전이 아닌 MV에서 동작하지 않는 문제 수정
  * 2018.11.10 (v0.1.31) :
  * - 프리 로드 함수에 아무것도 설정하지 않으면 오류가 나는 문제를 수정하였습니다.
  * 2018.11.09 (v0.1.30) :
@@ -1500,6 +1504,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.16 (v0.1.32) :
+ * - 1.6.1 버전이 아닌 MV에서 동작하지 않는 문제 수정
  * 2018.11.10 (v0.1.31) :
  * - 프리 로드 함수에 아무것도 설정하지 않으면 오류가 나는 문제를 수정하였습니다.
  * 2018.11.09 (v0.1.30) :
@@ -2019,19 +2025,19 @@ var Color = Color || {};
       RS.MessageSystem.Reg[e][40] = new RegExp(`\x1b${tcGroup[40]}`, 'gi'); // [>]
       RS.MessageSystem.Reg[e][41] = new RegExp(`\x1b${tcGroup[41]}`, 'gi'); // [\^]
 
-      RS.MessageSystem.Reg[e][42] = new RegExp(`\x1b${tcGroup[42]}`, 'ugi'); // AS굵게!
-      RS.MessageSystem.Reg[e][43] = new RegExp(`\x1b${tcGroup[43]}`, 'ugi'); // AE굵게!
-      RS.MessageSystem.Reg[e][44] = new RegExp(`\x1b${tcGroup[44]}`, 'ugi'); // AS이탤릭!
-      RS.MessageSystem.Reg[e][45] = new RegExp(`\x1b${tcGroup[45]}`, 'ugi'); // AE이탤릭!
+      RS.MessageSystem.Reg[e][42] = new RegExp(`\x1b${tcGroup[42]}`, 'gi'); // AS굵게!
+      RS.MessageSystem.Reg[e][43] = new RegExp(`\x1b${tcGroup[43]}`, 'gi'); // AE굵게!
+      RS.MessageSystem.Reg[e][44] = new RegExp(`\x1b${tcGroup[44]}`, 'gi'); // AS이탤릭!
+      RS.MessageSystem.Reg[e][45] = new RegExp(`\x1b${tcGroup[45]}`, 'gi'); // AE이탤릭!
 
-      RS.MessageSystem.Reg[e][46] = new RegExp(`(?:<${tcGroup[46]}>)`, 'ugi'); // LEFT
-      RS.MessageSystem.Reg[e][47] = new RegExp(`(?:<${tcGroup[47]}>)`, 'ugi'); // CENTER
-      RS.MessageSystem.Reg[e][48] = new RegExp(`(?:<${tcGroup[48]}>)`,'ugi'); // RIGHT
+      RS.MessageSystem.Reg[e][46] = new RegExp(`(?:<${tcGroup[46]}>)`, 'gi'); // LEFT
+      RS.MessageSystem.Reg[e][47] = new RegExp(`(?:<${tcGroup[47]}>)`, 'gi'); // CENTER
+      RS.MessageSystem.Reg[e][48] = new RegExp(`(?:<${tcGroup[48]}>)`,'gi'); // RIGHT
 
-      RS.MessageSystem.Reg[e][49] = new RegExp(`(?:<[${tcGroup[49]}]>)`, 'ugi'); // B
-      RS.MessageSystem.Reg[e][50] = new RegExp(`(?:<\/[${tcGroup[50]}]>)`, 'ugi'); // B
-      RS.MessageSystem.Reg[e][51] = new RegExp(`(?:<[${tcGroup[51]}]>)`, 'ugi'); // I
-      RS.MessageSystem.Reg[e][52] = new RegExp(`(?:<\/[${tcGroup[52]}]>)`, 'ugi'); // I
+      RS.MessageSystem.Reg[e][49] = new RegExp(`(?:<[${tcGroup[49]}]>)`, 'gi'); // B
+      RS.MessageSystem.Reg[e][50] = new RegExp(`(?:<\/[${tcGroup[50]}]>)`, 'gi'); // B
+      RS.MessageSystem.Reg[e][51] = new RegExp(`(?:<[${tcGroup[51]}]>)`, 'gi'); // I
+      RS.MessageSystem.Reg[e][52] = new RegExp(`(?:<\/[${tcGroup[52]}]>)`, 'gi'); // I
       RS.MessageSystem.Reg[e][53] = new RegExp(`\x1b${tcGroup[53]}`, 'gi'); // AEND : ALIGN_CLEAR
       RS.MessageSystem.Reg[e][54] = new RegExp(`\x1b${tcGroup[54]}\\<(.+?)\\>`, 'gi'); // 스킨변경
 
