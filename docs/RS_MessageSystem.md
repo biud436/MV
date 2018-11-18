@@ -5,7 +5,7 @@
 **RPG Maker MV <font color='red'>v1.5.1</font> 이상 버전에서만 동작합니다.**
 
 ## 플러그인 다운로드
-[다운로드 - v0.1.32 (2018.11.16)][1]
+[다운로드][1]
 
 [1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
 
