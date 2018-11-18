@@ -338,7 +338,7 @@
  \敵キャラ[nth]
  \ステート[nth]
  \スキル[nth]
- \顔<얼굴_이미지_이름,얼굴_이미지_인덱스>
+ \顔<face_name,face_index>
  \FRIENDLY_TROOPS[nth]
  \ENEMY_TROOPS[nth]
  <B></B>
