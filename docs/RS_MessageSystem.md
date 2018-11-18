@@ -350,7 +350,7 @@
  <RIGHT></RIGHT>
  ```
 
-* Traditional Chinese Text Codes (中文)
+* Simplified Chinese Text Codes (中文)
  ```css
  \色[color_name]
  \速度[value]
