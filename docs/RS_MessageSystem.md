@@ -210,7 +210,9 @@
 <left> 태그는 메시지 시작 전에 정렬자 텍스트 코드로 정확히 자동 변환됩니다.</left> 
 ```
 
-![example align](./images/hms_align.png)
+![example image](./images/hms_align.png)
+![example image2](./images/hms_4.png)
+![example image2](./images/hms_5.png)
 
 ## 큰 페이스칩의 설정
 큰 페이스칩을 설정하려면 소재를 img/faces 폴더에 넣어주시기 바랍니다. 큰 페이스칩은 ```Big_``` 이라는 머릿말이 붙어있어야 합니다.
