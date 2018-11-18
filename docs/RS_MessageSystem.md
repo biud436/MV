@@ -299,7 +299,7 @@
  <B></B>
  <I></I>
  <LEFT></LEFT>
- <CENTER>></CENTER>
+ <CENTER></CENTER>
  <RIGHT></RIGHT>
  ```
 
@@ -346,7 +346,7 @@
  <B></B>
  <I></I>
  <LEFT></LEFT>
- <CENTER>></CENTER>
+ <CENTER></CENTER>
  <RIGHT></RIGHT>
  ```
 
@@ -393,7 +393,7 @@
  <B></B>
  <I></I>
  <LEFT></LEFT>
- <CENTER>></CENTER>
+ <CENTER></CENTER>
  <RIGHT></RIGHT>
 ```
 
@@ -440,7 +440,7 @@
  <B></B>
  <I></I>
  <LEFT></LEFT>
- <CENTER>></CENTER>
+ <CENTER></CENTER>
  <RIGHT></RIGHT>
  ```
 
