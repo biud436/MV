@@ -279,7 +279,7 @@
 ## 전체 명령어 목록 (Text Codes)
 전체 명령어 목록입니다. 위에서 설명하지 않은 기능들도 있습니다. 
 
-* Korean Text Codes (한국어)
+### Korean Text Codes (한국어)
 
 언어 코드를 ```ko```로 설정을 해두셔야 한국어 텍스트 코드를 인식합니다. 
 
@@ -333,7 +333,7 @@
  <RIGHT></RIGHT>
  ```
 
- * Japanese Text Codes (日本語 : 制御文字)
+### Japanese Text Codes (日本語 : 制御文字)
 
 언어 코드를 ```ja```로 설정을 해야 일본어 텍스트 코드가 인식됩니다.
 
@@ -393,7 +393,7 @@ Tkool 홈페이지에 있는 실제로 사용되고 있는 어휘를 참고하�
  <RIGHT></RIGHT>
  ```
 
-* Simplified Chinese Text Codes (中文)
+### Simplified Chinese Text Codes (中文)
 
 언어 코드를 ```zh```로 설정을 해야 중국어 텍스트 코드가 인식됩니다. 
 
@@ -449,7 +449,7 @@ Tkool 홈페이지에 있는 실제로 사용되고 있는 어휘를 참고하�
  <RIGHT></RIGHT>
 ```
 
-* English Text Codes
+### English Text Codes
 
 한글 텍스트 코드가 싫다면, 영어로된 텍스트 코드를 사용하셔도 됩니다. 다만 약간 수정이 필요한데요.
 
