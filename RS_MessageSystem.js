@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.32) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.33) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -551,6 +551,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.11.19 (v0.1.33) : 
+ * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
  * - 1.6.1 버전이 아닌 MV에서 동작하지 않는 문제 수정
  * - 0~31 사이의 숫자를 입력하면 시스템 텍스트 컬러로 반환
@@ -715,7 +717,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.31) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.33) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -965,6 +967,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.19 (v0.1.33) : 
+ * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
  * - 1.6.1 버전이 아닌 MV에서 동작하지 않는 문제 수정
  * - 0~31 사이의 숫자를 입력하면 시스템 텍스트 컬러로 반환
@@ -1127,7 +1131,7 @@
  */  
 /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.31) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.33) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1506,6 +1510,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.19 (v0.1.33) : 
+ * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
  * - 1.6.1 버전이 아닌 MV에서 동작하지 않는 문제 수정
  * - 0~31 사이의 숫자를 입력하면 시스템 텍스트 컬러로 반환
@@ -2983,6 +2989,12 @@ var Color = Color || {};
       $gameTemp.setMSHeightFunc(this.setHeight.bind(this));
       this.setHeight(RS.MessageSystem.Params.numVisibleRows);
       this.createFaceContents();
+      this.on('removed', this.removeEventHandler, this);
+      this.on('onLoadWindowskin', this.onLoadWindowskin, this);            
+    };
+
+    Window_Message.prototype.removeEventHandler = function() {
+      this.off('onLoadWindowskin', this.onLoadWindowskin, this);
     };
 
     Window_Message.prototype.textColor = function(n) {
@@ -2991,19 +3003,17 @@ var Color = Color || {};
       var py = 144 + Math.floor(n / 8) * 12 + 6;
       return windowskin.getPixel(px, py);
     };    
+
+    Window_Message.prototype.onLoadWindowskin = function() {
+      Color.baseColor = this.textColor(0);      
+      this.changeTextColor(Color.baseColor);
+    };
     
     Window_Message.prototype.loadWindowskin = function() {
       var self = this;
       var bitmap = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
       if(bitmap !== this.windowskin) {
         this.windowskin = bitmap;
-        this.windowskin.addLoadListener(function() {
-          self.createContents();
-          self.contents.clear();
-          self.resetFontSettings();
-          self.changeTextColor(Color.baseColor);
-          Color.baseColor = self.textColor(0);
-        });
         if(!this.windowskin.isReady()) {
           return setTimeout(function() {
             return self.loadWindowskin();
@@ -3123,7 +3133,8 @@ var Color = Color || {};
     Window_Message.prototype.newPage = function(textState) {
       this.setFaceZIndex();
       this.clearFaceBitmap();
-      this.loadWindowskin();      
+      this.loadWindowskin(); 
+      this.emit('onLoadWindowskin');
       this.openBalloon( $gameMessage.getBalloon() );
       alias_Window_Message_newPage.call( this, textState );
     };
@@ -3295,7 +3306,7 @@ var Color = Color || {};
     }
     
     this._bHeight = height;
-    
+
     // this.drawTextEx() 사용하기 이전 상태로 복구한다.
     this.restore();
     
