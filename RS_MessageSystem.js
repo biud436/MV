@@ -558,9 +558,12 @@
  * 버전 로그(Version Log)
  * =============================================================================
  * 2018.11.20 (v0.1.34) :
- * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
- * - 전투에서도 말풍선 텍스트 코드를 그대로 사용할 수 있게 변경.
- * - 암호화 설정이 없는 1.3.5 미만 MV에서의 예외 처리 추가.
+ * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
+ * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
+ * - 암호화 설정이 없는 1.3.5 미만 MV에서 오류 없이 동작하도록 예외 처리를 추가하였습니다.
+ * - 말풍선 모드에서 RPG Maker XP 스타일의 선택지 설정이 가능해졌습니다.
+ * - 메시지 윈도우의 위치를 위쪽으로 설정했을 때, 이름 윈도우의 크기 만큼 남는 현상을 수정하였습니다.
+ * - 이름 윈도우의 위치를 가운데 또는 오른쪽으로 설정했을 때, 기본 선택지와 겹치지 않도록 수정하였습니다. 
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -978,9 +981,12 @@
  * Version Log
  * =============================================================================
  * 2018.11.20 (v0.1.34) :
- * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
- * - 전투에서도 말풍선 텍스트 코드를 그대로 사용할 수 있게 변경.
- * - 암호화 설정이 없는 1.3.5 미만 MV에서의 예외 처리 추가.
+ * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
+ * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
+ * - 암호화 설정이 없는 1.3.5 미만 MV에서 오류 없이 동작하도록 예외 처리를 추가하였습니다.
+ * - 말풍선 모드에서 RPG Maker XP 스타일의 선택지 설정이 가능해졌습니다.
+ * - 메시지 윈도우의 위치를 위쪽으로 설정했을 때, 이름 윈도우의 크기 만큼 남는 현상을 수정하였습니다.
+ * - 이름 윈도우의 위치를 가운데 또는 오른쪽으로 설정했을 때, 기본 선택지와 겹치지 않도록 수정하였습니다. 
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -1525,9 +1531,12 @@
  * Version Log
  * =============================================================================
  * 2018.11.20 (v0.1.34) :
- * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
- * - 전투에서도 말풍선 텍스트 코드를 그대로 사용할 수 있게 변경.
- * - 암호화 설정이 없는 1.3.5 미만 MV에서의 예외 처리 추가.
+ * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
+ * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
+ * - 암호화 설정이 없는 1.3.5 미만 MV에서 오류 없이 동작하도록 예외 처리를 추가하였습니다.
+ * - 말풍선 모드에서 RPG Maker XP 스타일의 선택지 설정이 가능해졌습니다.
+ * - 메시지 윈도우의 위치를 위쪽으로 설정했을 때, 이름 윈도우의 크기 만큼 남는 현상을 수정하였습니다.
+ * - 이름 윈도우의 위치를 가운데 또는 오른쪽으로 설정했을 때, 기본 선택지와 겹치지 않도록 수정하였습니다. 
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -3035,7 +3044,7 @@ var Color = Color || {};
       // Y 값
       if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
         this._nameWindow.y = 0;
-        this.y = this._nameWindow.height + RS.MessageSystem.Params.nameWindowY;
+        this.y = this._nameWindow.isOpen() ? (this._nameWindow.height + RS.MessageSystem.Params.nameWindowY) : 0;
       } else {
         this._nameWindow.y = self.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
       }
@@ -3383,7 +3392,24 @@ var Color = Color || {};
       // 높이 값이 최소 높이보다 작으면, 최소 높이 값으로 설정한다.
       if(height < min) height = height.clamp(min, height + (min - height));
     }
+
+    var type = RS.MessageSystem.Params.choiceWindowStyle;
+
+    // 선택지가 있고, XP 스타일로 설정했을 때
+    if(type === 'RMXP' && $gameMessage.isChoice()) {
+      var maxLines = tempText.length;
+      var maxChoices = $gameMessage.choices().length;
+      var lineHeight = this.lineHeight();
+      // 선택지 갯수를 확장했을 수도 있지만, 4개로 가정한다.
+      height = height + (maxChoices * lineHeight);
+      // 선택지 윈도우의 폭이 말풍선보다 크면
+      if(this._choiceWindow.windowWidth() > this._bWidth) {
+        this._bWidth = this._choiceWindow.windowWidth();
+      }
+    }
     
+// this._bHeight = this._bHeight + ($gameMessage.isChoice() ? Math.min(this.numVisibleRows() - $gameMessage.choices().length, 4) * this.lineHeight() : 0);
+
     this._bHeight = height;
 
     // this.drawTextEx() 사용하기 이전 상태로 복구한다.
@@ -3458,7 +3484,7 @@ var Color = Color || {};
     var owner = $gameMap.getMsgOwner();
     data.mx = owner.screenX();
     data.my = owner.screenY();
-    
+
     data.tx = this._width / 2;
     data.ty = this._height;
     data.scaleY = 1;
@@ -4249,21 +4275,50 @@ var Color = Color || {};
     var type = RS.MessageSystem.Params.choiceWindowStyle;
     this.initWithStyle(type);
   };
+
+  Window_ChoiceList.prototype.updateNormalPlacement = function() {
+    var type = RS.MessageSystem.Params.choiceWindowStyle;
+    if(type === 'RMXP') return;
+
+    var messageX = this._messageWindow.x;      
+    var messageY = this._messageWindow.y;      
+    var messageWidth = this._messageWindow.width;
+    var messageHeight = this._messageWindow.height;
+
+    if (messageY >= Graphics.boxHeight / 2) {
+
+      var nameWindow = this._messageWindow._nameWindow;
+      var nameWindowXPositionType = RS.MessageSystem.Params.namePositionTypeAtX;
+
+      if(nameWindow.isOpen() && ['center', 'right'].contains(nameWindowXPositionType)) {
+        this.y = messageY - nameWindow.height - this.height;
+      } else {
+        this.y = messageY - this.height;
+      }
+        
+    } else {
+        this.y = messageY + messageHeight;
+    }
+
+    this.x = messageX + messageWidth - this.width;
+  };
+
+  var alias_Window_ChoiceList_start = Window_ChoiceList.prototype.start;
+  Window_ChoiceList.prototype.start = function() {
+    alias_Window_ChoiceList_start.call(this);
+  };  
   
   Window_ChoiceList.prototype.onChangeStyleToRMXP = function () {
-    if(!this._messageWindow.isActiveInBalloon()) {
-      RS.MessageSystem.Params.isTempSpriteContainerVisibility = false;
-      this.updateOpacity();
-      this.setPlacement();
-    } else {
-      this.onChangeStyleToDefault();
-    }
+    RS.MessageSystem.Params.isTempSpriteContainerVisibility = false;
+    this.updateOpacity();
+    this.setPlacement();
   };
   
   Window_ChoiceList.prototype.onChangeStyleToDefault = function () {
     RS.MessageSystem.Params.isTempSpriteContainerVisibility = true;
     this.needToUpdateWhenChangingVisibility();
     alias_Window_ChoiceList_updatePlacement.call(this);
+    this.updateNormalPlacement();
   };
   
   Window_ChoiceList.prototype.updateOpacity = function () {
@@ -4308,7 +4363,7 @@ var Color = Color || {};
     this.height = (height <= 0) ? messageHeight : height;
     
     this.x = this._messageWindow.x + this._messageWindow.newLineX();
-    this.y = this._messageWindow.y + currentTextHeight;
+    this.y = this._messageWindow.y - currentTextHeight;
     
   };
   
