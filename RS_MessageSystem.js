@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.34) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.41) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -557,13 +557,15 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
- * 2018.11.20 (v0.1.34) :
+ * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
  * - 암호화 설정이 없는 1.3.5 미만 MV에서 오류 없이 동작하도록 예외 처리를 추가하였습니다.
  * - 말풍선 모드에서 RPG Maker XP 스타일의 선택지 설정이 가능해졌습니다.
  * - 메시지 윈도우의 위치를 위쪽으로 설정했을 때, 이름 윈도우의 크기 만큼 남는 현상을 수정하였습니다.
  * - 이름 윈도우의 위치를 가운데 또는 오른쪽으로 설정했을 때, 기본 선택지와 겹치지 않도록 수정하였습니다. 
+ * - 이벤트 커맨드 실행 내용의 첫번 째 커맨드에 노트 태그를 설정하면 읽지 못했던 문제를 수정하였습니다.
+ * - 선택지 윈도우의 윈도우 스킨도 같이 변경됩니다.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -730,7 +732,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.34) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.41) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -980,13 +982,15 @@
  * =============================================================================
  * Version Log
  * =============================================================================
- * 2018.11.20 (v0.1.34) :
+ * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
  * - 암호화 설정이 없는 1.3.5 미만 MV에서 오류 없이 동작하도록 예외 처리를 추가하였습니다.
  * - 말풍선 모드에서 RPG Maker XP 스타일의 선택지 설정이 가능해졌습니다.
  * - 메시지 윈도우의 위치를 위쪽으로 설정했을 때, 이름 윈도우의 크기 만큼 남는 현상을 수정하였습니다.
  * - 이름 윈도우의 위치를 가운데 또는 오른쪽으로 설정했을 때, 기본 선택지와 겹치지 않도록 수정하였습니다. 
+ * - 이벤트 커맨드 실행 내용의 첫번 째 커맨드에 노트 태그를 설정하면 읽지 못했던 문제를 수정하였습니다.
+ * - 선택지 윈도우의 윈도우 스킨도 같이 변경됩니다.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -1151,7 +1155,7 @@
  */  
 /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.34) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.41) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1530,13 +1534,15 @@
  * =============================================================================
  * Version Log
  * =============================================================================
- * 2018.11.20 (v0.1.34) :
+ * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
  * - 암호화 설정이 없는 1.3.5 미만 MV에서 오류 없이 동작하도록 예외 처리를 추가하였습니다.
  * - 말풍선 모드에서 RPG Maker XP 스타일의 선택지 설정이 가능해졌습니다.
  * - 메시지 윈도우의 위치를 위쪽으로 설정했을 때, 이름 윈도우의 크기 만큼 남는 현상을 수정하였습니다.
  * - 이름 윈도우의 위치를 가운데 또는 오른쪽으로 설정했을 때, 기본 선택지와 겹치지 않도록 수정하였습니다. 
+ * - 이벤트 커맨드 실행 내용의 첫번 째 커맨드에 노트 태그를 설정하면 읽지 못했던 문제를 수정하였습니다.
+ * - 선택지 윈도우의 윈도우 스킨도 같이 변경됩니다.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -1950,15 +1956,18 @@ var Color = Color || {};
       var list = $gameMap.event(eventId).list();
       
       // 바로 이전 인덱스에 노트 태그가 있었는 지 확인합니다.
+      
+      if(index < 0) index = 0;
+
       var param = list[index];
 
-      while(param.code === 408) {
+      while(param && [108, 408].contains(param.code)) {
         data.note += param.parameters[0] + "\r\n";
         index--;
         param = list[index];        
       }
 
-      if(param.code === 108) {
+      if(param && param.code === 108) {
         data.note += param.parameters[0] + "\r\n";
 
         index--;
@@ -3077,6 +3086,7 @@ var Color = Color || {};
     };    
 
     Window_Message.prototype.onLoadWindowskin = function() {
+      Color.baseColor = this.textColor(0);      
       this.changeTextColor(Color.baseColor);
     };
     
@@ -3094,12 +3104,19 @@ var Color = Color || {};
         }
         // Set the default text color if the windowskin didn't load yet.
         this.changeTextColor(Color.baseColor);   
+
+        if(!this.windowskin.isReady()) {
+          return setTimeout(function() {
+              self.loadWindowSkin();
+          }.bind(this), 10);
+        }
+        
       }
     };
 
     var _Window_Message_updateLoading = Window_Message.prototype.updateLoading;
     Window_Message.prototype.updateLoading = function() {
-      var ret = false;
+      var ret = true;
       if(this._isDirtyWindowskin) {
         // Set the default text color from its bitmap after loaded the windowskin.
         Color.baseColor = this.textColor(0);      
@@ -3232,7 +3249,7 @@ var Color = Color || {};
       this._textState.index = 0;
       this._textState.text = this.convertEscapeCharacters($gameMessage.allText());
       var tempText = this._textState.text.slice(0);
-      this.calcBalloonRect(tempText); // 말풍선 영역 계산
+      this.calcBalloonRect(tempText); // 말풍선 영역 계산      
       this.newPage(this._textState); // 페이지 시작
       this.updatePlacement(); // 위치 설정
       this.updateBackground();
@@ -4309,6 +4326,7 @@ var Color = Color || {};
 
   var alias_Window_ChoiceList_start = Window_ChoiceList.prototype.start;
   Window_ChoiceList.prototype.start = function() {
+    this.windowskin = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
     alias_Window_ChoiceList_start.call(this);
   };  
   
@@ -4344,6 +4362,7 @@ var Color = Color || {};
     
     var messageHeight = this._messageWindow.windowHeight();
     var messageTextState = this._messageWindow._textState;
+    var newLineX = this._messageWindow.newLineX();
     var textLength, currentTextHeight, height;
     
     if(messageTextState.text) {
@@ -4360,13 +4379,13 @@ var Color = Color || {};
       
     }
     
-    this.width = this._messageWindow.width - this._messageWindow.newLineX();
+    this.width = this._messageWindow.width - newLineX;
     
     // messageHeight는 원래 높이.
     // height는 텍스트가 없는 부분의 높이.
     this.height = (height <= 0) ? messageHeight : height;
     
-    this.x = this._messageWindow.x + this._messageWindow.newLineX();
+    this.x = this._messageWindow.x + newLineX;
     this.y = this._messageWindow.y + currentTextHeight;
     
   };
