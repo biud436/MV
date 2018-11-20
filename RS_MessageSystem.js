@@ -471,12 +471,18 @@
  *   \골드
  *
  * 말풍선 메시지 창을 만들 수 있는 기능입니다. 0은 이 이벤트, -1은 플레이어입니다:
- * 기본 전투에서는 \말풍선[인덱스] 대신 \아군[인덱스], \적그룹[인덱스]을 사용하세요.
  *
  *   \말풍선[이벤트의 ID]
  *   \말풍선[0]
  *   \말풍선[-1]
- *
+ * 
+ * 전투에서는 \말풍선[배틀러의 ID]의 배틀러 ID 값에 음수 값을 전달하면 적 배틀러에 말풍선을 띄우고, 
+ * 양수 값을 전달할 경우, 아군에게 띄웁니다.
+ * 
+ * 음수 또는 양수를 전달해야 하므로 ID 값은 0이 될 수 없습니다.
+ * 
+ * 복잡하게 느껴진다면 \말풍선[인덱스] 대신 \아군[인덱스], \적그룹[인덱스]을 사용하세요.
+ * 
  * 왼쪽, 중앙 또는 오른쪽에 텍스트를 정렬할 수 있습니다. 
  * 정렬은 각 라인이 시작될 때 한 번씩 이뤄집니다.
  * 정렬자는 스택 방식이므로 각 라인에 하나씩 사용 바랍니다.
@@ -553,6 +559,8 @@
  * =============================================================================
  * 2018.11.20 (v0.1.34) :
  * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
+ * - 전투에서도 말풍선 텍스트 코드를 그대로 사용할 수 있게 변경.
+ * - 암호화 설정이 없는 1.3.5 미만 MV에서의 예외 처리 추가.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -971,6 +979,8 @@
  * =============================================================================
  * 2018.11.20 (v0.1.34) :
  * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
+ * - 전투에서도 말풍선 텍스트 코드를 그대로 사용할 수 있게 변경.
+ * - 암호화 설정이 없는 1.3.5 미만 MV에서의 예외 처리 추가.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -1516,6 +1526,8 @@
  * =============================================================================
  * 2018.11.20 (v0.1.34) :
  * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
+ * - 전투에서도 말풍선 텍스트 코드를 그대로 사용할 수 있게 변경.
+ * - 암호화 설정이 없는 1.3.5 미만 MV에서의 예외 처리 추가.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -2907,8 +2919,11 @@ var Color = Color || {};
       }.bind(this));
       text = text.replace(regGroup[tcGroup.BALLOON], function() {
         var value = Number(arguments[1] || -2);
-        if($gameParty.inBattle()) value = -2;
-        $gameMessage.setBalloon(value);
+        if($gameParty.inBattle()) {
+          $gameMessage.setBalloon( (value < 0) ? 'ENEMIES : ' + Math.abs(value) :  'ACTORS : ' + value);
+        } else {
+          $gameMessage.setBalloon(value);
+        }
         return '';
       }.bind(this));
       text = text.replace(regGroup[tcGroup.FRIENDLY_TROOPS], function() {
@@ -4048,7 +4063,8 @@ var Color = Color || {};
     this._soundPool.src = "./audio/se/" + RS.MessageSystem.Params.pathTextSound + AudioManager.audioFileExt();
     
     // 암호화 파일 처리
-    if(Decrypter.hasEncryptedAudio) {
+    var hasEncrypted = (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.3.5");
+    if(hasEncrypted && Decrypter.hasEncryptedAudio) {
       var url = Decrypter.extToEncryptExt(this._soundPool.src);
       this.setDecryptTextSoundSrc(url, function (src) {
         if(src) self._soundPool.src = src;
@@ -4110,7 +4126,8 @@ var Color = Color || {};
       document.body.removeChild(textSound);
     }
     // 암호화 사운드 파일이라면
-    if(Decrypter.hasEncryptedAudio) {
+    var hasEncrypted = (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.3.5");
+    if(hasEncrypted && Decrypter.hasEncryptedAudio) {
       URL.revokeObjectURL(this._soundPool.src);
     }
     
