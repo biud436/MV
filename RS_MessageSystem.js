@@ -2910,6 +2910,22 @@ var Color = Color || {};
           retName = retName.replace(':left', '');
           RS.MessageSystem.Params.namePositionTypeAtX = "left";
         }
+        if(retName.endsWith(':auto')) {
+          retName = retName.replace(':auto', '');
+          RS.MessageSystem.Params.namePositionTypeAtX = "auto";
+        }
+        if(retName.endsWith(':center')) {
+          retName = retName.replace(':center', '');
+          RS.MessageSystem.Params.namePositionTypeAtX = "center";
+        }        
+        if(retName.endsWith(':opacity0')) {
+          retName = retName.replace(':opacity0', '');
+          RS.MessageSystem.Params.namePositionTypeAtX = "opacity0";
+        }            
+        if(retName.endsWith(':defaultOpacity')) {
+          retName = retName.replace(':defaultOpacity', '');
+          RS.MessageSystem.Params.namePositionTypeAtX = "defaultOpacity";
+        }                    
         if(retName.endsWith(':right')) {
           retName = retName.replace(':right', '');
           RS.MessageSystem.Params.namePositionTypeAtX = "right";
@@ -2982,17 +2998,39 @@ var Color = Color || {};
       this.updatePlacement();
       this.updateNameWindow();
     };
+
+    Window_Message.prototype.updateNameWindowPositionXImpl = function() {
+      var namePositionTypeAtX = RS.MessageSystem.Params.namePositionTypeAtX;
+      var newX = this.x + RS.MessageSystem.Params.nameWindowX;
+
+      switch(namePositionTypeAtX) {
+        case 'right':
+          newX = (this.x + this.width) - this._nameWindow.width - RS.MessageSystem.Params.nameWindowX;
+          break;
+        case 'center':
+          newX = (this.x + this.width / 2) - (this._nameWindow.width / 2) - RS.MessageSystem.Params.nameWindowX;
+          break;
+        case 'left':
+          newX = this.x + RS.MessageSystem.Params.nameWindowX;
+          break;
+        case 'opacity0':
+          this._nameWindow.opacity = 0;
+          break;
+        case 'defaultOpacity':
+          this._nameWindow.opacity = RS.MessageSystem.Params.defaultOpacity;
+          break;
+        case 'auto':
+          newX = this.x + this.newLineX() + RS.MessageSystem.Params.nameWindowX;        
+          break;      
+      }
+
+      this._nameWindow.x = newX;
+    };
     
     Window_Message.prototype.updateNameWindow = function() {
       var self = this;
-      var namePositionTypeAtX = RS.MessageSystem.Params.namePositionTypeAtX;
       
-      // X 값
-      if(namePositionTypeAtX === 'right') {
-        this._nameWindow.x = (this.x + this.width) - this._nameWindow.width - RS.MessageSystem.Params.nameWindowX;
-      } else {
-        this._nameWindow.x = this.x + RS.MessageSystem.Params.nameWindowX;
-      }
+      this.updateNameWindowPositionXImpl();
       
       // Y 값
       if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
