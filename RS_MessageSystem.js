@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.33) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.34) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -551,6 +551,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.11.20 (v0.1.34) :
+ * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -717,7 +719,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.33) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.34) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -967,6 +969,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.20 (v0.1.34) :
+ * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -1131,7 +1135,7 @@
  */  
 /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.33) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.34) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1510,6 +1514,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.20 (v0.1.34) :
+ * - 윈도우 스킨이 프리 로드되지 않았을 때, 기본 컬러로 설정되도록 설정 변경.
  * 2018.11.19 (v0.1.33) : 
  * - 윈도우 스킨 변경 후 다음 메시지의 가로 길이가 더 넓어지면 글자가 잘리는 현상 수정.
  * 2018.11.16 (v0.1.32) :
@@ -2999,13 +3005,16 @@ var Color = Color || {};
 
     Window_Message.prototype.textColor = function(n) {
       var windowskin = this.windowskin;
+      if(!windowskin.isReady()) {
+        // Set the default text color if the windowskin is not ready.
+        return Color.baseColor;
+      }
       var px = 96 + (n % 8) * 12 + 6;
       var py = 144 + Math.floor(n / 8) * 12 + 6;
       return windowskin.getPixel(px, py);
     };    
 
     Window_Message.prototype.onLoadWindowskin = function() {
-      Color.baseColor = this.textColor(0);      
       this.changeTextColor(Color.baseColor);
     };
     
@@ -3014,13 +3023,30 @@ var Color = Color || {};
       var bitmap = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
       if(bitmap !== this.windowskin) {
         this.windowskin = bitmap;
-        if(!this.windowskin.isReady()) {
-          return setTimeout(function() {
-            return self.loadWindowskin();
-          }, 10);
+        this._isDirtyWindowskin = false;
+        this.windowskin.addLoadListener(function() {
+          this._isDirtyWindowskin = true;
+        }.bind(this));
+        if(!this.contents) {
+          this.createContents();
         }
+        // Set the default text color if the windowskin didn't load yet.
+        this.changeTextColor(Color.baseColor);   
       }
     };
+
+    var _Window_Message_updateLoading = Window_Message.prototype.updateLoading;
+    Window_Message.prototype.updateLoading = function() {
+      var ret = false;
+      if(this._isDirtyWindowskin) {
+        // Set the default text color from its bitmap after loaded the windowskin.
+        Color.baseColor = this.textColor(0);      
+        this.changeTextColor(Color.baseColor);        
+        this._isDirtyWindowskin = false;
+        ret = true;
+      }
+      return _Window_Message_updateLoading.call(this) && ret;
+    };    
     
     Window_Message.prototype.needsNewPage = function(textState) {
       return (!this.isEndOfText(textState) && textState.y + textState.height > this.contentsHeight());
@@ -3816,6 +3842,8 @@ var Color = Color || {};
   RS.Window_Name.prototype.refresh = function() {
     this.contents.clear();
     this.createContents();
+    // Set the default text color if the windowskin didn't load yet.
+    this.changeTextColor(Color.baseColor);
     this.contents.fontSize = RS.MessageSystem.Params.fontSize;
     this.text = this.convertEscapeCharacters(this.text);
     this.text = this.textProcessing(this.text);
@@ -3839,23 +3867,11 @@ var Color = Color || {};
   
   RS.Window_Name.prototype.close = function() {
     Window_Base.prototype.close.call(this);
-    this.changeTextColor(this.textColor(0));
   };
   
   RS.Window_Name.prototype.loadWindowskin = function() {
     var self = this;
     this.windowskin = ImageManager.loadSystem(RS.MessageSystem.Params.windowskinForNameWindow);
-    this.windowskin.addLoadListener(function() {
-      self.createContents();
-      self.contents.clear();
-      self.resetFontSettings();
-      self.changeTextColor(Color.baseColor);
-    });
-    if(!this.windowskin.isReady()) {
-      return setTimeout(function() {
-        return self.loadWindowskin();
-      }, 0);
-    }
   };
   
   //============================================================================
