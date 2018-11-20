@@ -3402,14 +3402,12 @@ var Color = Color || {};
       var lineHeight = this.lineHeight();
       // 선택지 갯수를 확장했을 수도 있지만, 4개로 가정한다.
       height = height + (maxChoices * lineHeight);
-      // 선택지 윈도우의 폭이 말풍선보다 크면
+      // 선택지 윈도우의 폭이 말풍선보다 크면 제한을 둔다.
       if(this._choiceWindow.windowWidth() > this._bWidth) {
         this._bWidth = this._choiceWindow.windowWidth();
       }
     }
     
-// this._bHeight = this._bHeight + ($gameMessage.isChoice() ? Math.min(this.numVisibleRows() - $gameMessage.choices().length, 4) * this.lineHeight() : 0);
-
     this._bHeight = height;
 
     // this.drawTextEx() 사용하기 이전 상태로 복구한다.
@@ -4277,6 +4275,8 @@ var Color = Color || {};
   };
 
   Window_ChoiceList.prototype.updateNormalPlacement = function() {
+
+    // XP 스타일이면 메서드를 종료한다.
     var type = RS.MessageSystem.Params.choiceWindowStyle;
     if(type === 'RMXP') return;
 
@@ -4284,12 +4284,15 @@ var Color = Color || {};
     var messageY = this._messageWindow.y;      
     var messageWidth = this._messageWindow.width;
     var messageHeight = this._messageWindow.height;
+    var positionType = $gameMessage.positionType();
 
+    // 메시지 윈도우가 화면 하단에 위치한다면
     if (messageY >= Graphics.boxHeight / 2) {
 
       var nameWindow = this._messageWindow._nameWindow;
       var nameWindowXPositionType = RS.MessageSystem.Params.namePositionTypeAtX;
 
+      // 이름 윈도우가 가운데 또는 오른쪽에 있으면 패딩 값이 추가된다.
       if(nameWindow.isOpen() && ['center', 'right'].contains(nameWindowXPositionType)) {
         this.y = messageY - nameWindow.height - this.height;
       } else {
@@ -4297,7 +4300,8 @@ var Color = Color || {};
       }
         
     } else {
-        this.y = messageY + messageHeight;
+      // 메시지 윈도우가 상단에 있으면 선택지 윈도우는 메시지 윈도우 하단으로 오게 된다.
+      this.y = messageY + messageHeight;
     }
 
     this.x = messageX + messageWidth - this.width;
@@ -4363,7 +4367,7 @@ var Color = Color || {};
     this.height = (height <= 0) ? messageHeight : height;
     
     this.x = this._messageWindow.x + this._messageWindow.newLineX();
-    this.y = this._messageWindow.y - currentTextHeight;
+    this.y = this._messageWindow.y + currentTextHeight;
     
   };
   
