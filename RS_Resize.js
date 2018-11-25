@@ -1,5 +1,5 @@
 /*:
- * @plugindesc RPG Maker XP용으로 Character 이미지를 Resize합니다. <RS_Resize>
+ * @plugindesc RPG Maker XP용으로 Character와 Tileset 이미지를 Resize합니다. <RS_Resize>
  * @author biud436
  * @help
  * ===================================================================
