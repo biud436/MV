@@ -28,7 +28,7 @@
  * ** Notice that the most of Auto-tiles doesn't be compatible with RMXP. **
  * 
  * In the RPG Maker XP, Internally the one Auto-tile floor is that composited four tiles.
- * Each tile have a size 16 x 16 px, But tiles of RPG Maker MV have a size of 24 x 24px. 
+ * Each tiles have a size 16 x 16 px, But tiles of RPG Maker MV have a size of 24 x 24px. 
  * You can understand they are different each other.
  * Furthermore, some Auto-tiles couldn't resize the size of it, 
  * therefore this couldn't create the correct Auto-tile.
