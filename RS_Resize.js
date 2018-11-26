@@ -1,4 +1,56 @@
 /*:
+ * @plugindesc This plugin can resize Character and Tileset images for RPG Maker XP. <RS_Resize>
+ * @author biud436
+ * @help
+ * ===================================================================
+ * Character images
+ * ===================================================================
+ * To resize size of the character image for RPG Maker XP, 
+ * You need to execute the following code.
+ * 
+ *      RS.Resize.convertCharacterImage();
+ * 
+ * The above function creates a new image for RMXP.
+ * 'convert_img' folder will be going to automatically open after formed a work.
+ * 
+ * ===================================================================
+ * Tileset images (Auto-tile floors and normal tiles)
+ * ===================================================================
+ * To convert tilesets used for RPG Maker XP, Start up the game and 
+ * execute the following plugin command. 
+ *
+ *      CreateTilesets
+ * 
+ * There is no arguments in the plugin command and read all tile set images.
+ * wait for a second after calling above plugin command 
+ * and then it will be opened up the folder called 'convert_img'.
+ * 
+ * ** Notice that the most of Auto-tiles doesn't be compatible with RMXP. **
+ * 
+ * In the RPG Maker XP, Internally the one Auto-tile floor is that composited four tiles.
+ * Each tile have a size 16 x 16 px, But tiles of RPG Maker MV have a size of 24 x 24px. 
+ * You can understand they are different each other.
+ * Furthermore, some Auto-tiles couldn't resize the size of it, 
+ * therefore this couldn't create the correct Auto-tile.
+ * 
+ * The Auto-tile floor consists of two parts!
+ * First, There are four lines of 12 tiles.
+ * The first lines that will be resized to 32 x 32px. 
+ * (the middle tile of its line is empty)
+ * 
+ * Second, the size of other three lines are completely the same as RPG Maker MV, 
+ * so they couldn't resize the size of it and basically doesn't be compatible with RMXP.
+ * 
+ * - Animated auto-tiles will be supported, but it may contain incorrect pixel.
+ * - Some Auto-tile walls may contain an incorrect pixel.
+ * - Auto-tile walls(A4) wouldn't be supported, it contains in the normal tile.
+ * 
+ * ===================================================================
+ * Change Log
+ * ===================================================================
+ * 2018.11.26 (v1.0.0) - First Release.
+ */
+/*:ko
  * @plugindesc RPG Maker XP용으로 Character와 Tileset 이미지를 Resize합니다. <RS_Resize>
  * @author biud436
  * @help
