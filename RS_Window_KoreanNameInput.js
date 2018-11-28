@@ -72,8 +72,9 @@
  * - Added the help window.
  * - You can switch the name input mode between direct mode and touch mode, and indicate corresponding message to help window.
  * 2018.11.28 (v1.0.2) :
- * - Added the key called '한/영(Hangul / English)'
+ * - 한/영 키 추가.
  * - The help text would always be displayed up to top.
+ * - 오른쪽 숫자 패드로 숫자 입력 가능.
  */
 /*:ko
  * @plugindesc <RS_Window_KoreanNameInput>
@@ -162,6 +163,7 @@
  * 2018.11.28 (v1.0.2) :
  * - 한/영 전환 기능이 추가되었습니다.
  * - 도움말 텍스트가 항상 위로 올라오게 됩니다.
+ * - 오른쪽 숫자 패드로 숫자 입력 가능.
  */
 
 var Imported = Imported || {};
@@ -675,6 +677,16 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
       88: ["ㅌ"],
       89: ["ㅛ"],
       90: ["ㅋ"],
+      96: ["0"],
+      97: ["1"],
+      98: ["2"],
+      99: ["3"],
+      100: ["4"],
+      101: ["5"],
+      102: ["6"],
+      103: ["7"],
+      104: ["8"],
+      105: ["9"],      
       188: [",", "<"],
       190: [".", ">"],
       191: ["/", "?"]
@@ -718,6 +730,16 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
       88: ["x", "X"],
       89: ["y", "Y"],
       90: ["z", "Z"],
+      96: ["0"],
+      97: ["1"],
+      98: ["2"],
+      99: ["3"],
+      100: ["4"],
+      101: ["5"],
+      102: ["6"],
+      103: ["7"],
+      104: ["8"],
+      105: ["9"],
       188: [",", "<"],
       190: [".", ">"],
       191: ["/", "?"]
