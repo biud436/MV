@@ -71,6 +71,9 @@
  * 2018.10.26 (v1.0.1) :
  * - Added the help window.
  * - You can switch the name input mode between direct mode and touch mode, and indicate corresponding message to help window.
+ * 2018.11.28 (v1.0.2) :
+ * - Added the key called '한/영(Hangul / English)'
+ * - The help text would always be displayed up to top.
  */
 /*:ko
  * @plugindesc <RS_Window_KoreanNameInput>
@@ -156,6 +159,9 @@
  * 2018.10.26 (v1.0.1) :
  * - 툴팁을 표시하는 창을 추가했습니다.
  * - 직접 입력과 터치 모드를 전환할 수 있으며 툴팁에 표시됩니다.
+ * 2018.11.28 (v1.0.2) :
+ * - 한/영 전환 기능이 추가되었습니다.
+ * - 도움말 텍스트가 항상 위로 올라오게 됩니다.
  */
 
 var Imported = Imported || {};
@@ -200,7 +206,18 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
   'ㅁ','ㄴ','ㅇ','ㄹ','ㅎ',  'ㅗ','ㅓ','ㅏ','ㅣ','',
   'ㅋ','ㅌ','ㅊ','ㅍ','ㅠ',  'ㅜ','ㅡ','','','',
   '1','2','3','4','5',  '6','7','8','9','0',
-  '','','','','', '','','띄어쓰기','백스페이스','확인'];
+  '',"한/영",'','','', '','','띄어쓰기','백스페이스','확인'];
+
+  Window_KoreanNameInput.KOREAN2 =
+  [ 'A','B','C','D','E',  'a','b','c','d','e',
+    'F','G','H','I','J',  'f','g','h','i','j',
+    'K','L','M','N','O',  'k','l','m','n','o',
+    'P','Q','R','S','T',  'p','q','r','s','t',
+    'U','V','W','X','Y',  'u','v','w','x','y',
+    'Z','[',']','^','_',  'z','{','}','|','~',
+    '0','1','2','3','4',  '!','#','$','%','&',
+    '5','6','7','8','9',  '(',')','*','+','-',
+    '',"한/영",'','','', '','','띄어쓰기','백스페이스','확인' ];  
   
   Window_KoreanNameInput.prototype.initialize = function(editWindow) {
     var self = this;
@@ -209,11 +226,8 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
     this._dataFromTable.okIndex = Window_KoreanNameInput.KOREAN.indexOf("확인");
     this._dataFromTable.backIndex = Window_KoreanNameInput.KOREAN.indexOf("백스페이스");
     this._dataFromTable.spaceIndex = Window_KoreanNameInput.KOREAN.indexOf("띄어쓰기");
+    this._dataFromTable.specificIndex = Window_KoreanNameInput.KOREAN.indexOf("한/영");
     Window_NameInput.prototype.initialize.call(this, editWindow);
-  };
-  
-  Window_KoreanNameInput.prototype.windowHeight = function() {
-    return eval(RS.Window_KoreanNameInput.Params.windowHeightEval);
   };
   
   Window_KoreanNameInput.prototype.standardFontSize = function() {
@@ -225,11 +239,11 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
   };
   
   Window_KoreanNameInput.prototype.windowHeight = function() {
-    return this.fittingHeight(6);
+    return (this._page === 0) ? this.fittingHeight(6) : this.fittingHeight(9);
   };
   
   Window_KoreanNameInput.prototype.table = function() {
-    return [Window_KoreanNameInput.KOREAN];
+    return [Window_KoreanNameInput.KOREAN, Window_KoreanNameInput.KOREAN2];
   };
   
   Window_KoreanNameInput.prototype.maxCols = function() {
@@ -239,11 +253,16 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
   Window_KoreanNameInput.prototype.maxItems = function() {
     return this.table().length;
   };
+
+  Window_KoreanNameInput.prototype.cursorPagedown = function() {
+    this._page = (this._page + 1) % this.table().length;
+    this.refresh();
+  };
   
   Window_KoreanNameInput.prototype.character = function(index) {
     index = index || this._index;
     var c = this.table()[this._page][index];
-    var exclude = ['띄어쓰기','백스페이스','확인'];
+    var exclude = ['띄어쓰기','백스페이스','확인', "한/영"];
     var isCharacter = (exclude.indexOf(c) === -1);
     if(isCharacter) {
       return c;
@@ -434,12 +453,28 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
       var table = this.table();
       this.contents.clear();
       this.resetTextColor();
+      
+      if(!this._dataFromTable) {
+        this._dataFromTable = {};
+      }
+
+      this._dataFromTable.maxItems = table[this._page].length;
+      this._dataFromTable.okIndex = table[this._page].indexOf("확인");
+      this._dataFromTable.backIndex = table[this._page].indexOf("백스페이스");
+      this._dataFromTable.spaceIndex = table[this._page].indexOf("띄어쓰기");
+      this._dataFromTable.specificIndex = table[this._page].indexOf("한/영");
+
       for (var i = 0; i < this._dataFromTable.maxItems; i++) {
         var rect = this.itemRect(i);
         rect.x += 3;
         rect.width -= 6;
         this.drawText(table[this._page][i], rect.x, rect.y, rect.width, 'center');
       }
+
+    };
+
+    Window_KoreanNameInput.prototype.isHan = function() {
+      return this._index === this._dataFromTable.specificIndex;
     };
     
     Window_KoreanNameInput.prototype.isOk = function() {
@@ -459,6 +494,11 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
         this.onNameAdd();
       } else if (this.isOk()) {
         this.onNameOk();
+      } else if (this.isHan()) {
+        this._editWindow._isHan = !this._editWindow._isHan;
+        this._page = (this._editWindow._isHan) ? 0 : 1;
+        this.refresh();
+        this._index = this._dataFromTable.specificIndex;
       } else if (this.isSpace()) {
         this._editWindow.add(" ");
       } else if(this.isBack()) {
@@ -481,6 +521,7 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
       Window_NameEdit.prototype.initialize.call(this, actor, maxLength);
       this._traceBackCallback = [];
       this._alertFunc = function() {};
+      this._isHan = true;
       this._isOnAlertWindowWhenTyping = "none";
       this.on('removed', this.removeEventListener, this);
       this.addEventListener();    
@@ -572,6 +613,7 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
     Window_KoreanNameEdit.ENTER = 13;
     Window_KoreanNameEdit.IS_NOT_CHAR = 32;
     Window_KoreanNameEdit.KEYS_ARRAY = 255;
+
     
     Window_KoreanNameEdit.prototype.addEventListener = function () {
       window.addEventListener('keydown', this.onKeyDown.bind(this), false);
@@ -637,6 +679,49 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
       190: [".", ">"],
       191: ["/", "?"]
     };
+
+    Window_KoreanNameEdit.ENGLISH_KEYS = {
+      32: [" "],
+      49: ["1", "!"],
+      50: ["2", "@"],
+      51: ["3", "#"],
+      52: ["4", "$"],
+      53: ["5", "%"],
+      54: ["6", "^"],
+      55: ["7", "&"],
+      56: ["8", "*"],
+      57: ["9", "("],
+      48: ["0", ")"],
+      65: ["a", "A"],
+      66: ["b", "B"],
+      67: ["c", "C"],
+      68: ["d", "D"],
+      69: ["e", "E"],
+      70: ["f", "F"],
+      71: ["g", "G"],
+      72: ["h", "H"],
+      73: ["i", "I"],
+      74: ["j", "J"],
+      75: ["k", "K"],
+      76: ["l", "L"],
+      77: ["m", "M"],
+      78: ["n", "N"],
+      79: ["o", "O"],
+      80: ["p", "P"],
+      81: ["q", "Q"],
+      82: ["r", "R"],
+      83: ["s", "S"],
+      84: ["t", "T"],
+      85: ["u", "U"],
+      86: ["v", "V"],
+      87: ["w", "W"],
+      88: ["x", "X"],
+      89: ["y", "Y"],
+      90: ["z", "Z"],
+      188: [",", "<"],
+      190: [".", ">"],
+      191: ["/", "?"]
+    };    
     
     Window_KoreanNameEdit.prototype.isValidInputWindow = function () {
       var scene = SceneManager._scene;
@@ -647,6 +732,8 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
     Window_KoreanNameEdit.ARROW_UP = 38;
     Window_KoreanNameEdit.ARROW_RIGHT = 39;
     Window_KoreanNameEdit.ARROW_DOWN = 40;
+
+    Window_KoreanNameEdit.HANGUL_ENGLISH_SPECIFIC_KEY = 21;
     
     Window_KoreanNameEdit.prototype.onKeyDown = function(e) {
       var keyCode = e.which;
@@ -669,14 +756,23 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
             inputWindow._index = inputWindow._dataFromTable.okIndex;
           }
           e.preventDefault();
+        } else if (keyCode === Window_KoreanNameEdit.HANGUL_ENGLISH_SPECIFIC_KEY) {
+          if(inputWindow = this.isValidInputWindow()) {
+            this._isHan = !this._isHan;
+            inputWindow._page = (this._isHan === true) ? 0 : 1;
+            inputWindow.refresh();
+          }
         }
         
       } else if (keyCode < Window_KoreanNameEdit.KEYS_ARRAY) {  
         if(inputWindow = this.isValidInputWindow()) inputWindow.active = false;    
         var c = "";
-        if(c = Window_KoreanNameEdit.HANGUL_KEYS[keyCode]) {
+        if(this._isHan && (c = Window_KoreanNameEdit.HANGUL_KEYS[keyCode])) {
           c = (e.shiftKey && c.length > 1) ? c[1] : c[0];
           this.add(c);
+        } else if(!this._isHan && (c = Window_KoreanNameEdit.ENGLISH_KEYS[keyCode])) {
+          c = (e.shiftKey && c.length > 1) ? c[1] : c[0];
+          this.add(c);          
         }
       }
       
@@ -736,9 +832,10 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
       this._helpWindow.x = 0;
       this._helpWindow.y = Graphics.boxHeight - this._helpWindow.height - 1;
       this._helpWindow.opacity = 0;
+      this._helpWindow._isWindow = false;
       this._helpWindow.hide();
       this._helpWindowLife = 0;
-      this.addWindow(this._helpWindow);
+      this.addChild(this._helpWindow);
     };
     
     Scene_KoreanName.prototype.update = function() {
