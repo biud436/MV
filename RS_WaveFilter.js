@@ -138,6 +138,8 @@
  * 2018.11.01 (v1.5.9) : 
  * - Fixed the issue that the wave filter is not working in the game picture.
  * - Fixed the issue that the wave effect do a horizontal looping likes as Tiling Sprite.
+ * 2018.11.29 (v1.5.10) :
+ * - Fixed the bug that causes an error when calling Erase Event event command.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -300,6 +302,8 @@
  * 2018.11.01 (v1.5.9) : 
  * - Fixed the issue that the wave filter is not working in the game picture.
  * - Fixed the issue that the wave effect do a horizontal looping likes as Tiling Sprite.
+ * 2018.11.29 (v1.5.10) :
+ * - Fixed the bug that causes an error when calling Erase Event event command.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -986,6 +990,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   Game_Event.prototype.updateWaveEffect = function() {
     var self = this;
     if(this._pageIndex === this._lastPageIndex) return;
+    if(!self.page()) return false;
     if(self.findProperPageIndex() < 0) return false;
     if(self._trigger > 3) return false;
 
