@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.41) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.42) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -557,6 +557,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.11.30 (v0.1.42) :
+ * - 텍스트 코드 \! 사용 시 생기는 문제를 수정하였습니다. (drawTextEx 관련)
  * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
@@ -732,7 +734,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.41) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.42) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -982,6 +984,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.30 (v0.1.42) :
+ * - 텍스트 코드 \! 사용 시 생기는 문제를 수정하였습니다. (drawTextEx 관련)
  * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
@@ -1155,7 +1159,7 @@
  */  
 /*:ja
  * RS_MessageSystem.js
- * @plugindesc (v0.1.41) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
+ * @plugindesc (v0.1.42) メッセージウィンドウ内で 制御文字を日本語で入力することができます。 <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1534,6 +1538,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.11.30 (v0.1.42) :
+ * - 텍스트 코드 \! 사용 시 생기는 문제를 수정하였습니다. (drawTextEx 관련)
  * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
@@ -3353,6 +3359,13 @@ var Color = Color || {};
   Window_Message.prototype.lineHeight = function () {
     return RS.MessageSystem.Params.lineHeight;
   };
+
+  var alias_Window_Message_startPause = Window_Message.prototype.startPause;
+  Window_Message.prototype.startPause = function() {
+    if(!this._isAntiPauseMode) {
+      alias_Window_Message_startPause.call(this);
+    }
+  };
   
   Window_Message.prototype.calcBalloonRect = function(text) {
     var self = this;
@@ -3391,7 +3404,9 @@ var Color = Color || {};
     // 폭을 계산한다.
     var pw = 0;
     for(var i = 0; i < numOfLines; i++) {
+      this._isAntiPauseMode = true;
       var x = this.drawTextEx(tempText[i], 0, this.contents.height + textPadding);
+      this._isAntiPauseMode = false;
       if(x >= pw) {
         pw = x;
       }
@@ -4041,7 +4056,9 @@ var Color = Color || {};
     var tempText = text;
     tempText = tempText.split(/[\n]+/);
     this.save();
+    this._isAntiPauseMode = true;
     this.__textWidth = this.drawTextEx(tempText[0], 0, this.contents.height);
+    this._isAntiPauseMode = false;
     this.restore();
     return this.__textWidth;
   };
