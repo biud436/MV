@@ -558,7 +558,7 @@
  * 버전 로그(Version Log)
  * =============================================================================
  * 2018.11.30 (v0.1.42) :
- * - 텍스트 코드 \! 사용 시 생기는 문제를 수정하였습니다. (drawTextEx 관련)
+ * - \! 사용 시 생기는 문제를 수정하였습니다.
  * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
@@ -985,7 +985,7 @@
  * Version Log
  * =============================================================================
  * 2018.11.30 (v0.1.42) :
- * - 텍스트 코드 \! 사용 시 생기는 문제를 수정하였습니다. (drawTextEx 관련)
+ * - \! 사용 시 생기는 문제를 수정하였습니다.
  * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
@@ -1539,7 +1539,7 @@
  * Version Log
  * =============================================================================
  * 2018.11.30 (v0.1.42) :
- * - 텍스트 코드 \! 사용 시 생기는 문제를 수정하였습니다. (drawTextEx 관련)
+ * - \! 사용 시 생기는 문제를 수정하였습니다.
  * 2018.11.21 (v0.1.41) :
  * - 윈도우 스킨을 사전에 로드하지 않았을 때, 기본 텍스트 색상이 기본색으로 설정되도록 하였습니다.
  * - 말풍선 텍스트 코드를 전투에서 그대로 쓸 수 있게 새로운 기능을 추가하였습니다.
@@ -2738,17 +2738,18 @@ var Color = Color || {};
       this.startWait(1);
       break;
       case textCode[tcGroup.PLAY_SE]:
-      this.playSe(this.obtainSoundName(textState));
+      if(!this._isUsedTextWidthEx) this.playSe(this.obtainSoundName(textState));
       break;
       case textCode[tcGroup.SHOW_PICTURE]:
-      this.showPicture(this.obtainSoundName(textState));
+      if(!this._isUsedTextWidthEx) this.showPicture(this.obtainSoundName(textState));
       this.startWait(15);
       break;
       case textCode[tcGroup.HIDE_PICTURE]:
-      this.erasePicture(this.obtainEscapeParam(textState));
+      if(!this._isUsedTextWidthEx) this.erasePicture(this.obtainEscapeParam(textState));
       this.startWait(15);
       break;
       case textCode[tcGroup.FACE]:
+      if(this._isUsedTextWidthEx) break;
       var params = this.obtainSoundName(textState).split(',');
       this.redrawFaceImage(textState, params[0], params[1], 0, 0);
       this.startWait(1);
@@ -3360,13 +3361,29 @@ var Color = Color || {};
     return RS.MessageSystem.Params.lineHeight;
   };
 
+  var alias_Window_Message_startWait = Window_Message.prototype.startWait;
+  Window_Message.prototype.startWait = function(count) {
+    if(this._isUsedTextWidthEx) return;
+    alias_Window_Message_startWait.call(this, count);
+  };
+
   var alias_Window_Message_startPause = Window_Message.prototype.startPause;
   Window_Message.prototype.startPause = function() {
-    if(!this._isAntiPauseMode) {
-      alias_Window_Message_startPause.call(this);
-    }
+    if(this._isUsedTextWidthEx) return;
+    alias_Window_Message_startPause.call(this);
   };
-  
+
+  var _alias_Window_Gold_open = Window_Gold.prototype.open;
+  Window_Gold.prototype.open = function() {
+    if(SceneManager._scene instanceof Scene_Map ||
+    SceneManager._scene instanceof Scene_Battle) {
+      if(SceneManager._scene._messageWindow._isUsedTextWidthEx) {
+        return;
+      }
+    }
+    _alias_Window_Gold_open.call(this);
+  };
+
   Window_Message.prototype.calcBalloonRect = function(text) {
     var self = this;
     var temp, baseWidth, tempText, height, min, pad, numOfLines;
@@ -3404,9 +3421,9 @@ var Color = Color || {};
     // 폭을 계산한다.
     var pw = 0;
     for(var i = 0; i < numOfLines; i++) {
-      this._isAntiPauseMode = true;
+      this._isUsedTextWidthEx = true;
       var x = this.drawTextEx(tempText[i], 0, this.contents.height + textPadding);
-      this._isAntiPauseMode = false;
+      this._isUsedTextWidthEx = false;
       if(x >= pw) {
         pw = x;
       }
@@ -4056,9 +4073,9 @@ var Color = Color || {};
     var tempText = text;
     tempText = tempText.split(/[\n]+/);
     this.save();
-    this._isAntiPauseMode = true;
+    this._isUsedTextWidthEx = true;
     this.__textWidth = this.drawTextEx(tempText[0], 0, this.contents.height);
-    this._isAntiPauseMode = false;
+    this._isUsedTextWidthEx = false;
     this.restore();
     return this.__textWidth;
   };
@@ -4232,6 +4249,8 @@ var Color = Color || {};
   Window_Message.prototype._requestTextSound = function () {
     var textSound, currentId;
     
+    if(this._isUsedTextWidthEx) return false;
+
     // 사운드 풀 유효성 체크
     if(!this.isValidTextSound()) return false;
     
