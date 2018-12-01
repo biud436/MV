@@ -221,6 +221,8 @@ Imported.RS_TitleManagerEx = true;
  * 2017.06.09 (v1.0.4) - Fixed the parameter not to remove the resource when deploying the game.
  * 2017.07.23 (v1.0.5) - Fixed the incorrect description
  * 2018.08.28 (v1.0.6) - Fixed the incorrect plugin parameter's name.
+ * 2018.12.01 (v1.0.7) :
+ * - BGM이 재생되지 않았던 문제를 수정했습니다.
  */
 /*:
  * @plugindesc This plugin allows player to change resources of the title scene after the user has been ended a certain epilogue.
@@ -424,7 +426,9 @@ Imported.RS_TitleManagerEx = true;
  * 2016.03.07 (v1.0.3) - Fixed a bug that causes a serious problem when the parameters were set to English.
  * 2017.06.09 (v1.0.4) - Fixed the parameter not to remove the resource when deploying the game.
  * 2017.07.23 (v1.0.5) - Fixed the incorrect description
- * 2018.08.28 (v1.0.6) - Fixed the inccorect plugin parameter's name
+ * 2018.08.28 (v1.0.6) - Fixed the inccorect plugin parameter's name.
+ * 2018.12.01 (v1.0.7) :
+ * - Fixed the issue that couldn't playback the BGM.
  */
 
 var RS = RS || {};
@@ -696,6 +700,7 @@ RS.TitleManagerEx = RS.TitleManagerEx || {};
       var data = AudioManager.makeEmptyAudioObject();
       data.name = RS.TitleManagerEx.Header.exportBackground()[2];
       data.volume = 90;
+      data.pitch = 100;
       AudioManager.playBgm(data);
     } else {
       AudioManager.playBgm($dataSystem.titleBgm);
