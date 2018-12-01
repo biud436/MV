@@ -1,6 +1,6 @@
 /*:
  * RS_SelfVariables.js
- * @plugindesc This plugin allows you to set up the variable on event itself.
+ * @plugindesc This plugin allows you to set up the variable on event itself. <RS_SelfVariables>
  * @author biud436
  *
  * @param Save notifying variable
@@ -104,7 +104,7 @@
  * 2017.04.29 (v1.0.1) - Added built-in variables like x, y, direction.
  */
 /*:ko
- * @plugindesc 이벤트 내에서 전역으로 사용할 수 있는 셀프 변수 플러그인입니다.
+ * @plugindesc 이벤트 내에서 전역으로 사용할 수 있는 셀프 변수 플러그인입니다.<RS_SelfVariables>
  * @author 러닝은빛(biud436)
  *
  * @param Save notifying variable
@@ -264,7 +264,12 @@ function Game_SelfVariables() {
 
 (function ($) {
 
-  var parameters = PluginManager.parameters('RS_SelfVariables');
+  var parameters = $plugins.filter(function(i) {
+    return i.description.contains("<RS_SelfVariables>");
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
   $.notifyingVarNum = Number(parameters['notifying variable number'] || 1);
   $.saveFlags = Boolean(parameters['Save notifying variable'] === 'true');
   $.nonEventPointer = 10000;

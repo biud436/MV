@@ -7,8 +7,8 @@
 * @param text Size
 * @type number
 * @desc Changes a text size
-* @default 16
-* @min 4
+* @default 22
+* @min 12
 * @decimals 0
 *
 * @param Show Player Text

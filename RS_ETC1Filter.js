@@ -1,6 +1,8 @@
 /*:
  * @plugindesc <RS_ETC1Filter>
  * @author biud436
+ * @help
+ * 
  */
 
 var RS = RS || {};
@@ -13,6 +15,16 @@ RS.ETC1Filter = RS.ETC1Filter || {};
     var parameters = $plugins.filter(function(i) {
         return i.description.contains("<RS_ETC1Filter>");
     });
+
+    if(!Utils.RPGMAKER_VERSION || (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION < "1.3.5") ) {
+        console.warn("This plugin needs to be used for RPG Maker MV v1.3.5 or higher.");
+        return;
+    }
+
+    if(!Graphics.isWebGL()) {
+        console.warn("This plugin needs to be used a WebGL. Cannot supported in the canvas mode.");
+        return;
+    }
 
     PIXI.ETC1Filter = function(sprite)
     {

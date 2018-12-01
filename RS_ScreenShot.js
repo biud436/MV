@@ -1,6 +1,6 @@
 /*:
  * RS_ScreenShot.js
- * @plugindesc This plugin creates the screenshot file in ScreenShots folder when you press on the specific key.
+ * @plugindesc <RS_ScreenShot>
  *
  * @author biud436
  * @date 2015.12.22
@@ -59,7 +59,7 @@
  */
 /*:ko
 * RS_ScreenShot.js
-* @plugindesc 이 플러그인은 스크린샷 파일을 만듭니다.
+* @plugindesc <RS_ScreenShot>
 *
 * @author biud436
 * @date 2015.12.22
@@ -125,7 +125,12 @@ RS.ScreenShot = RS.ScreenShot || {};
 
 (function($) {
 
-  var parameters = PluginManager.parameters('RS_ScreenShot');
+  var parameters = $plugins.filter(function(i) {
+    return i.description.contains("<RS_ScreenShot>");
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
   $.KEY = Number(parameters['key'] || 118 );
   $.isPreviewWindow = Boolean(parameters['Screenshot Preview Window'] === 'true');
   $.isPlaySe = Boolean(parameters['Play Se'] === 'true');

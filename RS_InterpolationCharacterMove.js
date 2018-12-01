@@ -22,6 +22,11 @@
 
  (function() {
 
+    // if this is used for <community-1.3> or higher, it will break.
+    if(Utils.RPGMAKER_ENGINE && Utils.RPGMAKER_ENGINE.slice(-3) >= "1.3") {
+        return;
+    }
+
     //======================================================================
     // SceneManager
     //======================================================================

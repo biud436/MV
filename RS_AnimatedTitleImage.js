@@ -109,6 +109,16 @@ Imported.AnimatedTitleImage = true;
   RS.AnimatedTitleImage.Params.isPreload = Boolean(parameters['Preload'] === 'true');
   RS.AnimatedTitleImage.Params.images = [];
 
+  if(Imported.RS_TitleManagerEx) {
+    console.warn("Cannot use together with RS_TitleManagerEx.js plugin.");
+    return false;
+  }
+
+  if(!Utils.RPGMAKER_VERSION || (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION < "1.3.5") ) {
+    console.warn("This plugin needs to be used for RPG Maker MV v1.3.5 or higher.");
+    return;
+  }
+
   RS.Utils.jsonParse = function (str) {
     var retData = JSON.parse(str, function (k, v) {
       try { return RS.Utils.jsonParse(v); } catch (e) { return v; }

@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.2) This plugin allows you to show up the version anywhere.
+ * @plugindesc (v1.0.2) This plugin allows you to show up the version anywhere. <RS_VersionLayer>
  * @author biud436
  *
  * @param Version
@@ -84,7 +84,7 @@
  * 2016.08.23 (v1.0.2) - Added position parameter.
  */
 /*:ko
- * @plugindesc (v1.0.2) 버전 텍스트를 화면에 표시합니다.
+ * @plugindesc (v1.0.2) 버전 텍스트를 화면에 표시합니다. <RS_VersionLayer>
  * @author 러닝은빛(biud436)
  *
  * @param Version
@@ -189,7 +189,12 @@ Imported.RS_VersionLayer = true;
 
 (function () {
 
-  var parameters = PluginManager.parameters("RS_VersionLayer");
+  var parameters = $plugins.filter(function(i) {
+    return i.description.contains("<RS_VersionLayer>");
+  })
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
   var params = [
     String(eval(parameters["Version"] || '1.0')),
     Number(parameters['fontSize'] || 14),

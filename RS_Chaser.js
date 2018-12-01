@@ -25,7 +25,7 @@
  * the search.
  */
 /*:ko
- * @plugindes 캐릭터나 플레이어를 추격합니다. 장애물도 피할 수 있습니다 (이동 AI 강화)
+ * @plugindesc 캐릭터나 플레이어를 추격합니다. 장애물도 피할 수 있습니다 (이동 AI 강화)
  * @author 러닝은빛(biud436)
  *
  * @param Default Search Limit

@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.3) Wav File Encrypter
+ * @plugindesc (v1.0.3) Wav File Encrypter <RS_WavFileEncrypter>
  * @author biud436
  *
  * @param key
@@ -35,7 +35,7 @@
  * 2018.03.13 (v1.0.3) - Fixed the token error.
  */
 /*:ko
- * @plugindesc (v1.0.3) 웨이브 파일 인크립터
+ * @plugindesc (v1.0.3) 웨이브 파일 인크립터 <RS_WavFileEncrypter>
  * @author 러닝은빛(biud436)
  *
  * @param key
@@ -83,7 +83,11 @@ function Encrypter() {
 
 (function() {
 
-  var parameters = PluginManager.parameters('RS_WavFileEncrypter');
+  var parameters = $plugins.filter(function(i) {
+    return i.description.contains("<RS_WavFileEncrypter>");
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
 
   var fs = require('fs');
 
