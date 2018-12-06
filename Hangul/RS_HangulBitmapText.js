@@ -46,7 +46,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
 
   RS.HangulBitmapText.Params.init = false;
   RS.HangulBitmapText.Params.tempInit = false;
-  RS.HangulBitmapText.Params.fontName = "나눔고딕";
+  RS.HangulBitmapText.Params.fontName = "defaultFont";
   RS.HangulBitmapText.Params.fntName = 'img/hangul/hangul.xml';
   RS.HangulBitmapText.Params.resources = null;
 
@@ -61,7 +61,6 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
       if(resources[i] && resources[i].extension === "xml") {
         RS.HangulBitmapText.Params.fontName = resources[i].bitmapFont.font;
         RS.HangulBitmapText.Params.resources = resources[i].data;
-        console.log(resources[i]);
       }
     }, this);
     RS.HangulBitmapText.Params.init = true;
