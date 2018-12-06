@@ -1,12 +1,7 @@
 /*:
  * @plugindesc 한글 비트맵 폰트 <RS_HangulBitmapText>
  * @author biud436
- * 
- * @param fontName
- * @text 폰트명
- * @desc 폰트의 이름을 적으십시오.
- * @default 나눔고딕
- * 
+ *
  * @help
  * 비트맵 폰트는 나눔고딕 32px 기반이며 2048 사이즈의 아틀라스 Texture입니다.
  * 필요한 파일은 hangul_0.png 파일과 hangul.xml 파일이며 해당 파일을
@@ -51,7 +46,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
 
   RS.HangulBitmapText.Params.init = false;
   RS.HangulBitmapText.Params.tempInit = false;
-  RS.HangulBitmapText.Params.fontName = parameters["fontName"] || "나눔고딕";
+  RS.HangulBitmapText.Params.fontName = "나눔고딕";
   RS.HangulBitmapText.Params.fntName = 'img/hangul/hangul.xml';
   RS.HangulBitmapText.Params.resources = null;
 
@@ -60,10 +55,15 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
       .load(onAssetsLoaded);
 
   function onAssetsLoaded(loader, resources) {
-    var xml = resources[RS.HangulBitmapText.Params.fontName];
-    if(xml && xml.data) {
-      RS.HangulBitmapText.Params.resources = xml.data;
-    }
+    var keys = Object.keys(resources);
+    var item = null;
+    keys.forEach(function(i) {
+      if(resources[i] && resources[i].extension === "xml") {
+        RS.HangulBitmapText.Params.fontName = resources[i].bitmapFont.font;
+        RS.HangulBitmapText.Params.resources = resources[i].data;
+        console.log(resources[i]);
+      }
+    }, this);
     RS.HangulBitmapText.Params.init = true;
   };
 
