@@ -75,6 +75,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   Bitmap.prototype.measureTextWidth = function(text) {
     if(!RS.HangulBitmapText.Params.init) return alias_Bitmap_measureTextWidth.call(this, text);
     var data = PIXI.extras.BitmapText.fonts[RS.HangulBitmapText.Params.fontName];
+    var scale = this.fontSize / data.size;
     var pos = 0;
     for(var i=0; i<text.length; ++i) {
       var charCode = text.charCodeAt(i);
@@ -85,7 +86,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
       if(!charData) {
         return alias_Bitmap_measureTextWidth.call(this, text);
       }
-      pos += parseInt(charData.xAdvance, 10);
+      pos += parseInt(charData.xAdvance, 10) * scale;
     }
     return pos;
   };
