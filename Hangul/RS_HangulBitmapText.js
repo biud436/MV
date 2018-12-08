@@ -24,6 +24,8 @@
  * 2018.12.06 (v1.0.5) :
  * - 비트맵 변환 과정을 없앴습니다.
  * - 퍼포먼스가 향상되었습니다.
+ * 2018.12.08 (v1.0.6) :
+ * - 숫자 파싱 오류 수정
  */
 
 var Imported = Imported || {};
@@ -101,6 +103,8 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
 
     this._letterSpacing = 0;
+    
+    text = String(text);
 
     var data = PIXI.extras.BitmapText.fonts[RS.HangulBitmapText.Params.fontName];
     var scale = this.fontSize / data.size;
