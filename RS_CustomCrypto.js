@@ -1,19 +1,21 @@
 /*:
- * @plugindesc This plugin allows you to compress a string by using the secret key.
+ * @plugindesc (v1.0.1) This plugin allows you to ecrypt with AES method in your save file.
  * @date 2015.12.29
  * @author biud436
  *
  * @param UserKey
- * @desc UserKey
+ * @desc Specify desired secret key.
  * @default Secret Passphrase
- *
- * @param  script_url
- * @desc script_url
- * @default http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/tripledes.js
- *
+ * 
+ * @help
+ * ===================================================================
+ * Version Log
+ * ===================================================================
+ * 2015.12.29 (v1.0.0) - First Release.
+ * 2018.12.15 (v1.0.1) - Fixed the issue that couldn't find the CryptoJS library from google-cdn.
  */
 /*:ko
- * @plugindesc 비밀키를 사용하여 세이브 파일을 AES 방식으로 암호화합니다.
+ * @plugindesc (v1.0.1) 비밀키를 사용하여 세이브 파일을 AES 방식으로 암호화합니다.
  * @date 2015.12.29
  * @author biud436
  *
@@ -21,11 +23,13 @@
  * @text 비밀 키
  * @desc UserKey
  * @default Secret Passphrase
- *
- * @param  script_url
- * @desc script_url
- * @default http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/tripledes.js
- *
+ * 
+ * @help
+ * ===================================================================
+ * Version Log
+ * ===================================================================
+ * 2015.12.29 (v1.0.0) - First Release.
+ * 2018.12.15 (v1.0.1) - Fixed the issue that couldn't find the CryptoJS library from google-cdn.
  */
 
 var Imported = Imported || {};
@@ -37,16 +41,19 @@ RS.CustomCrypto = RS.CustomCrypto || {};
 (function() {
 
   var parameters = PluginManager.parameters("RS_CustomCrypto");
-  RS.CustomCrypto.URL = String(parameters['script_url'] || 'http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/tripledes.js');
   RS.CustomCrypto.userKey = String(parameters['UserKey'] || 'Secret Passphrase');
-  RS.CustomCrypto.subKey = null;
 
-  RS.CustomCrypto.loadScript = function() {
-    if(this.isSetup()) return;
+  var data = [
+    "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js",
+  ];
+  
+  data.forEach(function(i) {
     var _script = document.createElement('script');
-    _script.src = this.URL;
-    document.body.appendChild(_script);
-  };
+    _script.src = encodeURI(i);
+    document.body.appendChild(_script);    
+  })
 
   RS.CustomCrypto.getKey = function() {
     return CryptoJS.MD5(RS.CustomCrypto.userKey).toString();
@@ -56,18 +63,12 @@ RS.CustomCrypto = RS.CustomCrypto || {};
     var arr = document.querySelectorAll('script');
     var result = false;
     for(i = 0; i < arr.length; i++) {
-     if(arr[i].url === this.URL) {
+     if(data.contains(arr[i].url)) {
        result = true;
        break;
      }
     }
     return result;
-  };
-
-  var alias_Scene_Boot_init = Scene_Boot.prototype.initialize
-  Scene_Boot.prototype.initialize = function() {
-    RS.CustomCrypto.loadScript();
-    alias_Scene_Boot_init .call(this);
   };
 
   RS.CustomCrypto.compress = LZString.compressToBase64;
