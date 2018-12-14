@@ -21,7 +21,7 @@
  *
  * @param UserKey
  * @text 비밀 키
- * @desc UserKey
+ * @desc 원하는 비밀키를 입력해주십시오.
  * @default Secret Passphrase
  * 
  * @help
