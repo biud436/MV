@@ -2256,7 +2256,11 @@ var Color = Color || {};
   };
 
   Window_Message.prototype.setHighlightTextColor = function() {
-    this.contents.highlightTextColor = arguments[0];
+    var color = arguments[0];
+    if(color === "null" || color === "없음") {
+      color = null;
+    }
+    this.contents.highlightTextColor = color;
   };
 
   Window_Message.prototype.setTextGradient = function(textState) {
@@ -2391,7 +2395,7 @@ var Color = Color || {};
     // 하이라이트 컬러 (Highlight Color)
     // 너무 길어 영어로 표기
     // \HC[]
-    if(this.contents.highlightTextColor) {
+    if(this.contents.highlightTextColor !== null) {
       this.contents.fillRect( textState.x, textState.y, w * 2, textState.height, this.contents.highlightTextColor);
     }
 
