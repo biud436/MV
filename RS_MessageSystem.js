@@ -1555,7 +1555,7 @@ var Color = Color || {};
       RS.MessageSystem.Reg[e][51] = new RegExp(`(?:<[${tcGroup[51]}]>)`, 'gi'); // I
       RS.MessageSystem.Reg[e][52] = new RegExp(`(?:<\/[${tcGroup[52]}]>)`, 'gi'); // I
       RS.MessageSystem.Reg[e][53] = new RegExp(`\x1b${tcGroup[53]}`, 'gi'); // AEND : ALIGN_CLEAR
-      RS.MessageSystem.Reg[e][54] = new RegExp(`(?:\x1b${tcGroup[54]})\\[(.+?)\\]`, 'gi'); // \배경색[색상] \HC[색상]
+      RS.MessageSystem.Reg[e][54] = new RegExp(`\x1b${tcGroup[54]}\\[(.*)\\]`, 'gi'); // \배경색[색상] \HC[색상]
 
     }, this);
   }());
@@ -2392,11 +2392,9 @@ var Color = Color || {};
       }
     }
 
-    // 하이라이트 컬러 (Highlight Color)
-    // 너무 길어 영어로 표기
-    // \HC[]
+    // 배경색
     if(this.contents.highlightTextColor !== null) {
-      this.contents.fillRect( textState.x, textState.y, w * 2, textState.height, this.contents.highlightTextColor);
+      this.contents.fillRect( textState.x, textState.y, w, textState.height, this.contents.highlightTextColor);
     }
 
     this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
