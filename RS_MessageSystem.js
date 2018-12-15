@@ -1555,7 +1555,7 @@ var Color = Color || {};
       RS.MessageSystem.Reg[e][51] = new RegExp(`(?:<[${tcGroup[51]}]>)`, 'gi'); // I
       RS.MessageSystem.Reg[e][52] = new RegExp(`(?:<\/[${tcGroup[52]}]>)`, 'gi'); // I
       RS.MessageSystem.Reg[e][53] = new RegExp(`\x1b${tcGroup[53]}`, 'gi'); // AEND : ALIGN_CLEAR
-      RS.MessageSystem.Reg[e][54] = new RegExp(`(?:\x1b${tcGroup[55]})\\[(.+?)\\]`, 'gi'); // \배경색[색상] \HC[색상]
+      RS.MessageSystem.Reg[e][54] = new RegExp(`(?:\x1b${tcGroup[54]})\\[(.+?)\\]`, 'gi'); // \배경색[색상] \HC[색상]
 
     }, this);
   }());
