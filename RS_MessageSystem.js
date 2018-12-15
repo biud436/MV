@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.43) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.44) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -556,6 +556,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2018.12.15 (v0.1.44) :
+ * - 자동 개행 기능 추가 (일반 메시지에서만 사용 가능)
  * 2018.12.08 (v0.1.43) : 
  * - \} \축소! 사용 시 라인 높이보다 작아질 수 없게 하였습니다.
  * 2018.11.30 (v0.1.42) :
@@ -735,7 +737,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.43) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.44) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -985,6 +987,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2018.12.15 (v0.1.44) :
+ * - 자동 개행 기능 추가 (일반 메시지에서만 사용 가능)
  * 2018.12.08 (v0.1.43) : 
  * - \} \축소! 사용 시 라인 높이보다 작아질 수 없게 하였습니다.
  * 2018.11.30 (v0.1.42) :
@@ -2335,9 +2339,39 @@ var Color = Color || {};
     return RS.MessageSystem.Params.numVisibleRows;
   };
   
+  var alias_Window_Message_origin_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
   Window_Message.prototype.processNormalCharacter = function(textState) {
-    Window_Base.prototype.processNormalCharacter.call(this, textState);
+    
+    var c = textState.text[textState.index++];
+
+    // 수 많은 테스트 끝에 알아낸 사실은
+    // 텍스트의 폭은 정수가 아니며 소수점 자리까지 나온다는 사실이다.
+    // 즉, 폰트 크기가 28이면 실제로는 28이 아니다.
+    // 실제 값은 28.25165154 이런 식이므로 오차가 생기게 된다.
+    // 무언가 계산을 하려면 이 값을 정수로 변환해서 사용하자.
+    var w = this.textWidth(c);
+
+    var width = this.contentsWidth();
+
+    // 일반 메시지 모드에서만 동작 한다.
+    var isValid = ($gameMessage.getBalloon() === -2);
+
+    // 그동안 있었던 버그는 텍스트의 폭이 소수점까지 나온다는 사실을 모르고 있었기 때문이다.
+    // 780.25 > 780 은 true이 되므로, 소수점이 없는 픽셀의 세상에선 일부 글자가 겹치게 된다. 
+    // 따라서 소수점이 있으면 정확하게 계산되지 않게 된다.
+    // 소수점 자리를 버려야 정확히 계산된다.
+    if(Math.floor(textState.x + (w * 2)) > width) {
+      if(isValid) {
+        this.processNewLine(textState);
+        textState.index--;
+      }
+    }
+
+    this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
+    textState.x += w;
+
     !this._showFast && this.startWait($gameMessage.getWaitTime() || 0);
+
   };
   
   var alias_Window_Message_createSubWindows = Window_Message.prototype.createSubWindows;
