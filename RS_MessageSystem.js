@@ -567,6 +567,7 @@
  * 2018.12.16 (v0.1.44) :
  * - 자동 개행 기능 추가 (일반 메시지에서만 사용 가능)
  * - 배경색 기능을 추가하였습니다.
+ * - 그레디언트(Gradient) 텍스트를 2개 이상 사용하면 색상 영역이 확장되는 현상을 수정하였습니다.
  * 2018.12.08 (v0.1.43) : 
  * - \} \축소! 사용 시 라인 높이보다 작아질 수 없게 하였습니다.
  * 2018.11.30 (v0.1.42) :
@@ -999,6 +1000,7 @@
  * 2018.12.16 (v0.1.44) :
  * - 자동 개행 기능 추가 (일반 메시지에서만 사용 가능)
  * - 배경색 기능을 추가하였습니다.
+ * - 그레디언트(Gradient) 텍스트를 2개 이상 사용하면 색상 영역이 확장되는 현상을 수정하였습니다.
  * 2018.12.08 (v0.1.43) : 
  * - \} \축소! 사용 시 라인 높이보다 작아질 수 없게 하였습니다.
  * 2018.11.30 (v0.1.42) :
@@ -2003,10 +2005,12 @@ var Color = Color || {};
   Bitmap.prototype.setGradient = function(text, color1, color2, color3, tx, ty) {
     var context = this._context;
     var tWidth = this.measureTextWidth(text);
+    context.save();
     var gradient = context.createLinearGradient(tx, 0, tx + tWidth, 0);
     gradient.addColorStop('0', color1);
     gradient.addColorStop('0.6', color2);
     gradient.addColorStop('1', color3);
+    context.restore();
     return gradient;
   };
   
