@@ -2310,7 +2310,6 @@ var Color = Color || {};
     this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
     this.contents.fontGradient = false;
     this.contents.highlightTextColor = null;
-    this._isUsedTextWidthEx = false;
     this._windowPauseSignSprite.move(this._width / 2, this._height);
     this._windowPauseSignSprite.scale.y = 1;
     $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
