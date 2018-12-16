@@ -2398,7 +2398,8 @@ var Color = Color || {};
 
     // 배경색
     if(this.contents.highlightTextColor !== null) {
-      this.contents.fillRect( textState.x, textState.y, w, textState.height, this.contents.highlightTextColor);
+      var pad = 1.0;
+      this.contents.fillRect( textState.x, textState.y, w + pad, textState.height, this.contents.highlightTextColor);
     }
 
     this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
