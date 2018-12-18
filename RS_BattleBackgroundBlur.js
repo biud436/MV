@@ -60,7 +60,7 @@ RS.BattleBackgroundBlur = RS.BattleBackgroundBlur || {};
     Bitmap.prototype.radialBlur = function(angle, division) {
 
         // There are two blur method called Spin, Zoom in the photoshop!
-        // But, We are used the regacy trick.
+        // But, We are used the regacy trick such as RPG Maker VX Ace.
 
         division = division.clamp(2, 100);
 
@@ -72,7 +72,7 @@ RS.BattleBackgroundBlur = RS.BattleBackgroundBlur || {};
         context.save();
 
         // The variable for performance.
-        var toRadian = Math.PI / 180.0; 
+        var toRadian = (Math.PI / 180.0); 
 
         // Sets the temp blur function.
         var _blur = function() {
@@ -106,7 +106,6 @@ RS.BattleBackgroundBlur = RS.BattleBackgroundBlur || {};
         var halfHeight = h * 0.5;
 
         for(var i = 0; i < division; ++i) {
-            // remove this
             var _rotation = ($.Params.initialRotation + (i * n));
             context.save();
             context.translate(halfWidth, halfHeight);
