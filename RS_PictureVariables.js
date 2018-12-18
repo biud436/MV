@@ -123,17 +123,15 @@ RS.PictureVariables = RS.PictureVariables || {};
     // Show Picture
     var alias_Game_Interpreter_command231 = Game_Interpreter.prototype.command231;
     Game_Interpreter.prototype.command231 = function() {
-        var ret = alias_Game_Interpreter_command231.call(this);          
-        if (ret) {
-            
-            $gameScreen.picture(this._params[0]).setIds(
-                $.Params.pictureWidthId, 
-                $.Params.pictureHeightId);
-            if(SceneManager._scene._spriteset) {
-                SceneManager._scene._spriteset.emit('get_picture_size');
-            }
-        }      
-        return ret;
+        var ret = alias_Game_Interpreter_command231.call(this);   
+        var params = this._params;
+        $gameScreen.picture(params[0]).setIds(
+            $.Params.pictureWidthId, 
+            $.Params.pictureHeightId);
+        if(SceneManager._scene._spriteset) {
+            SceneManager._scene._spriteset.emit('get_picture_size');
+        }
+        return ret;            
     };
     
 })(RS.PictureVariables);
