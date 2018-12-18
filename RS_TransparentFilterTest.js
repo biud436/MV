@@ -179,41 +179,28 @@ RS.TransparentFilterTest = RS.TransparentFilterTest || {};
         var fragmentSrc = `
         varying vec2 vTextureCoord; 
 
-        uniform sampler2D uSampler;
-        
-        uniform vec2 resolution;
-        uniform float time;        
+        uniform sampler2D uSampler;     
         
         void main(void)
         {
-            float mx = max(resolution.x, resolution.y);
-            vec2 uv = gl_FragCoord.xy / mx;
-            vec2 center = resolution / mx * 0.5;
-            float t = time * 2.0;
-
-            vec4 backColor = texture2D(uSampler, vTextureCoord.xy);
-          
-            gl_FragColor = mix(vec4(vec3(sin(t - distance(uv, center) * 0.25)) * 0.2, 0.2), backColor.rgba, 0.2);
+            gl_FragColor = texture2D(uSampler, vTextureCoord);
         }
         `;
 
         PIXI.Filter.call( this, vertexSrc, fragmentSrc );
 
-        this.uniforms.time = 0.0;
-        this.uniforms.resolution = [816.0, 624.0]; 
-
-        var a = -1;
+        var a = 2.0;
         var c = 0;
         var b = 0;
-        var d = 1;
-        var tx = 816.0 / 2.0;
-        var ty = 624.0 / 2.0;
+        var d = -2.0;
+        var tx = 0;
+        var ty = -624.0;
 
         this.uniforms.mirrorMatrix = [
             a, c, tx,
             b, d, ty,
             0, 0, 1
-        ];
+        ];        
 
     };
 
@@ -225,8 +212,8 @@ RS.TransparentFilterTest = RS.TransparentFilterTest || {};
         var c = 0;
         var b = 0;
         var d = 1;
-        var tx = 4.0 * Math.randomInt(12);
-        var ty = -4.0 * Math.randomInt(12);
+        var tx = 16.0 * Math.randomInt(12);
+        var ty = -16.0 * Math.randomInt(12);
 
         this.uniforms.mirrorMatrix = [
             a, c, tx,
@@ -283,13 +270,13 @@ RS.TransparentFilterTest = RS.TransparentFilterTest || {};
         // 물방울이 호숫가에 떨어진 것처럼 원형의 파동이 퍼져나간다.
         // this._circleFilter = new PIXI.filters.CircleFilter();
         this._circleFilter = new PIXI.filters.ScratchFilter();
-        this._ticker = new PIXI.ticker.Ticker();
-        this._ticker.add(function(delta) {
-            this._circleFilter.uniforms.time += 0.2 * delta;
-            this._circleFilter.updateMirrorMatrix();
-        }, this);
+        // this._ticker = new PIXI.ticker.Ticker();
+        // this._ticker.add(function(delta) {
+        //     this._circleFilter.uniforms.time += 0.2 * delta;
+        //     this._circleFilter.updateMirrorMatrix();
+        // }, this);
         this._gameTitleSprite.filters = [this._circleFilter];
-        this._ticker.start();
+        // this._ticker.start();
         // 평가 : 게임에 쓰기에는 부적절한 이펙트로 보여짐
     };
 
