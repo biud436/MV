@@ -51,6 +51,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
   RS.HangulBitmapText.Params.fontName = "defaultFont";
   RS.HangulBitmapText.Params.fntName = 'img/hangul/hangul.xml';
   RS.HangulBitmapText.Params.resources = null;
+  RS.HangulBitmapText.Params.optimize = false;
 
   PIXI.loader
       .add(RS.HangulBitmapText.Params.fontName, RS.HangulBitmapText.Params.fntName)
@@ -232,6 +233,10 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
       isProcessTextColor = true;
     }
 
+    if(RS.HangulBitmapText.Params.optimize) {
+      isProcessTextColor = false;
+    }
+
     var bitmap;
 
     // 퍼포먼스가 저하됩니다.
@@ -257,6 +262,13 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
         source = ImageManager.loadHangul(filename);
       }
 
+      if(source && source._context) {
+        var pixels = source._context.getImageData(0, 0, 1, 1).data;
+        if(pixels[3] != 0x00) {
+          console.error("알파값이 투명이 아닌 Texture는 제대로 그려지지 않습니다.");
+        }
+      }
+
       // Get the real texture rect.
       var frame = chars[i].texture.frame;
 
@@ -269,11 +281,9 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
             
       // Blt
       if(isProcessTextColor) {
-        bitmap.blt(source, frame.x, frame.y, frame.width, frame.height, 
-          rect.x, rect.y, rect.width, rect.height);
+        this.blt(source, frame.x, frame.y, frame.width, frame.height, rect.x, rect.y, rect.width, rect.height);
       } else {
-        this.blt(source, frame.x, frame.y, frame.width, frame.height, 
-          rect.x, rect.y, rect.width, rect.height);
+        this.blt(source, frame.x, frame.y, frame.width, frame.height, rect.x, rect.y, rect.width, rect.height);
       }
 
     }
@@ -293,6 +303,7 @@ RS.HangulBitmapText.Params = RS.HangulBitmapText.Params || {};
 
       // Double Bufferring
       this.blt(bitmap, 0, 0, this.width, this.height, 0, 0);
+   
     }
 
   };

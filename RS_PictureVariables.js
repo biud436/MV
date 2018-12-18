@@ -9,11 +9,11 @@
  * 
  * @param Picture Height ID
  * @type variable
- * @desc Specify the id of the variable that would get the picture width.
+ * @desc Specify the id of the variable that would get the picture height.
  * @default 11
  * 
  * @help
- * 2018.12.18 (1.0.0.test) - ...
+ * 2018.12.18 (1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
