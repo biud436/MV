@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin allows you to shows up the radial blur to bitmap. <RS_BattleBackgroundBlur>
+ * @plugindesc This plugin allows you to shows up the radial blur to bitmap. <RS_BattleBackgroundRadialBlur>
  * @author biud436
  * 
  * @param Opacity
@@ -26,15 +26,15 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_BattleBackgroundBlur = true;
+Imported.RS_BattleBackgroundRadialBlur = true;
 
 var RS = RS || {};
-RS.BattleBackgroundBlur = RS.BattleBackgroundBlur || {};
+RS.BattleBackgroundRadialBlur = RS.BattleBackgroundRadialBlur || {};
 
 (function($) {
     
     var parameters = $plugins.filter(function (i) {
-      return i.description.contains('<RS_BattleBackgroundBlur>');
+      return i.description.contains('<RS_BattleBackgroundRadialBlur>');
     });
     
     parameters = (parameters.length > 0) && parameters[0].parameters;
@@ -138,4 +138,4 @@ RS.BattleBackgroundBlur = RS.BattleBackgroundBlur || {};
         this._baseSprite.addChild(this._backgroundSprite);
     };    
     
-})(RS.BattleBackgroundBlur);
+})(RS.BattleBackgroundRadialBlur);
