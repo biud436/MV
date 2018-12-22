@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.7) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.8) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -50,6 +50,8 @@
  * 2018.08.14 (v1.0.6) - Fixed the LF(line feed) and CR(carriage return)
  * 2018.11.05 (v1.0.7) : 
  * - Added text codes like as <LEFT>, <CENTER>, <RIGHT>, </LEFT>, </CENTER>, </RIGHT>
+ * 2018.12.22 (v1.0.8) : 
+ * - Now it is possible to use a text alignment in scrolling text and item window.
  */
 
 var Imported = Imported || {};
@@ -92,10 +94,22 @@ RS.MessageAlign = RS.MessageAlign || {};
     //============================================================================
     // Window_Message
     //============================================================================
+
+    Window_Base.prototype.isUsedTextWidthEx = function() {
+        var ret = false;
+        if(Imported.YEP_MessageCore && this._checkWordWrapMode) {
+            ret = true;
+        } 
+        if(!Imported.YEP_MessageCore) {
+            ret = this._isUsedTextWidth;
+        }
+        
+        return ret;
+    };
     
-    var alias_Window_Message_convertEscapeCharacters = Window_Message.prototype.convertEscapeCharacters;
-    Window_Message.prototype.convertEscapeCharacters = function(text) {
-        text = alias_Window_Message_convertEscapeCharacters.call(this, text);
+    var alias_Window_Base_convertEscapeCharacters = Window_Base.prototype.convertEscapeCharacters;
+    Window_Base.prototype.convertEscapeCharacters = function(text) {
+        text = alias_Window_Base_convertEscapeCharacters.call(this, text);
         text = text.replace(/\\/g, '\x1b');
         text = text.replace(/\x1b\x1b/g, '\\');        
         text = text.replace(/(?:<LEFT>)/gi, function() {
@@ -108,7 +122,9 @@ RS.MessageAlign = RS.MessageAlign || {};
             return '\x1bTA[2]';
         }.bind(this));              
         text = text.replace(/\x1bTA\[(\d+)\]/gi, function() {
-            $gameMessage.setAlign(Number(arguments[1] || 0));
+            if(!this.isUsedTextWidthEx()) {
+                $gameMessage.setAlign(Number(arguments[1] || 0));
+            }
             return "";
         }.bind(this)); 
         text = text.replace(/<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi, function() {
@@ -117,18 +133,18 @@ RS.MessageAlign = RS.MessageAlign || {};
         return text;
     };
 
-    var alias_Window_Message_processEscapeCharacter = Window_Message.prototype.processEscapeCharacter;
-    Window_Message.prototype.processEscapeCharacter = function(code, textState) {
+    var alias_Window_Base_processEscapeCharacter = Window_Base.prototype.processEscapeCharacter;
+    Window_Base.prototype.processEscapeCharacter = function(code, textState) {
         switch (code) {
         case 'AEND':
         $gameMessage.clearAlignLast();
         break;
         default:
-        alias_Window_Message_processEscapeCharacter.call(this, code, textState);
+        alias_Window_Base_processEscapeCharacter.call(this, code, textState);
         }
     };    
     
-    Window_Message.prototype.processAlign = function(textState) {
+    Window_Base.prototype.processAlign = function(textState) {
         textState = textState || this._textState;
         switch($gameMessage.getAlign()) {
             case 1:
@@ -142,23 +158,22 @@ RS.MessageAlign = RS.MessageAlign || {};
         }
     };
     
-    var alias_Window_Message_processNewLine = Window_Message.prototype.processNewLine;
-    Window_Message.prototype.processNewLine = function(textState) {
-        alias_Window_Message_processNewLine.call(this, textState);
-        // When processing a new line, the function that aligns a text will be executed.
+    var alias_Window_Base_processNewLine = Window_Base.prototype.processNewLine;
+    Window_Base.prototype.processNewLine = function(textState) {
+        alias_Window_Base_processNewLine.call(this, textState);
         this.processAlign(textState);
     };
 
     if(!Imported.YEP_MessageCore) {
 
-        Window_Message.prototype.saveFontSettings = function() {
+        Window_Base.prototype.saveFontSettings = function() {
             this._messageDesc = {}; 
             this._messageDesc.fontFace = this.contents.fontFace;
             this._messageDesc.fontSize = this.contents.fontSize;
             this._messageDesc.textColor = this.contents.textColor;
         };
         
-        Window_Message.prototype.restoreFontSettings = function() {
+        Window_Base.prototype.restoreFontSettings = function() {
             if(!this._messageDesc) return;
             this.contents.fontFace = this._messageDesc.fontFace;
             this.contents.fontSize = this._messageDesc.fontSize;
@@ -168,13 +183,11 @@ RS.MessageAlign = RS.MessageAlign || {};
 
     };    
     
-    Window_Message.prototype.calcTextWidth = function(text) {
+    Window_Base.prototype.calcTextWidth = function(text) {
         
         var tempText = text; tempText = tempText.split(/[\r\n]+/);
         var textWidth;
 
-        // This makes it easier to get the text width.
-        // But it will be drawn the text many times inside invisible area.
         if(Imported.YEP_MessageCore) {
 
             textWidth = this.textWidthExCheck(tempText[0]);
@@ -182,34 +195,63 @@ RS.MessageAlign = RS.MessageAlign || {};
         } else { 
 
             this.saveFontSettings();
+            this._isUsedTextWidth = true;
             textWidth = this.drawTextEx(tempText[0], 0, this.contents.height);
             this.restoreFontSettings();
+            this._isUsedTextWidth = false;
 
         }
 
         return textWidth;        
 
     };
+
+    Window_Base.prototype.newLineX = function() {
+        return this.textPadding();
+    };
     
-    Window_Message.prototype.setAlignLeft = function(textState) {
+    Window_Base.prototype.setAlignLeft = function(textState) {
         var padding = this.textPadding();
         textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x = ( this.newLineX() + padding );
         textState.left = textState.x;
     };
     
-    Window_Message.prototype.setAlignCenter = function(textState) {
+    Window_Base.prototype.setAlignCenter = function(textState) {
         var padding = this.textPadding();
         textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x = ( this.newLineX() + this.contentsWidth() + padding) / 2 - textState.tx / 2;
         textState.left = textState.x;
     };
     
-    Window_Message.prototype.setAlignRight = function(textState) {
+    Window_Base.prototype.setAlignRight = function(textState) {
         var padding = this.textPadding();
         textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x = ( this.contentsWidth() - padding) - textState.tx;
         textState.left = textState.x;
+    };
+
+    Window_Base.prototype.doFirstLineAlign = function(textState) {
+        var isValid = !this.isUsedTextWidthEx();
+        if(isValid) {
+            this.processAlign(textState);
+        }
+    };
+
+    Window_Base.prototype.drawTextEx = function(text, x, y) {
+        if (text) {
+            this.resetFontSettings();
+            var textState = { index: 0, x: x, y: y, left: x };
+            textState.text = this.convertEscapeCharacters(text);
+            textState.height = this.calcTextHeight(textState, false);
+            this.doFirstLineAlign(textState);
+            while (textState.index < textState.text.length) {
+                this.processCharacter(textState);
+            }
+            return textState.x - x;
+        } else {
+            return 0;
+        }
     };
     
     var alias_Window_Message_startMessage_setAlignCenter = Window_Message.prototype.startMessage;
@@ -217,5 +259,5 @@ RS.MessageAlign = RS.MessageAlign || {};
         alias_Window_Message_startMessage_setAlignCenter.call(this);
         this.processAlign();
     };
-    
+
 })();
