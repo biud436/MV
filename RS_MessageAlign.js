@@ -51,7 +51,7 @@
  * 2018.11.05 (v1.0.7) : 
  * - Added text codes like as <LEFT>, <CENTER>, <RIGHT>, </LEFT>, </CENTER>, </RIGHT>
  * 2018.12.22 (v1.0.8) : 
- * - Now it is possible to use a text alignment in scrolling text and item window.
+ * - Now it is possible to use a text alignment in scroll text window and item window.
  */
 
 var Imported = Imported || {};
