@@ -4,39 +4,75 @@
  *
  * @param default S Power
  * @type number
- * @desc
+ * @desc 'S Power' means 'The starting power' between the linear interpolant.
  * @default 0
  *
  * @param default E Power
  * @type number
- * @desc
+ * @desc 'E Power' means 'The end power' between the linear interpolant.
  * @default 0
  *
  * @param formula1
- * @desc
+ * @desc it means the linear interpolation formula for Quadratic Bézier curves.
  * @default a + t * (b - a)
  *
  * @param formula2
- * @desc
+ * @desc it means the linear interpolation formula for Quadratic Bézier curves.
  * @default b + t * (c - b)
  *
  * @param formula3
- * @desc
+ * @desc it means the linear interpolation formula for Quadratic Bézier curves.
  * @default d + t * (e - d)
  *
  * @help
  * ============================================================================
  * Plugin Command
  * ============================================================================
+ * This plugin allows you to control the weather effect by using a math method 
+ * called 'Quadratic Bézier curves', it means the linear interpolation. 
+ * 
+ * We need to set three formulas. 
+ * Those formulas use importantly in the Quadratic Bézier curves.
+ * 
  * TimedWeatherEffect start type power duration
+ *    - type : specify the weather type is to string. 
+ *             those types are the same as none, rain, storm, snow.
+ *    - power : the power value is a number between 0 and 9.
+ *    - duration : the weather duration. it speicfies the the duration value by the frame unit.
+ *               So the value called 60 is the same as 1 second on powerful devices such as 
+ *               PC and Mac, phones. (60 frame = 1sec)
+ * 
+ * those variables are private so it can't change directly but you can change it through plugin command. 
+ * 
  * TimedWeatherEffect setPower start end
+ *     - start : change the value called 'S Power' means the starting power in the Quadratic Bézier curves.
+ *     - end : change the value called 'E Power' means the end power in the Quadratic Bézier curves.
+ * those variables are private so it can't change directly but you can change it through plugin command. 
+ * 
  * TimedWeatherEffect setFormula1 fx
  * TimedWeatherEffect setFormula2 fx
  * TimedWeatherEffect setFormula3 fx
+ *    - fx : the fx means a formula.
+ * 
+ * So, we can use it, as follows.
+ * 
+ * TimedWeatherEffect setFormula1 a + t * (b - a)
+ * TimedWeatherEffect setFormula2 b + t * (c - b)
+ * TimedWeatherEffect setFormula3 d + t * (e - d)
+ * 
+ * the value called 'a' is the same as the 'S Power'.
+ * the value called 'b' means the power value.
+ * the value called 'c' is the same as the 'E Power'.
+ * the value called 'd' is a result value of the formula 1 (linear interpolation).
+ * the value called 'e' is a result value of the formula 2 (linear interpolation).
+ * 
  * ============================================================================
  * Version Log
  * ============================================================================
  * 2016.07.24 (v1.0.0) - First Release.
+ * 2018.12.24 (v1.0.1) : 
+ * - Fixed the bug that is not working.
+ * - Added descriptions.
  */
 /*:ko
  * @plugindesc 날씨 효과의 강도를 곡선 형태로 부드럽게 가속하거나 감속을 합니다.
@@ -55,11 +91,15 @@
  * @default 0
  *
  * @param formula1
- * @desc 2차 베지어 곡선을 위한 함수 #1
+ * @desc
+ * @default a + t * (b - a)
+ *
+ * @param formula2
+ * @desc
  * @default b + t * (c - b)
  *
  * @param formula3
- * @desc 2차 베지어 곡선을 위한 함수 #2
+ * @desc
  * @default d + t * (e - d)
  *
  * @help
@@ -97,6 +137,9 @@
  * 변동 사항
  * ============================================================================
  * 2016.07.24 (v1.0.0) - First Release.
+ * 2018.12.24 (v1.0.1) : 
+ * - Fixed the bug that is not working.
+ * - Added descriptions.
  */
 
 var Imported = Imported || {};
@@ -140,9 +183,9 @@ Imported.RS_TimedWeatherEffects = true;
     if(command === "TimedWeatherEffect") {
       switch (args[0]) {
       case 'start':
-        type = Number(args[1]);
-        power = Number(args[1]);
-        duration = Number(args[2]);
+        type = args[1];
+        power = Number(args[2]);
+        duration = Number(args[3]);
         $gameScreen.changeWeather(type, power, duration);
         break;
       case 'setPower':
