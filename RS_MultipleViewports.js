@@ -1,6 +1,6 @@
 /*:
  * RS_MultipleViewports.js
- * @plugindesc (v1.2.1) This plugin provides the multiple viewports.
+ * @plugindesc (v1.2.2) This plugin provides the multiple viewports. <RS_MultipleViewports>
  * @author biud436
  *
  * @param Maximum viewport
@@ -8,7 +8,7 @@
  * @desc Sets the number of viewports to display on the screen.
  * @default 4
  * @min 2
- * @min 4
+ * @max 4
  *
  * @param Viewport orientation
  * @type boolean
@@ -111,10 +111,13 @@
  * - Fixed the bug that video is played in duplicate.
  * - Fixed an issue that image is set in duplicate.
  * - Converted some sources to ES6
+ * 2018.12.25 (v1.2.2) :
+ * - Fixed the issue that couldn't set a number of viewports less than 4.
+ * - Fixed the issue that causes the size error when setting a number of viewports less than 4.
  */
 /*:ko
  * RS_MultipleViewports.js
- * @plugindesc (v1.2.1) 분할된 화면에 서로 다른 장소를 표시할 수 있습니다.
+ * @plugindesc (v1.2.2) 분할된 화면에 서로 다른 장소를 표시할 수 있습니다. <RS_MultipleViewports>
  * @author biud436
  *
  * @param Maximum viewport
@@ -123,7 +126,7 @@
  * @desc 화면에 표시되는 뷰포트의 갯수
  * @default 4
  * @min 2
- * @min 4
+ * @max 4
  *
  * @param Viewport orientation
  * @text 뷰포트 화면 방향
@@ -245,6 +248,9 @@
  * - Fixed the bug that video is played in duplicate.
  * - Fixed an issue that image is set in duplicate.
  * - Converted some sources to ES6
+ * 2018.12.25 (v1.2.2) :
+ * - Fixed the issue that couldn't set a number of viewports less than 4.
+ * - Fixed the issue that causes the size error when setting a number of viewports less than 4.
  */
 
 var Imported = Imported || {};
@@ -263,7 +269,11 @@ RS.MultipleViewports = RS.MultipleViewports || {};
 
   let isStoppingMainScene = false;
 
-  let parameters = PluginManager.parameters('RS_MultipleViewports');
+  let parameters = $plugins.filter(function(i) {
+    return i.description.contains("<RS_MultipleViewports>");
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;
 
   RS.MultipleViewports.isVertical = Boolean(parameters['Viewport orientation'] === 'false');
 
@@ -352,7 +362,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
         this._viewImageCached = [];
         this._renderBounds = null;
         this._target = null;
-        this._maxDisplayCounts = Number(parameters['Maximum viewport'] || 4);
+        this._maxDisplayCounts = Number(parameters['Maximum viewport'] || 4).clamp(2, 4);
       }
 
       clear()
@@ -457,6 +467,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
         let positionType = [];
         let w, h;
         let vx, vy;
+        let size = this._maxDisplayCounts;
         switch (this._maxDisplayCounts) {
           case 2: case 3:
             if(RS.MultipleViewports.isVertical) {
