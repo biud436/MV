@@ -12,7 +12,7 @@
  * ===============================================================
  * Version Log
  * ===============================================================
- * 2016.09.08 (v1.0.0) - First Release.
+ * 2016.02.13 (v1.0.0) - First Release
  * 2018.12.30 (v1.1.0) :
  * - Now it is supported in RPG Maker MV v1.6.1.
  * (I've been rewritten shader for RPG Maker MV v1.6.1)
