@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin applies the lighting effect.
+ * @plugindesc This plugin applies the lighting effect. <RS_SimpleLight>
  * @author biud436
  * 
  * @help
@@ -22,7 +22,7 @@ var Imported = Imported || {};
 Imported.RS_SimpleLight = true;
 
 var RS = RS || {};
-RS.LightConfig = RS.LightConfig || {};
+RS.SimpleLight = RS.SimpleLight || {};
 
 (function($) {
 
@@ -337,4 +337,4 @@ RS.LightConfig = RS.LightConfig || {};
   };
 
 
-})(PIXI.tilemap);
+})(RS.SimpleLight);
