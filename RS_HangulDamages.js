@@ -28,6 +28,14 @@
  * @desc Specify the line index of image for MISS in the default image.
  * @default 4
  * 
+ * @param baseInitialPositionY
+ * @text Base Initial Position Y
+ * @type number
+ * @desc Specify the initial position Y of the damage sprite.
+ * @default -40
+ * @min -1080
+ * @max 1080
+ * 
  * @help
  * ===================================================================
  * Test Sripts
@@ -45,6 +53,7 @@
  * - 데미지 비트맵을 미리 불러옵니다.
  * - 표기법을 수 표기법 맞춤법에 맞춰 수정하였습니다.
  * 2018.08.30 (v1.0.2) - 속도가 더 향상되었습니다.
+ * 2019.01.09 (v1.0.3) - 양(10^28) 까지 표시 가능
  */
 /*:ko
  * @plugindesc 데미지를 수 표기법에 맞춰서 표시합니다 <RS_HangulDamages>
@@ -76,15 +85,54 @@
  * @desc 미스 스프라이트가 있는 라인을 설정합니다.
  * @default 4
  * 
+ * @param baseInitialPositionY
+ * @text Base Initial Position Y
+ * @type number
+ * @desc 데미지 스프라이트의 초기 Y 좌표를 설정합니다.
+ * @default -40
+ * @min -1080
+ * @max 1080
+ * 
  * @help
  * ===================================================================
  * 테스트 스크립트
  * ===================================================================
+ * 데미지 값이 적어도 10,000은 초과해야 하므로, 
+ * 일반적으로 테스트가 불가하여 
+ * 테스트를 위해 다음과 같은 테스트 스크립트를 짰습니다.
+ * 
  * var target = $gameTroop._enemies[0];
  * target.gainHp(-100101150);
  * BattleManager._logWindow.clear()
  * BattleManager._logWindow.displayHpDamage(target);
  * target.startDamagePopup();
+ * 
+ * 복사하여 전투 중 콘솔에 입력하면 데미지 스프라이트가 임의로 표시 됩니다.
+ * 
+ * ===================================================================
+ * 한글 숫자 테이블 매개변수 지정 방법
+ * ===================================================================
+ * 데미지 스프라이트 시트에서 숫자는 가로로 10개 배치되어있습니다.
+ * 
+ * 한글 데미지 스프라이트도 이러한 규칙에 따르므로, 
+ * 각 셀(만, 억, 조, 경, 텅 빈)의 가로 인덱스를 지정을 해야 합니다.
+ * 0부터 9까지 지정할 수 있습니다.
+ * 
+ * 인덱스는 0부터 시작하지만, 천 단위는 생략하고 만 단위부터 시작하므로
+ * 1부터 기입할 수 있습니다.
+ * 
+ * {
+ *         "만": 1,
+ *         "억": 2,
+ *         "조": 3,
+ *         "경": 4,
+ *         "해": 5,
+ *         "자": 6,
+ *         "양": 7,
+ *         "X": 8
+ * }
+ * 
+ * 마지막 8은 띄어쓰기를 위한 텅 빈 셀을 나타냅니다.
  * 
  * ===================================================================
  * Change Log
@@ -94,6 +142,7 @@
  * - 데미지 비트맵을 미리 불러옵니다.
  * - 표기법을 수 표기법 맞춤법에 맞춰 수정하였습니다.
  * 2018.08.30 (v1.0.2) - 속도가 더 향상되었습니다.
+ * 2019.01.09 (v1.0.3) - 양(10^28) 까지 표시 가능
  */
 
 var Imported = Imported || {};
@@ -148,11 +197,15 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         "억": 2,
         "조": 3,
         "경": 4,
-        "X": 6
+        "해": 5,
+        "자": 6,
+        "양": 7,
+        "X": 8
     };
 
     $.Params.HANGUL_BASE_ROW = Number(parameters["hangulBaseRow"]) || 5;
     $.Params.MISS_BASE_ROW = Number(parameters["missBaseRow"]) || 4;
+    $.Params.baseInitialPositionY = Number(parameters["baseInitialPositionY"] || -40);
 
     //===================================================================
     // Sprite_HangulDamage
@@ -186,6 +239,17 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
             sprite.dy = 0;            
         }
 
+        createChildSprite() {
+            var sprite = new Sprite();
+            sprite.bitmap = this._damageBitmap;
+            sprite.anchor.x = 0.5;
+            sprite.anchor.y = 1;
+            sprite.y = $.Params.baseInitialPositionY;
+            sprite.ry = sprite.y;
+            this.addChild(sprite);
+            return sprite;            
+        }
+
         whereDigits(strings) {
             var digits = [];
             var ret = [];
@@ -215,6 +279,15 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
                         case (len - 5):
                         digits.push("경"); // 경(京) means 10,000,000,000,000,000 (10^16)
                         break;
+                        case (len - 6): 
+                        digits.push("해") // 해(垓) means 10^20
+                        break;
+                        case (len - 7): 
+                        digits.push("자") // 자(秭) means 10^24
+                        break;      
+                        case (len - 8): 
+                        digits.push("양") // 양(穰) means 10^28
+                        break;                                             
                     }
                     digits.push("X"); // 띄어쓰기 추가
                 }
