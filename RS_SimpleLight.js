@@ -247,7 +247,7 @@ RS.SimpleLight = RS.SimpleLight || {};
       if(!target.filters) {
         target.filters = [];
       }      
-      target.filters = target.filter(function(filter) {
+      target.filters = target.filters.filter(function(filter) {
         return filter !== isValid;
       }, this);
     }
