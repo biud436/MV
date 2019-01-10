@@ -37,31 +37,32 @@
  * 
  * @help
  * ===================================================================
- * 테스트 스크립트
+ * Test Script
  * ===================================================================
- * 데미지 값이 적어도 10,000은 초과해야 하므로, 
- * 일반적으로 테스트가 불가하여 
- * 테스트를 위해 다음과 같은 테스트 스크립트를 짰습니다.
+ * Note that Korean damage text will not show up until the damage value 
+ * must exceed at least 10,000 or more.
  * 
- * var target = $gameTroop._enemies[0];
- * target.gainHp(-100101150);
- * BattleManager._logWindow.clear()
- * BattleManager._logWindow.displayHpDamage(target);
- * target.startDamagePopup();
+ *  var target = $gameTroop._enemies[0];
+ *  target.gainHp(-100101150);
+ *  BattleManager._logWindow.clear()
+ *  BattleManager._logWindow.displayHpDamage(target);
+ *  target.startDamagePopup();
  * 
- * 복사하여 전투 중 콘솔에 입력하면 데미지 스프라이트가 임의로 표시 됩니다.
+ * If you copy and enter the above a piece of the code into the console 
+ * during a battle, the damage sprite will be displayed.
  * 
  * ===================================================================
- * 한글 숫자 테이블 매개변수 지정 방법
+ * How to specify Korean numeric table parameters
  * ===================================================================
- * 데미지 스프라이트 시트에서 숫자는 가로로 10개 배치되어있습니다.
+ * The sprite sheet is filled with 10 numbers horizontally.
  * 
- * 한글 데미지 스프라이트도 이러한 규칙에 따르므로, 
- * 각 셀(만, 억, 조, 경, 텅 빈)의 가로 인덱스를 지정을 해야 합니다.
- * 0부터 9까지 지정할 수 있습니다.
+ * You have to specify the index for each cell, 
+ * then the index value is specified a number value from 0 to 9.
  * 
- * 인덱스는 0부터 시작하지만, 천 단위는 생략하고 만 단위부터 시작하므로
- * 1부터 기입할 수 있습니다.
+ * In the parameter called "Hangul digits table", you must specify a 
+ * JSON data as follows. 
+ * 
+ * Note the index value starts with 0.
  * 
  * {
  *         "만": 1,
@@ -74,7 +75,7 @@
  *         "X": 8
  * }
  * 
- * 마지막 8은 띄어쓰기를 위한 텅 빈 셀을 나타냅니다.
+ * The text called "X" indicates an index of the empty cell in it.
  * 
  * ===================================================================
  * Change Log
