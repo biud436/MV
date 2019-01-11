@@ -1,6 +1,32 @@
 /*:
  * @plugindesc This plugin allows you to implement the character effect like as ghost. <RS_GhostEffect>
  * @author biud436
+ * 
+ * @param Uniform
+ * 
+ * @param lifeTime
+ * @parent Uniform
+ * @type number
+ * @desc All of the effects has a lifeTime, After that time, the effect pattern will be changed.
+ * @default 100
+ * @min 1
+ * 
+ * @param threshold
+ * @parent Uniform
+ * @type number
+ * @desc if threshold is higher, the effect can decrease.
+ * @default 0.7
+ * @decimals 2
+ * @min 0.10
+ * @max 1.00
+ * 
+ * @param xoffset
+ * @parent Uniform
+ * @type number
+ * @desc When the value approaches 0.0, it would look like the paper burning.
+ * @default 0.07
+ * @decimals 2
+ * 
  * @help
  * 
  * Note that this plugin only works in WebGL mode.
@@ -19,13 +45,25 @@
  * =======================================================
  * Plugin Commands
  * =======================================================
- * GhostEffect lifetime 100
- * GhostEffect threshold 0.7
+ * All of the effects has a lifeTime. 
+ * After that time, the effect pattern will be changed.
+ * The time unit is milliseconds, 
+ * so setting it to 100 will result in 0.1 second.
+ * 
+ *   GhostEffect lifetime 100
+ * 
+ * If the threshold is close to 1, the effect may be reduced.
+ * 
+ *      GhostEffect threshold 0.7
+ * 
+ * When the value approaches 0.0, it would look like the paper burning.
+ * 
+ * GhostEffect xoffset 0.07
  * 
  * =======================================================
  * Version Log
  * =======================================================
- * 2019.01.19 (v1.0.0-alpha) - First Release.
+ * 2019.01.19 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
@@ -46,8 +84,9 @@ RS.GhostEffect = RS.GhostEffect || {};
     
     RS.GhostEffect.Params = RS.GhostEffect.Params || {};
 
-    RS.GhostEffect.Params.lifeTime = 100;
-    RS.GhostEffect.Params.threshold = 0.7;
+    RS.GhostEffect.Params.lifeTime = parseInt(parameters["lifeTime"] || 100);
+    RS.GhostEffect.Params.threshold = parseFloat(parameters["threshold"] || 0.7);
+    RS.GhostEffect.Params.xoffset = parseFloat(parameters["xoffset"] || 0.07);
     
     //============================================================================
     // PIXI.GhostEffect
@@ -79,6 +118,8 @@ RS.GhostEffect = RS.GhostEffect || {};
         uniform sampler2D uSampler;
         
         uniform vec2 dimensions;
+        uniform float u_xoffset;
+
         uniform vec4 filterArea;
         uniform vec4 filterClamp;    
                    
@@ -90,7 +131,7 @@ RS.GhostEffect = RS.GhostEffect || {};
             vRec -= 0.5;
             vRec *= u_scale;
             vRec += 0.5;
-            vRec.x += 0.07;
+            vRec.x += u_xoffset;
             
             vec4 recColor = texture2D(uSampler, vRec);
             
@@ -103,6 +144,7 @@ RS.GhostEffect = RS.GhostEffect || {};
         
         this.uniforms.dimensions = new Float32Array(2);
         this.uniforms.u_scale = [0.5, 0.5];
+        this.uniforms.u_xoffset = 0.07;
 
         this._effectVal = 0;
         this._time = performance.now();
@@ -131,6 +173,7 @@ RS.GhostEffect = RS.GhostEffect || {};
         }
         this.uniforms.u_scale[0] = this._effectVal;
         this.uniforms.u_scale[1] = this._effectVal;
+        this.uniforms.u_xoffset = RS.GhostEffect.Params.xoffset;
 
         this._time = performance.now();
     };
@@ -229,6 +272,9 @@ RS.GhostEffect = RS.GhostEffect || {};
                 break;
             case 'threshold':
                 RS.GhostEffect.Params.threshold = parseFloat(args[1] || 0.7);
+                break;
+            case 'xoffset':
+                RS.GhostEffect.Params.xoffset = parseFloat(args[1] || 0.07);
                 break;
             }
         }
