@@ -45,7 +45,7 @@ GhostEffect xoffset 0.07
 ## 다운로드
 [Download1](https://github.com/biud436/MV/raw/master/RS_GhostEffect.js) - 소스 코드 보기
 
-[Download2](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_GhostEffect.js) - 직접 다운로드
+<a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_GhostEffect.js" target="_blank">Download2</a> - 직접 다운로드
 
 
 ## 버전 로그
