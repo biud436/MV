@@ -5,7 +5,7 @@ Ghost Effect 플러그인은 캐릭터에 아래 스크린샷/동영상과 같�
 **플러그인은 WebGL 환경에서만 동작합니다.**
 
 ## 동영상
-[![Video Label](http://img.youtube.com/vi/GkPUvGcC1Zc/0.jpg)](https://youtu.be/GkPUvGcC1Zc?t=0s)l
+[![Video Label](http://img.youtube.com/vi/GkPUvGcC1Zc/0.jpg)](https://youtu.be/GkPUvGcC1Zc?t=0s)
 
 ## 사용법
 
