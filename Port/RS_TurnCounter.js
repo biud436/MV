@@ -1,6 +1,6 @@
 /*:
  * @plugindesc <RS_TurnCounter>
- * @author prico
+ * @author prico, biud436
  * 
  * @param Term
  * 
