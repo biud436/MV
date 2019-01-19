@@ -9,6 +9,14 @@
  * @desc Turn의 이름(용어)를 지정합니다.
  * @default 턴
  * 
+ * @param X
+ * @desc 턴 표시 창의 X좌표를 설정합니다.
+ * @default Graphics.boxWidth - textWidth
+ * 
+ * @param Y
+ * @desc 턴 표시 창의 Y좌표를 설정합니다.
+ * @default 0
+ * 
  * @help
  * 아래 VXA용 스크립트가 원조이며, 
  * 
@@ -37,6 +45,8 @@ RS.TurnCounter = RS.TurnCounter || {};
 
     $.Params = {};
     $.Params.turnTerm = parameters["Turn"] || "턴";
+    $.Params.x = parameters["X"] || "Graphics.boxWidth - textWidth";
+    $.Params.y = parameters["Y"] || "0";
 
     //====================================================================
     // Window_Turn
@@ -63,7 +73,8 @@ RS.TurnCounter = RS.TurnCounter || {};
         var text = `${$gameTroop.turnCount()} ${$.Params.turnTerm}`;
         var textWidth = this.drawTextEx(text, 0, this.contents.height + this.textPadding()) * 2;
         this.width = textWidth;
-        this.x = Graphics.boxWidth - textWidth;
+        this.x = eval($.Params.x);
+        this.y = eval($.Params.y);
         this.drawTextEx(text, this.textPadding(), 0);
     };
 
