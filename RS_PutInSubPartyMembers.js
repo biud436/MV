@@ -1,4 +1,20 @@
 /*:
+ * @plugindesc This plugin allows you to add a extra party member when all of party members are dead <RS_PutInSubPartyMembers>
+ * @author biud436
+ * 
+ * @param Extra Members Ids
+ * @type actor[]
+ * @desc Specify the extra party members.
+ * @default ["5","6","7","8"]
+ * 
+ * @help
+ * Note that this plugin is possible to use in RPG Maker MV v1.5.1+ or more.
+ * ================================================================
+ * Version Log
+ * ================================================================
+ * 2019.01.26 (v1.0.0) - First Release.
+ */
+/*:ko
  * @plugindesc 모든 파티원이 전투 불능일 때 추가 파티원이 즉시 투입됩니다. <RS_PutInSubPartyMembers>
  * @author biud436
  * 
