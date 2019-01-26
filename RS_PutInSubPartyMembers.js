@@ -1,5 +1,5 @@
 /*:
- * @plugindesc 모든 파티원이 전투 불능일 때 추가 파티원이 즉시 투입됩니다. <RS_ChangeSecondPartyMembers>
+ * @plugindesc 모든 파티원이 전투 불능일 때 추가 파티원이 즉시 투입됩니다. <RS_PutInSubPartyMembers>
  * @author biud436
  * 
  * @param Extra Members Ids
@@ -16,15 +16,15 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_ChangeSecondPartyMembers = true;
+Imported.RS_PutInSubPartyMembers = true;
 
 var RS = RS || {};
-RS.ChangeSecondPartyMembers = RS.ChangeSecondPartyMembers || {};
+RS.PutInSubPartyMembers = RS.PutInSubPartyMembers || {};
 
 (function($) {
     
     var parameters = $plugins.filter(function (i) {
-      return i.description.contains('<RS_ChangeSecondPartyMembers>');
+      return i.description.contains('<RS_PutInSubPartyMembers>');
     });
     
     parameters = (parameters.length > 0) && parameters[0].parameters;
@@ -114,4 +114,4 @@ RS.ChangeSecondPartyMembers = RS.ChangeSecondPartyMembers || {};
         return false;
     };
     
-})(RS.ChangeSecondPartyMembers);
+})(RS.PutInSubPartyMembers);
