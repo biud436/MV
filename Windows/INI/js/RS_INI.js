@@ -150,7 +150,11 @@ RS.MSGBOX = RS.MSGBOX || {};
         if(!$.module) return;
         titleName = titleName || document.title;
         content = content || "";        
+        var gui = require('nw.gui');
+        var win = gui.Window.get();        
         var id = $.module.MessageBox(content, titleName, type);
+        win.focus();
+        Input.clear();        
         return id;
     };
 
@@ -201,6 +205,19 @@ RS.MSGBOX = RS.MSGBOX || {};
             yes();
         } else {
             no();
+        }
+    };
+
+    Input._wrapNwjsAlert = function() {
+        if (Utils.isNwjs()) {
+            var _alert = window.alert;
+            window.alert = function() {
+                var gui = require('nw.gui');
+                var win = gui.Window.get();
+                Utils.msgbox.apply(this, arguments);
+                win.focus();
+                Input.clear();
+            };
         }
     };
 

@@ -16,6 +16,51 @@ function getRPGMV(basePath) {
     return filePath;
 };
 
+function readNodeVersion(rmmvPath) {
+    var dllFile = path.normalize(path.win32.join(rmmvPath, "nwjs-win", "node.dll"));
+    var data = fs.readFileSync(dllFile);
+
+    var startOffset = ((data.length - 0x10) / 2);
+    startOffset = (startOffset & ~0x0F);
+    var maxOffset = (startOffset + (startOffset >> 1));
+    var version = "";
+
+    for(var curOffset = startOffset; curOffset < maxOffset; curOffset += 0x10) {
+        var buf = data.toString('ascii', curOffset, curOffset + 0x08 + 0x04);
+        if(buf === "versions\u0000\u0000\u0000\u0000") {
+            var targetOffset = curOffset - 0x10;
+            version = data.toString('ascii', targetOffset, targetOffset + 0x08);
+        }
+    }
+
+    return version;
+};
+
+function readNodeVersionForOlder(rmmvPath) {
+    var dllFile = path.normalize(path.win32.join(rmmvPath, "nwjs-win", "nw.exe"));
+    var data = fs.readFileSync(dllFile);
+
+    var startOffset = ((data.length - 0x10) / 2);
+    startOffset = (startOffset & ~0x0F);
+    var maxOffset = data.length - 0x10;
+    var version = "";
+
+    for(var curOffset = startOffset; curOffset < maxOffset; curOffset += 0x10) {
+        var buf = data.toString('ascii', curOffset, curOffset + 0x10);
+        if(buf === "s['node-webkit']") {
+            var targetOffset = curOffset + 0x10;
+            var str = data.toString('ascii', targetOffset, targetOffset + 0x10);
+            var re = /'(\d+\.\d+\.\d+)'/gm;
+            if(re.exec(str)) {
+                version = `v${RegExp.$1}`;
+            }
+        }
+    }
+
+    return version;
+};
+
+
 if(process.platform.includes("win") >= 0) {
 
     var processname = 'python';
@@ -35,13 +80,14 @@ if(process.platform.includes("win") >= 0) {
         var driveName = fullPath.shift(); // process.env.SystemRoot
         fullPath = fullPath.join("/");
         filePath = driveName + "///" + fullPath;    
-    
+
         var version = vi(filePath);
         version = String(version["ProductVersion"]);
         if(version >= "1.6.1") {
-            console.log("v9.11.1");
+            console.log(readNodeVersion(rmmvPath));
         } else {
             console.log("v1.2.0");
+            console.log(readNodeVersionForOlder(rmmvPath));
         }    
     
     });
@@ -49,50 +95,5 @@ if(process.platform.includes("win") >= 0) {
     child.stdin.end(); 
 
 } else {
-
-// var processname = 'python';
-// var args = [];
-// args.push('./get_steam_path.py');
-
-// subprocess(processname, p, {
-//     stdout: function(out) {    
-//         var rmmvPath = out.toString('utf8').replace("\r\n", "");
-//         var filePath = getCoreJSFile();
-        
-//         // var filePath = path.normalize(path.win32.join(rmmvPath, "RPGMV.exe"));
-
-//         var fullPath = filePath.split("\\");
-//         var driveName = fullPath.shift();
-//         fullPath = fullPath.join("/");
-//         filePath = driveName + "///" + fullPath;
-
-//         fs.readFile(filePath, 'utf8', function(err, data) {
-//             // console.log(data);
-//             if(/(?:Utils.RPGMAKER_VERSION = )\"(.*)\"\;/i.exec(data)) {
-//                 var version = String(RegExp.$1);
-//                 if(version >= "1.6.1") {
-//                     console.log("v10.0.0");
-//                 } else {
-//                     console.log("v1.2.0");
-//                 }                
-//             }
-//         });
-        
-//         // var version = vi(filePath);
-//         // version = String(version["ProductVersion"]);
-//         // if(version >= "1.6.1") {
-//         //     console.log("v10.0.0");
-//         // } else {
-//         //     console.log("v1.2.0");
-//         // }
-
-//     },
-//     stderr: function(out) {
-//         console.log("error");
-//     },
-//     exit: function(code) {
-//         console.log(code);
-//     }
-//   });
 
 }
