@@ -86,7 +86,6 @@ version = String(version["ProductVersion"]);
 if(version >= "1.6.1") {
     console.log(readNodeVersion(rmmvPath));
 } else {
-    console.log("v1.2.0");
     console.log(readNodeVersionForOlder(rmmvPath));
 }    
 
