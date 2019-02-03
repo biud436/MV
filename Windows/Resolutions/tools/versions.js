@@ -37,7 +37,7 @@ return version;
 };
 
 function readNodeVersionForOlder(rmmvPath) {
-var dllFile = path.normalize(path.win32.join(rmmvPath, "nwjs-win", "nw.exe"));
+var dllFile = path.normalize(path.win32.join(rmmvPath, "nwjs-win", "Game.exe"));
 var data = fs.readFileSync(dllFile);
 
 var startOffset = ((data.length - 0x10) / 2);
