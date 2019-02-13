@@ -8,9 +8,94 @@
  * Free for commercial and non-commercial use
  */
 /*:ko
- * @plugindesc INI 모듈
+ * @plugindesc INI 파일 생성 또는 메시지 박스를 띄우는 플러그인입니다.
  * @author biud436
  * @help
+ * ==============================================================================
+ * 설치법
+ * ==============================================================================
+ * js/libs 폴더에 node 파일(DLL과 같은 개념)을 두어야 합니다.
+ * 
+ * 데모 - https://drive.google.com/open?id=105zvVpbiKDwkuzB3vJjworjA2Nv1mV9m
+ * 
+ * NW.js 버전에 맞는 라이브러리 파일을 둬야 합니다. 
+ * RPG Maker MV의 각 버전의 NW.js 바닐라 상태에 해당하는 라이브러리 파일은 미리 빌드해두었습니다.
+ * 하지만 더 상위 버전을 사용하신다면 직접 빌드를 하셔야 합니다.
+ * 
+ * 데모 게임 파일에서는 RPG Maker MV v1.6.2이며 바닐라가 아닌 NWJS 0.33.4 버전을 
+ * 사용하고 있습니다.
+ * 
+ * 부가 기능
+ * 
+ * 아이콘을 지닌 메시지 박스 또는 예/아니오 질문을 할 수 있는 메시지 박스를 띄웁니다. 
+ * 아래 코드는 '창 닫기' 이벤트를 수신하여 닫기 전에 종료하겠냐는 질문을 합니다.
+ * 
+ * // In RPG Maker MV 1.6.0 version or above, it can use 'nw' instead of require('nw.gui')
+ * var gui = nw.Window.get();
+ * 
+ * // This callback function listens for the exit button being pressed.
+ * gui.on('close', function() {
+ * 
+ *     var ret = RS.MSGBOX.yesno("안내", "게임을 종료하시겠습니까?");
+ *     var iconType = RS.MSGBOX.MB_TYPE.MB_OK | RS.MSGBOX.MB_TYPE.MB_ICONINFORMATION;
+ *     if(ret) {
+ *         RS.MSGBOX.open("안내", "예(YES) 버튼을 눌렀습니다.", iconType);
+ *         this.close(true);
+ *     } else {
+ *         RS.MSGBOX.open("안내", "아니오(NO) 버튼을 눌렀습니다.", iconType);
+ *     }
+ * 
+ * });
+ * 
+ * 다음은 오류 메시지 박스를 띄우는 부가 기능입니다.
+ * 
+ * // The title of message box is set as a game title automatically.
+ * Utils.errorMsg("에러가 발생하였습니다. 개발자에게 문의하세요");
+ * 
+ * Utils.yesno("Do you want to download the help file?", function() {
+ *     // this callback function listens for the 'yes' button being pressed.
+ * }, function() {
+ *     // this callback function listens for the 'no' button being pressed.
+ * });
+ * 
+ * ==============================================================================
+ * 소스 코드
+ * ==============================================================================
+ * 문자셋 변환 작업이 주된 작업이며, MV 버전이 1.5.2 이하라면 node-gyp로 빌드되며, 
+ * 1.6.1 이상이면 nw-gyp를 사용해야 합니다.
+ * 
+ * npm_setup.bat 파일을 수정하여 사용하시면 편리합니다.
+ * 
+ * 소스 코드 링크 - https://github.com/biud436/MV/tree/master/Windows/INI
+ * 
+ * 소스 코드는 C++로 작성되었습니다.
+ * 
+ * ==============================================================================
+ * 설치 및 빌드
+ * ==============================================================================
+ * 'latest.cmd' 파일을 실행하면  v9.11.1-INI-x64.node 파일이 bin 폴더에 생성됩니다.  
+ * RPG Maker MV 버전이 1.5.2 이하라면, 명령 프롬프트에서 다음 코드를 실행하시기 바랍니다.
+ * 
+ * latest.cmd "0.12.3"
+ * 
+ * 빌드 결과물은 NWJS의 버전에 따라 파일명이 달라집니다.
+ * 
+ * 바닐라 상태의 NWJS를 사용하시는 경우, 직접 빌드를 하지 않아도 됩니다. 
+ * 미리 빌드된 라이브러리를 파일을 다운로드 받아서 쓰셔도 됩니다.
+ * 
+ * - RPG Maker MV v1.5.2 이하 (32비트/64비트)
+ * https://github.com/biud436/MV/raw/master/Windows/INI/bin/v1.2.0-INI-ia32.node
+ * https://github.com/biud436/MV/raw/master/Windows/INI/bin/v1.2.0-INI-x64.node
+ * 
+ * - RPG Maker MV v1.6.1+ (32비트/64비트)
+ * https://github.com/biud436/MV/raw/master/Windows/INI/bin/v9.11.1-INI-ia32.node
+ * https://github.com/biud436/MV/raw/master/Windows/INI/bin/v9.11.1-INI-x64.node
+ * 
+ * vX.XX.X-INI-X.node 파일을 준비하셨다면, js/libs 폴더에 넣어주세요.
+ * 이 다음에는 RS_INI.js라는 파일을 js/plugins 폴더에 삽입하여 플러그인 관리로 설정하세요.
+ * 
+ * 라이브러리를 직접 빌드하려면 Node.js 와 Visual Studio와 Python이 설치되어있어야 합니다.
+ * 
  * ==============================================================================
  * Terms of Use
  * ==============================================================================
