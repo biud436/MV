@@ -14,7 +14,7 @@
  * @desc 라인 갯수
  * @default 4
  * @min 1
- *
+ * 
  * @param 그레디언트 시작 색상
  * @desc 그레디언트 시작 색상
  * @default #FFFFFF
@@ -51,17 +51,26 @@
  * @type number
  * @desc 큰 페이스칩의 오프셋 X
  * @default 0
+ * @min -1280
  *
  * @param 큰 페이스칩 OY
  * @type number
  * @desc 큰 페이스칩의 오프셋 Y
  * @default 0
+ * @min -1280
+ * 
+ * @param face Opacity
+ * @text 큰 페이스칩 투명도
+ * @type number
+ * @desc 큰 페이스칩의 투명도를 조절합니다.
+ * (0 - 255)
+ * @default 255
  *
  * @param 대화창 뒤에 얼굴 표시
  * @type boolean
  * @desc 큰 페이스칩을 메시지창의 뒷면에 표시합니다.
  * 예 - true   아니오 - false
- * @default false
+ * @default true
  * @on 대화창 뒤에
  * @off 대화창을 가림
  *
@@ -152,6 +161,7 @@
  * @parent 선택지 표시
  * @type select
  * @desc 선택지 창의 스타일을 설정할 수 있습니다
+ * (숫자 입력은 XP 스타일로 나오지 않습니다.)
  * @default default
  * @option RMXP 스타일
  * @value RMXP
@@ -260,6 +270,38 @@
  * @type file[]
  * @desc 윈도우 스킨을 프리 로드합니다.
  * @default
+ * 
+ * @param Window Width
+ * @text 윈도우 폭
+ * @type string
+ * @desc 윈도우 폭 지정
+ * (Graphics.boxWidth는 화면 가로 길이)
+ * @default (Graphics.boxWidth / 2) + (Graphics.boxWidth / 3)
+ * 
+ * @param Gradient Style
+ * @text 그레디언트 스타일
+ * @type select
+ * @desc 그레디언트 스타일을 지정합니다.
+ * @default linear-horizontal
+ * @option 선형 (가로)
+ * @value linear-horizontal
+ * @option 축형 (가로)
+ * @value axial-horizontal
+ * @option 선형 (세로)
+ * @value linear-vertical
+ * @option 축형 (세로)
+ * @value axial-vertical
+ * @option 방사선
+ * @value radial
+ * 
+ * @param Paragraph Minifier
+ * @text 자동 개행 여부
+ * @type boolean
+ * @desc 자동 개행 여부를 설정하십시오
+ * (기본 값은 false)
+ * @default false
+ * @on 자동 개행 설정
+ * @off 미설정
  *
  * @help
  * 이 플러그인은 복잡한 텍스트 코드가 아닌 한글 단어로 직관적으로 텍스트 코드를 호출하기
@@ -564,10 +606,13 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
- * 2018.12.16 (v0.1.44) :
+ * 2019.02.16 (v0.1.44) :
  * - 자동 개행 기능 추가 (일반 메시지에서만 사용 가능)
  * - 배경색 기능을 추가하였습니다.
  * - 그레디언트(Gradient) 텍스트를 2개 이상 사용하면 색상 영역이 확장되는 현상을 수정하였습니다.
+ * - 그레디언트 스타일 추가
+ * - 윈도우 폭 설정 기능 추가
+ * - 큰 페이스칩(스탠딩 CG) 투명도 조절 기능 추가
  * 2018.12.08 (v0.1.43) : 
  * - \} \축소! 사용 시 라인 높이보다 작아질 수 없게 하였습니다.
  * 2018.11.30 (v0.1.42) :
@@ -761,7 +806,6 @@
  * @desc Sets the number of rows to indicate in a message window.
  * @default 4
  * @min 1
- *
  * @param gradientColor1
  * @desc Sets needed gradient color for the start point of the gradient text.
  * @default #FFFFFF
@@ -803,6 +847,13 @@
  * @param Big Face OY
  * @type number
  * @desc Sets the large face bitmap's offset y
+ * @default 0
+ * 
+ * @param face Opacity
+ * @text Big Face Opacity
+ * @type number
+ * @desc Set the opacity using a specific game variable.
+ * (0 - 255)
  * @default 0
  *
  * @param Show Big Face Back
@@ -992,6 +1043,38 @@
  * @desc preload windowskin files
  * @default
  * 
+ * @param Window Width
+ * @text Window Width
+ * @type string
+ * @desc Specify the window width
+ * (Graphics.boxWidth is the same as the screen width)
+ * @default Graphics.boxWidth
+ * 
+ * @param Gradient Style
+ * @text Gradient Style
+ * @type select
+ * @desc Specify the gradient style.
+ * @default linear-horizontal
+ * @option linear-horizontal
+ * @value linear-horizontal
+ * @option axial-horizontal
+ * @value axial-horizontal
+ * @option linear-vertical
+ * @value linear-vertical
+ * @option axial-vertical
+ * @value axial-vertical
+ * @option radial
+ * @value radial
+ * 
+ * @param Paragraph Minifier
+ * @text Automatic New Line
+ * @type boolean
+ * @desc Set the automatic line breaks.
+ * (The default value is to false)
+ * @default false
+ * @on true
+ * @off false
+ * 
  * @help
  *
  * =============================================================================
@@ -1000,7 +1083,10 @@
  * 2018.12.16 (v0.1.44) :
  * - 자동 개행 기능 추가 (일반 메시지에서만 사용 가능)
  * - 배경색 기능을 추가하였습니다.
- * - 그레디언트(Gradient) 텍스트를 2개 이상 설정하면 색상 영역이 확장되는 현상을 수정하였습니다.
+ * - 그레디언트(Gradient) 텍스트를 2개 이상 사용하면 색상 영역이 확장되는 현상을 수정하였습니다.
+ * - 그레디언트 스타일 추가
+ * - 윈도우 폭 설정 기능 추가
+ * - 큰 페이스칩(스탠딩 CG) 투명도 조절 기능 추가
  * 2018.12.08 (v0.1.43) : 
  * - \} \축소! 사용 시 라인 높이보다 작아질 수 없게 하였습니다.
  * 2018.11.30 (v0.1.42) :
@@ -1316,7 +1402,23 @@ var Color = Color || {};
 
   RS.MessageSystem.Params.preloadWindowskins = JSON.parse(parameters["preload windowskin"] || "[]");
 
-  RS.MessageSystem.Params.isParagraphMinifier = false;
+  RS.MessageSystem.Params.isParagraphMinifier = Boolean(parameters["Paragraph Minifier"] === "true");
+
+  RS.MessageSystem.Params.windowOffset = new Point(0, 0);
+
+  RS.MessageSystem.Params.gradientStyle = parameters["Gradient Style"];
+
+  RS.MessageSystem.Params.faceOpacity = parseInt(parameters["face Opacity"] || 21);
+
+  //============================================================================
+  // Lazy Initialize Parameters (느린 초기화)
+  //============================================================================
+
+  var alias_Game_Temp_initialize = Game_Temp.prototype.initialize;
+  Game_Temp.prototype.initialize = function() { 
+    alias_Game_Temp_initialize.call(this);
+    RS.MessageSystem.Params.windowWidth = eval(parameters["Window Width"]) || Graphics.boxWidth;
+  };
     
   //============================================================================
   // Multiple Language supports
@@ -1846,7 +1948,7 @@ var Color = Color || {};
     }    
     return RS.MessageSystem.getEnglishColor(string);
   };
-    
+
   //============================================================================
   // Window_Base
   //============================================================================
@@ -1879,7 +1981,7 @@ var Color = Color || {};
       color = this.textColor(color);
     }
     this.contents.textColor = color;
-  };  
+  }; 
   
   Window_Base.prototype.processEscapeCharacter = function(code, textState) {
     var tcGroup = RS.MessageSystem.TextCodes.ENUM;
@@ -1906,11 +2008,6 @@ var Color = Color || {};
     }
   };
   
-  /**
-  * 윈도우 스킨 로딩이 완료되면 기본 색상 설정
-  * @memberOf Window_Base
-  * @method loadWindowskin
-  */
   var alias_loadWindowskin = Window_Base.prototype.loadWindowskin;
   Window_Base.prototype.loadWindowskin = function() {
     alias_loadWindowskin.call(this);
@@ -2013,6 +2110,44 @@ var Color = Color || {};
     context.restore();
     return gradient;
   };
+
+  Bitmap.prototype.setGradientStyle = function(text, color1, color2, color3, tx, ty) {
+    var context = this._context;
+    var width = this.measureTextWidth(text);
+    var height = RS.MessageSystem.Params.lineHeight;
+    var grd;
+
+    context.save();
+
+    var style = RS.MessageSystem.Params.gradientStyle;
+
+    if(style !== "radial") {
+      if(style.contains("horizontal")) {
+        grd = context.createLinearGradient(tx, 0, tx + width, 0);
+      } else {
+        grd = context.createLinearGradient(tx, 0, 0, ty + height);
+      }
+    } else {
+      var ws = parseFloat(width * 0.5);
+      var hs = parseFloat(height * 0.5);
+      grd = context.createRadialGradient(ws, hs, 0.000, ws, hs, ws);
+    }
+
+    if(style === "radial") {
+      grd.addColorStop('0.0', color1);
+      grd.addColorStop('1.0', color2);
+    } else if(style.contains("axial")) {
+      grd.addColorStop('0.0', color1);
+      grd.addColorStop('0.5', color2);
+      grd.addColorStop('1.0', color3);
+    } else {
+      grd.addColorStop('0.0', color1);
+      grd.addColorStop('1.0', color2);
+    }
+
+    context.restore();
+    return grd;
+  };
   
   Bitmap.prototype._makeFontNameText = function() {
     return (this.fontItalic ? 'Italic ' : '') + (this.fontBold ? 'bold ' : '') +
@@ -2025,7 +2160,7 @@ var Color = Color || {};
     context.imageSmoothingEnabled = RS.MessageSystem.Params.fontSmoothingEnabled;
     // context.imageSmoothingQuality = "low"; // firefox only?
     if(this.fontGradient) {
-      var gradient = this.setGradient(text,
+      var gradient = this.setGradientStyle(text,
         RS.MessageSystem.Params.gradientColor1,
         RS.MessageSystem.Params.gradientColor2,
         RS.MessageSystem.Params.gradientColor3, 
@@ -2369,7 +2504,7 @@ var Color = Color || {};
   Window_Message.prototype.numVisibleRows = function() {
     return RS.MessageSystem.Params.numVisibleRows;
   };
-  
+
   var alias_Window_Message_origin_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
   Window_Message.prototype.processNormalCharacter = function(textState) {
     
@@ -2419,420 +2554,432 @@ var Color = Color || {};
   Window_Message.prototype.subWindows = function() {
     return [this._goldWindow, this._choiceWindow,
       this._numberWindow, this._itemWindow, this._nameWindow];
-    };
-    
-    Window_Message.prototype.updatePlacement = function() {
-      this._positionType = $gameMessage.positionType();
-      if($gameMessage.getBalloon() === -2) {
-        this.y = this._positionType * (Graphics.boxHeight - this.height) / 2;
-      } else {
-        if(SceneManager._scene instanceof Scene_Map) this.updateBalloonPosition();
-      }
-      this._goldWindow.y = this.y > 0 ? 0 : Graphics.boxHeight - this._goldWindow.height;
-      this.updateDefaultOpacity();
-      this.updateContentsOpacity();
-    };
-    
-    var alias_Window_Message_updatePlacement = Window_Message.prototype.updatePlacement;
-    Window_Message.prototype.updatePlacement = function() {
-      alias_Window_Message_updatePlacement.call(this);
-      if(this._nameWindow.isOpen() || this.areSettingsChanged()) {
-        this.updateNameWindow();
-      }
-    };
-    
-    var alias_Window_Message_convertEscapeCharacters = Window_Message.prototype.convertEscapeCharacters;
-    Window_Message.prototype.convertEscapeCharacters = function(text) {
-      var tcGroup = RS.MessageSystem.TextCodes.ENUM;
-      var textCode = RS.MessageSystem.TextCodes.Main;
-      var regGroup = RS.MessageSystem.Reg.Group;
-      text = alias_Window_Message_convertEscapeCharacters.call(this, text);
-      text = text.replace(regGroup[tcGroup.NAME], function() {
-        var retName = arguments[1];
-        if(retName.endsWith(':left')) {
-          retName = retName.replace(':left', '');
-          RS.MessageSystem.Params.namePositionTypeAtX = "left";
-        }
-        if(retName.endsWith(':auto')) {
-          retName = retName.replace(':auto', '');
-          RS.MessageSystem.Params.namePositionTypeAtX = "auto";
-        }
-        if(retName.endsWith(':center')) {
-          retName = retName.replace(':center', '');
-          RS.MessageSystem.Params.namePositionTypeAtX = "center";
-        }        
-        if(retName.endsWith(':opacity0')) {
-          retName = retName.replace(':opacity0', '');
-          RS.MessageSystem.Params.namePositionTypeAtX = "opacity0";
-        }            
-        if(retName.endsWith(':defaultOpacity')) {
-          retName = retName.replace(':defaultOpacity', '');
-          RS.MessageSystem.Params.namePositionTypeAtX = "defaultOpacity";
-        }                    
-        if(retName.endsWith(':right')) {
-          retName = retName.replace(':right', '');
-          RS.MessageSystem.Params.namePositionTypeAtX = "right";
-        }
-        this._nameWindow.drawName(retName);
-        return '';
-      }.bind(this));
-      text = text.replace(regGroup[tcGroup.BALLOON], function() {
-        var value = Number(arguments[1] || -2);
-        if($gameParty.inBattle()) {
-          $gameMessage.setBalloon( (value < 0) ? 'ENEMIES : ' + Math.abs(value) :  'ACTORS : ' + value);
-        } else {
-          $gameMessage.setBalloon(value);
-        }
-        return '';
-      }.bind(this));
-      text = text.replace(regGroup[tcGroup.FRIENDLY_TROOPS], function() {
-        var value = Number(arguments[1] || 0);
-        $gameMessage.setBalloon( 'ACTORS : ' + value );
-        return '';
-      }.bind(this));
-      text = text.replace(regGroup[tcGroup.ENEMY_TROOPS], function() {
-        var value = Number(arguments[1] || 0);
-        $gameMessage.setBalloon( 'ENEMIES : ' + value );
-        return '';
-      }.bind(this));
-      text = text.replace(regGroup[tcGroup.ALIGN_LEFT], function() {
-        return '\x1b' + textCode[tcGroup.ALIGN] + "[0]";
-      }.bind(this));      
-      text = text.replace(regGroup[tcGroup.ALIGN_CENTER], function() {
-        return '\x1b' + textCode[tcGroup.ALIGN] + "[1]";
-      }.bind(this));        
-      text = text.replace(regGroup[tcGroup.ALIGN_RIGHT], function() {
-        return '\x1b' + textCode[tcGroup.ALIGN] + "[2]";
-      }.bind(this));      
-      text = text.replace(regGroup[tcGroup.ALIGN], function() {
-        $gameMessage.setAlign(Number(arguments[1] || 0));
-        return '';
-      }.bind(this));
-      text = text.replace(/<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi, function() {
-        return regGroup[tcGroup.ALIGN_CLEAR].source;
-      }.bind(this)); 
-      text = text.replace(regGroup[tcGroup.BOLD_START_CV], function() {
-        return regGroup[tcGroup.BOLD_START].source;
-      }.bind(this));   
-      text = text.replace(regGroup[tcGroup.BOLD_END_CV], function() {
-        return regGroup[tcGroup.BOLD_END].source;
-      }.bind(this));        
-      text = text.replace(regGroup[tcGroup.ITALIC_START_CV], function() {
-        return regGroup[tcGroup.ITALIC_START].source;
-      }.bind(this));   
-      text = text.replace(regGroup[tcGroup.ITALIC_END_CV], function() {
-        return regGroup[tcGroup.ITALIC_END].source;
-      }.bind(this));
+  };
 
-      return text;
-    };
+  Window_Message.prototype.updateBigFaceOpacity = function() {
+    if(!this._faceContents) {
+      return;
+    }
+    var value = RS.MessageSystem.Params.faceOpacity.clamp(0, 255);
+  };
     
-    var alias_Window_Message_terminateMessage = Window_Message.prototype.terminateMessage;
-    Window_Message.prototype.terminateMessage = function() {
-      this._nameWindow.close();
-      alias_Window_Message_terminateMessage.call(this);
-    };
-    
-    Window_Message.prototype.setHeight = function(n) {
-      this.contents.clear();
-      $gameMessage.setMaxLine(n);
-      this.height = this.fittingHeight(n);
-      this.createContents();
-      this.updatePlacement();
+  Window_Message.prototype.updatePlacement = function() {
+    this._positionType = $gameMessage.positionType();
+    if($gameMessage.getBalloon() === -2) {
+      this.x = (Graphics.boxWidth / 2) - (this.width / 2) + RS.MessageSystem.Params.windowOffset.x;
+      this.y = this._positionType * (Graphics.boxHeight - this.height) / 2 + RS.MessageSystem.Params.windowOffset.y;
+    } else {
+      if(SceneManager._scene instanceof Scene_Map) this.updateBalloonPosition();
+    }
+    this._goldWindow.y = this.y > 0 ? 0 : Graphics.boxHeight - this._goldWindow.height;
+    this.updateDefaultOpacity();
+    this.updateContentsOpacity();
+    this.updateBigFaceOpacity();
+    if(this._nameWindow.isOpen() || this.areSettingsChanged()) {
       this.updateNameWindow();
-    };
-
-    Window_Message.prototype.updateNameWindowPositionXImpl = function() {
-      var namePositionTypeAtX = RS.MessageSystem.Params.namePositionTypeAtX;
-      var newX = this.x + RS.MessageSystem.Params.nameWindowX;
-
-      switch(namePositionTypeAtX) {
-        case 'right':
-          newX = (this.x + this.width) - this._nameWindow.width - RS.MessageSystem.Params.nameWindowX;
-          break;
-        case 'center':
-          newX = (this.x + this.width / 2) - (this._nameWindow.width / 2) - RS.MessageSystem.Params.nameWindowX;
-          break;
-        case 'left':
-          newX = this.x + RS.MessageSystem.Params.nameWindowX;
-          break;
-        case 'opacity0':
-          this._nameWindow.opacity = 0;
-          break;
-        case 'defaultOpacity':
-          this._nameWindow.opacity = RS.MessageSystem.Params.defaultOpacity;
-          break;
-        case 'auto':
-          newX = this.x + this.newLineX() + RS.MessageSystem.Params.nameWindowX;        
-          break;      
-      }
-
-      this._nameWindow.x = newX;
-    };
-    
-    Window_Message.prototype.updateNameWindow = function() {
-      var self = this;
-      
-      this.updateNameWindowPositionXImpl();
-      
-      // Y 값
-      if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
-        this._nameWindow.y = 0;
-        this.y = this._nameWindow.isOpen() ? (this._nameWindow.height + RS.MessageSystem.Params.nameWindowY) : 0;
-      } else {
-        this._nameWindow.y = self.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
-      }
-      
-    };
-    
-    var alias_Window_Message_initialize = Window_Message.prototype.initialize;
-    Window_Message.prototype.initialize = function() {
-      alias_Window_Message_initialize.call(this);
-      $gameTemp.setMSHeightFunc(this.setHeight.bind(this));
-      this.setHeight(RS.MessageSystem.Params.numVisibleRows);
-      this.createFaceContents();
-      this.on('removed', this.removeEventHandler, this);
-      this.on('onLoadWindowskin', this.onLoadWindowskin, this);            
-    };
-
-    Window_Message.prototype.removeEventHandler = function() {
-      this.off('onLoadWindowskin', this.onLoadWindowskin, this);
-    };
-
-    Window_Message.prototype.textColor = function(n) {
-      var windowskin = this.windowskin;
-      if(!windowskin.isReady()) {
-        // Set the default text color if the windowskin is not ready.
-        return Color.baseColor;
-      }
-      var px = 96 + (n % 8) * 12 + 6;
-      var py = 144 + Math.floor(n / 8) * 12 + 6;
-      return windowskin.getPixel(px, py);
-    };    
-
-    Window_Message.prototype.onLoadWindowskin = function() {
-      Color.baseColor = this.textColor(0);      
-      this.changeTextColor(Color.baseColor);
-    };
-    
-    Window_Message.prototype.loadWindowskin = function() {
-      var self = this;
-      var bitmap = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
-      if(bitmap !== this.windowskin) {
-        this.windowskin = bitmap;
-        this._isDirtyWindowskin = false;
-        this.windowskin.addLoadListener(function() {
-          this._isDirtyWindowskin = true;
-        }.bind(this));
-        if(!this.contents) {
-          this.createContents();
-        }
-        // Set the default text color if the windowskin didn't load yet.
-        this.changeTextColor(Color.baseColor);   
-
-        if(!this.windowskin.isReady()) {
-          return setTimeout(function() {
-              self.loadWindowSkin();
-          }.bind(this), 10);
-        }
+    }    
+  };
         
+  var alias_Window_Message_convertEscapeCharacters = Window_Message.prototype.convertEscapeCharacters;
+  Window_Message.prototype.convertEscapeCharacters = function(text) {
+    var tcGroup = RS.MessageSystem.TextCodes.ENUM;
+    var textCode = RS.MessageSystem.TextCodes.Main;
+    var regGroup = RS.MessageSystem.Reg.Group;
+    text = alias_Window_Message_convertEscapeCharacters.call(this, text);
+    text = text.replace(regGroup[tcGroup.NAME], function() {
+      var retName = arguments[1];
+      if(retName.endsWith(':left')) {
+        retName = retName.replace(':left', '');
+        RS.MessageSystem.Params.namePositionTypeAtX = "left";
       }
-    };
+      if(retName.endsWith(':auto')) {
+        retName = retName.replace(':auto', '');
+        RS.MessageSystem.Params.namePositionTypeAtX = "auto";
+      }
+      if(retName.endsWith(':center')) {
+        retName = retName.replace(':center', '');
+        RS.MessageSystem.Params.namePositionTypeAtX = "center";
+      }        
+      if(retName.endsWith(':opacity0')) {
+        retName = retName.replace(':opacity0', '');
+        RS.MessageSystem.Params.namePositionTypeAtX = "opacity0";
+      }            
+      if(retName.endsWith(':defaultOpacity')) {
+        retName = retName.replace(':defaultOpacity', '');
+        RS.MessageSystem.Params.namePositionTypeAtX = "defaultOpacity";
+      }                    
+      if(retName.endsWith(':right')) {
+        retName = retName.replace(':right', '');
+        RS.MessageSystem.Params.namePositionTypeAtX = "right";
+      }
+      this._nameWindow.drawName(retName);
+      return '';
+    }.bind(this));
+    text = text.replace(regGroup[tcGroup.BALLOON], function() {
+      var value = Number(arguments[1] || -2);
+      if($gameParty.inBattle()) {
+        $gameMessage.setBalloon( (value < 0) ? 'ENEMIES : ' + Math.abs(value) :  'ACTORS : ' + value);
+      } else {
+        $gameMessage.setBalloon(value);
+      }
+      return '';
+    }.bind(this));
+    text = text.replace(regGroup[tcGroup.FRIENDLY_TROOPS], function() {
+      var value = Number(arguments[1] || 0);
+      $gameMessage.setBalloon( 'ACTORS : ' + value );
+      return '';
+    }.bind(this));
+    text = text.replace(regGroup[tcGroup.ENEMY_TROOPS], function() {
+      var value = Number(arguments[1] || 0);
+      $gameMessage.setBalloon( 'ENEMIES : ' + value );
+      return '';
+    }.bind(this));
+    text = text.replace(regGroup[tcGroup.ALIGN_LEFT], function() {
+      return '\x1b' + textCode[tcGroup.ALIGN] + "[0]";
+    }.bind(this));      
+    text = text.replace(regGroup[tcGroup.ALIGN_CENTER], function() {
+      return '\x1b' + textCode[tcGroup.ALIGN] + "[1]";
+    }.bind(this));        
+    text = text.replace(regGroup[tcGroup.ALIGN_RIGHT], function() {
+      return '\x1b' + textCode[tcGroup.ALIGN] + "[2]";
+    }.bind(this));      
+    text = text.replace(regGroup[tcGroup.ALIGN], function() {
+      $gameMessage.setAlign(Number(arguments[1] || 0));
+      return '';
+    }.bind(this));
+    text = text.replace(/<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi, function() {
+      return regGroup[tcGroup.ALIGN_CLEAR].source;
+    }.bind(this)); 
+    text = text.replace(regGroup[tcGroup.BOLD_START_CV], function() {
+      return regGroup[tcGroup.BOLD_START].source;
+    }.bind(this));   
+    text = text.replace(regGroup[tcGroup.BOLD_END_CV], function() {
+      return regGroup[tcGroup.BOLD_END].source;
+    }.bind(this));        
+    text = text.replace(regGroup[tcGroup.ITALIC_START_CV], function() {
+      return regGroup[tcGroup.ITALIC_START].source;
+    }.bind(this));   
+    text = text.replace(regGroup[tcGroup.ITALIC_END_CV], function() {
+      return regGroup[tcGroup.ITALIC_END].source;
+    }.bind(this));
 
-    var _Window_Message_updateLoading = Window_Message.prototype.updateLoading;
-    Window_Message.prototype.updateLoading = function() {
-      var ret = true;
-      if(this._isDirtyWindowskin) {
-        // Set the default text color from its bitmap after loaded the windowskin.
-        Color.baseColor = this.textColor(0);      
-        this.changeTextColor(Color.baseColor);        
-        this._isDirtyWindowskin = false;
-        ret = true;
+    return text;
+  };
+    
+  var alias_Window_Message_terminateMessage = Window_Message.prototype.terminateMessage;
+  Window_Message.prototype.terminateMessage = function() {
+    this._nameWindow.close();
+    alias_Window_Message_terminateMessage.call(this);
+  };
+  
+  Window_Message.prototype.setHeight = function(n) {
+    this.contents.clear();
+    $gameMessage.setMaxLine(n);
+    this.height = this.fittingHeight(n);
+    this.createContents();
+    this.updatePlacement();
+    this.updateNameWindow();
+  };
+
+  Window_Message.prototype.updateNameWindowPositionXImpl = function() {
+    var namePositionTypeAtX = RS.MessageSystem.Params.namePositionTypeAtX;
+    var newX = this.x + RS.MessageSystem.Params.nameWindowX;
+
+    switch(namePositionTypeAtX) {
+      case 'right':
+        newX = (this.x + this.width) - this._nameWindow.width - RS.MessageSystem.Params.nameWindowX;
+        break;
+      case 'center':
+        newX = (this.x + this.width / 2) - (this._nameWindow.width / 2) - RS.MessageSystem.Params.nameWindowX;
+        break;
+      case 'left':
+        newX = this.x + RS.MessageSystem.Params.nameWindowX;
+        break;
+      case 'opacity0':
+        this._nameWindow.opacity = 0;
+        break;
+      case 'defaultOpacity':
+        this._nameWindow.opacity = RS.MessageSystem.Params.defaultOpacity;
+        break;
+      case 'auto':
+        newX = this.x + this.newLineX() + RS.MessageSystem.Params.nameWindowX;        
+        break;      
+    }
+
+    this._nameWindow.x = newX;
+  };
+    
+  Window_Message.prototype.updateNameWindow = function() {
+    var self = this;
+    
+    this.updateNameWindowPositionXImpl();
+    
+    // Y 값
+    if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
+      this._nameWindow.y = 0;
+      this.y = this._nameWindow.isOpen() ? (this._nameWindow.height + RS.MessageSystem.Params.nameWindowY) : 0;
+    } else {
+      this._nameWindow.y = self.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
+    }
+    
+  };
+    
+  var alias_Window_Message_initialize = Window_Message.prototype.initialize;
+  Window_Message.prototype.initialize = function() {
+    alias_Window_Message_initialize.call(this);
+    $gameTemp.setMSHeightFunc(this.setHeight.bind(this));
+    this.setHeight(RS.MessageSystem.Params.numVisibleRows);
+    this.createFaceContents();
+    this.on('removed', this.removeEventHandler, this);
+    this.on('onLoadWindowskin', this.onLoadWindowskin, this);            
+  };
+
+  Window_Message.prototype.removeEventHandler = function() {
+    this.off('onLoadWindowskin', this.onLoadWindowskin, this);
+  };
+
+  Window_Message.prototype.textColor = function(n) {
+    var windowskin = this.windowskin;
+    if(!windowskin.isReady()) {
+      // Set the default text color if the windowskin is not ready.
+      return Color.baseColor;
+    }
+    var px = 96 + (n % 8) * 12 + 6;
+    var py = 144 + Math.floor(n / 8) * 12 + 6;
+    return windowskin.getPixel(px, py);
+  };    
+
+  Window_Message.prototype.onLoadWindowskin = function() {
+    Color.baseColor = this.textColor(0);      
+    this.changeTextColor(Color.baseColor);
+  };
+  
+  Window_Message.prototype.loadWindowskin = function() {
+    var self = this;
+    var bitmap = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
+    if(bitmap !== this.windowskin) {
+      this.windowskin = bitmap;
+      this._isDirtyWindowskin = false;
+      this.windowskin.addLoadListener(function() {
+        this._isDirtyWindowskin = true;
+      }.bind(this));
+      if(!this.contents) {
+        this.createContents();
       }
-      return _Window_Message_updateLoading.call(this) && ret;
-    };    
-    
-    Window_Message.prototype.needsNewPage = function(textState) {
-      return (!this.isEndOfText(textState) && textState.y + textState.height > this.contentsHeight());
-    };
-    
-    Window_Message.prototype.createFaceContents = function() {
-      this._faceContents = new Sprite(); // 큰 얼굴 이미지 생성
-      this._faceContents.x = 0;
-      this._faceContents.y = 0;
-      this.addChild(this._faceContents);
-      return this._faceContents;
-    };
-    
-    Window_Message.prototype.removeFaceContents = function() {
-      if(this._faceContents) this.removeChild(this._faceContents);
-    };
-    
-    /**
-    * 큰 얼굴 이미지가 설정되었을 때 텍스트 시작 위치
-    */
-    Window_Message.prototype.newLineX = function() {
-      var reg = /^Big_/i;
-      var faceName = $gameMessage.faceName();
-      var faceIndex = $gameMessage.faceIndex();
-      if( reg.exec( faceName ) ) { 
-        return (faceIndex > 0) ? 0 : RS.MessageSystem.Params.textStartX; 
-      } else {
-        return ((faceName) ? RS.MessageSystem.Params.faceStartOriginX : 0);
-      }
-    };
-    
-    Window_Message.prototype.drawBigFace = function(faceName) {
-      
-      this.loadMessageFace();
-      var w = Graphics.boxWidth - this._faceBitmap.width;
-      var h = Graphics.boxHeight - this._faceBitmap.height;
-      var offsetX = this.x + RS.MessageSystem.Params.faceOX;
-      var offsetY = this.y + RS.MessageSystem.Params.faceOY;
-      var faceIndex = $gameMessage.faceIndex();
-      
-      this._faceContents.bitmap = this._faceBitmap;
-      
-      if(faceIndex > 0) { // 1 이상이면 오른쪽에 위치
-        this._faceContents.x = w - offsetX; 
-      } else { // 0이면 왼쪽에 위치
-        this._faceContents.x = offsetX;
-      }
-      
-      this._faceContents.y = h - offsetY;
-      
-    };
-    
-    Window_Message.prototype.drawMessageFace = function() {
-      
-      var reg = /^Big_/i;
-      var faceName = $gameMessage.faceName();
-      var faceIndex = $gameMessage.faceIndex();
-      
-      if(reg.exec( faceName ) ) { // 큰 얼굴 그래픽이 있으면
-        this.drawBigFace( faceName );
-      } else {
-        this.drawFace( faceName, faceIndex , 0, 0);
-      }
-      
-    };
-    
-    Window_Message.prototype.isAlreadyDrawnFace = function () {
-      return this._faceContents.bitmap || this.newLineX() > 0;
-    };
-    
-    Window_Message.prototype.setFaceZIndex = function (zIndex) {
-      zIndex = zIndex || 0;
-      if(this.parent && RS.MessageSystem.Params.faceSide) this.setChildIndex( this._faceContents, zIndex );
-    };
-    
-    Window_Message.prototype.clearFaceBitmap = function () {
-      if(this._faceContents.bitmap) this._faceContents.bitmap = null;
-    };
-    
-    Window_Message.prototype.redrawFaceImage = function (textState, faceName, faceIndex, x, y, width, height) {
-      
-      if(!this.isAlreadyDrawnFace()) return;
-      
-      width = width || Window_Base._faceWidth;
-      height = height || Window_Base._faceHeight;
-      faceName = faceName.trim() || "";
-      faceIndex = parseInt(faceIndex) || 0;
-      
-      $gameMessage._faceName = faceName;
-      $gameMessage._faceIndex = faceIndex;
-      
-      if( /^Big_/i.test( faceName ) ) {
-        // TODO: 텍스쳐를 교체하는 코드.
-        this.removeFaceContents();
-        this.createFaceContents();
-        this.setFaceZIndex();
-        this.drawBigFace( faceName );
-      } else {
-        // TODO: 다른 플러그인의 영향으로 얼굴 이미지가 오른쪽에 표시된다면 텍스트 영역이 삭제될 수도 있다.
-        // 특정 영역 삭제 및 일반 얼굴 이미지 묘화
-        this.contents.clearRect(x, y, width, height);
-        this.drawFace(faceName, faceIndex, 0, 0);
+      // Set the default text color if the windowskin didn't load yet.
+      this.changeTextColor(Color.baseColor);   
+
+      if(!this.windowskin.isReady()) {
+        return setTimeout(function() {
+            self.loadWindowSkin();
+        }.bind(this), 10);
       }
       
-      // ImageManager.releaseReservation(RS.MessageSystem.Params._imageReservationId);
-      
-    };
+    }
+  };
+
+  var _Window_Message_updateLoading = Window_Message.prototype.updateLoading;
+  Window_Message.prototype.updateLoading = function() {
+    var ret = true;
+    if(this._isDirtyWindowskin) {
+      Color.baseColor = this.textColor(0);      
+      this.changeTextColor(Color.baseColor);        
+      this._isDirtyWindowskin = false;
+      ret = true;
+    }
+    return _Window_Message_updateLoading.call(this) && ret;
+  };    
+  
+  Window_Message.prototype.needsNewPage = function(textState) {
+    return (!this.isEndOfText(textState) && textState.y + textState.height > this.contentsHeight());
+  };
+  
+  Window_Message.prototype.createFaceContents = function() {
+    this._faceContents = new Sprite(); // 큰 얼굴 이미지 생성
+    this._faceContents.x = 0;
+    this._faceContents.y = 0;
+    this.addChild(this._faceContents);
+    return this._faceContents;
+  };
+  
+  Window_Message.prototype.removeFaceContents = function() {
+    if(this._faceContents) this.removeChild(this._faceContents);
+  };
+  
+  /**
+  * 큰 얼굴 이미지가 설정되었을 때 텍스트 시작 위치
+  */
+  Window_Message.prototype.newLineX = function() {
+    var reg = /^Big_/i;
+    var faceName = $gameMessage.faceName();
+    var faceIndex = $gameMessage.faceIndex();
+    if( reg.exec( faceName ) ) { 
+      return (faceIndex > 0) ? 0 : RS.MessageSystem.Params.textStartX; 
+    } else {
+      return ((faceName) ? RS.MessageSystem.Params.faceStartOriginX : 0);
+    }
+  };
+  
+  Window_Message.prototype.drawBigFace = function(faceName, faceIndex) {
     
-    var alias_Window_Message_newPage = Window_Message.prototype.newPage;
-    Window_Message.prototype.newPage = function(textState) {
+    this.loadMessageFace();
+    var w = Graphics.boxWidth - this._faceBitmap.width;
+    var h = Graphics.boxHeight - this._faceBitmap.height;
+    var offsetX = this.x + RS.MessageSystem.Params.faceOX;
+    var offsetY = this.y + RS.MessageSystem.Params.faceOY;
+    var faceIndex = $gameMessage.faceIndex();
+    
+    this._faceContents.bitmap = this._faceBitmap;
+    
+    if(faceIndex > 0) { // 1 이상이면 오른쪽에 위치
+      this._faceContents.x = w - offsetX; 
+    } else { // 0이면 왼쪽에 위치
+      this._faceContents.x = offsetX;
+    }
+    
+    this._faceContents.y = h - offsetY;
+    
+  };
+  
+  Window_Message.prototype.drawMessageFace = function() {
+    
+    var reg = /^Big_/i;
+    var faceName = $gameMessage.faceName();
+    var faceIndex = $gameMessage.faceIndex();
+    
+    if(reg.exec( faceName ) ) { // 큰 얼굴 그래픽이 있으면
+      this.drawBigFace( faceName, faceIndex );
+    } else {
+      this.drawFace( faceName, faceIndex , 0, 0);
+    }
+    
+  };
+  
+  Window_Message.prototype.isAlreadyDrawnFace = function () {
+    return this._faceContents.bitmap || this.newLineX() > 0;
+  };
+  
+  Window_Message.prototype.setFaceZIndex = function (zIndex) {
+    zIndex = zIndex || 0;
+    if(this.parent && RS.MessageSystem.Params.faceSide) this.setChildIndex( this._faceContents, zIndex );
+  };
+  
+  Window_Message.prototype.clearFaceBitmap = function () {
+    if(this._faceContents.bitmap) this._faceContents.bitmap = null;
+  };
+  
+  Window_Message.prototype.redrawFaceImage = function (textState, faceName, faceIndex, x, y, width, height) {
+    
+    if(!this._faceContents) return;
+    var isValid = (this.newLineX() > 0);
+    if(!isValid) return;
+
+    width = width || Window_Base._faceWidth;
+    height = height || Window_Base._faceHeight;
+    faceName = faceName.trim() || "";
+    faceIndex = parseInt(faceIndex) || 0;
+    
+    $gameMessage._faceName = faceName;
+    $gameMessage._faceIndex = faceIndex;
+    
+    if( /^Big_/i.test( faceName )) {
+      faceIndex = faceIndex.clamp(0, 1);
+
+      // TODO: 텍스쳐를 교체하는 코드.
       this.setFaceZIndex();
-      this.clearFaceBitmap();
-      this.loadWindowskin(); 
-      this.emit('onLoadWindowskin');
-      this.openBalloon( $gameMessage.getBalloon() );
-      alias_Window_Message_newPage.call( this, textState );
-    };
+      this.drawBigFace( faceName, faceIndex );
+    } else {
+      // TODO: 다른 플러그인의 영향으로 얼굴 이미지가 오른쪽에 표시된다면 텍스트 영역이 삭제될 수도 있다.
+      // 특정 영역 삭제 및 일반 얼굴 이미지 묘화
+      this.contents.clearRect(x, y, width, height);
+      this.drawFace(faceName, faceIndex, 0, 0);
+    }
     
-    Window_Message.prototype.startMessage = function() {      
-      this._textState = {};
-      this._textState.index = 0;
-      this._textState.text = this.convertEscapeCharacters($gameMessage.allText());
-      var tempText = this._textState.text.slice(0);
-      if($gameMessage.getBalloon() === -2 && RS.MessageSystem.Params.isParagraphMinifier) {
-        this._textState.text = this._textState.text.replace(/[\r\n]+/gm, " ");
-      }
-      this.calcBalloonRect(tempText); // 말풍선 영역 계산      
-      this.newPage(this._textState); // 페이지 시작
-      this.updatePlacement(); // 위치 설정
-      this.updateBackground();
-      this.open();
-    };
+    // ImageManager.releaseReservation(RS.MessageSystem.Params._imageReservationId);
     
-    var alias_Window_Message_startMessage = Window_Message.prototype.startMessage;
-    Window_Message.prototype.startMessage = function() {
-      alias_Window_Message_startMessage.call(this);
-      this.updateNameWindow();
-      this.startWait(1); // 1프레임 대기
-    };
+  };
+  
+  var alias_Window_Message_newPage = Window_Message.prototype.newPage;
+  Window_Message.prototype.newPage = function(textState) {
+    this.setFaceZIndex();
+    this.clearFaceBitmap();
+    this.loadWindowskin(); 
+    this.emit('onLoadWindowskin');
+    this.openBalloon( $gameMessage.getBalloon() );
+    alias_Window_Message_newPage.call( this, textState );
+  };
+  
+  Window_Message.prototype.startMessage = function() {      
+    this._textState = {};
+    this._textState.index = 0;
+    this._textState.text = this.convertEscapeCharacters($gameMessage.allText());
+    var tempText = this._textState.text.slice(0);
+    if($gameMessage.getBalloon() === -2 && RS.MessageSystem.Params.isParagraphMinifier) {
+      this._textState.text = this._textState.text.replace(/[\r\n]+/gm, " ");
+    }   
+    this.calcBalloonRect(tempText); // 말풍선 영역 계산        
+    this.newPage(this._textState); // 페이지 시작
+    this.resizeMessageSystem(); // width 와 height를 재설정한다.
+    this.createContents();
+    this.updatePlacement(); // 위치 설정
+    this.updateBackground();
+    this.open();
+  };
     
-    Window_Message.prototype.openBalloon = function(sign) {
-      
-      // 말풍선 모드가 아니면 빠져나간다.
-      if(sign === -2) {
-        this.resizeMessageSystem();
-        return;
-      }
-      
-      this.setupOwner(sign);
-      
-      // 전투 중일 경우
-      if(SceneManager._scene instanceof Scene_Battle) {
-        this.updateBalloonPositionInBattle();
-      } else {
-        this.updateBalloonPosition();
-      }
-    };
+  var alias_Window_Message_startMessage = Window_Message.prototype.startMessage;
+  Window_Message.prototype.startMessage = function() {
+    alias_Window_Message_startMessage.call(this);
+    this.updateNameWindow();
+    this.startWait(1); // 1프레임 대기
+  };
+  
+  Window_Message.prototype.openBalloon = function(sign) {
     
-    Window_Message.prototype.resizeMessageSystem = function() {
-      
-      var n = $gameMessage.positionType();
-      
-      this.x = 0;
-      // 상, 중, 하
-      this.y = n * (Graphics.boxHeight - this.windowHeight()) / 2;
-      this.width = this.windowWidth();
-      this.height = this.windowHeight();
-      
-      $gameMap.setMsgOwner($gamePlayer);
-      
-    };
+    // 말풍선 모드가 아니면 빠져나간다.
+    if(sign === -2) {
+      this.resizeMessageSystem();
+      return;
+    }
     
-    Window_Message.prototype.calcTextHeight = function(textState, all) {
-      "use strict";
-      
-      var tcGroup = RS.MessageSystem.TextCodes.ENUM;
-      var regGroup = RS.MessageSystem.Reg.Group;
-      
-      var lastFontSize = this.contents.fontSize;
-      var textHeight = 0;
-      var lines = textState.text.slice(textState.index).split('\n');
-      var maxLines = all ? lines.length : 1;
+    this.setupOwner(sign);
+    
+    // 전투 중일 경우
+    if(SceneManager._scene instanceof Scene_Battle) {
+      this.updateBalloonPositionInBattle();
+    } else {
+      this.updateBalloonPosition();
+    }
+  };
+
+  Window_Message.prototype.windowWidth = function() {
+    var value = RS.MessageSystem.Params.windowWidth;
+    return value || Graphics.boxWidth;
+  };
+  
+  Window_Message.prototype.resizeMessageSystem = function() {
+    
+    var n = $gameMessage.positionType();
+    
+    this.x = (Graphics.boxWidth / 2) - (this.windowWidth() / 2) + RS.MessageSystem.Params.windowOffset.x;
+    // 상, 중, 하
+    this.y = n * (Graphics.boxHeight - this.windowHeight()) / 2 + RS.MessageSystem.Params.windowOffset.y;
+    this.width = this.windowWidth();
+    this.height = this.windowHeight();
+    
+    $gameMap.setMsgOwner($gamePlayer);
+    
+  };
+    
+  Window_Message.prototype.calcTextHeight = function(textState, all) {
+    "use strict";
+    
+    var tcGroup = RS.MessageSystem.TextCodes.ENUM;
+    var regGroup = RS.MessageSystem.Reg.Group;
+    
+    var lastFontSize = this.contents.fontSize;
+    var textHeight = 0;
+    var lines = textState.text.slice(textState.index).split('\n');
+    var maxLines = all ? lines.length : 1;
       
       for (var i = 0; i < maxLines; i++) {
         var maxFontSize = this.contents.fontSize;
@@ -2987,7 +3134,7 @@ var Color = Color || {};
 
     // this.drawTextEx() 사용하기 이전 상태로 복구한다.
     this.restore();
-    
+
   };
   
   Window_Message.prototype.isActiveInBalloon = function () {
@@ -3448,7 +3595,7 @@ var Color = Color || {};
     text = text.replace(regGroup[tcGroup.BALLOON], '');
     text = text.replace(regGroup[tcGroup.NAME], '');
     text = text.replace(regGroup[tcGroup.ALIGN], '');
-    text = text.replace(regGroup[tcGroup.ICON],'');
+    text = text.replace(regGroup[tcGroup.ICON], '');
     text = text.replace(regGroup[tcGroup.INCREASE], '');
     text = text.replace(regGroup[tcGroup.DECREASE], '');
     text = text.replace(regGroup[tcGroup.TEXT_SPEED], '');
@@ -3499,6 +3646,7 @@ var Color = Color || {};
     this.contents.fontSize = RS.MessageSystem.Params.fontSize;
     this.text = this.convertEscapeCharacters(this.text);
     this.text = this.textProcessing(this.text);
+    // TO DO : replace this line as to this.drawTextEx(text, x, y)
     this.drawText(this.text, 0, 0, this.width, 'left');
   };
   
