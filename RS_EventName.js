@@ -1,7 +1,7 @@
 /*:
 * RS_EventName.js
 *
-* @plugindesc (v1.3.9) This plugin displays an event's name above a head.
+* @plugindesc (v1.3.9) This plugin displays an event's name above a head. <RS_EventName>
 * @author biud436
 *
 * @param text Size
@@ -51,7 +51,7 @@
 /*:ko
 * RS_EventName.js
 * 
-* @plugindesc (v1.3.9) 이벤트 이름 표시 플러그인
+* @plugindesc (v1.3.9) 이벤트 이름 표시 플러그인 <RS_EventName>
 * @author 러닝은빛
 *
 * @param text Size
@@ -124,8 +124,15 @@ function Sprite_VehicleName() {
 };
 
 (function() {
+
+    "use strict";
     
-    var parameters = PluginManager.parameters('RS_EventName');
+    var parameters = $plugins.filter(function (i) {
+        return i.description.contains('<RS_EventName>');
+    });
+
+    parameters = (parameters.length > 0) && parameters[0].parameters;  
+    
     var textSize = Number(parameters['textSize'] || 14 );
     var colorMatch = /@color\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/
     var showPlayerText = String(parameters['Show Player Text'] || 'true');
