@@ -1,9 +1,39 @@
 /*:
- * @plugindesc This plugin allows you to set up the custom transparent color. <RS_TransparentFilter>
+ * @plugindesc This plugin allows you to set up the desired transparent color. <RS_TransparentFilter>
  * @author biud436
  * 
  * @help
+ * ================================================================
+ * How to Use
+ * ================================================================
+ * You execute the extension after extract the extension file 
+ * and next then select the game project folder. 
+ * it's done that you press the Add Extension button. 
+ * if you have restarted RPG Maker MV, 
+ * it would be created a new icon that indicates a stuff like as an eyedropper in the toolbar. 
  * 
+ * - Note that it does not appear the project file select window if you have done settings. 
+ * - To delete an extension, you must click the Remove Extension before you delete the extension.
+ * ================================================================
+ * Download
+ * ================================================================
+ * This plugin only supports Picture and Character images but 
+ * it will be going to add a new sprite type in the next version (Maybe it is a Battler image)
+ * 
+ * - Plugin Link : https://raw.githubusercontent.com/biud436/MV/master/RS_TransparentFilter.js
+ * - Extension (Windows Only) : https://github.com/biud436/MV/releases/download/1.0.0/NewResourceManager.zip
+ * 
+ * ## Required : 
+ * - RPG Make MV 1.5.2 or above.
+ * - .NET Framework 4.5.2 or above.
+ * 
+ * ## Supported Languages
+ * - English
+ * - Korean
+ * ================================================================
+ * Change Log
+ * ================================================================
+ * 2019.02.21 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
