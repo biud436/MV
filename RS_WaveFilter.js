@@ -140,6 +140,8 @@
  * - Fixed the issue that the wave effect do a horizontal looping likes as Tiling Sprite.
  * 2018.11.29 (v1.5.10) :
  * - Fixed the bug that causes an error when calling Erase Event event command.
+ * 2019.02.24 (v1.5.11) :
+ * - Fixed an issue that is not loaded a save file that you saved before using this script.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -304,6 +306,8 @@
  * - Fixed the issue that the wave effect do a horizontal looping likes as Tiling Sprite.
  * 2018.11.29 (v1.5.10) :
  * - Fixed the bug that causes an error when calling Erase Event event command.
+ * 2019.02.24 (v1.5.11) :
+ * - Fixed an issue that is not loaded a save file that you saved before using this script.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -902,27 +906,33 @@ RS.WaveConfig = RS.WaveConfig || {};
   };
 
   Game_System.prototype.getWaveEnabled = function () {
-   return this._waveProp.wave;
+    if(!this._waveProp) this.initWaveProperty();
+    return this._waveProp.wave;
   };
 
   Game_System.prototype.getWaveHeight = function () {
-   return this._waveProp.waveHeight;
+    if(!this._waveProp) this.initWaveProperty();
+    return this._waveProp.waveHeight;
   };
 
   Game_System.prototype.getWaveFrequency = function () {
-   return this._waveProp.waveFrequency;
+    if(!this._waveProp) this.initWaveProperty();
+    return this._waveProp.waveFrequency;
   };
 
   Game_System.prototype.getWaveTime = function () {
-   return this._waveProp.waveTime;
+    if(!this._waveProp) this.initWaveProperty();
+    return this._waveProp.waveTime;
   };
 
   Game_System.prototype.getUVSpeed = function () {
-   return this._waveProp.UVSpeed;
+    if(!this._waveProp) this.initWaveProperty();
+    return this._waveProp.UVSpeed;
   };
 
   Game_System.prototype.getWavePhase = function () {
-   return this._waveProp.wavePhase;
+    if(!this._waveProp) this.initWaveProperty();
+    return this._waveProp.wavePhase;
   };
 
   //============================================================================
@@ -954,11 +964,11 @@ RS.WaveConfig = RS.WaveConfig || {};
   };
 
   Game_CharacterBase.prototype.waveFrequency = function () {
-    return this._waveFrequency;
+    return this._waveFrequency || 0.02;
   };
 
   Game_CharacterBase.prototype.waveSpeed = function () {
-    return this._waveSpeed;
+    return this._waveSpeed || 0.25;
   };
 
   //============================================================================
