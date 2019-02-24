@@ -16,6 +16,8 @@
  * 2018.12.30 (v1.1.0) :
  * - Now it is supported in RPG Maker MV v1.6.1.
  * (I've been rewritten shader for RPG Maker MV v1.6.1)
+ * 2019.02.24 (v1.1.01) :
+ * - Fixed an issue that is not loaded a save file that you saved before using this plugin.
  */
 
 var Imported = Imported || {};
@@ -293,20 +295,19 @@ RS.SimpleLight = RS.SimpleLight || {};
   };
 
   Game_System.prototype.updateLightProperty = function () {
-    if(!this._lightProp) return;
+    if(!this._lightProp) this.initLightProperty();
     this.setLightProperty('direction', $gamePlayer.direction());
     this.setLightProperty('resolution', [Graphics.boxWidth, Graphics.boxHeight]);
   };  
 
   Game_System.prototype.setLightProperty = function (name, value) {
-    if(this._lightProp) {
-      this._lightProp[name] = value;
-      return this._lightProp[name];
-    }
-    return 0.0;
+    if(!this._lightProp) this.initLightProperty();
+    this._lightProp[name] = value;
+    return this._lightProp[name];
   };
 
   Game_System.prototype.enabledLight = function () {
+    if(!this._lightProp) this.initLightProperty();
     return this._lightProp['light'] === true;
   };
 
