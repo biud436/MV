@@ -34,7 +34,7 @@
  * 2019.02.21 (v1.0.0) - First Release.
  * 2019.02.27 (v1.0.2) 
  * - Added the Sprite_Actor and Sprite_Enemy
- * - Fixed the issue that is not changed the tone in the picture.
+ * - Fixed the issue that shows up the transparent color when it is applied the tone in the picture.
  */
 
 var Imported = Imported || {};
