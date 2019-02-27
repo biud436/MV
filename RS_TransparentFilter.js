@@ -17,8 +17,6 @@
  * ================================================================
  * Download
  * ================================================================
- * This plugin only supports Picture and Character images but 
- * it will be going to add a new sprite type in the next version (Maybe it is a Battler image)
  * 
  * - Plugin Link : https://raw.githubusercontent.com/biud436/MV/master/RS_TransparentFilter.js
  * - Extension (Windows Only) : https://github.com/biud436/MV/releases/download/1.0.0/NewResourceManager.zip
