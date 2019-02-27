@@ -34,8 +34,9 @@
  * Change Log
  * ================================================================
  * 2019.02.21 (v1.0.0) - First Release.
- * 2019.02.27 (v1.0.1) :
+ * 2019.02.27 (v1.0.2) 
  * - Added the Sprite_Actor and Sprite_Enemy
+ * - Fixed the issue that is not changed the tone in the picture.
  */
 
 var Imported = Imported || {};
@@ -213,7 +214,6 @@ RS.TransparentFilter = RS.TransparentFilter || {};
     };
 
     /**
-     * refer to Bitmap.prototype.rotateHue
      * @param {Number} offset The hue offset in 360 degrees
      */
     $.rotateHue = function(offset) {
@@ -221,15 +221,14 @@ RS.TransparentFilter = RS.TransparentFilter || {};
         var isValid = this._colorMatrixFilter;
 
         if(!isValid) {
-            this._colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+            this._colorMatrixFilter = new ToneFilter();
 
             if(!this.filters) {
                 this.filters = [];
             }
 
-            this._colorMatrixFilter.hue(offset);
+            this._colorMatrixFilter.adjustHue(offset);
 
-            // this._alphaFilter.uniforms.alphaColor = new Float32Array(color);
             this.filters = this.filters.concat([this._colorMatrixFilter]);
 
         } else {
@@ -244,6 +243,63 @@ RS.TransparentFilter = RS.TransparentFilter || {};
 
         }        
         
+    };
+
+    /**
+     * @method adjustTone
+     * @param {Number} r The red strength in the range (-255, 255)
+     * @param {Number} g The green strength in the range (-255, 255)
+     * @param {Number} b The blue strength in the range (-255, 255)
+     */
+    $.adjustTone = function(tone) {
+
+        var isValid = this._colorMatrixFilter;
+
+        if(!isValid) {
+            this._colorMatrixFilter = new ToneFilter();
+
+            if(!this.filters) {
+                this.filters = [];
+            }
+
+            if(!tone) {
+                tone = [0.0, 0.0, 0.0, 0.0];
+            }
+
+            this._colorMatrixFilter.adjustTone2(tone[0], tone[1], tone[2], tone[3]);     
+            this.filters = this.filters.concat([this._colorMatrixFilter]);
+
+        } else {
+
+            if(!this.filters) {
+            this.filters = [];
+            }      
+
+            this.filters = this.filters.filter(function(filter) {
+                return filter !== isValid;
+            }, this);
+
+        }        
+        
+    };    
+
+    //============================================================================
+    // Sprite_Actor
+    //============================================================================      
+
+    /**
+     * Changes the tone.
+     *
+     * @method adjustTone
+     * @param {Number} r The red strength in the range (-255, 255)
+     * @param {Number} g The green strength in the range (-255, 255)
+     * @param {Number} b The blue strength in the range (-255, 255)
+     * @param {Number} saturation The saturation value in the range (-255, 255)
+     */
+    ToneFilter.prototype.adjustTone2 = function(r, g, b, saturation) {
+        this.reset();
+        this.adjustTone(r, g, b);
+        this.adjustSaturation(saturation);
     };
 
     //============================================================================
@@ -348,7 +404,17 @@ RS.TransparentFilter = RS.TransparentFilter || {};
             if (this._pictureName !== "" && !this._alphaFilter) {
                 this._isPicture = false;
                 var color = $.getTransparentColor("img/pictures", this._pictureName);
+
+                if(color.equals([1.0, 1.0, 1.0, 1.0])) {
+                    return;
+                }
+
+                var tone = this._colorTone.clone();
                 RS.TransparentFilter.addFilter.call(this, color);
+                if(this._needsTint() && !this._colorMatrixFilter) {
+                    $.adjustTone.call(this, tone);
+                }                
+                
             }            
         }        
     };
@@ -357,8 +423,40 @@ RS.TransparentFilter = RS.TransparentFilter || {};
     Sprite_Picture.prototype.updateBitmap = function() {
         this.applyTransparentFilter();
         alias_Sprite_Picture_updateBitmap.call(this);
+
+        if(this._alphaFilter) {
+            this._alphaFilter.enabled = this.visible;
+        }
+
+        if(this._colorMatrixFilter) {
+            this._colorMatrixFilter.enabled = this.visible;
+        }        
+
     };    
 
+    Sprite_Picture.prototype.setColorTone = function(tone) {
+
+        if (!(tone instanceof Array)) {
+            throw new Error('Argument must be an array');
+        }
+
+        if (!this._colorTone.equals(tone)) {
+            this._colorTone = tone.clone();
+        }
+        
+        if(this._needsTint() && !this._colorMatrixFilter) {
+            $.adjustTone.call(this, tone);
+        }            
+
+        if(this._colorMatrixFilter) {
+
+            if(this._needsTint()) {
+                this._colorMatrixFilter.adjustTone2(tone[0], tone[1], tone[2], tone[3]);
+            }
+        }
+
+    };
+    
     $.loadTransparentKey();
 
 })(RS.TransparentFilter);
