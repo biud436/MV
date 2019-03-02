@@ -46,6 +46,15 @@
  * @help
  * More details for information, 
  * Please see this post - http://biud436.tistory.com/31
+ * 
+ * ==================================================================================
+ * How to Use
+ * ==================================================================================
+ * To show up the name of certain event, you must set the event note as follows.
+ * (Note that An Event Note is next to event name)
+ * 
+ * #color[255, 0, 0]
+ * 
  * ==================================================================================
  * Change Log
  * ==================================================================================
@@ -160,7 +169,7 @@ RS.EventName.Params = RS.EventName.Params || {};
     
     RS.EventName.Params.textSize = Number(parameters['textSize'] || 14 );
     
-    RS.EventName.Params.regExpr = /@color\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/;
+    RS.EventName.Params.regExpr = /(?:@color|#color)\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/;
     RS.EventName.Params.showPlayerText = String(parameters['Show Player Text'] || 'true');
 
     RS.EventName.Params.airshipName = String(parameters['AirShip'] || 'AirShip');
