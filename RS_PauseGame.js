@@ -924,10 +924,10 @@ RS.PauseGame = RS.PauseGame || {};
   var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     alias_Game_Interpreter_pluginCommand.call(this);
-    if(command.toLowerCase() === "enablepausegame") {
+    if(command === "EnablePauseGame") {
       RS.PauseGame.Params.isEnabled = true;
     }    
-    if(command.toLowerCase() === "disablepausegame") {
+    if(command === "DisablePauseGame") {
       RS.PauseGame.Params.isEnabled = false;
     }
   };
