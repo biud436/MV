@@ -55,6 +55,22 @@
  * 
  * #color[255, 0, 0]
  * 
+ * There is no way how to change the color after initializing. 
+ * it is not needed. Because that is the performance reasons. 
+ * 
+ * To change the name without saving to data file, you can call this plugin command.
+ * 
+ *      ChangeEventName eventId name
+ * 
+ *  eventId : 
+ *      if you set the number is to 0, the eventId will set as current event id.
+ *  name    : Speicfy the desired name. (Do not be omitted the name)
+ * 
+ * Here are how to use it.
+ * The event name of the target will be updated to include as follows name informations.
+ * 
+ *      ChangeEventName 0 RPG Maker MV
+ * 
  * ==================================================================================
  * Change Log
  * ==================================================================================
@@ -744,7 +760,7 @@ RS.EventName.Params = RS.EventName.Params || {};
     var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
         alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if(command.toLowerCase() === "changeeventname") {
+        if(command === "ChangeEventName") {
             if(!RS.EventName.Params.isRefreshName) return;
             var eventId = parseInt(args[0]);
             if(eventId <= 0) eventId = this._eventId;
