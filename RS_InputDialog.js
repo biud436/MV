@@ -147,6 +147,8 @@
  * - On the mobile device, the font size is now set to 1rem (16px).
  * - Fixed the default UI-theme is to black.
  * - In the chromium 69+ more over, The input element is always displayed even though <canvas>'s z-index is large than <input> element's z-index. so I've fixed that.
+ * 2019.03.05 (v1.1.16) :
+ * - Fixed the issue that can not create a background when using Irina_PerformanceUpgrade.
  */
 /*:ko
  * @plugindesc 화면에 텍스트 에디터 띄워 텍스트 값을 변수로 받습니다 <RS_InputDialog>
@@ -339,6 +341,8 @@
  * - 모바일에서의 폰트 크기를 1rem(16px)로 설정하였습니다.
  * - 기본 디자인을 초록색 테마에서 검정색 테마로 변경하였습니다. 
  * - 크로미움 69+ 버전에서 <input> 태그의 z-index가 <canvas> 태그의 z-index보다 낮더라도 화면에 표시되는 버그가 있었습니다.
+ * 2019.03.05 (v1.1.16) :
+ * - Fixed the issue that can not create a background when using Irina_PerformanceUpgrade.
  */
 
 var Imported = Imported || {};
@@ -952,10 +956,14 @@ function Scene_InputDialog() {
   };
 
   Scene_InputDialog.prototype.createBackground = function() {
-    this._backgroundSprite = new Sprite();
-    this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
-    this._backgroundSprite.opacity = 128;
-    this.addChild(this._backgroundSprite);
+    if(Imported.Irina_PerformanceUpgrade) {
+      Scene_MenuBase.prototype.createBackground.call(this);
+    } else {
+      this._backgroundSprite = new Sprite();
+      this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
+      this._backgroundSprite.opacity = 128;
+      this.addChild(this._backgroundSprite);      
+    }
   };
 
   Scene_InputDialog.prototype.createTextBox = function () {
