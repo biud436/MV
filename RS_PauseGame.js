@@ -19,6 +19,7 @@
  * @text Notification (>= v1.6.1+)
  * 
  * @param Enabled Notification
+ * @parent Notification
  * @text Enabled Notification
  * @type boolean
  * @desc Specify the whether the Notification will be enabled.
@@ -257,12 +258,13 @@
  * 2017.05.06 (v1.0.0) - First Release.
  * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
  * 2018.10.30 (v1.0.2) : 
- * - Fixed the issue that is not working in RPG Maker MV 1.6.1
+ * - Fixed the issue that is not working in RPG Maker MV v1.6.1
  * - Added the chromium notification (>= v1.6.1+)
  * - Added the keycode converter.
  * 2019.03.05 (v1.0.3) :
  * - Added new plugin commands.
  * - Added the feature that sets whether the chromium notification is enabled or disabled.
+ * - Fixed the issue that is not working in the strict mode of RPG Maker MV v1.5.x.
  */
 /*:ko
  * @plugindesc 특정 버튼으로 게임을 일지 정지합니다. <RS_PauseGame>
@@ -287,6 +289,7 @@
  *
  * @param Enabled Notification
  * @text Notification 사용 여부
+ * @parent Notification
  * @type boolean
  * @desc Notification 사용 가능 여부를 지정하십시오.
  * @default true
@@ -535,12 +538,13 @@
  * 2017.05.06 (v1.0.0) - First Release.
  * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
  * 2018.10.30 (v1.0.2) : 
- * - Fixed the issue that is not working in RPG Maker MV 1.6.1
+ * - Fixed the issue that is not working in RPG Maker MV v1.6.1
  * - Added the chromium notification (>= v1.6.1+)
  * - Added the keycode converter.
  * 2019.03.05 (v1.0.3) :
  * - Added new plugin commands.
  * - Added the feature that sets whether the chromium notification is enabled or disabled.
+ * - Fixed the issue that is not working in the strict mode of RPG Maker MV v1.5.x.
  */
 
 var Imported = Imported || {};
@@ -759,7 +763,6 @@ RS.PauseGame = RS.PauseGame || {};
     "<" : 188,
     "," : 188,
     ">" : 190,
-    "," : 188,
     "?" : 191,
     "/" : 191,
     "-" : 189,
