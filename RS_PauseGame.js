@@ -1,5 +1,271 @@
+/*:
+ * @plugindesc This plugin allows user to pause the game. <RS_PauseGame>
+ * @author biud436
+ *
+ * @param keyCode
+ * @text Key Name
+ * @desc Specify the Key Name
+ * (Please refer to help documentation!)
+ * @default p
+ *
+ * @param Pause Image Src
+ * @desc Specify an image path
+ * @default pause
+ * @require 1
+ * @dir img/pictures/
+ * @type file
+ * 
+ * @param Notification
+ * @text Notification (>= v1.6.1+)
+ * 
+ * @param Enabled Notification
+ * @text Enabled Notification
+ * @type boolean
+ * @desc Specify the whether the Notification will be enabled.
+ * @default true
+ * @on true
+ * @off false
+ *
+ * @param Title Text
+ * @parent Notification
+ * @desc Specify the text for the chromium notification.
+ * @default Pause
+ *  
+ * @param Body Text
+ * @parent Notification
+ * @desc Specify the text for the chromium notification.
+ * @default The game has been paused.
+ *
+ * @param Icon
+ * @parent Notification
+ * @desc Specify the icon image for the chromium notification from icon folder.
+ * @default icon
+ * 
+ * @param Time
+ * @type number
+ * @parent Notification
+ * @desc Specify the time that shows up the chromium notification.
+ * @default 2000
+ *
+ * @help
+ * =============================================================================
+ * Plugin Commands
+ * -----------------------------------------------------------------------------
+ * This is to ensure that it cannot be toggled the pause mode when pressed the pause key.
+ * 
+ *  DisablePauseGame
+ * 
+ * if you use this feature, you can be toggled the pause mode when pressing the pause key.
+ * 
+ * EnablePauseGame
+ * =============================================================================
+ * Available Key Names
+ * -----------------------------------------------------------------------------
+ * VK_LBUTTON
+ * VK_RBUTTON
+ * VK_CANCEL
+ * VK_MBUTTON
+ * VK_XBUTTON1
+ * VK_XBUTTON2
+ * VK_BACK
+ * VK_TAB
+ * VK_CLEAR
+ * VK_RETURN
+ * VK_SHIFT
+ * VK_CONTROL
+ * VK_MENU
+ * VK_PAUSE
+ * VK_CAPITAL
+ * VK_KANA
+ * VK_HANGEUL
+ * VK_HANGUL
+ * VK_JUNJA
+ * VK_FINAL
+ * VK_HANJA
+ * VK_KANJI
+ * VK_ESCAPE
+ * VK_CONVERT
+ * VK_NONCONVERT
+ * VK_ACCEPT
+ * VK_MODECHANGE
+ * VK_SPACE
+ * VK_PRIOR
+ * VK_NEXT
+ * VK_END
+ * VK_HOME
+ * VK_LEFT
+ * VK_UP
+ * VK_RIGHT
+ * VK_DOWN
+ * VK_SELECT
+ * VK_PRINT
+ * VK_EXECUTE
+ * VK_SNAPSHOT
+ * VK_INSERT
+ * VK_DELETE
+ * VK_HELP
+ * VK_LWIN
+ * VK_RWIN
+ * VK_APPS
+ * VK_SLEEP
+ * VK_NUMPAD0
+ * VK_NUMPAD1
+ * VK_NUMPAD2
+ * VK_NUMPAD3
+ * VK_NUMPAD4
+ * VK_NUMPAD5
+ * VK_NUMPAD6
+ * VK_NUMPAD7
+ * VK_NUMPAD8
+ * VK_NUMPAD9
+ * VK_MULTIPLY
+ * VK_ADD
+ * VK_SEPARATOR
+ * VK_SUBTRACT
+ * VK_DECIMAL
+ * VK_DIVIDE
+ * VK_F1
+ * VK_F2
+ * VK_F3
+ * VK_F4
+ * VK_F5
+ * VK_F6
+ * VK_F7
+ * VK_F8
+ * VK_F9
+ * VK_F10
+ * VK_F11
+ * VK_F12
+ * VK_F13
+ * VK_F14
+ * VK_F15
+ * VK_F16
+ * VK_F17
+ * VK_F18
+ * VK_F19
+ * VK_F20
+ * VK_F21
+ * VK_F22
+ * VK_F23
+ * VK_F24
+ * VK_NUMLOCK
+ * VK_SCROLL
+ * VK_OEM_NEC_EQUAL
+ * VK_OEM_FJ_JISHO
+ * VK_OEM_FJ_MASSHOU
+ * VK_OEM_FJ_TOUROKU
+ * VK_OEM_FJ_LOYA
+ * VK_OEM_FJ_ROYA
+ * VK_LSHIFT
+ * VK_RSHIFT
+ * VK_LCONTROL
+ * VK_RCONTROL
+ * VK_LMENU
+ * VK_RMENU
+ * VK_BROWSER_BACK
+ * VK_BROWSER_FORWARD
+ * VK_BROWSER_REFRESH
+ * VK_BROWSER_STOP
+ * VK_BROWSER_SEARCH
+ * VK_BROWSER_FAVORITES
+ * VK_BROWSER_HOME
+ * VK_VOLUME_MUTE
+ * VK_VOLUME_DOWN
+ * VK_VOLUME_UP
+ * VK_MEDIA_NEXT_TRACK
+ * VK_MEDIA_PREV_TRACK
+ * VK_MEDIA_STOP
+ * VK_MEDIA_PLAY_PAUSE
+ * VK_LAUNCH_MAIL
+ * VK_LAUNCH_MEDIA_SELECT
+ * VK_LAUNCH_APP1
+ * VK_LAUNCH_APP2
+ * VK_OEM_1
+ * VK_OEM_PLUS
+ * VK_OEM_COMMA
+ * VK_OEM_MINUS
+ * VK_OEM_PERIOD
+ * VK_OEM_2
+ * VK_OEM_3
+ * VK_OEM_4
+ * VK_OEM_5
+ * VK_OEM_6
+ * VK_OEM_7
+ * VK_OEM_8
+ * VK_OEM_AX
+ * VK_OEM_102
+ * VK_ICO_HELP
+ * VK_ICO_00
+ * VK_PROCESSKEY
+ * VK_ICO_CLEAR
+ * VK_PACKET
+ * VK_OEM_RESET
+ * VK_OEM_JUMP
+ * VK_OEM_PA1
+ * VK_OEM_PA2
+ * VK_OEM_PA3
+ * VK_OEM_WSCTRL
+ * VK_OEM_CUSEL
+ * VK_OEM_ATTN
+ * VK_OEM_FINISH
+ * VK_OEM_COPY
+ * VK_OEM_AUTO
+ * VK_OEM_ENLW
+ * VK_OEM_BACKTAB
+ * VK_ATTN
+ * VK_CRSEL
+ * VK_EXSEL
+ * VK_EREOF
+ * VK_PLAY
+ * VK_ZOOM
+ * VK_NONAME
+ * VK_PA1
+ * VK_OEM_CLEAR
+ * VK_KEY_0
+ * VK_KEY_1
+ * VK_KEY_2
+ * VK_KEY_3
+ * VK_KEY_4
+ * VK_KEY_5
+ * VK_KEY_6
+ * VK_KEY_7
+ * VK_KEY_8
+ * VK_KEY_9
+ * ~
+ * `
+ * [
+ * {
+ * }
+ * ]
+ * ;
+ * :
+ * ''
+ * '
+ * <
+ * ,
+ * >
+ * ,
+ * ?
+ * /
+ * -
+ * _
+ * +
+ * =
+ * ==============================================================================
+ * Change Log
+ * ------------------------------------------------------------------------------
+ * 2017.05.06 (v1.0.0) - First Release.
+ * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
+ * 2018.10.30 (v1.0.2) : 
+ * - Fixed the issue that is not working in RPG Maker MV 1.6.1
+ * - Added the chromium notification (>= v1.6.1+)
+ * - Added the keycode converter.
+ * 2019.03.05 (v1.0.3) :
+ * - Added new plugin commands.
+ * - Added the feature that sets whether the chromium notification is enabled or disabled.
+ */
 /*:ko
- * @plugindesc 특정 버튼으로 게임을 일지 정지합니다.
+ * @plugindesc 특정 버튼으로 게임을 일지 정지합니다. <RS_PauseGame>
  * @author biud436
  *
  * @param keyCode
@@ -19,6 +285,14 @@
  * @param Notification
  * @text 알림 (v1.6.1 이상)
  *
+ * @param Enabled Notification
+ * @text Notification 사용 여부
+ * @type boolean
+ * @desc Notification 사용 가능 여부를 지정하십시오.
+ * @default true
+ * @on 사용
+ * @off 사용하지 않음
+ * 
  * @param Title Text
  * @text 타이틀
  * @parent Notification
@@ -43,6 +317,16 @@
  * @default 2000
  *
  * @help
+ * =============================================================================
+ * 플러그인 명령
+ * -----------------------------------------------------------------------------
+ * 이 플러그인 명령은 일시 정지 키를 눌렀을 때 일시 정지 모드로 전환 할 수 없도록 하기 위한 것입니다.
+ * 
+ *  DisablePauseGame
+ * 
+ * 일시 정지 모드를 다시 사용할 수 있게 됩니다.
+ * 
+ *  EnablePauseGame
  * =============================================================================
  * 사용 가능한 키의 이름
  * -----------------------------------------------------------------------------
@@ -254,266 +538,37 @@
  * - Fixed the issue that is not working in RPG Maker MV 1.6.1
  * - Added the chromium notification (>= v1.6.1+)
  * - Added the keycode converter.
- */
-/*:
- * @plugindesc This plugin allows user to pause the game.
- * @author biud436
- *
- * @param keyCode
- * @text Key Name
- * @desc Specify the Key Name
- * (Please refer to help documentation!)
- * @default p
- *
- * @param Pause Image Src
- * @desc Specify an image path
- * @default pause
- * @require 1
- * @dir img/pictures/
- * @type file
- * 
- * @param Notification
- * @text Notification (>= v1.6.1+)
- *
- * @param Title Text
- * @parent Notification
- * @desc Specify the text for the chromium notification.
- * @default Pause
- *  
- * @param Body Text
- * @parent Notification
- * @desc Specify the text for the chromium notification.
- * @default The game has been paused.
- *
- * @param Icon
- * @parent Notification
- * @desc Specify the icon image for the chromium notification from icon folder.
- * @default icon
- * 
- * @param Time
- * @type number
- * @parent Notification
- * @desc Specify the time that shows up the chromium notification.
- * @default 2000
- *
- * @help
- * =============================================================================
- * Available Key Names
- * -----------------------------------------------------------------------------
- * VK_LBUTTON
- * VK_RBUTTON
- * VK_CANCEL
- * VK_MBUTTON
- * VK_XBUTTON1
- * VK_XBUTTON2
- * VK_BACK
- * VK_TAB
- * VK_CLEAR
- * VK_RETURN
- * VK_SHIFT
- * VK_CONTROL
- * VK_MENU
- * VK_PAUSE
- * VK_CAPITAL
- * VK_KANA
- * VK_HANGEUL
- * VK_HANGUL
- * VK_JUNJA
- * VK_FINAL
- * VK_HANJA
- * VK_KANJI
- * VK_ESCAPE
- * VK_CONVERT
- * VK_NONCONVERT
- * VK_ACCEPT
- * VK_MODECHANGE
- * VK_SPACE
- * VK_PRIOR
- * VK_NEXT
- * VK_END
- * VK_HOME
- * VK_LEFT
- * VK_UP
- * VK_RIGHT
- * VK_DOWN
- * VK_SELECT
- * VK_PRINT
- * VK_EXECUTE
- * VK_SNAPSHOT
- * VK_INSERT
- * VK_DELETE
- * VK_HELP
- * VK_LWIN
- * VK_RWIN
- * VK_APPS
- * VK_SLEEP
- * VK_NUMPAD0
- * VK_NUMPAD1
- * VK_NUMPAD2
- * VK_NUMPAD3
- * VK_NUMPAD4
- * VK_NUMPAD5
- * VK_NUMPAD6
- * VK_NUMPAD7
- * VK_NUMPAD8
- * VK_NUMPAD9
- * VK_MULTIPLY
- * VK_ADD
- * VK_SEPARATOR
- * VK_SUBTRACT
- * VK_DECIMAL
- * VK_DIVIDE
- * VK_F1
- * VK_F2
- * VK_F3
- * VK_F4
- * VK_F5
- * VK_F6
- * VK_F7
- * VK_F8
- * VK_F9
- * VK_F10
- * VK_F11
- * VK_F12
- * VK_F13
- * VK_F14
- * VK_F15
- * VK_F16
- * VK_F17
- * VK_F18
- * VK_F19
- * VK_F20
- * VK_F21
- * VK_F22
- * VK_F23
- * VK_F24
- * VK_NUMLOCK
- * VK_SCROLL
- * VK_OEM_NEC_EQUAL
- * VK_OEM_FJ_JISHO
- * VK_OEM_FJ_MASSHOU
- * VK_OEM_FJ_TOUROKU
- * VK_OEM_FJ_LOYA
- * VK_OEM_FJ_ROYA
- * VK_LSHIFT
- * VK_RSHIFT
- * VK_LCONTROL
- * VK_RCONTROL
- * VK_LMENU
- * VK_RMENU
- * VK_BROWSER_BACK
- * VK_BROWSER_FORWARD
- * VK_BROWSER_REFRESH
- * VK_BROWSER_STOP
- * VK_BROWSER_SEARCH
- * VK_BROWSER_FAVORITES
- * VK_BROWSER_HOME
- * VK_VOLUME_MUTE
- * VK_VOLUME_DOWN
- * VK_VOLUME_UP
- * VK_MEDIA_NEXT_TRACK
- * VK_MEDIA_PREV_TRACK
- * VK_MEDIA_STOP
- * VK_MEDIA_PLAY_PAUSE
- * VK_LAUNCH_MAIL
- * VK_LAUNCH_MEDIA_SELECT
- * VK_LAUNCH_APP1
- * VK_LAUNCH_APP2
- * VK_OEM_1
- * VK_OEM_PLUS
- * VK_OEM_COMMA
- * VK_OEM_MINUS
- * VK_OEM_PERIOD
- * VK_OEM_2
- * VK_OEM_3
- * VK_OEM_4
- * VK_OEM_5
- * VK_OEM_6
- * VK_OEM_7
- * VK_OEM_8
- * VK_OEM_AX
- * VK_OEM_102
- * VK_ICO_HELP
- * VK_ICO_00
- * VK_PROCESSKEY
- * VK_ICO_CLEAR
- * VK_PACKET
- * VK_OEM_RESET
- * VK_OEM_JUMP
- * VK_OEM_PA1
- * VK_OEM_PA2
- * VK_OEM_PA3
- * VK_OEM_WSCTRL
- * VK_OEM_CUSEL
- * VK_OEM_ATTN
- * VK_OEM_FINISH
- * VK_OEM_COPY
- * VK_OEM_AUTO
- * VK_OEM_ENLW
- * VK_OEM_BACKTAB
- * VK_ATTN
- * VK_CRSEL
- * VK_EXSEL
- * VK_EREOF
- * VK_PLAY
- * VK_ZOOM
- * VK_NONAME
- * VK_PA1
- * VK_OEM_CLEAR
- * VK_KEY_0
- * VK_KEY_1
- * VK_KEY_2
- * VK_KEY_3
- * VK_KEY_4
- * VK_KEY_5
- * VK_KEY_6
- * VK_KEY_7
- * VK_KEY_8
- * VK_KEY_9
- * ~
- * `
- * [
- * {
- * }
- * ]
- * ;
- * :
- * ''
- * '
- * <
- * ,
- * >
- * ,
- * ?
- * /
- * -
- * _
- * +
- * =
- * ==============================================================================
- * Change Log
- * ------------------------------------------------------------------------------
- * 2017.05.06 (v1.0.0) - First Release.
- * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
- * 2018.10.30 (v1.0.2) : 
- * - Fixed the issue that is not working in RPG Maker MV 1.6.1
- * - Added the chromium notification (>= v1.6.1+)
- * - Added the keycode converter.
+ * 2019.03.05 (v1.0.3) :
+ * - Added new plugin commands.
+ * - Added the feature that sets whether the chromium notification is enabled or disabled.
  */
 
 var Imported = Imported || {};
 Imported.RS_PauseGame = true;
 
+var RS = RS || {};
+RS.PauseGame = RS.PauseGame || {};
+
 (function() {
 
   "use strict";
 
-  var parameters = PluginManager.parameters('RS_PauseGame');
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_PauseGame>');
+  });
+  
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
   var imageSrc = parameters['Pause Image Src'] || 'pause';
   var titleText = parameters["Title Text"] || 'Pause';
   var bodyText = parameters["Body Text"] || 'The game has been paused.';
   var iconPath = parameters["Icon"] || 'icon';
   var time = parseInt(parameters["Time"]) || 2000;
+
+  RS.PauseGame.Params = RS.PauseGame.Params || {};
+  RS.PauseGame.Params.isEnabled = true;
+
+  RS.PauseGame.Params.isEnabledNotification = Boolean(parameters["Enabled Notification"] === 'true');
 
   var KEY = {
     "VK_LBUTTON" :  0x01,
@@ -756,7 +811,8 @@ Imported.RS_PauseGame = true;
     var ret = SceneManager.pause;
     var ctx, dx, dy;
 
-    if(event.keyCode === keyCode) {
+    if(event.keyCode === keyCode && 
+      RS.PauseGame.Params.isEnabled) {
       event.preventDefault();
       SceneManager.pause = !ret;
       if(SceneManager.pause) {
@@ -802,7 +858,9 @@ Imported.RS_PauseGame = true;
     ctx.drawImage(self._pauseImage, mx, my);
     ctx.restore();
 
-    if(Utils.isNwjs() && Utils.RPGMAKER_VERSION >= '1.6.1') {
+    if(Utils.isNwjs() && 
+    Utils.RPGMAKER_VERSION >= '1.6.1' && 
+    RS.PauseGame.Params.isEnabledNotification) {
       var t = new Notification(titleText, {body: bodyText, icon:`icon/${iconPath}.png`});
       setTimeout(function() {
         t.close();
@@ -858,6 +916,17 @@ Imported.RS_PauseGame = true;
     }
     this.renderScene();
     this.requestUpdate();
+  };
+
+  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this);
+    if(command.toLowerCase() === "enablepausegame") {
+      RS.PauseGame.Params.isEnabled = true;
+    }    
+    if(command.toLowerCase() === "disablepausegame") {
+      RS.PauseGame.Params.isEnabled = false;
+    }
   };
 
   Graphics.initPause();
