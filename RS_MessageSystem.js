@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.44) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.45) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -256,8 +256,8 @@
  * @param 텍스트 효과음 볼륨
  * @parent 효과음 재생
  * @type note
- * @desc 텍스트 효과음의 볼륨을 램덤으로 만듭니다 (0.0 ~ 1.0 사이)
- * @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.7, 1.0)"
+ * @desc 텍스트 효과음의 볼륨을 정합니다. (0.0 ~ 1.0 사이)
+ * @default "0.4"
  *
  * @param 언어 코드
  * @desc 사용할 텍스트 코드의 언어 코드를 입력하세요
@@ -341,6 +341,11 @@
  * number가 -1이면 메시지 창이 페이스칩을 가리고, 다른 값이면 가리지 않습니다:
  * 메시지 큰페이스칩Z number
  *
+ * 배경투명도의 경우, 주의 사항이 있습니다.
+ * 255로 설정하면 완전히 불투명해야 하지만 기본 이미지의 알파 채널 자체가 반투명하여
+ * 완전 불투명하게 표시되지 않습니다. 완전 불투명하게 표시하려면 이미지의 알파 채널도
+ * 불투명해야 합니다.
+ * 
  * 메시지 탭크기 number
  * 메시지 배경투명도 number
  * 메시지 컨텐츠투명도 number
@@ -355,6 +360,14 @@
  * 
  * 개행 문자를 그대로 두고, 자동으로 줄바꿈 처리를 하지 않습니다.
  * 메시지 문단최소화 false
+ * 
+ * 문단 최소화가 true(ON)인 상태에서 정렬자를 사용하면 정렬자가 제대로 동작하지 않을 수 있
+ * 으니 주의 하시기 바랍니다.
+ * 
+ * 말풍선 모드나 일반 메시지 창의 오프셋을 조정할 수 있습니다.
+ * 
+ * 메시지 오프셋X number
+ * 메시지 오프셋Y number
  *
  * =============================================================================
  * 큰 페이스칩 설정
@@ -606,6 +619,10 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.03.07 (v0.1.45) : 
+ * - 말풍선 멈춤 스프라이트의 위치가 잘못되는 문제 수정
+ * - 메시지 사운드 볼륨 값을 0.4로 수정하였습니다.
+ * - 이제 메시지 오프셋 값을 수정할 수 있습니다.
  * 2019.02.16 (v0.1.44) :
  * - 자동 개행 기능 추가 (일반 메시지에서만 사용 가능)
  * - 배경색 기능을 추가하였습니다.
@@ -792,7 +809,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.44) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.45) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1030,7 +1047,7 @@
  * @parent Sound Effects
  * @type note
  * @desc Make the volume of the text sound by the random value that is float between 0.0 and 1.0
- * @default "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.7, 1.0)"
+ * @default "0.4"
  *
  * @param Language Code
  * @desc Specify the language code of the text codes.
@@ -1080,6 +1097,10 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+  * 2019.03.07 (v0.1.45) : 
+ * - 말풍선 멈춤 스프라이트의 위치가 잘못되는 문제 수정
+ * - 메시지 사운드 볼륨 값을 0.4로 수정하였습니다.
+ * - 이제 메시지 오프셋 값을 수정할 수 있습니다.
  * 2019.02.16 (v0.1.44) :
  * - 자동 개행 기능 추가 (일반 메시지에서만 사용 가능)
  * - 배경색 기능을 추가하였습니다.
@@ -2473,9 +2494,6 @@ var Color = Color || {};
     this._messageDesc.outlineWidth = this.contents.outlineWidth;
     this._messageDesc.fontGradient = this.contents.fontGradient;
     this._messageDesc.highlightTextColor = this.contents.highlightTextColor;
-    this._messageDesc.pauseSignSpriteX = this._windowPauseSignSprite.x;
-    this._messageDesc.pauseSignSpriteY = this._windowPauseSignSprite.y;
-    this._messageDesc.pauseSignSpriteScaleY = this._windowPauseSignSprite.scale.y;
     this._messageDesc.textSpeed = $gameMessage.getWaitTime();
   };
   
@@ -2490,9 +2508,6 @@ var Color = Color || {};
     this.contents.outlineWidth = this._messageDesc.outlineWidth;
     this.contents.fontGradient = this._messageDesc.fontGradient;
     this.contents.highlightTextColor = this._messageDesc.highlightTextColor;
-    this._windowPauseSignSprite.x = this._messageDesc.pauseSignSpriteX;
-    this._windowPauseSignSprite.y = this._messageDesc.pauseSignSpriteY;
-    this._windowPauseSignSprite.scale.y = this._messageDesc.pauseSignSpriteScaleY;
     $gameMessage.setWaitTime(this._messageDesc.textSpeed);
     this._messageDesc = undefined;
   };
@@ -2711,13 +2726,14 @@ var Color = Color || {};
     
   Window_Message.prototype.updateNameWindow = function() {
     var self = this;
-    
+    var ox = RS.MessageSystem.Params.windowOffset.x;
+    var oy = RS.MessageSystem.Params.windowOffset.y;    
     this.updateNameWindowPositionXImpl();
     
     // Y 값
     if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
-      this._nameWindow.y = 0;
-      this.y = this._nameWindow.isOpen() ? (this._nameWindow.height + RS.MessageSystem.Params.nameWindowY) : 0;
+      this._nameWindow.y = (0 + oy);
+      this.y = this._nameWindow.isOpen() ? (this._nameWindow.height + RS.MessageSystem.Params.nameWindowY + oy) : (0 + oy);
     } else {
       this._nameWindow.y = self.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
     }
@@ -2959,10 +2975,12 @@ var Color = Color || {};
   Window_Message.prototype.resizeMessageSystem = function() {
     
     var n = $gameMessage.positionType();
-    
-    this.x = (Graphics.boxWidth / 2) - (this.windowWidth() / 2) + RS.MessageSystem.Params.windowOffset.x;
+    var ox = RS.MessageSystem.Params.windowOffset.x;
+    var oy = RS.MessageSystem.Params.windowOffset.y;
+
+    this.x = (Graphics.boxWidth / 2) - (this.windowWidth() / 2) + ox;
     // 상, 중, 하
-    this.y = n * (Graphics.boxHeight - this.windowHeight()) / 2 + RS.MessageSystem.Params.windowOffset.y;
+    this.y = n * (Graphics.boxHeight - this.windowHeight()) / 2 + oy;
     this.width = this.windowWidth();
     this.height = this.windowHeight();
     
@@ -3147,8 +3165,10 @@ var Color = Color || {};
   };
   
   Window_Message.prototype.setBalloonRect = function (data) {
-    this.x =  data.dx;
-    this.y =  data.dy;
+    var ox = RS.MessageSystem.Params.windowOffset.x;
+    var oy = RS.MessageSystem.Params.windowOffset.y;
+    this.x = data.dx + ox;
+    this.y = data.dy + oy;
     this.width = this._bWidth;
     this.height = this._bHeight;
   };
@@ -3999,6 +4019,14 @@ var Color = Color || {};
   Window_ChoiceList.prototype.updatePlacement = function() {
     var type = RS.MessageSystem.Params.choiceWindowStyle;
     this.initWithStyle(type);
+    this.setWindowStyle();
+  };
+
+  Window_ChoiceList.prototype.setWindowStyle = function () {
+    this.opacity = RS.MessageSystem.Params.defaultOpacity;
+    this.backOpacity = RS.MessageSystem.Params.backOpacity;
+    this.contentsOpacity = RS.MessageSystem.Params.contentsOpacity;
+    this.translucentOpacity = RS.MessageSystem.Params.translucentOpacity;
   };
 
   Window_ChoiceList.prototype.updateNormalPlacement = function() {
@@ -4007,8 +4035,8 @@ var Color = Color || {};
     var type = RS.MessageSystem.Params.choiceWindowStyle;
     if(type === 'RMXP') return;
 
-    var messageX = this._messageWindow.x;      
-    var messageY = this._messageWindow.y;      
+    var messageX = this._messageWindow.x;     
+    var messageY = this._messageWindow.y;   
     var messageWidth = this._messageWindow.width;
     var messageHeight = this._messageWindow.height;
     var positionType = $gameMessage.positionType();
@@ -4039,11 +4067,12 @@ var Color = Color || {};
     this.windowskin = ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
     alias_Window_ChoiceList_start.call(this);
   };  
-  
+    
   Window_ChoiceList.prototype.onChangeStyleToRMXP = function () {
     RS.MessageSystem.Params.isTempSpriteContainerVisibility = false;
     this.updateOpacity();
     this.setPlacement();
+    this.updateBackground();
   };
   
   Window_ChoiceList.prototype.onChangeStyleToDefault = function () {
@@ -4051,6 +4080,7 @@ var Color = Color || {};
     this.needToUpdateWhenChangingVisibility();
     alias_Window_ChoiceList_updatePlacement.call(this);
     this.updateNormalPlacement();
+    this.updateBackground();
   };
   
   Window_ChoiceList.prototype.updateOpacity = function () {
@@ -4088,7 +4118,7 @@ var Color = Color || {};
       height = this._messageWindow.height;
       
     }
-    
+
     this.width = this._messageWindow.width - newLineX;
     
     // messageHeight는 원래 높이.
@@ -4202,6 +4232,14 @@ var Color = Color || {};
         case 'fontSize': case '폰트크기':
         RS.MessageSystem.Params.fontSize = Number(args[1]);
         break;
+        //-------------------------------------------------------------------------
+        case 'offsetX': case '오프셋X':
+        RS.MessageSystem.Params.windowOffset.x = Number(args[1]);
+        break;        
+        //-------------------------------------------------------------------------
+        case 'offsetY': case '오프셋Y':
+        RS.MessageSystem.Params.windowOffset.y = Number(args[1]);
+        break;                
         //-------------------------------------------------------------------------
         case 'minFontSize': case '폰트최소크기':
         RS.MessageSystem.Params.minFontSize = Number(args[1]);
