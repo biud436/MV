@@ -56,6 +56,8 @@
  * - Fixed the getPath function issue in RMMV 1.6.0.
  * - Changed the source code for RMMV 1.6.0.
  * 2018.04.25 (v1.0.6) - Added a feature that allows you to select the file format in the screenshot.
+* 2019.03.13 (v1.0.7) :
+* - Fixed the issue that is not showing the image to preview window in the RMMV 1.6.2
  */
 /*:ko
 * RS_ScreenShot.js
@@ -115,6 +117,8 @@
 * - Fixed the getPath function issue in RMMV 1.6.0.
 * - Changed the source code for RMMV 1.6.0.
 * 2018.04.25 (v1.0.6) - Added a feature that allows you to select the file format in the screenshot.
+* 2019.03.13 (v1.0.7) :
+* - Fixed the issue that is not showing the image to preview window in the RMMV 1.6.2
 */
 
 var Imported = Imported || {};
@@ -204,8 +208,12 @@ RS.ScreenShot = RS.ScreenShot || {};
       var blob = new Blob([html], {type : 'text/html'});
       var url = URL.createObjectURL(blob);
       var win = window.open(url, '_blank');
-      // var url2 = canvas.toDataURL("image/png");
-      // var win = window.open(url2, '_blank');
+      
+      if(Utils.RPGMAKER_VERSION >= "1.6.0") {
+        url = canvas.toDataURL("image/%1".format($.fileFormat));
+        var win = window.open(url, '_blank');
+      }
+     
     }
     if(renderTexture) renderTexture.destroy( { destroyBase: true } );
 
@@ -237,7 +245,9 @@ RS.ScreenShot = RS.ScreenShot || {};
         if($.isPlaySe) {
           AudioManager.playStaticSe({name: $.seName, pan: 0, pitch: 100, volume: ConfigManager.seVolume});
         }
-        if($.isPreviewWindow) $.previewScreenShot(fileName);
+      if($.isPreviewWindow) {
+        $.previewScreenShot(fileName);
+      }
       });
 
     }.bind(this), { format : $.fileFormat, datatype : 'buffer'} );
