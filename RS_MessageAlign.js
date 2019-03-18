@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.8) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.9) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -52,6 +52,8 @@
  * - Added text codes like as <LEFT>, <CENTER>, <RIGHT>, </LEFT>, </CENTER>, </RIGHT>
  * 2018.12.22 (v1.0.8) : 
  * - Now it is possible to use a text alignment in scroll text window and item window.
+ * 2019.03.18 (v1.0.9) :
+ * - Added something for Galv's Message Styles Compatibility.
  */
 
 var Imported = Imported || {};
@@ -186,7 +188,35 @@ RS.MessageAlign = RS.MessageAlign || {};
     Window_Base.prototype.calcTextWidth = function(text) {
         
         var tempText = text; tempText = tempText.split(/[\r\n]+/);
-        var textWidth;
+        var textWidth = 0;
+
+        // Galv's Message Styles Compatibility
+        if(Imported.Galv_MessageStyles) {
+            var ret = 0;
+            
+            if (Imported.Galv_MessageBusts) {
+                if ($gameMessage.bustPos == 1) {
+                    var faceoffset = 0;
+                } else {
+                    var faceoffset = Galv.MB.w;
+                };
+            } else {
+                var faceoffset = Window_Base._faceWidth + 25;
+            };
+    
+            // Calc X Offset
+            var xO = $gameMessage._faceName ? faceoffset : 0;
+            xO += Galv.Mstyle.padding[1] + Galv.Mstyle.padding[3]; // Added padding
+
+            if (this.pTarget != null) {
+                this.resetFontSettings();                
+                ret = this.testWidthEx(tempText[0]);
+                this.resetFontSettings();  
+                textWidth = Math.max(textWidth, ret);
+                if(textWidth !== 0) return textWidth;
+            }
+            
+        }
 
         if(Imported.YEP_MessageCore) {
 
@@ -253,6 +283,28 @@ RS.MessageAlign = RS.MessageAlign || {};
             return 0;
         }
     };
+
+    // Galv's Message Styles Compatibility
+    if(Imported.Galv_MessageStyles) {
+
+        Window_Message.prototype.textPadding = function() {
+            if (Imported.Galv_MessageBusts) {
+                if ($gameMessage.bustPos == 1) {
+                    var faceoffset = 0;
+                } else {
+                    var faceoffset = Galv.MB.w;
+                };
+            } else {
+                var faceoffset = Window_Base._faceWidth + 25;
+            };
+    
+            // Calc X Offset
+            var xO = $gameMessage._faceName ? faceoffset : 0;
+            xO += Galv.Mstyle.padding[1] + Galv.Mstyle.padding[3]; // Added padding
+
+            return xO;
+        };   
+    }
     
     var alias_Window_Message_startMessage_setAlignCenter = Window_Message.prototype.startMessage;
     Window_Message.prototype.startMessage = function() {
