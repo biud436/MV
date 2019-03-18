@@ -1,6 +1,9 @@
 /**
  * @author biud436
  * @description This module allows you to unify all of data files to one javascript file.
+ * @example
+ * let utils = require('./utils');
+ * utils.toWeb();
  */
 
 const fs = require('fs');
