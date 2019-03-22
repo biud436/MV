@@ -5,7 +5,7 @@
  * @param texts
  * @type note
  * @desc Specify the text and you can use text code too.
- * @default "\\c[1]Screen Size : \\c[0]${a} x ${b}\n\\c[1]To press ESC Button, \\c[0]Open the Menu\n\\c[1]Aspect Ratio : \\c[0](${config.getRatioAsString(a, b)})"
+ * @default "\\c[1]Graphics Size : \\c[0]${a} x ${b}\n\\c[1]Screen Size : \\c[0]${window.outerWidth} x ${window.outerHeight}\n\\c[1]Platform : \\c[0]${navigator.platform}\n\\c[1]Aspect Ratio : \\c[0](${config.getRatioAsString(a, b)})"
  * 
  * @help
  */
@@ -16,7 +16,7 @@
  * @param texts
  * @type note
  * @desc Specify the text and you can use text code too.
- * @default "\\c[1]Screen Size : \\c[0]${a} x ${b}\n\\c[1]To press ESC Button, \\c[0]Open the Menu\n\\c[1]Aspect Ratio : \\c[0](${config.getRatioAsString(a, b)})"
+ * @default "\\c[1]Graphics Size : \\c[0]${a} x ${b}\n\\c[1]Screen Size : \\c[0]${window.outerWidth} x ${window.outerHeight}\n\\c[1]Platform : \\c[0]${navigator.platform}\n\\c[1]Aspect Ratio : \\c[0](${config.getRatioAsString(a, b)})"
  * 
  * @help
  */
@@ -83,6 +83,11 @@ RS.DebugLog = RS.DebugLog || {};
       this._debug = new Window_Base(0, 0, a / 2, b / 2);
       this._debug._isWindow = false; 
       this._debug.opacity = 0; 
+      if(window.Utils.isMobileDevice()) {
+        this._debug.standardFontSize = function() {
+          return 14;
+        }
+      }
       this._debug.drawTextEx(s, 0, 0);
       
       this.addChild(this._debug);
@@ -97,6 +102,11 @@ RS.DebugLog = RS.DebugLog || {};
 
     Utils.prepare(function(a, b, s) {
       this._debug.contents.clear();
+      if(window.Utils.isMobileDevice()) {
+        this._debug.standardFontSize = function() {
+          return 14;
+        }
+      }      
       this._debug.drawTextEx(s, 0, 0);
     }, this);
 
