@@ -291,6 +291,8 @@ Imported.RS_ScreenManager = true;
  * 2019.03.22 (v1.0.16) :
  * - Fixed an issue that initial resolution was set incorrectly.
  * - The Resolution Option is no longer displayed on the mobile (because it's unstable)
+ * - Added JSON Beautifier option in the package.json file.
+ * - In the Test-Play mode, Now the alert window is not shown. (1.5.2 or less)
  */
 /*~struct~ScreenSize:
  *
