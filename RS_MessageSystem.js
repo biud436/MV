@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.45) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.46) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -619,6 +619,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.03.23 (v0.1.46) :
+ * - 말풍선 소유자가 플레이어로 고정되는 문제를 수정하였습니다.
  * 2019.03.07 (v0.1.45) : 
  * - 말풍선 멈춤 스프라이트의 위치가 잘못되는 문제 수정
  * - 메시지 사운드 볼륨 값을 0.4로 수정하였습니다.
@@ -809,7 +811,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.45) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.46) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1097,7 +1099,9 @@
  * =============================================================================
  * Version Log
  * =============================================================================
-  * 2019.03.07 (v0.1.45) : 
+ * 2019.03.23 (v0.1.46) :
+ * - 말풍선 소유자가 플레이어로 고정되는 문제를 수정하였습니다.
+ * 2019.03.07 (v0.1.45) : 
  * - 말풍선 멈춤 스프라이트의 위치가 잘못되는 문제 수정
  * - 메시지 사운드 볼륨 값을 0.4로 수정하였습니다.
  * - 이제 메시지 오프셋 값을 수정할 수 있습니다.
@@ -2478,7 +2482,7 @@ var Color = Color || {};
     this._windowPauseSignSprite.scale.y = 1;
     $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
   };
-  
+   
   /**
   * this.drawTextEx가 실행되기 전에 this.resetFontSettings()이 실행되므로,
   * 상태를 저장해둘 필요성이 있다.
@@ -2935,7 +2939,7 @@ var Color = Color || {};
     }   
     this.calcBalloonRect(tempText); // 말풍선 영역 계산        
     this.newPage(this._textState); // 페이지 시작
-    this.resizeMessageSystem(); // width 와 height를 재설정한다.
+    this.resizeMessageSystem('no reset'); // width 와 height를 재설정한다.
     this.createContents();
     this.updatePlacement(); // 위치 설정
     this.updateBackground();
@@ -2973,6 +2977,8 @@ var Color = Color || {};
   };
   
   Window_Message.prototype.resizeMessageSystem = function() {
+
+    var isResetOwner = !(arguments.length > 0);
     
     var n = $gameMessage.positionType();
     var ox = RS.MessageSystem.Params.windowOffset.x;
@@ -2984,7 +2990,10 @@ var Color = Color || {};
     this.width = this.windowWidth();
     this.height = this.windowHeight();
     
-    $gameMap.setMsgOwner($gamePlayer);
+    if(isResetOwner) {
+      $gameMap.setMsgOwner($gamePlayer);
+    }
+    
     
   };
     
