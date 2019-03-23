@@ -11,8 +11,7 @@
 
 ## 버전 별 다운로드
 
-<p>2019.03.07 (v0.1.45) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/535a08e35ba1ba1bf9225e2481f1d891237a0a8f/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
-<p>2019.02.16 (v0.1.44) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/edcae14ea5e42f54949c334bd94cf722f5581dc5/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
+<p>2019.03.23 (v0.1.46) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/cfb8ebaf25775878c2504e5a63ebc5e7483f45d1/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2018.12.08 (v0.1.43) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/8c023b47a2f01181d907cb594c3312657ac5262d/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2018.11.30 (v0.1.42) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/9e794fcab98a7d489409acdb461b6979f9fcb4d8/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2018.11.21 (v0.1.41) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/caa6f56fb560f5dcda8c4c0e3fb71284790ba3df/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -22,6 +21,8 @@
 ## 버전 로그
 
 ```text
+2019.03.23 (v0.1.46) :
+- 말풍선 소유자가 플레이어로 고정되는 문제를 수정하였습니다.
 2019.03.07 (v0.1.45) : 
 - 말풍선 멈춤 스프라이트의 위치가 잘못되는 문제 수정
 - 메시지 사운드 볼륨 값을 0.4로 수정하였습니다.
