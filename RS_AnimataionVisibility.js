@@ -7,6 +7,15 @@
  * =====================================================
  * 2019.03.24 (v1.0.0) - First Release.
  */
+/*:ko
+ * @plugindesc 애니메이션을 바로 정지시킵니다. <RS_AnimataionVisibility>
+ * @author biud436
+ * @help
+ * =====================================================
+ * Version Log
+ * =====================================================
+ * 2019.03.24 (v1.0.0) - First Release.
+ */
  
 var Imported = Imported || {};
 Imported.RS_AnimataionVisibility = true;
