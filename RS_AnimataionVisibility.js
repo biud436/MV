@@ -1,6 +1,11 @@
 /*:
  * @plugindesc <RS_AnimataionVisibility>
  * @author biud436
+ * @help
+ * =====================================================
+ * Version Log
+ * =====================================================
+ * 2019.03.24 (v1.0.0) - First Release.
  */
  
 var Imported = Imported || {};
@@ -34,22 +39,10 @@ Imported.RS_AnimataionVisibility = true;
     this.visible = this.isTargetReady();
   };
 
+  var alias_Sprite_Animation_processTimingData = Sprite_Animation.prototype.processTimingData;
   Sprite_Animation.prototype.processTimingData = function(timing) {
-    var duration = timing.flashDuration * this._rate;
-    switch (timing.flashScope) {
-    case 1:
-        this.startFlash(timing.flashColor, duration);
-        break;
-    case 2:
-        this.startScreenFlash(timing.flashColor, duration);
-        break;
-    case 3:
-        this.startHiding(duration);
-        break;
-    }
-    if (!this._duplicated && timing.se && this.isTargetReady()) {
-        AudioManager.playSe(timing.se);
-    }
+    if(!this.isTargetReady()) return;
+    alias_Sprite_Animation_processTimingData.call(this, timing);
   };
   
 })();
