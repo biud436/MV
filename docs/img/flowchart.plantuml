@@ -1,0 +1,18 @@
+@startuml flowchart
+
+[*] --> initialize: "F키를 NPC 앞에서 누르면 시작"
+start --> initMembers: "멤버 변수 초기화"
+start --> setRate: "성공 확률 설정"
+start --> createChildSprites: "A와 B 영역 생성"
+start --> update: "업데이트"
+update --> updateInput: "키보드 체크"
+update --> updateHook: "바늘 위치 업데이트"
+update --> isValidHookInArea: "영역에 바늘이 있는 가?"
+update --> isEnded: "시간 체크"
+isValidHookInArea --> success: "아이템 훔치기 성공"
+isValidHookInArea --> failed: "아이템 훔치기 실패"
+success --> [*]: End
+failed --> [*]: End
+
+@enduml
+
