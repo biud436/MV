@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NewResourceManager.exe" size="54160">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NewResourceManager.exe" size="54672">
       <assemblyIdentity name="NewResourceManager" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>7iqHpiepjMxGAXlY7Mvd230dMsza9s2/9i0qJ1JrhvY=</dsig:DigestValue>
+        <dsig:DigestValue>CQtqGZP1zz0QmC9UFS6mawSJ1H7jeDhgYYQolUm3xB0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -74,7 +74,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>5UmKpQZuUqXsSGb3Bc2UkCwM1SRQ7y8SM3lzEWzpMng=</dsig:DigestValue>
+        <dsig:DigestValue>K0h0bimHSCI5sHpl7mKRuxgBHzTnZiUYImqhwNdXti8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
