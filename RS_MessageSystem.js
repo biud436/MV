@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.47) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.48) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -619,9 +619,10 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
- * 2019.04.10 (v0.1.47) :
+ * 2019.04.10 (v0.1.48) :
  * - 라인 확장 관련 버그를 수정하였습니다.
  * - 라인 확장 시에도 선택지가 바로 표시되게 수정하였습니다.
+ * - 이제 라인 확장 시 메시지가 아랫쪽일 때 선택지 위치가 위쪽에 표시됩니다.
  * 2019.03.23 (v0.1.46) :
  * - 말풍선 소유자가 플레이어로 고정되는 문제를 수정하였습니다.
  * 2019.03.07 (v0.1.45) : 
@@ -814,7 +815,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.47) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.48) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1102,9 +1103,10 @@
  * =============================================================================
  * Version Log
  * =============================================================================
- * 2019.04.10 (v0.1.47) :
+ * 2019.04.10 (v0.1.48) :
  * - 라인 확장 관련 버그를 수정하였습니다.
  * - 라인 확장 시에도 선택지가 바로 표시되게 수정하였습니다.
+ * - 이제 라인 확장 시 메시지가 아랫쪽일 때 선택지 위치가 위쪽에 표시됩니다.
  * 2019.03.23 (v0.1.46) :
  * - 말풍선 소유자가 플레이어로 고정되는 문제를 수정하였습니다.
  * 2019.03.07 (v0.1.45) : 
@@ -4065,23 +4067,30 @@ var Color = Color || {};
     var messageWidth = this._messageWindow.width;
     var messageHeight = this._messageWindow.height;
     var positionType = $gameMessage.positionType();
+    var nameWindow = this._messageWindow._nameWindow;
+    var nameWindowXPositionType = RS.MessageSystem.Params.namePositionTypeAtX;    
+    var nameWindowPad = 0;
+    
+    if(nameWindow.isOpen() && ['center', 'right'].contains(nameWindowXPositionType)) {
+      nameWindowPad = nameWindow.height;
+    }
 
     // 메시지 윈도우가 화면 하단에 위치한다면
     if (messageY >= Graphics.boxHeight / 2) {
 
-      var nameWindow = this._messageWindow._nameWindow;
-      var nameWindowXPositionType = RS.MessageSystem.Params.namePositionTypeAtX;
-
       // 이름 윈도우가 가운데 또는 오른쪽에 있으면 패딩 값이 추가된다.
-      if(nameWindow.isOpen() && ['center', 'right'].contains(nameWindowXPositionType)) {
-        this.y = messageY - nameWindow.height - this.height;
-      } else {
-        this.y = messageY - this.height;
-      }
+      this.y = messageY - nameWindowPad - this.height;
         
     } else {
+
       // 메시지 윈도우가 상단에 있으면 선택지 윈도우는 메시지 윈도우 하단으로 오게 된다.
-      this.y = messageY + messageHeight;
+      var ty = messageY + messageHeight;
+      if(ty > Graphics.boxHeight - this.height) {
+        // 이름 윈도우가 가운데 또는 오른쪽에 있으면 패딩 값이 추가된다.
+        this.y = messageY - nameWindowPad - this.height;     
+      } else {
+        this.y = messageY + messageHeight;
+      }
     }
 
     this.x = messageX + messageWidth - this.width;
