@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.46) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.47) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -619,6 +619,9 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.04.10 (v0.1.47) :
+ * - 라인 확장 관련 버그를 수정하였습니다.
+ * - 라인 확장 시에도 선택지가 바로 표시되게 수정하였습니다.
  * 2019.03.23 (v0.1.46) :
  * - 말풍선 소유자가 플레이어로 고정되는 문제를 수정하였습니다.
  * 2019.03.07 (v0.1.45) : 
@@ -811,7 +814,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.46) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.47) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1099,6 +1102,9 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2019.04.10 (v0.1.47) :
+ * - 라인 확장 관련 버그를 수정하였습니다.
+ * - 라인 확장 시에도 선택지가 바로 표시되게 수정하였습니다.
  * 2019.03.23 (v0.1.46) :
  * - 말풍선 소유자가 플레이어로 고정되는 문제를 수정하였습니다.
  * 2019.03.07 (v0.1.45) : 
@@ -3515,16 +3521,26 @@ var Color = Color || {};
     
     this.initLineHeight();
     
-    while(this._lineHeight < $gameMessage.getMaxLine()) {
+    while($gameMessage._texts.length < $gameMessage.getMaxLine()) {
       while(this.nextEventCode() === 401) {
         this._index++;
         $gameMessage.add(this.currentCommand().parameters[0]);
         this.addLineHeight();
+        if(this._lineHeight >= $gameMessage.getMaxLine()) {
+          break;
+        }
       }
       if(this.nextEventCode() !== 101) {
         break;
       }
     }
+
+    // 커맨드 코드 401번이 아직 남아있는 상황이라면,
+    // 다음 인덱스로 넘겨야 선택지가 제대로 동작한다.
+    while(this.nextEventCode() === 401) {
+      this._index++;
+    }
+      
   };
   
   Game_Interpreter.prototype.initLineHeight = function() {
