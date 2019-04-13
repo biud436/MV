@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.9) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.10) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -54,6 +54,8 @@
  * - Now it is possible to use a text alignment in scroll text window and item window.
  * 2019.03.18 (v1.0.9) :
  * - Added something for Galv's Message Styles Compatibility.
+ * 2019.04.13 (v1.0.10) :
+ * - Fixed the issue that is not working in the scrolling text.
  */
 
 var Imported = Imported || {};
@@ -312,4 +314,15 @@ RS.MessageAlign = RS.MessageAlign || {};
         this.processAlign();
     };
 
+    Window_ScrollText.prototype.refresh = function() {
+        var textState = { index: 0 };
+        textState.text = this.convertEscapeCharacters(this._text);
+        this.resetFontSettings();
+        this._allTextHeight = this.calcTextHeight(textState, true);
+        this.createContents();
+        this.origin.y = -this.height;
+        this.processAlign(textState);
+        this.drawTextEx(this._text, this.textPadding(), 1);
+    };
+    
 })();
