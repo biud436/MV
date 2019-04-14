@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.11) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.12) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -56,8 +56,9 @@
  * - Added something for Galv's Message Styles Compatibility.
  * 2019.04.13 (v1.0.10) :
  * - Fixed the issue that is not working in the scrolling text.
- * 2019.04.15 (v1.0.11) :
+ * 2019.04.15 (v1.0.12) :
  * - Added the feature that recalculates the text height when using a text code called \fs[x].
+ * - Fixed the bug that goes a font resetting for each line.
  */
 
 var Imported = Imported || {};
@@ -167,7 +168,7 @@ RS.MessageAlign = RS.MessageAlign || {};
     var alias_Window_Base_processNewLine = Window_Base.prototype.processNewLine;
     Window_Base.prototype.processNewLine = function(textState) {
         alias_Window_Base_processNewLine.call(this, textState);
-        this.processAlign(textState);
+        this.processAlign(textState);        
     };
 
     if(!Imported.YEP_MessageCore) {
@@ -224,13 +225,21 @@ RS.MessageAlign = RS.MessageAlign || {};
 
         if(Imported.YEP_MessageCore) {
 
-            textWidth = this.textWidthExCheck(tempText[0]);
+            var setting = this._wordWrap;
+            this._wordWrap = false;
+            this.saveCurrentWindowSettings();
+            this._checkWordWrapMode = true;
+            textWidth = this.drawTextExForAlign(tempText[0], 0, this.contents.height);
+            this._checkWordWrapMode = false;
+            this.restoreCurrentWindowSettings();
+            this.clearCurrentWindowSettings();
+            this._wordWrap = setting;
 
         } else { 
 
             this.saveFontSettings();
             this._isUsedTextWidth = true;
-            textWidth = this.drawTextEx(tempText[0], 0, this.contents.height);
+            textWidth = this.drawTextExForAlign(tempText[0], 0, this.contents.height);
             this.restoreFontSettings();
             this._isUsedTextWidth = false;
 
@@ -289,22 +298,22 @@ RS.MessageAlign = RS.MessageAlign || {};
     
     Window_Base.prototype.setAlignLeft = function(textState) {
         var padding = this.textPadding();
-        textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
+        tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x = ( this.newLineX() + padding );
         textState.left = textState.x;
     };
     
     Window_Base.prototype.setAlignCenter = function(textState) {
         var padding = this.textPadding();
-        textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
-        textState.x = ( this.newLineX() + this.contentsWidth() + padding) / 2 - textState.tx / 2;
+        tx = this.calcTextWidth(textState.text.slice(textState.index));
+        textState.x = ( this.newLineX() + this.contentsWidth() + padding) / 2 - tx / 2;
         textState.left = textState.x;
     };
-    
+
     Window_Base.prototype.setAlignRight = function(textState) {
         var padding = this.textPadding();
-        textState.tx = this.calcTextWidth(textState.text.slice(textState.index));
-        textState.x = ( this.contentsWidth() - padding) - textState.tx;
+        tx = this.calcTextWidth(textState.text.slice(textState.index));
+        textState.x = ( this.contentsWidth() - padding) - tx;
         textState.left = textState.x;
     };
 
@@ -314,6 +323,20 @@ RS.MessageAlign = RS.MessageAlign || {};
             this.processAlign(textState);
         }
     };
+
+    Window_Base.prototype.drawTextExForAlign = function(text, x, y) {
+        if (text) {
+            var textState = { index: 0, x: x, y: y, left: x };
+            textState.text = this.convertEscapeCharacters(text);
+            textState.height = this.calcTextHeight(textState, false);
+            while (textState.index < textState.text.length) {
+                this.processCharacter(textState);
+            }
+            return textState.x - x;
+        } else {
+            return 0;
+        }
+    };    
 
     Window_Base.prototype.drawTextEx = function(text, x, y) {
         if (text) {
