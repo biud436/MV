@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.10) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.11) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -56,6 +56,8 @@
  * - Added something for Galv's Message Styles Compatibility.
  * 2019.04.13 (v1.0.10) :
  * - Fixed the issue that is not working in the scrolling text.
+ * 2019.04.15 (v1.0.11) :
+ * - Added the feature that recalculates the text height when using a text code called \fs[x].
  */
 
 var Imported = Imported || {};
@@ -237,6 +239,49 @@ RS.MessageAlign = RS.MessageAlign || {};
         return textWidth;        
 
     };
+
+    if(Imported.YEP_MessageCore) {
+
+        Window_Base.prototype.calcTextHeight = function(textState, all) {
+        
+            "use strict";
+    
+            var lastFontSize = this.contents.fontSize;
+            var textHeight = 0;
+            var lines = textState.text.slice(textState.index).split('\n');
+            var maxLines = all ? lines.length : 1;
+            
+            for (var i = 0; i < maxLines; i++) {
+                var maxFontSize = this.contents.fontSize;
+                var regExp = /\x1b[\{\}]|\x1bFS\[(\d+)\]/ig;
+                for (;;) {
+                    var array = regExp.exec(lines[i]);
+                    if (array) {
+                        if (array[0] === '\x1b{') {
+                            this.makeFontBigger();
+                        }
+                        if (array[0] === '\x1b}') {
+                            this.makeFontSmaller();
+                        }
+                        if (array[0].contains('\x1bfs'.toLowerCase())) {
+                            this.contents.fontSize = parseInt(array[1]);
+                        }
+                        if (maxFontSize < this.contents.fontSize) {
+                            maxFontSize = this.contents.fontSize;
+                        }                   
+                    } else {
+                        break;
+                    }
+                }
+                textHeight += maxFontSize + 8;
+            }
+        
+            this.contents.fontSize = lastFontSize;
+    
+            return textHeight;
+        };    
+    
+    }
 
     Window_Base.prototype.newLineX = function() {
         return this.textPadding();
