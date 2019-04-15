@@ -619,9 +619,10 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
- * 2019.04.13 (v0.1.49) :
+ * 2019.04.15 (v0.1.49) :
  * - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
  * - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
+ * - 텍스트 정렬자 사용 시 폰트 크기가 초기 설정으로 되돌아가는 문제를 수정하였습니다.
  * 2019.04.10 (v0.1.48) :
  * - 라인 확장 관련 버그를 수정하였습니다.
  * - 라인 확장 시에도 선택지가 바로 표시되게 수정하였습니다.
@@ -1106,9 +1107,10 @@
  * =============================================================================
  * Version Log
  * =============================================================================
- * 2019.04.13 (v0.1.49) :
+ * 2019.04.15 (v0.1.49) :
  * - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
  * - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
+ * - 텍스트 정렬자 사용 시 폰트 크기가 초기 설정으로 되돌아가는 문제를 수정하였습니다.
  * 2019.04.10 (v0.1.48) :
  * - 라인 확장 관련 버그를 수정하였습니다.
  * - 라인 확장 시에도 선택지가 바로 표시되게 수정하였습니다.
@@ -2409,7 +2411,7 @@ var Color = Color || {};
 
     this.save();
     this._isUsedTextWidthEx = true;
-    textWidth = this.drawTextEx(tempText[0], 0, this.contents.height);
+    textWidth = this.drawTextExForAlign(tempText[0], 0, this.contents.height);
     this._isUsedTextWidthEx = false;
     this.restore();        
 
@@ -2464,7 +2466,21 @@ var Color = Color || {};
         return 0;
     }
   };    
-      
+
+  Window_Base.prototype.drawTextExForAlign = function(text, x, y) {
+    if (text) {
+        var textState = { index: 0, x: x, y: y, left: x };
+        textState.text = this.convertEscapeCharacters(text);
+        textState.height = this.calcTextHeight(textState, false);
+        while (textState.index < textState.text.length) {
+            this.processCharacter(textState);
+        }
+        return textState.x - x;
+    } else {
+        return 0;
+    }
+  };      
+
   //============================================================================
   // Window_Message
   //============================================================================
