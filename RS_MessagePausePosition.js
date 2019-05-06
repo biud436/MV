@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin allows you to change the pause position <RS_WindowPauseSprite>
+ * @plugindesc This plugin allows you to change the pause position <RS_MessagePausePosition>
  * @author biud436
  * 
  * @param pauseX
@@ -39,8 +39,8 @@
  * 
  * To change its position during the game, you can use the global variables, as follows.
  * 
- * RS.WindowPauseSprite.Params.pauseX = "this.width / 2";
- * RS.WindowPauseSprite.Params.pauseY = "this.height";
+ * RS.MessagePausePosition.Params.pauseX = "this.width / 2";
+ * RS.MessagePausePosition.Params.pauseY = "this.height";
  * 
  * or you can use plugin commands, as follows.
  * 
@@ -53,7 +53,7 @@
  * 2019.05.06 (v1.0.0) - First Relase.
  */
 /*:ko
- * @plugindesc Pause 스프라이트의 위치를 변경합니다. <RS_WindowPauseSprite>
+ * @plugindesc Pause 스프라이트의 위치를 변경합니다. <RS_MessagePausePosition>
  * @author biud436
  * 
  * @param pauseX
@@ -90,15 +90,15 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_WindowPauseSprite = true;
+Imported.RS_MessagePausePosition = true;
 
 var RS = RS || {};
-RS.WindowPauseSprite = RS.WindowPauseSprite || {};
+RS.MessagePausePosition = RS.MessagePausePosition || {};
 
 (function($) {
     
     var parameters = $plugins.filter(function (i) {
-      return i.description.contains('<RS_WindowPauseSprite>');
+      return i.description.contains('<RS_MessagePausePosition>');
     });
     
     parameters = (parameters.length > 0) && parameters[0].parameters;
@@ -136,4 +136,4 @@ RS.WindowPauseSprite = RS.WindowPauseSprite || {};
         }        
     };
     
-})(RS.WindowPauseSprite);
+})(RS.MessagePausePosition);
