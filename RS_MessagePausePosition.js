@@ -77,7 +77,7 @@
  * 
  * 오른쪽 아래에 위치시키려면 X 좌표를 다음과 같이 설정하세요.
  * 
- * this.width - padding;
+ * this.width - (padding);
  * 
  * 왼쪽 아래에 위치시키려면 X 좌표를 다음과 같이 설정하세요.
  * 
@@ -122,6 +122,49 @@ RS.MessagePausePosition = RS.MessagePausePosition || {};
 
         this._windowPauseSignSprite.move(tx, ty);
     };
+
+    if(Imported.RS_MessageSystem) {
+
+        Window_Message.prototype.updateSubBalloonElements = function (data) {
+
+            var padding = this.standardPadding();
+
+            if($gameMessage.getBalloon() === -2) {
+                data.tx = eval($.Params.pauseX);
+                data.ty = eval($.Params.pauseY);
+            }
+
+            this._windowPauseSignSprite.move(tx, ty);
+            this._windowPauseSignSprite.scale.y = data.scaleY;
+            this._nameWindow.y = data.ny;
+            
+            this.startWait(1);
+        };    
+
+        Window_Message.prototype.resetFontSettings = function() {
+            Window_Base.prototype.resetFontSettings.call(this);
+            this.contents.fontBold = false;
+            this.contents.fontItalic = false;
+            this.contents.outlineWidth = RS.MessageSystem.Params.defaultOutlineWidth;
+            this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
+            this.contents.fontGradient = false;
+            this.contents.highlightTextColor = null;
+
+            var padding = this.standardPadding();
+            var tx = this._width / 2;
+            var ty = this._height;
+
+            if($gameMessage.getBalloon() === -2) {
+                tx = eval($.Params.pauseX);
+                ty = eval($.Params.pauseY);
+            }
+
+            this._windowPauseSignSprite.move(tx, ty);
+            this._windowPauseSignSprite.scale.y = 1;
+            $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
+          };        
+    
+    }
 
     var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
