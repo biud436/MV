@@ -12,7 +12,7 @@
  * @text pauseY
  * @desc Specify the posotion to y.
  * (Note that this will be evaluant as the Javascript)
- * @default this.height;
+ * @default this.height - padding;
  * 
  * @help
  * ==============================================================
@@ -59,12 +59,12 @@
  * @param pauseX
  * @text X 좌표
  * @desc 
- * @default this.width - padding;
+ * @default this.width / 2;
  * 
  * @param pauseY
  * @text Y 좌표
  * @desc 
- * @default this.height;
+ * @default this.height - padding;
  * 
  * @help
  * ==============================================================
