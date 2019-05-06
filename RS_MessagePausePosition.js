@@ -168,7 +168,7 @@ RS.MessagePausePosition = RS.MessagePausePosition || {};
 
     var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this);
+        alias_Game_Interpreter_pluginCommand.call(this, command, args);
         if(command == "ChangePauseSpriteX") {
             var evaluantValue = args.join("");
             $.Params.pauseX = evaluantValue;

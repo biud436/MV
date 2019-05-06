@@ -78,12 +78,11 @@ RS.GameSpeed = RS.GameSpeed || {};
 
     var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this);
+        alias_Game_Interpreter_pluginCommand.call(this, command, args);
         if(command == "ChangeFPS") {
-          $.Params.FPS = parseFloat(args[0] || 60);
-          setTimeout(function() {
-            SceneManager._deltaTime = 1.0 / $.Params.FPS;
-          }, 0);
+          RS.GameSpeed.Params.FPS = parseFloat(args[0] || 60);
+          console.log(args[0]);
+          SceneManager._deltaTime = 1.0 / $.Params.FPS;
         }
     };    
     
