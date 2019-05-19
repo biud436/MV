@@ -1572,11 +1572,23 @@ var Color = Color || {};
       var list = $gameMap.event(eventId).list();
       
       // 바로 이전 인덱스에 노트 태그가 있었는 지 확인합니다.
-      
       if(index < 0) index = 0;
+
+      // 부모 이벤트 없이 호출되는 공통 이벤트가 있는 지 확인합니다. 
+      if(eventId <= 0) {
+        var commonEvent = $gameTemp.reservedCommonEvent();
+        if(commonEvent) {
+          list = commonEvent.list;
+          // 공통 이벤트는 한 번 설치된 후 클리어되므로 목록을 두 번 읽을 순 없으므로 예외 처리
+          if(!list) {
+            return data; 
+          }
+        }
+      }
 
       var param = list[index];
 
+      // 코멘트를 읽어옵니다.
       while(param && [108, 408].contains(param.code)) {
         data.note += param.parameters[0] + "\r\n";
         index--;
@@ -1617,6 +1629,7 @@ var Color = Color || {};
           }
       }
     } catch(e) {
+      // 리스트를 읽지 못할 경우 try-catch 문에 의해 예외 처리가 됩니다.
       return {note: "", meta: {}};
     }
     return data.meta;
