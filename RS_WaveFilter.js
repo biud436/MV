@@ -1032,6 +1032,46 @@ RS.WaveConfig = RS.WaveConfig || {};
   };
 
   //============================================================================
+  // Wave Utils
+  //============================================================================
+
+  window.waveUtils = {};
+
+  /**
+   * @example
+    var _s, _e, _r;
+    _s = new Point(0.0, 0.0);
+    _e = new Point(0.07, 0.25);
+    _r = waveUtils.mix(_s, _e);
+    $gameScreen.startWave(1, _r.x, _r.y);
+   */    
+  waveUtils.mix = function(vec1, vec2, t) {
+    var vec = new Point(0, 0);
+    if(!t) t = (Date.now() % 10000 / 10000);
+    vec.x = vec1.x + t * (vec2.x - vec1.x);
+    vec.y = vec1.x + t * (vec2.y - vec1.y);
+    return vec;
+  };
+
+  /**
+   * @example
+    var _s, _p, _e, _r;
+    _s = new Point(0.0, 0.0);
+    _p = new Point(0.07, 0.25);
+    _e = new Point(0.0, 0.0);
+    _r = waveUtils.quadraticBezier(_s, _p, _e);
+    $gameScreen.startWave(1, _r.x, _r.y);
+   */  
+  waveUtils.quadraticBezier = function(vec1, vec2, vec3, t) {
+    var d, e, p;
+    if(!t) t = (Date.now() % 10000 / 10000);
+    d = waveUtils.mix(vec1, vec2, t);
+    e = waveUtils.mix(vec2, vec3, t);
+    p = waveUtils.mix(d, e, t);
+    return p;
+  };
+
+  //============================================================================
   // Game_Interpreter
   //============================================================================
 
