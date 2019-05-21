@@ -111,7 +111,31 @@
  *      - cond : Specify true or false whether the wave effect is used.
  *      - waveAmp : the default value is to 0.02
  *      - waveSpeed : the default value is to 0.25
- *
+ * 
+ * =============================================================================
+ * Timing
+ * =============================================================================
+ * if you want to fade-out or fade-in the properties of the wave effect applied to the picture, 
+ * Let's call the following function.
+ * 
+ * waveUtils.quadraticBezier(start, median, end, dt);
+ * 
+ * dt stands for delta time, The delta time parameter is the elapsed time since the last frame. 
+ * if you omit it, The wave filter will measure the elapsed time automatically 
+ * and fill it (In fact, It will be filled with the current time value) 
+ * 
+ * To get started with implementing this, add this code just using the script command.
+ * 
+ * var _s, _p, _e, _r;
+ * _s = new Point(0.0, 0.0);
+ * _p = new Point(0.07, 0.25);
+ * _e = new Point(0.0, 0.0);
+ * _r = waveUtils.quadraticBezier(_s, _p, _e);
+ * $gameScreen.startWave(1, _r.x, _r.y);
+ * 
+ * The value of the wave speed is started with 0.0 and then increased until 0.07 and then decreased to 0.0.
+ * The value of the wave amplitude is also started with 0.0 and then increased until 0.25 and then decreased to 0.0.
+ * 
  * =============================================================================
  * Change Log
  * =============================================================================
