@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.49) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.50) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -70,7 +70,7 @@
  * @type boolean
  * @desc 큰 페이스칩을 메시지창의 뒷면에 표시합니다.
  * 예 - true   아니오 - false
- * @default true
+ * @default false
  * @on 대화창 뒤에
  * @off 대화창을 가림
  *
@@ -619,6 +619,9 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.05.22 (v0.1.50) :
+ * - 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
+ * - 말풍선이 설정되어있을 때 숫자 입력 창이 제대로 위치하도록 수정하였습니다.
  * 2019.04.15 (v0.1.49) :
  * - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
  * - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
@@ -819,7 +822,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.49) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.50) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1107,6 +1110,9 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2019.05.22 (v0.1.50) :
+ * - 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
+ * - 말풍선이 설정되어있을 때 숫자 입력 창이 제대로 위치하도록 수정하였습니다.
  * 2019.04.15 (v0.1.49) :
  * - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
  * - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
@@ -1450,6 +1456,8 @@ var Color = Color || {};
   RS.MessageSystem.Params.gradientStyle = parameters["Gradient Style"];
 
   RS.MessageSystem.Params.faceOpacity = parseInt(parameters["face Opacity"] || 21);
+
+  RS.MessageSystem.Params.faceDirection = 0;
 
   //============================================================================
   // Lazy Initialize Parameters (느린 초기화)
@@ -2697,6 +2705,19 @@ var Color = Color || {};
     return RS.MessageSystem.Params.numVisibleRows;
   };
 
+  Window_Message.prototype.processWordWrap = function(textState, w, width, isValid) {
+    if(Math.floor(textState.x + (w * 2)) > width) {
+      if(isValid) {
+        this.processNewLine(textState);
+        textState.index--;
+        if(this.needsNewPage(textState)) {
+          textState.index--;
+          this.startPause();
+        }
+      }
+    }
+  }
+
   var alias_Window_Message_origin_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
   Window_Message.prototype.processNormalCharacter = function(textState) {
     
@@ -2712,17 +2733,16 @@ var Color = Color || {};
     var isValid = ($gameMessage.getBalloon() === -2) && !this._isUsedTextWidthEx && RS.MessageSystem.Params.isParagraphMinifier;
 
     // 소수점 자리를 버려야 정확히 계산된다.
-    if(Math.floor(textState.x + (w * 2)) > width) {
-      if(isValid) {
-        this.processNewLine(textState);
-        textState.index--;
-        if(this.needsNewPage(textState)) {
-          textState.index--;
-          this.startPause();
-        }
-      }
-    }
+    this.processWordWrap(textState, w, width, isValid);
 
+    // 얼굴 이미지가 있고 오른쪽인가?
+    if($gameMessage.faceName() !== "") {
+      // 내부 컨텐츠의 가로 크기 - 얼굴의 가로 크기
+      width = this.contents.width - (Window_Base._faceWidth);
+      isValid = (RS.MessageSystem.Params.faceDirection === 2);
+      this.processWordWrap(textState, w, width, isValid);
+    }
+    
     // 배경색
     if(this.contents.highlightTextColor !== null) {
       var pad = 1.0;
@@ -2753,6 +2773,7 @@ var Color = Color || {};
       return;
     }
     var value = RS.MessageSystem.Params.faceOpacity.clamp(0, 255);
+    this._faceContents.opacity = value;
   };
     
   Window_Message.prototype.updatePlacement = function() {
@@ -2992,6 +3013,7 @@ var Color = Color || {};
     if( reg.exec( faceName ) ) { 
       return (faceIndex > 0) ? 0 : RS.MessageSystem.Params.textStartX; 
     } else {
+      if(RS.MessageSystem.Params.faceDirection === 2) return 0;
       return ((faceName) ? RS.MessageSystem.Params.faceStartOriginX : 0);
     }
   };
@@ -3014,19 +3036,50 @@ var Color = Color || {};
     }
     
     this._faceContents.y = h - offsetY;
+    this._faceContents.setFrame(0, 0, this._faceBitmap.width, this._faceBitmap.height);
     
   };
-  
+
+  Window_Message.prototype.drawFace = function(faceName, faceIndex, x, y, width, height) {
+    width = width || Window_Base._faceWidth;
+    height = height || Window_Base._faceHeight;
+    var bitmap = ImageManager.loadFace(faceName);
+    var pw = Window_Base._faceWidth;
+    var ph = Window_Base._faceHeight;
+    var sw = Math.min(width, pw);
+    var sh = Math.min(height, ph);
+    var dx = Math.floor(x + Math.max(width - pw, 0) / 2);
+    var dy = Math.floor(y + Math.max(height - ph, 0) / 2);
+    var sx = faceIndex % 4 * pw + (pw - sw) / 2;
+    var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
+
+    this._faceContents.bitmap = bitmap;
+    this._faceContents.setFrame(sx, sy, sw, sh);
+
+    this._faceContents.x = this.standardPadding() + dx;
+    this._faceContents.y = this.standardPadding() + dy;
+
+};  
+
   Window_Message.prototype.drawMessageFace = function() {
     
     var reg = /^Big_/i;
     var faceName = $gameMessage.faceName();
     var faceIndex = $gameMessage.faceIndex();
     
-    if(reg.exec( faceName ) ) { // 큰 얼굴 그래픽이 있으면
+    // 큰 얼굴 그래픽이 있으면
+    if(reg.exec( faceName ) ) { 
       this.drawBigFace( faceName, faceIndex );
     } else {
-      this.drawFace( faceName, faceIndex , 0, 0);
+
+      var fx = 0;
+      var fw = Window_Base._faceWidth;
+      var padding = this.standardPadding();
+      if(RS.MessageSystem.Params.faceDirection === 2) {
+        fx = (($gameMessage.getBalloon() === -2) ? this.contents.width : (this._bWidth - padding * 2)) - fw;
+      }      
+      this.drawFace( faceName, faceIndex , fx, 0);
+
     }
     
   };
@@ -3068,7 +3121,13 @@ var Color = Color || {};
       // TODO: 다른 플러그인의 영향으로 얼굴 이미지가 오른쪽에 표시된다면 텍스트 영역이 삭제될 수도 있다.
       // 특정 영역 삭제 및 일반 얼굴 이미지 묘화
       this.contents.clearRect(x, y, width, height);
-      this.drawFace(faceName, faceIndex, 0, 0);
+      var fx = 0;
+      var fw = Window_Base._faceWidth;
+      var padding = this.standardPadding();
+      if(RS.MessageSystem.Params.faceDirection === 2) {
+        fx = (($gameMessage.getBalloon() === -2) ? this.contents.width : (this._bWidth - padding * 2)) - fw;
+      }
+      this.drawFace( faceName, faceIndex , fx, 0);
     }
     
     // ImageManager.releaseReservation(RS.MessageSystem.Params._imageReservationId);
@@ -3125,6 +3184,7 @@ var Color = Color || {};
     } else {
       this.updateBalloonPosition();
     }
+
   };
 
   Window_Message.prototype.windowWidth = function() {
@@ -3294,6 +3354,9 @@ var Color = Color || {};
       min = this.fittingHeight(4);
       // 기존 폭 값에 얼굴 이미지의 폭을 더한다.
       this._bWidth += this.newLineX() + pad;
+      if(RS.MessageSystem.Params.faceDirection === 2) {
+        this._bWidth += (Window_Base._faceWidth);
+      }
       // 높이 값이 최소 높이보다 작으면, 최소 높이 값으로 설정한다.
       if(height < min) height = height.clamp(min, height + (min - height));
     }
@@ -3336,6 +3399,11 @@ var Color = Color || {};
     this.y = data.dy + oy;
     this.width = this._bWidth;
     this.height = this._bHeight;
+
+    if($gameMessage.faceName() && RS.MessageSystem.Params.faceDirection === 2) {
+      this.drawMessageFace();
+    }
+
   };
   
   Window_Message.prototype.setBalloonPlacement = function (data) {
@@ -4316,7 +4384,24 @@ var Color = Color || {};
     this.y = this._messageWindow.y + currentTextHeight;
     
   };
+
+  //===========================================================================
+  // Window_NumberInput
+  //===========================================================================  
   
+  Window_NumberInput.prototype.updatePlacement = function() {
+    var messageY = this._messageWindow.y;
+    var spacing = 8;
+    this.width = this.windowWidth();
+    this.height = this.windowHeight();
+    this.x = this._messageWindow.x + (this._messageWindow.width - this.width) / 2;
+    if (messageY >= Graphics.boxHeight / 2) {
+        this.y = messageY - this.height - spacing;
+    } else {
+        this.y = messageY + this._messageWindow.height + spacing;
+    }
+  };
+
   //===========================================================================
   // String
   //===========================================================================
