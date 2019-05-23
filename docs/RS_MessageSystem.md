@@ -10,6 +10,7 @@
 [1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
 
 ## 버전 별 다운로드
+<p>2019.05.22 (v0.1.53) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/bb8be7ee4e788b8f853a5fd4894ba73aef6ef6be/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.04.10 (v0.1.48) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/7ba5a4b7ec842de5b6a66b32dd3751a1a1ab719f/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.03.23 (v0.1.46) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/cfb8ebaf25775878c2504e5a63ebc5e7483f45d1/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2018.12.08 (v0.1.43) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/8c023b47a2f01181d907cb594c3312657ac5262d/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -21,6 +22,11 @@
 ## 버전 로그
 
 ```text
+2019.05.22 (v0.1.53) :
+- 일반 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
+- 일반 얼굴 이미지도 별도의 스프라이트로 표시됩니다.
+- 말풍선이 설정되어있을 때 숫자 입력 창이 제대로 위치하도록 수정하였습니다.
+- 큰 얼굴 이미지가 사이드에 설정되어있을 때 텍스트 시작 위치가 0부터 시작됩니다.
 2019.04.13 (v0.1.49) :
 - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
 - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
@@ -420,6 +426,13 @@ XP 스타일로 설정할 경우, 다음과 같이 선택지 창이 안으로 �
 
 얼굴 이미지는 ```\얼굴<이미지명, 이미지 인덱스>``` 텍스트 코드를 사용해서 중간에 변경할 수도 있습니다. ```RPG Maker MV 1.5.0``` 이상 버전을 사용하고 계시다면 텍스트를 읽어들이기 전에 얼굴 이미지를 바꾸는 텍스트 코드가 있는 지를 확인하여 사전에 이미지를 자동으로 로드합니다. 하지만 RMMV 최신 버전이 아니라면, 그 기능이 적용되지 않기 때문에 별도로 프리로드를 해야 합니다.
 
+
+# 일반 페이스칩의 표시 위치 설정
+얼굴 이미지의 위치라는 플러그인 매개변수 값 조절을 통해 표시 위치를 왼쪽 또는 오른쪽으로 바꿀 수 있습니다. 
+플러그인 명령 ```메시지 페이스칩위치 2```을 통해 표시 위치를 오른쪽으로 바꿀 수 있으며,
+플러그인 명령 ```메시지 페이스칩위치 0```을 통해 표시 위치를 다시 왼쪽으로 바꿀 수 있습니다.
+오른쪽 정렬 시 얼굴 이미지와 겹쳐지는 텍스트는 **자동으로 줄바꿈 처리**됩니다.
+
 ## 라인 갯수 변경
 대화창의 기본 라인 수를 변경하고 싶을 경우 아래와 같이 메시지 라인이라는 플러그인 커맨드를 사용하여 라인 수를 변경할 수 있습니다.
 
@@ -786,4 +799,12 @@ number가 -1이면 메시지 창이 페이스칩을 가리고, 다른 값이면 
 ```
 메시지 오프셋X number
 메시지 오프셋Y number
+```
+
+얼굴 이미지의 정렬 위치를 바꾸려면 다음과 같은 플러그인 명령을 호출하세요.
+왼쪽 정렬은 0을, 오른쪽 정렬은 2를 인자 값으로 전달하세요.
+
+```
+메시지 페이스칩위치 0
+메시지 페이스칩위치 2
 ```
