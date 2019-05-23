@@ -10,7 +10,7 @@
 [1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
 
 ## 버전 별 다운로드
-<p>2019.05.23 (v0.1.54) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/59363ae31dff5506667bde82190b88055e8d5d43/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
+<p>2019.05.23 (v0.1.56) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/fe5ba535c6d887eb9291849db9ad51ed3b8f3b93/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.04.10 (v0.1.48) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/7ba5a4b7ec842de5b6a66b32dd3751a1a1ab719f/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.03.23 (v0.1.46) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/cfb8ebaf25775878c2504e5a63ebc5e7483f45d1/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2018.12.08 (v0.1.43) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/8c023b47a2f01181d907cb594c3312657ac5262d/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -22,12 +22,14 @@
 ## 버전 로그
 
 ```text
-2019.05.23 (v0.1.54) :
+2019.05.23 (v0.1.56) :
 - 일반 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
 - 일반 얼굴 이미지도 별도의 스프라이트로 표시됩니다.
 - 말풍선이 설정되어있을 때 숫자 입력 창이 제대로 위치하도록 수정하였습니다.
 - 큰 얼굴 이미지가 사이드에 설정되어있을 때 텍스트 시작 위치가 0부터 시작됩니다.
 - 멈춤 표시 스프라이트 위치가 잘못되어있는데 수정하였습니다.
+- 얼굴 이미지의 방향을 제어할 수 있는 텍스트 코드를 추가하였습니다.
+- 대화창이 열리고 닫힐 때 얼굴 이미지의 스케일도 같이 조정됩니다.
 2019.04.13 (v0.1.49) :
 - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
 - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
@@ -430,8 +432,12 @@ XP 스타일로 설정할 경우, 다음과 같이 선택지 창이 안으로 �
 
 # 일반 페이스칩의 표시 위치 설정
 얼굴 이미지의 위치라는 플러그인 매개변수 값 조절을 통해 표시 위치를 왼쪽 또는 오른쪽으로 바꿀 수 있습니다. 
+
 플러그인 명령 ```메시지 페이스칩위치 2```을 통해 표시 위치를 오른쪽으로 바꿀 수 있으며,
 플러그인 명령 ```메시지 페이스칩위치 0```을 통해 표시 위치를 다시 왼쪽으로 바꿀 수 있습니다.
+
+또는 텍스트 코드 ```\FD[2]``` 또는 ```\FD[0]```으로 바꿀 수 있습니다.
+
 오른쪽 정렬 시 얼굴 이미지와 겹쳐지는 텍스트는 **자동으로 줄바꿈 처리**됩니다.
 
 ## 라인 갯수 변경
@@ -542,6 +548,7 @@ RPG Maker MV는 이전 시리즈와 달리 동기 방식이 아니라 비동기 
  <CENTER></CENTER>
  <RIGHT></RIGHT>
  \배경색[색상명]
+ \FD[얼굴_위치]  * Face Direction의 약자
  ```
 
 ### Japanese Text Codes (日本語 : 制御文字)
@@ -603,6 +610,7 @@ Tkool 홈페이지에 있는 실제로 사용되고 있는 어휘를 참고하�
  <CENTER></CENTER>
  <RIGHT></RIGHT>
  \HC[color_name]
+ \FD[face_position]
  ```
 
 ### Simplified Chinese Text Codes (中文)
@@ -660,6 +668,7 @@ Tkool 홈페이지에 있는 실제로 사용되고 있는 어휘를 참고하�
  <CENTER></CENTER>
  <RIGHT></RIGHT>
  \HC[color_name]
+ \FD[face_position]
 ```
 
 ### English Text Codes
@@ -722,6 +731,7 @@ Tkool 홈페이지에 있는 실제로 사용되고 있는 어휘를 참고하�
  <CENTER></CENTER>
  <RIGHT></RIGHT>
  \HC[color_name]
+ \FD[face_position]
  ```
 
 한국어 텍스트 코드 이외에 중국어, 일본어를 쓰시는 분은 없을 듯 합니다. 한국어 입력은 조합형이지만 중국어와 일본어의 경우, 영어로 입력한 후 맞는 글자를 찾는 것이므로 입력이 불편하므로 쓰기에 적합하지 않다는 걸 알고 있습니다. 또한 지금까지 번역이 잘못되었다는 말이 없는 걸 보면 아무도 쓰지 않는 듯 합니다. 또한 영어로 번역을 해두지 않았기 때문에 사용자가 아예 없을 것입니다.
