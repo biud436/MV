@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.50) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.53) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -41,19 +41,24 @@
  * @type number
  * @desc \{로 텍스트 크기를 한 단계 키울 때 최대 크기를 제한합니다
  * @default 96
+ * 
+ * @param 큰 페이스칩
  *
  * @param 텍스트 시작 X
+ * @parent 큰 페이스칩
  * @type number
  * @desc 큰 페이스칩이 설정되어있을 때 텍스트 시작 좌표를 정수로 기입하세요.
  * @default 256
  *
  * @param 큰 페이스칩 OX
+ * @parent 큰 페이스칩
  * @type number
  * @desc 큰 페이스칩의 오프셋 X
  * @default 0
  * @min -1280
  *
  * @param 큰 페이스칩 OY
+ * @parent 큰 페이스칩
  * @type number
  * @desc 큰 페이스칩의 오프셋 Y
  * @default 0
@@ -61,6 +66,7 @@
  * 
  * @param face Opacity
  * @text 큰 페이스칩 투명도
+ * @parent 큰 페이스칩
  * @type number
  * @desc 큰 페이스칩의 투명도를 조절합니다.
  * (0 - 255)
@@ -68,11 +74,23 @@
  *
  * @param 대화창 뒤에 얼굴 표시
  * @type boolean
+ * @parent 큰 페이스칩
  * @desc 큰 페이스칩을 메시지창의 뒷면에 표시합니다.
  * 예 - true   아니오 - false
  * @default false
  * @on 대화창 뒤에
  * @off 대화창을 가림
+ * 
+ * @param face Direction
+ * @text 얼굴 이미지의 위치
+ * @type select
+ * @parent 큰 페이스칩
+ * @desc 일반 얼굴 이미지의 위치를 설정합니다.
+ * @default 0
+ * @option 왼쪽
+ * @value 0
+ * @option 오른쪽
+ * @value 2
  *
  * @param 탭 크기
  * @type number
@@ -368,6 +386,12 @@
  * 
  * 메시지 오프셋X number
  * 메시지 오프셋Y number
+ * 
+ * 얼굴 이미지의 정렬 위치를 바꾸려면 다음과 같은 플러그인 명령을 호출하세요.
+ * 왼쪽 정렬은 0을, 오른쪽 정렬은 2를 인자 값으로 전달하세요.
+ * 
+ * 메시지 페이스칩위치 0
+ * 메시지 페이스칩위치 2
  *
  * =============================================================================
  * 큰 페이스칩 설정
@@ -619,9 +643,11 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
- * 2019.05.22 (v0.1.50) :
- * - 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
+ * 2019.05.22 (v0.1.53) :
+ * - 일반 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
+ * - 일반 얼굴 이미지도 별도의 스프라이트로 표시됩니다.
  * - 말풍선이 설정되어있을 때 숫자 입력 창이 제대로 위치하도록 수정하였습니다.
+ * - 큰 얼굴 이미지가 사이드에 설정되어있을 때 텍스트 시작 위치가 0부터 시작됩니다.
  * 2019.04.15 (v0.1.49) :
  * - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
  * - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
@@ -822,7 +848,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.50) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.53) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -892,6 +918,16 @@
  * @default false
  * @on Can Display
  * @off Can't Display
+ *  
+ * @param face Direction
+ * @text Face Position
+ * @type select
+ * @desc Specify the position of the normal face image.
+ * @default 0
+ * @option Left
+ * @value 0
+ * @option Right
+ * @value 2
  *
  * @param Tab Size
  * @type number
@@ -1110,9 +1146,11 @@
  * =============================================================================
  * Version Log
  * =============================================================================
- * 2019.05.22 (v0.1.50) :
- * - 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
+ * 2019.05.22 (v0.1.53) :
+ * - 일반 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
+ * - 일반 얼굴 이미지도 별도의 스프라이트로 표시됩니다.
  * - 말풍선이 설정되어있을 때 숫자 입력 창이 제대로 위치하도록 수정하였습니다.
+ * - 큰 얼굴 이미지가 사이드에 설정되어있을 때 텍스트 시작 위치가 0부터 시작됩니다.
  * 2019.04.15 (v0.1.49) :
  * - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
  * - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
@@ -1457,7 +1495,7 @@ var Color = Color || {};
 
   RS.MessageSystem.Params.faceOpacity = parseInt(parameters["face Opacity"] || 21);
 
-  RS.MessageSystem.Params.faceDirection = 0;
+  RS.MessageSystem.Params.faceDirection = parseInt(parameters["face Direction"] || 0);
 
   //============================================================================
   // Lazy Initialize Parameters (느린 초기화)
@@ -2650,7 +2688,7 @@ var Color = Color || {};
     textState.x += w;
     this.contents.fontGradient = false;
   };
-  
+
   Window_Message.prototype.playSe = function (seName) {
     var realName = seName.trim();
     var data = {"name": realName, "pan": 0, "pitch": 100, "volume": ConfigManager.seVolume};
@@ -2716,7 +2754,7 @@ var Color = Color || {};
         }
       }
     }
-  }
+  };
 
   var alias_Window_Message_origin_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
   Window_Message.prototype.processNormalCharacter = function(textState) {
@@ -2777,20 +2815,36 @@ var Color = Color || {};
   };
     
   Window_Message.prototype.updatePlacement = function() {
+
     this._positionType = $gameMessage.positionType();
+
     if($gameMessage.getBalloon() === -2) {
       this.x = (Graphics.boxWidth / 2) - (this.width / 2) + RS.MessageSystem.Params.windowOffset.x;
       this.y = this._positionType * (Graphics.boxHeight - this.height) / 2 + RS.MessageSystem.Params.windowOffset.y;
     } else {
       if(SceneManager._scene instanceof Scene_Map) this.updateBalloonPosition();
     }
+
     this._goldWindow.y = this.y > 0 ? 0 : Graphics.boxHeight - this._goldWindow.height;
     this.updateDefaultOpacity();
     this.updateContentsOpacity();
     this.updateBigFaceOpacity();
+
     if(this._nameWindow.isOpen() || this.areSettingsChanged()) {
       this.updateNameWindow();
-    }    
+    }   
+
+    if($gameMessage.faceName() !== "") {
+      var isBigFace = /^Big_/.exec($gameMessage.faceName());
+      var backIndex = this.children.length - 1;
+
+      if(RS.MessageSystem.Params.faceSide) {
+        this.setFaceZIndex(isBigFace ? 0 : backIndex);
+      } else {
+        this.setFaceZIndex(backIndex);
+      }
+    }
+
   };
         
   var alias_Window_Message_convertEscapeCharacters = Window_Message.prototype.convertEscapeCharacters;
@@ -3011,7 +3065,8 @@ var Color = Color || {};
     var faceName = $gameMessage.faceName();
     var faceIndex = $gameMessage.faceIndex();
     if( reg.exec( faceName ) ) { 
-      return (faceIndex > 0) ? 0 : RS.MessageSystem.Params.textStartX; 
+      var faceStartX = RS.MessageSystem.Params.faceSide ? 0 : RS.MessageSystem.Params.textStartX;
+      return (faceIndex > 0) ? 0 : faceStartX; 
     } else {
       if(RS.MessageSystem.Params.faceDirection === 2) return 0;
       return ((faceName) ? RS.MessageSystem.Params.faceStartOriginX : 0);
@@ -3032,7 +3087,7 @@ var Color = Color || {};
     if(faceIndex > 0) { // 1 이상이면 오른쪽에 위치
       this._faceContents.x = w - offsetX; 
     } else { // 0이면 왼쪽에 위치
-      this._faceContents.x = offsetX;
+      this._faceContents.x = offsetX - this._faceBitmap.width / 2;
     }
     
     this._faceContents.y = h - offsetY;
@@ -4567,6 +4622,10 @@ var Color = Color || {};
         } else {
           RS.MessageSystem.Params.faceSide = false;
         }
+        break;
+        //-------------------------------------------------------------------------        
+        case 'facePos': case '페이스칩위치':
+        RS.MessageSystem.Params.faceDirection = parseInt(args[1] || 0);
         break;
         //-------------------------------------------------------------------------
         case 'setTabSize': case '탭크기':
