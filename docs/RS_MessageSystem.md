@@ -10,7 +10,7 @@
 [1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
 
 ## 버전 별 다운로드
-<p>2019.05.22 (v0.1.53) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/bb8be7ee4e788b8f853a5fd4894ba73aef6ef6be/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
+<p>2019.05.23 (v0.1.54) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/59363ae31dff5506667bde82190b88055e8d5d43/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.04.10 (v0.1.48) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/7ba5a4b7ec842de5b6a66b32dd3751a1a1ab719f/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.03.23 (v0.1.46) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/cfb8ebaf25775878c2504e5a63ebc5e7483f45d1/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2018.12.08 (v0.1.43) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/8c023b47a2f01181d907cb594c3312657ac5262d/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -22,11 +22,12 @@
 ## 버전 로그
 
 ```text
-2019.05.22 (v0.1.53) :
+2019.05.23 (v0.1.54) :
 - 일반 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
 - 일반 얼굴 이미지도 별도의 스프라이트로 표시됩니다.
 - 말풍선이 설정되어있을 때 숫자 입력 창이 제대로 위치하도록 수정하였습니다.
 - 큰 얼굴 이미지가 사이드에 설정되어있을 때 텍스트 시작 위치가 0부터 시작됩니다.
+- 멈춤 표시 스프라이트 위치가 잘못되어있는데 수정하였습니다.
 2019.04.13 (v0.1.49) :
 - 텍스트 정렬 기능을 스크롤 텍스트나 사용자 프로필에서 사용할 수 있습니다.
 - 멀티 라인 사용 여부 체크 함수를 한층 더 보완하였습니다.
