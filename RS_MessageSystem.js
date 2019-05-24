@@ -2047,6 +2047,25 @@ var Color = Color || {};
       return Color.getUserCustomColor(string);
     }
   };  
+
+  RS.MessageSystem.getBrowser = function() {
+    /* Refer to https://stackoverflow.com/a/16938481 */
+    var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+    if(/trident/i.test(M[1])){
+        tem=/\brv[ :]+(\d+)/g.exec(ua) || []; 
+        return {name:'IE',version:(tem[1]||'')};
+        }   
+    if(M[1]==='Chrome'){
+        tem=ua.match(/\bOPR|Edge\/(\d+)/)
+        if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+        }   
+    M=M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+    if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+    return {
+      name: M[0],
+      version: M[1]
+    };    
+  };
     
   Color.gmColor = function(string) {
     var type = RS.MessageSystem.Params.langCode;
@@ -4218,6 +4237,22 @@ var Color = Color || {};
       // 일반적인 처리
       self._addTextSoundToPool();
     }
+
+    /*
+      * Promise 브라우저 별 지원 여부
+      * https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Promise
+      */
+    var browserType = RS.MessageSystem.getBrowser();      
+    if(browserType.name.contains("Chrom")) {
+      this._soundPool.isValid = (browserType.version >= "32");
+    }
+    
+    this._soundPool.isValid = (typeof(Promise) === "function");
+    if(this._soundPool.isValid) {
+      if(!("then" in Promise.prototype)) this._soundPool.isValid = false;
+      if(!('catch' in Promise.prototype)) this._soundPool.isValid = false;
+    }
+
   };
   
   Window_Message.prototype._addTextSoundToPool = function () {
@@ -4304,14 +4339,18 @@ var Color = Color || {};
       
       // media-load-algorithm - https://html.spec.whatwg.org/multipage/media.html#concept-media-load-algorithm
       textSound.load();
-      
-      var playPromise = textSound.play();
-      if (playPromise !== undefined) {
-        playPromise.then(function() {
-          
-        }).catch(function (err) {
-          
-        });
+
+      if(this._soundPool.isValid) {
+        var playPromise = textSound.play();
+        if (playPromise !== undefined) {
+          playPromise.then(function() {
+            
+          }).catch(function (err) {
+            
+          });
+        }        
+      } else {
+        textSound.play();        
       }
     }
     
