@@ -304,7 +304,7 @@ Imported.RS_ScreenManager = true;
  * - Added JSON Beautifier option in the package.json file.
  * - In the Test-Play mode, Now the alert window is not shown. (1.5.2 or less)
  * 2019.05.27 (v1.0.17) :
- * - Fixed the error that is indicated always the NaN when it couldn't load the addon.
+ * - Fixed the error that is always indicated the NaN when it couldn't load the addon.
  */
 /*~struct~ScreenSize:
  *
