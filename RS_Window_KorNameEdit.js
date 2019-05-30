@@ -93,9 +93,13 @@
  * @help
  * This plugin provides a keyboard that allows you to type in korean
  * or other native language in the Name Input Proccessing.
- *
- * This plugin provides following the pluginCommand below.
- *
+ * 
+ * ============================================================================
+ * Plugin Commands
+ * ============================================================================
+ * 
+ * These plugin commands can change the properties of the name window. 
+ * 
  * KNE width number
  * KNE center true/false
  * KNE outlineWidth number
@@ -104,8 +108,14 @@
  * KNE fontSize number
  * KNE opacity number
  * KNE askText string
+ * 
+ * if you want to type a name is to 9 characters or more, you must call at the following plugin command.
+ * 
+ * OpenXNameInput leader 9
  *
- * - Change Log
+ * ============================================================================
+ * Change Log
+ * ============================================================================
  * 2016.03.05 (v1.3.3) - Fixed the class structure.
  * 2016.03.22 (v1.4.0) - Fixed a bug that causes a serious problem.
  * 2016.04.05 (v1.5.0) - Fixed a bug that causes to delete the text automatically
@@ -129,6 +139,8 @@
  * - Actor's name can change the same as previous name. 
  * - Now command buttons are show up only in mobile devices. 
  * - Fixed the position of the edit window.
+ * 2019.05.30 (v1.6.8) :
+ * - Added the feature that the name can type as 9 characters or more.
  */
  /*:ko
   * RS_Window_KorNameEdit.js
@@ -253,7 +265,6 @@
   * ============================================================================
   * 이 플러그인은 아래와 같은 플러그인 커맨드를 제공합니다.
   *
-  * 한국어 명령어 (Korean)
   * KNE 폭 숫자
   * KNE 중앙정렬 true/false
   * KNE 테두리크기 숫자
@@ -265,6 +276,10 @@
   *
   * - 폰트 (본고딕)
   * http://www.google.com/get/noto/#/family/noto-sans-kore
+  * 
+  * 이름을 9자 이상으로 입력하려면 다음 플러그인 명령을 호출해주십시오.
+  * 
+  * OpenXNameInput leader 9
   *
   * ============================================================================
   * 변경 사항
@@ -292,6 +307,8 @@
   * - 같은 이름으로 설정할 수 있게 변경하였습니다.
   * - 수정, 확인, 취소 칸은 모바일 디바이스에서만 뜨게 변경하였습니다.
   * - 에디트 윈도우의 좌표를 모든 해상도에 대응할 수 있게 상대 좌표로 수정하였습니다.
+  * 2019.05.30 (v1.6.8) :
+  * - 이름을 9자 이상으로 입력할 수 있는 기능이 추가되었습니다.
   */
 
  var Imported = Imported || {};
@@ -960,6 +977,17 @@
              break;
          }
        }
+       if(command === "OpenXNameInput") {
+        if (!$gameParty.inBattle()) {
+          var leaderId = $gameParty.leader().actorId();
+          var actorId = (args[0] === "leader") ? leaderId : (parseInt(args[0]) || leaderId);
+          var digits = parseInt(args[1]) || 6;
+          if ($dataActors[actorId]) {
+            SceneManager.push(Scene_KorName);
+            SceneManager.prepareNextScene(actorId, digits);
+          }
+        }
+      }       
    };
  
  })(RS.Window_KorNameEdit);
