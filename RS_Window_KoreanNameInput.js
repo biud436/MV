@@ -75,6 +75,9 @@
  * - 한/영 키 추가.
  * - The help text would always be displayed up to top.
  * - 오른쪽 숫자 패드로 숫자 입력 가능.
+ * 2019.05.30 (v1.0.3) :
+ * - 마지막 글자가 입력되지 않는 문제를 수정하였습니다.
+ * - 이름이 허용 글자 수보다 더 큰 경우 발생하는 문제를 수정하였습니다.
  */
 /*:ko
  * @plugindesc <RS_Window_KoreanNameInput>
@@ -164,6 +167,9 @@
  * - 한/영 전환 기능이 추가되었습니다.
  * - 도움말 텍스트가 항상 위로 올라오게 됩니다.
  * - 오른쪽 숫자 패드로 숫자 입력 가능.
+ * 2019.05.30 (v1.0.3) :
+ * - 마지막 글자가 입력되지 않는 문제를 수정하였습니다.
+ * - 이름이 허용 글자 수보다 더 큰 경우 발생하는 문제를 수정하였습니다.
  */
 
 var Imported = Imported || {};
@@ -521,6 +527,8 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
     
     Window_KoreanNameEdit.prototype.initialize = function(actor, maxLength) {
       Window_NameEdit.prototype.initialize.call(this, actor, maxLength);
+      this._name = actor.name().slice(0, this._maxLength);
+      this._index = this._name.length;
       this._traceBackCallback = [];
       this._alertFunc = function() {};
       this._isHan = true;
@@ -557,9 +565,10 @@ RS.Window_KoreanNameInput.Params = RS.Window_KoreanNameInput.Params || {};
           inputWindow._index = (ch === " ") ? inputWindow._dataFromTable.spaceIndex : index;
         }
       }
-      if (this._index < this._maxLength) {
+      if (this._index <= this._maxLength) {
         var ret = (this._name.slice(0) + ch).split(""); // 배열로 변환
         this._name = Hangul.assemble( Hangul.disassemble(ret) );
+        this._name = this._name.slice(0, this._maxLength);
         this._index = this._name.length;
         this.refresh();
         return true;
