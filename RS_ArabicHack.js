@@ -1,5 +1,5 @@
 /*:
- * @plugindesc <RS_ArabicHack>
+ * @plugindesc This plugin is possible to show up Arabic text simplify. <RS_ArabicHack>
  * @author biud436
  * 
  * @param Message Mode
@@ -17,6 +17,11 @@
  * @default Simplified Arabic, Times New Roman, Segoe UI
  * 
  * @help
+ * ============================================================================
+ * Introduction
+ * ============================================================================
+ * There is no a flip layer because is compatibility issue.
+ * 
  * ============================================================================
  * Plugin Commands
  * ============================================================================
