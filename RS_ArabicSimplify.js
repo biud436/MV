@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin is possible to show up Arabic text simplify. <RS_ArabicHack>
+ * @plugindesc This plugin is possible to show up Arabic text simplify. <RS_ArabicSimplify>
  * @author biud436
  * 
  * @param Message Mode
@@ -41,17 +41,17 @@
  */
 
 var Imported = Imported || {};
-Imported.RS_ArabicHack = true;
+Imported.RS_ArabicSimplify = true;
 
 var RS = RS || {};
-RS.ArabicHack = RS.ArabicHack || {};
+RS.ArabicSimplify = RS.ArabicSimplify || {};
 
 (function($) {
     
     "use strict";
     
     var parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_ArabicHack>');
+        return i.description.contains('<RS_ArabicSimplify>');
     });
     
     parameters = (parameters.length > 0) && parameters[0].parameters;
@@ -163,4 +163,4 @@ RS.ArabicHack = RS.ArabicHack || {};
   
     };
     
-})(RS.ArabicHack);
+})(RS.ArabicSimplify);
