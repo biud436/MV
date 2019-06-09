@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v1.0.8) This plugin allows you to create or copy or delete an event
+ * @plugindesc (v1.0.9) This plugin allows you to create or copy or delete an event
  *
  * @author biud436
  *
@@ -338,7 +338,7 @@
   *
   */
 /*:ko
- * @plugindesc (v1.0.8) 커스텀 이벤트 생성 및 복제 플러그인
+ * @plugindesc (v1.0.9) 커스텀 이벤트 생성 및 복제 플러그인
  * @author 러닝은빛(biud436)
  *
  * @param Default Event Data
@@ -404,6 +404,8 @@
  * - Removed the code that is creating a testing message in an event create command.
  * 2018.08.09 (v1.0.8) :
  * - Now the eventId is set to equal the index of $gameMap._events.
+ * 2019.06.09 (v1.0.9) :
+ * - 이벤트가 계속 생성되고 삭제될 때 커스텀 데이터 오류가 나는 문제 수정.
  */
 
  /*~struct~EventData:ko
@@ -845,7 +847,10 @@ RS.Event = RS.Event || {};
               var event = item.events[eventId];
               event.id = $.makeEventId();
               $.applyEventOnMap(event);
-              self.instanceCopy(x, y, $gameMap.mapId(), event.id).setCustomData(event);
+              var newEvent = self.instanceCopy(x, y, $gameMap.mapId(), event.id);
+              if(newEvent) {
+                newEvent.setCustomData(event);
+              }
           }
       }
     xhr.onerror = function() {
