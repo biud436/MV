@@ -355,7 +355,8 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
 
         createDigits(baseRow, value) {
             // 큰 숫자 값 표기를 위해 사용.
-            var string = new Intl.NumberFormat('ko-KR', {useGrouping:false} ).format(Math.abs(value));
+            var Formatter = new Intl.NumberFormat('ko-KR', {useGrouping:false});
+            var string = Formatter.format(Math.abs(value));
 
             var row = baseRow + (value < 0 ? 1 : 0);
     
@@ -378,8 +379,9 @@ RS.HangulDamages.Params = RS.HangulDamages.Params || {};
         var digits = [];
         var ret = [];
         var len = 0;
+        var Formatter = new Intl.NumberFormat('ko-KR', {useGrouping:false});
 
-        strings = new Intl.NumberFormat('ko-KR', {useGrouping:false} ).format(Math.abs(strings));
+        strings = Formatter.format(Math.abs(strings));
 
         ret = strings.toCommaAlpha().split(",");
         len = ret.length;
