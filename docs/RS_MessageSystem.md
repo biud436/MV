@@ -10,6 +10,7 @@
 [1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
 
 ## 버전 별 다운로드
+<p>2019.06.12 (v0.1.57) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/6a0c7078008c7e0fb95b97806b94b2ecf1e11547/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.05.23 (v0.1.56) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/fe5ba535c6d887eb9291849db9ad51ed3b8f3b93/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.04.10 (v0.1.48) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/7ba5a4b7ec842de5b6a66b32dd3751a1a1ab719f/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.03.23 (v0.1.46) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/cfb8ebaf25775878c2504e5a63ebc5e7483f45d1/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -22,6 +23,8 @@
 ## 버전 로그
 
 ```text
+2019.06.12 (v0.1.57) :
+- 전투에서 말풍선, 적그룹, 아군 제어 코드가 동작하지 않는 문제를 해결하였습니다.
 2019.05.23 (v0.1.56) :
 - 일반 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
 - 일반 얼굴 이미지도 별도의 스프라이트로 표시됩니다.
