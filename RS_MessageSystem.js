@@ -1,6 +1,6 @@
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.56) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.57) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -651,6 +651,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.06.12 (v0.1.57) :
+ * - 전투에서 말풍선, 적그룹, 아군 제어 코드가 동작하지 않는 문제를 해결하였습니다.
  * 2019.05.23 (v0.1.56) :
  * - 일반 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
  * - 일반 얼굴 이미지도 별도의 스프라이트로 표시됩니다.
@@ -859,7 +861,7 @@
 
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.56) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.57) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -1157,6 +1159,8 @@
  * =============================================================================
  * Version Log
  * =============================================================================
+ * 2019.06.12 (v0.1.57) :
+ * - 전투에서 말풍선, 적그룹, 아군 제어 코드가 동작하지 않는 문제를 해결하였습니다.
  * 2019.05.23 (v0.1.56) :
  * - 일반 얼굴 이미지를 오른쪽에 위치시킬 수 있습니다.
  * - 일반 얼굴 이미지도 별도의 스프라이트로 표시됩니다.
@@ -3303,6 +3307,8 @@ var Color = Color || {};
   Window_Message.prototype.resizeMessageSystem = function() {
 
     var isResetOwner = !(arguments.length > 0);
+    
+    if (!isResetOwner && (SceneManager._scene instanceof Scene_Battle)) return;
     
     var n = $gameMessage.positionType();
     var ox = RS.MessageSystem.Params.windowOffset.x;
