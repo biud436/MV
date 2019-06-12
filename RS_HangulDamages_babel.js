@@ -88,6 +88,10 @@
  * 2019.01.09 (v1.0.4) :
  * - 양(10^28) 까지 표시 가능
  * - 자릿수가 클수록 스프라이트가 더 높이 튀는 현상을 해결하였습니다.
+ * 2019.06.12 (v1.0.5) :
+ * - 기본으로 제공되는 이미지에 새로운 자릿수를 추가하였습니다.
+ * - 지수 표현을 쓰지 않고 숫자 값을 그대로 표시합니다.
+ * - 배틀 로그에도 한글 데미지 값이 적용됩니다.
  */
 /*:ko
  * @plugindesc 데미지를 수 표기법에 맞춰서 표시합니다 <RS_HangulDamages>
@@ -178,217 +182,356 @@
  * 2019.01.09 (v1.0.4) :
  * - 양(10^28) 까지 표시 가능
  * - 자릿수가 클수록 스프라이트가 더 높이 튀는 현상을 해결하였습니다.
+ * 2019.06.12 (v1.0.5) :
+ * - 기본으로 제공되는 이미지에 새로운 자릿수를 추가하였습니다.
+ * - 지수 표현을 쓰지 않고 숫자 값을 그대로 표시합니다.
+ * - 배틀 로그에도 한글 데미지 값이 적용됩니다.
  */
 
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _instanceof(left, right) { if (right != null && typeof Symbol !== "undefined" && right[Symbol.hasInstance]) { return right[Symbol.hasInstance](left); } else { return left instanceof right; } }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _classCallCheck(instance, Constructor) { if (!_instanceof(instance, Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var Imported = Imported || {};
 Imported.RS_HangulDamages = true;
-
 var RS = RS || {};
 RS.HangulDamages = RS.HangulDamages || {};
 RS.HangulDamages.Params = RS.HangulDamages.Params || {};
 
 (function ($) {
+  "use strict";
 
-    "use strict";
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_HangulDamages>');
+  });
+  parameters = parameters.length > 0 && parameters[0].parameters; //===================================================================
+  // String
+  //=================================================================== 
 
-    var parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_HangulDamages>');
+  String.prototype.toArray = function () {
+    return this.split("");
+  };
+
+  String.prototype.reverse = function () {
+    return this.toArray().reverse().join("");
+  };
+
+  String.prototype.toCommaAlpha = function () {
+    return this.reverse().match(/.{1,4}/g).join(",").reverse();
+  }; //===================================================================
+  // RS.HangulDamages
+  //===================================================================      
+
+
+  $.Params.damageBitmapName = parameters["damageBitmapName"] || "Damage_1";
+
+  $.jsonParse = function (str) {
+    var retData = JSON.parse(str, function (k, v) {
+      try {
+        return $.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
     });
+    return retData;
+  };
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  $.Params.HANGUL_DIGITS_INDEX = $.jsonParse(parameters["hangulDigitsTable"]) || {
+    // "천": 0,
+    "만": 1,
+    "억": 2,
+    "조": 3,
+    "경": 4,
+    "해": 5,
+    "자": 6,
+    "양": 7,
+    "구": 8,
+    "간": 9,
+    "X": 10
+  };
+  $.Params.HANGUL_BASE_ROW = Number(parameters["hangulBaseRow"]) || 5;
+  $.Params.MISS_BASE_ROW = Number(parameters["missBaseRow"]) || 4;
+  $.Params.bounceLevel = Number(parameters["bounceLevel"] || 0); //===================================================================
+  // Sprite_HangulDamage
+  //===================================================================  
 
-    //===================================================================
-    // String
-    //=================================================================== 
+  var Sprite_HangulDamage =
+  /*#__PURE__*/
+  function (_Sprite_Damage) {
+    _inherits(Sprite_HangulDamage, _Sprite_Damage);
 
-    String.prototype.toArray = function () {
-        return this.split("");
-    };
+    function Sprite_HangulDamage() {
+      var _this;
 
-    String.prototype.reverse = function () {
-        return this.toArray().reverse().join("");
-    };
+      _classCallCheck(this, Sprite_HangulDamage);
 
-    String.prototype.toCommaAlpha = function () {
-        return this.reverse().match(/.{1,4}/g).join(",").reverse();
-    };
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(Sprite_HangulDamage).call(this));
+      _this._duration = 90;
+      _this._flashColor = [0, 0, 0, 0];
+      _this._flashDuration = 0;
+      _this._damageBitmap = ImageManager.loadSystem(RS.HangulDamages.Params.damageBitmapName);
 
-    //===================================================================
-    // RS.HangulDamages
-    //===================================================================      
+      _this.on("updateDirty", _this.updateDirty, _assertThisInitialized(_this));
 
-    $.Params.damageBitmapName = parameters["damageBitmapName"] || "Damage_1";
+      return _this;
+    }
 
-    $.jsonParse = function (str) {
-        var retData = JSON.parse(str, function (k, v) {
-            try {
-                return $.jsonParse(v);
-            } catch (e) {
-                return v;
+    _createClass(Sprite_HangulDamage, [{
+      key: "digitWidth",
+      value: function digitWidth(n) {
+        n = n || 10;
+        return this._damageBitmap ? this._damageBitmap.width / n : 0;
+      }
+    }, {
+      key: "digitHeight",
+      value: function digitHeight() {
+        return this._damageBitmap ? this._damageBitmap.height / 6 : 0;
+      }
+    }, {
+      key: "createMiss",
+      value: function createMiss() {
+        var w = this.digitWidth();
+        var h = this.digitHeight();
+        var sprite = this.createChildSprite();
+        sprite.setFrame(0, $.Params.MISS_BASE_ROW * h, 4 * w, h);
+        sprite.dy = 0;
+      }
+    }, {
+      key: "whereDigits",
+      value: function whereDigits(strings) {
+        var digits = [];
+        var ret = [];
+        var len = 0;
+        ret = strings.toCommaAlpha().split(",");
+        len = ret.length;
+
+        for (var i = 0; i < len; i++) {
+          var n = Number(ret[i]); // '한글 맞춤법' 제5장 띄어쓰기, 제2절, 제44항에 의하면, 수를 표기할 때,
+          // '12억 3456만 7898', '3243조 7867억 8927만 6354'와 같이 표기해야 한다.
+          // '12억 7898'에서 만 단위가 없을 수도 있다.
+
+          if (n === 0 || !n) continue;
+          digits.push(n);
+
+          if (len - 1 !== i) {
+            // 천 단위 생략
+            switch (i) {
+              case len - 2:
+                digits.push("만"); // 만(萬) means 10,000 (10^4)
+
+                break;
+
+              case len - 3:
+                digits.push("억"); // 억(億) means 100,000,000 (10^8)
+
+                break;
+
+              case len - 4:
+                digits.push("조"); // 조(兆) means 1,000,000,000,000 (10^12)
+
+                break;
+
+              case len - 5:
+                digits.push("경"); // 경(京) means 10,000,000,000,000,000 (10^16)
+
+                break;
+
+              case len - 6:
+                digits.push("해"); // 해(垓) means 10^20
+
+                break;
+
+              case len - 7:
+                digits.push("자"); // 자(秭) means 10^24
+
+                break;
+
+              case len - 8:
+                digits.push("양"); // 양(穰) means 10^28
+
+                break;
+
+              case len - 9:
+                digits.push("구"); // 구(穰) means 10^32
+
+                break;
+
+              case len - 10:
+                digits.push("간"); // 간(穰) means 10^36
+
+                break;
             }
-        });
-        return retData;
-    };
 
-    $.Params.HANGUL_DIGITS_INDEX = $.jsonParse(parameters["hangulDigitsTable"]) || {
-        // "천": 0,
-        "만": 1,
-        "억": 2,
-        "조": 3,
-        "경": 4,
-        "해": 5,
-        "자": 6,
-        "양": 7,
-        "X": 8
-    };
-
-    $.Params.HANGUL_BASE_ROW = Number(parameters["hangulBaseRow"]) || 5;
-    $.Params.MISS_BASE_ROW = Number(parameters["missBaseRow"]) || 4;
-    $.Params.bounceLevel = Number(parameters["bounceLevel"] || 0);
-
-    //===================================================================
-    // Sprite_HangulDamage
-    //===================================================================  
-
-    var Sprite_HangulDamage = function (_Sprite_Damage) {
-        _inherits(Sprite_HangulDamage, _Sprite_Damage);
-
-        function Sprite_HangulDamage() {
-            _classCallCheck(this, Sprite_HangulDamage);
-
-            var _this = _possibleConstructorReturn(this, (Sprite_HangulDamage.__proto__ || Object.getPrototypeOf(Sprite_HangulDamage)).call(this));
-
-            _this._duration = 90;
-            _this._flashColor = [0, 0, 0, 0];
-            _this._flashDuration = 0;
-            _this._damageBitmap = ImageManager.loadSystem(RS.HangulDamages.Params.damageBitmapName);
-            _this.on("updateDirty", _this.updateDirty, _this);
-            return _this;
+            digits.push("X"); // 띄어쓰기 추가
+          }
         }
 
-        _createClass(Sprite_HangulDamage, [{
-            key: "digitWidth",
-            value: function digitWidth(n) {
-                n = n || 10;
-                return this._damageBitmap ? this._damageBitmap.width / n : 0;
+        return digits.join(""); // 문자열로 변환
+      }
+    }, {
+      key: "updateDirty",
+      value: function updateDirty(string, baseRow, value, row, w, h) {
+        return setTimeout(function () {
+          for (var i = 0; i < string.length; i++) {
+            var sprite = this.createChildSprite();
+            var n = Number(string[i]);
+            row = baseRow + (value < 0 ? 1 : 0);
+
+            if (isNaN(n)) {
+              // 만, 억, 조, 경
+              row = RS.HangulDamages.Params.HANGUL_BASE_ROW;
+              n = RS.HangulDamages.Params.HANGUL_DIGITS_INDEX[string[i]];
             }
-        }, {
-            key: "digitHeight",
-            value: function digitHeight() {
-                return this._damageBitmap ? this._damageBitmap.height / 6 : 0;
-            }
-        }, {
-            key: "createMiss",
-            value: function createMiss() {
-                var w = this.digitWidth();
-                var h = this.digitHeight();
-                var sprite = this.createChildSprite();
-                sprite.setFrame(0, $.Params.MISS_BASE_ROW * h, 4 * w, h);
-                sprite.dy = 0;
-            }
-        }, {
-            key: "whereDigits",
-            value: function whereDigits(strings) {
-                var digits = [];
-                var ret = [];
-                var len = 0;
 
-                ret = strings.toCommaAlpha().split(",");
-                len = ret.length;
+            sprite.setFrame(n * w, row * h, w, h);
+            sprite.x = (i - (string.length - 1) / 2) * w;
+            sprite.dy = -i.clamp(0, $.Params.bounceLevel);
+          }
+        }.bind(this), 0);
+      }
+    }, {
+      key: "createDigits",
+      value: function createDigits(baseRow, value) {
+        // 큰 숫자 값 표기를 위해 사용.
+        var string = new Intl.NumberFormat('ko-KR', {
+          useGrouping: false
+        }).format(Math.abs(value));
+        var row = baseRow + (value < 0 ? 1 : 0);
+        var w = this.digitWidth();
+        var h = this.digitHeight();
+        string = this.whereDigits(string); // 배열을 변환한다.
 
-                for (var i = 0; i < len; i++) {
-                    var n = Number(ret[i]);
-                    // '한글 맞춤법' 제5장 띄어쓰기, 제2절, 제44항에 의하면, 수를 표기할 때,
-                    // '12억 3456만 7898', '3243조 7867억 8927만 6354'와 같이 표기해야 한다.
-                    // '12억 7898'에서 만 단위가 없을 수도 있다.
-                    if (n === 0 || !n) continue;
-                    digits.push(n);
-                    if (len - 1 !== i) {
-                        // 천 단위 생략
-                        switch (i) {
-                            case len - 2:
-                                digits.push("만"); // 만(萬) means 10,000 (10^4)
-                                break;
-                            case len - 3:
-                                digits.push("억"); // 억(億) means 100,000,000 (10^8)
-                                break;
-                            case len - 4:
-                                digits.push("조"); // 조(兆) means 1,000,000,000,000 (10^12)
-                                break;
-                            case len - 5:
-                                digits.push("경"); // 경(京) means 10,000,000,000,000,000 (10^16)
-                                break;
-                            case len - 6:
-                                digits.push("해"); // 해(垓) means 10^20
-                                break;
-                            case len - 7:
-                                digits.push("자"); // 자(秭) means 10^24
-                                break;
-                            case len - 8:
-                                digits.push("양"); // 양(穰) means 10^28
-                                break;
-                        }
-                        digits.push("X"); // 띄어쓰기 추가
-                    }
-                }
+        this.emit("updateDirty", string, baseRow, value, row, w, h);
+      }
+    }]);
 
-                return digits.join(""); // 문자열로 변환
-            }
-        }, {
-            key: "updateDirty",
-            value: function updateDirty(string, baseRow, value, row, w, h) {
-                return setTimeout(function () {
-                    for (var i = 0; i < string.length; i++) {
-                        var sprite = this.createChildSprite();
-                        var n = Number(string[i]);
-                        row = baseRow + (value < 0 ? 1 : 0);
-                        if (isNaN(n)) {
-                            // 만, 억, 조, 경
-                            row = RS.HangulDamages.Params.HANGUL_BASE_ROW;
-                            n = RS.HangulDamages.Params.HANGUL_DIGITS_INDEX[string[i]];
-                        }
-                        sprite.setFrame(n * w, row * h, w, h);
-                        sprite.x = (i - (string.length - 1) / 2) * w;
-                        sprite.dy = -i.clamp(0, $.Params.bounceLevel);
-                    }
-                }.bind(this), 0);
-            }
-        }, {
-            key: "createDigits",
-            value: function createDigits(baseRow, value) {
-                var string = Math.abs(value).toString();
-                var row = baseRow + (value < 0 ? 1 : 0);
+    return Sprite_HangulDamage;
+  }(Sprite_Damage);
 
-                var w = this.digitWidth();
-                var h = this.digitHeight();
+  window.Sprite_Damage = Sprite_HangulDamage; //===================================================================
+  // Window_BattleLog
+  //===================================================================
 
-                string = this.whereDigits(string); // 배열을 변환한다.
-                this.emit("updateDirty", string, baseRow, value, row, w, h);
-            }
-        }]);
+  Window_BattleLog.prototype.whereDigits = function (strings) {
+    var digits = [];
+    var ret = [];
+    var len = 0;
+    strings = new Intl.NumberFormat('ko-KR', {
+      useGrouping: false
+    }).format(Math.abs(strings));
+    ret = strings.toCommaAlpha().split(",");
+    len = ret.length;
 
-        return Sprite_HangulDamage;
-    }(Sprite_Damage);
+    for (var i = 0; i < len; i++) {
+      var n = Number(ret[i]); // '한글 맞춤법' 제5장 띄어쓰기, 제2절, 제44항에 의하면, 수를 표기할 때,
+      // '12억 3456만 7898', '3243조 7867억 8927만 6354'와 같이 표기해야 한다.
+      // '12억 7898'에서 만 단위가 없을 수도 있다.
 
-    window.Sprite_Damage = Sprite_HangulDamage;
+      if (n === 0 || !n) continue;
+      digits.push(n);
 
-    //===================================================================
-    // Scene_Boot
-    //===================================================================
+      if (len - 1 !== i) {
+        // 천 단위 생략
+        switch (i) {
+          case len - 2:
+            digits.push("만"); // 만(萬) means 10,000 (10^4)
 
-    var alias_Scene_Boot_loadSystemImages = Scene_Boot.loadSystemImages;
-    Scene_Boot.loadSystemImages = function () {
-        alias_Scene_Boot_loadSystemImages.call(this);
-        ImageManager.reserveSystem($.Params.damageBitmapName);
-    };
+            break;
+
+          case len - 3:
+            digits.push("억"); // 억(億) means 100,000,000 (10^8)
+
+            break;
+
+          case len - 4:
+            digits.push("조"); // 조(兆) means 1,000,000,000,000 (10^12)
+
+            break;
+
+          case len - 5:
+            digits.push("경"); // 경(京) means 10,000,000,000,000,000 (10^16)
+
+            break;
+
+          case len - 6:
+            digits.push("해"); // 해(垓) means 10^20
+
+            break;
+
+          case len - 7:
+            digits.push("자"); // 자(秭) means 10^24
+
+            break;
+
+          case len - 8:
+            digits.push("양"); // 양(穰) means 10^28
+
+            break;
+
+          case len - 9:
+            digits.push("구"); // 구(穰) means 10^32
+
+            break;
+
+          case len - 10:
+            digits.push("간"); // 간(穰) means 10^36
+
+            break;
+        }
+
+        digits.push(" "); // 띄어쓰기 추가
+      }
+    }
+
+    return digits.join(""); // 문자열로 변환
+  };
+
+  Window_BattleLog.prototype.makeHpDamageText = function (target) {
+    var result = target.result();
+    var damage = result.hpDamage;
+    var isActor = target.isActor();
+    var fmt;
+
+    if (damage > 0 && result.drain) {
+      fmt = isActor ? TextManager.actorDrain : TextManager.enemyDrain;
+      return fmt.format(target.name(), TextManager.hp, damage);
+    } else if (damage > 0) {
+      fmt = isActor ? TextManager.actorDamage : TextManager.enemyDamage;
+      return fmt.format(target.name(), this.whereDigits(damage));
+    } else if (damage < 0) {
+      fmt = isActor ? TextManager.actorRecovery : TextManager.enemyRecovery;
+      return fmt.format(target.name(), TextManager.hp, -damage);
+    } else {
+      fmt = isActor ? TextManager.actorNoDamage : TextManager.enemyNoDamage;
+      return fmt.format(target.name());
+    }
+  }; //===================================================================
+  // Scene_Boot
+  //===================================================================
+
+
+  var alias_Scene_Boot_loadSystemImages = Scene_Boot.loadSystemImages;
+
+  Scene_Boot.loadSystemImages = function () {
+    alias_Scene_Boot_loadSystemImages.call(this);
+    ImageManager.reserveSystem($.Params.damageBitmapName);
+  };
 })(RS.HangulDamages);
