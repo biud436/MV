@@ -1,31 +1,31 @@
 /*:
- * @plugindesc This plugin allows you to open up the shop in the map. <RS_Shop>
+ * @plugindesc This plugin allows you to open up the internal shop in the map <RS_InternalShop>
  * @author biud436
  * @help 
  * This plugin does not provide plugin commands.
  */
 
 var Imported = Imported || {};
-Imported.RS_Shop = true;
+Imported.RS_InternalShop = true;
 
 var RS = RS || {};
-RS.Shop = RS.Shop || {};
+RS.InternalShop = RS.InternalShop || {};
 
 (function($) {
 
     "use strict";
     
     var parameters = $plugins.filter(function (i) {
-      return i.description.contains('<RS_Shop>');
+      return i.description.contains('<RS_InternalShop>');
     });
     
     parameters = (parameters.length > 0) && parameters[0].parameters;
 
     //==============================================================
-    // Scene_InsideShop
+    // Scene_InternalShop
     //==============================================================
 
-    class Scene_InsideShop extends Scene_Shop {
+    class Scene_InternalShop extends Scene_Shop {
 
         createBackground() {
             this._backgroundSprite = new Sprite();
@@ -112,7 +112,7 @@ RS.Shop = RS.Shop || {};
 
     Scene_Map.prototype.createSubShop = function(goods, purchaseOnly) {
         if(this._shopScene) this.terminateSubShop();
-        this._shopScene = new Scene_InsideShop();
+        this._shopScene = new Scene_InternalShop();
         this._shopScene.prepare(goods, purchaseOnly);
         this._shopScene.create();
         this._shopScene.start();        
@@ -133,4 +133,4 @@ RS.Shop = RS.Shop || {};
         $gameSystem.closeShop();
     };
     
-})(RS.Shop);
+})(RS.InternalShop);
