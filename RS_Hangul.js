@@ -1,4 +1,16 @@
 /*:
+ * @plugindesc This plugin allows you to type the Korean Characters called 'Hangul' <RS_Hangul>
+ * @author biud436
+ * @help
+ * =================================================================
+ * Change Log
+ * =================================================================
+ * 2018.07.18 (v1.0.0) - First Release.
+ * 2018.07.27 (v1.0.1) - Fixed the issue that couldn't type the character called '~' (Tilde)
+ * 2019.06.20 (v1.0.3) :
+ * - Fixed backspace and space bar bugs.
+ */
+/*:ko
  * @plugindesc 한글 조합 입력 기능을 제공합니다. <RS_Hangul>
  * @author biud436
  * @help
