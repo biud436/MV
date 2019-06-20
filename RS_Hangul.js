@@ -913,7 +913,7 @@ function HangulIME() {
         if(RS.Hangul.isComposite()) {
 
             var text = texts[pos];
-            var deletedCharacter = -3;
+            var deletedCharacter = -2;
     
             // 특수 문자인가?
             if(RS.Hangul.isSpecialCharacter(text)){
