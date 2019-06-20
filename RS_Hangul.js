@@ -1,14 +1,4 @@
 /*:
- * @plugindesc This plugin allows you to type the Korean Characters called 'Hangul' <RS_Hangul>
- * @author biud436
- * @help
- * =================================================================
- * Change Log
- * =================================================================
- * 2018.07.18 (v1.0.0) - First Release.
- * 2018.07.27 (v1.0.1) - Fixed the issue that couldn't type the character called '~' (Tilde)
- */
-/*:ko
  * @plugindesc 한글 조합 입력 기능을 제공합니다. <RS_Hangul>
  * @author biud436
  * @help
@@ -17,6 +7,9 @@
  * =================================================================
  * 2018.07.18 (v1.0.0) - First Release.
  * 2018.07.27 (v1.0.1) - Fixed the issue that couldn't type the character called '~' (Tilde)
+ * 2019.06.20 (v1.0.3) :
+ * - 띄어쓰기가 매끄럽지 않았던 문제를 수정했습니다.
+ * - 백스페이스 시 조합 중이면 자모음 단위로 삭제하며, 조합이 완료되었을 땐 한 글자씩 삭제합니다.
  */
 
 var Imported = Imported || {};
@@ -85,7 +78,6 @@ function HangulIME() {
     HangulIME.prototype.startWithComposite = function(texts, func) {
         this.initMembers();
         this._messTexts = this.decompress(texts);
-        this._composing = true; // 조합 중으로 변경한다.
         this._index = 0; // 인덱스 0부터 시작
         var depth = 0;
         for(;;) {
@@ -97,7 +89,7 @@ function HangulIME() {
                 func(this._retTexts);
                 break;
             }            
-            if(this._currentStep === HangulIME.STEP11) { // 초성1 처리(겹받침 및 겹모음 처리)
+            if(this._currentStep === HangulIME.STEP11) { // 초성1 처리(겹받침 및 겹모음 처리)             
                 this.startStep11();
             } else if(this._currentStep === HangulIME.STEP12) { // 초성 2 처리
                 this.startStep12();
@@ -197,6 +189,7 @@ function HangulIME() {
 
         // 초성이 맞다면 중성 단계로 진입한다.
         if(idx >= 0) {
+            this._composing = true; // 조합 중으로 변경한다.
             // 초성을 설정한다.
             this.setFirst(idx);
             // 다음 단계로
@@ -209,6 +202,7 @@ function HangulIME() {
                 this._currentStep = HangulIME.STEP21;
                 return true;
             } else { // 중성이 아니면 영어나 특수 문자, 공백이므로 그냥 추가한다.
+                this._composing = false;
                 this._currentStep = HangulIME.STEP43;
                 return false;
             }
@@ -254,6 +248,7 @@ function HangulIME() {
 
         } else { // 중성이 아니라면, 다른 글자이므로 그냥 추가한다.
             this._index--; // 중성이 없기 때문에 인덱스를 줄여 현재 인덱스로 설정한다.
+            // this._composing = false;
             this._currentStep = HangulIME.STEP43;
             return false;
         }
@@ -271,11 +266,13 @@ function HangulIME() {
         this.setFinal(0);
   
         // 종성이 겹받침이 될 수 있나? 가능하다면 겹받침 처리
-        if(ret = this.processDoubleFinalConsonant(currentChar, nextChar, lastChar)) {     
+        if(ret = this.processDoubleFinalConsonant(currentChar, nextChar, lastChar)) {    
+            this._composing = false; 
             this._currentStep = HangulIME.STEP42;
         } else { // 조합이 불가능하다면 일반 종성 처리로
         
             if(this.isFirst(currentChar) >= 0 && this.isMiddle(nextChar) >= 0) {
+                this._composing = false; 
                 this._currentStep = HangulIME.STEP42;
                 return false;
             }             
@@ -302,6 +299,7 @@ function HangulIME() {
 
             this.setFinal(idx);
             // 다음 단계로
+            this._composing = false; 
             this._currentStep = HangulIME.STEP42;
             this._index++;
             return true;
@@ -310,7 +308,8 @@ function HangulIME() {
             // 중성이 아니라면, 다른 글자이므로 그냥 추가한다.
             // 종성이 없으므로 인덱스를 줄여 현재 인덱스로 맞춘다.
             // 현재까지 조합된 것을 완료한다.
-            // this.makeWansung(c.first, c.middle, c.final);        
+            // this.makeWansung(c.first, c.middle, c.final);      
+            this._composing = false;   
             this._currentStep = HangulIME.STEP42;
             return false;
         }
@@ -322,7 +321,6 @@ function HangulIME() {
         this._retTexts += this.makeWansung(c.first, c.middle, c.final);
         this._lastIndex = this._index;
         this._currentStep = HangulIME.STEP11;
-        
         return true;
     };            
 
@@ -372,6 +370,14 @@ function HangulIME() {
         var ret = jongsung.indexOf(text);
         return (ret >= 0) ? ret : -1;
     };        
+
+    HangulIME.prototype.isComposite = function() {
+        return this._composing === true;
+    };
+
+    HangulIME.prototype.isSpecialCharacter = function(text) {
+        return /[~`!#$%\^&*+=\-\[\]\\';,\./{}|\\":<>\?]/g.test(text);
+    }
 
     // 겹받침 처리 후 리턴 위치로
     HangulIME.prototype.processDoubleFinalConsonant = function(currentChar, nextChar, lastChar) {
@@ -533,7 +539,7 @@ function HangulIME() {
     };
 
     Window_Hangul.prototype.windowWidth = function() {
-        return Math.floor(Graphics.boxWidth / 2);
+        return Math.floor(Graphics.boxWidth);
     };
 
     Window_Hangul.prototype.windowHeight = function() {
@@ -856,12 +862,28 @@ function HangulIME() {
         var text = han.pop();
         var pos = this._cursorIndex;
         this._texts = this._texts.split("");
-        // 마지막 글자가 한글 범위이고 종성이 비어있으면 스페이스바 두 번
-        if(RS.Hangul.isFinal(text) <= 0 && this._keyboardMode === "ko") { 
-            this._texts.splice(pos, 0, " ");
+        
+        var prevChar = han.pop();
+        var grandPrevChar = han.pop();
+        
+        // 아무 글자도 입력되었다면 띄어쓰기 한 번
+        if (han.length === 0) {
             this._texts.splice(pos, 0, " ");
             this._cursorIndex++;
-        } else { // 그게 아니라면 한 번만 띄어쓰기를 한다.
+            this._texts = this._texts.join("");
+            return;
+        }
+
+        // 이전 글자가 중성이고, 현재 종성이 비어있다면 띄어쓰기를 두번 한다.
+        if( 
+            RS.Hangul.isFinal(text) <= 0) { 
+            if(!RS.Hangul.isSpecialCharacter(text)) {
+                this._texts.splice(pos, 0, " ");
+            }
+            this._texts.splice(pos, 0, " ");
+            this._cursorIndex++;
+        } else { 
+            // 완성된 글자라면 띄어쓰기를 한 번만 한다.
             this._texts.splice(pos, 0, " ");
         }
         this._texts = this._texts.join("");
@@ -870,14 +892,49 @@ function HangulIME() {
     };
 
     VirtualKeyboardMV.prototype.processBackspace = function() {
+        var joinedText = this._texts.split("");
         var texts = RS.Hangul.decompress(this._texts);
         var pos = this.currentCursorPosition() - 1;
         if(pos < 0) pos = 0;
 
-        this._texts = texts;
-        this._texts.splice(pos, 1);
-        this._texts = this._texts.join("");
-        this._cursorIndex = pos;
+        if(RS.Hangul.isComposite()) {
+
+            var text = texts[pos];
+            var deletedCharacter = -3;
+    
+            // 특수 문자인가?
+            if(RS.Hangul.isSpecialCharacter(text)){
+                deletedCharacter = -1;            
+            } else if(RS.Hangul.isFinal(text) <= 0) {
+                deletedCharacter = -2;
+            }
+    
+            var compositedChars = texts.slice(0, deletedCharacter);
+    
+            RS.Hangul.startWithComposite(compositedChars, function(ret) {
+                this._texts = ret;
+                this._cursorIndex = ret.length;         
+            }.bind(this));
+
+        } else {
+
+            joinedText.splice(pos, 1);
+            this._texts = joinedText.join("");
+            this._cursorIndex = this._texts.length;
+
+            // RS.Hangul.startWithComposite(RS.Hangul.decompress(joinedText), function(ret) {
+            //     this._texts = ret;
+            //     this._cursorIndex = ret.length;         
+            // }.bind(this));            
+
+        }
+
+
+        // this._texts = texts;
+        // this._texts.splice(pos, 1);
+        // this._texts = this._texts.join("");
+
+        // this._cursorIndex = pos;
 
     };
 
@@ -885,7 +942,10 @@ function HangulIME() {
         this._lastTexts = text; // 조합된 텍스트 저장
 
         // 글자 길이가 조합 이전과 같다면 조합 모드로 판단한다.
-        this._composeMode = (this._prevComposeCursorIndex === this._lastTexts.length)? true : false;
+        // this._composeMode = (this._prevComposeCursorIndex === this._lastTexts.length)? true : false;
+        
+        this._composeMode = RS.Hangul._currentStep < 7;
+
         // 조합 모드가 아니면 인덱스를 저장한다.
         if(!this._composeMode) {
             this._composeCursorIndex = this._lastTexts.length;
@@ -1045,6 +1105,8 @@ function HangulIME() {
             event.preventDefault();
             return;
         }        
+
+        this._composeMode = RS.Hangul._currentStep < 7;
 
         // 엔터 처리
         if(VirtualKeyboardMV.ENTER === keyCode) { 
