@@ -1,42 +1,37 @@
 /*:
- * @plugindesc This plugin allows you to type the Korean Characters called 'Hangul' <RS_Hangul>
+ * @plugindesc This plugin allows you to type the Korean Hangul or English <RS_HangulInput>
  * @author biud436
+ * 
+ * @param variableId
+ * @text Variable ID
+ * @type number
+ * @desc Specify the variable ID
+ * @default 10
+ * 
  * @help
- * =================================================================
+ * To open the Hangul Input, you can call the plugin command called 'HangulInput'.
+ * or you can call the script command called 'SceneManager.push(Scene_HangulInput);'
+ * 
+ * ==============================================================
  * Change Log
- * =================================================================
- * 2018.07.18 (v1.0.0) - First Release.
- * 2018.07.27 (v1.0.1) - Fixed the issue that couldn't type the character called '~' (Tilde)
- * 2019.06.20 (v1.0.3) :
- * - Fixed backspace and space bar bugs.
- */
-/*:ko
- * @plugindesc 한글 조합 입력 기능을 제공합니다. <RS_Hangul>
- * @author biud436
- * @help
- * 한글 메시지 시스템이 있어야 정상적인 구동이 가능합니다.
- * =================================================================
- * 변동 사항
- * =================================================================
- * 2018.07.18 (v1.0.0) - First Release.
- * 2018.07.27 (v1.0.1) - Fixed the issue that couldn't type the character called '~' (Tilde)
- * 2019.06.20 (v1.0.3) :
- * - 띄어쓰기가 매끄럽지 않았던 문제를 수정했습니다.
- * - 백스페이스 시 조합 중이면 자모음 단위로 삭제하며, 조합이 완료되었을 땐 한 글자씩 삭제합니다.
+ * ==============================================================
+ * 2019.06.21 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
-Imported.RS_Hangul = true;
+Imported.RS_HangulInput = true;
 
 var RS = RS || {};
+RS.HangulInput = RS.HangulInput || {};
+
 RS.Hangul = RS.Hangul || {};
 RS.Keyboard = RS.Keyboard || {};
 
-function HangulIME() {
-    this.initialize.apply(this, arguments);
-};
-
 (function() {
+
+    function HangulIME() {
+        this.initialize.apply(this, arguments);
+    };    
     
     // 한글 음절표 19 * 21 * (27 + 1) = 11172;
 
@@ -528,179 +523,6 @@ function HangulIME() {
 
 (function() {
 
-    if(!Utils) return;
-
-    //===============================================================
-    // Window_Hangul
-    //===============================================================       
-
-    function Window_Hangul() {
-        this.initialize.apply(this, arguments);
-    };
-    
-    Window_Hangul.prototype = Object.create(Window_Base.prototype);
-    Window_Hangul.prototype.constructor = Window_Hangul;
-    
-    Window_Hangul.prototype.initialize = function() {
-        var width = this.windowWidth();
-        var height = this.windowHeight();   
-        Window_Base.prototype.initialize.call(this, 0, 0, width, height);
-        this.refresh();
-        RS.Keyboard.valid();
-        // Window_Hangul이 제거될 때, 실행되어야 하는 콜백 함수
-        this.on('removed', function() { RS.Keyboard.inValid(); } ,this)
-    };
-
-    Window_Hangul.prototype.windowWidth = function() {
-        return Math.floor(Graphics.boxWidth);
-    };
-
-    Window_Hangul.prototype.windowHeight = function() {
-        return this.fittingHeight(1);
-    };      
-
-    Window_Hangul.prototype.setChatView = function(window) {
-        this._chatViewWindow = window;
-    }
-
-    Window_Hangul.prototype.update = function() {
-        Window_Base.prototype.update.call(this);
-        if(RS.Keyboard.isValid()) {
-            $gameSystem.disableMenu();
-            this.visible = true;
-            if(RS.Keyboard.lastKeyCode() === 13) { // Enter가 눌렸나?
-                if(Imported.RS_MessageSystem) {
-                    if($gameSystem._chatList.length > 10) $gameSystem._chatList.shift();
-                    $gameMessage.add("\x1b말풍선[-1]" + RS.Keyboard.getTexts());
-                    $gameSystem._chatList.push("\x1bC[2][일반]\x1bC[0] " +RS.Keyboard.getTexts());
-                    this._chatViewWindow.select($gameSystem._chatList.length - 1);
-                    this._chatViewWindow.refresh();
-                }
-                RS.Keyboard.clear();
-            }
-        } else {
-            $gameSystem.enableMenu();
-            this.visible = false;
-        }
-        this.refresh();
-    };
-
-    Window_Hangul.prototype.standardFontSize = function() {
-        return 24;
-    };
-
-    Window_Hangul.prototype.refresh = function() {
-        this.contents.clear();
-        this.changeTextColor(this.normalColor());
-        var text = RS.Keyboard.getTexts();
-        var pos = RS.Keyboard.currentCursorPosition();
-        var textWidth = this.contents.measureTextWidth(text.slice(0, pos));
-        this.drawText(text, this.textPadding(), 0, this.contentsWidth());
-        if(Graphics.frameCount % 15 === 0) {
-            this.contents.fillRect(textWidth + 1, 0, 2, this.contentsHeight(), 'white');
-        }
-    };
-
-    //===============================================================
-    // Game_System
-    //===============================================================        
-
-    var alias_Game_System_initialize = Game_System.prototype.initialize;
-    Game_System.prototype.initialize = function() {
-        alias_Game_System_initialize.call(this);
-        this._chatList = [];
-    };
-
-    Game_System.prototype.chatList = function() {
-        return this._chatList;
-    };
-
-    Game_System.prototype.addChat = function(text) {
-        if($gameSystem._chatList) {
-            if($gameSystem._chatList) $gameSystem._chatList.push(text);
-        }        
-    };
-
-    //===============================================================
-    // Window_HangulChatView
-    //===============================================================    
-
-    function Window_HangulChatView() {
-        this.initialize.apply(this, arguments);
-    };
-    
-    Window_HangulChatView.prototype = Object.create(Window_Selectable.prototype);
-    Window_HangulChatView.prototype.constructor = Window_HangulChatView;
-    
-    Window_HangulChatView.prototype.initialize = function() {
-        var width = this.windowWidth();
-        var height = this.windowHeight();   
-        Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);  
-        this._pendingIndex = -1;
-        this.refresh();             
-    };
-
-    Window_HangulChatView.prototype.windowWidth = function() {
-        return Math.floor(Graphics.boxWidth / 2);
-    };
-
-    Window_HangulChatView.prototype.windowHeight = function() {
-        return this.fittingHeight(4);
-    };          
-
-    Window_HangulChatView.prototype.maxItems = function() {
-        return $gameSystem._chatList.length;
-    };    
-
-    Window_HangulChatView.prototype.standardFontSize = function() {
-        return 14;
-    };        
-
-    Window_HangulChatView.prototype.numVisibleRows = function() {
-        return 5;
-    };    
-
-    Window_HangulChatView.prototype.itemWidth = function() {
-        return this.contentsWidth();
-    };
-
-    Window_HangulChatView.prototype.itemHeight = function() {
-        var innerHeight = this.height - this.padding * 2;
-        return Math.floor(innerHeight / this.numVisibleRows());
-    };
-
-    Window_HangulChatView.prototype.processCursorMove = function() {
-    };
-    
-    Window_HangulChatView.prototype.drawItem = function(index) {
-        var rect = this.itemRect(index);
-        var color = this.pendingColor();
-        this.changePaintOpacity(false);
-        this.drawTextEx($gameSystem._chatList[index], rect.x, rect.y);
-        this.changePaintOpacity(true);
-    };
- 
-    //===============================================================
-    // Scene_Map
-    //===============================================================
-    
-    var alias_Scene_Map_start = Scene_Map.prototype.start;
-    Scene_Map.prototype.start = function() {
-        alias_Scene_Map_start.call(this);
-        this._hangul = new Window_Hangul();
-        this._hangul.y = Graphics.boxHeight - this._hangul.windowHeight();
-        this._chatView = new Window_HangulChatView();
-        this._chatView.y = this._hangul.y - this._chatView.height;
-        this._hangul.setChatView(this._chatView);
-        this._chatView.activate();
-        this.addWindow(this._hangul);
-        this.addWindow(this._chatView);
-    };
-
-})();
-
-(function() {
-
     function VirtualKeyboardMV() {
         this.initialize.apply(this, arguments);
     };    
@@ -1129,8 +951,157 @@ function HangulIME() {
     
     };
 
-    RS.Keyboard = new VirtualKeyboardMV();
-
-    document.addEventListener('keydown', RS.Keyboard.onKeyDown.bind(RS.Keyboard), false);
+    window.VirtualKeyboardMV = VirtualKeyboardMV;
 
 })();
+
+(function($) {
+    
+    var parameters = $plugins.filter(function (i) {
+      return i.description.contains('<RS_HangulInput>');
+    });
+    
+    parameters = (parameters.length > 0) && parameters[0].parameters;
+
+    $.Params = {};
+    $.Params.variableId = parseInt(parameters["variableId"] || 10);
+
+    //===============================================================
+    // Window_Hangul
+    //===============================================================       
+
+    function Window_Hangul() {
+        this.initialize.apply(this, arguments);
+    };
+    
+    Window_Hangul.prototype = Object.create(Window_Base.prototype);
+    Window_Hangul.prototype.constructor = Window_Hangul;
+    
+    Window_Hangul.prototype.initialize = function() {
+        var width = this.windowWidth();
+        var height = this.windowHeight();   
+        Window_Base.prototype.initialize.call(this, 0, 0, width, height);
+        this.refresh();
+        RS.Keyboard.valid();
+        // Window_Hangul이 제거될 때, 실행되어야 하는 콜백 함수
+        this.on('removed', function() { RS.Keyboard.inValid(); } ,this)
+    };
+
+    Window_Hangul.prototype.windowWidth = function() {
+        return Math.floor(Graphics.boxWidth) - Math.floor(Graphics.boxWidth / 8) ;
+    };
+
+    Window_Hangul.prototype.windowHeight = function() {
+        return this.fittingHeight(1);
+    };      
+
+    Window_Hangul.prototype.setOkCallback = function(callback) {
+        this._okCallback = callback;
+    }
+
+    Window_Hangul.prototype.update = function() {
+        Window_Base.prototype.update.call(this);
+        if(RS.Keyboard.isValid()) {
+            $gameSystem.disableMenu();
+            this.visible = true;
+            if(RS.Keyboard.lastKeyCode() === 13) { // Enter가 눌렸나?
+                this._okCallback(RS.Keyboard.getTexts());
+                RS.Keyboard.clear();
+            }
+        } else {
+            $gameSystem.enableMenu();
+            this.visible = false;
+        }
+        this.refresh();
+    };
+
+    Window_Hangul.prototype.standardFontSize = function() {
+        return 24;
+    };
+
+    Window_Hangul.prototype.refresh = function() {
+        this.contents.clear();
+        this.changeTextColor(this.normalColor());
+        var text = RS.Keyboard.getTexts();
+        var pos = RS.Keyboard.currentCursorPosition();
+        var textWidth = this.contents.measureTextWidth(text.slice(0, pos));
+        this.drawText(text, this.textPadding(), 0, this.contentsWidth());
+        if(Graphics.frameCount % 15 === 0) {
+            this.contents.fillRect(textWidth + 1, 0, 2, this.contentsHeight(), 'white');
+        }
+    };
+
+    //=========================================================
+    // Scene_HangulInput
+    //=========================================================
+
+    function Scene_HangulInput() {
+        this.initialize.apply(this, arguments);
+    }    
+
+    Scene_HangulInput.prototype = Object.create(Scene_Base.prototype);
+    Scene_HangulInput.prototype.constructor = Scene_HangulInput;
+
+    Scene_HangulInput.prototype.initialize = function() {
+        Scene_Base.prototype.initialize.call(this);
+    };
+
+    Scene_HangulInput.prototype.create = function() {
+        Scene_Base.prototype.create.call(this);
+        this.addKeyboardListener();
+        this.createBackground();
+        this.createWindowLayer();        
+        this.createHangul();
+        RS.Keyboard.clear();        
+    };
+
+    Scene_HangulInput.prototype.addKeyboardListener = function() {
+        RS.Keyboard = new VirtualKeyboardMV();
+        document.addEventListener('keydown', RS.Keyboard.onKeyDown.bind(RS.Keyboard), false);
+    };
+
+    Scene_HangulInput.prototype.removeKeyboardListener = function() {
+        RS.Keyboard = null;
+        document.removeEventListener('keydown', RS.Keyboard.onKeyDown.bind(RS.Keyboard), false);        
+    };
+
+    Scene_HangulInput.prototype.terminate = function() {
+        Scene_Base.prototype.terminate.call(this);
+    };
+
+    Scene_HangulInput.prototype.createBackground = function() {
+        if(Imported.Irina_PerformanceUpgrade) {
+          Scene_MenuBase.prototype.createBackground.call(this);
+        } else {
+          this._backgroundSprite = new Sprite();
+          this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
+          this._backgroundSprite.opacity = 128;
+          this.addChild(this._backgroundSprite);      
+        }
+      };    
+
+    Scene_HangulInput.prototype.createHangul = function() {
+        this._hangul = new Window_Hangul();
+        this._hangul.x = Graphics.boxWidth / 2 - this._hangul.windowWidth() / 2;
+        this._hangul.y = Graphics.boxHeight / 2 - this._hangul.windowHeight() / 2;
+        this._hangul.setOkCallback(this.okCallback.bind(this));
+        this.addWindow(this._hangul);
+    };
+
+    Scene_HangulInput.prototype.okCallback = function(compositedText) {
+        $gameVariables.setValue($.Params.variableId, compositedText);
+        SoundManager.playOk();
+        this.popScene();
+    };
+
+    window.Scene_HangulInput = Scene_HangulInput;
+
+    var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+    Game_Interpreter.prototype.pluginCommand = function(command, args) {
+        alias_Game_Interpreter_pluginCommand.call(this, command, args);
+        if(command === "HangulInput") {
+            SceneManager.push(Scene_HangulInput);
+        }
+    };    
+    
+})(RS.HangulInput);
