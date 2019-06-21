@@ -17,6 +17,49 @@
  * ==============================================================
  * 2019.06.21 (v1.0.0) - First Release.
  */
+/*:ko
+ * @plugindesc 한글 조합 입력기 <RS_HangulInput>
+ * @author biud436
+ * 
+ * @param variableId
+ * @text 변수 ID
+ * @type number
+ * @desc OK 이후 값이 저장됩니다. 변수 ID 값을 기입하세요.
+ * @default 10
+ * 
+ * @help
+ * 직접 만든 한글 조합 라이브러리를 내장하여 만든 한글 입력기입니다.
+ * HangulInput라는 플러그인 명령을 실행하면 한글 입력 씬이 뜹니다.
+ * 또는 스크립트 명령 'SceneManager.push(Scene_HangulInput);' 코드를 실행하면 됩니다.
+ * 입력이 끝나면 지정된 변수에 값이 저장됩니다.
+ * 
+ * 이 플러그인은 모바일 지원을 하고 있지 않습니다.
+ * 모바일은 웹뷰 파편화로 인해 많은 버그가 일어나며 
+ * 버그 피드백도 거의 없기 때문에 해결이 어렵습니다.
+ * 
+ * 하지만 실망하지 마십시오.
+ * 모바일 지원을 하고 있는 제가 만든 다른 플러그인이 있습니다.
+ * 
+ * RS_Window_KoreanNameInput.js의 경우, 
+ * 다른 분이 만든 안정적인 한글 조합 라이브러리를 내장하였습니다.
+ * 또한 모바일을 위한 키보드 레이아웃 창을 만들었습니다.
+ * PC에서는 직접 입력이 가능하고 모바일에서는 터치를 통해 조합 입력이 가능합니다.
+ * 
+ * https://github.com/biud436/MV/raw/master/RS_Window_KoreanNameInput.js
+ * 
+ * RS_Window_KorNameEdit.js도 모바일에서 사용이 가능합니다.
+ * 보이지 않는 IME에서 텍스트를 받아서 사용합니다.
+ * 이때 일부 모바일 웹뷰에서 상태바가 간헐적으로 사라지지 않는 버그가 생깁니다.
+ * 상태바의 경우, 자바스크립트로 제어할 수가 없습니다.
+ * IME 그 자체이기 때문에 중국어와 일본어도 입력이 가능합니다.
+ * 
+ * https://github.com/biud436/MV/raw/master/RS_Window_KorNameEdit.js
+ * 
+ * ==============================================================
+ * Change Log
+ * ==============================================================
+ * 2019.06.21 (v1.0.0) - First Release.
+ */
 
 var Imported = Imported || {};
 Imported.RS_HangulInput = true;
