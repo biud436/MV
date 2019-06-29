@@ -11,6 +11,13 @@
  * <TURN_ACTOR : actor_id turn_a turn_b>
  * <TURN_ENEMY : enemy_index turn_a turn_b>
  * 
+ * Suppose you set the switch name as follows:
+ * 
+ * <TURN_ACTOR : 2 0 1>
+ * 
+ * The turn calculates using formulas such as 'turn_a + (turn_b * X)',
+ * So the battle event is executed whenever actor2's turn is returned.
+ * 
  * ==================================================
  * Version Log
  * ==================================================
