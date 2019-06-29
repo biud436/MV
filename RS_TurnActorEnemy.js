@@ -15,6 +15,9 @@
  * Version Log
  * ==================================================
  * 2019.06.29 (v1.0.0) - First Release.
+ * 2019.06.30 (v1.0.1) :
+ * - Added the new feature that checks whether the actor's id or enemy's index is correct.
+ * - Now it starts the battle event together when enemy or actor gets a turn.
  */
 /*:ko
  * @plugindesc RM2K3의 전투 이벤트 시작 조건처럼 몬스터의 턴, 액터의 턴을 설정합니다. <RS_TurnActorEnemy>
@@ -34,6 +37,9 @@
  * Version Log
  * ==================================================
  * 2019.06.29 (v1.0.0) - First Release.
+ * 2019.06.30 (v1.0.1) :
+ * - actorId 및 enemyIndex를 체크하는 기능 추가
+ * - 배틀러의 턴이 시작될 때, 전투 이벤트도 같이 시작됩니다.
  */
 
 var Imported = Imported || {};
@@ -94,7 +100,42 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
         return true;
     };
 
-    Game_Troop.prototype.meetsConditions = function(page) {
+    var alias_Game_Troop_clear = Game_Troop.prototype.clear;
+    Game_Troop.prototype.clear = function() {
+        alias_Game_Troop_clear.call(this);
+        this._turnFlags = {};
+    };
+    
+    Game_Troop.prototype.setup2K3BattleEvent = function(index) {
+        if (!this._interpreter.isRunning()) {
+            if (this._interpreter.setupReservedCommonEvent()) {
+                return;
+            }
+            var pages = this.troop().pages;
+            for (var i = 0; i < pages.length; i++) {
+                var page = pages[i];
+                if (this.meetsConditions2(page, index) && !this._turnFlags[i]) {
+                    this._interpreter.setup(page.list);
+                    if (page.span <= 1) {
+                        this._turnFlags[index] = true;
+                    }                    
+                    break;
+                }
+            }            
+        }
+    };
+
+    Game_Troop.prototype.onTurnFlags = function(index) {
+        var pages = this.troop().pages;
+        for (var i = 0; i < pages.length; i++) {
+            var page = pages[i];
+            if (page.span === 1) {
+                this._turnFlags[index] = false;
+            }
+        }
+    };
+
+    Game_Troop.prototype.meetsConditions2 = function(page, index) {
         var c = page.conditions;
         if (!c.turnEnding && !c.turnValid && !c.enemyValid &&
                 !c.actorValid && !c.turnActorValid && !c.turnEnemyValid && !c.switchValid) {
@@ -136,6 +177,13 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
             var n = actor.turnCount();
             var a = c.turnActorA;
             var b = c.turnActorB;
+            var id = index.split("_");
+            if(id[0] !== "actor") {
+                return false;
+            }
+            if(parseInt(id[1]) !== c.turnActorId) {
+                return false;
+            }            
             if ((b === 0 && n !== a)) {
                 return false;
             }
@@ -150,12 +198,19 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
             var n = enemy.turnCount();
             var a = c.turnEnemyA;
             var b = c.turnEnemyB;
+            var id = index.split("_");
+            if(id[0] !== "enemy") {
+                return false;
+            }            
+            if(parseInt(id[1]) !== c.turnEnemyIndex) {
+                return false;
+            }            
             if ((b === 0 && n !== a)) {
                 return false;
             }
             if ((b > 0 && (n < 1 || n < a || n % b !== a % b))) {
                 return false;
-            }
+            }      
         } else if (c.switchValid) {
             if (!$gameSwitches.value(c.switchId)) {
                 return false;
@@ -174,8 +229,9 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
         this._turnCount = 0;
     };    
 
-    Game_BattlerBase.prototype.increaseTurn = function() {
+    Game_BattlerBase.prototype.increaseTurn = function(index) {
         this._turnCount++;
+        $gameTroop.onTurnFlags(index);
     };
 
     Game_BattlerBase.prototype.turnCount = function() {
@@ -190,11 +246,20 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
 
     var alias_BattleManager_startAction = BattleManager.startAction;
     BattleManager.startAction = function() {
+        alias_BattleManager_startAction.call(this);  
         var subject = this._subject;
         if(subject) {
-            subject.increaseTurn();
-        }
-        alias_BattleManager_startAction.call(this);        
+            var index = "";
+            if(subject.isEnemy()) {
+                index += "enemy_";
+                index += subject.index();
+            } else if(subject.isActor()) {
+                index += "actor_"; 
+                index += subject.actorId();
+            }
+            subject.increaseTurn(index);
+            $gameTroop.setup2K3BattleEvent(index);
+        }        
     };    
     
 })(RS.TurnActorEnemy);
