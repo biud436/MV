@@ -245,7 +245,6 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
 
     Game_BattlerBase.prototype.increaseTurn = function(index) {
         this._turnCount++;
-        $gameTroop.onTurnFlags(index);
     };
 
     Game_BattlerBase.prototype.turnCount = function() {
@@ -273,6 +272,7 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
             }
             subject.increaseTurn(index);
             $gameTroop.setup2K3BattleEvent(index);
+            $gameTroop.onTurnFlags(index);            
         }        
     };    
     
