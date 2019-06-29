@@ -182,6 +182,12 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
         return this._turnCount;
     };
 
+    var alias_Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
+    Game_Battler.prototype.onBattleStart = function() {
+        alias_Game_Battler_onBattleStart.call(this);
+        this.clearTurn();
+    };
+
     var alias_BattleManager_startAction = BattleManager.startAction;
     BattleManager.startAction = function() {
         var subject = this._subject;
