@@ -233,47 +233,69 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
         return true;
     };
 
-    var alias_Game_BattlerBase_initMembers = Game_BattlerBase.prototype.initMembers;
-    Game_BattlerBase.prototype.initMembers = function() {
-        alias_Game_BattlerBase_initMembers.call(this);
-        this._turnCount = 0;
-    };
+    if(Imported.YEP_BattleEngineCore) {
 
-    Game_BattlerBase.prototype.clearTurn = function() {
-        this._turnCount = 0;
-    };    
-
-    Game_BattlerBase.prototype.increaseTurn = function(index) {
-        this._turnCount++;
-    };
-
-    Game_BattlerBase.prototype.turnCount = function() {
-        return this._turnCount;
-    };
-
-    var alias_Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
-    Game_Battler.prototype.onBattleStart = function() {
-        alias_Game_Battler_onBattleStart.call(this);
-        this.clearTurn();
-    };
-
-    var alias_BattleManager_startAction = BattleManager.startAction;
-    BattleManager.startAction = function() {
-        alias_BattleManager_startAction.call(this);  
-        var subject = this._subject;
-        if(subject) {
+        var alias_Game_Battler_increaseSelfTurnCount = Game_Battler.prototype.increaseSelfTurnCount;
+        Game_Battler.prototype.increaseSelfTurnCount = function() {
+            alias_Game_Battler_increaseSelfTurnCount.call(this);
+            if(!$gameParty.inBattle()) return;
             var index = "";
-            if(subject.isEnemy()) {
+            if(this.isEnemy()) {
                 index += "enemy_";
-                index += subject.index();
-            } else if(subject.isActor()) {
+                index += this.index();
+            } else if(this.isActor()) {
                 index += "actor_"; 
-                index += subject.actorId();
-            }
-            subject.increaseTurn(index);
+                index += this.actorId();
+            }            
             $gameTroop.setup2K3BattleEvent(index);
-            $gameTroop.onTurnFlags(index);            
-        }        
-    };    
+            $gameTroop.onTurnFlags(index);               
+        };        
+
+    } else {
+
+        var alias_Game_BattlerBase_initMembers = Game_BattlerBase.prototype.initMembers;
+        Game_BattlerBase.prototype.initMembers = function() {
+            alias_Game_BattlerBase_initMembers.call(this);
+            this._turnCount = 0;
+        };
+    
+        Game_BattlerBase.prototype.clearTurn = function() {
+            this._turnCount = 0;
+        };    
+    
+        Game_BattlerBase.prototype.increaseTurn = function(index) {
+            this._turnCount++;
+        };
+    
+        Game_BattlerBase.prototype.turnCount = function() {
+            return this._turnCount;
+        };
+    
+        var alias_Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
+        Game_Battler.prototype.onBattleStart = function() {
+            alias_Game_Battler_onBattleStart.call(this);
+            this.clearTurn();
+        };
+    
+        var alias_BattleManager_startAction = BattleManager.startAction;
+        BattleManager.startAction = function() {
+            alias_BattleManager_startAction.call(this);  
+            var subject = this._subject;
+            if(subject) {
+                var index = "";
+                if(subject.isEnemy()) {
+                    index += "enemy_";
+                    index += subject.index();
+                } else if(subject.isActor()) {
+                    index += "actor_"; 
+                    index += subject.actorId();
+                }
+                subject.increaseTurn(index);
+                $gameTroop.setup2K3BattleEvent(index);
+                $gameTroop.onTurnFlags(index);            
+            }        
+        };    
+
+    }
     
 })(RS.TurnActorEnemy);
