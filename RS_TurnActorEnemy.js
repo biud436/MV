@@ -235,22 +235,6 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
 
     if(Imported.YEP_BattleEngineCore) {
 
-        var alias_Game_Battler_increaseSelfTurnCount = Game_Battler.prototype.increaseSelfTurnCount;
-        Game_Battler.prototype.increaseSelfTurnCount = function() {
-            alias_Game_Battler_increaseSelfTurnCount.call(this);
-            if(!$gameParty.inBattle()) return;
-            var index = "";
-            if(this.isEnemy()) {
-                index += "enemy_";
-                index += this.index();
-            } else if(this.isActor()) {
-                index += "actor_"; 
-                index += this.actorId();
-            }            
-            $gameTroop.setup2K3BattleEvent(index);
-            $gameTroop.onTurnFlags(index);               
-        };        
-
     } else {
 
         var alias_Game_BattlerBase_initMembers = Game_BattlerBase.prototype.initMembers;
