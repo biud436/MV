@@ -25,6 +25,7 @@
  * 2019.06.30 (v1.0.1) :
  * - Added the new feature that checks whether the actor's id or enemy's index is correct.
  * - Now it starts the battle event together when enemy or actor gets a turn.
+ * - It is now compatible with YEP_BattleEngineCore.
  */
 /*:ko
  * @plugindesc RM2K3의 전투 이벤트 시작 조건처럼 몬스터의 턴, 액터의 턴을 설정합니다. <RS_TurnActorEnemy>
@@ -51,9 +52,10 @@
  * Version Log
  * ==================================================
  * 2019.06.29 (v1.0.0) - First Release.
- * 2019.06.30 (v1.0.1) :
+ * 2019.06.30 (v1.0.2) :
  * - actorId 및 enemyIndex를 체크하는 기능 추가
  * - 배틀러의 턴이 시작될 때, 전투 이벤트도 같이 시작됩니다.
+ * - YEP_BattleEngineCore 관련 기능 추가
  */
 
 var Imported = Imported || {};
@@ -72,6 +74,10 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
 
     $.Params = {};
     $.Params.isDatabaseLoaded = false;
+
+    //====================
+    // DataManager
+    //====================         
 
     var alias_DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
     DataManager.isDatabaseLoaded = function() {
@@ -113,6 +119,10 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
 
         return true;
     };
+
+    //====================
+    // Game_Troop
+    //====================       
 
     var alias_Game_Troop_clear = Game_Troop.prototype.clear;
     Game_Troop.prototype.clear = function() {
@@ -233,53 +243,71 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
         return true;
     };
 
-    if(Imported.YEP_BattleEngineCore) {
-        // YEP_BattleEngineCore does not support yet.
-    } else {
+    //====================
+    // Game_Battler
+    //====================
 
-        var alias_Game_BattlerBase_initMembers = Game_BattlerBase.prototype.initMembers;
-        Game_BattlerBase.prototype.initMembers = function() {
-            alias_Game_BattlerBase_initMembers.call(this);
-            this._turnCount = 0;
-        };
-    
-        Game_BattlerBase.prototype.clearTurn = function() {
-            this._turnCount = 0;
-        };    
-    
-        Game_BattlerBase.prototype.increaseTurn = function(index) {
-            this._turnCount++;
-        };
-    
-        Game_BattlerBase.prototype.turnCount = function() {
-            return this._turnCount;
-        };
-    
-        var alias_Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
-        Game_Battler.prototype.onBattleStart = function() {
-            alias_Game_Battler_onBattleStart.call(this);
-            this.clearTurn();
-        };
-    
-        var alias_BattleManager_startAction = BattleManager.startAction;
-        BattleManager.startAction = function() {
-            alias_BattleManager_startAction.call(this);  
-            var subject = this._subject;
-            if(subject) {
-                var index = "";
-                if(subject.isEnemy()) {
-                    index += "enemy_";
-                    index += subject.index();
-                } else if(subject.isActor()) {
-                    index += "actor_"; 
-                    index += subject.actorId();
-                }
-                subject.increaseTurn(index);
-                $gameTroop.setup2K3BattleEvent(index);
-                $gameTroop.onTurnFlags(index);            
-            }        
-        };    
+    $.isBattleEngineCore = function() {
+        if(!Imported.YEP_BattleEngineCore) return false;
+        if(!BattleManager.isTickBased()) return false;
+        if(!Yanfly.Param.BECAISelfTurn) return false;
+        return true;
+    };
 
-    }
-    
+    var alias_Game_Battler_initMembers = Game_Battler.prototype.initMembers;
+    Game_Battler.prototype.initMembers = function() {
+        alias_Game_Battler_initMembers.call(this);
+        if(!$.isBattleEngineCore()) this._turnCount = 0;
+    };
+
+    Game_Battler.prototype.clearTurn = function() {
+        if($.isBattleEngineCore()) return;
+        this._turnCount = 0;
+    };
+
+    Game_Battler.prototype.increaseTurn = function(index) {
+        if($.isBattleEngineCore()) {
+            this.increaseSelfTurnCount();
+            return;
+        }
+        this._turnCount++;
+    };
+
+    var alias_Game_Battler_turnCount = Game_Battler.prototype.turnCount;
+    Game_Battler.prototype.turnCount = function() {
+        if($.isBattleEngineCore()) {
+            return alias_Game_Battler_turnCount.call(this);
+        }
+        return this._turnCount;
+    };
+
+    var alias_Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
+    Game_Battler.prototype.onBattleStart = function() {
+        alias_Game_Battler_onBattleStart.call(this);
+        this.clearTurn();
+    };
+
+    //====================
+    // BattleManager
+    //====================    
+
+    var alias_BattleManager_startAction = BattleManager.startAction;
+    BattleManager.startAction = function() {
+        alias_BattleManager_startAction.call(this);  
+        var subject = this._subject;
+        if(subject) {
+            var index = "";
+            if(subject.isEnemy()) {
+                index += "enemy_";
+                index += subject.index();
+            } else if(subject.isActor()) {
+                index += "actor_"; 
+                index += subject.actorId();
+            }
+            subject.increaseTurn(index);
+            $gameTroop.setup2K3BattleEvent(index);
+            $gameTroop.onTurnFlags(index);            
+        }        
+    };    
+
 })(RS.TurnActorEnemy);
