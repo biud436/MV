@@ -234,7 +234,7 @@ RS.TurnActorEnemy = RS.TurnActorEnemy || {};
     };
 
     if(Imported.YEP_BattleEngineCore) {
-
+        // YEP_BattleEngineCore does not support yet.
     } else {
 
         var alias_Game_BattlerBase_initMembers = Game_BattlerBase.prototype.initMembers;
