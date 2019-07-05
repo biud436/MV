@@ -12,6 +12,8 @@
  * is stored as text strings in the global memory space until the game ends.
  *
  *    MenuInformation add Hello, World
+ *    MenuInformation add \image<picture_name> image1...
+ *    MenuInformation add \image<picture_name:90> image2...
  *
  * Here plugin command is deleted all texts that are stored in the global memory
  * space.
@@ -26,6 +28,8 @@
  * 2016.03.05 (v1.0.1b) - Fixed the class structure.
  * 2017.01.23 (v1.0.2) - Converted sources to ES6.
  * 2017.09.06 (v1.0.3) - Converted sources to ES5.
+ * 2019.07.05 (v1.0.4) :
+ * - Added the image text code.
  */
 /*:ko
  * @plugindesc 간단한 텍스트를 표기할 수 있는 창을 만들 수 있습니다.
@@ -44,6 +48,8 @@
  * 정보 창에 새로운 라인을 추가하려면 다음 명령을 사용하세요.
  *
  *    MenuInformation add Hello, World
+ *    MenuInformation add \image<picture_name> wow...
+ *    MenuInformation add \image<picture_name:90> image2...
  *
  * 모든 텍스트를 삭제하려면 다음 명령을 사용하세요.
  *
@@ -59,48 +65,55 @@
  * 2016.03.05 (v1.0.1b) - 클래스 구조가 수정되었습니다.
  * 2017.01.23 (v1.0.2) - 소스를 ES6으로 변환했습니다.
  * 2017.09.06 (v1.0.3) - 소스를 ES5로 변환했습니다.
+ * 2019.07.05 (v1.0.4) :
+ * - 이미지 텍스트 코드 추가
  */
 
 var Imported = Imported || {};
 Imported.RS_MenuInformation = true;
 
-function MenuInformation() {
-  throw new Error("This is a static class");
-}
-
-function Scene_Information() {
-  this.initialize.apply(this, arguments);
-}
-
 (function() {
 
-  var parameters = PluginManager.parameters('RS_MenuInformation');
-  var _menuName = String(parameters['Menu Name'] || "Information");
-  var _menuSymbol = String("information");
+  "use strict";
+
+  const parameters = PluginManager.parameters('RS_MenuInformation');
+  let _menuName = String(parameters['Menu Name'] || "Information");
+  let _menuSymbol = "information";
+  
+  let preloadingImage = true;
+  let preloadImages = [];
+  let preloadImageId = Utils.generateRuntimeId();
+  let isImageText = false;
 
   //============================================================================
   // MenuInformation
   //============================================================================
 
+  class MenuInformation {
+
+    static add(text) {
+      this._texts.push(text);
+    }
+
+    static clear() {
+      if(this._texts.length > 0) this._texts = [];
+    }
+
+    static allText() {
+      return this._texts.join('\n');
+    }
+
+  }
+
   MenuInformation._texts = [];
 
-  MenuInformation.add = function (text) {
-    this._texts.push(text);
-  };
-
-  MenuInformation.clear = function () {
-    if(this._texts.length > 0) this._texts = [];
-  };
-
-  MenuInformation.allText = function () {
-    return this._texts.join('\n');
-  };
+  window.MenuInformation = MenuInformation;
 
   //============================================================================
   // Window_MenuCommand
   //============================================================================
 
-  var alias_Window_MenuCommand_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
+  const alias_Window_MenuCommand_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
   Window_MenuCommand.prototype.addOriginalCommands = function() {
     alias_Window_MenuCommand_addOriginalCommands.call(this);
     this.addInformationCommand();
@@ -114,7 +127,7 @@ function Scene_Information() {
   // Scene_Menu
   //============================================================================
 
-  var alias_Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
+  const alias_Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
   Scene_Menu.prototype.createCommandWindow = function() {
     alias_Scene_Menu_createCommandWindow.call(this);
     this._commandWindow.setHandler(_menuSymbol, this.commandInformation.bind(this));
@@ -128,75 +141,187 @@ function Scene_Information() {
   // Window_Information
   //============================================================================
 
-  function Window_Information() {
-    this.initialize.apply(this, arguments);
-  }
+  class Window_Information extends Window_Base {
 
-  Window_Information.prototype = Object.create(Window_Base.prototype);
-  Window_Information.prototype.constructor = Window_Information;
+    constructor() {
+      super(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+      this._text = "";
+    }
 
-  Window_Information.prototype.initialize = function (numLines) {
-    Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth, Graphics.boxHeight);
-    this._text = "";
-  };
-
-  Window_Information.prototype.setText = function (text) {
-    if (this._text !== text) {
+    setText(text) {
+      if (this._text !== text) {
         this._text = text;
         this.refresh();
+      }
+    }  
+    
+    clear() {
+      this.setText('');
     }
-  };
 
-  Window_Information.prototype.clear = function() {
-    this.setText('');
-  };
+    refresh() {
+      this.contents.clear();
+      this.drawTextEx(this._text, this.textPadding(), 0);      
+    }
 
-  Window_Information.prototype.refresh = function() {
-    this.contents.clear();
-    this.drawTextEx(this._text, this.textPadding(), 0);
-  };
+    obtainEscapeCode(textState) {
+      textState.index++;
+      var regExp = /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-ퟻ]+[!]*/i;
+      var arr = regExp.exec(textState.text.slice(textState.index));
+      if (arr) {
+        textState.index += arr[0].length;
+        return arr[0].toUpperCase();
+      } else {
+        return '';
+      }
+    }
+
+    obtainImage(textState) {
+      var arr = /\<(.*)\>/i.exec(textState.text.slice(textState.index));
+      if(arr) {
+        textState.index += arr[0].length;
+        return arr[1];
+      } else {
+        return "";
+      }
+    }
+
+    addImage(textState, imageName) {
+      if(preloadingImage) {
+        var degree = 0.0;
+
+        // imagename:45
+        imageName = imageName.replace(/\:(\d+)/i, ()=>{
+          degree = parseFloat(RegExp.$1);
+          return "";
+        });
+        
+        var bitmap = ImageManager.loadPicture(imageName);
+        var dx = textState.x;
+        var dy = textState.y;
+        var context = this.contents._context;
+  
+        if(!degree) degree = 0.0;
+  
+        var rotation = (Math.PI / 180.0) * degree;
+  
+        var c = Math.cos(rotation);
+        var s = Math.sin(rotation);
+        
+        var x = dx;
+        
+        if(rotation) {
+          x += (this.width / 2) - (this.standardPadding() * 2);
+        }
+
+        var y = dy;
+  
+        context.save();
+        context.setTransform( c, s, -s, c, x, y );
+        
+        this.contents.blt(bitmap, 0, 0, bitmap.width, bitmap.height, dx, dy);
+
+        context.restore();
+  
+        if(isImageText) {
+          textState.y += bitmap.height;
+        }
+        
+      }
+    }
+
+    processEscapeCharacter(code, textState) {
+
+      switch(code.toLowerCase()) {
+        case 'image':
+          this.addImage(textState, this.obtainImage(textState));
+          break;
+        default:  
+          super.processEscapeCharacter(code, textState);
+          break;
+      }
+    }
+
+  }
 
   //============================================================================
   // Scene_Information
   //============================================================================
 
-  Scene_Information.prototype = Object.create(Scene_MenuBase.prototype);
-  Scene_Information.prototype.constructor = Scene_Information;
-
-  Scene_Information.prototype.initialize = function () {
-    Scene_MenuBase.prototype.initialize.call(this);
-  };
-
-  Scene_Information.prototype.create = function () {
-    Scene_MenuBase.prototype.create.call(this);
-    this._informationWindow = new Window_Information();
-    this.addWindow(this._informationWindow);
-    this.refresh();
-  };
-
-  Scene_Information.prototype.update = function() {
-    Scene_MenuBase.prototype.update.call(this);
-    if(this.isCancelled()) {
-      this.popScene();
+  class Scene_Information extends Scene_MenuBase {
+    
+    constructor() {
+      super()
+      this._isReady = false;
     }
-  };
 
-  Scene_Information.prototype.isCancelled = function() {
-    return Input.isTriggered('menu') || TouchInput.isCancelled();
-  };
+    create() {
 
-  Scene_Information.prototype.refresh = function() {
-    var actor = this.actor();
-    this._informationWindow.setText(MenuInformation.allText());
-    this._informationWindow.refresh();
-    this._informationWindow.activate();
-  };
+      super.create();
+
+      // Preload the images.
+      preloadImages = [];
+
+      var texts = MenuInformation.allText();
+      texts.replace(/(?:IMAGE)\<(.*)\>/ig, (...args) => {
+        const imageName = args[1].replace(/\:(\d+)/i, () => { return ""; });
+        preloadImages.push( imageName );
+      });
+      
+      preloadImages.forEach((i) => ImageManager.reservePicture(i, 0, preloadImageId));
+
+      this._isReady = true;  
+    }
+
+    start() {
+      super.start();
+
+      // Create an information window
+      this._informationWindow = new Window_Information();
+      this.addWindow(this._informationWindow);
+
+      this.refresh();    
+    }
+
+    isReady() {
+      return this._isReady && super.isReady();
+    }
+
+    update() {
+      super.update();
+      if(this.isCancelled()) {
+        this.popScene();
+      }
+    }
+
+    terminate() {
+      super.terminate();
+
+      // Release the bitmap from reservation chche.
+      ImageManager.releaseReservation(preloadImageId);   
+
+    }
+
+    isCancelled() {
+      return Input.isTriggered('menu') || TouchInput.isCancelled();
+    }
+
+    refresh() {
+      var actor = this.actor();
+      this._informationWindow.setText(MenuInformation.allText());
+      this._informationWindow.refresh();
+      this._informationWindow.activate();
+    }
+
+  }
+
+  window.Scene_Information = Scene_Information;
 
   //============================================================================
   // Game_Interpreter
   //============================================================================
 
-  let alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+  const alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
     if(command === "MenuInformation") {
