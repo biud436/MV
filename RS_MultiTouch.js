@@ -2,7 +2,26 @@
  * @plugindesc <RS_MultiTouch>
  * @author biud436
  * @help
- * This plugin is not completed a development yet.
+ * This plugin allows you to make sure that interact three finger or more in the touch screen-based devices.
+ * But Just remember that this plugin is not finished a development yet, so maybe it is a lot of bugs.
+ * 
+ * Here is a list of available functions.
+ * 
+ * RS.MultiTouch.isTriggered(index);
+ * RS.MultiTouch.isReleased(index);
+ * RS.MultiTouch.isPressed(index);
+ * RS.MultiTouch.isRepeated(index);
+ * RS.MultiTouch.isLongPressed(index);
+ * 
+ * Do pass just one parameter named index. 
+ * The index parameter is a number value for finger.
+ * 
+ * Note that our Multi-Touch functions will be deprecated in the future.
+ * They will integrate to static touch input object.
+ * 
+ * I recommend that don't try to this plugin.
+ * because this plugin is not finished a development yet!
+ * 
  */
 
 var Imported = Imported || {};
