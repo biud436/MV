@@ -53,10 +53,9 @@ RS.SweetInputDialog = RS.SweetInputDialog || {};
     
     parameters = (parameters.length > 0) && parameters[0].parameters;
 
-    var path = require('path');
-    var targetPath = path.join(process.mainModule.filename, "..");     
-
     $.downloadData = function(filePath, url, func) {
+        if(!Utils.isNwJs()) return;
+
         var http = require('https');
         var Stream = require('stream').Transform;
         var fs = require('fs');
