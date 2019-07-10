@@ -1,5 +1,5 @@
 /*:
- * @plugindesc This plugin allows you to type the Korean Hangul or English <RS_HangulInput>
+ * @plugindesc This plugin allows you to type the Korean <RS_HangulInput>
  * @author biud436
  * 
  * @param variableId
@@ -9,8 +9,40 @@
  * @default 10
  * 
  * @help
- * To open the Hangul Input, you can call the plugin command called 'HangulInput'.
- * or you can call the script command called 'SceneManager.push(Scene_HangulInput);'
+ * 
+ * This plugin combines the korean alphabet so you can type the Korean, without Input Method Editor.
+ * 
+ * Q. What is Hangul?
+ * Hangul is the the Korean alphabet and it has been used to write the Korean language 
+ * since its creation in the 15th century by King Sejong the Great.
+ * 
+ * See more information : https://en.wikipedia.org/wiki/Hangul
+ * 
+ * There are 19 consonants and 21 vowels and 28 final letters used in the modern alphabet.
+ * 
+ * Initial Consonants : ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ
+ * Vowels : ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ
+ * Final Consonants : (none)ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ
+ * ("none" means there is no final letter)
+ * 
+ * = Initial Consonants + Vowels + Final Consonants
+ * = ㄷ + ㅏ + ㄺ
+ * = 닭
+ * 
+ * ==============================================================
+ * Plugin Command
+ * ==============================================================
+ * To open the Hangul Input, 
+ * you can call the plugin command called
+ * 
+ * HangulInput
+ * 
+ * ==============================================================
+ * Script Command
+ * ==============================================================
+ * you can call the script command called 
+ * 
+ * SceneManager.push(Scene_HangulInput);
  * 
  * ==============================================================
  * Change Log
