@@ -4,7 +4,7 @@
  * 
  * @help
  * So far we have implement a lantern using images and it is good choices.
- * However this plugin add effect using shader so we have possible performance penalties in less powerful devices such as phones.
+ * However this plugin adds effects using shader so we have possible performance penalties in less powerful devices such as phones.
  * it is something that you should take into account.
  * 
  * This plugin provides two simple plugin commands it is that enable or disable.
