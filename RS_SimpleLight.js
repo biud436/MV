@@ -7,7 +7,7 @@
  * However this plugin adds effects using shader so we have possible performance penalties in less powerful devices such as phones.
  * it is something that you should take into account.
  * 
- * Many light plugins are provided a lot of complex plugin command.
+ * Many light plugins are provided a lot of complex plugin commands.
  * But, this plugin provides two simple plugin commands it is that enable or disable.
  * 
  * To turn on the lantern effect, First you must call the plugin command, as follows.
