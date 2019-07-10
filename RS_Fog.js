@@ -1,5 +1,5 @@
 /*:
- * @plugindesc <RS_Fog>
+ * @plugindesc This plugin allows you to deal with FOG like RPG Maker XP <RS_Fog>
  * @author biud436
  * 
  * @param fog
@@ -8,6 +8,10 @@
  * @default
  * 
  * @help
+ * 
+ * The demo game is available at https://www.dropbox.com/s/p7qg1r1eo9vihjb/Fog.zip?dl=1
+ * it is completely worked fine in the RPG Maker MV v1.6.2
+ * 
  * ============================================================================
  * Note Tags
  * ============================================================================
@@ -162,6 +166,12 @@
  * @default
  * 
  * @help
+ * 데모 게임은 다음 링크에서 내려받을 수 있습니다.
+ * 
+ * https://www.dropbox.com/s/p7qg1r1eo9vihjb/Fog.zip?dl=1
+ *
+ * 데모 게임은 RPG Maker MV v1.6.2 버전에서 잘 동작하였습니다.
+ * 
  * ============================================================================
  * 노트 태그 / Note Tags
  * ============================================================================
