@@ -1,8 +1,40 @@
 /*:
- * @plugindesc <RS_SweetInputDialog>
+ * @plugindesc This plugin allows you to change an UI of the alert window by using SweetAlert library. <RS_SweetInputDialog>
  * @author biud436
  * 
  * @help
+ * =========================================================================================
+ * Installation
+ * =========================================================================================
+ * SweetAlert library is available at https://unpkg.com/sweetalert/dist/sweetalert.min.js
+ * And then copy sweetalert.min.js to js/plugins folder of your game's root directory.
+ * You don't need to choose its library file within the Plugin Manager.
+ * 
+ * But, this plugin must need a RS_InputDialog.js plugin.
+ * it is available at https://raw.githubusercontent.com/biud436/MV/master/RS_InputDialog.js
+ * 
+ * In the Plugin Manager, This plugin must locate in somewhere below RS_InputDialog plugin.
+ * 
+ * =========================================================================================
+ * Introduction and Usage
+ * =========================================================================================
+ * This plugin must require RS_InputDialog.js plugins and SweetAlert library.
+ * We will check whether the button is OK or Cancel in the dialog and then let's show up alert window.
+ * 
+ * It is very easy to make the two buttons in the alert window.
+ * Open up the script command and you can write this code, as follows :
+ * 
+ *  var textbox = new SweetTextBox();
+ *  textbox.setEvent(function() {
+ *      swal("This is a OK Callback function");
+ *  }, function() {
+ *      swal("This is a Cancel Callback function");
+ *  });
+ *  textbox.open();
+ * 
+ * We must pass by defining callback functions such as OK or Cancel into the setEvent function of our textbox.
+ * Note that the SweetTextBox class makes sure that assigns callback functions into the swal of SweetAlert library.
+ * 
  */
 
 var Imported = Imported || {};
@@ -21,11 +53,43 @@ RS.SweetInputDialog = RS.SweetInputDialog || {};
     
     parameters = (parameters.length > 0) && parameters[0].parameters;
 
+    var path = require('path');
+    var targetPath = path.join(process.mainModule.filename, "..");     
+
+    $.downloadData = function(filePath, url, func) {
+        var http = require('https');
+        var Stream = require('stream').Transform;
+        var fs = require('fs');
+
+        http.request(url, function(response) {
+        var data = new Stream();
+        var ext = url.match(/(\/www|)\/[^\/]*$/);
+
+        console.log(ext);
+
+        if(ext && ext instanceof Array) {
+            ext = ext[0];
+        }
+
+        response.on('data', function(chunk) {
+            data.push(chunk);
+        });
+
+        response.on('end', function() {
+            fs.writeFileSync('%1%2'.format(filePath, ext), data.read());
+            func();
+        });
+
+        }).end();
+    }    
+
+    PluginManager.loadScript("sweetalert.min.js");
+
     if(!Imported.RS_InputDialog) {
-        console.error("This pluin must be required on RS_InputDialog and then need to use SweetAlert.");
+        console.error(`This pluin must be required on RS_InputDialog`);       
+        $.downloadData(`js/plugins`, `https://raw.githubusercontent.com/biud436/MV/master/RS_InputDialog.js`, ()=>{});
         return;
     }
-
 
     if(Utils.RPGMAKER_VERSION < '1.6.1') {
         SceneManager._getTimeInMsWithoutMobileSafari = function() {
@@ -155,19 +219,6 @@ RS.SweetInputDialog = RS.SweetInputDialog || {};
         Input._shouldPreventDefault = original_Input_shouldPreventDefault;
     };  
 
-    function TestSweetTextBox() {
-        var textbox = new SweetTextBox();
-        textbox.setEvent(() => {
-            swal("확인 버튼을 눌렀습니다.");
-        },() => {
-            swal("취소 버튼을 눌렀습니다.");
-        });
-        textbox.open();
-    };
-
-    $.test = TestSweetTextBox;
+    window.SweetTextBox = SweetTextBox;
 
 })(RS.SweetInputDialog); 
-
-
-
