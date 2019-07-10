@@ -129,6 +129,8 @@ RS.ScreenShot = RS.ScreenShot || {};
 
 (function($) {
 
+  "use strict";
+
   var parameters = $plugins.filter(function(i) {
     return i.description.contains("<RS_ScreenShot>");
   });
@@ -150,7 +152,7 @@ RS.ScreenShot = RS.ScreenShot || {};
   };
 
   $.getPath = function () {
-    if(Utils.RPGMAKER_VERSION >= "1.6.0") return $.localFilePath();
+    if(Utils.RPGMAKER_VERSION >= '1.6.0') return $.localFilePath();
     var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, '/ScreenShots/');
     if (path.match(/^\/([A-Z]\:)/)) {
       path = path.slice(1);
@@ -158,64 +160,56 @@ RS.ScreenShot = RS.ScreenShot || {};
     return decodeURIComponent(path);
   };
 
-  $.getParentFolder = function (url2) {
-    url2 = url2 || location.href;
-    var i = 0;
-    var ret = '';
-    while(url2[i] !== undefined) {
-     i++;
-    }
-    while(url2[i] !== '/') {
-     i--;
-    }
-    ret = url2.slice(0, i).concat('/');
-    return ret;
-  };
-
   $.previewScreenShot = function (fileName) {
-    var renderer = Graphics._renderer;
-    var renderTexture = PIXI.RenderTexture.create(renderer.width, renderer.height);
-    var stage = SceneManager._scene;
+    const renderer = Graphics._renderer;
+    const renderTexture = PIXI.RenderTexture.create(renderer.width, renderer.height);
+    const stage = SceneManager._scene;
+
     if(stage) {
       renderer.render(stage, renderTexture);
-      var canvas = renderer.extract.base64(renderTexture);
-      var html = [
-        '<!DOCTYPE html>',
-        '<html>',
-        '  <head>',
-        '    <meta charset="utf-8">',
-        '  <style>',
-        '  .preview {',
-        '   position: absolute;',
-        '   background-color: #888888;',
-        '   font-size: 18px;',
-        '   color: white;',
-        '   text-align: center;',
-        '   width: 256px;',
-        '   height: 19px;',
-        '   opacity: 0.7;',
-        '   word-wrap: break-word;',
-        '}',
-        '  </style>',
-        '  <title>ScreenShots Preview</title>',
-        '  </head>',
-        '<div class="preview">%1.%2</div>'.format(fileName, $.fileFormat),
-        '<body>',
-        '<img src=\'%1\'>'.format(canvas),
-        '</body>',
-        '</html>'
-      ].join('\n');
-      var blob = new Blob([html], {type : 'text/html'});
-      var url = URL.createObjectURL(blob);
-      var win = window.open(url, '_blank');
+      let canvas = renderer.extract.base64(renderTexture);
+      
+      let html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+          .preview {
+              position: absolute;
+              background-color: #888888;
+              font-size: 18px;
+              color: white;
+              text-align: center;
+              width: 256px;
+              height: 19px;
+              opacity: 0.7;
+              word-wrap: break-word;
+            }
+          </style>
+          <title>ScreenShots Preview</title>
+        </head>
+        <div class="preview">${fileName}.${$.fileFormat}</div>
+        <body>
+          <img src=\'${canvas}\'>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([html], {type : 'text/html'});
+      let url = URL.createObjectURL(blob);
+      let win = window.open(url, '_blank');
       
       if(Utils.RPGMAKER_VERSION >= "1.6.0") {
-        url = canvas.toDataURL("image/%1".format($.fileFormat));
-        var win = window.open(url, '_blank');
+        url = canvas.toDataURL(`image/${$.fileFormat}`);
+        win = window.open(url, '_blank');
       }
      
     }
-    if(renderTexture) renderTexture.destroy( { destroyBase: true } );
+
+    if(renderTexture) {
+      renderTexture.destroy( { destroyBase: true } );
+    }
 
     // Call this method when it doesn't need to keep the reference to URL object any longer.
     URL.revokeObjectURL(url);
@@ -234,29 +228,31 @@ RS.ScreenShot = RS.ScreenShot || {};
     var fs = require('fs');
     var filePath;
 
-    var result = win.capturePage(function(buffer) {
+    var result = win.capturePage((buffer) => {
       if(!fs.existsSync(this.getPath()) ) {
         fs.mkdirSync(this.getPath());
       }
       var fileName = new Date().toJSON().replace(/[.:]+/g, "-");
-      filePath = this.getPath() + '%1.%2'.format(fileName, $.fileFormat);
-      fs.writeFile(filePath, buffer, function (err) {
+      filePath = this.getPath() + `${fileName}.${$.fileFormat}`;
+
+      fs.writeFile(filePath, buffer, (err)=>{
         if (err) throw err;
         if($.isPlaySe) {
           AudioManager.playStaticSe({name: $.seName, pan: 0, pitch: 100, volume: ConfigManager.seVolume});
         }
+      });
+
       if($.isPreviewWindow) {
         $.previewScreenShot(fileName);
       }
-      });
 
-    }.bind(this), { format : $.fileFormat, datatype : 'buffer'} );
+    }, { format : $.fileFormat, datatype : 'buffer'} );
 
   };
 
-  var alias_SceneManager_onKeyDown = SceneManager.onKeyDown;
+  const alias_SceneManager_onKeyDown = SceneManager.onKeyDown;
   SceneManager.onKeyDown = function(event) {
-      alias_SceneManager_onKeyDown.apply(this, arguments);
+      alias_SceneManager_onKeyDown.call(this, event);
       if (!event.ctrlKey && !event.altKey) {
         switch (event.keyCode) {
         case $.KEY:   // F7

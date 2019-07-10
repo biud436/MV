@@ -133,7 +133,14 @@
  * RefreshManager open
  * 
  * 플러그인 설정 변경은 RefreshManager에서 가능합니다.
- *
+ * 
+ * 수동으로 변경하시려면 다음과 같이 하시기 바랍니다.
+ * 
+ * PluginManager.setStatus(pluginName, status);
+ * 
+ * 예를 들면, 다음과 같습니다.
+ *  ex) PluginManager.refreshStatus("Community_Basic", false);
+ * 
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -610,11 +617,20 @@ var RS = RS || {};
         texts += self._tokens[i].text;
       }
 
-      texts = JSON.parse(JSON.stringify(texts));
+      texts = JSON.parse(JSON.stringify(texts, null, '\t'));
       self.makePlugins(texts);
 
     });
 
+  };
+
+  PluginManager.refreshStatus = function(pluginName, status) {
+    PluginManager.setStatus(pluginName, status);
+    $gameSystem.onBeforeSave();
+    if (DataManager.saveRefreshGame(fastLoadFileId)) {
+      StorageManager.cleanBackup(fastLoadFileId);
+      if(isAutoReload) window.location.reload();      
+    }
   };
 
   //============================================================================

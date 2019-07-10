@@ -1,14 +1,30 @@
 /*:
- * @plugindesc This plugin allows you to type the Korean Characters called 'Hangul' <RS_Hangul>
+ * @plugindesc This plugin allows you to type the Korean. <RS_Hangul>
  * @author biud436
  * @help
- * =================================================================
- * Change Log
- * =================================================================
- * 2018.07.18 (v1.0.0) - First Release.
- * 2018.07.27 (v1.0.1) - Fixed the issue that couldn't type the character called '~' (Tilde)
- * 2019.06.20 (v1.0.3) :
- * - Fixed backspace and space bar bugs.
+ * This plugin combines the korean alphabet so you can type the Korean, without Input Method Editor.
+ * 
+ * Q. What is Hangul?
+ * Hangul is the the Korean alphabet and it has been used to write the Korean language 
+ * since its creation in the 15th century by King Sejong the Great.
+ * 
+ * See more information : https://en.wikipedia.org/wiki/Hangul
+ * 
+ * Q. How do we use this plugin?
+ * To use this plugin, you can require plugin called 'RS_MessageSystem.js'
+ * its plugin provides extra text codes for Korean so I've need to it.
+ * 
+ * There are 19 consonants and 21 vowels and 28 final letters used in the modern alphabet.
+ * 
+ * Initial Consonants : ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ
+ * Vowels : ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ
+ * Final Consonants : (none)ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ
+ * ("none" means there is no final letter)
+ * 
+ * = Initial Consonants + Vowels + Final Consonants
+ * = ㄷ + ㅏ + ㄺ
+ * = 닭
+ * 
  */
 /*:ko
  * @plugindesc 한글 조합 입력 기능을 제공합니다. <RS_Hangul>
