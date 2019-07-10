@@ -3,10 +3,18 @@
  * @author biud436
  * 
  * @help
- *
- * This plugin commands allows you to enable or disable a lantern.
- *
+ * So far we have implement a lantern using images and it is good choices.
+ * However this plugin add effect using shader so we have possible performance penalties in less powerful devices such as phones.
+ * it is something that you should take into account.
+ * 
+ * This plugin provides two simple plugin commands it is that enable or disable.
+ * 
+ * To turn on the lantern effect, First you must call the plugin command, as follows.
+ * 
  * RS_SimpleLight Enable
+ * 
+ * To turn off the lantern effect, it calls a plugin command, as follows.
+ * 
  * RS_SimpleLight Disable
  * 
  * ===============================================================
