@@ -10,7 +10,7 @@
  * And then copy sweetalert.min.js to js/plugins folder of your game's root directory.
  * You don't need to choose its library file within the Plugin Manager.
  * 
- * But, this plugin must need a RS_InputDialog.js plugin.
+ * Note that this plugin must need a RS_InputDialog.js plugin.
  * it is available at https://raw.githubusercontent.com/biud436/MV/master/RS_InputDialog.js
  * 
  * In the Plugin Manager, This plugin must locate in somewhere below RS_InputDialog plugin.
