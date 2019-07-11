@@ -367,6 +367,15 @@ function Scene_LoadFog() {
         return parseInt(value) || 0;
     };
 
+    /**
+     * The blend modes is useful for game sprites. 
+     * But its modes will change little bit in the PIXI v5.
+     * The PIXI official docs website has a list of 19 blend modes except of SUBTRACT.
+     * 
+     * Unfortunately, In the PIXI v5, its modes will add more,
+     * and it collides with blend mode I've added in the PIXI v5.
+     * So I'll remove a specific blend mode I added as possible for stable.
+     */
     $.fogBlendModes = {
         "NORMAL":         0,
         "ADD":            1,
@@ -388,7 +397,7 @@ function Scene_LoadFog() {
         "NORMAL_NPM":     17,
         "ADD_NPM":        18,
         "SCREEN_NPM":     19,
-        "SUBTRACT":   20        
+        "SUBTRACT":       20, /** I will remove this in the future */
     };
 
     $.loadFog = function(filename, hue) {
