@@ -146,8 +146,6 @@ RS.LoadTimeChecker = RS.LoadTimeChecker || {};
         width: parameters["Bitmap Width"],
         height: parameters["Bitmap Height"],
     };
-
-    $.Params.Image = parameters["Image"];
     
     var alias_Game_System_initialize = Game_System.prototype.initialize;
     Game_System.prototype.initialize = function() {
