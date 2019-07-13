@@ -80,8 +80,15 @@
  * 
  * @param Text Align
  * @parent Font Option
+ * @type select
  * @desc Specify the text alignment.
  * @default center
+ * @option left
+ * @value left
+ * @option cetner
+ * @value center
+ * @option right
+ * @value right
  * 
  * @param Bitmap Width
  * @parent Font Option
