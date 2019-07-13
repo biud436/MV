@@ -102,6 +102,14 @@
  * (This is evaluated the javascript)
  * @default 64
  * 
+ * @param Reward Option
+ * 
+ * @param Code Injection
+ * @parent Reward Option
+ * @type note
+ * @desc Can evaluate a javascript code using day, hours, mins, seconds variables.
+ * @default "// if(day >= 1) {\n//   $gameParty.gainGold(1000 * day);\n// }\n// if(hours >= 1) {\n//   $gameParty.gainGold(200 * hours);\n// }\n// if(mins >= 30) {\n//   $gameParty.gainGold(100 * mins);\n// }\n// if(seconds >= 45) {\n//   $gameParty.gainGold(50 * seconds);\n// }"
+ * 
  * @help
  * ========================================================
  * Introduction
@@ -153,6 +161,8 @@ RS.LoadTimeChecker = RS.LoadTimeChecker || {};
         width: parameters["Bitmap Width"],
         height: parameters["Bitmap Height"],
     };
+
+    $.Params.evaluateCode = parameters["Code Injection"];
     
     var alias_Game_System_initialize = Game_System.prototype.initialize;
     Game_System.prototype.initialize = function() {
@@ -245,7 +255,18 @@ RS.LoadTimeChecker = RS.LoadTimeChecker || {};
 
         let loadTime = newLoadTime.getTime();
         let beforeTime = newBeforeTime.getTime();
-
+if(day >= 1) {
+  $gameParty.gainGold(1000 * day);
+}
+if(hours >= 1) {
+  $gameParty.gainGold(200 * hours);
+}
+if(mins >= 30) {
+  $gameParty.gainGold(100 * mins);
+}
+if(seconds >= 45) {
+  $gameParty.gainGold(50 * seconds);
+}
         let day = Math.floor(loadTime / dayValue) - Math.floor((beforeTime - newBeforeTime.getTimezoneOffset() * 60 * 1000) / dayValue );
         let hours = (Math.floor(loadTime / hourValue) - Math.floor(beforeTime/ hourValue )) % 24;
         let mins = (Math.floor(loadTime / minValue) - Math.floor(beforeTime / minValue )) % 60;
@@ -264,6 +285,12 @@ RS.LoadTimeChecker = RS.LoadTimeChecker || {};
         this._timeChecker.x = eval($.Params.dx);
         this._timeChecker.y = eval($.Params.dy);
 
+        try {
+            eval(JSON.parse($.Params.evaluateCode));
+        } catch(e) {
+            throw new Error(e.message);
+        }
+    
         setTimeout(() => {
             this._timeChecker.visible = false;
         }, 1000 * $.Params.hideTime);
