@@ -255,18 +255,7 @@ RS.LoadTimeChecker = RS.LoadTimeChecker || {};
 
         let loadTime = newLoadTime.getTime();
         let beforeTime = newBeforeTime.getTime();
-if(day >= 1) {
-  $gameParty.gainGold(1000 * day);
-}
-if(hours >= 1) {
-  $gameParty.gainGold(200 * hours);
-}
-if(mins >= 30) {
-  $gameParty.gainGold(100 * mins);
-}
-if(seconds >= 45) {
-  $gameParty.gainGold(50 * seconds);
-}
+
         let day = Math.floor(loadTime / dayValue) - Math.floor((beforeTime - newBeforeTime.getTimezoneOffset() * 60 * 1000) / dayValue );
         let hours = (Math.floor(loadTime / hourValue) - Math.floor(beforeTime/ hourValue )) % 24;
         let mins = (Math.floor(loadTime / minValue) - Math.floor(beforeTime / minValue )) % 60;
