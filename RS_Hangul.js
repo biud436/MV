@@ -39,6 +39,10 @@
  * 2019.06.20 (v1.0.3) :
  * - 띄어쓰기가 매끄럽지 않았던 문제를 수정했습니다.
  * - 백스페이스 시 조합 중이면 자모음 단위로 삭제하며, 조합이 완료되었을 땐 한 글자씩 삭제합니다.
+ * 2019.07.13 (v1.0.5) :
+ * - 문자열 인스턴스에서 indexOf를 사용하였을 때 빈 문자열("")을 인자로 넘기면 0을 반환합니다. 
+ * 하지만 원하는 반환 값은 -1이 되어야 합니다. 따라서 문자열을 문자열 배열로 변경하였습니다.
+ * - 완성된 조합 문자열이 반환될 때, 남아있는 초성, 중성, 종성이 있을 수 있어 이에 대한 처리를 추가하였습니다.
  */
 
 var Imported = Imported || {};
@@ -53,26 +57,15 @@ function HangulIME() {
 };
 
 (function() {
-    
+
     // 한글 음절표 19 * 21 * (27 + 1) = 11172;
 
     // 초성 19자
-    var chosung = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+    var chosung = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
     // 중성 21자
-    var joongsung = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
+    var joongsung = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
     // 종성 28자 (공백 포함)
-    var jongsung = ' ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ';
-
-    // 자음(닿소리)
-    var consonant1 = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
-    // 쌍자음(겹닿소리)
-    var consonant2 = 'ㄲㄸㅃㅆㅉ';
-    // 흩모음 (홀소리)
-    var vowel1 = 'ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ';
-    // 겹모음 (겹홀소리)
-    var vowel2 = 'ㅐㅒㅔㅖㅘㅙㅚㅗㅝㅞㅟㅢ';
-    // 겹받침
-    var consonant3 = 'ㄲㅆㄳㄵㄶㄺㄻㄼㄽㄾㄿㅀㅄ';
+    var jongsung = [" ", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
     
     HangulIME.prototype.constructor = HangulIME;
     
@@ -107,33 +100,51 @@ function HangulIME() {
     HangulIME.prototype.startWithComposite = function(texts, func) {
         this.initMembers();
         this._messTexts = this.decompress(texts);
-        this._index = 0; // 인덱스 0부터 시작
+        
+        // 인덱스 0부터 시작
+        this._index = 0; 
+        
         var depth = 0;
+
         for(;;) {
-            if(1000 < depth) { // 문장이 너무 길어지는 것 방지
+            
+            // 문장이 너무 길어지는 것 방지
+            if(1000 < depth) { 
                 func(this._retTexts);
                 break;
             }
-            if(this._index > this._messTexts.length) { // 조합 완료되었으면 끝낸다.
+            
+            // 조합 완료되었으면 끝낸다.
+            if(this._index > this._messTexts.length) { 
                 func(this._retTexts);
                 break;
-            }            
-            if(this._currentStep === HangulIME.STEP11) { // 초성1 처리(겹받침 및 겹모음 처리)             
+            }         
+
+            switch(this._currentStep) {
+            case HangulIME.STEP11: // 초성1 처리(겹받침 및 겹모음 처리)       
                 this.startStep11();
-            } else if(this._currentStep === HangulIME.STEP12) { // 초성 2 처리
+                break;
+            case HangulIME.STEP12: // 초성 2 처리
                 this.startStep12();
-            } else if(this._currentStep === HangulIME.STEP21) { // 중성 1 처리 (겹홀소리 처리)
+                break;
+            case HangulIME.STEP21: // 중성 1 처리 (겹홀소리 처리)
                 this.startStep21();
-            } else if (this._currentStep === HangulIME.STEP22) { // 중성 2 처리
+                break;
+            case HangulIME.STEP22: // 중성 2 처리
                 this.startStep22();
-            } else if (this._currentStep === HangulIME.STEP31) { // 종성 1 처리 (겹받침 처리)
+                break;
+            case HangulIME.STEP31: // 종성 1 처리 (겹받침 처리)
                 this.startStep31();
-            } else if (this._currentStep === HangulIME.STEP32) { // 종성 2 처리
+                break;
+            case HangulIME.STEP32: // 종성 2 처리
                 this.startStep32();
-            } else if (this._currentStep === HangulIME.STEP42) { // 완성형 글자를 만든다.
+                break;
+            case HangulIME.STEP42: // 완성형 글자를 만든다.
                 this.startStep42();
-            } else if (this._currentStep === HangulIME.STEP43) { // 특수 문자, 영어 처리
+                break;
+            case HangulIME.STEP43: // 특수 문자, 영어 처리
                 this.startStep43();
+                break;
             }
 
             depth++;
@@ -146,7 +157,7 @@ function HangulIME() {
     HangulIME.prototype.startStep11 = function() {
         var currentChar = this._messTexts[this._index];
         var nextChar = this._messTexts[this._index + 1];
-        var lastChar = this._messTexts[this._index + 1];
+        var lastChar = this._messTexts[this._index + 2];
         var ret = false;
     
         // 다음 글자가 없다면 인덱스를 늘린다.
@@ -292,8 +303,10 @@ function HangulIME() {
         var ret = false;
 
         // 공백으로 초기화한다.
-        this.setFinal(0);
-  
+        if(this._hanTexts.final <= 0) {
+            this.setFinal(0);
+        }
+        
         // 종성이 겹받침이 될 수 있나? 가능하다면 겹받침 처리
         if(ret = this.processDoubleFinalConsonant(currentChar, nextChar, lastChar)) {    
             this._composing = false; 
@@ -349,6 +362,9 @@ function HangulIME() {
         var c = this._hanTexts;
         this._retTexts += this.makeWansung(c.first, c.middle, c.final);
         this._lastIndex = this._index;
+        this._hanTexts.first = -1;
+        this._hanTexts.middle = -1;
+        this._hanTexts.final = -1;
         this._currentStep = HangulIME.STEP11;
         return true;
     };            
@@ -411,6 +427,10 @@ function HangulIME() {
     // 겹받침 처리 후 리턴 위치로
     HangulIME.prototype.processDoubleFinalConsonant = function(currentChar, nextChar, lastChar) {
         var ret = "";
+
+        if(currentChar === "") {
+            return false;
+        }
     
         // 중성인가? 겹모음인가? 
         if( this.isMiddle(currentChar) >= 0 ) {
@@ -475,6 +495,11 @@ function HangulIME() {
 
         // 겹모음으로 조합이 가능한 ㅗㅜㅡ인가?
         var middles = "ㅗㅜㅡ";
+
+        if(currentChar === undefined || currentChar === "") {
+            return false;
+        }
+
         if(middles.indexOf(currentChar) < 0) {
             return false;
         }
