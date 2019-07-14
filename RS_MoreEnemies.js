@@ -1,5 +1,5 @@
 /*:
- * @plugindesc <RS_MoreEnemies>
+ * @plugindesc This plugin allows you to add a lot of enemies. <RS_MoreEnemies>
  * @author biud436
  * 
  * @param Troop Settings
