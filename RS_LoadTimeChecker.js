@@ -119,7 +119,9 @@
  * 
  * The text for time will be gone after a period of time 
  * and then you can put the code in a preset points and evaluate it.
+ * 
  * You can be also accessed a lot of local variables such as day, hours, mins, seconds.
+ * and can give an user some rewards like as item, gold.
  * 
  * ========================================================
  * Change Log
