@@ -127,6 +127,8 @@
  * Change Log
  * ========================================================
  * 2019.07.13 (v1.0.0) - First Release.
+ * 2019.07.14 (v1.0.1) :
+ * - Fixed the bug. Now every 24 hours by default, the day variable will increase.
  */
 
 var Imported = Imported || {};
