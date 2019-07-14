@@ -130,6 +130,159 @@
  * 2019.07.14 (v1.0.1) :
  * - Fixed the bug. Now every 24 hours by default, the day variable will increase.
  */
+/*:ko
+ * @plugindesc 세이브 파일을 로드할 때, 마지막 세이브 시간으로부터 현실 시간이 얼마나 지났나 확인하여 화면에 표시합니다. <RS_LoadTimeChecker> 
+ * @author 러닝은빛(biud436)
+ * 
+ * @param Text Option
+ * @text 텍스트 옵션
+ * 
+ * @param Day
+ * @text 일
+ * @parent Text Option
+ * @desc 시간 단위에서 '일(日)'을 어떻게 표시합니까?
+ * @default 일
+ * 
+ * @param Hours
+ * @text 시간
+ * @parent Text Option
+ * @desc 시간 단위에서 '시간' 단위를 화면에 어떻게 표시할 것인지를 설정합니다.
+ * @default 시간
+ * 
+ * @param Minutes
+ * @text 분
+ * @parent Text Option
+ * @desc 시간 단위에서 '분' 단위를 화면에 어떻게 표시할 것인지를 설정합니다.
+ * @default 분
+ * 
+ * @param Seconds
+ * @text 초
+ * @parent Text Option
+ * @desc 시간 단위에서 '초' 단위를 화면에 어떻게 표시할 것인지를 설정합니다.
+ * @default 초
+ * 
+ * @param Description Text
+ * @text 알림 텍스트
+ * @parent Text Option
+ * @desc 시간 알림과 함께 표시 할 텍스트를 지정하세요.
+ * @default 만에 게임으로 돌아오셨습니다.
+ * 
+ * @param Hide Time
+ * @text 숨김 시간
+ * @parent Text Option
+ * @type number
+ * @desc 시간 알림 이후, 텍스트가 화면에서 사라질 때 까지의 시간을 초 단위로 지정하세요.
+ * @default 6
+ * 
+ * @param Position
+ * @text 위치
+ * 
+ * @param X
+ * @text X 좌표
+ * @parent Position
+ * @desc X 좌표를 지정하십시오.
+ * (자바스크립트로 취급됩니다)
+ * @default 0
+ * 
+ * @param Y
+ * @text Y 좌표
+ * @parent Position
+ * @desc Y 좌표를 지정하십시오.
+ * (자바스크립트로 취급됩니다)
+ * @default 0
+ * 
+ * @param Font Option
+ * @text 폰트 옵션
+ * 
+ * @param Font Face
+ * @text 폰트 설정
+ * @parent Font Option
+ * @desc 폰트를 설정하십시오.
+ * @default 나눔고딕, Dotum, AppleGothic, sans-serif
+ * 
+ * @param Font Size
+ * @text 폰트 크기
+ * @parent Font Option
+ * @type number
+ * @desc 폰트 크기를 지정하세요.
+ * @default 28
+ * 
+ * @param Text Color
+ * @text 텍스트 색상
+ * @parent Font Option
+ * @desc 텍스트 색상을 설정하세요.
+ * @default #ffffff
+ * 
+ * @param Outline Color
+ * @text 테두리 색상
+ * @parent Font Option
+ * @desc 테두리 색상을 설정할 수 있습니다.
+ * @default rgba(0, 0, 0, 0.5)
+ * 
+ * @param Outline Width
+ * @text 테두리 굵기
+ * @parent Font Option
+ * @type number
+ * @desc 테두리 굵기를 변경할 수 있습니다.
+ * @default 4
+ * 
+ * @param Text Align
+ * @text 텍스트 정렬
+ * @parent Font Option
+ * @type select
+ * @desc 텍스트 정렬 옵션을 설정할 수 있습니다. 기본 값은 중앙입니다.
+ * @default center
+ * @option 왼쪽
+ * @value left
+ * @option 가운데
+ * @value center
+ * @option 오른쪽
+ * @value right
+ * 
+ * @param Bitmap Width
+ * @text 비트맵 가로 길이
+ * @parent Font Option
+ * @desc 비트맵의 가로 길이를 설정할 수 있습니다.
+ * (자바스크립트로 취급됩니다)
+ * @default Graphics.boxWidth
+ * 
+ * @param Bitmap Height
+ * @text 비트맵 높이
+ * @parent Font Option
+ * @desc 비트맵의 높이를 설정할 수 있습니다.
+ * (자바스크립트로 취급됩니다)
+ * @default 64
+ * 
+ * @param Reward Option
+ * @text 보상 옵션
+ * 
+ * @param Code Injection
+ * @text 코드 삽입
+ * @parent Reward Option
+ * @type note
+ * @desc day, hours, mins, seconds 와 같은 시간 변수를 활용하여 코드를 작성해 보상을 지급할 수 있습니다.
+ * @default "// if(day >= 1) {\n//   $gameParty.gainGold(1000 * day);\n// }\n// if(hours >= 1) {\n//   $gameParty.gainGold(200 * hours);\n// }\n// if(mins >= 30) {\n//   $gameParty.gainGold(100 * mins);\n// }\n// if(seconds >= 45) {\n//   $gameParty.gainGold(50 * seconds);\n// }"
+ * 
+ * @help
+ * ========================================================
+ * 소개
+ * ========================================================
+ * 이 플러그인을 사용하면 화면에 지난 세이브 파일로부터 지난 시간을 텍스트로 표시하고, 
+ * 시간에 따라 아이템이나 금전 같은 일정한 보상을 지급할 수 있습니다.
+ * 
+ * 보상은 플러그인에 따로 정해져있지 않으며 코드를 작성하셔야 합니다.
+ * 작성된 코드는 사전에 지정한 위치에 삽입됩니다.
+ * 
+ * 따라서 day, hours, mins, seconds 지역 변수에 접근할 수 있고, 
+ * 이를 통해 다양한 보상을 할 수 있습니다.
+ * 
+ * ========================================================
+ * 버전 로그
+ * ========================================================
+ * 2019.07.13 (v1.0.0) - First Release.
+ * 2019.07.14 (v1.0.1) :
+ * - Fixed the bug. Now every 24 hours by default, the day variable will increase.
+ */
 
 var Imported = Imported || {};
 Imported.RS_LoadTimeChecker = true;
