@@ -1,5 +1,5 @@
 /*:
- * @plugindesc <RS_LoadTimeChecker> 
+ * @plugindesc This plugin allows you to check the time that has passed since last save. <RS_LoadTimeChecker> 
  * @author biud436
  * 
  * @param Text Option
@@ -39,13 +39,13 @@
  * 
  * @param X
  * @parent Position
- * @desc Specify the position. 
+ * @desc Change the x-coordinate of bitmap text.
  * (This is evaluated the javascript)
  * @default 0
  * 
  * @param Y
  * @parent Position
- * @desc Specify the position of the text.
+ * @desc Change the y-coordinate of bitmap text.
  * (This is evaluated the javascript)
  * @default 0
  * 
@@ -114,8 +114,12 @@
  * ========================================================
  * Introduction
  * ========================================================
- * This plugin allows to indicate as the time text on the screen when loaded a save file.
- * The time text is that how long it took the amount of time since last save time.
+ * This plugin allows you to check the time that has passed since last save 
+ * and drawing its time text on the screen when loading the map.
+ * 
+ * The text for time will be gone after a period of time 
+ * and then you can put the code in a preset points and evaluate it.
+ * You can be also accessed a lot of local variables such as day, hours, mins, seconds.
  * 
  * ========================================================
  * Change Log
