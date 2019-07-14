@@ -262,8 +262,15 @@ RS.LoadTimeChecker = RS.LoadTimeChecker || {};
         let loadTime = newLoadTime.getTime();
         let beforeTime = newBeforeTime.getTime();
 
+        var t = (Math.floor(loadTime / hourValue) - Math.floor(beforeTime/ hourValue ));
+        
         let day = Math.floor(loadTime / dayValue) - Math.floor((beforeTime - newBeforeTime.getTimezoneOffset() * 60 * 1000) / dayValue );
-        let hours = (Math.floor(loadTime / hourValue) - Math.floor(beforeTime/ hourValue )) % 24;
+
+        if(t < 24) {
+            day = 0;
+        }
+
+        let hours = t % 24;
         let mins = (Math.floor(loadTime / minValue) - Math.floor(beforeTime / minValue )) % 60;
         let seconds = (Math.floor(loadTime / secondValue) - Math.floor(beforeTime / secondValue)) % 60;
         
