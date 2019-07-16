@@ -171,7 +171,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         $.Params.states[e.id] = e;
     });
 
-    // 활성화된 상태의 ID (하지만 이렇게 하면 2개의 이상은 어떻게?)
+    // 활성화된 상태의 ID (2개 이상의 상태는 할당할 수 없는 방식)
     $.Params.activeStateId = "";
 
     $.Params.defaultState = {
