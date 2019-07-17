@@ -5,12 +5,9 @@
  * @param Set Animation Face
  * @type struct<AnimationFace>[]
  * @desc Animation Face에 대한 옵션 데이터를 설정할 수 있습니다.
- * @default ["{\"id\":\"char\",\"x\":\"0\",\"y\":\"0\",\"width\":\"48\",\"height\":\"48\",\"cols\":\"3\",\"rows\":\"4\",\"maxFrames\":\"3\",\"delay\":\"5.00\",\"looping\":\"true\"}"]
+ * @default {"id":"blink","x":"0","y":"0","width":"144","height":"144","cols":"4","maxFrames":"3","delay":"5.00","looping":"true"}
  * 
  * @help
- * 
- * Sorry, This plugin has not been translated into English yet.
- * 
  * ================================================================
  * How to Use
  * ================================================================
@@ -72,6 +69,8 @@
  * Change Log
  * ================================================================
  * 2019.07.16 (v1.0.0) - First Release.
+ * 2019.07.17 (v1.0.1) :
+ * - Fixed the issue that shows up the incorrect frame in the sprite sheet.
  */
 /*~struct~AnimationFace:
  *
@@ -92,27 +91,22 @@
  * @param width
  * @type number
  * @desc 화면에 표시 할 프레임의 가로 길이입니다.
- * @default 1
+ * @default 144
  * 
  * @param height
  * @type number
  * @desc 화면에 표시 할 프레임의 세로 길이입니다.
- * @default 1
+ * @default 144
  * 
  * @param cols
  * @type number
  * @desc 열의 수. 애니메이션을 하려면 스프라이트 시트에서 한 프레임만을 잘라야 합니다.
- * @default 3
- * 
- * @param rows
- * @type number
- * @desc 행의 수. 애니메이션을 하려면 스프라이트 시트에서 한 프레임만을 잘라야 합니다.
  * @default 4
  * 
  * @param maxFrames
  * @type number
  * @desc 최대 프레임입니다. 기본적으로 애니메이션 상태는 2 프레임 이상입니다.
- * @default 1
+ * @default 3
  * 
  * @param delay
  * @type number
@@ -180,7 +174,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         width : 1,
         height : 1,
         cols : 1,
-        rows : 1,
+        startFrame: 0,
         maxFrames : 1,
         delay : 5.0,
         looping : false,
@@ -239,7 +233,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
      */    
 
     class FaceSprite extends Sprite {
-        constructor(bitmap, x, y, width, height, maxFrames, cols, rows) {
+        constructor(bitmap, x, y, width, height, maxFrames, cols) {
             
             super();
 
@@ -267,20 +261,11 @@ RS.FaceAnimation = RS.FaceAnimation || {};
                 cols = 1;
             }
 
-            if(!rows) {
-                rows = 1;
-            }
-
             if(cols < 0) {
                 cols = 1;
             }
 
-            if(rows < 0) {
-                rows = 1;
-            }
-
             this._cols = cols;
-            this._rows = rows;
 
             this.visible = false;
             this._visible = false;
@@ -434,18 +419,13 @@ RS.FaceAnimation = RS.FaceAnimation || {};
             return this;
         }
 
-        setSpriteSheets(cols, rows) {
+        setSpriteSheets(cols) {
 
             if(cols < 0) {
                 cols = 1;
             }
 
-            if(rows < 0) {
-                rows = 1;
-            }
-
             this._cols = cols;
-            this._rows = rows;
 
             return this;
         }
@@ -518,7 +498,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
                 default:
                     this._spriteData._rect.x = (this._currentFrame % this._cols) * this._spriteData._width;
                     this._spriteData._rect.width = this._spriteData._width;
-                    this._spriteData._rect.y = Math.floor(this._currentFrame / this._rows) * this._spriteData._height;
+                    this._spriteData._rect.y = Math.floor(this._currentFrame / this._cols) * this._spriteData._height;
                     this._spriteData._rect.height = this._spriteData._height;                    
                     break;
             }
@@ -570,19 +550,19 @@ RS.FaceAnimation = RS.FaceAnimation || {};
             var width = Number(state.width);
             var height = Number(state.height);
             var cols = Number(state.cols);
-            var rows = Number(state.rows);  
             var maxFrames = Number(state.maxFrames);  
             var delay = Number(state.delay);
             var looping = state.looping;
 
-            this._faceSprite = new RS.FaceSprite(this._faceBitmap, x, y, width, height, maxFrames, cols, rows);
+            this._faceSprite = new RS.FaceSprite(this._faceBitmap, x, y, width, height, maxFrames, cols);
             this._faceSprite
                 .setPosition($.Params.globalStates.x, $.Params.globalStates.y)
                 .setAngle($.Params.globalStates.angle)
                 .setScale($.Params.globalStates.scale)
                 .setLoop(looping)
                 .setFrameDelay(delay)
-                .setSpriteSheets(cols, rows)
+                .setSpriteSheets(cols)
+                .setFrames(0, maxFrames)
                 .setVisible(true);
             
             this.addChild(this._faceSprite);
