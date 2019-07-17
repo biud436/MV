@@ -5,7 +5,7 @@
  * @param Set Animation Face
  * @type struct<AnimationFace>[]
  * @desc Animation Face에 대한 옵션 데이터를 설정할 수 있습니다.
- * @default {"id":"blink","x":"0","y":"0","width":"144","height":"144","cols":"4","maxFrames":"3","delay":"5.00","looping":"true"}
+ * @default ["{\"id\":\"blink\",\"x\":\"0\",\"y\":\"0\",\"width\":\"144\",\"height\":\"144\",\"cols\":\"4\",\"maxFrames\":\"3\",\"delay\":\"5.00\",\"looping\":\"true\"}"]
  * 
  * @help
  * ================================================================
