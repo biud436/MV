@@ -1,5 +1,13 @@
 
+<p><font color='red'>한글 메시지 플러그인은 이제 더 이상 개발되지 않습니다.</font></p>
+<p><font color='red'>대부분 호환성 문제는 이제 해결하기 어렵습니다.</font></p>
+<p><font color='red'>대신 YEP Message Core 플러그인을 사용하는 것을 권장합니다.</font></p>
+<p><font color='red'>입문자 분들에게도 다른 플러그인 사용을 권해주시기 바랍니다.</font></p>
+
+<p><font color='red'>그래도 버그 피드백을 주시고 싶은 분들은 Issues 란에 피드백을 남겨주세요.</font></p>
+
 ## 플러그인 소개
+
 이 플러그인은 영어 위주로 되어있는 기존 텍스트 코드들을 한국어로 사용할 수 있게 해주는 플러그인입니다. 
 
 **RPG Maker MV <font color='red'>v1.5.1</font> 이상 버전에서만 동작합니다.**
