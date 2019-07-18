@@ -14,7 +14,7 @@
  * In this section, you'll learn how to define a custom animated face data.
  * 
  * You can show up a lot of emotions such as an idle, run, sad, blink, 
- * run, die, and so on.
+ * die, and so on.
  * 
  * In the plugin parameter called 'Set Animation Face', 
  * You need to define a new custom face data for your own purposes.
@@ -57,58 +57,65 @@
  * Plugin Commands
  * ================================================================
  * 
+ * This plugin provides a toggle functionality for animated face.
  * if you use this plugin command, you can show up an animated face in the message window.
  * 
  * ShowAnimationFace
  * 
+ * You wish to hide the animated face after it indicates on the screen.
  * it is returned back as a normal face if you use this plugin command.
  * 
  * HideAnimationFace
  * 
- * 애니메이션 얼굴 이미지의 설정 정보는 Set Animation Face 매개변수에서 설정합니다.
- * AnimationFace에는 ID 값이 존재합니다. 
- * ID는 빠르게 데이터를 취득 하기 위해 존재하는 데이터 식별 값으로 ID라고 부릅니다.
- * 이 값은 문자열이나 숫자 값 등을 지정할 수 있습니다.
+ * This plugin will be checked the ID value of activated face 
+ * and then show up it when the next message opens up.
+ * So you need to set the ID of the animated face before the message window sets up.
+ * it will be already set in the plugin parameter called 'Set Animation Face'
+ * The ID value should be changed as your own purposes.
  * 
  * SetAnimationFace Id
  * 
- * 예를 들어, 매개변수에서 char라는 Id 값에 해당하는 JSON 데이터를 만들어놓았다고 가정합니다.
- * 이 경우에는 문장의 표시를 호출하기 전에 다음 플러그인 명령을 사용해야 합니다.
+ * For example, there is the face ID called 'blink' into it
+ * and you can use like this before the message window starts up, as follows.
  * 
  * ShowAnimationFace
- * SetAnimationFace char
+ * SetAnimationFace blink
  * 
- * 문장의 표시에선 해당 얼굴 이미지를 찾아 선택해야 합니다.
- * 옵션 정보에 맞게 얼굴 이미지를 자르고 프레임을 만들기 때문입니다.
+ * Next, you need to select the face image from the event command called 'Show Message'
+ * then, The animated face system makes to add all the frames for that image
  * 
- * 혹 다시 일반 얼굴 이미지를 사용하고 싶다면, 다음 플러그인 명령을 호출해야 합니다.
+ * In this part, you'll learn how to change the scale, rotation, position for the animated-
+ * face sprites.
  * 
- * HideAnimationFace
+ * Once changed that, all of the faces are affected since changed it.
+ * Note that all of the parameters need to write in lower case.
  * 
- * 위 명령을 호출하면 다시 기본 상태로 되돌아갈 것입니다.
- * 
- * 회전, 위치 변경, 스케일 변경 기능에 대해서 설명하겠습니다.
- * 이 기능은 전역에 적용되므로 매우 조심스럽게 사용해야 합니다.
- * 모든 인자는 소문자로 적어야 합니다.
- * 
- * 예를 들어,스프라이트를 60도 회전을 시키고 싶다면 다음과 같이 해야 합니다.
+ * For examples, if you want to rotate the animated-face by 60 degree,
+ * You must do like this.
+ * You have passed angle 60.0 in to the plugin command called 'ChangeParamAnimationFace'
  * 
  * ChangeParamAnimationFace angle 60.0
  * 
- * 메시지 윈도우 내에서 애니메이션 얼굴 이미지의 위치는 기본적으로
- * 메시지 윈도우의 상대 좌표로 결정됩니다. 
- * 따라서 상단 좌표는 0, 0 입니다.
+ * into the message window, the position of the animated-face image is basically the 
+ * relative coordinates to parent message window.
+ * So its coordinates are (0, 0) px.
  * 
  * ChangeParamAnimationFace x 0.0
  * ChangeParamAnimationFace y 0.0
  * 
- * 애니메이션 얼굴 이미지의 크기는 scale 인자를 전달하여 조절이 가능한데요.
- * 1.0은 기본 스케일이며, 2.0은 두 배 확대입니다.
+ * and you can also apply the padding value into it, like this.
+ * 
+ * ChangeParamAnimationFace x 18.0
+ * ChangeParamAnimationFace y 18.0
+ * 
+ * In this part, You'll learn how to change a scale of the animated face sprite.
+ * 
+ * To scale the animated face, you passed scale to the plugin command ChangeParamAnimationFace,
+ * like this.
  * 
  * ChangeParamAnimationFace scale 1.0
  * 
- * 다시 한 번 말하지만 위 인자들은 글로벌에 적용되기 때문에,
- * 이후에 표시되는 모든 얼굴 애니메이션에 적용되므로 조심히 사용하시기 바랍니다.
+ * The 1.0 is the default scale and 2.0 is to zoom in by double.
  * 
  * ================================================================
  * Change Log
