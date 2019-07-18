@@ -127,48 +127,48 @@
 /*~struct~AnimationFace:
  *
  * @param id
- * @desc 해시 테이블을 이 ID 값으로 탐색하여 상태를 빠르게 취득합니다.
+ * @desc Specify the ID of the animated face. 
  * @default 0
  * 
  * @param x
  * @type number
- * @desc 화면 상의 좌표가 아니라, 스프라이트 시트 내에서의 시작점을 의미합니다.
+ * @desc Set the internal x-coordinate in the sprite sheet.
  * @default 0
  * 
  * @param y
  * @type number
- * @desc 화면 상의 좌표가 아니라, 스프라이트 시트 내에서의 시작점을 의미합니다.
+ * @desc Set the internal y-coordinate in the sprite sheet.
  * @default 0
  * 
  * @param width
  * @type number
- * @desc 화면에 표시 할 프레임의 가로 길이입니다.
+ * @desc Set the frame width in the sprite sheet.
  * @default 144
  * 
  * @param height
  * @type number
- * @desc 화면에 표시 할 프레임의 세로 길이입니다.
+ * @desc Set the frame height in the sprite sheet.
  * @default 144
  * 
  * @param cols
  * @type number
- * @desc 열의 수. 애니메이션을 하려면 스프라이트 시트에서 한 프레임만을 잘라야 합니다.
+ * @desc Set the cols value in the sprite sheets.
  * @default 4
  * 
  * @param maxFrames
  * @type number
- * @desc 최대 프레임입니다. 기본적으로 애니메이션 상태는 2 프레임 이상입니다.
+ * @desc Set the max frames. You can want to limit a max frame less than originally frames.
  * @default 3
  * 
  * @param delay
  * @type number
- * @desc 한 프레임이 끝나면 일정 시간 딜레이를 걸어줘야 자연스럽습니다.
+ * @desc Once started animation, Each frame will take a delay time.
  * @default 5.00
  * @decimals 2
  * 
  * @param looping
  * @type boolean
- * @desc 반복 재생을 위한 옵션입니다. 재생이 끝나면 반복적으로 재생되어야 하는 경우가 있습니다.
+ * @desc if you set the looping value is to true, The animated face will never stop.
  * @default false
  * @on true
  * @off false
