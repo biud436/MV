@@ -40,7 +40,7 @@
  * 
  * @help
  * // TODO:
- * 1. 아이템이 0번 슬롯이 아직 다른 곳에 있을 때, 같은 아이템을 획득하면 0번 슬롯으로 옮겨지는 문제가 있다.
+ * 1. 아이템이 0번 슬롯이 아닌 다른 곳에 있을 때, 같은 아이템을 획득하면 0번 슬롯으로 옮겨지는 문제가 있다.
  */
 
 var Imported = Imported || {};
@@ -969,7 +969,7 @@ var $gameInventory;
 
         restorePosition() {
             if(!this._view) return;
-            //TODO: $gameTemp가 아직 초기화되지 않은 경우에 해당한다.
+            //TODO: $gameSystem이 아직 초기화되지 않은 경우에 해당한다.
             this._view.x = $gameSystem.inventoryX || 0;
             this._view.y = $gameSystem.inventoryY || 0;            
         }
