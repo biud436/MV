@@ -1,3 +1,681 @@
+ /*:
+ * RS_MessageSystem.js
+ * @plugindesc (v0.1.58) Hangul Message System <RS_MessageSystem>
+ * @author biud436
+ *
+ * @param Font Size
+ * @type number
+ * @desc Specifies the text size as integer type.
+ * (default : 28)
+ * @default 28
+ *
+ * @param numVisibleRows
+ * @type number
+ * @desc Sets the number of rows to indicate in a message window.
+ * @default 4
+ * @min 1
+ * @param gradientColor1
+ * @desc Sets needed gradient color for the start point of the gradient text.
+ * @default #FFFFFF
+ *
+ * @param gradientColor2
+ * @desc Sets needed gradient color for the middle point of the gradient text.
+ * @default #F29661
+ *
+ * @param gradientColor3
+ * @desc Sets needed gradient color for the ended point of the gradient text.
+ * @default #CC3D3D
+ *
+ * @param Text Speed
+ * @type number
+ * @desc Sets the default text speed
+ * @default 0
+ * @min 0
+ *
+ * @param Text Min Size
+ * @type number
+ * @desc limits the text size by specifying the minimum text size when using the text code called '\}'.
+ * @default 24
+ *
+ * @param Text Max Size
+ * @type number
+ * @desc limits the text size by specifying the maximum text size when using the text code called '\{'.
+ * @default 96
+ *
+ * @param Text Start X
+ * @type number
+ * @desc The starting x position of the text in case of using a large face bitmap.
+ * @default 256
+ *
+ * @param Big Face OX
+ * @type number
+ * @desc Sets the large face bitmap's offset x
+ * @default 0
+ *
+ * @param Big Face OY
+ * @type number
+ * @desc Sets the large face bitmap's offset y
+ * @default 0
+ * 
+ * @param face Opacity
+ * @text Big Face Opacity
+ * @type number
+ * @desc Set the opacity using a specific game variable.
+ * (0 - 255)
+ * @default 0
+ *
+ * @param Show Big Face Back
+ * @type boolean
+ * @desc Whether display a large face bitmap on the backside of the message window.
+ * @default false
+ * @on Can Display
+ * @off Can't Display
+ *  
+ * @param face Direction
+ * @text Face Position
+ * @type select
+ * @desc Specify the position of the normal face image.
+ * @default 0
+ * @option Left
+ * @value 0
+ * @option Right
+ * @value 2
+ *
+ * @param Tab Size
+ * @type number
+ * @desc Sets the maximum width for tabs.
+ * @default 4
+ *
+ * @param back Opacity
+ * @type number
+ * @desc Sets the opacity of the message window for backgrounds.
+ * @default 192
+ *
+ * @param default Opacity
+ * @type number
+ * @desc Sets the default opacity of the message window.
+ * @default 255
+ *
+ * @param contents Opacity
+ * @type number
+ * @desc Sets the opacity of the message window for all contents.
+ * @default 255
+ *
+ * @param translucent Opacity
+ * @type number
+ * @desc Sets the translucent opacity of the message window.
+ * @default 160
+ *
+ * @param default outline width
+ * @type number
+ * @desc Specifies the maximum width for text borders.
+ * @default 2
+ *
+ * @param default outline Color
+ * @desc Specifies the color for text borders.
+ * @default rgba(0, 0, 0, 1.0)
+ *
+ * @param Default Windowskin
+ * @desc Specifies a window skin to message window
+ * @require 1
+ * @default Window
+ * @dir img/system/
+ * @type file
+ * 
+ * @param System Font Settings
+ * 
+ * @param systemFont
+ * @parent System Font Settings
+ * @text System Font
+ * @type struct<SystemFont>
+ * @desc The font is setting up as the system font.
+ * @default {"settings":"[\"{\\\"languageCode\\\":\\\"ko\\\",\\\"fontName\\\":\\\"나눔고딕, Dotum, AppleGothic, sans-serif\\\"}\",\"{\\\"languageCode\\\":\\\"zh\\\",\\\"fontName\\\":\\\"SimHei, Heiti TC, sans-serif\\\"}\"]"}
+ *
+ * @param Custom Font
+ *
+ * @param Using Custom Font
+ * @parent Custom Font
+ * @type boolean
+ * @desc Do you wish to use a custom font?
+ * @default false
+ *
+ * @param Custom Font Name
+ * @parent Custom Font
+ * @desc Specifies the name for fonts
+ * @default NanumBrush
+ *
+ * @param Custom Font Src
+ * @parent Custom Font
+ * @desc Specifies the file path for fonts
+ * @default fonts/NanumBrush.ttf
+ *
+ * @param Choice Window
+ *
+ * @param Choice Style
+ * @parent Choice Window
+ * @type select
+ * @desc Can change as the desired choice window style
+ * @default default
+ * @option RMXP Style
+ * @value RMXP
+ * @option Default Style
+ * @value default
+ *
+ * @param Name Window
+ *
+ * @param Name Windowskin
+ * @parent Name Window
+ * @desc Specifies a window skin for a name window
+ * @require 1
+ * @default Window
+ * @dir img/system/
+ * @type file
+ *
+ * @param Name Window X
+ * @parent Name Window
+ * @type number
+ * @desc Sets the name window's offset x by dx.
+ * @default 0
+ *
+ * @param Name Window Y
+ * @parent Name Window
+ * @type number
+ * @desc Sets the name window's offset y by dy.
+ * @default 0
+ *
+ * @param Name Window Inner Padding
+ * @parent Name Window
+ * @type number
+ * @desc Sets the name window's inner padding
+ * @default 10
+ *
+ * @param Name Window Position
+ * @parent Name Window
+ * @type select
+ * @desc The name window's position sets up as certain position in message window
+ * @default left
+ * @option Top of left (default)
+ * @value left
+ * @option Top of right
+ * @value right
+ *
+ * @param Text Color
+ * @type struct<TextColor>[]
+ * @desc This allows you to add desired text color.
+ * @default ["{\"Color Name\":\"c_lviolet \",\"Red\":\"200\",\"Green\":\"191\",\"Blue\":\"231\",\"Alpha\":\"1.0\"}"]
+ *
+ * @param Text Code
+ * @type struct<TextCode>
+ * @desc Can change with desired text codes
+ * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS굵게!\",\"AE굵게!\",\"AS이탤릭!\",\"AE이탤릭!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\",\"배경색\",\"FD\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS加粗!\",\"AE加粗!\",\"AS倾斜!\",\"AE倾斜!\",\"左\",\"中間\",\"右\",\"B\",\"B\",\"I\",\"I\",\"AEND\",\"HC\",\"FD\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"ASBOLD!\",\"AEBOLD!\",\"ASITALIC!\",\"AEITALIC!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\",\"HC\",\"FD\"]","Japanese":"[\"色\",\"テキストスピード\",\"輪郭の色\",\"輪郭のサイズ\",\"インデント\",\"太字!\",\"斜体!\",\"名前\",\"グラデーション\",\"パーティーメンバー\",\"アクタ\",\"変数\",\"アイコン\",\"INCREASE!\",\"DECREASE!\",\"通貨単位表示\",\"フキダシ\",\"整列\",\"数字\",\"テキストのサイズ\",\"TAB!\",\"CR!\",\"効果音\",\"ピクチャの表示\",\"ピクチャの消去\",\"アイテム\",\"武器\",\"防具\",\"職業\",\"敵キャラ\",\"ステート\",\"スキル\",\"顔\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS太字!\",\"AE太字!\",\"AS斜体!\",\"AE斜体!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\",\"HC\",\"FD\"]"}
+ *
+ * @param Sound Effects
+ *
+ * @param Text Sound ON/OFF
+ * @parent Sound Effects
+ * @type boolean
+ * @default true
+ *
+ * @param Text Sound
+ * @parent Sound Effects
+ * @type file
+ * @dir audio/se/
+ * @desc Plays back the text sound when processing for each text.
+ * @default Cursor1
+ * @require 1
+ *
+ * @param Text Sound Execution Condition
+ * @parent Sound Effects
+ * @type note
+ * @desc Make the probability to play the text sound.
+ * @default "Math.randomInt(100) < 45"
+ *
+ * @param Text Sound Pool Size
+ * @parent Sound Effects
+ * @type number
+ * @desc Specify the size of the text sound pool.
+ * @default 2
+ * @min 1
+ * 
+ * @param Text Sound Interval
+ * @parent Sound Effects
+ * @type number
+ * @desc Specify the text sound interval.
+ * @default 2
+ * @min 1
+ *
+ * @param Text Sound Volume
+ * @parent Sound Effects
+ * @type note
+ * @desc Make the volume of the text sound by the random value that is float between 0.0 and 1.0
+ * @default "0.4"
+ *
+ * @param Language Code
+ * @desc Specify the language code of the text codes.
+ * @default ko
+ *
+ * @param preload windowskin
+ * @require 1
+ * @dir img/system/
+ * @type file[]
+ * @desc preload windowskin files
+ * @default
+ * 
+ * @param Window Width
+ * @text Window Width
+ * @type string
+ * @desc Specify the window width
+ * (Graphics.boxWidth is the same as the screen width)
+ * @default Graphics.boxWidth
+ * 
+ * @param Gradient Style
+ * @text Gradient Style
+ * @type select
+ * @desc Specify the gradient style.
+ * @default linear-horizontal
+ * @option linear-horizontal
+ * @value linear-horizontal
+ * @option axial-horizontal
+ * @value axial-horizontal
+ * @option linear-vertical
+ * @value linear-vertical
+ * @option axial-vertical
+ * @value axial-vertical
+ * @option radial
+ * @value radial
+ * 
+ * @param Paragraph Minifier
+ * @text Automatic New Line
+ * @type boolean
+ * @desc Set the automatic line breaks.
+ * (The default value is to false)
+ * @default false
+ * @on true
+ * @off false
+ * 
+ * @help
+ * //! ===================================================================
+ * //! Introduction
+ * //! ===================================================================
+ * This plugin allows you to use text codes in English, Korean, Chinese, Japanese.
+ * 
+ * To send me general feedback, simply send an e-mail to biud436@gmail.com 
+ * and mention the plugin name via the subject of your message.
+ * 
+ * But, This plugin also provide the text codes in English instead of Korean.
+ * To use the text codes in English, 
+ * You must set with 'en' in the plugin parameter named 'Language Code'
+ * 
+ * English Text Codes :
+ *
+ *   \COLOR[html_color_name]
+ *   \TEXT_SPEED[value]
+ *   \OUTLINE_COLOR[color_name]
+ *   \OUTLINE_WIDTH[value]
+ *   \INDENT[value]
+ *   \BOLD!
+ *   \ITALIC!
+ *   \NAME<event_name>
+ *   \GRADIENT<text>
+ *   \PARTY_MEMBER[nth]
+ *   \PLAYER[nth]
+ *   \VAR[nth]
+ *   \ICON[nth]
+ *   \INCREASE!
+ *   \DECREASE!
+ *   \GOLD
+ *   \BALLOON[event_id]
+ *   \BALLOON[0]
+ *   \BALLOON[-1]
+ *   \ALIGN[1]
+ *   \ALIGN[2]
+ *   \NUM[number]
+ *   \TEXT_SIZE[number]
+ *   \TAB!
+ *   \CR!
+ *   \PLAY_SE<se_name>
+ *   \SHOW_PICTURE<nth, picture_name, origin_number, x, y>
+ *   \HIDE_PICTURE[nth]
+ *   \ITEM[nth]
+ *   \WEAPON[nth]
+ *   \ARMOR[nth]
+ *   \CLASSES[nth]
+ *   \ENEMY[nth]
+ *   \STATE[nth]
+ *   \SKILL[nth]
+ *   \FACE<face_name,face_index>
+ *   \FRIENDLY_TROOPS[nth]
+ *   \ENEMY_TROOPS[nth]
+ *   <B></B>
+ *   <I></I>
+ *   <LEFT></LEFT>
+ *   <CENTER></CENTER>
+ *   <RIGHT></RIGHT>
+ *   \HC[color_name]
+ *   \FD[face_position]
+ * 
+ * //? ===================================================================
+ * //? Opening the name window
+ * //? ===================================================================
+ * The name window is executed once before all the text codes start.
+ * and automatically transforms the name window to fit the width of the text area.
+ * 
+ * To open the name window, do as follows.
+ * You put the name text between Less-than sign and Greater-than sign.
+ * 
+ * \NAME<text>
+ * 
+ * You can add a certain command by attaching a colon(:) at the end of the name text.
+ * To change the position of the name window, as follows.
+ * 
+ * \NAME<text:left>
+ * \NAME<text:right>
+ * \NAME<text:center>
+ * 
+ * To change the opacity of the name window, as follows.
+ * 
+ * \NAME<text:opacity0>
+ * \NAME<text:defaultOpacity>
+ * 
+ * To set the name window above the speech balloon, as follows
+ * 
+ * \BALLOON[0]\NAME<eric>\COLOR[red]hello?
+ * 
+ * To change the text color in the name window, as follows
+ * 
+ * \NAME<\COLOR[red]eric>
+ *
+ * //? ===================================================================
+ * //? Opening the speech balloon window
+ * //? ===================================================================
+ * The speech balloon window is executed once before all the text codes start.
+ * and transforms the message window to fit with a target sprite and changes the position of it, too.
+ * 
+ * To create a new speech balloon window and indicate, do as follows.
+ * 
+ * You put the index between square brackets.
+ * if the index sets to 0, it'll set to a current event.
+ * if the index sets to -1, it'll set to a player.
+ * 
+ * \BALLOON[event_id]
+ * \BALLOON[0] ** current event
+ * \BALLOON[-1] ** player
+ * 
+ * In the battle, To indicate the window in above the battler, do as follows.
+ * it can obtain the nth battler of the party members and indicate the message window.
+ * 
+ * \FRIENDLY_TROOPS[nth]
+ * \FRIENDLY_TROOPS[1] is the same as \BALLOON[1] and it can obtain the second FRIENDLY battler.
+ * \FRIENDLY_TROOPS[2] is the same as \BALLOON[2]
+ * 
+ * This can obtain the nth battler of the enemy troops and indicate the message window.
+ * 
+ * \ENEMY_TROOPS[nth]
+ * \ENEMY_TROOPS[1] is the same as \BALLOON[-1]
+ * \ENEMY_TROOPS[2] is the same as \BALLOON[-2]
+ * 
+ * Note that it will appear as the normal message window if the battler is in a dead state or does not exist.
+ * 
+ * \BALLOON[1] // party member 1
+ * \BALLOON[2] // party member 2
+ * \BALLOON[3] // party member 3
+ * \BALLOON[4] // party member 4
+ * \BALLOON[5] // if the party member 5 is not existed, the target sets as party member 4.
+ * \BALLOON[-1] // enemy 1
+ * \BALLOON[-2] // enemy 2
+ * 
+ * In the battle, it must put a negative or positive numbers between square brackets.
+ * if you put to 0, it indicates as the normal message window.
+ * 
+ * \BALLOON[0] // normal message window
+ * 
+ * //? ===================================================================
+ * //? Changing the text speed.
+ * //? ===================================================================
+ * This text code is applied once in the one page so in the other page has been invalid.
+ * 
+ * To change the text speed in the message window, as follows.
+ * 
+ * \TEXT_SPEED[frame]
+ * 
+ * You put the speed value between square brackets.
+ * if the value is to 0, The text will be drawn without delay.
+ * if the value is to 1, The text will be drawn every 1 frame.
+ * 
+ * Note that it will be reset with initial value when starting the next page.
+ * 
+ * //? ===================================================================
+ * //? Making the bold and the italic text.
+ * //? ===================================================================
+ * To change the font setting, it is possible to do bold and italic 
+ * settings by using a html tag such as <B></B><I></I>.
+ * 
+ * For Example, you could use the following things.
+ * 
+ * \BALLOON[0]\NAME<Wanderers>Hello. <B>Eric.</B> <I>Welcome to the game.</I>
+ * 
+ * //? ===================================================================
+ * //? Indenting the text
+ * //? ===================================================================
+ * To indent the text in the current page, as follows.
+ * you can put the number for indent between square brackets.
+ * 
+ * \INDENT[value]
+ * 
+ * For instance, you are possible to use as follows.
+ * 
+ * \indent[10]Leaves change their color in the fall
+ * 
+ * Notice that the indent settings resets with initial value in the next page starts up.
+ * 
+ * //? ===================================================================
+ * //? A Text Alingment
+ * //? ===================================================================
+ * You can use a html tag such as <CENTER>, <LEFT>, <RIGHT> in the message window.
+ * For instance, You can use as follows.
+ * 
+ * <CENTER>The god appeared in the from of a fairy</CENTER>
+ * <RIGHT>The robbers hid in the bushes and fell on me from four sides.</RIGHT>
+ * 
+ * //? ===================================================================
+ * //? Setting the standing CG.
+ * //? ===================================================================
+ * This plugin allows you to show up the large face image on the message window.
+ * 
+ * To set the large face image that means the standing CG, 
+ * You must place Big_*.png that starts with prefix called Big_ from the img/faces folder 
+ * on your root project folder.
+ * 
+ * so it will be going to create using img/faces/Big_*.png
+ * 
+ * and then you select the face index that can set the position of it.
+ * 
+ * The face image has an index, as follows:
+ *    
+ *  0 1 2 3
+ *  4 5 6 7
+ * 
+ * For instance, 
+ * if the face index is to 0, the face image will show up on the left of message window.
+ * if the face index is to 1 or more, the face image will show up on the right of message window.
+ * 
+ * To change a standing CG after the message window starts up, you can use this text code.
+ * 
+ * \FACE<face_name,face_index>
+ * 
+ * You put the face name and face index between Less-than sign and Greater-than sign, as follows
+ * 
+ * \FACE<Big_ScaredActor,0>
+ * 
+ * But, this text code should be used for a special purpose.
+ * You should preload the face image because loading image is the asynchronous.
+ * Otherwise, You will not be going to show anything.
+ * 
+ * //? ===================================================================
+ * //? Changing the position of face image.
+ * //? ===================================================================
+ * To change the face image to the right side of message window, as follows.
+ * 
+ * You can use the text code called \FD[2] or 
+ * use the plugin command called 'Message facePos 2'
+ * 
+ * To show up the face image again to the left side on the message window, 
+ * You can use the text code called \FD[0] or use the plugin command called 'Message facePos 0'
+ * 
+ * //? ===================================================================
+ * //? Dealing with colors
+ * //? ===================================================================
+ * You can various color code such as web hex code or built-in color.
+ * it can use them everywhere that can use text codes.
+ * 
+ * \COLOR[c_red]
+ * \COLOR[c_silver]
+ * \COLOR[c_normal]
+ * \COLOR[#ffffff]
+ * \COLOR[aqua]
+ * \COLOR[rgb(255, 0, 0)]
+ * 
+ * To use web colors, you must pass hex format like as #RRGGBB.
+ * For example, the lime color is to \COLOR[#00FF00] or \COLOR[lime]
+ * 
+ * //! ===================================================================
+ * //! Plugin Commands
+ * //! ===================================================================
+ * 
+ * Changes the text speed. The n is the delay frame of each character:
+ *  
+ *  Message textSpeed [n]
+ * 
+ *  Message fontSize [n]
+ * 
+ * Changes the offset position of the message window. the n is the number value:
+ * 
+ *  Message offsetX [n]
+ *  Message offsetY [n]
+ * 
+ *  Message minFontSize [n]
+ *  Message maxFontSize [n]
+ * 
+ * Changes the number of lines. 
+ * Notice that the number of lines must restore as default value after changing lines:
+ * 
+ *  Message line [n]
+ * 
+ *  Message textStartX [n]
+ * 
+ *  Message name x [n]
+ *  Message name y [n]
+ *  Message name padding [n]
+ *  Message name windowskin [...]
+ * 
+ *  Message faceOX [n]
+ *  Message faceOY [n]
+ * 
+ * Changes the large face image's z-index.
+ * if the z-index is to 0, the face image will show up in front of the message window.
+ * if it is to -1, the face image will show up behind the background image of the message window.
+ * 
+ *  Message faceZ -1
+ *  Message faceZ [n]
+ * 
+ *  Message facePos [n]
+ *  Message setTabSize [n]
+ *  Message backgroundOpacity [n]
+ *  Message contentsOpacity [n]
+ * 
+ *  Message windowskin [...]
+ * 
+ * Changes the word wrap settings. 
+ * if true, it will be going to remove a custom line break in all of lines and it fills the texts finely.
+ * 
+ *  Message minifier true
+ *  Message minifier false
+ *
+ */
+/*~struct~TextCode:
+ *
+ * @param Korean
+ * @type string[]
+ * @desc Can specify the desired text code as Korean.
+ * (This will be used when the system language is in Korean)
+ * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴","아군","적그룹","[.]","[|]","[!]","[<]","[>]","[\\^]","AS굵게!","AE굵게!","AS이탤릭!","AE이탤릭!","LEFT","CENTER","RIGHT","B","B","I","I","AEND","배경색","FD"]
+ *
+ * @param Chinese
+ * @type string[]
+ * @desc Can specify the desired text code as Chinese
+ * (This will be used when the system language is in Chinese)
+ * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸","我军","敌人组","[.]","[|]","[!]","[<]","[>]","[\\^]","AS加粗!","AE加粗!","AS倾斜!","AE倾斜!","左","中間","右","B","B","I","I","AEND", "HC", "FD"]
+ *
+ * @param English
+ * @type string[]
+ * @desc Can specify the desired text code as English
+ * (This will be used when the system language is to English)
+ * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","ASBOLD!","AEBOLD!","ASITALIC!","AEITALIC!","LEFT","CENTER","RIGHT","B","B","I","I","AEND", "HC", "FD"]
+ *
+ * @param Japanese
+ * @type string[]
+ * @desc To work this, Note that you can set the system lanuage is to Japanese.
+ * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","AS太字!","AE太字!","AS斜体!","AE斜体!","LEFT","CENTER","RIGHT","B","B","I","I","AEND", "HC", "FD"]
+ * 
+ */
+/*~struct~TextColor:
+*
+* @param Color Name
+* @desc Specify desired color name
+* @default
+*
+* @param Red
+* @type number
+* @desc 0 ~ 255
+* @min 0
+* @max 255
+* @default 0
+*
+* @param Green
+* @type number
+* @desc 0 ~ 255
+* @min 0
+* @max 255
+* @default 0
+*
+* @param Blue
+* @type number
+* @desc 0 ~ 255
+* @min 0
+* @max 255
+* @default 0
+*
+* @param Alpha
+* @type number
+* @desc 0.0 ~ 1.0
+* @min 0
+* @max 1
+* @decimals 1
+* @default 1.0
+*
+*/
+/*~struct~SystemFont:
+ * 
+ * @param settings
+ * @text Settings
+ * @type struct<SystemFontDescriptor>[]
+ * @desc Set the font for each language.
+ * @default ["{\"languageCode\":\"ko\",\"fontName\":\"나눔고딕, Dotum, AppleGothic, sans-serif\"}","{\"languageCode\":\"zh\",\"fontName\":\"SimHei, Heiti TC, sans-serif\"}"]
+ *  
+ */
+/*~struct~SystemFontDescriptor:
+ * 
+ * @param languageCode
+ * @text Language Code
+ * @desc Please enter the language code.
+ * @default en
+ * 
+ * @param fontName
+ * @text Font Name
+ * @desc Specify multiple fonts. (Separated by commas)
+ * @default GameFont
+ * 
+ */
  /*:ko
  * RS_MessageSystem.js
  * @plugindesc (v0.1.58) 한글 메시지 시스템 <RS_MessageSystem>
@@ -322,12 +1000,12 @@
  * @off 미설정
  *
  * @help
- * 이 플러그인은 복잡한 텍스트 코드가 아닌 한글 단어로 직관적으로 텍스트 코드를 호출하기
- * 위해 개발된 것입니다. 제법 자유로운 라이센스를 따르고 있기 때문에 저작권 자를 따로
- * 표시할 필요도 없고 소스 코드를 허락 없이 수정해도 상관 없습니다. 심도있게 테스트를
- * 하진 않았기 때문에 버그가 있을 수 있지만, 버그는 언제든지 수정될 수 있습니다.
- *
- * 버그를 발견하신 분들은 게시 사이트의 댓글이나 메일을 통해 피드백 부탁 드립니다.
+ * 플러그인 사용 중에 궁금하신 사항이나,
+ * 버그 피드백은 아래 메일로 보내주시면 빠른 시일 내에 답변하겠습니다.
+ * 
+ * biud436@gmail.com 
+ * 
+ * 상업적인 이용 및 비상업적인 게임에서 모두 이용이 가능합니다.
  *
  * =============================================================================
  * 플러그인 커맨드
@@ -651,6 +1329,9 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.08.03 (v0.1.58) :
+ * - 말풍선 시 메시지 창이 캐릭터를 따라다니게 되는 기능을 추가하였습니다.
+ * - 스탠딩 CG를 전면에 표시할 때, 텍스트가 가려지지 않게 수정하였습니다. 
  * 2019.06.12 (v0.1.57) :
  * - 전투에서 말풍선, 적그룹, 아군 제어 코드가 동작하지 않는 문제를 해결하였습니다.
  * 2019.05.23 (v0.1.56) :
@@ -856,389 +1537,6 @@
  * @text 폰트명
  * @desc 여러 개의 폰트를 쓸 수 있습니다. (콤마로 구분합니다)
  * @default 나눔고딕, Dotum, AppleGothic, sans-serif
- * 
- */
-
-/*:
- * RS_MessageSystem.js
- * @plugindesc (v0.1.57) Hangul Message System <RS_MessageSystem>
- * @author biud436
- *
- * @param Font Size
- * @type number
- * @desc Specifies the text size as integer type.
- * (default : 28)
- * @default 28
- *
- * @param numVisibleRows
- * @type number
- * @desc Sets the number of rows to indicate in a message window.
- * @default 4
- * @min 1
- * @param gradientColor1
- * @desc Sets needed gradient color for the start point of the gradient text.
- * @default #FFFFFF
- *
- * @param gradientColor2
- * @desc Sets needed gradient color for the middle point of the gradient text.
- * @default #F29661
- *
- * @param gradientColor3
- * @desc Sets needed gradient color for the ended point of the gradient text.
- * @default #CC3D3D
- *
- * @param Text Speed
- * @type number
- * @desc Sets the default text speed
- * @default 0
- * @min 0
- *
- * @param Text Min Size
- * @type number
- * @desc limits the text size by specifying the minimum text size when using the text code called '\}'.
- * @default 24
- *
- * @param Text Max Size
- * @type number
- * @desc limits the text size by specifying the maximum text size when using the text code called '\{'.
- * @default 96
- *
- * @param Text Start X
- * @type number
- * @desc The starting x position of the text in case of using a large face bitmap.
- * @default 256
- *
- * @param Big Face OX
- * @type number
- * @desc Sets the large face bitmap's offset x
- * @default 0
- *
- * @param Big Face OY
- * @type number
- * @desc Sets the large face bitmap's offset y
- * @default 0
- * 
- * @param face Opacity
- * @text Big Face Opacity
- * @type number
- * @desc Set the opacity using a specific game variable.
- * (0 - 255)
- * @default 0
- *
- * @param Show Big Face Back
- * @type boolean
- * @desc Whether display a large face bitmap on the backside of the message window.
- * @default false
- * @on Can Display
- * @off Can't Display
- *  
- * @param face Direction
- * @text Face Position
- * @type select
- * @desc Specify the position of the normal face image.
- * @default 0
- * @option Left
- * @value 0
- * @option Right
- * @value 2
- *
- * @param Tab Size
- * @type number
- * @desc Sets the maximum width for tabs.
- * @default 4
- *
- * @param back Opacity
- * @type number
- * @desc Sets the opacity of the message window for backgrounds.
- * @default 192
- *
- * @param default Opacity
- * @type number
- * @desc Sets the default opacity of the message window.
- * @default 255
- *
- * @param contents Opacity
- * @type number
- * @desc Sets the opacity of the message window for all contents.
- * @default 255
- *
- * @param translucent Opacity
- * @type number
- * @desc Sets the translucent opacity of the message window.
- * @default 160
- *
- * @param default outline width
- * @type number
- * @desc Specifies the maximum width for text borders.
- * @default 2
- *
- * @param default outline Color
- * @desc Specifies the color for text borders.
- * @default rgba(0, 0, 0, 1.0)
- *
- * @param Default Windowskin
- * @desc Specifies a window skin to message window
- * @require 1
- * @default Window
- * @dir img/system/
- * @type file
- * 
- * @param System Font Settings
- * 
- * @param systemFont
- * @parent System Font Settings
- * @text System Font
- * @type struct<SystemFont>
- * @desc The font is setting up as the system font.
- * @default {"settings":"[\"{\\\"languageCode\\\":\\\"ko\\\",\\\"fontName\\\":\\\"나눔고딕, Dotum, AppleGothic, sans-serif\\\"}\",\"{\\\"languageCode\\\":\\\"zh\\\",\\\"fontName\\\":\\\"SimHei, Heiti TC, sans-serif\\\"}\"]"}
- *
- * @param Custom Font
- *
- * @param Using Custom Font
- * @parent Custom Font
- * @type boolean
- * @desc Do you wish to use a custom font?
- * @default false
- *
- * @param Custom Font Name
- * @parent Custom Font
- * @desc Specifies the name for fonts
- * @default NanumBrush
- *
- * @param Custom Font Src
- * @parent Custom Font
- * @desc Specifies the file path for fonts
- * @default fonts/NanumBrush.ttf
- *
- * @param Choice Window
- *
- * @param Choice Style
- * @parent Choice Window
- * @type select
- * @desc Can change as the desired choice window style
- * @default default
- * @option RMXP Style
- * @value RMXP
- * @option Default Style
- * @value default
- *
- * @param Name Window
- *
- * @param Name Windowskin
- * @parent Name Window
- * @desc Specifies a window skin for a name window
- * @require 1
- * @default Window
- * @dir img/system/
- * @type file
- *
- * @param Name Window X
- * @parent Name Window
- * @type number
- * @desc Sets the name window's offset x by dx.
- * @default 0
- *
- * @param Name Window Y
- * @parent Name Window
- * @type number
- * @desc Sets the name window's offset y by dy.
- * @default 0
- *
- * @param Name Window Inner Padding
- * @parent Name Window
- * @type number
- * @desc Sets the name window's inner padding
- * @default 10
- *
- * @param Name Window Position
- * @parent Name Window
- * @type select
- * @desc The name window's position sets up as certain position in message window
- * @default left
- * @option Top of left (default)
- * @value left
- * @option Top of right
- * @value right
- *
- * @param Text Color
- * @type struct<TextColor>[]
- * @desc This allows you to add desired text color.
- * @default ["{\"Color Name\":\"c_lviolet \",\"Red\":\"200\",\"Green\":\"191\",\"Blue\":\"231\",\"Alpha\":\"1.0\"}"]
- *
- * @param Text Code
- * @type struct<TextCode>
- * @desc Can change with desired text codes
- * @default {"Korean":"[\"색\",\"속도\",\"테두리색\",\"테두리크기\",\"들여쓰기\",\"굵게!\",\"이탤릭!\",\"이름\",\"그레디언트\",\"파티원\",\"주인공\",\"변수\",\"아이콘\",\"확대!\",\"축소!\",\"골드\",\"말풍선\",\"정렬자\",\"숫자\",\"크기\",\"탭!\",\"캐리지리턴!\",\"효과음\",\"그림표시\",\"그림제거\",\"아이템\",\"무기구\",\"방어구\",\"직업\",\"적군\",\"상태\",\"스킬\",\"얼굴\",\"아군\",\"적그룹\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS굵게!\",\"AE굵게!\",\"AS이탤릭!\",\"AE이탤릭!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\",\"배경색\",\"FD\"]","Chinese":"[\"色\",\"速度\",\"轮廓颜色\",\"轮廓宽度\",\"缩进\",\"加粗!\",\"倾斜!\",\"名字\",\"渐变颜色\",\"队伍成员\",\"角色\",\"变量\",\"图标\",\"增大!\",\"减少!\",\"金币\",\"对话框\",\"对齐\",\"数\",\"大小\",\"TAB!\",\"CR!\",\"音效播放\",\"显示图像\",\"隐藏图像\",\"道具\",\"武器\",\"装甲\",\"职业\",\"敌人\",\"状态\",\"技能\",\"脸\",\"我军\",\"敌人组\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS加粗!\",\"AE加粗!\",\"AS倾斜!\",\"AE倾斜!\",\"左\",\"中間\",\"右\",\"B\",\"B\",\"I\",\"I\",\"AEND\",\"HC\",\"FD\"]","English":"[\"COLOR\",\"TEXT_SPEED\",\"OUTLINE_COLOR\",\"OUTLINE_WIDTH\",\"INDENT\",\"BOLD!\",\"ITALIC!\",\"NAME\",\"GRADIENT\",\"PARTY_MEMBER\",\"PLAYER\",\"VAR\",\"ICON\",\"INCREASE!\",\"DECREASE!\",\"GOLD\",\"BALLOON\",\"ALIGN\",\"NUM\",\"TEXT_SIZE\",\"TAB!\",\"CR!\",\"PLAY_SE\",\"SHOW_PICTURE\",\"HIDE_PICTURE\",\"ITEM\",\"WEAPON\",\"ARMOR\",\"CLASSES\",\"ENEMY\",\"STATE\",\"SKILL\",\"FACE\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"ASBOLD!\",\"AEBOLD!\",\"ASITALIC!\",\"AEITALIC!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\",\"HC\",\"FD\"]","Japanese":"[\"色\",\"テキストスピード\",\"輪郭の色\",\"輪郭のサイズ\",\"インデント\",\"太字!\",\"斜体!\",\"名前\",\"グラデーション\",\"パーティーメンバー\",\"アクタ\",\"変数\",\"アイコン\",\"INCREASE!\",\"DECREASE!\",\"通貨単位表示\",\"フキダシ\",\"整列\",\"数字\",\"テキストのサイズ\",\"TAB!\",\"CR!\",\"効果音\",\"ピクチャの表示\",\"ピクチャの消去\",\"アイテム\",\"武器\",\"防具\",\"職業\",\"敵キャラ\",\"ステート\",\"スキル\",\"顔\",\"FRIENDLY_TROOPS\",\"ENEMY_TROOPS\",\"[.]\",\"[|]\",\"[!]\",\"[<]\",\"[>]\",\"[\\\\^]\",\"AS太字!\",\"AE太字!\",\"AS斜体!\",\"AE斜体!\",\"LEFT\",\"CENTER\",\"RIGHT\",\"B\",\"B\",\"I\",\"I\",\"AEND\",\"HC\",\"FD\"]"}
- *
- * @param Sound Effects
- *
- * @param Text Sound ON/OFF
- * @parent Sound Effects
- * @type boolean
- * @default true
- *
- * @param Text Sound
- * @parent Sound Effects
- * @type file
- * @dir audio/se/
- * @desc Plays back the text sound when processing for each text.
- * @default Cursor1
- * @require 1
- *
- * @param Text Sound Execution Condition
- * @parent Sound Effects
- * @type note
- * @desc Make the probability to play the text sound.
- * @default "Math.randomInt(100) < 45"
- *
- * @param Text Sound Pool Size
- * @parent Sound Effects
- * @type number
- * @desc Specify the size of the text sound pool.
- * @default 2
- * @min 1
- * 
- * @param Text Sound Interval
- * @parent Sound Effects
- * @type number
- * @desc Specify the text sound interval.
- * @default 2
- * @min 1
- *
- * @param Text Sound Volume
- * @parent Sound Effects
- * @type note
- * @desc Make the volume of the text sound by the random value that is float between 0.0 and 1.0
- * @default "0.4"
- *
- * @param Language Code
- * @desc Specify the language code of the text codes.
- * @default ko
- *
- * @param preload windowskin
- * @require 1
- * @dir img/system/
- * @type file[]
- * @desc preload windowskin files
- * @default
- * 
- * @param Window Width
- * @text Window Width
- * @type string
- * @desc Specify the window width
- * (Graphics.boxWidth is the same as the screen width)
- * @default Graphics.boxWidth
- * 
- * @param Gradient Style
- * @text Gradient Style
- * @type select
- * @desc Specify the gradient style.
- * @default linear-horizontal
- * @option linear-horizontal
- * @value linear-horizontal
- * @option axial-horizontal
- * @value axial-horizontal
- * @option linear-vertical
- * @value linear-vertical
- * @option axial-vertical
- * @value axial-vertical
- * @option radial
- * @value radial
- * 
- * @param Paragraph Minifier
- * @text Automatic New Line
- * @type boolean
- * @desc Set the automatic line breaks.
- * (The default value is to false)
- * @default false
- * @on true
- * @off false
- * 
- * @help
- * 
- */
-/*~struct~TextCode:
- *
- * @param Korean
- * @type string[]
- * @desc Can specify the desired text code as Korean.
- * (This will be used when the system language is in Korean)
- * @default ["색","속도","테두리색","테두리크기","들여쓰기","굵게!","이탤릭!","이름","그레디언트","파티원","주인공","변수","아이콘","확대!","축소!","골드","말풍선","정렬자","숫자","크기","탭!","캐리지리턴!","효과음","그림표시","그림제거","아이템","무기구","방어구","직업","적군","상태","스킬","얼굴","아군","적그룹","[.]","[|]","[!]","[<]","[>]","[\\^]","AS굵게!","AE굵게!","AS이탤릭!","AE이탤릭!","LEFT","CENTER","RIGHT","B","B","I","I","AEND","배경색","FD"]
- *
- * @param Chinese
- * @type string[]
- * @desc Can specify the desired text code as Chinese
- * (This will be used when the system language is in Chinese)
- * @default ["色","速度","轮廓颜色","轮廓宽度","缩进","加粗!","倾斜!","名字","渐变颜色","队伍成员","角色","变量","图标","增大!","减少!","金币","对话框","对齐","数","大小","TAB!","CR!","音效播放","显示图像","隐藏图像","道具","武器","装甲","职业","敌人","状态","技能","脸","我军","敌人组","[.]","[|]","[!]","[<]","[>]","[\\^]","AS加粗!","AE加粗!","AS倾斜!","AE倾斜!","左","中間","右","B","B","I","I","AEND", "HC", "FD"]
- *
- * @param English
- * @type string[]
- * @desc Can specify the desired text code as English
- * (This will be used when the system language is to English)
- * @default ["COLOR","TEXT_SPEED","OUTLINE_COLOR","OUTLINE_WIDTH","INDENT","BOLD!","ITALIC!","NAME","GRADIENT","PARTY_MEMBER","PLAYER","VAR","ICON","INCREASE!","DECREASE!","GOLD","BALLOON","ALIGN","NUM","TEXT_SIZE","TAB!","CR!","PLAY_SE","SHOW_PICTURE","HIDE_PICTURE","ITEM","WEAPON","ARMOR","CLASSES","ENEMY","STATE","SKILL","FACE","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","ASBOLD!","AEBOLD!","ASITALIC!","AEITALIC!","LEFT","CENTER","RIGHT","B","B","I","I","AEND", "HC", "FD"]
- *
- * @param Japanese
- * @type string[]
- * @desc To work this, Note that you can set the system lanuage is to Japanese.
- * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","AS太字!","AE太字!","AS斜体!","AE斜体!","LEFT","CENTER","RIGHT","B","B","I","I","AEND", "HC", "FD"]
- * 
- */
-/*~struct~TextColor:
-*
-* @param Color Name
-* @desc Specify desired color name
-* @default
-*
-* @param Red
-* @type number
-* @desc 0 ~ 255
-* @min 0
-* @max 255
-* @default 0
-*
-* @param Green
-* @type number
-* @desc 0 ~ 255
-* @min 0
-* @max 255
-* @default 0
-*
-* @param Blue
-* @type number
-* @desc 0 ~ 255
-* @min 0
-* @max 255
-* @default 0
-*
-* @param Alpha
-* @type number
-* @desc 0.0 ~ 1.0
-* @min 0
-* @max 1
-* @decimals 1
-* @default 1.0
-*
-*/
-/*~struct~SystemFont:
- * 
- * @param settings
- * @text Settings
- * @type struct<SystemFontDescriptor>[]
- * @desc Set the font for each language.
- * @default ["{\"languageCode\":\"ko\",\"fontName\":\"나눔고딕, Dotum, AppleGothic, sans-serif\"}","{\"languageCode\":\"zh\",\"fontName\":\"SimHei, Heiti TC, sans-serif\"}"]
- *  
- */
-/*~struct~SystemFontDescriptor:
- * 
- * @param languageCode
- * @text Language Code
- * @desc Please enter the language code.
- * @default en
- * 
- * @param fontName
- * @text Font Name
- * @desc Specify multiple fonts. (Separated by commas)
- * @default GameFont
  * 
  */
   
@@ -2786,7 +3084,7 @@ var Color = Color || {};
     if($gameMessage.faceName() !== "") {
 
       var isBigFace = /^Big_/.exec($gameMessage.faceName());
-      var backIndex = this.children.length - 1;
+      var backIndex = this._windowSpriteContainer.children.length - 1;
 
       if(RS.MessageSystem.Params.faceSide) {
         this.setFaceZIndex(isBigFace ? 0 : backIndex);
@@ -3015,12 +3313,12 @@ var Color = Color || {};
     this._faceContents = new Sprite();
     this._faceContents.x = 0;
     this._faceContents.y = 0;
-    this.addChild(this._faceContents);
+    this._windowSpriteContainer.addChild(this._faceContents);
     return this._faceContents;
   };
   
   Window_Message.prototype.removeFaceContents = function() {
-    if(this._faceContents) this.removeChild(this._faceContents);
+    if(this._faceContents) this._windowSpriteContainer.removeChild(this._faceContents);
   };
   
   /**
@@ -3127,7 +3425,7 @@ var Color = Color || {};
   
   Window_Message.prototype.setFaceZIndex = function (zIndex) {
     zIndex = zIndex || 0;
-    if(this.parent && RS.MessageSystem.Params.faceSide) this.setChildIndex( this._faceContents, zIndex );
+    if(this.parent && RS.MessageSystem.Params.faceSide) this._windowSpriteContainer.setChildIndex( this._faceContents, zIndex );
   };
   
   Window_Message.prototype.clearFaceBitmap = function () {
