@@ -10,6 +10,7 @@
 [1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
 
 ## 버전 별 다운로드
+<p>2019.08.03 (v0.1.58) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/8ead62b18b2d0291c5806d1610ad0a5239e1762e/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.06.12 (v0.1.57) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/6a0c7078008c7e0fb95b97806b94b2ecf1e11547/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.05.23 (v0.1.56) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/fe5ba535c6d887eb9291849db9ad51ed3b8f3b93/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.04.10 (v0.1.48) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/7ba5a4b7ec842de5b6a66b32dd3751a1a1ab719f/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -23,6 +24,9 @@
 ## 버전 로그
 
 ```text
+2019.08.03 (v0.1.58) :
+- 말풍선 시 메시지 창이 캐릭터를 따라다니게 되는 기능을 추가하였습니다.
+- 스탠딩 CG를 전면에 표시할 때, 텍스트가 가려지지 않게 수정하였습니다. 
 2019.06.12 (v0.1.57) :
 - 전투에서 말풍선, 적그룹, 아군 제어 코드가 동작하지 않는 문제를 해결하였습니다.
 2019.05.23 (v0.1.56) :
