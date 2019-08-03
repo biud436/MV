@@ -3807,7 +3807,8 @@ var Color = Color || {};
   Window_Message.prototype.updateInput = function() {
     if(alias_Window_Message_updateInput.call(this)) {
       // 말풍선 모드일 때, 말풍선 창이 캐릭터를 따라다니게 됩니다.
-      if(this.pause && $gameMessage.getBalloon() !== -2) {
+      if(this.pause && $gameMessage.getBalloon() !== -2 &&
+      SceneManager._scene instanceof Scene_Map) {
         this.updateBalloonPosition();
         // 멈춤 표시 스프라이트에는 애니메이션이 있어 몇 프레임 간의 여유를 두고 완전 표시된다.
         // 하지만 ES5 기준, 루비의 Fiber나 유니티의 코루틴처럼 안전하게 재진입할 수 있는 방법이 현재까지 없다.
