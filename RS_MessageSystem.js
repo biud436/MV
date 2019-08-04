@@ -287,7 +287,7 @@
  * @param Paragraph Minifier
  * @text Automatic New Line
  * @type boolean
- * @desc Set the automatic line breaks.
+ * @desc Specify whether the word wrap is used.
  * (The default value is to false)
  * @default false
  * @on true
@@ -556,32 +556,51 @@
  *  Message minFontSize [n]
  *  Message maxFontSize [n]
  * 
- * Changes the number of lines. 
+ * Changes the number of lines in which it appears on the message window.
  * Notice that the number of lines must restore as default value after changing lines:
  * 
  *  Message line [n]
  * 
  *  Message textStartX [n]
  * 
+ * Changes the offset or the padding of the name window in which it appears above the message window.
  *  Message name x [n]
  *  Message name y [n]
  *  Message name padding [n]
+ * 
+ * Changes the windowskin in which it appears on the name window. 
+ * Notice that you need to preload the window skin before starting the name window.
+ * if not, it can fail to correctly get the text color table inside the window skin.
  *  Message name windowskin [...]
  * 
+ * Changes the offset of the large face image in which it appears on the screen.
  *  Message faceOX [n]
  *  Message faceOY [n]
  * 
- * Changes the large face image's z-index.
+ * Changes the large face image's z-index in which it appears on the message window.
  * if the z-index is to 0, the face image will show up in front of the message window.
  * if it is to -1, the face image will show up behind the background image of the message window.
  * 
  *  Message faceZ -1
  *  Message faceZ [n]
  * 
+ * Changes the position of the normal face image in which it appears on the message window.
+ * By default, the face image will be located at the left side of the message window.
+ * if you use this plugin command, you can change the position of the face image.
+ * if the value is to 2, it will be located at the right side of the message window.
+ * if the value is t0 0, it will be located at the left side of the message window.
+ * 
  *  Message facePos [n]
+ * 
+ * Changes the size of the tab, which adds a space when you are used the text code called '\TAB!'
  *  Message setTabSize [n]
+ * 
  *  Message backgroundOpacity [n]
  *  Message contentsOpacity [n]
+ * 
+ * Changes the windowskin in which it appears on the message window. 
+ * Notice that you need to preload the window skin before starting the message window.
+ * if not, it can fail to correctly get the text color table inside the window skin.
  * 
  *  Message windowskin [...]
  * 
