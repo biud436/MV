@@ -299,7 +299,7 @@
  * //! ===================================================================
  * This plugin allows you to use text codes in English, Korean, Chinese, Japanese.
  * 
- * To send me general feedback, simply send an e-mail to biud436@gmail.com 
+ * To send me general feedback, simply send an e-mail to biud436(gmail.com)
  * and mention the plugin name via the subject of your message.
  * 
  * But, This plugin also provide the text codes in English instead of Korean.
@@ -1000,13 +1000,6 @@
  * @off 미설정
  *
  * @help
- * 플러그인 사용 중에 궁금하신 사항이나,
- * 버그 피드백은 아래 메일로 보내주시면 빠른 시일 내에 답변하겠습니다.
- * 
- * biud436@gmail.com 
- * 
- * 상업적인 이용 및 비상업적인 게임에서 모두 이용이 가능합니다.
- *
  * =============================================================================
  * 플러그인 커맨드
  * =============================================================================
