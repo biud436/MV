@@ -45,33 +45,41 @@
  * @param Text Start X
  * @type number
  * @desc The starting x position of the text in case of using a large face bitmap.
- * @default 256
+ * @default 6
+ * 
+ * @param Bust Option
  *
  * @param Big Face OX
+ * @parent Bust Option
  * @type number
  * @desc Sets the large face bitmap's offset x
  * @default 0
  *
  * @param Big Face OY
+ * @parent Bust Option
  * @type number
  * @desc Sets the large face bitmap's offset y
  * @default 0
  * 
  * @param face Opacity
+ * @parent Bust Option
  * @text Big Face Opacity
  * @type number
- * @desc Set the opacity using a specific game variable.
+ * @desc Set the opacity of the large face.
  * (0 - 255)
- * @default 0
+ * @default 255
  *
  * @param Show Big Face Back
+ * @text Face Z-Index
+ * @parent Bust Option
  * @type boolean
- * @desc Whether display a large face bitmap on the backside of the message window.
+ * @desc if true, the bust image'll show behind the background of the message window.
  * @default false
- * @on Can Display
- * @off Can't Display
+ * @on true
+ * @off false
  *  
  * @param face Direction
+ * @parent Bust Option
  * @text Face Position
  * @type select
  * @desc Specify the position of the normal face image.
@@ -745,7 +753,7 @@
  * @parent 큰 페이스칩
  * @type number
  * @desc 큰 페이스칩이 설정되어있을 때 텍스트 시작 좌표를 정수로 기입하세요.
- * @default 256
+ * @default 6
  *
  * @param 큰 페이스칩 OX
  * @parent 큰 페이스칩
@@ -1341,6 +1349,9 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.08.07 (v0.1.59) :
+ * - 희미한 배경, 투명한 배경 설정 시, 스탠딩 CG가 보이지 않던 문제를 수정하였습니다.
+ * - 스탠딩 CG가 설정되었을 때의 텍스트 시작 좌표를 6으로 수정하였습니다.
  * 2019.08.03 (v0.1.58) :
  * - 말풍선 시 메시지 창이 캐릭터를 따라다니게 되는 기능을 추가하였습니다.
  * - 스탠딩 CG를 전면에 표시할 때, 텍스트가 가려지지 않게 수정하였습니다. 
@@ -3096,7 +3107,7 @@ var Color = Color || {};
     if($gameMessage.faceName() !== "") {
 
       var isBigFace = /^Big_/.exec($gameMessage.faceName());
-      var backIndex = this._windowSpriteContainer.children.length - 1;
+      var backIndex = 2;
 
       if(RS.MessageSystem.Params.faceSide) {
         this.setFaceZIndex(isBigFace ? 0 : backIndex);
@@ -3325,12 +3336,13 @@ var Color = Color || {};
     this._faceContents = new Sprite();
     this._faceContents.x = 0;
     this._faceContents.y = 0;
-    this._windowSpriteContainer.addChild(this._faceContents);
+    
+    this.addChildAt(this._faceContents, 2);
     return this._faceContents;
   };
   
   Window_Message.prototype.removeFaceContents = function() {
-    if(this._faceContents) this._windowSpriteContainer.removeChild(this._faceContents);
+    if(this._faceContents) this.removeChild(this._faceContents);
   };
   
   /**
@@ -3437,7 +3449,7 @@ var Color = Color || {};
   
   Window_Message.prototype.setFaceZIndex = function (zIndex) {
     zIndex = zIndex || 0;
-    if(this.parent && RS.MessageSystem.Params.faceSide) this._windowSpriteContainer.setChildIndex( this._faceContents, zIndex );
+    if(this.parent && RS.MessageSystem.Params.faceSide) this.setChildIndex( this._faceContents, zIndex );
   };
   
   Window_Message.prototype.clearFaceBitmap = function () {
