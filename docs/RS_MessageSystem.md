@@ -1,3 +1,7 @@
+[▽ English Translation](#Introduction)
+
+---
+
 ## 플러그인 소개
 
 이 플러그인은 영어 위주로 되어있는 기존 텍스트 코드들을 한국어로 사용할 수 있게 해주는 플러그인입니다. 
@@ -817,3 +821,371 @@ number가 -1이면 메시지 창이 페이스칩을 가리고, 다른 값이면 
 메시지 페이스칩위치 0
 메시지 페이스칩위치 2
 ```
+
+# Introduction
+This plugin allows you to use text codes in English, Korean, Chinese, Japanese.
+
+To send me general feedback, simply send an e-mail to biud436@gmail.com
+and mention the plugin name via the subject of your message.
+
+But, This plugin also provide the text codes in English instead of Korean.
+To use the text codes in English, 
+You must set with 'en' in the plugin parameter named 'Language Code'
+
+English Text Codes :
+```
+  \COLOR[html_color_name]
+  \TEXT_SPEED[value]
+  \OUTLINE_COLOR[color_name]
+  \OUTLINE_WIDTH[value]
+  \INDENT[value]
+  \BOLD!
+  \ITALIC!
+  \NAME<event_name>
+  \GRADIENT<text>
+  \PARTY_MEMBER[nth]
+  \PLAYER[nth]
+  \VAR[nth]
+  \ICON[nth]
+  \INCREASE!
+  \DECREASE!
+  \GOLD
+  \BALLOON[event_id]
+  \BALLOON[0]
+  \BALLOON[-1]
+  \ALIGN[1]
+  \ALIGN[2]
+  \NUM[number]
+  \TEXT_SIZE[number]
+  \TAB!
+  \CR!
+  \PLAY_SE<se_name>
+  \SHOW_PICTURE<nth, picture_name, origin_number, x, y>
+  \HIDE_PICTURE[nth]
+  \ITEM[nth]
+  \WEAPON[nth]
+  \ARMOR[nth]
+  \CLASSES[nth]
+  \ENEMY[nth]
+  \STATE[nth]
+  \SKILL[nth]
+  \FACE<face_name,face_index>
+  \FRIENDLY_TROOPS[nth]
+  \ENEMY_TROOPS[nth]
+  <B></B>
+  <I></I>
+  <LEFT></LEFT>
+  <CENTER></CENTER>
+  <RIGHT></RIGHT>
+  \HC[color_name]
+  \FD[face_position]
+```
+# Opening the name window
+The name window is executed once before all the text codes start.
+and automatically transforms the name window to fit the width of the text area.
+
+To open the name window, do as follows.
+You put the name text between Less-than sign and Greater-than sign.
+
+```html
+\NAME<text>
+```
+
+You can add a certain command by attaching a colon(:) at the end of the name text.
+To change the position of the name window, as follows.
+
+```html
+\NAME<text:left>
+\NAME<text:right>
+\NAME<text:center>
+```
+
+To change the opacity of the name window, as follows.
+
+```html
+\NAME<text:opacity0>
+\NAME<text:defaultOpacity>
+```
+
+To set the name window above the speech balloon, as follows
+
+```html
+\BALLOON[0]\NAME<eric>\COLOR[red]hello?
+```
+
+To change the text color in the name window, as follows
+
+```html
+\NAME<\COLOR[red]eric>
+```
+
+# Opening the speech balloon window
+The speech balloon window is executed once before all the text codes start.
+and transforms the message window to fit with a target sprite and changes the position of it, too.
+
+To create a new speech balloon window and indicate, do as follows.
+
+You put the index between square brackets.
+if the index sets to 0, it'll set to a current event.
+if the index sets to -1, it'll set to a player.
+
+```js
+\BALLOON[event_id]
+\BALLOON[0] // current event
+\BALLOON[-1] // player
+```
+
+In the battle, To indicate the window in above the battler, do as follows.
+it can obtain the nth battler of the party members and indicate the message window.
+
+```
+\FRIENDLY_TROOPS[nth]
+\FRIENDLY_TROOPS[1] is the same as \BALLOON[1] and it can obtain the second FRIENDLY battler.
+\FRIENDLY_TROOPS[2] is the same as \BALLOON[2]
+```
+
+This can obtain the nth battler of the enemy troops and indicate the message window.
+
+```
+\ENEMY_TROOPS[nth]
+\ENEMY_TROOPS[1] is the same as \BALLOON[-1]
+\ENEMY_TROOPS[2] is the same as \BALLOON[-2]
+```
+
+Note that it will appear as the normal message window if the battler is in a dead state or does not exist.
+
+```
+\BALLOON[1] // party member 1
+\BALLOON[2] // party member 2
+\BALLOON[3] // party member 3
+\BALLOON[4] // party member 4
+\BALLOON[5] // if the party member 5 is not existed, the target sets as party member 4.
+\BALLOON[-1] // enemy 1
+\BALLOON[-2] // enemy 2
+```
+
+In the battle, it must put a negative or positive numbers between square brackets.
+if you put to 0, it indicates as the normal message window.
+
+```js
+\BALLOON[0] // normal message window
+```
+
+# Changing the text speed.
+This text code is applied once in the one page so in the other page has been invalid.
+
+To change the text speed in the message window, as follows.
+
+```js
+\TEXT_SPEED[frame]
+```
+
+You put the speed value between square brackets.
+if the value is to 0, The text will be drawn without delay.
+if the value is to 1, The text will be drawn every 1 frame.
+
+Note that it will be reset with initial value when starting the next page.
+
+# Making the bold and the italic text.
+To change the font setting, it is possible to do bold and italic 
+settings by using a html tag such as ```<B></B><I></I>```
+
+For Example, you could use the following things.
+
+```html
+\BALLOON[0]\NAME<Wanderers>Hello. <B>Eric.</B> <I>Welcome to the game.</I>
+```
+
+# Indenting the text
+To indent the text in the current page, as follows.
+you can put the number for indent between square brackets.
+
+```
+\INDENT[value]
+```
+
+For instance, you are possible to use as follows.
+
+```
+\indent[10]Leaves change their color in the fall
+```
+
+Notice that the indent settings resets with initial value in the next page starts up.
+
+# A Text Alingment
+You can use a html tag such as ```<CENTER>, <LEFT>, <RIGHT>``` in the message window.
+For instance, You can use as follows.
+
+```html
+<CENTER>The god appeared in the from of a fairy</CENTER>
+<RIGHT>The robbers hid in the bushes and fell on me from four sides.</RIGHT>
+```
+
+# Setting the standing CG.
+This plugin allows you to show up the large face image on the message window.
+
+To set the large face image that means the standing CG, 
+You must place Big_*.png that starts with prefix called Big_ from the img/faces folder 
+on your root project folder.
+
+so it will be going to create using **img/faces/Big_*.png**
+
+and then you select the face index that can set the position of it.
+
+The face image has an index, as follows:
+   
+```
+ 0 1 2 3
+ 4 5 6 7
+```
+
+For instance, 
+if the face index is to ```0```, the face image will show up on the left of message window.
+if the face index is to ```1``` or more, the face image will show up on the right of message window.
+
+To change a standing CG after the message window starts up, you can use this text code.
+
+```html
+\FACE<face_name,face_index>
+```
+
+You put the face name and face index between Less-than sign and Greater-than sign, as follows
+
+```html
+\FACE<Big_ScaredActor,0>
+```
+
+But, this text code should be used for a special purpose.
+You should preload the face image because loading image is the asynchronous.
+Otherwise, You will not be going to show anything.
+
+# Changing the position of face image.
+To change the face image to the right side of message window, as follows.
+
+You can use the text code called ```\FD[2]``` or 
+use the plugin command called ```Message facePos 2```
+
+To show up the face image again to the left side on the message window, 
+You can use the text code called ```\FD[0]``` or use the plugin command called ```Message facePos 0```
+
+# Dealing with colors
+You can various color code such as web hex code or built-in color.
+it can use them everywhere that can use text codes.
+
+```js
+\COLOR[c_red]
+\COLOR[c_silver]
+\COLOR[c_normal]
+\COLOR[#ffffff]
+\COLOR[aqua]
+\COLOR[rgb(255, 0, 0)]
+```
+
+To use web colors, you must pass hex format like as #RRGGBB.
+For example, the lime color is to ```\COLOR[#00FF00]``` or ```\COLOR[lime]```
+
+# Plugin Commands
+
+Changes the text speed. The n is the delay frame of each character:
+ 
+ ```
+  Message textSpeed [n]
+ ```
+
+```
+ Message fontSize [n]
+```
+
+Changes the offset position of the message window. the n is the number value:
+
+```
+ Message offsetX [n]
+ Message offsetY [n]
+```
+
+```
+ Message minFontSize [n]
+ Message maxFontSize [n]
+```
+
+Changes the number of lines in which it appears on the message window.
+Notice that the number of lines must restore as default value after changing lines:
+
+```
+ Message line [n]
+```
+
+```
+ Message textStartX [n]
+```
+
+Changes the offset or the padding of the name window in which it appears above the message window.
+
+```
+ Message name x [n]
+ Message name y [n]
+ Message name padding [n]
+```
+
+Changes the windowskin in which it appears on the name window. 
+Notice that you need to preload the window skin before starting the name window.
+if not, it can fail to correctly get the text color table inside the window skin.
+
+```
+ Message name windowskin [...]
+```
+
+Changes the offset of the large face image in which it appears on the screen.
+
+```
+ Message faceOX [n]
+ Message faceOY [n]
+``` 
+
+Changes the large face image's z-index in which it appears on the message window.
+if the z-index is to ```0```, the face image will show up in front of the message window.
+if it is to ```-1```, the face image will show up behind the background image of the message window.
+
+```
+ Message faceZ -1
+ Message faceZ [n]
+``` 
+
+Changes the position of the normal face image in which it appears on the message window.
+By default, the face image will be located at the left side of the message window.
+if you use this plugin command, you can change the position of the face image.
+if the value is to ```2```, it will be located at the right side of the message window.
+if the value is t0 ```0```, it will be located at the left side of the message window.
+
+```
+ Message facePos [n]
+```
+
+Changes the size of the tab, which adds a space when you are used the text code called '\TAB!'
+
+```
+ Message setTabSize [n]
+```
+
+```
+ Message backgroundOpacity [n]
+ Message contentsOpacity [n]
+``` 
+
+Changes the windowskin in which it appears on the message window. 
+Notice that you need to preload the window skin before starting the message window.
+if not, it can fail to correctly get the text color table inside the window skin.
+
+```
+ Message windowskin [...]
+```
+
+Changes the word wrap settings. 
+if true, it will be going to remove a custom line break in all of lines and it fills the texts finely.
+
+```
+ Message minifier true
+ Message minifier false
+```
+
+[▲ TOP](#)
