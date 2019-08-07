@@ -1,6 +1,6 @@
  /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.58) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.59) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -705,7 +705,7 @@
  */
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.58) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.59) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
