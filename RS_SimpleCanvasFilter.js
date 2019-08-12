@@ -1,11 +1,20 @@
+//================================================================
+// RS_SimpleCanvasFilter.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin applies CSS filter to canvas
  * @author biud436
  * @help
+ * Notice that this plugin applies filter effects to canvas element only.
+ * 
  * =============================================================================
  * Plugin Command
  * =============================================================================
- * 
  * CanvasFilter Whole blur 5px
  * CanvasFilter Whole brightness 0.5
  * CanvasFilter Whole contrast 150%

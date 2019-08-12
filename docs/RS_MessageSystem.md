@@ -1079,6 +1079,14 @@ it can use them everywhere that can use text codes.
 \COLOR[#ffffff]
 \COLOR[aqua]
 \COLOR[rgb(255, 0, 0)]
+\OUTLINE_COLOR[color_name]
+\HC[color_name]
+```
+
+To change the background color of your text area, do as follows.
+
+```
+\HC[color_name] 
 ```
 
 To use web colors, you must pass hex format like as #RRGGBB.

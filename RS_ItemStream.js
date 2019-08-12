@@ -1,3 +1,11 @@
+//================================================================
+// RS_ItemStream.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to send a certain item or gold to certain save file.
  * @author biud436

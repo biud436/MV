@@ -1,3 +1,11 @@
+//================================================================
+// RS_BattleTimerAbortControl.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to be maintaining the battle even if the timer is less than 0 on battle.
  * @author biud436

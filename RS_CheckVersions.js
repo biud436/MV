@@ -1,3 +1,11 @@
+//================================================================
+// RS_CheckVersions.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2017 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to open the market page in a boot scene if there has detected a new version for this game <RS_CheckVersions>
  * @author biud436

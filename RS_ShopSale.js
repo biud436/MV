@@ -1,3 +1,11 @@
+//================================================================
+// RS_ShopSale.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_ShopSale.js
  * @plugindesc (v1.1.0) This plugin provides simple commands for shop processing.

@@ -1,3 +1,11 @@
+//================================================================
+// RS_ExitDialog.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_ExitDialog.js
  * @plugindesc This plugin allows you to show up the exit dialog on Android.

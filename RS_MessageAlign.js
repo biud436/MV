@@ -1,3 +1,11 @@
+//================================================================
+// RS_MessageAlign.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2017 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc (v1.0.12) This plugin allows you to align the text in the message system.
  * @author biud436

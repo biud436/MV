@@ -1,3 +1,11 @@
+//================================================================
+// RS_SweetInputDialog.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to change an UI of the alert window by using SweetAlert library. <RS_SweetInputDialog>
  * @author biud436

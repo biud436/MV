@@ -1,3 +1,11 @@
+//================================================================
+// RS_SimpleLight.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin applies the lighting effect. <RS_SimpleLight>
  * @author biud436

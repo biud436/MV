@@ -1,3 +1,11 @@
+//================================================================
+// RS_MessagePausePosition.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to change the pause position <RS_MessagePausePosition>
  * @author biud436

@@ -1,3 +1,11 @@
+//================================================================
+// RS_AnimataionVisibility.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to remove the animation on the screen when the character is deactivated. <RS_AnimataionVisibility>
  * @author biud436

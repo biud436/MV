@@ -1,3 +1,11 @@
+//================================================================
+// RS_OnlyOGG.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
 * @plugindesc This plugin can play OGG files only in the RPG Maker MV.
 * @author biud436

@@ -1,3 +1,11 @@
+//================================================================
+// RS_MenuInformation.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_MenuInformation.js
  * @plugindesc This plugin provides the Information Window that adds a text via the global variable.

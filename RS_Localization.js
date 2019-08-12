@@ -1,3 +1,11 @@
+//================================================================
+// RS_Localization.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
 * RS_Localization.js
 * @plugindesc This plugin provides the solution to change the game language. <RS_Localization>

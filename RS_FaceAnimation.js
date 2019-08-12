@@ -1,3 +1,11 @@
+//================================================================
+// RS_FaceAnimation.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to show up the animation face in the messsage window <RS_FaceAnimation>
  * @author biud436

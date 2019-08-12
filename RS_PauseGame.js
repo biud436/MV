@@ -1,3 +1,11 @@
+//================================================================
+// RS_PauseGame.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2017 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows user to pause the game. <RS_PauseGame>
  * @author biud436

@@ -1,3 +1,11 @@
+//================================================================
+// RS_Window_KorNameEdit.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_Window_KorNameEdit.js
  * @plugindesc This plugin allows you to type in korean in the Name Input Proccessing <RS_Window_KorNameEdit>

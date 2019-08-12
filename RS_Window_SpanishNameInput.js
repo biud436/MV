@@ -1,3 +1,11 @@
+//================================================================
+// RS_Window_SpanishNameInput.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to type the Spanish name in the Name Input <RS_Window_SpanishNameInput>
  * @author biud436

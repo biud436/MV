@@ -1,3 +1,11 @@
+//================================================================
+// RS_HMS_GameOptions.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to control the message speed and font size in your own game options. <RS_HMS_GameOptions>
  * @author biud436

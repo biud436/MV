@@ -1,3 +1,11 @@
+//================================================================
+// RS_FastTransfer.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2017 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to transfer the player without downloading the data when transferring as same map.
  * @author biud436

@@ -1,3 +1,11 @@
+//================================================================
+// RS_RefreshManager.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_RefreshManager.js
  * @plugindesc This plugin creates or changes a file called 'js/plugins.js'

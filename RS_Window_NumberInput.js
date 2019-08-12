@@ -1,3 +1,11 @@
+//================================================================
+// RS_Window_NumberInput.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to type the number value <RS_Window_NumberInput>
  * @author biud436

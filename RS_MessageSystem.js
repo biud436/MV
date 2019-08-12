@@ -1,3 +1,11 @@
+//================================================================
+// RS_MessageSystem.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
  /*:
  * RS_MessageSystem.js
  * @plugindesc (v0.1.59) Hangul Message System <RS_MessageSystem>
@@ -542,6 +550,11 @@
  * \COLOR[#ffffff]
  * \COLOR[aqua]
  * \COLOR[rgb(255, 0, 0)]
+ * 
+ * \OUTLINE_COLOR[color_name]
+ * 
+ * To change the background color of your text area, do as follows.
+ * \HC[color_name]
  * 
  * To use web colors, you must pass hex format like as #RRGGBB.
  * For example, the lime color is to \COLOR[#00FF00] or \COLOR[lime]

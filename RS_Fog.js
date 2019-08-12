@@ -1,3 +1,11 @@
+//================================================================
+// RS_Fog.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to deal with FOG like RPG Maker XP <RS_Fog>
  * @author biud436

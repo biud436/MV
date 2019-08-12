@@ -1,3 +1,11 @@
+//================================================================
+// RS_EventTouch.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_EventTouch.js
  * @plugindesc This plugin allows you to execute the event when you are clicking the event.

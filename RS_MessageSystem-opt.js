@@ -1,3 +1,11 @@
+//================================================================
+// RS_MessageSystem-opt.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================ 
  /*:
  * @plugindesc (v0.1.57-android-opt) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
@@ -1930,7 +1938,7 @@ var Color = Color || {};
 
     if($gameMessage.faceName() !== "") {
       var isBigFace = /^Big_/.exec($gameMessage.faceName());
-      var backIndex = this.children.length - 1;
+      var backIndex = this._windowSpriteContainer.children.length - 1;
 
       if($.Params.faceSide) {
         this.setFaceZIndex(isBigFace ? 0 : backIndex);
@@ -2251,7 +2259,7 @@ var Color = Color || {};
   
   Window_Message.prototype.setFaceZIndex = function (zIndex) {
     zIndex = zIndex || 0;
-    if(this.parent && $.Params.faceSide) this.setChildIndex( this._faceContents, zIndex );
+    if(this.parent && $.Params.faceSide) this._windowSpriteContainer.setChildIndex( this._faceContents, zIndex );
   };
   
   Window_Message.prototype.clearFaceBitmap = function () {
@@ -3512,7 +3520,7 @@ var Color = Color || {};
   };
   
   Window_ChoiceList.prototype.needToUpdateWhenChangingVisibility = function () {
-    var visible = $.Params.isTempSpriteContainerVisibility;
+    var visible = RS.MessageSystem.Params.isTempSpriteContainerVisibility;
     if(this._windowSpriteContainer.visible !== visible) {
       this._windowSpriteContainer.visible = visible;
     }

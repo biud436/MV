@@ -1,3 +1,11 @@
+//================================================================
+// RS_HUD_4m.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_HUD_4m.js
  * @plugindesc (v1.2.8b) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.

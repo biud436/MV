@@ -1,3 +1,11 @@
+//================================================================
+// RS_SelfVariables.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_SelfVariables.js
  * @plugindesc This plugin allows you to set up the variable on event itself. <RS_SelfVariables>

@@ -1,3 +1,11 @@
+//================================================================
+// RS_GhostEffect.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to implement the character effect like as ghost. <RS_GhostEffect>
  * @author biud436

@@ -1,3 +1,11 @@
+//================================================================
+// RS_ResourceUpdate.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_ResourceUpdate.js
  * @plugindesc This plugin allows you to download adding resource files on PC.

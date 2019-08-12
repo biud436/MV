@@ -1,3 +1,11 @@
+//================================================================
+// RS_ModeTextCurosrFixes.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin can prevent changing cursor in the mode box.
  * @author biud436

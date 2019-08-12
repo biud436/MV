@@ -1,3 +1,11 @@
+//================================================================
+// RS_LoadTimeChecker.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to check the time that has passed since last save. <RS_LoadTimeChecker> 
  * @author biud436

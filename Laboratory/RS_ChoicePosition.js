@@ -1,3 +1,11 @@
+//================================================================
+// RS_ChoicePosition.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2017 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
 * @plugindesc This plugin allows you to set up the position of choice list window.
 * @author biud436

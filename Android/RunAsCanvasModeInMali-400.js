@@ -1,3 +1,11 @@
+//================================================================
+// RunAsCanvasModeInMali-400.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin sets the renderer type is to as canvas mode in ARM Mali-400 GPU (Galaxy S2, Galaxy S3)
  * @help

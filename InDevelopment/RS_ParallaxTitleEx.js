@@ -1,3 +1,11 @@
+//================================================================
+// RS_ParallaxTitleEx.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_ParallaxTitleEx.js
  * @plugindesc This plugin adds various text animations to the title screen.

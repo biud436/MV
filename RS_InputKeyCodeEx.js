@@ -1,3 +1,11 @@
+//================================================================
+// RS_InputKeyCodeEx.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015-2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin provides all of keycodes in the Input class <RS_InputKeyCodeEx>
  * @author biud436

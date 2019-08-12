@@ -1,3 +1,11 @@
+//================================================================
+// RS_PictureTool.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to run with two types of events when a certain picture collides with some sprites.
  * @author biud436
@@ -137,11 +145,13 @@ RS.PictureTool = RS.PictureTool || {};
     var th = $gameMap.tileHeight();
     var sx = this._character.screenX();
     var sy = this._character.screenY();
+    var width = this.patternWidth();
+    var height = this.patternHeight();
 
     if(this.frame) {
       frame =  this.frame;
     } else {
-      frame = new Rectangle(sx - tw / 2, sy - th, this.width, this.height);
+      frame = new Rectangle(sx - tw / 2, sy - th, width, height);
     }
 
     this._character._spriteFrame = frame;
@@ -157,18 +167,20 @@ RS.PictureTool = RS.PictureTool || {};
   };
 
   /**
-   * 픽처 찾기
+   * Find the piciture from the picture container.
+   * @param {Number} picId this is a number starts from 1.
    */
   $.findPicture = function (picId) {
     var container;
     if(!$.isMap()) return false;
     container = SceneManager._scene._spriteset._pictureContainer.children;
     if(!container) return false;
-    return container[picId - 1];
+    return container[picId];
   };
 
   /**
-   * 그림의 영역 찾기
+   * Find the frame of the picture sprite.
+   * @param {Number} picId this is a number starts from 1.
    */
   $.findPictureBound = function(picId) {
     var pic = $.findPicture(picId);
@@ -180,6 +192,11 @@ RS.PictureTool = RS.PictureTool || {};
     }
   };
 
+  /**
+   * Check whether the picture has been collide with target.
+   * @param {Rectangle} p specify the frame of the drawing object.
+   * @param {Rectangle} q specify the frame of the drawing object.
+   */
   $.isCheckHit = function (p, q) {
     var ret = false;
     if( (p.x + p.width > q.x) && (p.x < q.x + q.width)) {
@@ -209,6 +226,11 @@ RS.PictureTool = RS.PictureTool || {};
 
   };
 
+  /**
+   * @param {Number} picId this is a number starts from 1.
+   * @param {Number} eventId this is a number starts from 1.
+   * @param {Boolean} isPlayer check whether the target is a player character.
+   */
   $.isValid = function (picId, eventId, isPlayer) {
 
     var pic = $.findPictureBound(picId);

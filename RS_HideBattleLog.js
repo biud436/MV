@@ -1,3 +1,11 @@
+//================================================================
+// RS_HideBattleLog.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_HideBattleLog.js
  * @plugindesc This plugin provides function that shows or hides a battle log.

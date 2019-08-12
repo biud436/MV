@@ -1,3 +1,11 @@
+//================================================================
+// RS_WaveFilter.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_WaveFilter.js
  * @plugindesc This plugin applies the wave effect to the all objects by using the Fragment Shader.

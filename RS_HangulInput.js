@@ -1,3 +1,11 @@
+//================================================================
+// RS_HangulInput.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to type the Korean <RS_HangulInput>
  * @author biud436

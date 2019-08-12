@@ -1,3 +1,11 @@
+//================================================================
+// RS_CustomCrypto.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc (v1.0.1) This plugin allows you to ecrypt with AES method in your save file.
  * @date 2015.12.29

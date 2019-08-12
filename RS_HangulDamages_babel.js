@@ -1,3 +1,11 @@
+//================================================================
+// RS_HangulDamages_babel.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to indicate the damage digits using Korean language <RS_HangulDamages>
  * @author biud436

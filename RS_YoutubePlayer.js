@@ -1,3 +1,11 @@
+//================================================================
+// RS_YoutubePlayer.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_YoutubePlayer.js
  * @plugindesc This plugin allows you to start playback of the YouTube video <RS_YoutubePlayer>

@@ -1,3 +1,11 @@
+//================================================================
+// RS_TimedWeatherEffects.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to set timed weather effects.
  * @author biud436

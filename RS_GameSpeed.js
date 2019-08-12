@@ -1,3 +1,11 @@
+//================================================================
+// RS_GameSpeed.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to speed up or speed down the game speed. <RS_GameSpeed>
  * @author biud436
@@ -16,13 +24,13 @@
  * =======================================================
  * The plugin commands allows you to change the game speed during the game.
  * 
- * This plugin command change the game speed with 30 frame per second. 
- *  ChangeFPS 30
+ * Change the game speed with 30 frame per second. 
+ * ChangeFPS 30
  * 
- * This plugin command change the game speed with 60 frame per second.
+ * Change the game speed with 60 frame per second.
  * ChangeFPS 60
  * 
- * This plugin command change the game speed with 120 frame per second.
+ * Change the game speed with 120 frame per second.
  * ChangeFPS 120
  * 
  * =======================================================

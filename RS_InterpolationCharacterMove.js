@@ -1,3 +1,11 @@
+//================================================================
+// RS_InterpolationCharacterMove.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to prevent the movement of the character from splashing in the slow mobile device.
  * @author biud436

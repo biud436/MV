@@ -1,3 +1,11 @@
+//================================================================
+// RS_InputDialog.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_InputDialog.js
  * @plugindesc This plugin allows you to display Text Edit Box on the screen. <RS_InputDialog>

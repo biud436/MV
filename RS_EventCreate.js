@@ -1,3 +1,11 @@
+//================================================================
+// RS_EventCreate.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc (v1.0.9) This plugin allows you to create or copy or delete an event
  *

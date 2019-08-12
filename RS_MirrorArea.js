@@ -1,3 +1,11 @@
+//================================================================
+// RS_MirrorArea.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to indicate the mirror image the character on the screen <RS_MirrorArea>
  * @author biud436

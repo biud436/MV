@@ -1,3 +1,11 @@
+//================================================================
+// RS_MultipleViewports.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_MultipleViewports.js
  * @plugindesc (v1.2.2) This plugin provides the multiple viewports. <RS_MultipleViewports>

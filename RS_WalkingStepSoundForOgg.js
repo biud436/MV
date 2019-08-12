@@ -1,3 +1,11 @@
+//================================================================
+// RS_WalkingStepSoundForOgg.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_WalkingStepSoundForOgg
  * @plugindesc <RS_WalkingStepSoundForOgg>

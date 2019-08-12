@@ -1,3 +1,11 @@
+//================================================================
+// RS_BattleBackgroundRadialBlur.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to shows up the radial blur to bitmap. <RS_BattleBackgroundRadialBlur>
  * @author biud436

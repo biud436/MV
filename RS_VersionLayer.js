@@ -1,3 +1,11 @@
+//================================================================
+// RS_VersionLayer.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc (v1.0.2) This plugin allows you to show up the version anywhere. <RS_VersionLayer>
  * @author biud436

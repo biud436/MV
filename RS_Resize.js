@@ -1,3 +1,11 @@
+//================================================================
+// RS_Resize.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin can resize Character and Tileset images for RPG Maker XP. <RS_Resize>
  * @author biud436

@@ -1,3 +1,11 @@
+//================================================================
+// RS_SaveFileList.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2015 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
 * RS_SaveFileList.js
 * @plugindesc This plugin displays a face graphic on the save & load screen. <RS_SaveFileList>

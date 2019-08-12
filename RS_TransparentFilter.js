@@ -1,3 +1,11 @@
+//================================================================
+// RS_TransparentFilter.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to set up the desired transparent color. <RS_TransparentFilter>
  * @author biud436

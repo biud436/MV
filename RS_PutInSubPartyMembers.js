@@ -1,3 +1,11 @@
+//================================================================
+// RS_PutInSubPartyMembers.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2019 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to add a extra party member when all of party members are dead <RS_PutInSubPartyMembers>
  * @author biud436

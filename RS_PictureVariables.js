@@ -1,3 +1,11 @@
+//================================================================
+// RS_PictureVariables.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to get the size of specific picture <RS_PictureVariables>
  * @author biud436

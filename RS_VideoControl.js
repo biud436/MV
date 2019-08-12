@@ -1,3 +1,11 @@
+//================================================================
+// RS_VideoControl.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2016 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * RS_VideoControl.js
  * @plugindesc This plugin allows you to indicagte the play control bar of a video

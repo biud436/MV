@@ -1,3 +1,11 @@
+//================================================================
+// RS_MoreEnemies.js
+// ---------------------------------------------------------------
+// The MIT License
+// Copyright (c) 2018 biud436
+// ---------------------------------------------------------------
+// Free for commercial and non commercial use.
+//================================================================
 /*:
  * @plugindesc This plugin allows you to add a lot of enemies. <RS_MoreEnemies>
  * @author biud436
