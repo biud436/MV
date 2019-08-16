@@ -135,11 +135,7 @@
  * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
  * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
  *
- * YTPlayer stop // 유튜브 동영상 재생을 중단합니다
- *
- * 버그 제보는 아래 메일 주소로 보내주세요.
- *
- * biud436@gmail.com
+ * YTPlayer stop // 유튜브 동영상 재생을 중단합니다.
  *
  * =============================================================================
  * 스크립트 명령
