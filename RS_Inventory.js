@@ -443,6 +443,8 @@ var $gameInventory;
     // InventoryItem
     //==========================================================
 
+    const assignValues = Symbol("assignValues");
+
     class InventoryItem extends DraggingableSprite
     {
         
@@ -502,7 +504,7 @@ var $gameInventory;
             super.update(); 
         }
 
-        assignValues(func) {
+        [assignValues](func) {
             let w = this._size.width;
             let h = this._size.height;  
             let dw = w * Params.maxRows;
@@ -511,7 +513,7 @@ var $gameInventory;
         }
 
         savePosition() {
-            this.assignValues((w, h, dw) => {
+            this[assignValues]((w, h, dw) => {
                 this._startX = this.x.clamp(0, dw - w);
                 this._startY = this.y.clamp(h, dw - h);    
                 this._startPX = this.x.clamp(0, dw - w);
@@ -520,7 +522,7 @@ var $gameInventory;
         }
 
         updatePosition() {
-            this.assignValues((w, h, dw) => {
+            this[assignValues]((w, h, dw) => {
                 this._startPX = this.x.clamp(0, dw - w);
                 this._startPY = this.y.clamp(h, dw - h);                  
             })             
@@ -655,7 +657,7 @@ var $gameInventory;
                 itemCommand.run();
 
             }
-        }        
+        }         
     }
 
     //==========================================================
@@ -693,7 +695,7 @@ var $gameInventory;
             this._divideAreaForHeight = Params.maxRows;
             
             this._size = new PIXI.Rectangle(0, 0, 256, 256);
-            this._backgroundBitmap = new Bitmap(this._size.width, this._size.height + 32);
+            this._backgroundBitmap = new Bitmap(this._size.width, this._size.height + itemHeight);
             this._background = new Sprite();   
             this._data = $gameInventory.slots();
             this._itemLayer = [];
@@ -789,17 +791,20 @@ var $gameInventory;
             });
             
             const text = new PIXI.Text(goldValue, style);
+            const itemHeight = Params.itemBox.height;
+            const maxRows = Params.maxRows;
             text.x = this._size.width - text.width;
-            text.y = 32 * 8;
+            text.y = itemHeight * maxRows;
             this._itemLayer.push(text);
             this.addChild(text);
         }
 
         createTable(itemWidth, itemHeight) {
+
             for (let y = 0; y < 7; y++) {
                 for (let x = 0; x < 8; x++) {
                     let mx = (itemWidth * x);
-                    let my = 32 + (itemHeight * y);                         
+                    let my = itemHeight + (itemHeight * y);                         
                     // 슬롯 색상 값을 램덤으로 한다. (다시 그려진다는 것을 효과적으로 확인하기 위해)
                     let color = 'rgba(30,30,30,0.75)';
                     this._backgroundBitmap.fillRect(mx, my, itemWidth - 2, itemHeight - 2, color );
