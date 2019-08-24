@@ -8,15 +8,14 @@
 //================================================================
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.8b) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
- *
+ * @plugindesc (v1.2.8b) This plugin allows you show up the HUD elements such as the hp-gauge bar on the screen.
  * @author biud436
  *
  * @param --- Image Name
  *
  * @param EXP Gauge
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'exr' from img/pictures folder.
+ * @desc Specify the image that indicates the EXP from the img/pictures folder.
  * @default exr
  * @require 1
  * @dir img/pictures/
@@ -24,7 +23,8 @@
  *
  * @param Empty Gauge
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'gauge' from img/pictures folder.
+ * @desc All gauge-bar images will draw above the empty gauge bar. 
+ * if it takes the damage, this will reveal on the screen.
  * @default gauge
  * @require 1
  * @dir img/pictures/
@@ -32,7 +32,7 @@
  *
  * @param HP Gauge
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'hp' from img/pictures folder.
+ * @desc Specify the image that indicates the HP from the img/pictures folder.
  * @default hp
  * @require 1
  * @dir img/pictures/
@@ -40,7 +40,7 @@
  *
  * @param MP Gauge
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'mp' from img/pictures folder.
+ * @desc Specify the image that indicates the MP from the img/pictures folder.
  * @default mp
  * @require 1
  * @dir img/pictures/
@@ -48,7 +48,7 @@
  *
  * @param HUD Background
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'hud_window_empty' from img/pictures folder.
+ * @desc Specify the image that indicates the background from the img/pictures folder.
  * @default hud_window_empty
  * @require 1
  * @dir img/pictures/
@@ -56,7 +56,7 @@
  *
  * @param Masking
  * @parent --- Image Name
- * @desc Specifies to import file in the path named 'masking' from img/pictures folder.
+ * @desc To show face image, it must subtract the outside of the mask image from the face image.
  * @default masking
  * @require 1
  * @dir img/pictures/
@@ -66,56 +66,56 @@
  *
  * @param Face Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the face sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the sprite variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 0, 0, true
  *
  * @param HP Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the hp sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the sprite variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 160, 43, true
  *
  * @param MP Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the mp sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the sprite variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 160, 69, true
  *
  * @param EXP Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the exp sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the sprite variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 83, 91, true
  *
  * @param HP Text Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the hp text sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the text variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 160, 53, true
  *
  * @param MP Text Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the mp text sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the text variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 160, 79, true
  *
  * @param Level Text Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the level text sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the text variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 60, 80, true
  *
  * @param EXP Text Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the exp text sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the text variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 120.5, 93, true
  *
  * @param Name Text Position
  * @parent --- Image Custom Position
- * @desc Specifies the properties of the name text sprite by x, y, visible
- * (Draw it at changing position relative to a background sprite)
+ * @desc Determine the values of the text variables x, y and visible.
+ * Each variables would distinguish with comma.
  * @default 54, 53, false
  *
  * @param --- Noraml
@@ -142,13 +142,13 @@
  * @param Gaussian Blur
  * @parent --- Noraml
  * @type boolean
- * @desc Sets the Gaussian Blur.
+ * @desc You can set to be either the blur or non-blur.
  * @default true
  *
  * @param Show
  * @parent --- Noraml
  * @type boolean
- * @desc Sets the visible status. (default : true)
+ * @desc Sets whether the hud is showed. (default : true)
  * @default true
  *
  * @param Opacity
@@ -156,13 +156,13 @@
  * @type number
  * @min 0
  * @max 255
- * @desc Sets the opacity.
+ * @desc Sets the opacity value between 0 and 255.
  * @default 255
  *
  * @param Arrangement
  * @parent --- Noraml
  * @type string[]
- * @desc Create an array to set the anchor of each HUD.
+ * @desc Sets the position anchor of each hud elements on the screen.
  * @default ["LeftTop", "LeftBottom", "RightTop", "RightBottom"]
  *
  * @param Anchor
@@ -173,8 +173,7 @@
  * @param preloadImportantFaces
  * @parent --- Noraml
  * @type string[]
- * @desc Allow you to pre-load the base face chips.
- * (If you do not set this parameter, It can cause errors in the game.)
+ * @desc All face images can load before starting the map.
  * @default ["Actor1", "Actor2", "Actor3"]
  *
  * @param Battle Only
@@ -187,8 +186,7 @@
  * @param Show Comma
  * @parent --- Noraml
  * @type boolean
- * @desc Sets the value that indicates whether this parameter displays
- * the values with commas every three digits.
+ * @desc Set whether the number value distinguishes with comma every three digits.
  * @default false
  *
  * @param Max Exp Text
@@ -200,7 +198,7 @@
  * @parent --- Noraml
  * @type number
  * @min 1
- * @desc Specifies the maximum number of party members that displays within the game screen.
+ * @desc Specify the number of the hud elements displays on the screen.
  * @default 4
  *
  * @param --- Font
@@ -213,7 +211,7 @@
  * @param Korean Font
  * @parent --- Font
  * @desc Specifies the desired fonts
- * @default NanumGothic, Dotum, AppleGothic, sans-serif
+ * @default NanumGothic, GameFont, Dotum, AppleGothic, sans-serif
  *
  * @param Standard Font
  * @parent --- Font
