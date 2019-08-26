@@ -20,7 +20,7 @@
  * @text pauseY
  * @desc Specify the posotion to y.
  * (Note that this will be evaluant as the Javascript)
- * @default this.height - padding;
+ * @default this.height;
  * 
  * @help
  * ==============================================================
@@ -59,6 +59,9 @@
  * Version Log
  * ==============================================================
  * 2019.05.06 (v1.0.0) - First Relase.
+ * 2019.08.26 (v1.0.1) :
+ * - Fixed the issue that the pause sprite is moving to original position in the balloon mode.
+ * - Fixed the issue that the variables named tx, ty are not defined.
  */
 /*:ko
  * @plugindesc Pause 스프라이트의 위치를 변경합니다. <RS_MessagePausePosition>
@@ -72,7 +75,7 @@
  * @param pauseY
  * @text Y 좌표
  * @desc 
- * @default this.height - padding;
+ * @default this.height;
  * 
  * @help
  * ==============================================================
@@ -95,6 +98,9 @@
  * Version Log
  * ==============================================================
  * 2019.05.06 (v1.0.0) - First Relase.
+ * 2019.08.26 (v1.0.1) :
+ * - 한글 메시지 시스템에서 tx, ty가 정의되지 않았다고 나오는 오류를 수정하였습니다.
+ * - 한글 메시지 시스템의 말풍선 모드에서 제대로 동작하지 않는 문제를 수정하였습니다.
  */
 
 var Imported = Imported || {};
@@ -137,16 +143,13 @@ RS.MessagePausePosition = RS.MessagePausePosition || {};
 
             var padding = this.standardPadding();
 
-            if($gameMessage.getBalloon() === -2) {
-                data.tx = eval($.Params.pauseX);
-                data.ty = eval($.Params.pauseY);
-            }
+            data.tx = eval($.Params.pauseX);
+            data.ty = eval($.Params.pauseY);
 
-            this._windowPauseSignSprite.move(tx, ty);
+            this._windowPauseSignSprite.move(data.tx, data.ty);
             this._windowPauseSignSprite.scale.y = data.scaleY;
             this._nameWindow.y = data.ny;
             
-            this.startWait(1);
         };    
 
         Window_Message.prototype.resetFontSettings = function() {
@@ -162,10 +165,8 @@ RS.MessagePausePosition = RS.MessagePausePosition || {};
             var tx = this._width / 2;
             var ty = this._height;
 
-            if($gameMessage.getBalloon() === -2) {
-                tx = eval($.Params.pauseX);
-                ty = eval($.Params.pauseY);
-            }
+            tx = eval($.Params.pauseX);
+            ty = eval($.Params.pauseY);
 
             this._windowPauseSignSprite.move(tx, ty);
             this._windowPauseSignSprite.scale.y = 1;
