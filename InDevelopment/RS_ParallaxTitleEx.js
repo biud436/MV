@@ -5,121 +5,109 @@
 // Copyright (c) 2016 biud436
 // ---------------------------------------------------------------
 // Free for commercial and non commercial use.
+// Change Log
+//================================================================
+// 2016.03.04 (v1.0.1) - Added the comments for include used files.
+// 2016.11.21 (v1.0.2) - Fixed the bugs.
+// 2016.11.21 (v1.0.3) : Added new features.
+// - Removed the error that causes when using objects for older versions.
+// - Correctly created the contents of the default sprite button
+// by reading the elements in the command window and bound them.
+// 2016.11.22 (v1.0.4) - Added backgrounds that have applied a parallax scrolling.
+// 2016.11.22 (v1.0.5) - Optimized some code.
+// 2019.08.28 (v1.0.7) : 
+// - Added features for the new Plugin Manager in RPG Maker MV v1.5+
+// - Update docs.
 //================================================================
 /*:
- * RS_ParallaxTitleEx.js
- * @plugindesc This plugin adds various text animations to the title screen.
+ * @plugindesc This plugin allows you to apply parallax scrolling feature to title screen<RS_ParallaxTitleEx>
  * @author biud436
  *
- * @param parallaxImage1
- * @desc parallax Image
- * @default
- * @require 1
- * @dir img/parallaxes
- * @type file
- *
- * @param parallaxImage2
- * @desc parallax Image
- * @default
- * @require 1
- * @dir img/parallaxes
- * @type file
- *
- * @param parallaxImage3
- * @desc parallax Image
- * @default
- * @require 1
- * @dir img/parallaxes
- * @type file
- *
- * @param parallaxImage4
- * @desc parallax Image
- * @default
- * @require 1
- * @dir img/parallaxes
- * @type file
- *
- * @param parallaxImage5
- * @desc parallax Image
- * @default
- * @require 1
- * @dir img/parallaxes
- * @type file
- *
+ * @param Parallax
+ * @type struct<Position>[]
+ * @desc 여러 이미지를 타이틀 배경에 설정할 수 있습니다.
+ * @default ["{\"image\":\"BlueSky\",\"x\":\"0\",\"y\":\"0\",\"blend\":\"0\"}"]
+ * 
  * @param TextAnimation
- * @desc Please fill out one of these styles.
- * (Push, Split)
+ * @desc 텍스트 애니메이션을 설정하세요.
  * @default Push
+ * @type select
+ * @option Push
+ * @option Split
  *
  * @param Interval
- * @desc Specifies the distance difference between buttons.
+ * @type number
+ * @desc 버튼 사이의 거리 차이를 지정하세요
  * @default 80
  *
  * @param Menu Size
- * @desc Specifies the number of menus.
+ * @type number
+ * @desc 타이틀 커맨드의 버튼 갯수를 지정하세요
  * @default 3
  *
  * @param Angle Speed
- * @desc Specify angular velocity.
+ * @type number
+ * @desc 타이틀 커맨드의 각속도를 지정하세요
  * @default 120.0
+ * @decimals 1
  *
  * @param Text outline Color
- * @desc Specify Text outline Color.
+ * @desc 텍스트 테두리 색상을 지정하세요
  * @default #6799FF
  *
  * @param Selected Color
- * @desc Specifies the color of the text when the button is selected.
+ * @desc 버튼이 선택되어있을 때의 색상을 지정하세요
  * @default #6799FF
  *
  * @param Unselected Color
- * @desc Specifies the color of the text when the button is unselected.
+ * @desc 버튼이 선택되지 않았을 때의 색상을 지정하세요
  * @default #888888
  *
  * @param Circular Rotation
- * @desc Specifies whether the menu rotates in a circle.
+ * @type boolean
+ * @desc 원형 회전으로 설정하려면 true로 설정하세요.
  * @default false
  *
  * @param X Offset
- * @desc Please write JavaScript code.
+ * @desc 타이틀 커맨드가 생성될 좌표를 지정하세요.
  * @default this._commandWindow.width / 4
  *
- * @param ---------
- * @desc
- * @default
- *
  * @param Subtext
- * @desc Sets the content of the subtext of the game title text.
+ * @desc 게임 제목 밑에 표시될 부제목을 입력하세요.
  * @default v1.0.0
  *
  * @param Font Family
- * @desc Specify a font.
- * @default Arial
- *
- * @param Position ---
- * @desc
- * @default
- *
- * @param Parallax Position1
- * @desc [x, y, blend_mode]
- * @default [0, 0, 0]
- *
- * @param Parallax Position2
- * @desc [x, y, blend_mode]
- * @default [0, 0, 0]
- *
- * @param Parallax Position3
- * @desc [x, y, blend_mode]
- * @default [0, 0, 0]
- *
- * @param Parallax Position4
- * @desc [x, y, blend_mode]
- * @default [0, 0, 0]
- *
- * @param Parallax Position5
- * @desc [x, y, blend_mode]
- * @default [0, 0, 0]
+ * @desc 타이틀 텍스트의 폰트를 설정하세요.
+ * @default GameFont
+ * 
+ * @param No Save File Opacity
+ * @type number
+ * @desc 세이브 파일이 없을 때, 세이브 화면 불러오기 버튼의 투명도를 낮춥니다.
+ * @default 64
+ * 
+ * @param Parallax Formula
+ * @desc 더 멀리 있는 배경을 더 느리게 스크롤 하기 위해 사용하는 공식입니다.
+ * @default ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
  *
  * @help
+ * 
+ * 이 플러그인은 타이틀에 패러랠스 스크롤링을 적용하는 플러그인입니다.
+ * 타이틀 이미지는 원경 img/parallaxes 폴더에 넣어두어야 합니다.
+ * 
+ * 타이틀 이미지를 2개 이상 사용할 때,
+ * 스크롤 속도는 거리에 따라 다르게 지정됩니다.
+ * 
+ * 예를 들면, 더 멀리 있는 배경이 더 천천히 움직이게 됩니다.
+ * 앞에 있는 배경은 뒷배경을 투영할 수 있게 투명성을 지니고 있어야 합니다.
+ * 나무, 건물, 구름 등을 겹쳐 타이틀을 더 깊이감있게 표현할 수 있습니다.
+ * 
+ * 스크롤 속도는 다음과 같이 단순한 식으로 결정됩니다.
+ * 
+ * ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
+ * 
+ * 쉽게 말하면 보는 사람으로부터 더 멀어질 수록 스크롤 속도가 느려지게 됩니다.
+ * 이 값은 정확한 예측 값은 아니나, 멀리 있는 배경을 천천히 움직이게 하는 데에는 충분합니다.
+ * 
  * =============================================================================
  * Installation
  * =============================================================================
@@ -132,41 +120,239 @@
  * - 'Push' animation that text becomes smaller and larger.
  * - 'Split' animation that the text grows in the horizontal direction and becomes smaller.
  * The default animation of them is same as 'Push' animation.
- * =============================================================================
- * Blend Modes (base on Pixi4)
- * =============================================================================
- * You can find the 'Parallax Position' parameter in your Plugin Manager
- * and then notice that you properly set up the blend mode in 'Parallax Position' parameter
- * and it should be set as an javascript array literal.
+ */
+/*~struct~Position:
  *
- * NORMAL: 0,
- * ADD: 1,
- * MULTIPLY: 2,
- * SCREEN: 3,
- * OVERLAY: 4,
- * DARKEN: 5,
- * LIGHTEN: 6,
- * COLOR_DODGE: 7,
- * COLOR_BURN: 8,
- * HARD_LIGHT: 9,
- * SOFT_LIGHT: 10,
- * DIFFERENCE: 11,
- * EXCLUSION: 12,
- * HUE: 13,
- * SATURATION: 14,
- * COLOR: 15,
- * LUMINOSITY: 16
- * =============================================================================
- * Change Log
- * =============================================================================
- * 2016.03.04 (v1.0.1) - Added the comments for include used files.
- * 2016.11.21 (v1.0.2) - Fixed the bugs.
- * 2016.11.21 (v1.0.3) : Added new features.
- * - Removed the error that causes when using objects for older versions.
- * - Correctly created the contents of the default sprite button
- * by reading the elements in the command window and bound them.
- * 2016.11.22 (v1.0.4) - Added backgrounds that have applied a parallax scrolling.
- * 2016.11.22 (v1.0.5) - Optimized some code.
+ * @param image
+ * @desc
+ * @default
+ * @require 1
+ * @dir img/parallaxes
+ * @type file
+ *
+ * @param x
+ * @type number
+ * @desc
+ * @default 0
+ * 
+ * @param y
+ * @type number
+ * @desc
+ * @default 0
+ * 
+ * @param blend
+ * @type select
+ * @desc Set up the blend type.
+ * @default 0
+ * @option NORMAL
+ * @value 0
+ * @option ADD
+ * @value 1
+ * @option MULTIPLY
+ * @value 2
+ * @option SCREEN
+ * @value 3
+ * @option OVERLAY
+ * @value 4
+ * @option DARKEN
+ * @value 5
+ * @option LIGHTEN
+ * @value 6
+ * @option COLOR_DODGE
+ * @value 7
+ * @option COLOR_BURN
+ * @value 8
+ * @option HARD_LIGHT
+ * @value 9
+ * @option SOFT_LIGHT
+ * @value 10
+ * @option DIFFERENCE
+ * @value 11
+ * @option EXCLUSION
+ * @value 12
+ * @option HUE
+ * @value 13
+ * @option SATURATION
+ * @value 14
+ * @option COLOR
+ * @value 15
+ * @option LUMINOSITY
+ * @value 16
+ * @option NORMAL_NPM
+ * @value 17
+ * @option ADD_NPM
+ * @value 18
+ * @option SCREEN_NPM
+ * @value 19
+ */
+/*:ko
+ * @plugindesc <RS_ParallaxTitleEx>
+ * @author biud436
+ *
+ * @param Parallax
+ * @text 이미지 설정
+ * @type struct<Position>[]
+ * @desc 여러 이미지를 타이틀 배경에 설정할 수 있습니다.
+ * @default ["{\"image\":\"BlueSky\",\"x\":\"0\",\"y\":\"0\",\"blend\":\"0\"}"]
+ * 
+ * @param TextAnimation
+ * @text 텍스트 애니메이션
+ * @desc 텍스트 애니메이션을 설정하세요.
+ * @default Push
+ * @type select
+ * @option Push
+ * @option Split
+ *
+ * @param Interval
+ * @text 버튼 사이 거리
+ * @type number
+ * @desc 버튼 사이의 거리 차이를 지정하세요
+ * @default 80
+ *
+ * @param Menu Size
+ * @text 타이틀 커맨드 갯수
+ * @type number
+ * @desc 타이틀 커맨드의 버튼 갯수를 지정하세요
+ * @default 3
+ *
+ * @param Angle Speed
+ * @text 각 속도
+ * @type number
+ * @desc 타이틀 커맨드의 각속도를 지정하세요
+ * @default 120.0
+ * @decimals 1
+ *
+ * @param Text outline Color
+ * @text 테두리 색상
+ * @desc 텍스트 테두리 색상을 지정하세요
+ * @default #6799FF
+ *
+ * @param Selected Color
+ * @text 선택되어있을 때 색상
+ * @desc 버튼이 선택되어있을 때의 색상을 지정하세요
+ * @default #6799FF
+ *
+ * @param Unselected Color
+ * @text 선택되지 않았을 때 색상
+ * @desc 버튼이 선택되지 않았을 때의 색상을 지정하세요
+ * @default #888888
+ *
+ * @param Circular Rotation
+ * @text 원형 회전 여부
+ * @type boolean
+ * @desc 원형 회전으로 설정하려면 true로 설정하세요.
+ * @default false
+ *
+ * @param X Offset
+ * @text 타이틀 커맨드 오프셋
+ * @desc 타이틀 커맨드가 생성될 좌표를 지정하세요.
+ * @default this._commandWindow.width / 4
+ *
+ * @param Subtext
+ * @text 부제목 설정
+ * @desc 게임 제목 밑에 표시될 부제목을 입력하세요.
+ * @default v1.0.0
+ *
+ * @param Font Family
+ * @text 폰트 설정
+ * @desc 타이틀 텍스트의 폰트를 설정하세요.
+ * @default 나눔고딕
+ * 
+ * @param No Save File Opacity
+ * @text 세이브 커맨드 투명도 설정
+ * @type number
+ * @desc 세이브 파일이 없을 때, 세이브 화면 불러오기 버튼의 투명도를 낮춥니다.
+ * @default 64
+ * 
+ * @param Parallax Formula
+ * @text 시차 공식
+ * @desc 더 멀리 있는 배경을 더 느리게 스크롤 하기 위해 사용하는 공식입니다.
+ * @default ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
+ *
+ * @help
+ * 이 플러그인은 타이틀에 패러랠스 스크롤링을 적용하는 플러그인입니다.
+ * 타이틀 이미지는 원경 img/parallaxes 폴더에 넣어두어야 합니다.
+ * 
+ * 타이틀 이미지를 2개 이상 사용할 때,
+ * 스크롤 속도는 거리에 따라 다르게 지정됩니다.
+ * 
+ * 예를 들면, 더 멀리 있는 배경이 더 천천히 움직이게 됩니다.
+ * 앞에 있는 배경은 뒷배경을 투영할 수 있게 투명성을 지니고 있어야 합니다.
+ * 나무, 건물, 구름 등을 겹쳐 타이틀을 더 깊이감있게 표현할 수 있습니다.
+ * 
+ * 스크롤 속도는 다음과 같이 단순한 식으로 결정됩니다.
+ * 
+ * ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
+ * 
+ * 쉽게 말하면 보는 사람으로부터 더 멀어질 수록 스크롤 속도가 느려지게 됩니다.
+ * 이 값은 정확한 예측 값은 아니나, 멀리 있는 배경을 천천히 움직이게 하는 데에는 충분합니다.
+ * 
+ */
+/*~struct~Position:ko
+ *
+ * @param image
+ * @text 이미지
+ * @desc
+ * @default
+ * @require 1
+ * @dir img/parallaxes
+ * @type file
+ *
+ * @param x
+ * @type number
+ * @desc
+ * @default 0
+ * 
+ * @param y
+ * @type number
+ * @desc
+ * @default 0
+ * 
+ * @param blend
+ * @text 블렌드 타입
+ * @type select
+ * @desc Set up the blend type.
+ * @default 0
+ * @option NORMAL
+ * @value 0
+ * @option ADD
+ * @value 1
+ * @option MULTIPLY
+ * @value 2
+ * @option SCREEN
+ * @value 3
+ * @option OVERLAY
+ * @value 4
+ * @option DARKEN
+ * @value 5
+ * @option LIGHTEN
+ * @value 6
+ * @option COLOR_DODGE
+ * @value 7
+ * @option COLOR_BURN
+ * @value 8
+ * @option HARD_LIGHT
+ * @value 9
+ * @option SOFT_LIGHT
+ * @value 10
+ * @option DIFFERENCE
+ * @value 11
+ * @option EXCLUSION
+ * @value 12
+ * @option HUE
+ * @value 13
+ * @option SATURATION
+ * @value 14
+ * @option COLOR
+ * @value 15
+ * @option LUMINOSITY
+ * @value 16
+ * @option NORMAL_NPM
+ * @value 17
+ * @option ADD_NPM
+ * @value 18
+ * @option SCREEN_NPM
+ * @value 19
  */
 
 var Imported = Imported || {};
@@ -179,14 +365,41 @@ RS.Utils = RS.Utils || {};
 
 (function($) {
 
-  var parameters = PluginManager.parameters('RS_ParallaxTitleEx');
-  $.maxParallaxImages = 5;
+  "use strict";
 
-  // Find the resources.
-  $.parallaxImage = [];
-  for (var i = 0; i < $.maxParallaxImages; i++) {
-    $.parallaxImage[i] = parameters['parallaxImage' + parseInt(i+1)] || undefined;
-  }
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_ParallaxTitleEx>');
+  });
+
+  parameters = (parameters.length > 0) && parameters[0].parameters;    
+
+  $.jsonParse = function (str) {
+    var retData = JSON.parse(str, function (k, v) {
+        try {
+            return $.jsonParse(v);
+        } catch (e) {
+            return v;
+        }
+    });
+    
+    return retData;
+    
+  };
+
+  $.parallaxImage = []
+  $.maxParallaxImages = 0;  
+
+  (function() {
+    try {
+      $.parallaxImage = $.jsonParse(parameters["Parallax"]);
+      if(typeof($.parallaxImage) === "object" && 
+        Array.isArray($.parallaxImage)) {
+          $.maxParallaxImages = $.parallaxImage.length;
+      }
+    } catch (error) {
+      throw new Error("Failed to parse!");
+    }
+  })();
 
   $.textType = parameters['TextAnimation'] || 'Push';
   $._x = null;
@@ -198,8 +411,11 @@ RS.Utils = RS.Utils || {};
   $._outLineColor = String(parameters['Text outline Color'] || '#6799FF');
   $.selectedColor = parameters['Selected Color'] || '#6799FF';
   $.unselectedColor = parameters['Unselected Color'] || '#888888';
+  $.saveCmdOpacity = Number(parameters["No Save File Opacity"] || 64);
 
   $.fontFamily = parameters['Font Family'] || 'Arial';
+
+  $.parallaxFormula = parameters["Parallax Formula"];
 
   $.defaultTextStyle = {
     fontFamily: $.fontFamily,
@@ -241,10 +457,6 @@ RS.Utils = RS.Utils || {};
   // Find the position with parallax.
 
   $.parallaxPos = [];
-
-  for (var i = 0; i < $.maxParallaxImages; i++) {
-    $.parallaxPos.push([0, 0, 0]);
-  }
 
   //============================================================================
   // RS.Utils
@@ -292,7 +504,7 @@ RS.Utils = RS.Utils || {};
     alias_Scene_Title_start.call(this);
     this.initSpriteParameter();
     this.initTouchParameter();
-    if(!DataManager.isAnySavefileExists()) this._texts[1].opacity = 128;
+    if(!DataManager.isAnySavefileExists()) this._texts[1].opacity = $.saveCmdOpacity;
   };
 
   var alias_Scene_Title_update = Scene_Title.prototype.update;
@@ -315,6 +527,8 @@ RS.Utils = RS.Utils || {};
 
   Scene_Title.prototype.createForeground = function() {
 
+    if (!$dataSystem.optDrawTitle) return;
+
     var style = $.defaultTextStyle;
 
     var textStyle1 = new PIXI.TextStyle(style);
@@ -328,7 +542,7 @@ RS.Utils = RS.Utils || {};
     this._gameTitleSprite.addChild( new PIXI.Text('\n' + $.subtext.text, textStyle2) );
     this.addChild(this._gameTitleSprite);
 
-    if ($dataSystem.optDrawTitle) this.drawGameTitle();
+    this.drawGameTitle();
 
   };
 
@@ -384,10 +598,6 @@ RS.Utils = RS.Utils || {};
     // Create tiling sprite
     this._backSprite1 = new Sprite(ImageManager.loadTitle1($dataSystem.title1Name));
 
-    for (var i = 0; i < $.maxParallaxImages; i++) {
-      $.parallaxPos[i] = eval(parameters[String('Parallax Position' + parseInt(i + 1))] || '[0, 0, 0]');
-    }
-
     // It is a fixed window frame.
     this._backSprite2 = new Sprite(ImageManager.loadTitle2($dataSystem.title2Name));
 
@@ -396,16 +606,17 @@ RS.Utils = RS.Utils || {};
     this.addChild(this._backSprite2);
 
     for (var i = 0; i < $.maxParallaxImages; i++) {
-      this._parallax[i] = new TilingSprite(ImageManager.loadParallax($.parallaxImage[i]));
-      this._parallax[i].move($.parallaxPos[i][0], $.parallaxPos[i][1], Graphics.boxWidth, Graphics.boxHeight);
-      this._parallax[i].blendMode = $.parallaxPos[i][2] || PIXI.BLEND_MODES.NORMAL;
+      this._parallax[i] = new TilingSprite();
+      this._parallax[i].bitmap = ImageManager.loadParallax($.parallaxImage[i].image);
+      this._parallax[i].move($.parallaxImage[i].x, $.parallaxImage[i].y, Graphics.boxWidth, Graphics.boxHeight);
+      this._parallax[i].blendMode = $.parallaxImage[i].blend || PIXI.BLEND_MODES.NORMAL;
       this.addChild(this._parallax[i]);
     }
 
   };
 
   Scene_Title.prototype.getParallaxSpeed = function (idx) {
-    return ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
+    return eval($.parallaxFormula);
   };
 
   Scene_Title.prototype.updateParallaxBackground = function () {
