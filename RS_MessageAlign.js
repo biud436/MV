@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc (v1.0.12) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.13) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
