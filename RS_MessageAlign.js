@@ -67,6 +67,8 @@
  * 2019.04.15 (v1.0.12) :
  * - Added the feature that recalculates the text height when using a text code called \fs[x].
  * - Fixed the bug that goes a font resetting for each line.
+ * 2019.08.29 (v1.0.13) : 
+ * - Fixed the issue that is added the spaces from the second line when the text alignment is the left.
  */
 
 var Imported = Imported || {};
@@ -305,9 +307,8 @@ RS.MessageAlign = RS.MessageAlign || {};
     };
     
     Window_Base.prototype.setAlignLeft = function(textState) {
-        var padding = this.textPadding();
         tx = this.calcTextWidth(textState.text.slice(textState.index));
-        textState.x = ( this.newLineX() + padding );
+        textState.x = this.newLineX();
         textState.left = textState.x;
     };
     

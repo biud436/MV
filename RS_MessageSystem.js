@@ -8,7 +8,7 @@
 //================================================================
  /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.59) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.60) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -718,7 +718,7 @@
  */
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.59) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.60) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -1362,6 +1362,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.08.29 (v0.1.60) : 
+ * - 텍스트 정렬이 왼쪽일 때, 두 번째 라인에 공백이 삽입되는 문제를 수정하였습니다.
  * 2019.08.07 (v0.1.59) :
  * - 희미한 배경, 투명한 배경 설정 시, 스탠딩 CG가 보이지 않던 문제를 수정하였습니다.
  * - 스탠딩 CG가 설정되었을 때의 텍스트 시작 좌표를 6으로 수정하였습니다.
@@ -2745,9 +2747,8 @@ var Color = Color || {};
   };  
   
   Window_Base.prototype.setAlignLeft = function(textState) {
-    var padding = this.textPadding();
     textState.tx = this.calcTextWidth2(textState.text.slice(textState.index));
-    textState.x = ( this.newLineX() + padding );
+    textState.x = this.newLineX();
     textState.left = textState.x;
   };
 
