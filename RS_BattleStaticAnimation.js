@@ -29,7 +29,7 @@
  * Notice that the animation will be placed in front of all battlers.
  * 
  * StopStaticAnimation uniqId
- *      - uniqId : Specify the unique identifier that need when removing certain animation on the screen.
+ *      - uniqId : Specify the unique identifier that needs when removing certain animation on the screen.
  *                 This value can write with a string type, but it can not type the space.
  * 
  * it will be removed automatically when the battle is end.
