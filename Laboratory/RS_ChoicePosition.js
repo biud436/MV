@@ -32,20 +32,25 @@
  * Plugin Command
  * =============================================================================
  *
- * Choice pos 명령어는 특정 좌표에 선택지 윈도우를 배치할 수 있는 명령입니다.
+ * The command called 'Choice pos' is possible to place the choice window to the certain 
+ * coordinates on the screen.
  * 
  * Choice pos x y
+ *      - x or y : Specify the screen coordinates..
  * 
- * 선택지 윈도우가 이벤트나 플레이어를 따라갑니다.
+ * This will be going to move the location of the choice window to the position of specific event
+ * or player characters.
  * 
  * Choice pos event id
+ *      - id : Specify the number that starts with from 1.
+ * 
  * Choice pos player
  * 
- * 다음 플러그인 명령을 사용하여 화면 중앙에 선택지 윈도우를 위치시킬 수 있습니다.
+ * To place the choice window on the center of the screen, Try to this.
  * 
  * Choice pos center
  * 
- * 토글 명령어로 이 플러그인을 사용하지 않았을 때의 이전 위치로 되돌릴 수 있습니다.
+ * This can restore the position of the choice window to original position.
  * 
  * Choice enable
  * Choice disable
