@@ -19,7 +19,7 @@
  * Unless the battler is died, the animation will never stop until the battle is end.
  * 
  * PlayStaticAnimation uniqId battlerId animationId
- *      - uniqId : Specify the unique identifier that need when removing certain animation on the screen.
+ *      - uniqId : Specify the unique identifier that needs when removing certain animation on the screen.
  *                 This value can write with a string type, but it can not type the space.
  *      - battlerId : if it is to negative number, it means the id of specific enemy.
  *                 if not, it means the actor's ID.
