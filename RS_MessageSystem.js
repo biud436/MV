@@ -8,7 +8,7 @@
 //================================================================
  /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.60) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.61) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -718,7 +718,7 @@
  */
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.60) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.61) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -1362,6 +1362,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2019.09.23 (v0.1.61) :
+ * - 텍스트 정렬 명령어를 사용하지 않았을 때에도, 왼쪽으로 강제 정렬되는 문제를 수정하였습니다.
  * 2019.08.29 (v0.1.60) : 
  * - 텍스트 정렬이 왼쪽일 때, 두 번째 라인에 공백이 삽입되는 문제를 수정하였습니다.
  * 2019.08.07 (v0.1.59) :
@@ -2401,6 +2403,7 @@ var Color = Color || {};
     this._balloon = -2;
     this._align = [];
     this._balloonPatternHeight = 0;
+    this._lastAlign = -1;
   };
   
   Game_Message.prototype.setWaitTime = function(time) {
@@ -2451,7 +2454,7 @@ var Color = Color || {};
   };
 
   Game_Message.prototype.clearAlignLast = function(n) {
-    this._lastAlign = 0;
+    this._lastAlign = -1;
   };      
   
   Game_Message.prototype.setBalloonPatternHeight = function (value) {
@@ -2682,14 +2685,15 @@ var Color = Color || {};
   Window_Base.prototype.processAlign = function(textState) {
     textState = textState || this._textState;
     switch($gameMessage.getAlign()) {
+        case 0:
+          this.setAlignLeft(textState);      
+          break;
         case 1:
-        this.setAlignCenter(textState);
-        break;
+          this.setAlignCenter(textState);
+          break;
         case 2:
-        this.setAlignRight(textState);
-        break;
-        default:
-        this.setAlignLeft(textState);
+          this.setAlignRight(textState);
+          break;
     }
   };
 
