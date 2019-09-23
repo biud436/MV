@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc (v1.0.13) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.14) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -69,6 +69,8 @@
  * - Fixed the bug that goes a font resetting for each line.
  * 2019.08.29 (v1.0.13) : 
  * - Fixed the issue that is added the spaces from the second line when the text alignment is the left.
+ * 2019.09.23 (v1.0.14) :
+ * - Fixed issues that conflicts with YEP_StatAllocation and YEP_StatusMenuCore plugins.
  */
 
 var Imported = Imported || {};
@@ -87,7 +89,7 @@ RS.MessageAlign = RS.MessageAlign || {};
     Game_Message.prototype.clear = function() {
         alias_Game_Message_clear.call(this);
         this._align = [];
-        this._alignLast = 0;
+        this._alignLast = -1;
     };
     
     Game_Message.prototype.setAlign = function(n) {
@@ -105,11 +107,11 @@ RS.MessageAlign = RS.MessageAlign || {};
     };
 
     Game_Message.prototype.clearAlignLast = function(n) {
-        this._alignLast = 0;
+        this._alignLast = -1;
     };    
     
     //============================================================================
-    // Window_Message
+    // Window_Base
     //============================================================================
 
     Window_Base.prototype.isUsedTextWidthEx = function() {
@@ -154,24 +156,25 @@ RS.MessageAlign = RS.MessageAlign || {};
     Window_Base.prototype.processEscapeCharacter = function(code, textState) {
         switch (code) {
         case 'AEND':
-        $gameMessage.clearAlignLast();
-        break;
+            $gameMessage.clearAlignLast();
+            break;
         default:
-        alias_Window_Base_processEscapeCharacter.call(this, code, textState);
+            alias_Window_Base_processEscapeCharacter.call(this, code, textState);
         }
     };    
     
     Window_Base.prototype.processAlign = function(textState) {
         textState = textState || this._textState;
         switch($gameMessage.getAlign()) {
+            case 0:
+                this.setAlignLeft(textState);                
+                break;
             case 1:
-            this.setAlignCenter(textState);
-            break;
+                this.setAlignCenter(textState);
+                break;
             case 2:
-            this.setAlignRight(textState);
-            break;
-            default:
-            this.setAlignLeft(textState);
+                this.setAlignRight(textState);
+                break;
         }
     };
     
@@ -363,6 +366,10 @@ RS.MessageAlign = RS.MessageAlign || {};
         }
     };
 
+    //============================================================================
+    // Window_Message
+    //============================================================================    
+
     // Galv's Message Styles Compatibility
     if(Imported.Galv_MessageStyles) {
 
@@ -384,12 +391,31 @@ RS.MessageAlign = RS.MessageAlign || {};
             return xO;
         };   
     }
-    
+
+    Window_Message.prototype.processAlign = function(textState) {
+        textState = textState || this._textState;
+        switch($gameMessage.getAlign()) {
+            case 1:
+                this.setAlignCenter(textState);
+                break;
+            case 2:
+                this.setAlignRight(textState);
+                break;
+            default:
+                this.setAlignLeft(textState);  
+                break;
+        }
+    };    
+
     var alias_Window_Message_startMessage_setAlignCenter = Window_Message.prototype.startMessage;
     Window_Message.prototype.startMessage = function() {
         alias_Window_Message_startMessage_setAlignCenter.call(this);
         this.processAlign();
     };
+
+    //============================================================================
+    // Window_ScrollText
+    //============================================================================       
 
     Window_ScrollText.prototype.refresh = function() {
         var textState = { index: 0 };
