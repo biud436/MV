@@ -70,7 +70,7 @@
  * 2019.08.29 (v1.0.13) : 
  * - Fixed the issue that is added the spaces from the second line when the text alignment is the left.
  * 2019.09.23 (v1.0.14) :
- * - Fixed issues that conflicts with YEP_StatAllocation and YEP_StatusMenuCore plugins.
+ * - Fixed issues that conflict with YEP_StatAllocation and YEP_StatusMenuCore plugins.
  */
 
 var Imported = Imported || {};
