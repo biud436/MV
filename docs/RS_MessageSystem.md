@@ -14,6 +14,7 @@
 [1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
 
 ## 버전 별 다운로드
+<p>2019.09.23 (v0.1.61) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/9b713e8157fffada26566f84406fa2afbb05e4e5/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.08.29 (v0.1.60) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/915813543c7d61cc4a84db61ad251ba9c087f478/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.08.07 (v0.1.59) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/f103ad57631e08bf4867495ed7cdc35a43688065/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.08.03 (v0.1.58) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/6a29bd105b0974bc4d57d5bcc20aef135db94934/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -30,6 +31,8 @@
 ## 버전 로그
 
 ```text
+2019.09.23 (v0.1.61) :
+- 텍스트 정렬 명령어를 사용하지 않았을 때에도, 왼쪽으로 강제 정렬되는 문제를 수정하였습니다.
 2019.08.29 (v0.1.60) : 
 - 텍스트 정렬이 왼쪽일 때, 두 번째 라인에 공백이 삽입되는 문제를 수정하였습니다.
 2019.08.07 (v0.1.59) :
