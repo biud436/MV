@@ -26,6 +26,8 @@
  * 
  * Notice that this plugin can use only in PC platform.
  * 
+ * To save the json file, please press keys Ctrl + F7!
+ * 
  * ================================================================
  * Change Log
  * ================================================================
