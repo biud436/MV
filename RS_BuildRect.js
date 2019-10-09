@@ -268,7 +268,7 @@ RS.BuildRect = RS.BuildRect || {};
                         this._primitive.y, 
                         this._primitive.width, 
                         this._primitive.height, 
-                        0xff0000);                    
+                        $.Params.rectColor);                    
                 }
 
             }
@@ -282,7 +282,7 @@ RS.BuildRect = RS.BuildRect || {};
 
             if(this.onFlush(event)) {
                 this.clear();
-                this.addRect(this._primitive, 0xff0000); 
+                this.addRect(this._primitive, $.Params.rectColor); 
                 this._isMouseMovement = false;                
             }
 
