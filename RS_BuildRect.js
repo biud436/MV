@@ -33,7 +33,7 @@
  * ================================================================
  * 2019.10.09 (v1.0.0) - First Release.
  * 2019.10.10 (v1.0.1) : 
- * - Added the feature that get the name of the tile from img/tilesets folder.
+ * - Added the feature that gets the name of the tile from img/tilesets folder.
  * - Now it can create a JSON file for RS_MirrorArea plugin.
  */
 
