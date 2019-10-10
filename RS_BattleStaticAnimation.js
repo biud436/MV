@@ -12,8 +12,8 @@
  *          
  * @help
  * 
- * This plugin must require the specific plugin named YEP_BattleEngineCore.
- * You should place this plugin somewhere below 'YEP_BattleEngineCore' in the Plugin Manager.
+ * This plugin must require YEP_CoreEngine and YEP_BattleEngineCore plugins.
+ * You should place this plugin somewhere below 'YEP_CoreEngine' and 'YEP_BattleEngineCore' in the Plugin Manager.
  * 
  * This plugin allows you to playback certain animation.
  * Unless the battler is died, the animation will never stop until the battle is end.
@@ -40,6 +40,9 @@
  * Change Log
  * =====================================================================
  * 2019.09.11 (v1.0.0) - First Release.
+ * 2019.10.10 (v1.0.1) : 
+ * - Fixed the issue that is not working in front-view battle.
+ * - Update description.
  */
 /*:ko
  * @plugindesc This plugin allows you to play the loop animation during the battle <RS_BattleStaticAnimation>
@@ -47,8 +50,8 @@
  *          
  * @help
  * 
- * 플러그인을 구동 시 YEP_BattleEngineCore.js 파일이 필요하므로, 
- * YEP_BattleEngineCore 플러그인 아래 어딘가에 플러그인을 배치하시기 바랍니다.
+ * 플러그인을 구동 시 YEP_CoreEngine과 YEP_BattleEngineCore.js 파일이 필요하므로, 
+ * YEP_CoreEngine과 YEP_BattleEngineCore 플러그인 아래 어딘가에 플러그인을 배치하시기 바랍니다.
  * 
  * 전투 도중에 특정 애니메이션을 반복 재생합니다.
  * 
@@ -72,6 +75,9 @@
  * Change Log
  * =====================================================================
  * 2019.09.11 (v1.0.0) - First Release.
+ * 2019.10.10 (v1.0.1) : 
+ * - 프론트 뷰에서도 사용 가능
+ * - 설명을 수정하였습니다.
  */
 
 var Imported = Imported || {};
@@ -208,7 +214,6 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
     BattleManager.playStaticAnimation = function(uniqId, battlerId, animationId) {
         if(!Imported.YEP_BattleEngineCore) return;       
         if(!this._spriteset) return;
-        if (!$gameSystem.isSideView()) return false;
         let battlers = BattleManager.allBattleMembers();
         const maxBattlers = battlers.length;
         const maxActors = $gameParty.members().length;
@@ -230,7 +235,6 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
     BattleManager.stopStaticAnimation = function(uniqId) {
         if(!Imported.YEP_BattleEngineCore) return;    
         if(!this._spriteset) return;   
-        if (!$gameSystem.isSideView()) return false;    
         this._spriteset.stopStaticAnimation(uniqId);
     };
 
