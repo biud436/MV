@@ -145,6 +145,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
     //=====================================================================    
 
     Spriteset_Battle.prototype.createStaticAnimation = function() {
+        if(!Imported.YEP_CoreEngine) return;
         if(!Imported.YEP_BattleEngineCore) return;
         if(this._staticAnimation) this._baseSprite.removeChild(this._staticAnimation);
 
@@ -154,6 +155,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
     };    
 
     Spriteset_Battle.prototype.removeStaticAnimation = function() {
+        if(!Imported.YEP_CoreEngine) return;
         if(!Imported.YEP_BattleEngineCore) return;
         if(!this._staticAnimation) return;    
         this._staticAnimation.removeChildren();
@@ -162,6 +164,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
     };    
 
     Spriteset_Battle.prototype.playStaticAnimation = function(uniqId, battler, animationId) {
+        if(!Imported.YEP_CoreEngine) return;
         if(!Imported.YEP_BattleEngineCore) return;
         if(!BattleManager.allBattleMembers().contains(battler)) {
             return;
@@ -182,6 +185,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
     };
 
     Spriteset_Battle.prototype.stopStaticAnimation = function(uniqId) {
+        if(!Imported.YEP_CoreEngine) return;
         if(!Imported.YEP_BattleEngineCore) return;
         if(!this._staticAnimation) return;
 
@@ -212,6 +216,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
      * @param {Number} battlerId
      */
     BattleManager.playStaticAnimation = function(uniqId, battlerId, animationId) {
+        if(!Imported.YEP_CoreEngine) return;
         if(!Imported.YEP_BattleEngineCore) return;       
         if(!this._spriteset) return;
         let battlers = BattleManager.allBattleMembers();
@@ -233,6 +238,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
     };
 
     BattleManager.stopStaticAnimation = function(uniqId) {
+        if(!Imported.YEP_CoreEngine) return;
         if(!Imported.YEP_BattleEngineCore) return;    
         if(!this._spriteset) return;   
         this._spriteset.stopStaticAnimation(uniqId);
