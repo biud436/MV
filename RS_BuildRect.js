@@ -32,6 +32,9 @@
  * Change Log
  * ================================================================
  * 2019.10.09 (v1.0.0) - First Release.
+ * 2019.10.10 (v1.0.1) : 
+ * - Added the feature that get the name of the tile from img/tilesets folder.
+ * - Now it can create a JSON file for RS_MirrorArea plugin.
  */
 
 var Imported = Imported || {};
@@ -151,6 +154,44 @@ RS.BuildRect = RS.BuildRect || {};
 
         /**
          * 
+         * @param {Number} prefix 
+         * 0 : A1
+         * 1 : A2
+         * 2 : A3
+         * 3 : A4
+         * 4 : A5
+         * 5 : B
+         * 6 : C
+         * 7 : D
+         * 8 : E
+         * @param {Number} lastTileId The tile stores the special ID of the tiles by tilesets.
+         * Depending on the ID of the tile, The B or C tileset is selected.
+         */
+        getTileName(prefix, lastTileId) {
+            const tilesets = $gameMap.tileset().tilesetNames;
+            const filename = tilesets[prefix];
+
+            if(filename === "") return;
+            
+            const fs = require('fs');
+            const path = require('path');
+            const mainDir = path.join(process.mainModule.filename, "..");
+            const txtFileName = path.join(mainDir, "img", "tilesets", `${filename}.txt`);
+
+            if(fs.existsSync(txtFileName)) {
+                let eof = fs.readFileSync(txtFileName, "utf8");
+                const lines = eof.split(/[\r\n]+/i);
+                 // The line number starts with to 0 and it is the number between 0 and 255.
+                const tileName = lines[lastTileId % 256];
+                if(typeof(tileName) === "string") {
+                    // it consists with English|Japanese, so it must split.
+                    this._type = tileName.split("|")[0];
+                }
+            }
+        }
+
+        /**
+         * 
          * @param {PIXI.Rectangle} rect 
          * @param {Number} color 
          */
@@ -182,8 +223,39 @@ RS.BuildRect = RS.BuildRect || {};
             canvas.endFill();
 
             this._multiLayer.addChild(canvas);
-            
-            this._data.push(rect.clone());
+
+            if(Imported.RS_MirrorArea) {
+                
+                const mx = $gameMap.canvasToMapX(rect.x);
+                const my = $gameMap.canvasToMapY(rect.y);
+                const tileIds = $gameMap.layeredTiles(mx, my);
+                const lastTileId = tileIds[0];
+                
+                this._type = "MIRROR_NORMAL";
+
+                if(lastTileId > Tilemap.TILE_ID_B && lastTileId < Tilemap.TILE_ID_C) {
+                    this.getTileName(5, lastTileId);
+                } else if(lastTileId >= Tilemap.TILE_ID_C && lastTileId < Tilemap.TILE_ID_D) {
+                    this.getTileName(6, lastTileId);
+                }
+
+                const mirror = {
+                    note: this._type,
+                    w: rect.width,
+                    h: rect.height,
+                    mask_ox : rect.x, 
+                    mask_oy : rect.y,
+                    char_ox : rect.x, 
+                    char_oy : rect.y
+                };
+
+                this._type = null;
+
+                this._data.push(mirror);
+
+            } else {
+                this._data.push(rect.clone());
+            }
 
         }
 
@@ -248,7 +320,7 @@ RS.BuildRect = RS.BuildRect || {};
             const d = Math.sqrt(Math.pow(this._primitive.width - this._primitive.x, 2) + Math.pow(this._primitive.height - this._primitive.y, 2));
 
             this.createTextLayer(this._primitive);
-            
+             
             return (d >= 5) ? true : false;
 
         }        
@@ -306,7 +378,8 @@ RS.BuildRect = RS.BuildRect || {};
                 const filename = chooser.value;
                 fs.writeFile(filename, retData, err => {
                     if(err) {
-                        console.warn(`RS_BuildRect error! : ${err.message}`);
+                        this.createTextLayer(`Failed to save!!\n${err.message}`);
+                        return;
                     }
                     this.createTextLayer(`Successfully saved!! \n${filename}`);
 
