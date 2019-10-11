@@ -54,7 +54,7 @@
  * - Fixed the issue that is not working in front-view battle.
  * - Update description.
  * 2019.10.11 (v1.0.2) :
- * - Added a new feature that can play the animation witout setting the battler.
+ * - Added a new feature that can play the animation without setting the battler.
  * - Fixed the issue that is not played the animation correctly on the center of the screen.
  */
 /*:ko
