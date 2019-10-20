@@ -9,7 +9,7 @@
 /*:
  * RS_EventName.js
  *
- * @plugindesc (v1.3.10) This plugin displays an event's name above a head. <RS_EventName>
+ * @plugindesc (v1.3.11) This plugin displays an event's name above a head. <RS_EventName>
  * @author biud436
  *
  * @param text Size
@@ -97,12 +97,14 @@
  * - Added a feature that can change the name.
  * - Added a feature that can set the z-depth value.
  * - Refactoring the code.
+ * 2019.10.20 (v1.3.11) :
+ * - Refactoring the code.
  */
 
 /*:ko
  * RS_EventName.js
  * 
- * @plugindesc (v1.3.10) 이벤트 이름 표시 플러그인 <RS_EventName>
+ * @plugindesc (v1.3.11) 이벤트 이름 표시 플러그인 <RS_EventName>
  * @author 러닝은빛
  *
  * @param text Size
@@ -177,25 +179,6 @@
  * 실제 사용 예는 다음과 같습니다.
  * 
  *      ChangeEventName 0 RPG Maker MV
- * 
- * ==================================================================================
- * Change Log
- * ==================================================================================
- * 2016.03.25 (v1.3.0) - Added New Function called updateScale();
- * 2016.03.26 (v1.3.1) - Added Vehicle
- * 2016.05.05 (v1.3.2) - Updated Vector2 Class
- * 2016.05.20 (v1.3.3) - Fixed issues that can cause an increase of opacity and the memory leak.
- * 2016.05.21 (v1.3.4) - Fixed issue that causes the memory leak.
- * 2016.05.28 (v1.3.5) - Fixed Color Bug.
- * 2016.08.20 (v1.3.6) - Fixed the issue that was not working the name toggle function.
- * 2016.09.27 (v1.3.7) - The visible setting sets as the false before calling the battle.
- * 2016.09.28 (v1.3.8) - Fixed the issue that occurs when the player is not existed.
- * 2018.10.22 (v1.3.9) :
- * - Fixed the bug that vehicle name shows up even in the map that the vehicle didn't set.
- * 2019.03.03 (v1.3.10) :
- * - Added a feature that can change the name.
- * - Added a feature that can set the z-depth value.
- * - Refactoring the code.
  */
 
 var Imported = Imported || {};
@@ -245,291 +228,361 @@ RS.EventName.Params = RS.EventName.Params || {};
         x : 0.5,
         y : 1.0
     };
-
-    RS.EventName.Params.fontName = "GameFont";
-    
-    //===========================================================================
-    // Functions
-    //===========================================================================
-
-    function Vector2() {
-        this.initialize.apply(this, arguments);
-    };
-
-    function Sprite_Name() {
-        this.initialize.apply(this, arguments);
-    };
-    
-    function Sprite_PlayerName() {
-        this.initialize.apply(this, arguments);
-    };
-    
-    function Sprite_VehicleName() {
-        this.initialize.apply(this, arguments);
-    };    
     
     //===========================================================================
     // Vector2
     //===========================================================================
-    
-    Vector2.prototype.constructor = Vector2;
-    
-    Vector2.empty = function() {
-        return new Vector2(0.0, 0.0);
-    };
-    
-    Vector2.mix = function(vec1, vec2, t) {
-        var vec = Vector2.empty();
-        vec.x = vec1.x + t * (vec2.x - vec1.x);
-        vec.y = vec1.x + t * (vec2.y - vec1.y);
-        return vec;
-    };
-    
-    Vector2.isNormalize = function(vec) {
-        if( (vec.x >= 0.0 && vec.x <= 1.0) &&
-        (vec.y >= 0.0 && vec.y <= 1.0) ) {
-            return true;
-        }
-        return false;
-    };
-    
-    Vector2.quadraticBezier = function(vec1, vec2, vec3, t) {
-        var d, e, p;
-        d = Vector2.mix(vec1, vec2, t);
-        e = Vector2.mix(vec2, vec3, t);
-        p = Vector2.mix(d, e, t);
-        return p;
-    };
-    
-    Vector2.limitAngle = function(angle) {
-        while(angle < -Math.PI) angle += Math.PI * 2;
-        while(angle >= Math.PI) angle -= Math.PI * 2;
-        return angle;
-    };
-    
-    Vector2.distance = function(vec1, vec2) {
-        var val;
-        val = Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2);
-        return Math.sqrt(val);
-    };
-    
-    Vector2.prototype.initialize = function(x, y) {
-        this._x = x;
-        this._y = y;
-    };
-    
-    Vector2.prototype.add = function (vec) {
-        this.x = this.x + vec.x;
-        this.y = this.y + vec.y;
-        return this;
-    };
-    
-    Vector2.prototype.minus = function (vec) {
-        this.x = this.x - vec.x;
-        this.y = this.y - vec.y;
-        return this;
-    };
-    
-    Vector2.prototype.mul = function (vec) {
-        this.x = this.x * vec.x;
-        this.y = this.y * vec.y;
-        return this;
-    };
-    
-    Vector2.prototype.div = function (vec) {
-        this.x = this.x / vec.x;
-        this.y = this.y / vec.y;
-        return this;
-    };
-    
-    Object.defineProperty(Vector2.prototype, 'x', {
-        get: function() {
+
+    class Vector2 {
+        
+        /**
+         * @param  {Number} x
+         * @param  {Number} y
+         */
+        constructor(x, y) {
+            this._x = x;
+            this._y = y;
+        }        
+
+        /**
+         * @member {Number}
+         */
+        get x() {
             return this._x;
-        },
-        set: function(value) {
+        }
+
+        set x(value) {
             this._x = value;
         }
-    });
-    
-    Object.defineProperty(Vector2.prototype, 'y', {
-        get: function() {
+
+        /**
+         * @member {Number}
+         */        
+        get y() {
             return this._y;
-        },
-        set: function(value) {
+        }
+
+        set y(value) {
             this._y = value;
         }
-    });
-    
-    Object.defineProperty(Vector2.prototype, 'length', {
-        get: function() {
+
+        /**
+         * @param  {Vector2} vec
+         */
+        add(vec) {
+            this.x = this.x + vec.x;
+            this.y = this.y + vec.y;
+            return this;
+        }
+
+        /**
+         * @param  {Vector2} vec
+         */        
+        minus(vec) {
+            this.x = this.x - vec.x;
+            this.y = this.y - vec.y;
+            return this;
+        }
+
+        /**
+         * @param  {Vector2} vec
+         */        
+        mul(vec) {
+            this.x = this.x * vec.x;
+            this.y = this.y * vec.y;
+            return this;
+        }
+
+        /**
+         * @param  {Vector2} vec
+         */        
+        div(vec) {
+            if(!vec) return this;
+            if(vec.x === 0.0) return this;
+            if(vec.y === 0.0) return this;
+            this.x = this.x / vec.x;
+            this.y = this.y / vec.y;
+            return this;
+        }
+
+        /**
+         * @param  {Number} x
+         * @param  {Number} y
+         */
+        set(x, y) {
+            this.x = x;
+            this.y = y;            
+        }
+
+        getLength() {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        }
+
+        /**
+         * @member {Number}
+         * @readonly
+         */        
+        get length() {
             return this.getLength();
         }
-    });
-    
-    Vector2.prototype.set = function(x, y) {
-        this.x = x;
-        this.y = y;
+
+        /**
+         * @param  {Vector2} vec
+         * @return {Boolean}
+         */
+        static isNormalize(vec) {
+            if( (vec.x >= 0.0 && vec.x <= 1.0) &&
+            (vec.y >= 0.0 && vec.y <= 1.0) ) {
+                return true;
+            }
+            return false;            
+        }
+
+        /**
+         * @param  {Vector2} vec
+         */
+        getAngle(vec) {
+            if(Vector2.isNormalize(this) && Vector2.isNormalize(vec)) {
+                var val = this.dot(vec);
+                return Math.acos(val);
+            } else {
+                console.error("it doesn't a normalized vector");
+                return 0.0;
+            }
+        }
+
+        static empty() {
+            return new Vector2(0.0, 0.0);
+        }        
+
+        normalize() {
+            var rel = Vector2.empty();
+            if(this.length != 0) {
+                rel.x = this.x / this.length;
+                rel.y = this.y / this.length;
+            }
+            return rel;
+        }
+
+        /**
+         * @param  {Vector2} vec
+         */
+        dot(vec) {
+            return this.x * vec.x + this.y * vec.y;
+        }
+
+        /**
+         * @param  {Number} angle
+         */
+        rotate(angle) {
+            this.x = this.x * Math.cos(angle) - this.y * Math.sin(angle);
+            this.y = this.x * Math.sin(angle) + this.y * Math.cos(angle);
+        }
+
+        /**
+         * @param  {Vector2} vec
+         * @param  {Number} angle
+         */
+        pointDirection(vec, angle) {
+            return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
+        }
+
+        /**
+         * @param  {Vector2} vec1
+         * @param  {Vector2} vec2
+         * @param  {Number} t
+         */
+        static mix(vec1, vec2, t) {
+            var vec = Vector2.empty();
+            vec.x = vec1.x + t * (vec2.x - vec1.x);
+            vec.y = vec1.x + t * (vec2.y - vec1.y);
+            return vec;
+        }
+
+        /**
+         * @param  {Vector2} vec1
+         * @param  {Vector2} vec2
+         * @param  {Vector2} vec3
+         * @param  {Number} t
+         */
+        static quadraticBezier(vec1, vec2, vec3, t) {
+            var d, e, p;
+            d = Vector2.mix(vec1, vec2, t);
+            e = Vector2.mix(vec2, vec3, t);
+            p = Vector2.mix(d, e, t);
+            return p;            
+        }
+
+        /**
+         * @param  {Number} angle
+         */
+        static limitAngle(angle) {
+            while(angle < -Math.PI) angle += Math.PI * 2;
+            while(angle >= Math.PI) angle -= Math.PI * 2;
+            return angle;            
+        }
+       
+        /**
+         * @param  {Vector2} vec1
+         * @param  {Vector2} vec2
+         */
+        static distance(vec1, vec2) {
+            const val = Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2);
+            return Math.sqrt(val);
+        }        
+
     }
-    
-    Vector2.prototype.getLength = function() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
-    };
-    
-    Vector2.prototype.getAngle = function(vec) {
-        if(Vector2.isNormalize(this) && Vector2.isNormalize(vec)) {
-            var val = this.dot(vec);
-            return Math.acos(val);
-        } else {
-            console.error("it doesn't a normalized vector");
-        }
-    };
-    
-    Vector2.prototype.normalize = function() {
-        var rel = Vector2.empty();
-        if(this.length != 0) {
-            rel.x = this.x / this.length;
-            rel.y = this.y / this.length;
-        }
-        return rel;
-    };
-    
-    Vector2.prototype.dot = function(vec) {
-        return this.x * vec.x + this.y * vec.y;
-    };
-    
-    Vector2.prototype.rotate = function(angle) {
-        this.x = this.x * Math.cos(angle) - this.y * Math.sin(angle);
-        this.y = this.x * Math.sin(angle) + this.y * Math.cos(angle);
-    };
-    
-    Vector2.prototype.pointDirection = function(vec, angle) {
-        return Math.atan2(vec.y - this.y, vec.x - this.x) - (Math.PI / 180) * angle;
-    };
-    
+
     //===========================================================================
     // Sprite_Name
     //===========================================================================
+
+    class Sprite_Name extends Sprite {
+        constructor(data) {
+            super();
+            
+            this.bitmap = new Bitmap(RS.EventName.Params.nameBoxRect.width, RS.EventName.Params.nameBoxRect.height);
+            this.initMembers(data);
+            this.setFontName();
+            this.setTextSize(data.textSize);
+            this.setTextColor(data.textColor);
+            this.setTextOutlineWidth(data.outlineWidth);
+            this.setPosition();
+            this.setAnchor(data.anchor);
+            this.updateName();
+            this._visible = this.visible = this.isReady();
+
+        }
+
+        initMembers(data) {
+
+            this._member = data.member;
+            this._prevName = "";
+        }
+
+        setFontName() {
+            this.bitmap.fontFace = Window_Base.prototype.standardFontFace.call(this);
+        }
+
+        setTextSize(n) {
+            this.bitmap.fontSize = n;            
+        }
+
+        setTextOutlineWidth(n) {
+            this.bitmap.outlineWidth = n || RS.EventName.Params.defaultOutlineWidth;            
+        }
+
+        characterWidth() {
+            if(!this._member) return 0;
+            const name = character.characterName();
+            const isBigCharacter = ImageManager.isBigCharacter(name);
+            const bitmap = ImageManager.loadCharacter(name);
+            
+            if(!bitmap) return 0;
+
+            return isBigCharacter ? bitmap.width / 3 : bitmap.width / 12;
+
+        }
+
+        characterHeight() {
+            if(!this._member) return 0;
+            const name = this._member.characterName();
+            const isBigCharacter = ImageManager.isBigCharacter(name);
+            const bitmap = ImageManager.loadCharacter(name);
+            
+            if(!bitmap) return 0;
+
+            return isBigCharacter ? bitmap.height / 4 : bitmap.height / 8;
+
+        }                
+
+        setPosition() {
+            this.x = this._member.screenX();
+            this.y = this._member.screenY() - this.characterHeight() + RS.EventName.Params.nameBoxYPadding;
+        }
+
+        setAnchor(pt) {
+            this.anchor.x = pt.x || RS.EventName.Params.nameAnchor.x;
+            this.anchor.y = pt.y || RS.EventName.Params.nameAnchor.y;
+        }
+
+        isTransparent() {
+            return this._member.isTransparent();            
+        }
+
+        isErased() {
+            return this._member._erased || !this._member._characterName;            
+        }
+
+        isReady() {
+            return (this._member.findProperPageIndex() > -1) &&
+            (!this.isTransparent()) &&
+            (!this.isErased());
+        }
+
+        setTextColor(color) {
+            this.bitmap.textColor = Utils.rgbToCssColor.apply(this, color);
+        }
+
+        obtainName() {
+            var target = this._member;
+            var eventId = target.eventId();
+            var tempEvent = $dataMap.events[eventId];
+            var name = tempEvent.name || "";        
+            return name;
+        }
+
+        updateName() {
+            if(!this.bitmap) return;
+            if(!this.isReady()) return;
+            
+            var name = this.obtainName();
     
-    Sprite_Name.prototype = Object.create(Sprite.prototype);
-    Sprite_Name.prototype.constructor = Sprite_Name;
+            // if the text has be changed, it will be re-generated the texture so it can have a performance penalty.
+            if(this._prevName !== name) {
+                this.bitmap.clear();
+                this.bitmap.drawText(name, 0, 0, RS.EventName.Params.nameBoxRect.width, RS.EventName.Params.nameBoxRect.height, 'center');
+                this._prevName = name;
+            }
+        }
+
+        updateVisibility() {
+            if(this._visible !== this.isReady()) {
+                this.visible = this._visible = this.isReady();
+            }
+        }
+
+        updatePosition() {
+            this.x = this._member.screenX();
+            this.y = this._member.screenY() - this.characterHeight() + RS.EventName.Params.nameBoxYPadding;
+        }
+
+        updateScale() {
+            var x, y, t;
+            if(Vector2.distance(this, Sprite_Name.MOUSE_EVENT) < RS.EventName.Params.mousePointerNearDst) {
+                t = (Date.now() % 10000 / 10000);
+                this.scale = Vector2.quadraticBezier({x:1, y:1}, {x:2, y:2}, {x:1, y:1}, t);
+            } else {
+                this.scale = {x: 1, y: 1};
+            }            
+        }
+
+        updateFilter() {}
+        updateRotation() {}
+
+        update() {
+            super.update();
+            this.updatePosition();
+            this.updateVisibility();
+            this.updateScale();
+            this.updateFilter();
+            this.updateRotation();
+            this.updateName();            
+        }
+
+    }
     
     Sprite_Name.MOUSE_EVENT = Vector2.empty();
-    
-    Sprite_Name.prototype.initialize = function(data) {
-        Sprite.prototype.initialize.call(this);
-        this.bitmap = new Bitmap(RS.EventName.Params.nameBoxRect.width, RS.EventName.Params.nameBoxRect.height);
-        this._offsetY = data.height;
-        this._member = data.member;
-        this._prevName = "";
-        this.setFontName();
-        this.setTextSize(data.textSize);
-        this.setTextColor(data.textColor);
-        this.setTextOutlineWidth(data.outlineWidth);
-        this.setPosition();
-        this.setAnchor(data.anchor);
-        this.updateName();
-        this._visible = this.visible = this.isReady();
-    };
-
-    Sprite_Name.prototype.setFontName = function() {
-        this.bitmap.fontFace = RS.EventName.Params.fontName;
-    };
-    
-    Sprite_Name.prototype.setTextSize = function(n) {
-        this.bitmap.fontSize = n;
-    };
-    
-    Sprite_Name.prototype.setTextOutlineWidth = function(n) {
-        this.bitmap.outlineWidth = n || RS.EventName.Params.defaultOutlineWidth;
-    };
-
-    Sprite_Name.prototype.setPosition = function() {
-        this.x = this._member.screenX();
-        this.y = this._member.screenY() - (this._offsetY() || 0) + RS.EventName.Params.nameBoxYPadding;
-    };
-    
-    Sprite_Name.prototype.setAnchor = function(pt) {
-        this.anchor.x = pt.x || RS.EventName.Params.nameAnchor.x;
-        this.anchor.y = pt.y || RS.EventName.Params.nameAnchor.y;
-    };
-    
-    Sprite_Name.prototype.isTransparent = function() {
-        return this._member.isTransparent();
-    };
-    
-    Sprite_Name.prototype.isErased = function() {
-        return this._member._erased || !this._member._characterName;
-    };
-    
-    Sprite_Name.prototype.isReady = function() {
-        return (this._member.findProperPageIndex() > -1) &&
-        (!this.isTransparent()) &&
-        (!this.isErased());
-    };
-    
-    Sprite_Name.prototype.setTextColor = function(color) {
-        this.bitmap.textColor = Utils.rgbToCssColor.apply(this, color);
-    };
-
-    Sprite_Name.prototype.obtainName = function() {
-        var target = this._member;
-        var eventId = target.eventId();
-        var tempEvent = $dataMap.events[eventId];
-        var name = tempEvent.name || "";        
-        return name;
-    };
-    
-    Sprite_Name.prototype.updateName = function() {
-        
-        if(!this.bitmap) return;
-        if(!this.isReady()) return;
-        
-        var name = this.obtainName();
-
-        if(this._prevName !== name) {
-            this.bitmap.clear();
-            this.bitmap.drawText(name, 0, 0, RS.EventName.Params.nameBoxRect.width, RS.EventName.Params.nameBoxRect.height, 'center');
-            this._prevName = name;
-        }
-
-    };
-    
-    Sprite_Name.prototype.updateVisibility = function () {
-        if(this._visible !== this.isReady()) {
-            this.visible = this._visible = this.isReady();
-        }
-    };
-    
-    Sprite_Name.prototype.updatePosition = function () {
-        this.x = this._member.screenX();
-        this.y = this._member.screenY() - (this._offsetY() || 0) + RS.EventName.Params.nameBoxYPadding;
-    };
-    
-    Sprite_Name.prototype.updateScale = function () {
-        var x, y, t;
-        if(Vector2.distance(this, Sprite_Name.MOUSE_EVENT) < RS.EventName.Params.mousePointerNearDst) {
-            t = (Date.now() % 10000 / 10000);
-            this.scale = Vector2.quadraticBezier({x:1, y:1}, {x:2, y:2}, {x:1, y:1}, t);
-        } else {
-            this.scale = {x: 1, y: 1};
-        }
-    };
-    
-    Sprite_Name.prototype.updateFilter = function () {
-    };
-    
-    Sprite_Name.prototype.updateRotation = function () {
-    };
-    
-    Sprite_Name.prototype.update = function() {
-        Sprite.prototype.update.call(this);
-        this.updatePosition();
-        this.updateVisibility();
-        this.updateScale();
-        this.updateFilter();
-        this.updateRotation();
-        this.updateName();
-    };
     
     //===========================================================================
     // TouchInput
@@ -549,78 +602,82 @@ RS.EventName.Params = RS.EventName.Params || {};
     // Sprite_PlayerName
     //===========================================================================
     
-    Sprite_PlayerName.prototype = Object.create(Sprite_Name.prototype);
-    Sprite_PlayerName.prototype.constructor = Sprite_PlayerName;
-    
-    Sprite_PlayerName.prototype.initialize = function(data) {
-        Sprite_Name.prototype.initialize.call(this, data);
-        this._visible = this.visible = this.isReady();
-        this._pangle = 0;
-    };
-    
-    Sprite_PlayerName.prototype.setPosition = function() {
-        this.x = this._member.screenX();
-        this.y = this._member.screenY() - (this._offsetY() || 0) + 10;
-    };
-    
-    Sprite_PlayerName.prototype.isTransparent = function() {
-        return this._member.isTransparent();
-    };    
-    
-    Sprite_PlayerName.prototype.isReady = function() {
-        return ( $gameParty.members().length > 0 ) &&
-        ( !this.isTransparent() ) && RS.EventName.Params.showPlayerText === 'true' ;
-    };
+    class Sprite_PlayerName extends Sprite_Name {
+        constructor(data) {
+            super(data);
+            this._visible = this.visible = this.isReady();
+            this._pangle = 0;
+        }
 
-    Sprite_PlayerName.prototype.obtainName = function() {
-        var name = $gameParty.members()[0].name() || "";    
-        return name;
-    };
-    
+        setPosition() {
+            this.x = this._member.screenX();
+            this.y = this._member.screenY() - this.characterHeight() + 10;
+        }
+
+        isTransparent() {
+            return this._member.isTransparent();
+        }
+
+        isReady() {
+            return ( $gameParty.members().length > 0 ) &&
+            ( !this.isTransparent() ) && RS.EventName.Params.showPlayerText === 'true' ;
+        }
+
+        obtainName() {
+            const name = $gameParty.members()[0].name() || "";    
+            return name;
+        }
+
+    }
+
     //===========================================================================
     // Sprite_VehicleName
     //===========================================================================
-    
-    Sprite_VehicleName.prototype = Object.create(Sprite_Name.prototype);
-    Sprite_VehicleName.prototype.constructor = Sprite_VehicleName;
-    
-    Sprite_VehicleName.prototype.initialize = function(data) {
-        this._type = data.name;
-        Sprite_Name.prototype.initialize.call(this, data);
-    };
-    
-    Sprite_VehicleName.prototype.isTransparent = function() {
-        return false;
-    };
-    
-    Sprite_VehicleName.prototype.isReady = function() {
-        var isReady = this._member._mapId === $gameMap.mapId();
-        return RS.EventName.Params.showPlayerText === 'true' && isReady;
-    };
-    
-    Sprite_VehicleName.prototype.isErased = function() {
-        return !this._member._characterName;
-    };
 
-    Sprite_VehicleName.prototype.obtainName = function() {
-        
-        var type = this._type.slice(0);
+    class Sprite_VehicleName extends Sprite_Name {
 
-        switch (type) {
-            case 'airship':
-                return RS.EventName.Params.airshipName;
-                break;
-            case 'ship':
-                return RS.EventName.Params.shipName;
-                break;
-            case 'boat':
-                return RS.EventName.Params.boatName;
-                break;
-            default:
-                return type;
+        constructor(data) {
+            super(data);
         }
 
-    };
+        initMembers(data) {
+            super.initMembers(data);
+            this._type = data.name;            
+        }
+
+        isTransparent() {
+            return false;
+        }
+
+        isReady() {
+            var isReady = this._member._mapId === $gameMap.mapId();
+            return RS.EventName.Params.showPlayerText === 'true' && isReady;            
+        }
+
+        isErased() {
+            return !this._member._characterName;            
+        }
+
+        obtainName() {
+
+            const type = this._type.slice(0);
+
+            switch (type) {
+                case 'airship':
+                    return RS.EventName.Params.airshipName;
+                    break;
+                case 'ship':
+                    return RS.EventName.Params.shipName;
+                    break;
+                case 'boat':
+                    return RS.EventName.Params.boatName;
+                    break;
+                default:
+                    return type;
+            }
+
+        }
+    }
     
     //===========================================================================
     // Sprite_Character
@@ -647,38 +704,65 @@ RS.EventName.Params = RS.EventName.Params || {};
     };
     
     //===========================================================================
-    // Spriteset_Map
+    // NameComponent
     //===========================================================================
+
+    class NameComponent {
+
+        constructor(sprite) {
+            this._sprite = sprite;
+        }
+        
+        /**
+         * 
+         * @param {PIXI.Sprite} parent 
+         */
+        attach(parent) {
+            if(!parent) return;
+            if(this._sprite) parent.addChild(this._sprite);
+        }
+
+        /**
+         * @param  {String} type
+         * @param  {{outlineWidth: Number, anchor: Point, textSize: Number, height: Function}} data
+         */        
+        static create(type, data) {
+
+            let sprite = null;
+            
+            switch (type) {
+                case 'Game_Player':
+                    sprite = new Sprite_PlayerName(data);
+                    break;
+                case 'Game_Vehicle':
+                    sprite = new Sprite_VehicleName(data);
+                    break;
+                case 'Game_Event':
+                    sprite = new Sprite_Name(data);
+                    break;
+            }          
+
+            return new NameComponent(sprite);
+
+        }        
+
+    }
+
+    //===========================================================================
+    // Spriteset_Map
+    //===========================================================================    
     
     Spriteset_Map.prototype.addNewNameSprite = function (type, data) {
-        
-        var newNameSprite;
-        
-        switch (type) {
-            case 'Game_Player':
-                newNameSprite = new Sprite_PlayerName(data);
-                break;
-            case 'Game_Vehicle':
-                newNameSprite = new Sprite_VehicleName(data);
-                break;
-            case 'Game_Event':
-                newNameSprite = new Sprite_Name(data);
-                break;
-        }
-        
-        if(this._nameLayer && newNameSprite) {
-            this._nameLayer.addChild(newNameSprite);
-        }
-        
+        if(!this._nameLayer) return;
+        NameComponent.create(type, data).attach(this._nameLayer);
     };
     
     Spriteset_Map.prototype.createNameLayer = function () {
         
-        var commonData = {
+        let commonData = {
             'outlineWidth': RS.EventName.Params.defaultOutlineWidth,
             'anchor': new Point(RS.EventName.Params.nameAnchor.x, RS.EventName.Params.nameAnchor.y),
             'textSize': RS.EventName.Params.textSize,
-            'height': $gameMap.tileHeight.bind(this)
         };
         
         // Create Name Layer
@@ -700,10 +784,10 @@ RS.EventName.Params = RS.EventName.Params || {};
                 case 'Game_Player':
 
                     // if it exists the member into game party, it creates a name sprite.
-                    if($gameParty.members()[0]) {
+                    if($gameParty.leader()) {
                         this.addNewNameSprite(_constructor, Object.assign(commonData, {
                             'member': $gamePlayer,
-                            'textColor': RS.EventName.Params.playerNameColor
+                            'textColor': RS.EventName.Params.playerNameColor,
                         }));
                     }
 
@@ -734,7 +818,7 @@ RS.EventName.Params = RS.EventName.Params || {};
                         'member': character,
                         'textSize': RS.EventName.Params.textSize,
                         'textColor': RS.EventName.Params.vehicleNameColor,
-                        'name': character._type
+                        'name': character._type,
                     }));
                     
                     break;
