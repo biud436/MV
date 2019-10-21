@@ -70,6 +70,8 @@
  * 2019.09.11 (v1.0.5) :
  * - Fixed the bug that is not working the plugin command called 'Choice pos event id'
  * - Added the new feature that can change the position of the choice window on the center of the screen.
+ * 2019.10.21 (v1.0.6) : 
+ * - Fixed the performance penalty issue.
  */
 /*:ko
  * @plugindesc This plugin allows you to set up the position of choice list window.
@@ -115,21 +117,6 @@
  * Choice enable
  * Choice disable
  * 
- * =============================================================================
- * Change Log
- * =============================================================================
- * 2017.02.03 (v1.0.1) :
- * - Added the function allows the choice window to move linearly from a current position to the destination.
- * - It could automatically set the position of the choice window when the player is loading the save data.
- * 2017.02.08 (v1.0.2) :
- * - Optimized for motion.
- * 2017.09.24 (v1.0.3) :
- * - Fixed the bug that is not working the plugin command named 'Choice pos'
- * 2018.12.15 (v1.0.4) :
- * - Fixed the bug that couldn't find the variable called 'messagY'
- * 2019.09.11 (v1.0.5) :
- * - Fixed the bug that is not working the plugin command called 'Choice pos event id'
- * - Added the new feature that can change the position of the choice window on the center of the screen.
  */
 
 var Imported = Imported || {};
@@ -149,10 +136,26 @@ Imported.RS_ChoicePosition = true;
     var my = Number(parameters['y']);
     var isAudoDisable = Boolean(parameters['Auto Disable'] === 'true');
     
-    var alias_Window_ChoiceList_updatePlacement = Window_ChoiceList.prototype.updatePlacement;
-    Window_ChoiceList.prototype.updatePlacement = function() {
+    var alias_Window_ChoiceList_initialize = Window_ChoiceList.prototype.initialize;
+    Window_ChoiceList.prototype.initialize = function(messageWindow) {
+        alias_Window_ChoiceList_initialize.call(this, messageWindow);
+        this._prevTime = performance.now();
+    };
+
+    var alias_Window_ChoiceList_start = Window_ChoiceList.prototype.start;
+    Window_ChoiceList.prototype.start = function() {
+        this._prevTime = performance.now();
+        alias_Window_ChoiceList_start.call(this);
+        this.prepareTransform();
+    };
+
+    Window_ChoiceList.prototype.prepareTransform = function() {
         this.width = this.windowWidth();
         this.height = this.windowHeight();
+    };
+
+    var alias_Window_ChoiceList_updatePlacement = Window_ChoiceList.prototype.updatePlacement;
+    Window_ChoiceList.prototype.updatePlacement = function() {
         if($gameSystem.isChoiceMoveable()) {
             this.setCustomPosition();
         } else {
@@ -176,13 +179,11 @@ Imported.RS_ChoicePosition = true;
         }
     };
 
-    Window_ChoiceList.prototype.setCenteredChoiceWindow = function() {
-        this.width = this.windowWidth();
-        this.height = this.windowHeight();        
-        var cw = this.width / 2;
-        var ch = this.height / 2;
-        var cx = Graphics.boxWidth / 2;
-        var cy = Graphics.boxHeight / 2;
+    Window_ChoiceList.prototype.setCenteredChoiceWindow = function() {      
+        var cw = this.windowWidth() * 0.5;
+        var ch = this.windowHeight() * 0.5;
+        var cx = Graphics.boxWidth * 0.5;
+        var cy = Graphics.boxHeight * 0.5;
         var mx = cx - cw;
         var my = cy - ch;
 
@@ -195,9 +196,10 @@ Imported.RS_ChoicePosition = true;
             $gameSystem.setChoiceMoveable(false);
         }
         var t = performance.now();
-        var dt = (t % 10000 / 10000) * 0.5;
+        var dt =  (t - this._prevTime) / 1000.0;
         this.x = this.x + dt * (tx - this.x);
         this.y = this.y + dt * (ty - this.y);
+        this._prevTime = t;
     };
     
     Window_ChoiceList.prototype.getChoiceX = function () {
@@ -241,7 +243,7 @@ Imported.RS_ChoicePosition = true;
     
     var alias_Window_ChoiceList_update = Window_ChoiceList.prototype.update;
     Window_ChoiceList.prototype.update = function () {
-        if(alias_Window_ChoiceList_update) alias_Window_ChoiceList_update.call(this);
+        alias_Window_ChoiceList_update.call(this);
         if($gameMessage.choices().length > 0 && $gameSystem.isChoiceMoveable()) {
             this.updatePlacement();
         }
