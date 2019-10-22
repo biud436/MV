@@ -18,9 +18,9 @@ if sys.argv[1] == "r":
 
 # Write
 if sys.argv[1] == "w":
-	key = OpenKey(HKEY_CURRENT_USER, varSubkey)
+	key = OpenKey(HKEY_CURRENT_USER, varSubkey, 0, KEY_ALL_ACCESS)
 	value = sys.argv[2]
 	if isinstance(value, basestring):
-		SetValue(key, "mvTools", REG_SZ, value)
+		SetValueEx(key, "mvTools", 0, REG_SZ, value)
 		CloseKey(key)
-		print value.encode("utf-8")
+

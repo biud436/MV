@@ -3,7 +3,7 @@ const path = require('path');
 
 class Impl {
     
-    constructor(...args) {
+    constructor(args) {
         this._data = [];
         this._parameters = args;
         
@@ -62,10 +62,11 @@ class Impl {
         };
     }    
     
-    add(...args) {
+    add(args) {
 
         if(Array.isArray(this._data)) {
             const newItem = this.makeItem(args[0], args[1], args[2], args[3]);
+            console.log(newItem);
             this._data.push(newItem);
         }
 
