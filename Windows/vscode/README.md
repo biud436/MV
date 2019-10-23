@@ -26,7 +26,7 @@ Windows에서만 사용이 가능하며, Visual Studio Code가 컴퓨터에 설�
 
 vscode.bat 파일은 단순 배치 파일로 Visual Studio Code를 실행하는 역할을 합니다.
 
-```
+```cmd
 @SETLOCAL enableextensions enabledelayedexpansion
 @ECHO OFF
 
