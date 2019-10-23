@@ -7,7 +7,7 @@ IF NOT %errorlevel%==0 (
 	SET ERRORMSG=Could not find VS Code
 	GOTO :ERR
 )
-code %ARGS1%
+code -n %ARGS1%
 
 @ENDLOCAL
 GOTO :EOF
