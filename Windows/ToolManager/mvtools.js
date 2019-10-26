@@ -1,5 +1,7 @@
 const cp = require('child_process');
 const path = require('path');
+const { promisify } = require('util');
+const execFile = promisify(cp.execFile);
 
 class Impl {
     
@@ -13,11 +15,6 @@ class Impl {
     
     run() {
         this.read();
-        if(this.isValid()) {
-            this
-            .add(this._parameters)
-            .write();
-        }
         
         return this;
     }
@@ -31,7 +28,7 @@ class Impl {
         let args = [];
         args.push( path.join(__dirname, "get_mv_tools.py") );
         args.push( 'r' );
-        
+
         let child = cp.execFile('python', args, {encoding: 'utf8'}, (err, stdout, stderr) => {
             if(err) {
                 console.log(err.message);
@@ -40,6 +37,12 @@ class Impl {
             this._data = JSON.parse(stdout);
             
             console.log(this._data);
+
+            if(this.isValid()) {
+                this
+                .add(this._parameters)
+                .write();
+            }            
             
         });
         
