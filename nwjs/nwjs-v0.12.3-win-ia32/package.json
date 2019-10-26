@@ -4,7 +4,7 @@
     "js-flags": "--expose-gc",
     "window": {
         "title": "",
-        "toolbar": true,
+        "toolbar": false,
         "width": 816,
         "height": 624
     }

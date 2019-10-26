@@ -33,7 +33,7 @@ vscode.bat 파일은 단순 배치 파일로 Visual Studio Code를 실행하는 
 set ARGS1=%~p1
 WHERE "code.cmd">nul 2>nul
 IF NOT %errorlevel%==0 (
-	SET ERRORMSG=Could not find VS Code
+	SET ERRORMSG=Could not found VS Code
 	GOTO :ERR
 )
 code -n %ARGS1%
