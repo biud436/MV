@@ -35,8 +35,6 @@ class Impl {
             }
             
             this._data = JSON.parse(stdout);
-            
-            console.log(this._data);
 
             if(this.isValid()) {
                 this
@@ -69,7 +67,6 @@ class Impl {
 
         if(Array.isArray(this._data)) {
             const newItem = this.makeItem(args[0], args[1], args[2], args[3]);
-            console.log(newItem);
             this._data.push(newItem);
         }
 
@@ -87,8 +84,8 @@ class Impl {
             if(err) {
                 console.log(err.message);
             }
-            
-            console.log(stdout);
+
+            console.log(this._data);
             
         });
         
