@@ -1,0 +1,11 @@
+{
+    "name": "",
+    "main": "www/index.html",
+    "js-flags": "--expose-gc",
+    "window": {
+        "title": "",
+        "toolbar": true,
+        "width": 816,
+        "height": 624
+    }
+}
