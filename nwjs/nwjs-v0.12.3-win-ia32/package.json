@@ -6,7 +6,7 @@
     "inject-js-start": "bind_devtools.js",
     "window": {
         "title": "",
-        "toolbar": true,
+        "toolbar": false,
         "width": 816,
         "height": 624
     }
