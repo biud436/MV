@@ -2,9 +2,11 @@
     "name": "",
     "main": "www/index.html",
     "js-flags": "--expose-gc",
+    "chromium-args": "--javascript-harmony",
+    "inject-js-start": "bind_devtools.js",
     "window": {
         "title": "",
-        "toolbar": false,
+        "toolbar": true,
         "width": 816,
         "height": 624
     }
