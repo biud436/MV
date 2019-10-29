@@ -1593,6 +1593,8 @@ RS.Window_Name = function() {
 var Color = Color || {};
   
 (function () {
+
+  "use strict";
     
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_MessageSystem>');
@@ -2890,19 +2892,19 @@ var Color = Color || {};
       break;
       case textCode[tcGroup.CARRIAGE_RETURN]:
       textState.x = Number(textState.left || 0);
-      this.startWait(1);
+      if(!this._isUsedTextWidthEx) this.startWait(1);
       break;
       case textCode[tcGroup.PLAY_SE]:
       if(!this._isUsedTextWidthEx) this.playSe(this.obtainSoundName(textState));
       break;
       case textCode[tcGroup.SHOW_PICTURE]:
-      if(!this._isUsedTextWidthEx) this.showPicture(this.obtainSoundName(textState));
+      if(this._isUsedTextWidthEx) break;
+      this.showPicture(this.obtainSoundName(textState));
       this.startWait(15);
-      break;
       case textCode[tcGroup.HIDE_PICTURE]:
-      if(!this._isUsedTextWidthEx) this.erasePicture(this.obtainEscapeParam(textState));
+      if(this._isUsedTextWidthEx) break;
+      this.erasePicture(this.obtainEscapeParam(textState));
       this.startWait(15);
-      break;
       case textCode[tcGroup.FACE]:
       if(this._isUsedTextWidthEx) break;
       var params = this.obtainSoundName(textState).split(',');
@@ -3267,11 +3269,17 @@ var Color = Color || {};
     var ox = RS.MessageSystem.Params.windowOffset.x;
     var oy = RS.MessageSystem.Params.windowOffset.y;  
 
+    var positionType = $gameMessage.positionType();
+    var ballonOwnerType = $gameMessage.getBalloon();
+
     this.updateNameWindowPositionXImpl();
     
-    if($gameMessage.positionType() === 0 && $gameMessage.getBalloon() === -2) {
-      this._nameWindow.y = (0 + oy);
-      this.y = this._nameWindow.isOpen() ? (this._nameWindow.height + RS.MessageSystem.Params.nameWindowY + oy) : (0 + oy);
+    if(positionType === 0 && 
+       ballonOwnerType === -2) { 
+      // 메시지 윈도우가 상단일 때
+      var topY = 0;
+      this._nameWindow.y = (topY + oy);
+      this.y = this._nameWindow.isOpen() ? (topY + this._nameWindow.height + RS.MessageSystem.Params.nameWindowY + oy) : (topY + oy);
     } else {
       this._nameWindow.y = self.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
     }
