@@ -135,6 +135,10 @@ Imported.RS_ChoicePosition = true;
     var mx = Number(parameters['x']);
     var my = Number(parameters['y']);
     var isAudoDisable = Boolean(parameters['Auto Disable'] === 'true');
+
+    //============================================================================
+    // Window_ChoiceList
+    //============================================================================    
     
     var alias_Window_ChoiceList_initialize = Window_ChoiceList.prototype.initialize;
     Window_ChoiceList.prototype.initialize = function(messageWindow) {
@@ -156,21 +160,18 @@ Imported.RS_ChoicePosition = true;
 
     var alias_Window_ChoiceList_updatePlacement = Window_ChoiceList.prototype.updatePlacement;
     Window_ChoiceList.prototype.updatePlacement = function() {
-        if($gameSystem.isChoiceMoveable()) {
-            this.setCustomPosition();
-        } else {
-            alias_Window_ChoiceList_updatePlacement.call(this);
-        }
+        alias_Window_ChoiceList_updatePlacement.call(this);
+        if($gameSystem.isChoiceMoveable()) this.updateCustomPosition();
     };
     
-    Window_ChoiceList.prototype.setCustomPosition = function() {
+    Window_ChoiceList.prototype.updateCustomPosition = function() {
         
         var position = $gameSystem.getChoicePosition();
         var mx = position.x;
         var my = position.y;
         
-        if(mx === undefined || mx === null || isNaN(mx)) mx = this.getChoiceX();
-        if(my === undefined || my === null || isNaN(my)) my = this.getChoiceY();
+        if(!mx) mx = this.getChoiceX();
+        if(!my) my = this.getChoiceY();
 
         if(position.dirty) {
             this.setCenteredChoiceWindow();
@@ -205,8 +206,9 @@ Imported.RS_ChoicePosition = true;
     Window_ChoiceList.prototype.getChoiceX = function () {
 
         var x = 0;
+        var type = $gameMessage.choicePositionType();
 
-        switch ($gameMessage.choicePositionType()) {
+        switch (type) {
             case 0:
                 x = 0;
                 break;
