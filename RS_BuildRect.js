@@ -239,6 +239,10 @@ RS.BuildRect = RS.BuildRect || {};
                     this.getTileName(6, lastTileId);
                 }
 
+                this._type = this._type.replace(/\s/g, "_");
+                this._type = this._type.replace(/\(/g, "\\(");
+                this._type = this._type.replace(/\)/g, "\\)");
+
                 const mirror = {
                     note: this._type,
                     w: rect.width,
@@ -363,15 +367,26 @@ RS.BuildRect = RS.BuildRect || {};
         onSave() {
             const fs = require('fs');
             const path = require('path');
-            const mainDir = path.join(process.mainModule.filename, "..");
+            let mainDir = path.join(process.mainModule.filename, "..");
             const retPath = path.join(mainDir, "data", "rect.json")
-            const retData = JSON.stringify(this._data, null, "\t");
+
+            let retData = "";
+            
+            // JSON Beautify.
+            // However, The result of this function is different with the JSON string 
+            // that would be created in the plugin manager.
+            retData = JSON.stringify(this._data, null, "\t");
 
             let chooser = document.createElement('input');
             chooser.style.display = "none";
             chooser.id = "fileDialog";
             chooser.type = "file";
-            chooser.nwsaveas = "rect.json";
+            chooser.nwsaveas = (Imported.RS_MirrorArea) ? "Mirrors.json" : "rect.json";
+
+            if(Imported.RS_MirrorArea) {
+                mainDir = path.join(process.mainModule.filename, "..", "data");
+            }
+
             chooser.setAttribute('nwworkingdir', mainDir);
 
             chooser.addEventListener("change", () => {
