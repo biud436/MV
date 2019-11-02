@@ -59,6 +59,13 @@
  * @dir img/titles1
  * @type file
  * 
+ * @param Password Mode
+ * @type boolean
+ * @desc Set the password mode.
+ * @default false
+ * @on true
+ * @off false
+ * 
  * @help
  * =============================================================================
  * Usage
@@ -71,6 +78,7 @@
  * Change Log
  * =============================================================================
  * 2018.10.15 (v1.0.0) - First Release.
+ * 2019.11.02 (v1.0.1) - Added the password mode
  */
 /*:ko
  * @plugindesc 숫자 입력 패드입니다. <RS_Window_NumberInput>
@@ -132,6 +140,14 @@
  * @dir img/titles1
  * @type file
  * 
+ * @param Password Mode
+ * @text 패스워드 모드 설정
+ * @type boolean
+ * @desc 패스워드 모드로 설정할 경우, 글자가 *로 표시됩니다.
+ * @default false
+ * @on 참
+ * @off 거짓
+ * 
  * @help
  * =============================================================================
  * 사용법
@@ -147,6 +163,7 @@
  * Change Log
  * =============================================================================
  * 2018.10.15 (v1.0.0) - First Release.
+ * 2019.11.02 (v1.0.1) - Added the password mode
  */
 
  var Imported = Imported || {};
@@ -180,6 +197,8 @@
   RS.Window_NumberInputImpl.Params.buttonWidth = parameters["Default Button Width"] || "42";
   RS.Window_NumberInputImpl.Params.backgroundImage = parameters["Background Image"];
   RS.Window_NumberInputImpl.Params.backgroundType = parseInt(parameters["Window Background Type"] || 2);
+  RS.Window_NumberInputImpl.Params.passwordChar = "*";
+  RS.Window_NumberInputImpl.Params.passwordMode = Boolean(parameters["Password Mode"] === "true");   
 
   function Window_NumberInputImpl() {
     this.initialize.apply(this, arguments);
@@ -455,7 +474,11 @@
   Window_NumberEditImpl.prototype.drawChar = function(index) {
     var rect = this.itemRect(index);
     this.resetTextColor();
-    this.drawText(this._name[index] || '', rect.x, rect.y);
+    var character = this._name[index] || '';
+    if(RS.Window_NumberInputImpl.Params.passwordMode) {
+      character = RS.Window_NumberInputImpl.Params.passwordChar;
+    }
+    this.drawText(character, rect.x, rect.y);
   };  
 
   //============================================================================
