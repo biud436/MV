@@ -142,6 +142,7 @@
  * - Fixed the bug that is not working.
  * - Changed as the cordova plugin(extension) that works fine.
  * - Added reward video.
+ * - Changed SceneManager.exit() to navigator.app.exitApp();
  */
 
 var Imported = Imported || {};
@@ -323,7 +324,7 @@ RS.Admob = RS.Admob || {};
       }
     }.bind(this);
     xhr.onerror = function(err) {
-      SceneManager.exit();
+      navigator.app.exitApp();
     }.bind(this);
     xhr.send();
   };
