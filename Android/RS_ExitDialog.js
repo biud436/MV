@@ -56,6 +56,8 @@
   * 2016.05.29 (v1.0.2) - The incorrect character fixed.
   * 2016.12.19 (v1.0.3) - Removed a functionality that shows up the dialog only in the title scene.
   * 2017.01.13 (v1.0.4) - Fixed a bug that causing when pressing a back button several times.
+  * 2019.11.06 (v1.0.5) :
+  * - Fixed the bug that couldn't exit the App.
  */
  /*:ko
   * RS_ExitDialog.js
@@ -116,6 +118,8 @@
   * 2016.05.29 (v1.0.2) - The incorrect character fixed.
   * 2016.12.19 (v1.0.3) - Removed a functionality that shows up the dialog only in the title scene.
   * 2017.01.13 (v1.0.4) - Fixed a bug that causing when pressing a back button several times.
+  * 2019.11.06 (v1.0.5) :
+  * - Fixed the bug that couldn't exit the App.
   */
 
 
