@@ -296,10 +296,10 @@ RS.Admob = RS.Admob || {};
     if(!window.plugins && !window.plugins.AdMob) console.error(RS.Admob.Params.failMsg);
     admob.interstitial.config({
       id: RS.Admob.getAppID().interstitial,
-      isTesting: true,
-      autoShow: false,
+      isTesting: RS.Admob.Params.isTesting,
+      autoShow: true,
     })
-    admob.interstitial.prepare();        
+    admob.interstitial.prepare();   
     admob.interstitial.show();
   };
 
