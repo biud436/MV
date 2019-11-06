@@ -10,12 +10,14 @@
  * RS_ExitDialog.js
  * @plugindesc This plugin allows you to show up the exit dialog on Android.
  * @author biud436
+ * @cordova_plugin cordova-plugin-dialogs
  *
  * @param Dialog Name
  * @desc Sets up the title of the dialog
  * @default Information Dialog
  *
  * @param Show Custom Dialog Name
+ * @type boolean
  * @desc Sets up whether show as the title of the dialog you specify yourself
  * @default false
  *
@@ -30,7 +32,7 @@
  * @param Cancel Button
  * @desc Cancel Button's Name
  * @default Cancel
- *
+ * 
  * @help
  * =============================================================================
  * Installation
@@ -46,15 +48,6 @@
  *
  *    cordova plugin add cordova-plugin-dialogs
  *
- * =============================================================================
- * How to change a default behavior
- * =============================================================================
- * Scene_Map.prototype.onExit = function () {
- *   // your code add here.
- * };
- * Scene_Battle.prototype.onExit = function () {
- *   // your code add here.
- * };
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -97,7 +90,7 @@
   * @text 취소 버튼
   * @desc 취소 버튼 명
   * @default 취소
-  *
+  * 
   * @help
   * =============================================================================
   * 플러그인 동작 환경
@@ -114,23 +107,6 @@
   * 버전이라면 아래 명령이 잘 동작할 것입니다.
   *
   *    cordova plugin add cordova-plugin-dialogs
-  *
-  * =============================================================================
-  * 취소 버튼의 기본 동작 변경하기
-  * =============================================================================
-  * 계층적 구조로 되어있는 씬 클래스는 뒤로 가기 버튼을 눌렀을 때 onExit 이벤트를 받아,
-  * 종료 대화 상자를 기본적으로 띄우게 되어있습니다. 하지만 자바스크립트에 대해서 잘
-  * 아신다면 이 기본 동작을 오버라이딩하여 재정의하여 씬 별로 다른 동작 구현이 가능
-  * 합니다.
-  *
-  * Scene_Map.prototype.onExit = function () {
-  *   // your code add here.
-  * };
-  * Scene_Battle.prototype.onExit = function () {
-  *   // your code add here.
-  * };
-  *
-  * 정의하지 않으면 '예' 버튼을 눌렀을 때 게임이 종료 됩니다.
   *
   * =============================================================================
   * 변경 사항
@@ -151,60 +127,41 @@ RS.ExitDialog = RS.ExitDialog || {};
 
 (function($) {
 
+  "use strict";
+
   var parameters = PluginManager.parameters('RS_ExitDialog');
 
   $.Params = {
-
-    'message': parameters['Exit Message'] || "Are you sure you want to quit the game?" ,
-    'title': parameters['Dialog Name'] || "Information Dialog",
-
-    // Button
-    'okBtn': parameters['OK Button'] || "OK" ,
-    'cancelBtn': parameters['Cancel Button'] || "Cancel" ,
-
-    // Check properties
-    'isCustomTitleName': Boolean(parameters['Show Custom Dialog Name'] === 'true')
-
+    'message'          : parameters['Exit Message'] || "Are you sure you want to quit the game?" ,
+    'title'            : parameters['Dialog Name'] || "Information Dialog",
+    'okBtn'            : parameters['OK Button'] || "OK" ,
+    'cancelBtn'        : parameters['Cancel Button'] || "Cancel" ,
+    'isCustomTitleName': Boolean(parameters['Show Custom Dialog Name'] === 'true'),
   };
-
-  //============================================================================
-  // bind cordova
-  //============================================================================
 
   document.addEventListener("deviceready", onDeviceReady, false);
 
   function onDeviceReady() {
-      document.removeEventListener("backbutton", function(){}, false);
-      document.addEventListener("backbutton", SceneManager.onExit, false);
+      document.addEventListener("backbutton", onBackButtonDown, false);
   }
 
-  SceneManager.onExit = function() {
-      if(SceneManager._scene.onExit) SceneManager._scene.onExit();
-  };
+  /**
+   * @param {Event} e 
+   */
+  function onBackButtonDown(e) {
 
-  Scene_Base.prototype.onExit = function (e) {
-      var title = $dataSystem.gameTitle || document.title;
-      var okButtonId = 1;
-      if(e && e.preventDefault) e.preventDefault();
-      if(!$.Params.isCustomTitleName) title = $.Params.title;
-      // The index number starts from 1 (1,2,3...)
-      navigator.notification.confirm($.Params.message, function(idx) {
-          if(idx === okButtonId) {
-              SceneManager.exit();
-          }
-      }, title, [$.Params.okBtn, $.Params.cancelBtn]);
-  };
+    var title = $dataSystem.gameTitle || document.title;
 
-  //============================================================================
-  // Additional Code
-  //============================================================================
+    if(!$.Params.isCustomTitleName) {
+      title = $.Params.title;
+    }
 
-  // Scene_Map.prototype.onExit = function () {
-  //   // your code add here.
-  // };
-  //
-  // Scene_Battle.prototype.onExit = function () {
-  //   // your code add here.
-  // };
+    navigator.notification.confirm($.Params.message, function(buttonIndex) {
+        if(buttonIndex === 1) {
+          navigator.app.exitApp();
+        }
+    }, title, [$.Params.okBtn, $.Params.cancelBtn]);
+
+  }
 
 })(RS.ExitDialog);
