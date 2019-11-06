@@ -268,7 +268,8 @@ RS.Admob = RS.Admob || {};
   RS.Admob.remove = function() {
     document.removeEventListener('admob.rewardvideo.events.LOAD_FAIL', RS.Admob.Event.fail);
     document.removeEventListener('admob.rewardvideo.events.LOAD', RS.Admob.Event.load);
-    document.removeEventListener('admob.rewardvideo.events.CLOSE', RS.Admob.Event.close);    
+    document.removeEventListener('admob.rewardvideo.events.CLOSE', RS.Admob.Event.close);  
+    document.removeEventListener('admob.rewardvideo.events.REWARD', RS.Admob.Event.reward);      
   };
   
   RS.Admob.showBanner = function (bannerAtTop) {
