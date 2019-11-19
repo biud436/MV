@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * RS_HUD_4m_InBattle.js
- * @plugindesc (v1.2.5) This plugin requires RS_HUD_4m.js
+ * @plugindesc (v1.2.6) This plugin requires RS_HUD_4m.js
  *
  * @author biud436
  *
@@ -183,10 +183,12 @@
  * 2017.09.17 (v1.2.3) - Fixed the bug that cause the error when restarting the game.
  * 2017.10.26 (v1.2.4) - This plugin has applied with the new plugin manager features in the plugin parameters.
  * 2018.05.09 (v1.2.5) - Fixed an issue that is not showing the image after it has been added.
+ * 2019.11.19 (v1.2.6) :
+ * - Supported a plugin called 'MPP_ActiveTimeBattle'
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '1.2.5';
+Imported.RS_HUD_4m_InBattle = '1.2.6';
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -510,6 +512,19 @@ RS.HUD.param = RS.HUD.param || {};
   //
   //
 
+  (function() {
+
+    /**
+     * Find a script called "MPP_ActiveTimeBattle.js"
+     */
+    PluginManager._scripts.forEach(function(pluginName) {
+      if(pluginName === "MPP_ActiveTimeBattle") {
+        Imported.MPP_ActiveTimeBattle = true;
+      }
+    }, this);
+
+  })();
+
   Game_System.prototype.isAtbSystem = function () {
     if(Imported.YEP_BattleEngineCore && Imported.YEP_X_BattleSysATB) {
       return true;
@@ -518,6 +533,9 @@ RS.HUD.param = RS.HUD.param || {};
       return true;
     }
     if(Imported['VE - Active Time Battle']) {
+      return true;
+    }
+    if(Imported.MPP_ActiveTimeBattle) {
       return true;
     }
     return false;
@@ -533,6 +551,9 @@ RS.HUD.param = RS.HUD.param || {};
     if(Imported['VE - Active Time Battle']) {
       return this.atbRate();
     }
+    if(Imported.MPP_ActiveTimeBattle) {
+      return this.atRate();
+    }    
     return 1;
   };
 
@@ -546,13 +567,11 @@ RS.HUD.param = RS.HUD.param || {};
     if(Imported['VE - Active Time Battle']) {
       return this.atbRate();
     }
+    if(Imported.MPP_ActiveTimeBattle) {
+      return this.castRate();
+    }        
     return 1;
   };
-
-  //----------------------------------------------------------------------------
-  // (Addon) Yanfly Engine Plugins - Battle System - Active Turn Battle
-  //
-  //
 
   var alias_yanflyATB_gauge_HUD_initialize = HUD.prototype.initialize;
   HUD.prototype.initialize = function(config) {
