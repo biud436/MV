@@ -109,6 +109,11 @@
  * @desc when showing the input form on the screen, you can change the style of input.
  * @default {"width":"60%","textIndent":"10px","fontSize":"16px","lineHeight":"120%","border":"3px solid #bd7419","cursor":"text","Position":"","top":"\"\"","left":"\"\"","right":"0","bottom":"0"}
  *
+ * @param Show Face
+ * @type boolean
+ * @desc Specify whther the face image shows.
+ * @default true
+ * 
  * @help
  * This plugin provides a keyboard that allows you to type in korean
  * or other native language in the Name Input Proccessing.
@@ -163,6 +168,7 @@
  * 2019.11.23 (v1.6.9) :
  * - Added a new feature that can select whether input method editor shows on the screen. 
  * its feature can be resolved many of issues on the mobile device.
+ * - Added a new feature that can hide the face image on the name edit window.
  */
 /*~struct~TextBox:
  * 
@@ -332,6 +338,14 @@
  * @desc 입력 양식의 스타일을 설정할 수 있습니다 (기본적으로는 하단에 표시됨)
  * @default {"width":"60%","textIndent":"10px","fontSize":"16px","lineHeight":"120%","border":"3px solid #bd7419","cursor":"text","Position":"","top":"\"\"","left":"\"\"","right":"0","bottom":"0"}
  * 
+ * @param Show Face
+ * @text 얼굴 이미지 표시
+ * @type boolean
+ * @desc 얼굴 이미지 표시 여부를 설정합니다.
+ * @default true
+ * @on 표시
+ * @off 감추기
+ * 
  * @help
  * 화면에서 보이지 않는 <input> 폼을 생성하여 텍스트를 직접 입력 받을 수 있게 하는 플러그인입니다.
  *
@@ -409,6 +423,7 @@
  * - 이름을 9자 이상으로 입력할 수 있는 기능이 추가되었습니다.
  * 2019.11.23 (v1.6.9) :
  * - 입력 에디터를 화면에 표시하거나 숨길 수 있는 매개변수를 추가했습니다.
+ * - 얼굴 이미지를 감출 수 있는 기능을 추가하였습니다.
  */
 /*~struct~TextBox:ko
  * 
@@ -530,6 +545,8 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
   };  
   
   $.Params.style = $.jsonParse(parameters["Style"]);
+
+  $.Params.isValidFace = Boolean(parameters["Show Face"] === "true");
   
   //===========================================================================
   // TextBox Class
@@ -764,13 +781,25 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     }
     return this.textWidth(text);
   };
+
+  Window_KorNameEdit.prototype.faceWidth = function() {
+    return $.Params.isValidFace ? 144 : 0;
+  };
+
+  Window_KorNameEdit.prototype.left = function() {
+    var nameCenter = (this.contentsWidth() + this.faceWidth()) / 2;
+    var nameWidth = (this._maxLength + 1) * this.charWidth();
+    return Math.min(nameCenter - nameWidth / 2, this.contentsWidth() - nameWidth);
+  };  
   
   Window_KorNameEdit.prototype.drawActorFace = function(actor, x, y, width, height) {
-    this.drawFace(actor.faceName(), actor.faceIndex(), x, y, width, height);
+    if($.Params.isValidFace) {
+      this.drawFace(actor.faceName(), actor.faceIndex(), x, y, width, height);
+    }
     this.changeTextColor(this.hpColor(actor));
     this.drawText($.Params.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
   };
-  
+
   Window_KorNameEdit.prototype.itemRect = function(index) {
     return {
       x: this.left() + index * this.charWidth(),
@@ -779,14 +808,14 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
       height: this.lineHeight()
     };
   };
-  
+
   Window_KorNameEdit.prototype.windowWidth = function () {
     return 580;
   };
   
   Window_KorNameEdit.prototype.updateWindowWidth = function () {
     var padding = this.padding * 2;
-    var faceWidth = this.faceWidth();
+    var faceWidth = $.Params.isValidFace ? this.faceWidth() : 0;
     var textWidth = this.textWidth($.Params.askText) + this.textPadding() * 2;
     if($.Params.windowWidth === 'auto') {
       this.width = Math.max(Math.min(padding + faceWidth + textWidth, Graphics.boxWidth - padding), 580);
