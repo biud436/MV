@@ -855,12 +855,18 @@ class Database {
 
     static extract() {
 
-        Database.loadSystem();
-        Database.loadActorsData();
-        Database.loadEnemiesData();
-        Database.loadAnimationData();
-        Database.loadTilesetsData();
-        Database.loadCommonEvents();
+        this.loadSystem();
+        this.loadActorsData();
+        this.loadClassesData();
+        this.loadSkillsData();
+        this.loadItemsData();
+        this.loadWeaponsData();
+        this.loadArmorsData();
+        this.loadEnemiesData();
+        this.loadStatesData();
+        this.loadAnimationData();
+        this.loadTilesetsData();
+        this.loadCommonEvents();
 
         Resources.readMapData();
         
