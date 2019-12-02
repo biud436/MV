@@ -714,10 +714,101 @@ class Database {
 
     }
 
+    static loadActorsData() {
+
+        // battlerName
+        // characterName
+        // faceName
+
+        /**
+         * @type {RPG.Actor[]}
+         */
+        let items = this.loadDataFile("Actors");
+
+        items.forEach(i => {
+            if(!i) return;
+            if(i.battlerName != "") Resources.addSvActor(i.battlerName);
+            if(i.characterName != "") Resources.addCharacter(i.characterName);
+            if(i.faceName != "") Resources.addFace(i.faceName);
+        });
+
+    }
+
+    static loadClassesData() {}
+    static loadSkillsData() {}
+    static loadItemsData() {}
+    static loadWeaponsData() {}
+    static loadArmorsData() {}
+
+    static loadEnemiesData() {
+        
+        /**
+         * @type {RPG.Enemy[]}
+         */
+        let items = this.loadDataFile("Enemies");
+
+        items.forEach(i => {
+            if(!i) return;
+            Resources.addEnemies(i.battlerName);
+        })
+
+    }
+
+    static loadStatesData() {}        
+
+    static loadAnimationData() {
+
+        // animation1Name
+        // animation2Name
+        // timings[i].se
+
+        /**
+         * @type {RPG.Animation[]}
+         */
+        let items = this.loadDataFileFaster("Animations");
+
+        items.forEach(i => {
+            if(!i) return;
+            const animation1Name = i.animation1Name;
+            const animation2Name = i.animation2Name;
+            
+            if(animation1Name != "") Resources.addAnimation(animation1Name);
+            if(animation2Name != "") Resources.addAnimation(animation2Name);
+
+            i.timings.forEach(j => {
+                if(!j) return;
+                if(j.se && j.se.name !== "") {
+                    Resources.addSe(j.se.name);
+                }
+            });
+
+        });
+        
+    }
+
+    static loadTilesetsData() {
+
+        /**
+         * @type {RPG.Tileset[]}
+         */
+        let items = this.loadDataFileFaster("Tilesets");
+
+        items.forEach(i => {
+            if(!i) return;
+            
+            i.tilesetNames.forEach(tilesetName => Resources.addTileset(tilesetName));
+
+        });
+
+    }
+
     static loadCommonEvents() {
         let filepath = databasePath.CommonEvents;
         let json = fs.readFileSync(filepath, "utf8");   
 
+        /**
+         * @type {RPG.CommonEvent[]}
+         */
         this.commonEvents = jsonParse(json);
 
         this.commonEvents.forEach(commonEvent => {
@@ -761,92 +852,6 @@ class Database {
         Resources.addMe(system.gameoverMe.name);
 
     }    
-
-    static loadActorsData() {
-
-        // battlerName
-        // characterName
-        // faceName
-
-        /**
-         * @type {RPG.Actor[]}
-         */
-        let items = this.loadDataFile("Actors");
-
-        items.forEach(i => {
-            if(!i) return;
-            if(i.battlerName != "") Resources.addSvActor(i.battlerName);
-            if(i.characterName != "") Resources.addCharacter(i.characterName);
-            if(i.faceName != "") Resources.addFace(i.faceName);
-        });
-
-    }
-
-    static loadAnimationData() {
-
-        // animation1Name
-        // animation2Name
-        // timings[i].se
-
-        /**
-         * @type {RPG.Animation[]}
-         */
-        let items = this.loadDataFileFaster("Animations");
-
-        items.forEach(i => {
-            if(!i) return;
-            const animation1Name = i.animation1Name;
-            const animation2Name = i.animation2Name;
-            
-            if(animation1Name != "") Resources.addAnimation(animation1Name);
-            if(animation2Name != "") Resources.addAnimation(animation2Name);
-
-            i.timings.forEach(j => {
-                if(!j) return;
-                if(j.se && j.se.name !== "") {
-                    Resources.addSe(j.se.name);
-                }
-            });
-
-        });
-        
-    }
-
-    // Classes (x)
-    // Skill (x)
-    // Items (x)
-    // Weapons (x)
-    // Armors (x)
-
-    static loadEnemiesData() {
-        
-        /**
-         * @type {RPG.Enemy[]}
-         */
-        let items = this.loadDataFile("Enemies");
-
-        items.forEach(i => {
-            if(!i) return;
-            Resources.addEnemies(i.battlerName);
-        })
-
-    }
-
-    static loadTilesetsData() {
-
-        /**
-         * @type {RPG.Tileset[]}
-         */
-        let items = this.loadDataFileFaster("Tilesets");
-
-        items.forEach(i => {
-            if(!i) return;
-            
-            i.tilesetNames.forEach(tilesetName => Resources.addTileset(tilesetName));
-
-        });
-
-    }
 
     static extract() {
 
