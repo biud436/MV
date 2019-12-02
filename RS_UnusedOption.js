@@ -705,6 +705,30 @@ class Database {
 
     }
 
+    /**
+     * Extract the meta-data.
+     * (This function gets from the file called rpg_managers.js)
+     * 
+     * @param {RPG.Actor|RPG.Class|RPG.State|RPG.Weapon|RPG.Armor|RPG.Item} data 
+     * 
+     */
+    static extractMetadata(data) {
+        let re = /<([^<>:]+)(:?)([^>]*)>/g;
+        data.meta = {};
+        for (;;) {
+            let match = re.exec(data.note);
+            if (match) {
+                if (match[2] === ':') {
+                    data.meta[match[1]] = match[3];
+                } else {
+                    data.meta[match[1]] = true;
+                }
+            } else {
+                break;
+            }
+        }        
+    }
+
     static loadActorsData() {
 
         // battlerName
@@ -885,8 +909,13 @@ console.log(images);
 console.log(audios);
 
 // Not supported yet
-// * @noteParam sampleImage
+// 
+// * @noteParam gachaImage
 // * @noteRequire 1
-// * @noteDir img/sample/
+// * @noteDir img/gacha/
 // * @noteType file
 // * @noteData items
+//
+// ImageManager.loadBitmap("img/gacha/", this._item.meta.gachaImage);
+// 
+// <gachaImage:card01>
