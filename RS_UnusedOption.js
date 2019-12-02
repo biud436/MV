@@ -341,15 +341,6 @@ class Resources {
     
                 // Show Animation, Show Battle Animation
                 case 212: case 337:
-                    // if(params[1]) {
-                    //     var animation = $dataAnimations[params[1]];
-                    //     var name1 = animation.animation1Name;
-                    //     var name2 = animation.animation2Name;
-                    //     var hue1 = animation.animation1Hue;
-                    //     var hue2 = animation.animation2Hue;
-                    //     ImageManager.requestAnimation(name1, hue1);
-                    //     ImageManager.requestAnimation(name2, hue2);
-                    // }
                     break;
     
                 // Change Player Followers
@@ -730,6 +721,10 @@ class Database {
             if(i.battlerName != "") Resources.addSvActor(i.battlerName);
             if(i.characterName != "") Resources.addCharacter(i.characterName);
             if(i.faceName != "") Resources.addFace(i.faceName);
+
+            
+            i.note.split(/[\r\n]+/);
+
         });
 
     }
