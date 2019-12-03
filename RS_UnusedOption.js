@@ -1170,8 +1170,28 @@ const config = new PluginConfiguration((noteParams) => {
              .make();    
 
     // Log images and audios!
-    console.log(images);
-    console.log(audios);    
+    // console.log(images);
+    // console.log(audios); 
+
+    function collecting(object) {
+        for(let i in object) {
+            /**
+             * @type {ImageChunk}
+             */
+            const resource = object[i];
+            
+            if(resource) {
+                const rootPath = path.join(process.cwd(), resource._rootPath);
+                resource._data.forEach(file => {
+                    const retPath = path.join(rootPath, file);
+                    console.log(retPath);
+                });
+            }
+        }        
+    }
+
+    collecting(images);
+    collecting(audios);
 
 }).readPluginFiles();    
 
