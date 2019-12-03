@@ -913,34 +913,35 @@ class Database {
 
     static loadClassesData() {}
     static loadSkillsData() {}
-    
-    static loadItemsData() {
-        
-        /**
-         * @type {RPG.Item[]}
-         */
-        let items = this.loadDataFileFaster("Items");
 
-        // TODO: These lines are needed performance up and refactor.
-        items.forEach(i => {
+    /**
+     * 
+     * @param {RPG.Actor[]|RPG.Class[]|RPG.Skill[]|RPG.Item[]|RPG.State[]|RPG.Armor[]|RPG.Weapon[]} dataObject 
+     */
+    static extractResourceFromMetaData(dataObject) {
+        
+        // These lines are needed performance up and refactor.
+        // and it cannot read map info, event, common event yet.
+        // Because it takes a lot of times.        
+        dataObject.forEach(i => {
             if(!i) return;
 
             const noteData = this.noteParams.filter(note => {
                 return note.noteData === 'items'; // arg0
             });
-
+    
             let data = {
                 note: i.note
             };
-
+    
             this.extractMetadata(data);
-
+    
             noteData.forEach(i => {
                 const type = i.noteDir.split("/");
                 const rootFolderType = type[0];
                 const subFoldersType = type[1];
                 const resName = data.meta[i.name];
-
+    
                 if(resName) {
                     switch(rootFolderType) {
                         case 'img':
@@ -959,10 +960,18 @@ class Database {
                             break;
                     }
                 }
-                
-            });
+            }); 
+        });
+    }
+    
+    static loadItemsData() {
+        
+        /**
+         * @type {RPG.Item[]}
+         */
+        let items = this.loadDataFileFaster("Items");
 
-        })
+        this.extractResourceFromMetaData(items);
 
     }
 
