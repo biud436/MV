@@ -911,8 +911,23 @@ class Database {
 
     }
 
-    static loadClassesData() {}
-    static loadSkillsData() {}
+    static loadClassesData() {
+        /**
+         * @type {RPG.Class[]}
+         */
+        let items = this.loadDataFileFaster("Classes");
+
+        this.extractResourceFromMetaData(items);
+    }
+    
+    static loadSkillsData() {
+        /**
+         * @type {RPG.Skill[]}
+         */
+        let items = this.loadDataFileFaster("Skills");
+
+        this.extractResourceFromMetaData(items);
+    }
 
     /**
      * 
