@@ -1,14 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const EventEmiiter = require('events');
+
+class LazyInitialization extends EventEmiiter {}
 
 const processArgs = process.argv.slice(2);
 // const testdir = processArgs[0] || path.join(process.env["USERPROFILE"], "Desktop");
-const testdir = `C:/Users/U/Desktop/Exam/201907/www`;
+// const testdir = `C:/Users/U/Desktop/Exam/201907/www`;
+const testdir = `E:/SteamLibrary/steamapps/common/RPG Maker MV/dlc/KadokawaPlugins_New/samples/Gacha Sample`;
+
+let sourceDir = processArgs[0] || testdir;
+let targetDir = ``;
 
 process.chdir(testdir);
 
 /**
+ * VS Code에서 지원하지 않는다.
  * @param {*} target 
  * @param {*} name 
  * @param {PropertyDescriptor} descriptor 
@@ -19,7 +27,7 @@ const readOnly = (target, name, descriptor) => {
 };
 
 /**
- * @class ImageThunk
+ * @class ImageChunk
  */
 class ImageChunk {
     
@@ -90,6 +98,9 @@ class AudioChunk extends ImageChunk {
     }
 }
 
+/**
+ * @type {Proxy}
+ */
 let images = new Proxy({
     animations: new ImageChunk("img/animations"),
     battlebacks1: new ImageChunk("img/battlebacks1", [
@@ -143,11 +154,15 @@ let images = new Proxy({
     titles2: new ImageChunk("img/titles2", []),
 }, {
     set(target, key, value) {
-        target[key] = new ImageChunk(`img/${key}`, value);
+        if(!target[key]) {
+            target[key] = new ImageChunk(`img/${key}`, value);
+        }
+        return !!target[key];
     },
     get(target, key) {
         return target[key];
     },
+    
 });
 
 let audios = new Proxy({
@@ -157,7 +172,10 @@ let audios = new Proxy({
     se: new AudioChunk("audio/se", []),
 }, {
     set(target, key, value) {
-        target[key] = new ImageChunk(`audio/${key}`, value);
+        if(!target[key]) {
+            target[key] = new ImageChunk(`audio/${key}`, value);
+        } 
+        return !!target[key];
     },
     get(target, key) {
         if(key === "wav") {
@@ -478,9 +496,312 @@ class Resources {
     }
 }
 
-class Database {
+//#region Plugins
 
-    static init() {
+class Plugin {
+
+    constructor(...args) {
+
+        this._name = args[0];
+        this._status = args[1];
+        this._description = args[2];
+        this._parameters = jsonParse(args[3]);
+
+        this._files = [];
+
+        /**
+         * @type {{name: String, dir: String, require: number, type: String, default: String}[]}
+         */
+        this._params = [];
+
+        /**
+         * @type {{name: String, noteDir: String, noteRequire: number, noteType: String, noteData: String}[]}
+         */        
+        this._noteParams = [];
+
+        this._lastParam = null;
+        this._lastNoteParam = null;
+
+        this._isReady = false;
+    }
+
+    done() {
+        this._isReady = true;
+    }
+
+    push(...args) {
+        this._files.push(...args);
+    }
+
+    isValid() {
+        return this._isReady;
+    }
+
+    createParam(name) {
+        
+        let param = {
+            name: name,
+            dir: null,
+            require: null,
+            type: null,
+            default: "",
+        };
+
+        this._lastParam = param;
+    }
+
+    createNoteParam(name) {
+
+        let param = {
+            name: name,
+            noteRequire: null,
+            noteDir: null,
+            noteType: null,
+            noteData: null,
+        };
+
+        this._lastNoteParam = param;
+    }
+
+    updateParam(key, value) {
+        if(!this._lastParam) return;
+        this._lastParam[key] = value;
+    }
+
+    updateNoteParam(key, value) {
+        if(!this._lastNoteParam) return;
+        this._lastNoteParam[key] = value;
+    }
+
+    flushParam() {
+        if(this._lastParam) {
+            this._params.push(this._lastParam);
+            this._lastParam = null;
+        }
+    }
+
+    flushNoteParam() {
+        if(this._lastNoteParam) {
+            this._noteParams.push(this._lastNoteParam);
+            this._lastNoteParam = null;
+        }
+    }    
+
+    filterParams() {
+        this._params = this._params.filter(i => i.dir);
+    }
+
+    filterNoteParams() {
+        this._noteParams = this._noteParams.filter(i => i.noteDir);
+    }    
+
+    findResource() {
+        
+        for(let i in this._params) {
+            const name = this._params[i].name;
+            const dir =  this._params[i].dir;
+            const parameter = this._parameters[name];
+            if(parameter) {
+                let temp = dir.split("/");
+                let rtype = temp[0];
+                /**
+                 * @type {String}
+                 */
+                let stype = temp[1];
+                if(rtype === "img") {
+                    images[stype].push(parameter);
+                } else if(rtype === "audio") {
+                    audios[stype].push(parameter);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 
+     * @param {function(string, string) : void} noteCallback 
+     */
+    findResourcesFromMetadata(noteCallback) {
+        for(let i in this._noteParams) {
+
+            const name = this._noteParams[i].name;
+            const dir = this._noteParams[i].noteDir;
+
+            let temp = dir.split("/");
+            let rtype = temp[0];
+            let stype = temp[1];
+
+            noteCallback(rtype, stype);
+
+        }
+    }
+
+    /**
+     * 
+     * @param {function(string, Array) : void} callback 
+     */
+    readComments(callback) {
+        
+        let filePath = `js/plugins/${this._name}.js`;
+        let regRequiredAssets = /\*\s@requiredAssets\s(.*)/i;
+        let regParam = /\*\s@param\s(.*)/i;
+        let regNoteParam = /\*\s@noteParam\s(.*)/i;
+
+        if(fs.existsSync(filePath)) {
+            const fileStream = fs.createReadStream(filePath, 'utf8');
+            const rl = readline.createInterface({
+                input: fileStream,
+                crlfDelay: Infinity,
+            });
+
+            rl.on('line', (line) => {
+                line = line.trim();
+                if(!line.startsWith("*")) return;
+                if(regRequiredAssets.exec(line)) {
+                    this._files.push(RegExp.$1);
+                } else if(regParam.exec(line)) {
+                    this.flushParam();
+                    this.createParam(RegExp.$1);
+                } else if(regNoteParam.exec(line)) {
+                    this.flushNoteParam();
+                    this.createNoteParam(RegExp.$1);
+                }
+                
+                if(this._lastParam) {
+                    if(/\*\s@require\s1/i.exec(line)) {
+                        this.updateParam("require", 1);
+                    } else if(/\*\s@dir\s(.*)/i.exec(line))  {
+                        this.updateParam("dir", RegExp.$1);
+                    } else if(/\*\s@type\sfile/i.exec(line)) {
+                        this.updateParam("type", "file");
+                    } else if(/\*\s@default\s(.*)/i.exec(line)) {
+                        this.updateParam("default", RegExp.$1);
+                    }
+                }
+
+                if(this._lastNoteParam) {
+                    if(/\*\s@noteRequire\s1/i.exec(line)) {
+                        this.updateNoteParam("noteRequire", 1);
+                    } else if(/\*\s@noteDir\s(.*)/i.exec(line))  {
+                        this.updateNoteParam("noteDir", RegExp.$1);
+                    } else if(/\*\s@noteType\sfile/i.exec(line)) {
+                        this.updateNoteParam("noteType", "file");
+                    } else if(/\*\s@noteData\s(.*)/i.exec(line)) {
+                        this.updateNoteParam("noteData", RegExp.$1);                        
+                    }
+                }                
+
+            });
+
+            rl.on('close', () => {
+
+                this.flushParam();
+                this.filterParams();
+
+                this.flushNoteParam();
+                this.filterNoteParams();
+
+                this.done();
+                this.findResource();
+
+                callback(this._name, this._noteParams);
+
+            });
+
+        }        
+    }
+
+}
+
+class PluginConfiguration {
+
+    /**
+     * 
+     * @param {function()} lazycallback 
+     */
+    constructor(callback) {
+        /**
+         * @type {Plugin[]}
+         */
+        this._plugins = new Proxy([], {});
+
+
+        this._length = -1;
+
+        this._pendingDone = [];
+
+        /**
+         * This array will be initialized lazy after parsing comments.
+         */
+        this._noteParams = [];
+
+        /**
+         * @type {EventEmiiter}
+         */
+        this._lazyInitialization = new LazyInitialization();
+        this._lazyInitialization.on('done', callback);
+        
+    }
+
+    isReady() {
+        let isPending = this._pendingDone.filter(i => i === true).length < this._length;
+        return this._pendingDone.some(i => true) && !isPending;
+    }
+
+    readPluginFiles() {
+        let files = fs.readdirSync(`${process.cwd()}/js/plugins/`, 'utf8');        
+        let configPath = `${process.cwd()}/js/plugins.js`;
+        let jsonRaw = fs.readFileSync(configPath, 'utf8');
+        
+        jsonRaw = jsonRaw.split(/[\r\n]+/).slice(4);
+        let match = /\{"name"\:"(.*)"\,"status"\:(TRUE|FALSE)\,"description"\:"(.*)"\,"parameters"\:(.*)\}/i;
+
+        jsonRaw.forEach(line => {
+            if(match.exec(line)) {
+
+                const name = RegExp.$1;
+                const status = Boolean(RegExp.$2 === "true");
+                const description = RegExp.$3;
+                const parameters = RegExp.$4;
+
+                this._plugins.push(new Plugin(name, status, description, parameters));
+                this._pendingDone.push(false);
+            }
+        });
+
+        this._length = this._plugins.length;
+        console.log(`The number of Plugins : ${this._length}`);
+
+        this._plugins.forEach((plugin, i) => {
+            plugin.readComments((pluginName, noteParams) => {
+                
+                console.log(`Completed to parse plugin comments of ${pluginName}`);
+                
+                this._noteParams = this._noteParams.concat(noteParams);
+                
+                console.log(`Concating the noteParams : ${noteParams}`);
+                
+                this._pendingDone[i] = true;
+
+                if(this.isReady()) {
+                    console.log(`Completed parsing all plugin comments!`);
+                    this._lazyInitialization.emit('done', this._noteParams);
+                }
+            });
+        });
+
+    }
+}
+//#endregion
+
+
+class Database {
+   
+    /**
+     * @param {{name: String, noteDir: String, noteRequire: number, noteType: String, noteData: String}[]}
+     */     
+    static init(noteParams) {
         /**
          * @type {RPG.CommonEvent[]}
          */
@@ -495,6 +816,11 @@ class Database {
          * @type {RPG.Enemy[]}
          */
         this.enemies = [];
+
+        /**
+         * @type {{name: String, noteDir: String, noteRequire: number, noteType: String, noteData: String}[]}
+         */
+        this.noteParams = noteParams;
 
         return this;
 
@@ -580,16 +906,65 @@ class Database {
             if(i.characterName != "") Resources.addCharacter(i.characterName);
             if(i.faceName != "") Resources.addFace(i.faceName);
 
-            
             i.note.split(/[\r\n]+/);
-
         });
 
     }
 
     static loadClassesData() {}
     static loadSkillsData() {}
-    static loadItemsData() {}
+    
+    static loadItemsData() {
+        
+        /**
+         * @type {RPG.Item[]}
+         */
+        let items = this.loadDataFileFaster("Items");
+
+        items.forEach(i => {
+            if(!i) return;
+
+            const noteData = this.noteParams.filter(note => {
+                return note.noteData === 'items';
+            });
+
+            let data = {
+                note: i.note
+            };
+
+            this.extractMetadata(data);
+
+            noteData.forEach(i => {
+                const type = i.noteDir.split("/");
+                const rootFolderType = type[0];
+                const subFoldersType = type[1];
+                const resName = data.meta[i.name];
+
+                if(resName) {
+                    switch(rootFolderType) {
+                        case 'img':
+                            if(images[subFoldersType] == null) {
+                                images[subFoldersType] = resName;
+                            } else {
+                                images[subFoldersType].push(resName);
+                            }
+                            break;
+                        case 'audio':
+                                if(audio[subFoldersType] == null) {
+                                    audio[subFoldersType] = resName;
+                                } else {
+                                    audio[subFoldersType].push(resName);
+                                }
+                            break;
+                    }
+                }
+                
+            });
+
+        })
+
+    }
+
     static loadWeaponsData() {}
     static loadArmorsData() {}
 
@@ -729,199 +1104,21 @@ class Database {
 
 }
 
-//#region Plugins
-
-class Plugin {
-
-    constructor(...args) {
-
-        this._name = args[0];
-        this._status = args[1];
-        this._description = args[2];
-        this._parameters = jsonParse(args[3]);
-
-        this._files = [];
-
-        this._params = [];
-        this._lastParam = null;
-
-        this._isReady = false;
-    }
-
-    done() {
-        this._isReady = true;
-    }
-
-    push(...args) {
-        this._files.push(...args);
-    }
-
-    isValid() {
-        return this._isReady;
-    }
-
-    createParam(name) {
-        
-        let param = {
-            name: name,
-            dir: null,
-            require: null,
-            type: null,
-            default: "",
-        };
-
-        this._lastParam = param;
-    }
-
-    updateParam(key, value) {
-        if(!this._lastParam) return;
-        this._lastParam[key] = value;
-    }
-
-    flushParam() {
-        if(this._lastParam) {
-            this._params.push(this._lastParam);
-            this._lastParam = null;
-        }
-    }
-
-    filterParams() {
-        this._params = this._params.filter(i => i.dir);
-    }
-
-    findResource() {
-        
-        for(let i in this._params) {
-            const name = this._params[i].name;
-            const dir =  this._params[i].dir;
-            const parameter = this._parameters[name];
-            if(parameter) {
-                let temp = dir.split("/");
-                let rtype = temp[0];
-                /**
-                 * @type {String}
-                 */
-                let stype = temp[1];
-                if(rtype === "img") {
-                    images[stype].push(parameter);
-                } else if(rtype === "audio") {
-                    audios[stype].push(parameter);
-                }
-            }
-        }
-
-    }
-
-    readComments() {
-        
-        let filePath = `js/plugins/${this._name}.js`;
-        let regRequiredAssets = /\*\s@requiredAssets\s(.*)/i;
-        let regParam = /\*\s@param\s(.*)/i;
-
-        if(fs.existsSync(filePath)) {
-            const fileStream = fs.createReadStream(filePath, 'utf8');
-            const rl = readline.createInterface({
-                input: fileStream,
-                crlfDelay: Infinity,
-            });
-
-            rl.on('line', (line) => {
-                line = line.trim();
-                if(!line.startsWith("*")) return;
-                if(regRequiredAssets.exec(line)) {
-                    this._files.push(RegExp.$1);
-                } else if(regParam.exec(line)) {
-                    this.flushParam();
-                    this.createParam(RegExp.$1);
-                }
-                
-                if(this._lastParam) {
-                    if(/\*\s@require\s1/i.exec(line)) {
-                        this.updateParam("require", 1);
-                    } else if(/\*\s@dir\s(.*)/i.exec(line))  {
-                        this.updateParam("dir", RegExp.$1);
-                    } else if(/\*\s@type\sfile/i.exec(line)) {
-                        this.updateParam("type", "file");
-                    } else if(/\*\s@default\s(.*)/i.exec(line)) {
-                        this.updateParam("default", RegExp.$1);
-                    }
-                }
-
-            });
-
-            rl.on('close', () => {
-                this.flushParam();
-                this.filterParams();
-                this.done();
-                this.findResource();
-            });
-
-        }        
-    }
-
-}
-
-class PluginConfiguration {
-
-    constructor() {
-        /**
-         * @type {Plugin[]}
-         */
-        this._plugins = new Proxy([], {});
-    }
-
-    readPluginFiles() {
-        let files = fs.readdirSync(`${process.cwd()}/js/plugins/`, 'utf8');        
-        let configPath = `${process.cwd()}/js/plugins.js`;
-        let jsonRaw = fs.readFileSync(configPath, 'utf8');
-        
-        jsonRaw = jsonRaw.split(/[\r\n]+/).slice(4);
-        let match = /\{"name"\:"(.*)"\,"status"\:(TRUE|FALSE)\,"description"\:"(.*)"\,"parameters"\:(.*)\}/i;
-
-        jsonRaw.forEach(line => {
-            if(match.exec(line)) {
-
-                const name = RegExp.$1;
-                const status = Boolean(RegExp.$2 === "true");
-                const description = RegExp.$3;
-                const parameters = RegExp.$4;
-
-                this._plugins.push(new Plugin(name, status, description, parameters));
-            }
-        });
-
-        this._plugins.forEach(plugin => {
-            plugin.readComments();
-        });
-
-    }
-}
-//#endregion
-
 //#region Entry Point
+const config = new PluginConfiguration((noteParams) => {
+    
+    // Load the Database
+    Database.init(noteParams)
+            .extract();
 
-Database.init()
-        .extract();
+    // Collecting the resources!
+    Resources.unique()
+             .make();    
 
-const config = new PluginConfiguration()
-config.readPluginFiles();        
-        
-Resources.unique()
-         .make();
+    // Log images and audios!
+    console.log(images);
+    console.log(audios);    
 
-console.log(images);
-console.log(audios);
-
-// Not supported yet
-// 
-// * @noteParam gachaImage
-// * @noteRequire 1
-// * @noteDir img/gacha/
-// * @noteType file
-// * @noteData items
-//
-// ImageManager.loadBitmap("img/gacha/", this._item.meta.gachaImage);
-// 
-// <gachaImage:card01>
+}).readPluginFiles();    
 
 //#endregion
