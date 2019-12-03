@@ -11,7 +11,7 @@ const processArgs = process.argv.slice(2);
 const testdir = `E:/SteamLibrary/steamapps/common/RPG Maker MV/dlc/KadokawaPlugins_New/samples/Gacha Sample`;
 
 let sourceDir = processArgs[0] || testdir;
-let targetDir = ``;
+let targetDir = path.join(process.env["USERPROFILE"], "Desktop", "Test");;
 
 process.chdir(testdir);
 
@@ -1182,10 +1182,15 @@ const config = new PluginConfiguration((noteParams) => {
             
             if(resource) {
                 const rootPath = path.join(process.cwd(), resource._rootPath);
+                const targetPath = path.join(targetDir, resource._rootPath);
+
                 resource._data.forEach(file => {
-                    const retPath = path.join(rootPath, file);
-                    console.log(retPath);
+                    const sourcePath = path.join(rootPath, file);
+                    const copyPath = path.join(targetPath, file);
+                    console.log(sourcePath);
+                    console.log(copyPath);
                 });
+                
             }
         }        
     }
