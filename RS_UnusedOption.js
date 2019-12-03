@@ -940,9 +940,12 @@ class Database {
                 const type = i.noteDir.split("/");
                 const rootFolderType = type[0];
                 const subFoldersType = type[1];
-                const resName = data.meta[i.name];
+                let resName = data.meta[i.name];
     
-                if(resName) {
+                if(typeof(resName) === "string") {
+
+                    resName = resName.trim();
+                    
                     switch(rootFolderType) {
                         case 'img':
                             if(images[subFoldersType] == null) {
