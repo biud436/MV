@@ -978,8 +978,25 @@ class Database {
 
     }
 
-    static loadWeaponsData() {}
-    static loadArmorsData() {}
+    static loadWeaponsData() {
+
+        /**
+         * @type {RPG.Weapon[]}
+         */
+        let items = this.loadDataFileFaster("Weapons");
+
+        this.extractResourceFromMetaData(items);        
+    }
+
+    static loadArmorsData() {
+        
+        /**
+         * @type {RPG.Armor[]}
+         */
+        let items = this.loadDataFileFaster("Armors");
+
+        this.extractResourceFromMetaData(items);   
+    }
 
     static loadEnemiesData() {
         
@@ -995,7 +1012,15 @@ class Database {
 
     }
 
-    static loadStatesData() {}        
+    static loadStatesData() {
+        
+        /**
+         * @type {RPG.State[]}
+         */
+        let items = this.loadDataFileFaster("States");
+
+        this.extractResourceFromMetaData(items);
+    }        
 
     static loadAnimationData() {
 
