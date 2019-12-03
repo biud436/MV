@@ -740,7 +740,7 @@ class PluginConfiguration {
          * @type {EventEmiiter}
          */
         this._lazyInitialization = new LazyInitialization();
-        this._lazyInitialization.on('done', callback);
+        this._lazyInitialization.once('done', callback);
         
     }
 
@@ -921,11 +921,12 @@ class Database {
          */
         let items = this.loadDataFileFaster("Items");
 
+        // TODO: These lines are needed performance up and refactor.
         items.forEach(i => {
             if(!i) return;
 
             const noteData = this.noteParams.filter(note => {
-                return note.noteData === 'items';
+                return note.noteData === 'items'; // arg0
             });
 
             let data = {
@@ -950,11 +951,11 @@ class Database {
                             }
                             break;
                         case 'audio':
-                                if(audio[subFoldersType] == null) {
-                                    audio[subFoldersType] = resName;
-                                } else {
-                                    audio[subFoldersType].push(resName);
-                                }
+                            if(audio[subFoldersType] == null) {
+                                audio[subFoldersType] = resName;
+                            } else {
+                                audio[subFoldersType].push(resName);
+                            }
                             break;
                     }
                 }
@@ -1105,6 +1106,7 @@ class Database {
 }
 
 //#region Entry Point
+
 const config = new PluginConfiguration((noteParams) => {
     
     // Load the Database
