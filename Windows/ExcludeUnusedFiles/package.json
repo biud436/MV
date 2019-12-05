@@ -1,7 +1,6 @@
 {
   "name": "exclude-unused-files",
   "version": "1.0.0",
-  "description": "",
   "main": "RS_UnusedOption.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,5 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "crc": "^3.8.0"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }
