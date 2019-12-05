@@ -7,6 +7,8 @@
  * node RS_UnusedOption.js "src" "dst"
  * 
  * For instance,
+ * 
+ * @exmaple 
  * node RS_UnusedOption.js "E:/SteamLibrary/steamapps/common/RPG Maker MV/dlc/KadokawaPlugins_New/samples/Gacha Sample" "C:/Users/U/Desktop/Test"
  * 
  * =============================================================
