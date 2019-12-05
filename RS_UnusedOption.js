@@ -1,6 +1,14 @@
 /**
  * @author biud436
+ * @example
+ * This script allows you to perform to copy a source directory to the destination folder and exclude unused resources.
  * 
+ * Try to do a below command in your command prompt.
+ * node RS_UnusedOption.js "src" "dst"
+ * 
+ * For instance,
+ * node RS_UnusedOption.js "E:/SteamLibrary/steamapps/common/RPG Maker MV/dlc/KadokawaPlugins_New/samples/Gacha Sample" "C:/Users/U/Desktop/Test"
+ *
  * =============================================================
  * Change Log
  * =============================================================
