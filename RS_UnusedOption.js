@@ -36,6 +36,11 @@ let targetDir = processArgs[1] || path.join(process.env["USERPROFILE"], "Desktop
 console.log(`sourceDir => ${sourceDir}`);
 console.log(`targetDir => ${targetDir}`);
 
+let options = {
+    audioFileFormat: ".m4a",
+    remainTree: true,
+};
+
 process.chdir(testdir);
 
 /**
@@ -106,7 +111,7 @@ class ImageChunk {
  */
 class AudioChunk extends ImageChunk {
     extName() {
-        return ".m4a";
+        return options.audioFileFormat;
     }
 }
 
@@ -1163,10 +1168,20 @@ const config = new PluginConfiguration((noteParams) => {
     // Collecting the resources!
     Resources.unique()
              .make();    
+    
+    const rootPath = process.cwd();
+    const targetPath = path.join(targetDir);
 
-    // Log images and audios!
-    // console.log(images);
-    // console.log(audios); 
+    // Copy all files are excluded img and audio folders!
+    if(options.remainTree) {
+        fs.copySync(rootPath, targetPath, {overwrite: true, filter: (src, dst) => {
+            console.log(`Copy file ${src} to ${dst}`);
+            if(["img", "audio"].includes(path.dirname(path.relative(rootPath, src)))) {
+                return false;
+            }
+            return true;
+        }});
+    }
 
     function collecting(object) {
         for(let i in object) {
@@ -1176,8 +1191,6 @@ const config = new PluginConfiguration((noteParams) => {
             const resource = object[i];
             
             if(resource) {
-                const rootPath = process.cwd();
-                const targetPath = path.join(targetDir);
 
                 resource._data.forEach(file => {
                     const sourcePath = path.join(rootPath, file);
