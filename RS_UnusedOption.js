@@ -1175,10 +1175,10 @@ const config = new PluginConfiguration((noteParams) => {
     // Copy all files are excluded img and audio folders!
     if(options.remainTree) {
         fs.copySync(rootPath, targetPath, {overwrite: true, filter: (src, dst) => {
-            console.log(`Copy file ${src} to ${dst}`);
             if(["img", "audio"].includes(path.dirname(path.relative(rootPath, src)))) {
                 return false;
             }
+            console.log(`Copy file ${src} to ${dst}`);            
             return true;
         }});
     }
