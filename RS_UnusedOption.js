@@ -1,4 +1,14 @@
-const fs = require('fs');
+/**
+ * @author biud436
+ * 
+ * =============================================================
+ * Change Log
+ * =============================================================
+ * 2019.12.05 (v0.1.0) :
+ * - 폴더가 재귀적으로 생성되지 않았던 문제를 수정하였습니다.
+ * - 파일 복사 기능을 추가하였습니다.
+ */
+const fs = require("fs-extra");
 const path = require('path');
 const readline = require('readline');
 const EventEmiiter = require('events');
@@ -10,21 +20,14 @@ const processArgs = process.argv.slice(2);
 // const testdir = `C:/Users/U/Desktop/Exam/201907/www`;
 const testdir = `E:/SteamLibrary/steamapps/common/RPG Maker MV/dlc/KadokawaPlugins_New/samples/Gacha Sample`;
 
+// node RS_UnusedOption.js "E:/SteamLibrary/steamapps/common/RPG Maker MV/dlc/KadokawaPlugins_New/samples/Gacha Sample" "C:/Users/U/Desktop/Test"
 let sourceDir = processArgs[0] || testdir;
-let targetDir = path.join(process.env["USERPROFILE"], "Desktop", "Test");;
+let targetDir = processArgs[1] || path.join(process.env["USERPROFILE"], "Desktop", "Test");;
+
+console.log(`sourceDir => ${sourceDir}`);
+console.log(`targetDir => ${targetDir}`);
 
 process.chdir(testdir);
-
-/**
- * VS Code에서 지원하지 않는다.
- * @param {*} target 
- * @param {*} name 
- * @param {PropertyDescriptor} descriptor 
- */
-const readOnly = (target, name, descriptor) => {
-    descriptor.writable = false;
-    return descriptor;
-};
 
 /**
  * @class ImageChunk
@@ -34,7 +37,7 @@ class ImageChunk {
     constructor(rootPath, remainData) {
     
         if(!fs.existsSync(rootPath)) {
-            fs.mkdirSync(rootPath);
+            fs.ensureDirSync(rootPath);
         }
 
         if(fs.lstatSync(rootPath).isDirectory()) {
@@ -603,11 +606,12 @@ class Plugin {
             const parameter = this._parameters[name];
             if(parameter) {
                 let temp = dir.split("/");
-                let rtype = temp[0];
+                let rtype = temp.shift();
                 /**
                  * @type {String}
                  */
-                let stype = temp[1];
+                let stype = temp.join("/");
+                stype = stype.slice(0, stype.length - 1);
                 if(rtype === "img") {
                     images[stype].push(parameter);
                 } else if(rtype === "audio") {
@@ -616,25 +620,6 @@ class Plugin {
             }
         }
 
-    }
-
-    /**
-     * 
-     * @param {function(string, string) : void} noteCallback 
-     */
-    findResourcesFromMetadata(noteCallback) {
-        for(let i in this._noteParams) {
-
-            const name = this._noteParams[i].name;
-            const dir = this._noteParams[i].noteDir;
-
-            let temp = dir.split("/");
-            let rtype = temp[0];
-            let stype = temp[1];
-
-            noteCallback(rtype, stype);
-
-        }
     }
 
     /**
@@ -953,8 +938,9 @@ class Database {
     
             noteData.forEach(i => {
                 const type = i.noteDir.split("/");
-                const rootFolderType = type[0];
-                const subFoldersType = type[1];
+                const rootFolderType = type.shift();
+                let subFoldersType = type.join("/");
+                subFoldersType = subFoldersType.slice(0, subFoldersType.length - 1);
                 let resName = data.meta[i.name];
     
                 if(typeof(resName) === "string") {
@@ -1181,14 +1167,17 @@ const config = new PluginConfiguration((noteParams) => {
             const resource = object[i];
             
             if(resource) {
-                const rootPath = path.join(process.cwd(), resource._rootPath);
-                const targetPath = path.join(targetDir, resource._rootPath);
+                const rootPath = process.cwd();
+                const targetPath = path.join(targetDir);
 
                 resource._data.forEach(file => {
                     const sourcePath = path.join(rootPath, file);
                     const copyPath = path.join(targetPath, file);
-                    console.log(sourcePath);
-                    console.log(copyPath);
+
+                    fs.copySync(sourcePath, copyPath, {overwrite: true, filter: (src, dst) => {
+                        console.log(`Copy file ${src} to ${dst}`);
+                    }});
+
                 });
                 
             }
