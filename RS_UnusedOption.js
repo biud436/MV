@@ -1176,6 +1176,7 @@ const config = new PluginConfiguration((noteParams) => {
 
                     fs.copySync(sourcePath, copyPath, {overwrite: true, filter: (src, dst) => {
                         console.log(`Copy file ${src} to ${dst}`);
+                        return true;
                     }});
 
                 });
