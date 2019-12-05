@@ -1,3 +1,6 @@
 [submodule "Windows/MV-Exclude-Unused-Files"]
 	path = Windows/MV-Exclude-Unused-Files
 	url = https://github.com/biud436/MV-Exclude-Unused-Files.git
+[submodule "Windows/NewResourceManager"]
+	path = Windows/NewResourceManager
+	url = https://github.com/biud436/NewResourceManager.git
