@@ -21,6 +21,7 @@ const fs = require("fs-extra");
 const path = require('path');
 const readline = require('readline');
 const EventEmiiter = require('events');
+const { crc32 } = require('crc');
 
 class LazyInitialization extends EventEmiiter {}
 
@@ -1172,14 +1173,78 @@ const config = new PluginConfiguration((noteParams) => {
     const rootPath = process.cwd();
     const targetPath = path.join(targetDir);
 
+    const utils = {
+        getCrc32(filepath) {
+            return crc32(fs.readFileSync(filepath, 'utf8')).toString(16);        
+        },
+
+        /**
+         * @param {String} src 
+         * @param {String} dst 
+         * @return {Number}
+         * 1. 소스 폴더에는 파일이 있고, 복사 폴더에는 없는 경우 => 새로 복사  
+         * 2. 같은 파일이 이미 존재하는 경우 => 복사 금지 (false)
+         * 3. 파일이 변경된 경우 => 새로 복사
+         * 4. 반대로 복사 폴더에는 파일이 있지만, 소스 폴더에 파일이 사라진 경우
+         */
+        getStatus(src, dst) {
+            if(fs.existsSync(src) && !fs.existsSync(dst)) {
+                return 1;
+            }
+
+            const srcCrc32 = this.getCrc32(src);
+            const dstCrc32 = this.getCrc32(dst);
+
+            if(srcCrc32 === dstCrc32) {
+                return 2;
+            } else {
+                return 3;
+            }
+        },
+
+        /**
+         * 
+         * @param {String} src 
+         * @param {String} dst 
+         * @return {Boolean}
+         */
+        flush(src, dst) {
+
+            if(fs.statSync(src).isDirectory()) {
+                return true;
+            }
+
+            if(fs.statSync(dst).isDirectory()) {
+                return true;
+            }
+
+            switch(this.getStatus(src, dst)) {
+                case 1:
+                    console.log(`Copy file ${src} to ${dst}`);
+                    break;
+                case 2:
+                    console.log(`it's already existed a file to ${dst}`);
+                    return false;                    
+                case 3:
+                    console.log(`If the file is changed.. Copy file ${src} to ${dst}`);
+                    break;                    
+            }
+
+            return true;
+
+        }        
+    };
+
     // Copy all files are excluded img and audio folders!
     if(options.remainTree) {
         fs.copySync(rootPath, targetPath, {overwrite: true, filter: (src, dst) => {
+            
             if(["img", "audio"].includes(path.dirname(path.relative(rootPath, src)))) {
                 return false;
             }
-            console.log(`Copy file ${src} to ${dst}`);            
-            return true;
+
+            return utils.flush(src, dst);
+
         }});
     }
 
@@ -1197,6 +1262,7 @@ const config = new PluginConfiguration((noteParams) => {
                     const copyPath = path.join(targetPath, file);
 
                     fs.copySync(sourcePath, copyPath, {overwrite: true, filter: (src, dst) => {
+                        // return utils.flush(src, dst); // it is very slow...
                         console.log(`Copy file ${src} to ${dst}`);
                         return true;
                     }});
@@ -1209,6 +1275,8 @@ const config = new PluginConfiguration((noteParams) => {
 
     collecting(images);
     collecting(audios);
+
+    console.log('Done!');
 
 }).readPluginFiles();    
 
