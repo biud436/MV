@@ -14,7 +14,7 @@
  * SumRndmDde님의 SuperToolsEngine 사용 시, 
  * 안드로이드(Android) 플랫폼에서 파싱 오류가 생기는 문제를 수정합니다.
  * 
- * 원칙적으로는 process.versions['node-webkit'] 부분을 플러그인 자체 코드를
+ * 원칙적으로는 process.versions['node-webkit'] 부분을
  * Utils.isNwjs()로 교체해주는 것이 best 방법입니다.
  * 
  * 하지만 라이센스 문제로 인하여, 플러그인 파일을 직접 건드리기 제한되므로,
