@@ -4540,7 +4540,7 @@ declare var Decrypter: DecrypterStatic;declare namespace RPG {
         /**
          * The file name of the wall graphic if the battle background specification is enabled.
          */
-        battleback2_name: string;
+        battleback2Name: string;
 
         /**
          * The truth value indicating whether BGM autoswitching is enabled.
