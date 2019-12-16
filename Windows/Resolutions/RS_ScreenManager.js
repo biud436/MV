@@ -11,7 +11,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.17) <RS_ScreenManager>
+ * @plugindesc (v1.0.18) <RS_ScreenManager>
  * @author biud436
  *
  * @param Test Options
@@ -208,7 +208,7 @@ Imported.RS_ScreenManager = true;
  * @param PC
  * @parent Temp
  * @type struct<ScreenSize>[]
- * @desc Set as this automatically when it doesn't find the resolution from the library.
+ * @desc it is using pre-written resolutions when it failed to bind node extension.
  * @default ["{\"width\":\"640\",\"height\":\"480\"}","{\"width\":\"800\",\"height\":\"600\"}","{\"width\":\"1024\",\"height\":\"768\"}","{\"width\":\"1152\",\"height\":\"864\"}","{\"width\":\"1280\",\"height\":\"720\"}","{\"width\":\"1280\",\"height\":\"800\"}","{\"width\":\"1280\",\"height\":\"960\"}","{\"width\":\"1360\",\"height\":\"768\"}","{\"width\":\"1360\",\"height\":\"768\"}","{\"width\":\"1366\",\"height\":\"768\"}","{\"width\":\"1400\",\"height\":\"1050\"}","{\"width\":\"1440\",\"height\":\"900\"}","{\"width\":\"1600\",\"height\":\"900\"}","{\"width\":\"1600\",\"height\":\"1200\"}","{\"width\":\"1680\",\"height\":\"1050\"}","{\"width\":\"1920\",\"height\":\"1080\"}","{\"width\":\"1920\",\"height\":\"1200\"}","{\"width\":\"2048\",\"height\":\"1152\"}","{\"width\":\"2560\",\"height\":\"1440\"}","{\"width\":\"2560\",\"height\":\"1600\"}"]
  * 
  * @param Mobile
@@ -233,10 +233,28 @@ Imported.RS_ScreenManager = true;
  * @param Bind Node Library
  * @parent Module
  * @type boolean
- * @desc The node file that means the node library. it actually is the same as DLL file in Windows.
+ * @desc it obtains resolutions from the node extension on Windows. if not, it gets pre-written resolutions in plugin parameters.
  * @default false
  * @on true
  * @off false
+ * 
+ * @param Pictures
+ * 
+ * @param Scaled Picture
+ * @parent Pictures
+ * @type boolean
+ * @desc Resize the picture to fit the actual resolution ratio.
+ * @default false
+ * @on true
+ * @off false
+ * 
+ * @param Picture Position Type
+ * @parent Pictures
+ * @type combo
+ * @desc Please select picture positioning method when resizing.
+ * @default Actual Coordinates 
+ * @option Actual Coordinates
+ * @option Virtual Coordinates
  * 
  * @help
  * =============================================================================
@@ -310,6 +328,8 @@ Imported.RS_ScreenManager = true;
  * - In the Test-Play mode, Now the alert window is not shown. (1.5.2 or less)
  * 2019.05.27 (v1.0.17) :
  * - Fixed the error that is always indicated the NaN when it couldn't load the addon.
+ * 2019.12.16 (v1.0.18) :
+ * - Picture rescaling added.
  */
 /*~struct~ScreenSize:
  *
@@ -400,7 +420,12 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   };
 
   var getTargetRegex = /(\d+)[ ]x[ ](\d+)/i;
+
+  /**
+   * @type {{resize: Boolean, autoScaling: Boolean, minWidth: Boolean, minHeight: Boolean, recreate: Boolean, allResolutions: Boolean, aspectRatio: Boolean, isAutoSyncManifest: Boolean}}
+   */
   var options = {};
+
   var settings = {};
 
   options.resize = Boolean(parameters['isGraphicsRendererResize'] === 'true');
@@ -411,6 +436,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   options.allResolutions = Boolean(parameters['Use All Resolutions'] === 'true');
   options.aspectRatio = Boolean(parameters['Enable Custom Aspect Ratio'] === 'true');
   options.isAutoSyncManifest = Boolean(parameters['Auto Sync Manifest file'] === 'true');
+
   settings.customAspectRatio = parameters['Custom Aspect Ratio'] || "16:9";
   settings.customAspectRatio = settings.customAspectRatio.trim().split(":");
   settings.ptCustomScreenSize = String(parameters["Default Screen Size"] || '1280 x 720').split(' x ');
@@ -423,12 +449,22 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   settings.resolutionQualityOnMobile = $.jsonParse(parameters["Mobile Simple"]);
   settings.state = "ready";
 
+  // Parameters
   $.Params.settings = settings;
   $.Params.options = options;
-
   $.Params.fullscreenFlag = false;
-
   $.Params.isUsedNodeLibrary = Boolean(parameters["Bind Node Library"] === "true");
+  
+  $.Params.isAutoScaledPicture = Boolean(parameters["Scaled Picture"] === "true");
+
+  /**
+   * Screen Size : 1280, 720
+   * Picture's Size : 816, 614,
+   * Picture's Position : 816, 614
+   * Actual Coordinates : 816, 614
+   * Virtual Coordinates (Maintain ratio) : 1280, 720
+   */
+  $.Params.picturePosType = parameters["Picture Position Type"] || "Actual Coordinates";
 
   /**
    * Replace by target screen width and height values.
@@ -719,7 +755,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
             options.allResolutions = true;
             break;
         }
-      }      
+      }
 
     } catch (error) {
       console.warn(error);
@@ -1530,6 +1566,121 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var text = this._data[index];
     this.resetTextColor();
     this.drawText(text, rect.x, rect.y, rect.width, 'center');
+  };
+
+  //============================================================================
+  // Sprite_Base
+  //============================================================================
+
+  Sprite_Base.prototype.requestStretch = function (sprite) {
+    if(!sprite.bitmap) return;
+    var bitmap = sprite.bitmap;
+    if(bitmap.width <= 0) return;
+    if(bitmap.height <= 0) return;
+    var scaleX = Graphics.boxWidth / bitmap.width;
+    var scaleY = Graphics.boxHeight / bitmap.height;
+    sprite.scale.x = (scaleX > 1.0) ? scaleX : 1.0;
+    sprite.scale.y = (scaleY > 1.0) ? scaleY : 1.0;
+
+    if($.Params.picturePosType === "Virtual Coordinates") {
+      var x = sprite.x;
+      var y = sprite.y;
+      var sw = bitmap.width * sprite.scale.x; // scale width and height
+      var sh = bitmap.height * sprite.scale.y;
+      var dw = bitmap.width; // original width and original height
+      var dh = bitmap.height;
+      
+      if(dw == 0 || dh == 0) {
+        return;
+      }
+  
+      var dx = x * (sw / dw); // destination position
+      var dy = y * (sh / dh);
+  
+      // position
+      sprite.x = Math.floor(dx);
+      sprite.y = Math.floor(dy);
+  
+    }
+
+  };
+
+  //============================================================================
+  // Sprite_Picture
+  //============================================================================  
+
+  var alias_Sprite_Picture_updatePosition = Sprite_Picture.prototype.updatePosition;
+  Sprite_Picture.prototype.updatePosition = function() {
+    if(RS.ScreenManager.Params.isAutoScaledPicture) return;
+    alias_Sprite_Picture_updatePosition.call(this);
+  };
+
+  var alias_Sprite_Picture_updateScale = Sprite_Picture.prototype.updateScale;
+  Sprite_Picture.prototype.updateScale = function() {
+    if(RS.ScreenManager.Params.isAutoScaledPicture) return;
+    alias_Sprite_Picture_updateScale.call(this);
+  };
+
+  Sprite_Picture.prototype.updateAutoScale = function() {
+
+    /**
+     * @type {Game_Picture}
+     */
+    var picture = this.picture();
+    var bitmap = this.bitmap;
+
+    var originSX = picture.scaleX() / 100;
+    var originSY = picture.scaleY() / 100;
+
+    // Get the original width and height values
+    var dw = bitmap.width * originSX;
+    var dh = bitmap.height * originSY;
+
+    // Can not divide with 0
+    if(dw === 0 || dh === 0) {
+      this.x = Math.floor(picture.x());
+      this.y = Math.floor(picture.y());    
+      this.scale.x = originSX;
+      this.scale.y = originSY;        
+      return;
+    }
+
+    // Store the original coordinates before changing its size.
+    var x = picture.x();
+    var y = picture.y();
+
+    var scaleX = Graphics.boxWidth / dw;
+    var scaleY = Graphics.boxHeight / dh;
+    
+    // Perform re-scale and re-position.
+    this.scale.x = scaleX;
+    this.scale.y = scaleY;
+
+    if($.Params.picturePosType === "Virtual Coordinates") {
+
+      var sw = bitmap.width * scaleX;
+      var sh = bitmap.height * scaleY;
+      var dx = x * (sw / dw);
+      var dy = y * (sh / dh);
+
+      this.x = Math.floor(dx);
+      this.y = Math.floor(dy);
+
+    } else {
+
+      this.x = Math.floor(x);
+      this.y = Math.floor(y);
+
+    }
+
+  };
+
+  var alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
+  Sprite_Picture.prototype.update = function() {
+    alias_Sprite_Picture_update.call(this);
+    if(this.visible && RS.ScreenManager.Params.isAutoScaledPicture) {
+      this.updateAutoScale();
+    }
   };
 
   //============================================================================
