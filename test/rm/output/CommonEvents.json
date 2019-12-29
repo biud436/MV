@@ -1,0 +1,172 @@
+[
+	null,
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 1,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 101,
+				"@parameters": [
+					"",
+					0,
+					0,
+					2
+				],
+				"_name": "RPG::EventCommand"
+			},
+			{
+				"@indent": 0,
+				"@code": 401,
+				"@parameters": [
+					"안녕하세요?"
+				],
+				"_name": "RPG::EventCommand"
+			},
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 2,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 3,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 4,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 5,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 6,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 7,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 8,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 9,
+		"_name": "RPG::CommonEvent"
+	},
+	{
+		"@trigger": 0,
+		"@name": "",
+		"@switch_id": 1,
+		"@list": [
+			{
+				"@indent": 0,
+				"@code": 0,
+				"@parameters": [],
+				"_name": "RPG::EventCommand"
+			}
+		],
+		"@id": 10,
+		"_name": "RPG::CommonEvent"
+	}
+]

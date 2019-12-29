@@ -1,0 +1,1527 @@
+[
+	null,
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 196,
+				"@enemy_id": 1,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 348,
+				"@enemy_id": 1,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Slime*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 355,
+						"@parameters": [
+							"$self_variables[\"패턴\"] = 1"
+						],
+						"_name": "RPG::EventCommand"
+					},
+					{
+						"@indent": 0,
+						"@code": 655,
+						"@parameters": [
+							""
+						],
+						"_name": "RPG::EventCommand"
+					},
+					{
+						"@indent": 0,
+						"@code": 655,
+						"@parameters": [
+							"p $self_variables[\"패턴\"]"
+						],
+						"_name": "RPG::EventCommand"
+					},
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 1,
+				"@condition": {
+					"@turn_valid": true,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 1,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 1,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 207,
+				"@enemy_id": 2,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 337,
+				"@enemy_id": 2,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Bat*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 2,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 227,
+				"@enemy_id": 3,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 317,
+				"@enemy_id": 3,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Hornet*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 3,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 112,
+				"@enemy_id": 4,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 4,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 432,
+				"@enemy_id": 4,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Spider*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 4,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 154,
+				"@enemy_id": 5,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 5,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 390,
+				"@enemy_id": 5,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Rate*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 5,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 110,
+				"@enemy_id": 6,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 6,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 434,
+				"@enemy_id": 6,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Wisp*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 6,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 170,
+				"@enemy_id": 7,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 374,
+				"@enemy_id": 7,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Large Snake*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 7,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 105,
+				"@enemy_id": 8,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 8,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 439,
+				"@enemy_id": 8,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Scorpion*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 8,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 183,
+				"@enemy_id": 9,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 361,
+				"@enemy_id": 9,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Jellyfish*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 9,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 101,
+				"@enemy_id": 10,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 10,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 443,
+				"@enemy_id": 10,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Man-Eating Plant*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 10,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 146,
+				"@enemy_id": 11,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 11,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 398,
+				"@enemy_id": 11,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Ghost*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 11,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 181,
+				"@enemy_id": 12,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 363,
+				"@enemy_id": 12,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Skeleton*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 12,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 136,
+				"@enemy_id": 13,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 13,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 408,
+				"@enemy_id": 13,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Orc*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 13,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 201,
+				"@enemy_id": 14,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 343,
+				"@enemy_id": 14,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Imp*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 14,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 112,
+				"@enemy_id": 15,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 15,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 432,
+				"@enemy_id": 15,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Gazer*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 15,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 223,
+				"@enemy_id": 16,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 321,
+				"@enemy_id": 16,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Puppet*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 16,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 160,
+				"@enemy_id": 17,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 17,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 384,
+				"@enemy_id": 17,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Zombie*3",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 17,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 171,
+				"@enemy_id": 18,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 373,
+				"@enemy_id": 18,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Cockatrice*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 18,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 19,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Chimera",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 19,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 20,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Mimic",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 20,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 183,
+				"@enemy_id": 21,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 361,
+				"@enemy_id": 21,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Werewolf*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 21,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 149,
+				"@enemy_id": 22,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 395,
+				"@enemy_id": 22,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Sahagin*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 22,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 23,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Ogre",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 23,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 156,
+				"@enemy_id": 24,
+				"_name": "RPG::Troop::Member"
+			},
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 388,
+				"@enemy_id": 24,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Gargoyle*2",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 24,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 25,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Lamia",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 25,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 26,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Vampire",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 26,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 27,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Succubus",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 27,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 28,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Demon",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 28,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 29,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Demon King",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 29,
+		"_name": "RPG::Troop"
+	},
+	{
+		"@members": [
+			{
+				"@y": 288,
+				"@hidden": false,
+				"@x": 272,
+				"@enemy_id": 30,
+				"_name": "RPG::Troop::Member"
+			}
+		],
+		"@name": "Demon God",
+		"@pages": [
+			{
+				"@list": [
+					{
+						"@indent": 0,
+						"@code": 0,
+						"@parameters": [],
+						"_name": "RPG::EventCommand"
+					}
+				],
+				"@span": 0,
+				"@condition": {
+					"@turn_valid": false,
+					"@actor_hp": 50,
+					"@turn_a": 0,
+					"@turn_ending": false,
+					"@enemy_hp": 50,
+					"@switch_valid": false,
+					"@enemy_index": 0,
+					"@actor_valid": false,
+					"@actor_id": 1,
+					"@enemy_valid": false,
+					"@switch_id": 1,
+					"@turn_b": 0,
+					"_name": "RPG::Troop::Page::Condition"
+				},
+				"_name": "RPG::Troop::Page"
+			}
+		],
+		"@id": 30,
+		"_name": "RPG::Troop"
+	}
+]

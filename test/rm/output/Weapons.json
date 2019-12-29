@@ -1,0 +1,2619 @@
+[
+	null,
+	{
+		"@description": "Small ax used for harvesting wood.",
+		"@name": "Hand Ax",
+		"@icon_index": 144,
+		"@price": 100,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 1,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			15,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 1,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Double-sided axe made for combat.",
+		"@name": "Battle Axe",
+		"@icon_index": 144,
+		"@price": 500,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 2,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			30,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 1,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Three crescent blades on this axe.",
+		"@name": "Bardiche",
+		"@icon_index": 144,
+		"@price": 3000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 3,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			50,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 1,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril axe made of the magic mineral.",
+		"@name": "Mithril Axe",
+		"@icon_index": 144,
+		"@price": 6000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 4,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			70,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 1,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Crimson soaked battle axe.",
+		"@name": "Crimson Axe",
+		"@icon_index": 144,
+		"@price": 15000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 5,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			90,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 1,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Heavy axe used by giants.",
+		"@name": "Gigantes Axe",
+		"@icon_index": 144,
+		"@price": 30000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 6,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			110,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 1,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Spikes appear on the head of this glove.",
+		"@name": "Cestus",
+		"@icon_index": 145,
+		"@price": 100,
+		"@animation_id": 1,
+		"@note": "",
+		"@id": 7,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 34,
+				"@data_id": 0,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			4,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 2,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Fighting weapon with four short nails.",
+		"@name": "Bagna",
+		"@icon_index": 145,
+		"@price": 500,
+		"@animation_id": 1,
+		"@note": "",
+		"@id": 8,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 34,
+				"@data_id": 0,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			8,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 2,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Its claws are made of steel.",
+		"@name": "Iron Claw",
+		"@icon_index": 145,
+		"@price": 3000,
+		"@animation_id": 1,
+		"@note": "",
+		"@id": 9,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 34,
+				"@data_id": 0,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			16,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 2,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril claw made of the magic mineral.",
+		"@name": "Mithril Claw",
+		"@icon_index": 145,
+		"@price": 6000,
+		"@animation_id": 1,
+		"@note": "",
+		"@id": 10,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 34,
+				"@data_id": 0,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			28,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 2,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "The claw head is made of dragon fangs.",
+		"@name": "Dragon Fang",
+		"@icon_index": 145,
+		"@price": 15000,
+		"@animation_id": 1,
+		"@note": "",
+		"@id": 11,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 34,
+				"@data_id": 0,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			43,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 2,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Four winds empower this claw.",
+		"@name": "Zephyrus Claw",
+		"@icon_index": 145,
+		"@price": 30000,
+		"@animation_id": 1,
+		"@note": "",
+		"@id": 12,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 34,
+				"@data_id": 0,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			58,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 2,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A short spear.",
+		"@name": "Spear",
+		"@icon_index": 146,
+		"@price": 100,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 13,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			12,
+			0,
+			0,
+			0,
+			-2,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 3,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A long spear with a long blade.",
+		"@name": "Partisan",
+		"@icon_index": 146,
+		"@price": 500,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 14,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -3,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			25,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 3,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "An axe is mounted on this spear.",
+		"@name": "Halberd",
+		"@icon_index": 146,
+		"@price": 3000,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 15,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -3,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			38,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 3,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril spear made of the magic mineral.",
+		"@name": "Mithril Spear",
+		"@icon_index": 146,
+		"@price": 6000,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 16,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			55,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 3,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A white spirit blessed this holy spear.",
+		"@name": "Holy Lance",
+		"@icon_index": 146,
+		"@price": 15000,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 17,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -3,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			75,
+			0,
+			0,
+			5,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 3,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Contains deeply engraved shadow magic.",
+		"@name": "Gaebulg Spear",
+		"@icon_index": 146,
+		"@price": 30000,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 18,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -3,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			99,
+			0,
+			0,
+			10,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 3,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Light and easy-to-use short sword.",
+		"@name": "Short Sword",
+		"@icon_index": 147,
+		"@price": 100,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 19,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			10,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 4,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "The strength of the longest combat sword.",
+		"@name": "Long Sword",
+		"@icon_index": 147,
+		"@price": 500,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 20,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			22,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 4,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A broad sword with a crescent blade.",
+		"@name": "Falcion",
+		"@icon_index": 147,
+		"@price": 3000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 21,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			35,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 4,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril sword made of the magic mineral.",
+		"@name": "Mithril Sword",
+		"@icon_index": 147,
+		"@price": 6000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 22,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			50,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 4,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Engraved with magical runes.",
+		"@name": "Rune Blade",
+		"@icon_index": 147,
+		"@price": 15000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 23,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			70,
+			0,
+			10,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 4,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "The magic sword that brings triumph over evil.",
+		"@name": "Tyrfing Sword",
+		"@icon_index": 147,
+		"@price": 30000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 24,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			95,
+			0,
+			20,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 4,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Has a slender sword inscription.",
+		"@name": "Katana",
+		"@icon_index": 148,
+		"@price": 100,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 25,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.08,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			18,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 5,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Excellent sword with destructive power.",
+		"@name": "Zanbatou",
+		"@icon_index": 148,
+		"@price": 498,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 26,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.08,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			35,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 5,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A short sword tempered with frost.",
+		"@name": "Toratouru",
+		"@icon_index": 148,
+		"@price": 3000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 27,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.08,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			55,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 5,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Magic katana made of the magic mineral.",
+		"@name": "Reigin no Tachi",
+		"@icon_index": 148,
+		"@price": 6000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 28,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.08,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			72,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 5,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "An ancient sword with hidden power.",
+		"@name": "Shichishitou",
+		"@icon_index": 148,
+		"@price": 15000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 29,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.08,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			99,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 5,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A demonic sword that sucks the life of the wielder.",
+		"@name": "Muramasa Katana",
+		"@icon_index": 148,
+		"@price": 30000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 30,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			128,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 5,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A shortbow made for hunting.",
+		"@name": "Shortbow",
+		"@icon_index": 149,
+		"@price": 100,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 31,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": 5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			13,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 6,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "The circular shape grants it strength.",
+		"@name": "Longbow",
+		"@icon_index": 149,
+		"@price": 500,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 32,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": 5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			26,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 6,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Shoots a crossbow arrow from a strong string.",
+		"@name": "Crossbow",
+		"@icon_index": 149,
+		"@price": 3000,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 33,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": 5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			40,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 6,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril bow made of the magic mineral.",
+		"@name": "Mithril Bow",
+		"@icon_index": 149,
+		"@price": 6000,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 34,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": 5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			56,
+			0,
+			0,
+			0,
+			5,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 6,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A bow made from the earth spirits.",
+		"@name": "Ebon Bow",
+		"@icon_index": 149,
+		"@price": 15000,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 35,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": 5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			75,
+			0,
+			0,
+			0,
+			10,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 6,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A bow that bears the name of the Moon Goddess.",
+		"@name": "Artemis Bow",
+		"@icon_index": 149,
+		"@price": 30000,
+		"@animation_id": 13,
+		"@note": "",
+		"@id": 36,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": 5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			100,
+			0,
+			0,
+			0,
+			15,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 6,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Your run-of-the-mill knife.",
+		"@name": "Knife",
+		"@icon_index": 150,
+		"@price": 100,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 37,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			3,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 7,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A dagger with a large blade made for combat.",
+		"@name": "Dagger",
+		"@icon_index": 150,
+		"@price": 500,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 38,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			7,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 7,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Knife used for fending off attacks.",
+		"@name": "Main Gauche",
+		"@icon_index": 150,
+		"@price": 3000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 39,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			12,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 7,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril knife made of the magic mineral.",
+		"@name": "Mithril Knife",
+		"@icon_index": 150,
+		"@price": 6000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 40,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.06,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			22,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 7,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Used for assassinations.",
+		"@name": "Assassin's Dagger",
+		"@icon_index": 150,
+		"@price": 15000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 41,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.07,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.07,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			33,
+			0,
+			0,
+			0,
+			5,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 7,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Bears the name of an intense maelstrom.",
+		"@name": "Vortex Blade",
+		"@icon_index": 150,
+		"@price": 30000,
+		"@animation_id": 7,
+		"@note": "",
+		"@id": 42,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.03,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			50,
+			0,
+			0,
+			0,
+			10,
+			10
+		],
+		"@etype_id": 0,
+		"@wtype_id": 7,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A circular club with metal spikes.",
+		"@name": "Mace",
+		"@icon_index": 151,
+		"@price": 100,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 43,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			8,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 8,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "An iron ball dangling from a chain.",
+		"@name": "Flail",
+		"@icon_index": 151,
+		"@price": 500,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 44,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			18,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 8,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A steel hammer made for battle.",
+		"@name": "War Hammer",
+		"@icon_index": 151,
+		"@price": 3000,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 45,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			26,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 8,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril mace made of the magic mineral.",
+		"@name": "Mithril Mace",
+		"@icon_index": 151,
+		"@price": 6000,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 46,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			36,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 8,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "The earth can crack from this magical hammer.",
+		"@name": "Ground Breaker",
+		"@icon_index": 151,
+		"@price": 15000,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 47,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			45,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 8,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "The \"Crusher\" is what the God of War nicknamed this.",
+		"@name": "Mourner Hammer ",
+		"@icon_index": 151,
+		"@price": 30000,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 48,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			65,
+			0,
+			10,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 8,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Sturdy staff made of oak.",
+		"@name": "Wood Staff",
+		"@icon_index": 152,
+		"@price": 100,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 49,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			1,
+			0,
+			3,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 9,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "An orb attached to this staff helps with casting magic.",
+		"@name": "Magic Staff",
+		"@icon_index": 152,
+		"@price": 500,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 50,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			6,
+			0,
+			5,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 9,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Silver amplifies the magic cast from this wand.",
+		"@name": "Force Wand",
+		"@icon_index": 152,
+		"@price": 3000,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 51,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			14,
+			0,
+			8,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 9,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril rod made of the magic mineral.",
+		"@name": "Mithril Rod",
+		"@icon_index": 152,
+		"@price": 6000,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 52,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			22,
+			0,
+			12,
+			5,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 9,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A cane made from an old tree of mistletoe.",
+		"@name": "Spirit Staff",
+		"@icon_index": 152,
+		"@price": 15000,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 53,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			30,
+			0,
+			15,
+			8,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 9,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A magic wand embedded with the Philosopher's Stone.",
+		"@name": "Magic Wand Azert",
+		"@icon_index": 152,
+		"@price": 30000,
+		"@animation_id": 19,
+		"@note": "",
+		"@id": 54,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			40,
+			0,
+			20,
+			10,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 9,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Antique pistol with a funky brace.",
+		"@name": "Flint Lock",
+		"@icon_index": 153,
+		"@price": 100,
+		"@animation_id": 91,
+		"@note": "",
+		"@id": 55,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			16,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 10,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A gun used by musketeers.",
+		"@name": "Musket",
+		"@icon_index": 153,
+		"@price": 500,
+		"@animation_id": 91,
+		"@note": "",
+		"@id": 56,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			30,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 10,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Used by the cavalry.",
+		"@name": "Dragoon",
+		"@icon_index": 153,
+		"@price": 3000,
+		"@animation_id": 91,
+		"@note": "",
+		"@id": 57,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			48,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 10,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Mithril gun made of the magic mineral.",
+		"@name": "Mithril Gun",
+		"@icon_index": 153,
+		"@price": 6000,
+		"@animation_id": 91,
+		"@note": "",
+		"@id": 58,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			66,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 10,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "Revolving pistol that uses black powder.",
+		"@name": "Peacemaker",
+		"@icon_index": 153,
+		"@price": 15000,
+		"@animation_id": 91,
+		"@note": "",
+		"@id": 59,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			84,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 10,
+		"_name": "RPG::Weapon"
+	},
+	{
+		"@description": "A magical gun that shoots bullets from nothing.",
+		"@name": "Etherblast Gun",
+		"@icon_index": 153,
+		"@price": 30000,
+		"@animation_id": 91,
+		"@note": "",
+		"@id": 60,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 54,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			108,
+			0,
+			5,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 0,
+		"@wtype_id": 10,
+		"_name": "RPG::Weapon"
+	}
+]

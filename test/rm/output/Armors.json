@@ -1,0 +1,2055 @@
+[
+	null,
+	{
+		"@description": "Very lightweight clothes.",
+		"@name": "Casual Clothes",
+		"@icon_index": 168,
+		"@price": 100,
+		"@note": "",
+		"@id": 1,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			1,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Made with the best leather.",
+		"@name": "Leather Top",
+		"@icon_index": 168,
+		"@price": 300,
+		"@note": "",
+		"@id": 2,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			5,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Worn clothing that can withstand a harsh journey.",
+		"@name": "Adventurer's Garb",
+		"@icon_index": 168,
+		"@price": 2000,
+		"@note": "",
+		"@id": 3,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			10,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Hardened leather vest.",
+		"@name": "Hard Leather",
+		"@icon_index": 168,
+		"@price": 5000,
+		"@note": "",
+		"@id": 4,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			15,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Clothing made with reinforced steel.",
+		"@name": "Brigandine",
+		"@icon_index": 168,
+		"@price": 8000,
+		"@note": "",
+		"@id": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			20,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Headband cloth that protects the head.",
+		"@name": "Bandana",
+		"@icon_index": 162,
+		"@price": 100,
+		"@note": "",
+		"@id": 6,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			1,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Headband made of leather to protect the head.",
+		"@name": "Leather Bandana",
+		"@icon_index": 162,
+		"@price": 500,
+		"@note": "",
+		"@id": 7,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			3,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Hat made of fur.",
+		"@name": "Fur Hat",
+		"@icon_index": 162,
+		"@price": 1500,
+		"@note": "",
+		"@id": 8,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			6,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Thick cloth wrapped repeatedly around one's head.",
+		"@name": "Turban",
+		"@icon_index": 162,
+		"@price": 4000,
+		"@note": "",
+		"@id": 9,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			10,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Stylish hat with feathers from many beautiful birds.",
+		"@name": "Feather Cap",
+		"@icon_index": 162,
+		"@price": 6500,
+		"@note": "",
+		"@id": 10,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			14,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A robe made of thick cotten.",
+		"@name": "Cotton Robe",
+		"@icon_index": 171,
+		"@price": 100,
+		"@note": "",
+		"@id": 11,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			4,
+			2,
+			2,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A cloak made of fine silk.",
+		"@name": "Silk Cloak",
+		"@icon_index": 171,
+		"@price": 500,
+		"@note": "",
+		"@id": 12,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			9,
+			3,
+			4,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A lined robe engraved with runes.",
+		"@name": "Runed Robe",
+		"@icon_index": 171,
+		"@price": 3000,
+		"@note": "",
+		"@id": 13,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			13,
+			6,
+			7,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Robe worn by a wise old man.",
+		"@name": "Hermit Robe",
+		"@icon_index": 171,
+		"@price": 8000,
+		"@note": "",
+		"@id": 14,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 6,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 7,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 8,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			18,
+			11,
+			12,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "The power of the spirit king dwells in this robe.",
+		"@name": "Elemental Cloak",
+		"@icon_index": 171,
+		"@price": 13000,
+		"@note": "",
+		"@id": 15,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.6,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 0.6,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 0.6,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 6,
+				"@value": 0.6,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 7,
+				"@value": 0.6,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 8,
+				"@value": 0.6,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			25,
+			17,
+			18,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Hair ornaments made of copper.",
+		"@name": "Copper Brace",
+		"@icon_index": 166,
+		"@price": 100,
+		"@note": "",
+		"@id": 16,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			2,
+			2,
+			1,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A ring-shaped ornament made of iron.",
+		"@name": "Circlet",
+		"@icon_index": 166,
+		"@price": 400,
+		"@note": "",
+		"@id": 17,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			6,
+			4,
+			3,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Hair accessory that enhances magic.",
+		"@name": "Silver Hairpin",
+		"@icon_index": 166,
+		"@price": 2500,
+		"@note": "",
+		"@id": 18,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			10,
+			5,
+			4,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Mithril circlet made of the magic mineral.",
+		"@name": "Mithril Circlet",
+		"@icon_index": 166,
+		"@price": 6000,
+		"@note": "",
+		"@id": 19,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			15,
+			7,
+			6,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Empowered by an ancient magical civilization's power.",
+		"@name": "Magi's Crown",
+		"@icon_index": 166,
+		"@price": 10000,
+		"@note": "",
+		"@id": 20,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			18,
+			12,
+			11,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 2,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Armour made with overlapping leather.",
+		"@name": "Leather Mail",
+		"@icon_index": 169,
+		"@price": 100,
+		"@note": "",
+		"@id": 21,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			5,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A breastplate made of bronze.",
+		"@name": "Bronze Plate",
+		"@icon_index": 169,
+		"@price": 400,
+		"@note": "",
+		"@id": 22,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			12,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A breastplate made of iron.",
+		"@name": "Iron Plate",
+		"@icon_index": 169,
+		"@price": 2700,
+		"@note": "",
+		"@id": 23,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			18,
+			0,
+			0,
+			-2,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Mithril breastplate made of the magic mineral.",
+		"@name": "Mithril Plate",
+		"@icon_index": 169,
+		"@price": 7000,
+		"@note": "",
+		"@id": 24,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			24,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A breastplate made from dragon scales.",
+		"@name": "Dragon Plate",
+		"@icon_index": 169,
+		"@price": 12000,
+		"@note": "",
+		"@id": 25,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			30,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A hat made out of leather.",
+		"@name": "Leather Hap",
+		"@icon_index": 163,
+		"@price": 100,
+		"@note": "",
+		"@id": 26,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			4,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A reinforced hat made with bronze.",
+		"@name": "Bronze Cap",
+		"@icon_index": 163,
+		"@price": 350,
+		"@note": "",
+		"@id": 27,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			7,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A hat made with steel.",
+		"@name": "Sarett",
+		"@icon_index": 163,
+		"@price": 2400,
+		"@note": "",
+		"@id": 28,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			12,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Mithril cap made of the magic mineral.",
+		"@name": "Mithril Cap",
+		"@icon_index": 163,
+		"@price": 5500,
+		"@note": "",
+		"@id": 29,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			16,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A hat made of dragon scales.",
+		"@name": "Dragon Cap",
+		"@icon_index": 163,
+		"@price": 9500,
+		"@note": "",
+		"@id": 30,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			22,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 3,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Armour made with iron chains.",
+		"@name": "Chain Mail",
+		"@icon_index": 170,
+		"@price": 100,
+		"@note": "",
+		"@id": 31,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			8,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Armour made of steel.",
+		"@name": "Iron Armour",
+		"@icon_index": 170,
+		"@price": 800,
+		"@note": "",
+		"@id": 32,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -0.01,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			16,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Knights wear plate mail.",
+		"@name": "Plate Mail",
+		"@icon_index": 170,
+		"@price": 3600,
+		"@note": "",
+		"@id": 33,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -0.02,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -3,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			24,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Mithril armour made of the magic mineral.",
+		"@name": "Mithril Armour",
+		"@icon_index": 170,
+		"@price": 8000,
+		"@note": "",
+		"@id": 34,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			32,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Armour made from dragon scales.",
+		"@name": "Dragon Armour",
+		"@icon_index": 170,
+		"@price": 15000,
+		"@note": "",
+		"@id": 35,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -0.01,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			40,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 3,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Helmet made of iron chains.",
+		"@name": "Chain Helm",
+		"@icon_index": 164,
+		"@price": 100,
+		"@note": "",
+		"@id": 36,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			6,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Helmet made of steel.",
+		"@name": "Iron Helm",
+		"@icon_index": 164,
+		"@price": 600,
+		"@note": "",
+		"@id": 37,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -0.005,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			12,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Knights wear this helm.",
+		"@name": "Knight Helm",
+		"@icon_index": 164,
+		"@price": 3000,
+		"@note": "",
+		"@id": 38,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -0.01,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -3,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			18,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Mithril helm made of the magic mineral.",
+		"@name": "Mithril Helm",
+		"@icon_index": 164,
+		"@price": 7000,
+		"@note": "",
+		"@id": 39,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			24,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Helmet made of dragon scales.",
+		"@name": "Dragon Helm",
+		"@icon_index": 164,
+		"@price": 12000,
+		"@note": "",
+		"@id": 40,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -0.005,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			30,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 2,
+		"@atype_id": 4,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A small shield used to fend off attacks.",
+		"@name": "Buckler",
+		"@icon_index": 160,
+		"@price": 100,
+		"@note": "",
+		"@id": 41,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.02,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			1,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 5,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A circular shield with a reinforced steel frame.",
+		"@name": "Round Shield",
+		"@icon_index": 160,
+		"@price": 300,
+		"@note": "",
+		"@id": 42,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			3,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 5,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A shield with spikes on its surface for offense.",
+		"@name": "Spike Shield",
+		"@icon_index": 160,
+		"@price": 1800,
+		"@note": "",
+		"@id": 43,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.06,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			3,
+			6,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 5,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Mithril buckler made of the magic mineral.",
+		"@name": "Mithril Buckler",
+		"@icon_index": 160,
+		"@price": 4500,
+		"@note": "",
+		"@id": 44,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.08,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			10,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 5,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Buckler made of dragon scales.",
+		"@name": "Dragon Buckler",
+		"@icon_index": 160,
+		"@price": 7000,
+		"@note": "",
+		"@id": 45,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.125,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			15,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 5,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A shield made with hard wood.",
+		"@name": "Wood Shield",
+		"@icon_index": 161,
+		"@price": 100,
+		"@note": "",
+		"@id": 46,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 3,
+				"@value": -0.2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			2,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 6,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Shield made of steel.",
+		"@name": "Iron Shield",
+		"@icon_index": 161,
+		"@price": 700,
+		"@note": "",
+		"@id": 47,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 3,
+				"@value": -0.2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			6,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 6,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Knights use this shield.",
+		"@name": "Knight Shield",
+		"@icon_index": 161,
+		"@price": 3400,
+		"@note": "",
+		"@id": 48,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 3,
+				"@value": -0.2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -3,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			12,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 6,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Mithril shield made of the magic mineral.",
+		"@name": "Mithril Shield",
+		"@icon_index": 161,
+		"@price": 7500,
+		"@note": "",
+		"@id": 49,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 3,
+				"@value": -0.2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			18,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 6,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Shield made of dragon scales.",
+		"@name": "Dragon Shield",
+		"@icon_index": 161,
+		"@price": 13500,
+		"@note": "",
+		"@id": 50,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 3,
+				"@value": -0.2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 33,
+				"@data_id": 0,
+				"@value": -2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			24,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 1,
+		"@atype_id": 6,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Metal belt engraved with the War God's name.",
+		"@name": "War God's Belt",
+		"@icon_index": 179,
+		"@price": 3000,
+		"@note": "",
+		"@id": 51,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			10,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "Hung at the magic forest for defense.",
+		"@name": "Defense Piece",
+		"@icon_index": 179,
+		"@price": 3000,
+		"@note": "",
+		"@id": 52,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			10,
+			0,
+			10,
+			0,
+			0
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "The holy spirit of the wind dwell in these boots.",
+		"@name": "Winged Boots",
+		"@icon_index": 179,
+		"@price": 3000,
+		"@note": "",
+		"@id": 53,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			10,
+			0
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "The power of the earth protects the wearer.",
+		"@name": "Earth's Embrace",
+		"@icon_index": 179,
+		"@price": 3000,
+		"@note": "",
+		"@id": 54,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 2,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 4,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 5,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 6,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 7,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			5,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A charm engraved with the name of the goddess of luck.",
+		"@name": "Lucky Charm",
+		"@icon_index": 179,
+		"@price": 5000,
+		"@note": "",
+		"@id": 55,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			30
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A symbol worn by those who serve God.",
+		"@name": "Holy Symbol",
+		"@icon_index": 179,
+		"@price": 5000,
+		"@note": "",
+		"@id": 56,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 6,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 7,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 8,
+				"@value": 0.8,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			0,
+			0,
+			5,
+			0,
+			0
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A ring with the hidden power of a genie.",
+		"@name": "Solomon's Ring",
+		"@icon_index": 179,
+		"@price": 5000,
+		"@note": "",
+		"@id": 57,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 23,
+				"@data_id": 4,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			0,
+			10,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "A magic necklace that empowers those who fight.",
+		"@name": "Odin's Necklace",
+		"@icon_index": 179,
+		"@price": 5000,
+		"@note": "",
+		"@id": 58,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 9,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "An eyepatch worn by powerful berserkers.",
+		"@name": "Eyepatch of Fury",
+		"@icon_index": 179,
+		"@price": 5000,
+		"@note": "",
+		"@id": 59,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -0.05,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			15,
+			-5,
+			0,
+			0,
+			0,
+			0
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	},
+	{
+		"@description": "The king of gods dwell in this talisman.",
+		"@name": "Talisman of Light",
+		"@icon_index": 179,
+		"@price": 5000,
+		"@note": "",
+		"@id": 60,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 7,
+				"@value": 0.04,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			0,
+			0,
+			5,
+			5,
+			5,
+			5,
+			5,
+			5
+		],
+		"@etype_id": 4,
+		"@atype_id": 1,
+		"_name": "RPG::Armor"
+	}
+]

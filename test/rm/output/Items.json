@@ -1,0 +1,637 @@
+[
+	null,
+	{
+		"@description": "Recovers 500 HP.",
+		"@name": "Potion",
+		"@consumable": true,
+		"@occasion": 0,
+		"@icon_index": 192,
+		"@price": 50,
+		"@scope": 7,
+		"@animation_id": 37,
+		"@note": "",
+		"@speed": 0,
+		"@id": 1,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 11,
+				"@data_id": 0,
+				"@value1": 0,
+				"@value2": 500,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Recovers 2,500 HP.",
+		"@name": "Hi-Potion",
+		"@consumable": true,
+		"@occasion": 0,
+		"@icon_index": 192,
+		"@price": 150,
+		"@scope": 7,
+		"@animation_id": 37,
+		"@note": "",
+		"@speed": 0,
+		"@id": 2,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 11,
+				"@data_id": 0,
+				"@value1": 0,
+				"@value2": 2500,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Recovers all HP.",
+		"@name": "Full Potion",
+		"@consumable": true,
+		"@occasion": 0,
+		"@icon_index": 192,
+		"@price": 450,
+		"@scope": 7,
+		"@animation_id": 37,
+		"@note": "",
+		"@speed": 0,
+		"@id": 3,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 11,
+				"@data_id": 0,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Recovers 200 MP.",
+		"@name": "Magic Water",
+		"@consumable": true,
+		"@occasion": 0,
+		"@icon_index": 193,
+		"@price": 300,
+		"@scope": 7,
+		"@animation_id": 38,
+		"@note": "",
+		"@speed": 0,
+		"@id": 4,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 12,
+				"@data_id": 0,
+				"@value1": 0,
+				"@value2": 200,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Recovers ally from death.",
+		"@name": "Stimulant",
+		"@consumable": true,
+		"@occasion": 0,
+		"@icon_index": 194,
+		"@price": 250,
+		"@scope": 9,
+		"@animation_id": 42,
+		"@note": "",
+		"@speed": 0,
+		"@id": 5,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Treats poison.",
+		"@name": "Antidote",
+		"@consumable": true,
+		"@occasion": 0,
+		"@icon_index": 194,
+		"@price": 30,
+		"@scope": 7,
+		"@animation_id": 40,
+		"@note": "",
+		"@speed": 0,
+		"@id": 6,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Treats many status ailments.",
+		"@name": "Dispel Herb",
+		"@consumable": true,
+		"@occasion": 0,
+		"@icon_index": 194,
+		"@price": 90,
+		"@scope": 7,
+		"@animation_id": 41,
+		"@note": "",
+		"@speed": 0,
+		"@id": 7,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			},
+			{
+				"@code": 22,
+				"@data_id": 3,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			},
+			{
+				"@code": 22,
+				"@data_id": 4,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			},
+			{
+				"@code": 22,
+				"@data_id": 5,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			},
+			{
+				"@code": 22,
+				"@data_id": 6,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			},
+			{
+				"@code": 22,
+				"@data_id": 7,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Restores all HP and MP.",
+		"@name": "Elixir",
+		"@consumable": true,
+		"@occasion": 0,
+		"@icon_index": 197,
+		"@price": 1000,
+		"@scope": 7,
+		"@animation_id": 39,
+		"@note": "",
+		"@speed": 0,
+		"@id": 8,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 11,
+				"@data_id": 0,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			},
+			{
+				"@code": 12,
+				"@data_id": 0,
+				"@value1": 1,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Increases MaxHP by 50.",
+		"@name": "Life Up",
+		"@consumable": true,
+		"@occasion": 2,
+		"@icon_index": 199,
+		"@price": 200,
+		"@scope": 7,
+		"@animation_id": 0,
+		"@note": "",
+		"@speed": 0,
+		"@id": 9,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 42,
+				"@data_id": 0,
+				"@value1": 50,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Increases MaxMP by 10.",
+		"@name": "Mana Up",
+		"@consumable": true,
+		"@occasion": 2,
+		"@icon_index": 199,
+		"@price": 200,
+		"@scope": 7,
+		"@animation_id": 0,
+		"@note": "",
+		"@speed": 0,
+		"@id": 10,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 42,
+				"@data_id": 1,
+				"@value1": 10,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Increases ATK by 3.",
+		"@name": "Power Up",
+		"@consumable": true,
+		"@occasion": 2,
+		"@icon_index": 199,
+		"@price": 200,
+		"@scope": 7,
+		"@animation_id": 0,
+		"@note": "",
+		"@speed": 0,
+		"@id": 11,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 42,
+				"@data_id": 2,
+				"@value1": 3,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Increases DEF by 3.",
+		"@name": "Guard Up",
+		"@consumable": true,
+		"@occasion": 2,
+		"@icon_index": 199,
+		"@price": 200,
+		"@scope": 7,
+		"@animation_id": 0,
+		"@note": "",
+		"@speed": 0,
+		"@id": 12,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 42,
+				"@data_id": 3,
+				"@value1": 3,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Increases MAT by 3.",
+		"@name": "Magic Up",
+		"@consumable": true,
+		"@occasion": 2,
+		"@icon_index": 199,
+		"@price": 200,
+		"@scope": 7,
+		"@animation_id": 0,
+		"@note": "",
+		"@speed": 0,
+		"@id": 13,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 42,
+				"@data_id": 4,
+				"@value1": 3,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Increases MDF by 3.",
+		"@name": "Resist Up",
+		"@consumable": true,
+		"@occasion": 2,
+		"@icon_index": 199,
+		"@price": 200,
+		"@scope": 7,
+		"@animation_id": 0,
+		"@note": "",
+		"@speed": 0,
+		"@id": 14,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 42,
+				"@data_id": 5,
+				"@value1": 3,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Increases AGI by 3.",
+		"@name": "Speed Up",
+		"@consumable": true,
+		"@occasion": 2,
+		"@icon_index": 199,
+		"@price": 200,
+		"@scope": 7,
+		"@animation_id": 0,
+		"@note": "",
+		"@speed": 0,
+		"@id": 15,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 42,
+				"@data_id": 6,
+				"@value1": 3,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	},
+	{
+		"@description": "Increases LUK by 3.",
+		"@name": "Luck Up",
+		"@consumable": true,
+		"@occasion": 2,
+		"@icon_index": 199,
+		"@price": 200,
+		"@scope": 7,
+		"@animation_id": 0,
+		"@note": "",
+		"@speed": 0,
+		"@id": 16,
+		"@features": [],
+		"@effects": [
+			{
+				"@code": 42,
+				"@data_id": 7,
+				"@value1": 3,
+				"@value2": 0,
+				"_name": "RPG::UsableItem::Effect"
+			}
+		],
+		"@damage": {
+			"@type": 0,
+			"@element_id": 0,
+			"@formula": "0",
+			"@variance": 20,
+			"@critical": false,
+			"_name": "RPG::UsableItem::Damage"
+		},
+		"@success_rate": 100,
+		"@hit_type": 0,
+		"@itype_id": 1,
+		"@repeats": 1,
+		"@tp_gain": 0,
+		"_name": "RPG::Item"
+	}
+]

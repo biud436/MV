@@ -1,0 +1,3017 @@
+[
+	null,
+	{
+		"@name": "Slime",
+		"@gold": 5,
+		"@battler_hue": 0,
+		"@exp": 3,
+		"@hit": 95,
+		"@battler_name": "Slime",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 1,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			100,
+			0,
+			12,
+			4,
+			8,
+			8,
+			10,
+			10
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Bat",
+		"@gold": 10,
+		"@battler_hue": 0,
+		"@exp": 5,
+		"@hit": 95,
+		"@battler_name": "Bat",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 2,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 3,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 8,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 7,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			140,
+			0,
+			14,
+			6,
+			9,
+			9,
+			12,
+			12
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Hornet",
+		"@gold": 15,
+		"@battler_hue": 0,
+		"@exp": 8,
+		"@hit": 95,
+		"@battler_name": "Hornet",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 3,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 2,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 8,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 7,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			180,
+			0,
+			16,
+			7,
+			12,
+			12,
+			16,
+			16
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Spider",
+		"@gold": 25,
+		"@battler_hue": 0,
+		"@exp": 13,
+		"@hit": 95,
+		"@battler_name": "Spider",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 4,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 2,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			220,
+			0,
+			18,
+			8,
+			14,
+			14,
+			18,
+			18
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Rate",
+		"@gold": 40,
+		"@battler_hue": 0,
+		"@exp": 19,
+		"@hit": 95,
+		"@battler_name": "Rat",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 21,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 5,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			300,
+			0,
+			20,
+			9,
+			16,
+			16,
+			22,
+			22
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Wisp",
+		"@gold": 50,
+		"@battler_hue": 0,
+		"@exp": 26,
+		"@hit": 95,
+		"@battler_name": "Willowisp",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 51,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 6,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 7,
+				"@value": 0.15,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 7,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			350,
+			60,
+			30,
+			20,
+			18,
+			18,
+			24,
+			24
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Large Snake",
+		"@gold": 70,
+		"@battler_hue": 0,
+		"@exp": 34,
+		"@hit": 95,
+		"@battler_name": "Snake",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 4,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 7,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			400,
+			0,
+			28,
+			20,
+			20,
+			20,
+			28,
+			28
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Scorpion",
+		"@gold": 90,
+		"@battler_hue": 0,
+		"@exp": 43,
+		"@hit": 95,
+		"@battler_name": "Scorpion",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 8,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 2,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			450,
+			0,
+			36,
+			30,
+			25,
+			25,
+			30,
+			30
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Jellyfish",
+		"@gold": 105,
+		"@battler_hue": 0,
+		"@exp": 53,
+		"@hit": 95,
+		"@battler_name": "Jellyfish",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 9,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 3,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			500,
+			0,
+			32,
+			15,
+			25,
+			25,
+			32,
+			32
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Man-Eating Plant",
+		"@gold": 130,
+		"@battler_hue": 0,
+		"@exp": 63,
+		"@hit": 95,
+		"@battler_name": "Plant",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 3,
+				"@skill_id": 17,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 10,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 6,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			600,
+			0,
+			40,
+			17,
+			30,
+			30,
+			36,
+			36
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Ghost",
+		"@gold": 150,
+		"@battler_hue": 0,
+		"@exp": 75,
+		"@hit": 95,
+		"@battler_name": "Ghost",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 51,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 11,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 10,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 1,
+				"@value": 0.75,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 2,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 9,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 10,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			700,
+			80,
+			48,
+			20,
+			40,
+			40,
+			38,
+			38
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Skeleton",
+		"@gold": 180,
+		"@battler_hue": 0,
+		"@exp": 87,
+		"@hit": 95,
+		"@battler_name": "Skeleton",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 12,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 3,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 2,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 9,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			800,
+			0,
+			50,
+			25,
+			35,
+			35,
+			40,
+			40
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Orc",
+		"@gold": 200,
+		"@battler_hue": 0,
+		"@exp": 99,
+		"@hit": 95,
+		"@battler_name": "Orc",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 20,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 13,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 6,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			850,
+			0,
+			55,
+			30,
+			30,
+			30,
+			42,
+			42
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Imp",
+		"@gold": 220,
+		"@battler_hue": 0,
+		"@exp": 110,
+		"@hit": 95,
+		"@battler_name": "Imp",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 55,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 50,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 14,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 8,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			900,
+			150,
+			60,
+			32,
+			40,
+			40,
+			45,
+			45
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Gazer",
+		"@gold": 250,
+		"@battler_hue": 0,
+		"@exp": 130,
+		"@hit": 95,
+		"@battler_name": "Gayzer",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 23,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 15,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 6,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			950,
+			0,
+			65,
+			35,
+			40,
+			40,
+			50,
+			50
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Puppet",
+		"@gold": 280,
+		"@battler_hue": 0,
+		"@exp": 160,
+		"@hit": 95,
+		"@battler_name": "Puppet",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 53,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 65,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 16,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 6,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 7,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			1000,
+			200,
+			70,
+			40,
+			35,
+			35,
+			55,
+			55
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Zombie",
+		"@gold": 320,
+		"@battler_hue": 0,
+		"@exp": 180,
+		"@hit": 95,
+		"@battler_name": "Zombie",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 3,
+				"@skill_id": 4,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 17,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 2,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 9,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			1050,
+			0,
+			75,
+			40,
+			45,
+			45,
+			50,
+			50
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Cockatrice",
+		"@gold": 400,
+		"@battler_hue": 0,
+		"@exp": 260,
+		"@hit": 95,
+		"@battler_name": "Cockatrice",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 10,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 19,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 18,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 8,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			1100,
+			0,
+			80,
+			50,
+			40,
+			40,
+			60,
+			60
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Chimera",
+		"@gold": 900,
+		"@battler_hue": 0,
+		"@exp": 450,
+		"@hit": 95,
+		"@battler_name": "Chimera",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 4,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 9,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 18,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 19,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 6,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			1200,
+			0,
+			85,
+			45,
+			50,
+			50,
+			60,
+			60
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Mimic",
+		"@gold": 1600,
+		"@battler_hue": 0,
+		"@exp": 700,
+		"@hit": 95,
+		"@battler_name": "Mimic",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 3,
+				"@skill_id": 12,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 20,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 5,
+				"@value": 0.2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 61,
+				"@data_id": 0,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			2000,
+			0,
+			100,
+			65,
+			60,
+			60,
+			65,
+			65
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Werewolf",
+		"@gold": 1300,
+		"@battler_hue": 0,
+		"@exp": 660,
+		"@hit": 95,
+		"@battler_name": "Werewolf",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 3,
+				"@skill_id": 22,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 21,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 2,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			1600,
+			0,
+			90,
+			70,
+			65,
+			65,
+			70,
+			70
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Sahagin",
+		"@gold": 1800,
+		"@battler_hue": 0,
+		"@exp": 690,
+		"@hit": 95,
+		"@battler_name": "Sahagin",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 4,
+				"@skill_id": 13,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 64,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 22,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 6,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			1800,
+			400,
+			110,
+			75,
+			60,
+			60,
+			80,
+			80
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Ogre",
+		"@gold": 3200,
+		"@battler_hue": 0,
+		"@exp": 1600,
+		"@hit": 80,
+		"@battler_name": "Ogre",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 21,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 23,
+		"@eva": 0,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.75,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.15,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			2600,
+			0,
+			140,
+			80,
+			50,
+			50,
+			70,
+			70
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Gargoyle",
+		"@gold": 2400,
+		"@battler_hue": 0,
+		"@exp": 1400,
+		"@hit": 95,
+		"@battler_name": "Gargoyle",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 4,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 8,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 19,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 24,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 10,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			2400,
+			0,
+			130,
+			80,
+			70,
+			70,
+			90,
+			90
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Lamia",
+		"@gold": 4400,
+		"@battler_hue": 0,
+		"@exp": 2600,
+		"@hit": 95,
+		"@battler_name": "Lamia",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 3,
+				"@skill_id": 16,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 4,
+				"@skill_id": 15,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 25,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 3,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			3200,
+			1000,
+			120,
+			90,
+			80,
+			80,
+			95,
+			95
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Vampire",
+		"@gold": 5600,
+		"@battler_hue": 0,
+		"@exp": 3000,
+		"@hit": 95,
+		"@battler_name": "Vampire",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 3,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 23,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 3,
+				"@skill_id": 11,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 58,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 26,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 9,
+				"@value": 2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 10,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			5200,
+			2000,
+			135,
+			100,
+			90,
+			90,
+			100,
+			100
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Succubus",
+		"@gold": 8000,
+		"@battler_hue": 0,
+		"@exp": 4000,
+		"@hit": 95,
+		"@battler_name": "Succubus",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 2,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 1,
+				"@rating": 5,
+				"@skill_id": 38,
+				"@condition_param2": 4,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 4,
+				"@skill_id": 39,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 49,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 27,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 32,
+				"@data_id": 5,
+				"@value": 0.2,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			6000,
+			3000,
+			150,
+			120,
+			100,
+			100,
+			110,
+			110
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Demon",
+		"@gold": 12000,
+		"@battler_hue": 0,
+		"@exp": 6500,
+		"@hit": 95,
+		"@battler_name": "Demon",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 4,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 1,
+				"@rating": 4,
+				"@skill_id": 36,
+				"@condition_param2": 3,
+				"@condition_param1": 1,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 1,
+				"@rating": 8,
+				"@skill_id": 41,
+				"@condition_param2": 7,
+				"@condition_param1": 2,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 4,
+				"@skill_id": 71,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 4,
+				"@skill_id": 54,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 28,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 9,
+				"@value": 1.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 10,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			8000,
+			5000,
+			170,
+			120,
+			120,
+			120,
+			120,
+			120
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Demon King",
+		"@gold": 30000,
+		"@battler_hue": 0,
+		"@exp": 15000,
+		"@hit": 95,
+		"@battler_name": "Darklord",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 6,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 54,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 58,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 62,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 72,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 46,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 2,
+				"@rating": 5,
+				"@skill_id": 24,
+				"@condition_param2": 0.8,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 29,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 10,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 5,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 2,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 3,
+				"@value": 0.2,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 61,
+				"@data_id": 0,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 63,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			12000,
+			9999,
+			200,
+			150,
+			140,
+			140,
+			1,
+			140
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	},
+	{
+		"@name": "Demon God",
+		"@gold": 50000,
+		"@battler_hue": 0,
+		"@exp": 25000,
+		"@hit": 95,
+		"@battler_name": "Evilgod",
+		"@actions": [
+			{
+				"@condition_type": 0,
+				"@rating": 6,
+				"@skill_id": 1,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 74,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 8,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 9,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 15,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 13,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			},
+			{
+				"@condition_type": 0,
+				"@rating": 5,
+				"@skill_id": 12,
+				"@condition_param2": 0,
+				"@condition_param1": 0,
+				"_name": "RPG::Enemy::Action"
+			}
+		],
+		"@note": "",
+		"@id": 30,
+		"@eva": 5,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": 0.95,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 31,
+				"@data_id": 1,
+				"@value": 100,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 10,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 5,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 61,
+				"@data_id": 0,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 63,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@params": [
+			20000,
+			9999,
+			240,
+			150,
+			160,
+			160,
+			150,
+			150
+		],
+		"@drop_items": [
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			},
+			{
+				"@denominator": 1,
+				"@kind": 0,
+				"@data_id": 1,
+				"_name": "RPG::Enemy::DropItem"
+			}
+		],
+		"_name": "RPG::Enemy"
+	}
+]

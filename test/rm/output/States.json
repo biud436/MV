@@ -1,0 +1,836 @@
+[
+	null,
+	{
+		"@message2": " is slain!",
+		"@name": "Death",
+		"@priority": 100,
+		"@icon_index": 17,
+		"@message1": " has fallen!",
+		"@message4": " revives!",
+		"@restriction": 4,
+		"@release_by_damage": false,
+		"@message3": "",
+		"@note": "State #1 will be automatically added when\r\nHP reaches 0.",
+		"@id": 1,
+		"@features": [
+			{
+				"@code": 23,
+				"@data_id": 9,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 0,
+		"@min_turns": 1,
+		"@max_turns": 1,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": false,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " is poisoned!",
+		"@name": "Poison",
+		"@priority": 65,
+		"@icon_index": 18,
+		"@message1": " is poisoned!",
+		"@message4": " is freed of poison!",
+		"@restriction": 0,
+		"@release_by_damage": false,
+		"@message3": "",
+		"@note": "",
+		"@id": 2,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 7,
+				"@value": -0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 0,
+		"@min_turns": 1,
+		"@max_turns": 1,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": false,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " is blinded!",
+		"@name": "Blind",
+		"@priority": 70,
+		"@icon_index": 19,
+		"@message1": " becomes blind!",
+		"@message4": " is no longer blinded!",
+		"@restriction": 0,
+		"@release_by_damage": false,
+		"@message3": "",
+		"@note": "",
+		"@id": 3,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 0,
+				"@value": -0.6,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 1,
+		"@min_turns": 3,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " cannot cast Magic!",
+		"@name": "Silence",
+		"@priority": 75,
+		"@icon_index": 20,
+		"@message1": " cannot cast Magic!",
+		"@message4": "'s Magic is no longer sealed!",
+		"@restriction": 0,
+		"@release_by_damage": false,
+		"@message3": "",
+		"@note": "",
+		"@id": 4,
+		"@features": [
+			{
+				"@code": 42,
+				"@data_id": 2,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 1,
+		"@min_turns": 3,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " is confused!",
+		"@name": "Confusion",
+		"@priority": 80,
+		"@icon_index": 21,
+		"@message1": " becomes confused!",
+		"@message4": " is no longer confused!",
+		"@restriction": 2,
+		"@release_by_damage": false,
+		"@message3": "",
+		"@note": "",
+		"@id": 5,
+		"@features": [],
+		"@auto_removal_timing": 1,
+		"@min_turns": 2,
+		"@max_turns": 4,
+		"@chance_by_damage": 50,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": true,
+		"@remove_by_restriction": false,
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " falls asleep!",
+		"@name": "Sleep",
+		"@priority": 85,
+		"@icon_index": 22,
+		"@message1": " falls asleep!",
+		"@message4": " wakes up!",
+		"@restriction": 4,
+		"@release_by_damage": true,
+		"@message3": " is sleeping......",
+		"@note": "",
+		"@id": 6,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 1,
+		"@min_turns": 3,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": true,
+		"@remove_by_restriction": false,
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " is paralyzed!",
+		"@name": "Paralysis",
+		"@priority": 90,
+		"@icon_index": 23,
+		"@message1": " becomes paralyzed!",
+		"@message4": " is no longer paralyzed!",
+		"@restriction": 4,
+		"@release_by_damage": false,
+		"@message3": " is unable to move!",
+		"@note": "",
+		"@id": 7,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 1,
+				"@value": -1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 1,
+		"@min_turns": 4,
+		"@max_turns": 6,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " loses balance!",
+		"@name": "Stun",
+		"@priority": 60,
+		"@icon_index": 24,
+		"@message1": " loses balance!",
+		"@message4": " regains balance!",
+		"@restriction": 4,
+		"@release_by_damage": false,
+		"@message3": " hasn't regained balance......",
+		"@note": "",
+		"@id": 8,
+		"@features": [],
+		"@auto_removal_timing": 2,
+		"@min_turns": 1,
+		"@max_turns": 2,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Guard",
+		"@priority": 0,
+		"@icon_index": 0,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 9,
+		"@features": [
+			{
+				"@code": 62,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 1,
+		"@max_turns": 1,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": true,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Immortal",
+		"@priority": 0,
+		"@icon_index": 0,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 10,
+		"@features": [
+			{
+				"@code": 14,
+				"@data_id": 1,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 0,
+		"@min_turns": 1,
+		"@max_turns": 1,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Cover",
+		"@priority": 0,
+		"@icon_index": 0,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 11,
+		"@features": [
+			{
+				"@code": 62,
+				"@data_id": 2,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 1,
+		"@max_turns": 1,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": true,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Provoke",
+		"@priority": 50,
+		"@icon_index": 25,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 12,
+		"@features": [
+			{
+				"@code": 23,
+				"@data_id": 0,
+				"@value": 10,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 5,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Hide",
+		"@priority": 50,
+		"@icon_index": 28,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 13,
+		"@features": [
+			{
+				"@code": 23,
+				"@data_id": 0,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 5,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": true,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "HP Regen",
+		"@priority": 50,
+		"@icon_index": 26,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 14,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 7,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 4,
+		"@max_turns": 4,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "MP Regen",
+		"@priority": 50,
+		"@icon_index": 26,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 15,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 8,
+				"@value": 0.05,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 4,
+		"@max_turns": 4,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "TP Regen",
+		"@priority": 50,
+		"@icon_index": 26,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 16,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 9,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 4,
+		"@max_turns": 4,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Ironbody",
+		"@priority": 50,
+		"@icon_index": 29,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 17,
+		"@features": [
+			{
+				"@code": 23,
+				"@data_id": 6,
+				"@value": 0.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 3,
+		"@max_turns": 3,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": true,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Counterattack",
+		"@priority": 50,
+		"@icon_index": 27,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 18,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 6,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 3,
+		"@max_turns": 3,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": true,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Magic Evade",
+		"@priority": 50,
+		"@icon_index": 29,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 19,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 4,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 3,
+		"@max_turns": 3,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Magic Reflect",
+		"@priority": 50,
+		"@icon_index": 31,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 20,
+		"@features": [
+			{
+				"@code": 22,
+				"@data_id": 5,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 1,
+		"@max_turns": 1,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " acquires the power of fire!",
+		"@name": "Fire Force",
+		"@priority": 50,
+		"@icon_index": 104,
+		"@message1": " acquires the power of fire!",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 21,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 3,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 3,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 21,
+				"@data_id": 2,
+				"@value": 1.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 5,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " acquires the power of ice!",
+		"@name": "Ice Force",
+		"@priority": 50,
+		"@icon_index": 105,
+		"@message1": " acquires the power of ice!",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 22,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 4,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 4,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 21,
+				"@data_id": 2,
+				"@value": 1.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 5,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": " acquires the power of thunder!",
+		"@name": "Thunder Force",
+		"@priority": 50,
+		"@icon_index": 106,
+		"@message1": " acquires the power of thunder!",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 23,
+		"@features": [
+			{
+				"@code": 31,
+				"@data_id": 5,
+				"@value": 1,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 11,
+				"@data_id": 5,
+				"@value": 0.5,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 21,
+				"@data_id": 2,
+				"@value": 1.1,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 5,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "Ailment Guard",
+		"@priority": 50,
+		"@icon_index": 29,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 24,
+		"@features": [
+			{
+				"@code": 13,
+				"@data_id": 2,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 3,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 4,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 5,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 6,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 7,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			},
+			{
+				"@code": 13,
+				"@data_id": 8,
+				"@value": 0,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 5,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	},
+	{
+		"@message2": "",
+		"@name": "MP Cost Down",
+		"@priority": 50,
+		"@icon_index": 30,
+		"@message1": "",
+		"@message4": "",
+		"@restriction": 0,
+		"@message3": "",
+		"@note": "",
+		"@id": 25,
+		"@features": [
+			{
+				"@code": 23,
+				"@data_id": 4,
+				"@value": 0.25,
+				"_name": "RPG::BaseItem::Feature"
+			}
+		],
+		"@auto_removal_timing": 2,
+		"@min_turns": 5,
+		"@max_turns": 5,
+		"@chance_by_damage": 100,
+		"@steps_to_remove": 100,
+		"@remove_by_walking": false,
+		"@remove_at_battle_end": true,
+		"@remove_by_damage": false,
+		"@remove_by_restriction": false,
+		"@description": "",
+		"_name": "RPG::State"
+	}
+]

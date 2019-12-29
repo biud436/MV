@@ -1,0 +1,56 @@
+{
+	"1": {
+		"@scroll_x": 636,
+		"@name": "[MAP]Port Town",
+		"@expanded": false,
+		"@order": 2,
+		"@scroll_y": 478,
+		"@parent_id": 0,
+		"_name": "RPG::MapInfo"
+	},
+	"2": {
+		"@scroll_x": 619,
+		"@name": "[MAP]Mountain Village",
+		"@expanded": false,
+		"@order": 1,
+		"@scroll_y": 673,
+		"@parent_id": 0,
+		"_name": "RPG::MapInfo"
+	},
+	"3": {
+		"@scroll_x": 532,
+		"@name": "Ancient Historic RuinsF2F",
+		"@expanded": false,
+		"@order": 3,
+		"@scroll_y": 388,
+		"@parent_id": 0,
+		"_name": "RPG::MapInfo"
+	},
+	"4": {
+		"@scroll_x": 752,
+		"@name": "Sky City",
+		"@expanded": false,
+		"@order": 4,
+		"@scroll_y": 768,
+		"@parent_id": 0,
+		"_name": "RPG::MapInfo"
+	},
+	"5": {
+		"@scroll_x": 480,
+		"@name": "Mountain Village HouseiInteriorj",
+		"@expanded": false,
+		"@order": 6,
+		"@scroll_y": 410,
+		"@parent_id": 0,
+		"_name": "RPG::MapInfo"
+	},
+	"7": {
+		"@scroll_x": 779,
+		"@name": "Snow CastleiExteriorj",
+		"@expanded": false,
+		"@order": 5,
+		"@scroll_y": 942,
+		"@parent_id": 0,
+		"_name": "RPG::MapInfo"
+	}
+}
