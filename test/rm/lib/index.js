@@ -1,6 +1,8 @@
 const Marshal = require("marshal");
 const fs = require('fs-extra');
 const path = require('path');
+const cp = require('child_process');
+const Loader = require("./loader");
 
 const dataFiles = fs.readdirSync(path.join(__dirname, "..", "data"));
 dataFiles.forEach(file => {
@@ -32,3 +34,4 @@ dataFiles.forEach(file => {
     }
 
 });
+
