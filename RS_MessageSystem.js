@@ -8,7 +8,7 @@
 //================================================================
  /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.61) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.62) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -267,8 +267,17 @@
  * @default "0.4"
  *
  * @param Language Code
+ * @type select
  * @desc Specify the language code of the text codes.
- * @default ko
+ * @default en
+ * @option English
+ * @value en
+ * @option Korean
+ * @value ko
+ * @option Japanese
+ * @value ja
+ * @option Chinese
+ * @value zh
  *
  * @param preload windowskin
  * @require 1
@@ -718,7 +727,7 @@
  */
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.61) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.62) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -996,8 +1005,17 @@
  * @default "0.4"
  *
  * @param 언어 코드
+ * @type select
  * @desc 사용할 텍스트 코드의 언어 코드를 입력하세요
  * @default ko
+ * @option English
+ * @value en
+ * @option Korean
+ * @value ko
+ * @option Japanese
+ * @value ja
+ * @option Chinese
+ * @value zh
  * 
  * @param preload windowskin
  * @text 윈도우스킨 프리로드
