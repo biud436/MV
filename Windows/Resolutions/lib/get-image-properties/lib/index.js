@@ -1,7 +1,18 @@
 /**
  * This script allows you to get the width and height values of all images.
  * 
- * node index.js C:\Users\U\Desktop\Exam\201907
+ * You can call certain command in the command line, as follows.
+ * 
+ *      node index.js <PROJECT_PATH>
+ *      node index.js C:\Users\U\Desktop\Exam\201907
+ * 
+ * 이미지의 폭과 높이를 JSON 데이터로 반환하는 기능을 가지고 있습니다.
+ * 명령 프롬프트에서 이 파일이 위치된 폴더로 이동한 후, 파일을 아래와 같이 실행해주세요.
+ * 
+ *      node index.js <PROJECT_PATH>
+ *      node index.js C:\Users\U\Desktop\Exam\201907
+ * 
+ * 프로젝트 경로를 적절하게 적어주세요.
  * 
  * @author biud436
  * 
