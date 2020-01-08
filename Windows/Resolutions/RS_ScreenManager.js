@@ -252,9 +252,16 @@ Imported.RS_ScreenManager = true;
  * @parent Pictures
  * @type combo
  * @desc Please select picture positioning method when resizing.
- * @default Actual Coordinates 
+ * @default Virtual Coordinates
  * @option Actual Coordinates
  * @option Virtual Coordinates
+ * 
+ * @param Ignore Auto Scale
+ * @parent Pictures
+ * @type number[]
+ * @desc Sometimes it must ignore auto-scale.
+ * @min 1
+ * @default []
  * 
  * @help
  * =============================================================================
@@ -457,6 +464,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   
   $.Params.isAutoScaledPicture = Boolean(parameters["Scaled Picture"] === "true");
 
+  $.Params.ignoreAutoScalePictures = $.jsonParse(parameters["Ignore Auto Scale"]);
+
   /**
    * Screen Size : 1280, 720
    * Picture's Size : 816, 614,
@@ -645,6 +654,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
      
       if(Utils.isNwjs()) {
 
+        // if you didn't have node library, it will set as a default resolution list.
         if(!$.Params.isUsedNodeLibrary) {
           settings.pcGraphicsArray = settings.pcGraphicsTempArray;  
           options.allResolutions = true;
@@ -1666,9 +1676,18 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       return;
     }
 
+    // Sometimes it allows game developer to create a new picture that has a text via DTextPicture plugin.
+    // However it don't need to use an auto-scale.
     if(Imported.DTextPicture && picture.dTextInfo) {
       this.updateOriginScale();  
       return;
+    }
+    
+    // Sometimes the game picture has to use a default scale.
+    var blacklist = $.Params.ignoreAutoScalePictures || [];
+    if(blacklist.contains(this._pictureId)) {
+      this.updateOriginScale();  
+      return;      
     }
 
     var originSX = picture.scaleX() / 100;
