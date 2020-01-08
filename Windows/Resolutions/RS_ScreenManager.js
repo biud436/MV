@@ -467,6 +467,11 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   $.Params.picturePosType = parameters["Picture Position Type"] || "Actual Coordinates";
 
   /**
+   * if it is to true, it adds resolution select button in the option window.
+   */
+  $.Params.isValidOptionWindow = Utils.isMobileDevice() ? false : true;
+
+  /**
    * Replace by target screen width and height values.
    */
   $.initWithMobile = function() {
@@ -1121,12 +1126,12 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       Graphics.height = Graphics.boxHeight = newScr.y;
     }
 
-    // 렌더러 사이즈를 재설정한다.
+    // Reset graphics' size
     if(options.resize) {
         Graphics._renderer.resize(newScr.x, newScr.y);
     }
 
-    // 현재 씬을 처음부터 다시 생성한다. (저장되지 않은 정보는 잃을 수도 있다)
+    // Reset the scene (Unsaved changes will be lost)
     if(options.recreate && !(SceneManager._scene instanceof Scene_Boot)) {
       if(SceneManager._scene) SceneManager.push(SceneManager._scene.constructor);
     }
@@ -1134,7 +1139,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   };
 
   /**
-   * Community_Basic 플러그인의 기본 동작을 해제합니다.
+   * Disarms the behavior of Community_Basic plugin.
    */
   if(PluginManager._scripts.contains("Community_Basic")) {
     SceneManager.initNwjs = function() {
@@ -1152,7 +1157,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   };
 
   /**
-   * YEP_CoreEngine 및 ScreenResolution의 기본 동작을 해제합니다.
+   * Disarms the behavior of YEP_CoreEngine and ScreenResolution plugins.
    */
   if( SceneManager.run.toString().match(/Yanfly/i) ) {
     SceneManager.run = function(sceneClass) {
@@ -1192,15 +1197,15 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     maxSW = window.innerWidth;
     maxSH = window.innerHeight;
 
-    // 기본 해상도
+    // Sets the default screen width and height values.
     defScrWidth = settings.defaultScreenSize.x;
     defScrHeight = settings.defaultScreenSize.y;
 
-    // 화면 방향에 따른 비율값을 구한다
+    // Obtains the ratio depended on screen orientation.
     orientation = Graphics.getOrientation(true);
     config = new ScreenConfig(maxSW, maxSH, orientation);
 
-    // 모바일에서는 비율 값에 따라 해상도를 변경한다.
+    // Changes the resolution depended on the aspect ratio in the mobile device.
     size = config.getSize(defScrWidth);
 
     mobile = !Utils.isNwjs() || options.aspectRatio;
@@ -1209,7 +1214,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     bw = (mobile === true) ? size[0] : defScrWidth;
     bh = (mobile === true) ? size[1] : defScrHeight;
 
-    // PC라면 해상도 조절 함수를 호출한다.
+    // Calls the function changes the resolution in case of the PC.
     if(Utils.isNwjs()) {
       var newSize = new Point(sw, sh);
       Graphics.setScreenResize(newSize);
@@ -1256,11 +1261,12 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     this._lastScreenManagerItem = 0;
   };
 
+  //#region Option Window
   //============================================================================
   // Window_Options
   //============================================================================
 
-  if(!Utils.isMobileDevice()) {
+  if($.Params.isValidOptionWindow) {
 
     var alias_Window_Options_initialize = Window_Options.prototype.initialize;
     Window_Options.prototype.initialize = function() {
@@ -1519,11 +1525,11 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     }, this);
     return data;
   };
+  //#endregion
 
   //============================================================================
-  // Window_ResolutionListForMobile
+  //#region Window_ResolutionListForMobile
   //============================================================================
-
   /**
    * PC가 아닌 플랫폼에서는 창 사이즈가 변경되지 않으므로 그래픽 객체 크기를 변경한다.
    * @class Window_ResolutionListForMobile
@@ -1568,8 +1574,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     this.drawText(text, rect.x, rect.y, rect.width, 'center');
   };
 
+  //#endregion
+
   //============================================================================
-  // Sprite_Base
+  //#region Sprite_Base
   //============================================================================
 
   Sprite_Base.prototype.requestStretch = function (sprite) {
@@ -1604,9 +1612,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     }
 
   };
+  //#endregion
 
   //============================================================================
-  // Sprite_Picture
+  //#region Sprite_Picture
   //============================================================================  
 
   var alias_Sprite_Picture_updatePosition = Sprite_Picture.prototype.updatePosition;
@@ -1628,6 +1637,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
      */
     var picture = this.picture();
     var bitmap = this.bitmap;
+
+    if(!bitmap) return;
+    if(this.bitmap.width <= 0) return;
+    if(this.bitmap.height <= 0) return;    
 
     var originSX = picture.scaleX() / 100;
     var originSY = picture.scaleY() / 100;
@@ -1683,6 +1696,9 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     }
   };
 
+  //#endregion
+
+  //#region Rescaling Background
   //============================================================================
   // Scene_Base
   //============================================================================
@@ -1733,8 +1749,12 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     this.requestStretch(this._backSprite);
   };
 
+  //#endregion
+
+
+
   //============================================================================
-  // ScreenManager
+  //#region ScreenManager
   //============================================================================
 
   function ScreenManager() {
@@ -1896,6 +1916,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     this.flushScreen();
 
   };
+  //#endregion
 
   //============================================================================
   // Game_Interpreter

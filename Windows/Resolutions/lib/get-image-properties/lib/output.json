@@ -219,23 +219,6 @@
 			"height": 288
 		}
 	],
-	"pictures": [
-		{
-			"name": "resize400x305.png",
-			"width": 400,
-			"height": 305
-		},
-		{
-			"name": "resize816x624.png",
-			"width": 816,
-			"height": 624
-		},
-		{
-			"name": "resize980x750.png",
-			"width": 980,
-			"height": 750
-		}
-	],
 	"sv_actors": [
 		{
 			"name": "Actor1_1.png",
@@ -288,6 +271,37 @@
 			"name": "Slime.png",
 			"width": 102,
 			"height": 85
+		}
+	],
+	"pictures": [
+		{
+			"name": "resize400x305.png",
+			"width": 400,
+			"height": 305
+		},
+		{
+			"name": "resize816x624.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "resize980x750.png",
+			"width": 980,
+			"height": 750
+		}
+	],
+	"test": [
+		{
+			"name": "resize400x305.png",
+			"width": 400,
+			"height": 305
+		}
+	],
+	"titles1": [
+		{
+			"name": "Castle.png",
+			"width": 816,
+			"height": 624
 		}
 	],
 	"system": [
@@ -512,13 +526,6 @@
 			"name": "World_C.png",
 			"width": 768,
 			"height": 768
-		}
-	],
-	"titles1": [
-		{
-			"name": "Castle.png",
-			"width": 816,
-			"height": 624
 		}
 	]
 }
