@@ -1,5 +1,5 @@
 # Introduction
-I made this tool for personal use. If this tool becomes a problem, it may be deleted.
+불시에 비공개로 전활될 수 있습니다.
 
 # Usage
 
