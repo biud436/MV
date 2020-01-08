@@ -520,7 +520,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       }
     }    
 
-    var win = nw.Window.get();
+    var win = require('nw.gui').Window.get();
 
     win.on('resize', function(width, height) {
       var f = $.isFullscreen();
@@ -1618,6 +1618,19 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   //#region Sprite_Picture
   //============================================================================  
 
+  (function() {
+
+    /**
+     * Find a script called "DTextPicture.js"
+     */
+    PluginManager._scripts.forEach(function(pluginName) {
+      if(pluginName === "DTextPicture") {
+        Imported.DTextPicture = true;
+      }
+    }, this);
+
+  })();
+
   var alias_Sprite_Picture_updatePosition = Sprite_Picture.prototype.updatePosition;
   Sprite_Picture.prototype.updatePosition = function() {
     if(RS.ScreenManager.Params.isAutoScaledPicture) return;
@@ -1630,6 +1643,16 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     alias_Sprite_Picture_updateScale.call(this);
   };
 
+  Sprite_Picture.prototype.updateOriginScale = function() {
+    var picture = this.picture();
+    this.x = Math.floor(picture.x());
+    this.y = Math.floor(picture.y());
+    var originSX = picture.scaleX() / 100;
+    var originSY = picture.scaleY() / 100;        
+    this.scale.x = originSX;
+    this.scale.y = originSY;
+  };
+
   Sprite_Picture.prototype.updateAutoScale = function() {
 
     /**
@@ -1638,9 +1661,15 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var picture = this.picture();
     var bitmap = this.bitmap;
 
-    if(!bitmap) return;
-    if(this.bitmap.width <= 0) return;
-    if(this.bitmap.height <= 0) return;    
+    if(!bitmap) {
+      this.updateOriginScale();
+      return;
+    }
+
+    if(Imported.DTextPicture && picture.dTextInfo) {
+      this.updateOriginScale();  
+      return;
+    }
 
     var originSX = picture.scaleX() / 100;
     var originSY = picture.scaleY() / 100;
@@ -1651,10 +1680,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
     // Can not divide with 0
     if(dw === 0 || dh === 0) {
-      this.x = Math.floor(picture.x());
-      this.y = Math.floor(picture.y());    
-      this.scale.x = originSX;
-      this.scale.y = originSY;        
+      this.updateOriginScale();    
       return;
     }
 
