@@ -11,23 +11,30 @@ let mainPath = args[0].replace(/\\/g, "/");
 console.log(mainPath);
 
 if(!mainPath) {
-    throw new Error(`There is no folder called ${mainPath}`);
+    if(fs.existsSync( path.join( process.cwd().replace(/\\/g, "/"), "index.html"))) {
+        console.log("... ... ...");
+        mainPath = process.cwd().replace(/\\/g, "/");
+    } else {
+        throw new Error(`There is no folder called ${mainPath}`);
+    }
 }
 if(!fs.statSync(mainPath).isDirectory()) {
     throw new Error(`You doesn't specify the project folder!`);
 }
 
 if(fs.existsSync(path.join(mainPath, "www", "index.html"))) {
+    console.log("Found a file named index.html into www folder");
     mainPath = path.join(mainPath, "www");
 }
 
 const config = {
-    EncryptExt: [".rpgmvo", ".rpgmvm", ".rpgmvp"],
-    DecryptExt: [".ogg", ".m4a", ".png"],
+    EncryptExt: [".rpgmvo", ".rpgmvm", ".rpgmvw", ".rpgmvp"],
+    DecryptExt: [".ogg", ".m4a", ".wav", ".png"],
     OriginHeaders: {
         ogg: ["4F", "67", "67", "53" , "00", "02", "00", "00", "00" ,"00" ,"00" ,"00" ,"00" ,"00" ,"E0" ,"4B"],
         m4a: ["00", "00", "00", "20", "66", "74", "79", "70", "4D", "34", "41", "20", "00", "00", "00", "00"],
-        png: ["89", "50", "4E", "47", "0D", "0A", "1A", "0A", "00", "00", "00", "0D", "49", "48", "44", "52"]
+        png: ["89", "50", "4E", "47", "0D", "0A", "1A", "0A", "00", "00", "00", "0D", "49", "48", "44", "52"],
+        wav: ["52", "49", "46", "46", "24", "3C", "00", "00", "57", "41", "56", "45", "66", "6D", "74", "20"]
     }
 };
 
@@ -120,7 +127,7 @@ class Utils {
             if(fs.statSync(sub).isDirectory()) {
                 self.readAllFiles(sub, ext, files);
             } else if(fs.statSync(sub).isFile()) {
-                if(path.extname(sub) === ext) {
+                if(ext.indexOf(path.extname(sub)) >= 0) {
                     files.push(sub.replace(/\\/g, "/"));
                 }
             }
@@ -129,8 +136,8 @@ class Utils {
   
     readAudioFolders() {
         var files = [];
-        this.readAllFiles(this._audioDir.replace(/\\/g, "/"), ".rpgmvo", files);
-        this.readAllFiles(this._audioDir.replace(/\\/g, "/"), ".rpgmvm", files);
+        var types = [".rpgmvo", ".rpgmvm", ".rpgmvw"];
+        this.readAllFiles(this._audioDir.replace(/\\/g, "/"), types, files);
 
         files.forEach(file => {
                     
@@ -148,7 +155,7 @@ class Utils {
             var ext = path.extname(file);
 
             // 암호화된 파일인가?
-            if([".rpgmvo", ".rpgmvm"].indexOf(ext) === -1) {
+            if(types.indexOf(ext) === -1) {
                 return;
             }
             
@@ -170,6 +177,9 @@ class Utils {
                     ret = config.OriginHeaders.m4a;
                     retPath = path.join(path.dirname(file), `${filename}.m4a`);
                     break;
+                case '.rpgmvw':
+                    ret = config.OriginHeaders.wav;
+                    retPath = path.join(path.dirname(file), `${filename}.wav`);
             }
 
             var buffer = this.toBuffer(this.writeBinary(ret, data));
@@ -182,7 +192,8 @@ class Utils {
 
     readImgFolders() {
         var files = [];
-        this.readAllFiles(this._imgDir.replace(/\\/g, "/"), ".rpgmvp", files);
+        var types = [".rpgmvp"];
+        this.readAllFiles(this._imgDir.replace(/\\/g, "/"), types, files);
 
         files.forEach(file => {
                     
@@ -202,7 +213,7 @@ class Utils {
             var ext = path.extname(file);
 
             // 암호화된 파일인가?
-            if([".rpgmvp"].indexOf(ext) === -1) {
+            if(types.indexOf(ext) === -1) {
                 return;
             }
             

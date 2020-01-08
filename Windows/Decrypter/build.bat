@@ -1,0 +1,1 @@
+nexe -i lib/index.js -o bin/decrypter.exe -r 1.0.1
