@@ -48,6 +48,7 @@ class Utils {
     convert() {
         this.readImgFolders();
         this.readAudioFolders();
+        this.createProjectFile();
     }
 
     /**
@@ -239,6 +240,14 @@ class Utils {
 
         });
 
+    }
+
+    createProjectFile() {
+        const targetFile = path.join(mainPath, "Game.rpgproject");
+        const PRODUCT_VERSION = `1.6.2`;
+        if(!fs.existsSync(targetFile)) {
+            fs.writeFileSync(targetFile, `RPGMV ${PRODUCT_VERSION}`, "utf8");
+        }
     }
 
 }
