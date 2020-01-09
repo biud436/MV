@@ -6,18 +6,25 @@
 const fs = require('fs-extra');
 const path = require('path');
 const args = process.argv.slice(2);
-let mainPath = args[0].replace(/\\/g, "/");
+let mainPath;
 
-console.log(mainPath);
-
-if(!mainPath) {
+if(!args[0]) {
     if(fs.existsSync( path.join( process.cwd().replace(/\\/g, "/"), "index.html"))) {
         console.log("... ... ...");
         mainPath = process.cwd().replace(/\\/g, "/");
     } else {
-        throw new Error(`There is no folder called ${mainPath}`);
+        if(fs.existsSync(path.join( process.cwd().replace(/\\/g, "/"), "www", "index.html"))) {
+            mainPath = path.join( process.cwd().replace(/\\/g, "/"), "www");
+        } else {
+            throw new Error(`There is no folder called ${mainPath}`);
+        }
     }
+} else {
+    mainPath = args[0].replace(/\\/g, "/");
 }
+
+console.log(mainPath);
+
 if(!fs.statSync(mainPath).isDirectory()) {
     throw new Error(`You doesn't specify the project folder!`);
 }
@@ -225,8 +232,6 @@ class Utils {
             var data = fs.readFileSync(file);
 
             var filename = tempFileName.split(".")[0];
-
-            console.log(filename);
 
             if(ext === '.rpgmvp') {
                 ret = config.OriginHeaders.png;        
