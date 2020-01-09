@@ -25,6 +25,22 @@
  * Change Log
  * ================================================================
  * 2020.01.06 (v1.0.0) - First Release.
+ * 2020.01.09 (v1.0.1) : Fixed the bug
+ */
+/*~struct~ScreenSize:
+ *
+ * @param width
+ * @type number
+ * @min 0
+ * @desc Specify the desired width
+ * @default 320
+ *
+ * @param height
+ * @type number
+ * @min 0
+ * @desc Specify the desired height
+ * @default 240
+ * 
  */
 
 var Imported = Imported || {};
@@ -125,11 +141,25 @@ RS.ForceResize = RS.ForceResize || {};
       if(bitmap.width <= 0) return;
       if(bitmap.width <= 0) return;
 
-      var scaleX = Graphics.boxWidth / bitmap.width;
-      var scaleY = Graphics.boxHeight / bitmap.height;
+      var originSX = this.scale.x;
+      var originSY = this.scale.y;
 
-      this.scale.x = (scaleX > 1.0) ? scaleX : 1.0;
-      this.scale.y = (scaleY > 1.0) ? scaleY : 1.0;     
+      var originalViewWidth = parseInt(RS.ScreenManager.Params.originalPictureViewSize.width);
+      var originalViewHeight = parseInt(RS.ScreenManager.Params.originalPictureViewSize.height);
+      var scaleX = originSX;
+      var scaleY = originSY;
+  
+      if(Graphics.boxWidth > originalViewWidth) {
+        scaleX = Graphics.boxWidth / originalViewWidth;
+      } else if(Graphics.boxWidth < originalViewWidth) {
+        scaleX = originalViewWidth / Graphics.boxWidth;
+      }
+  
+      scaleY = Graphics.boxHeight / originalViewHeight;
+
+      // Perform re-scale and re-position.
+      this.scale.x = scaleX;
+      this.scale.y = scaleY;
       
       if(RS.ScreenManager.Params.picturePosType === "Virtual Coordinates") {
           var x = this.x;

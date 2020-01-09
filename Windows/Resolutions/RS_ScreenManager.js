@@ -11,7 +11,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.0.18) <RS_ScreenManager>
+ * @plugindesc (v1.0.20) <RS_ScreenManager>
  * @author biud436
  *
  * @param Test Options
@@ -263,6 +263,12 @@ Imported.RS_ScreenManager = true;
  * @min 1
  * @default []
  * 
+ * @param Original View Size
+ * @parent Pictures
+ * @type struct<ScreenSize>
+ * @desc Specify the original screen size.
+ * @default {"width":"816","height":"624"}
+ * 
  * @help
  * =============================================================================
  * Introduction
@@ -337,6 +343,8 @@ Imported.RS_ScreenManager = true;
  * - Fixed the error that is always indicated the NaN when it couldn't load the addon.
  * 2019.12.16 (v1.0.18) :
  * - Picture rescaling added.
+ * 2020.01.09 (v1.0.20) :
+ * - Fixed the bug that couldn't change the scale of picture properly.
  */
 /*~struct~ScreenSize:
  *
@@ -465,6 +473,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   $.Params.isAutoScaledPicture = Boolean(parameters["Scaled Picture"] === "true");
 
   $.Params.ignoreAutoScalePictures = $.jsonParse(parameters["Ignore Auto Scale"]);
+
+  $.Params.originalPictureViewSize = $.jsonParse(parameters["Original View Size"]);
 
   /**
    * Screen Size : 1280, 720
@@ -1675,13 +1685,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       this.updateOriginScale();
       return;
     }
-
-    // Sometimes it allows game developer to create a new picture that has a text via DTextPicture plugin.
-    // However it don't need to use an auto-scale.
-    if(Imported.DTextPicture && picture.dTextInfo) {
-      this.updateOriginScale();  
-      return;
-    }
     
     // Sometimes the game picture has to use a default scale.
     var blacklist = $.Params.ignoreAutoScalePictures || [];
@@ -1707,8 +1710,18 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var x = picture.x();
     var y = picture.y();
 
-    var scaleX = Graphics.boxWidth / dw;
-    var scaleY = Graphics.boxHeight / dh;
+    var originalViewWidth = parseInt($.Params.originalPictureViewSize.width);
+    var originalViewHeight = parseInt($.Params.originalPictureViewSize.height);
+    var scaleX = originSX;
+    var scaleY = originSY;
+
+    if(Graphics.boxWidth > originalViewWidth) {
+      scaleX = Graphics.boxWidth / originalViewWidth;
+    } else if(Graphics.boxWidth < originalViewWidth) {
+      scaleX = originalViewWidth / Graphics.boxWidth;
+    }
+
+    scaleY = Graphics.boxHeight / originalViewHeight;
     
     // Perform re-scale and re-position.
     this.scale.x = scaleX;
