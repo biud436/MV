@@ -39,6 +39,9 @@ if(!fs.existsSync(path.join(projectPath, "index.html"))) {
     } else {
         throw new Error("This is not a RPG Maker MV Game");
     }
+} else {
+    mainPath = projectPath;
+    imgDirPath = path.join(projectPath, "img");
 }
 
 let jsonData = {};
@@ -77,7 +80,6 @@ function getWindowProperties() {
  * Read the folder named "img" from the project folder
  */
 function readdir() {
-
     var imgDirectories = fs.readdirSync(imgDirPath);
 
     imgDirectories.forEach(dirname => {

@@ -1,49 +1,12 @@
 {
-	"animations": [
-		{
-			"name": "Cure1.png",
-			"width": 960,
-			"height": 1152
-		},
-		{
-			"name": "Fire1.png",
-			"width": 960,
-			"height": 1152
-		},
-		{
-			"name": "Hit1.png",
-			"width": 768,
-			"height": 192
-		},
-		{
-			"name": "Recovery1.png",
-			"width": 960,
-			"height": 1152
-		},
-		{
-			"name": "Revival1.png",
-			"width": 960,
-			"height": 960
-		},
-		{
-			"name": "Slash.png",
-			"width": 960,
-			"height": 192
-		},
-		{
-			"name": "Stick.png",
-			"width": 960,
-			"height": 384
-		},
-		{
-			"name": "Thunder1.png",
-			"width": 960,
-			"height": 576
-		}
-	],
 	"battlebacks1": [
 		{
 			"name": "Castle1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Castle2.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -53,7 +16,77 @@
 			"height": 740
 		},
 		{
+			"name": "Cobblestones1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Cobblestones2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Cobblestones3.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Cobblestones4.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Cobblestones5.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "CobblestonesPool.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Crystal.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DarkSpace.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DecorativeTile.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DemonCastle1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DemonCastle2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DemonicWorld.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
 			"name": "Desert.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Dirt1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Dirt2.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -63,7 +96,37 @@
 			"height": 740
 		},
 		{
+			"name": "FaceTile.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Factory.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "GrassMaze.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "GrassMazePool.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
 			"name": "Grassland.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "IceCave.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "InBody.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -78,7 +141,67 @@
 			"height": 740
 		},
 		{
+			"name": "LavaCave.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Meadow.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
 			"name": "PoisonSwamp.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Road1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Road2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Road3.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "RockCave.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Ruins1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Ruins2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Ruins3.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Ruins4.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Ruins5.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Sand.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -88,7 +211,22 @@
 			"height": 740
 		},
 		{
+			"name": "Sky.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
 			"name": "Snowfield.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Tent.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Translucent.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -96,11 +234,46 @@
 			"name": "Wasteland.png",
 			"width": 1000,
 			"height": 740
+		},
+		{
+			"name": "WireMesh.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Wood1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Wood2.png",
+			"width": 1000,
+			"height": 740
 		}
 	],
 	"battlebacks2": [
 		{
 			"name": "Brick.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Bridge.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Castle1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Castle2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Castle3.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -115,7 +288,42 @@
 			"height": 740
 		},
 		{
+			"name": "Crystal.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DarkSpace.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DemonCastle1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DemonCastle2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DemonCastle3.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DemonicWorld.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
 			"name": "Desert.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "DirtCave.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -125,7 +333,37 @@
 			"height": 740
 		},
 		{
+			"name": "Fort1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Fort2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "GrassMaze.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
 			"name": "Grassland.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "IceCave.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "IceMaze.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "InBody.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -135,7 +373,57 @@
 			"height": 740
 		},
 		{
+			"name": "LavaCave.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Metal.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Mine.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
 			"name": "PoisonSwamp.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Port.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "RockCave.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Room1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Room2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Room3.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Ruins1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Ruins2.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -145,7 +433,67 @@
 			"height": 740
 		},
 		{
+			"name": "Sky.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
 			"name": "Snowfield.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Stone1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Stone2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Stone3.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Temple.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Tent.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Tower.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Town1.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Town2.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Town3.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Town4.png",
+			"width": 1000,
+			"height": 740
+		},
+		{
+			"name": "Town5.png",
 			"width": 1000,
 			"height": 740
 		},
@@ -156,6 +504,81 @@
 		}
 	],
 	"characters": [
+		{
+			"name": "!$Gate1.png",
+			"width": 432,
+			"height": 384
+		},
+		{
+			"name": "!$Gate2.png",
+			"width": 432,
+			"height": 384
+		},
+		{
+			"name": "!Chest.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "!Crystal.png",
+			"width": 576,
+			"height": 768
+		},
+		{
+			"name": "!Door1.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "!Door2.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "!Flame.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "!Other1.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "!Other2.png",
+			"width": 576,
+			"height": 768
+		},
+		{
+			"name": "!SF_Door1.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "!SF_Door2.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "!Switch1.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "!Switch2.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "$BigMonster1.png",
+			"width": 288,
+			"height": 384
+		},
+		{
+			"name": "$BigMonster2.png",
+			"width": 360,
+			"height": 480
+		},
 		{
 			"name": "Actor1.png",
 			"width": 576,
@@ -172,12 +595,42 @@
 			"height": 384
 		},
 		{
+			"name": "Damage1.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Damage2.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Damage3.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Evil.png",
+			"width": 576,
+			"height": 384
+		},
+		{
 			"name": "Monster.png",
 			"width": 576,
 			"height": 384
 		},
 		{
+			"name": "Nature.png",
+			"width": 576,
+			"height": 384
+		},
+		{
 			"name": "People1.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "People2.png",
 			"width": 576,
 			"height": 384
 		},
@@ -214,66 +667,164 @@
 			"height": 288
 		},
 		{
+			"name": "Big_Package2_7.png",
+			"width": 450,
+			"height": 450
+		},
+		{
+			"name": "Evil.png",
+			"width": 576,
+			"height": 288
+		},
+		{
+			"name": "Monster.png",
+			"width": 576,
+			"height": 288
+		},
+		{
+			"name": "Nature.png",
+			"width": 576,
+			"height": 288
+		},
+		{
 			"name": "People1.png",
+			"width": 576,
+			"height": 288
+		},
+		{
+			"name": "People2.png",
+			"width": 576,
+			"height": 288
+		},
+		{
+			"name": "People3.png",
+			"width": 576,
+			"height": 288
+		},
+		{
+			"name": "People4.png",
 			"width": 576,
 			"height": 288
 		}
 	],
-	"sv_actors": [
+	"parallaxes": [
 		{
-			"name": "Actor1_1.png",
-			"width": 576,
-			"height": 384
+			"name": "BlueSky.png",
+			"width": 816,
+			"height": 816
 		},
 		{
-			"name": "Actor1_8.png",
-			"width": 576,
-			"height": 384
+			"name": "CloudySky1.png",
+			"width": 816,
+			"height": 816
 		},
 		{
-			"name": "Actor2_7.png",
-			"width": 576,
-			"height": 384
+			"name": "CloudySky2.png",
+			"width": 816,
+			"height": 816
 		},
 		{
-			"name": "Actor2_8.png",
-			"width": 576,
-			"height": 384
+			"name": "DarkSpace1.png",
+			"width": 816,
+			"height": 816
 		},
 		{
-			"name": "Actor3_8.png",
-			"width": 576,
-			"height": 384
-		}
-	],
-	"sv_enemies": [
-		{
-			"name": "Bat.png",
-			"width": 102,
-			"height": 158
+			"name": "DarkSpace2.png",
+			"width": 816,
+			"height": 816
 		},
 		{
-			"name": "Mage.png",
-			"width": 182,
-			"height": 224
+			"name": "Mountains1.png",
+			"width": 816,
+			"height": 816
 		},
 		{
-			"name": "Minotaur.png",
-			"width": 375,
-			"height": 335
+			"name": "Mountains2.png",
+			"width": 816,
+			"height": 816
 		},
 		{
-			"name": "Orc.png",
-			"width": 264,
-			"height": 286
+			"name": "Mountains3.png",
+			"width": 816,
+			"height": 816
 		},
 		{
-			"name": "Slime.png",
-			"width": 102,
-			"height": 85
+			"name": "Mountains4.png",
+			"width": 816,
+			"height": 816
+		},
+		{
+			"name": "Mountains5.png",
+			"width": 816,
+			"height": 816
+		},
+		{
+			"name": "Ocean1.png",
+			"width": 816,
+			"height": 816
+		},
+		{
+			"name": "Ocean2.png",
+			"width": 816,
+			"height": 816
+		},
+		{
+			"name": "SeaofClouds.png",
+			"width": 816,
+			"height": 816
+		},
+		{
+			"name": "StarlitSky.png",
+			"width": 816,
+			"height": 816
+		},
+		{
+			"name": "Sunset.png",
+			"width": 816,
+			"height": 816
 		}
 	],
 	"pictures": [
+		{
+			"name": "exr.png",
+			"width": 195,
+			"height": 4
+		},
+		{
+			"name": "gauge.png",
+			"width": 120,
+			"height": 20
+		},
+		{
+			"name": "hp.png",
+			"width": 120,
+			"height": 20
+		},
+		{
+			"name": "hud_window_empty.png",
+			"width": 319,
+			"height": 101
+		},
+		{
+			"name": "hud_window_empty_inbattle.png",
+			"width": 319,
+			"height": 101
+		},
+		{
+			"name": "masking.png",
+			"width": 87,
+			"height": 87
+		},
+		{
+			"name": "modify_wallpaper_816_614.png",
+			"width": 816,
+			"height": 614
+		},
+		{
+			"name": "mp.png",
+			"width": 120,
+			"height": 20
+		},
 		{
 			"name": "resize400x305.png",
 			"width": 400,
@@ -288,20 +839,465 @@
 			"name": "resize980x750.png",
 			"width": 980,
 			"height": 750
-		}
-	],
-	"test": [
+		},
 		{
-			"name": "resize400x305.png",
-			"width": 400,
-			"height": 305
-		}
-	],
-	"titles1": [
-		{
-			"name": "Castle.png",
+			"name": "test.png",
 			"width": 816,
 			"height": 624
+		}
+	],
+	"enemies": [
+		{
+			"name": "Actor1_3.png",
+			"width": 254,
+			"height": 225
+		},
+		{
+			"name": "Actor1_4.png",
+			"width": 275,
+			"height": 262
+		},
+		{
+			"name": "Actor1_5.png",
+			"width": 234,
+			"height": 307
+		},
+		{
+			"name": "Actor1_6.png",
+			"width": 254,
+			"height": 238
+		},
+		{
+			"name": "Actor1_7.png",
+			"width": 302,
+			"height": 272
+		},
+		{
+			"name": "Actor2_1.png",
+			"width": 227,
+			"height": 253
+		},
+		{
+			"name": "Actor2_2.png",
+			"width": 241,
+			"height": 254
+		},
+		{
+			"name": "Actor2_3.png",
+			"width": 223,
+			"height": 281
+		},
+		{
+			"name": "Actor2_4.png",
+			"width": 160,
+			"height": 249
+		},
+		{
+			"name": "Actor2_5.png",
+			"width": 263,
+			"height": 283
+		},
+		{
+			"name": "Actor2_6.png",
+			"width": 237,
+			"height": 278
+		},
+		{
+			"name": "Actor3_1.png",
+			"width": 241,
+			"height": 267
+		},
+		{
+			"name": "Actor3_2.png",
+			"width": 280,
+			"height": 247
+		},
+		{
+			"name": "Actor3_5.png",
+			"width": 275,
+			"height": 196
+		},
+		{
+			"name": "Actor3_6.png",
+			"width": 227,
+			"height": 257
+		},
+		{
+			"name": "Angel.png",
+			"width": 253,
+			"height": 286
+		},
+		{
+			"name": "Assassin.png",
+			"width": 161,
+			"height": 176
+		},
+		{
+			"name": "Bat.png",
+			"width": 128,
+			"height": 198
+		},
+		{
+			"name": "Behemoth.png",
+			"width": 511,
+			"height": 437
+		},
+		{
+			"name": "Captain.png",
+			"width": 222,
+			"height": 270
+		},
+		{
+			"name": "Cerberus.png",
+			"width": 214,
+			"height": 225
+		},
+		{
+			"name": "Chimera.png",
+			"width": 425,
+			"height": 418
+		},
+		{
+			"name": "Cockatrice.png",
+			"width": 127,
+			"height": 132
+		},
+		{
+			"name": "Darklord-final.png",
+			"width": 777,
+			"height": 435
+		},
+		{
+			"name": "Darklord.png",
+			"width": 499,
+			"height": 438
+		},
+		{
+			"name": "Death.png",
+			"width": 398,
+			"height": 426
+		},
+		{
+			"name": "Demon.png",
+			"width": 410,
+			"height": 423
+		},
+		{
+			"name": "Dragon.png",
+			"width": 420,
+			"height": 436
+		},
+		{
+			"name": "Earthspirit.png",
+			"width": 153,
+			"height": 193
+		},
+		{
+			"name": "Evilgod.png",
+			"width": 754,
+			"height": 437
+		},
+		{
+			"name": "Fairy.png",
+			"width": 119,
+			"height": 216
+		},
+		{
+			"name": "Fanatic.png",
+			"width": 265,
+			"height": 268
+		},
+		{
+			"name": "Firespirit.png",
+			"width": 145,
+			"height": 217
+		},
+		{
+			"name": "Gargoyle.png",
+			"width": 421,
+			"height": 432
+		},
+		{
+			"name": "Garuda.png",
+			"width": 483,
+			"height": 367
+		},
+		{
+			"name": "Gazer.png",
+			"width": 183,
+			"height": 217
+		},
+		{
+			"name": "General_f.png",
+			"width": 249,
+			"height": 274
+		},
+		{
+			"name": "General_m.png",
+			"width": 301,
+			"height": 289
+		},
+		{
+			"name": "Ghost.png",
+			"width": 211,
+			"height": 235
+		},
+		{
+			"name": "God.png",
+			"width": 763,
+			"height": 440
+		},
+		{
+			"name": "Goddess.png",
+			"width": 343,
+			"height": 264
+		},
+		{
+			"name": "Hornet.png",
+			"width": 94,
+			"height": 176
+		},
+		{
+			"name": "Imp.png",
+			"width": 120,
+			"height": 219
+		},
+		{
+			"name": "Irongiant.png",
+			"width": 465,
+			"height": 415
+		},
+		{
+			"name": "Jellyfish.png",
+			"width": 128,
+			"height": 136
+		},
+		{
+			"name": "Lamia.png",
+			"width": 421,
+			"height": 417
+		},
+		{
+			"name": "Mage.png",
+			"width": 227,
+			"height": 280
+		},
+		{
+			"name": "Mimic.png",
+			"width": 130,
+			"height": 125
+		},
+		{
+			"name": "Minotaur.png",
+			"width": 375,
+			"height": 335
+		},
+		{
+			"name": "Ogre.png",
+			"width": 469,
+			"height": 417
+		},
+		{
+			"name": "Orc.png",
+			"width": 264,
+			"height": 286
+		},
+		{
+			"name": "Plant.png",
+			"width": 152,
+			"height": 138
+		},
+		{
+			"name": "Puppet.png",
+			"width": 206,
+			"height": 222
+		},
+		{
+			"name": "Rat.png",
+			"width": 99,
+			"height": 154
+		},
+		{
+			"name": "Rogue.png",
+			"width": 195,
+			"height": 245
+		},
+		{
+			"name": "Sahuagin.png",
+			"width": 132,
+			"height": 140
+		},
+		{
+			"name": "Scorpion.png",
+			"width": 107,
+			"height": 126
+		},
+		{
+			"name": "Skeleton.png",
+			"width": 233,
+			"height": 211
+		},
+		{
+			"name": "Slime.png",
+			"width": 127,
+			"height": 106
+		},
+		{
+			"name": "Snake.png",
+			"width": 137,
+			"height": 135
+		},
+		{
+			"name": "Soldier.png",
+			"width": 276,
+			"height": 227
+		},
+		{
+			"name": "Spider.png",
+			"width": 144,
+			"height": 109
+		},
+		{
+			"name": "Succubus.png",
+			"width": 240,
+			"height": 270
+		},
+		{
+			"name": "Swordsman.png",
+			"width": 311,
+			"height": 218
+		},
+		{
+			"name": "Vampire.png",
+			"width": 264,
+			"height": 257
+		},
+		{
+			"name": "Waterspirit.png",
+			"width": 181,
+			"height": 187
+		},
+		{
+			"name": "Werewolf.png",
+			"width": 201,
+			"height": 197
+		},
+		{
+			"name": "Willowisp.png",
+			"width": 121,
+			"height": 126
+		},
+		{
+			"name": "Windspirit.png",
+			"width": 180,
+			"height": 188
+		},
+		{
+			"name": "Zombie.png",
+			"width": 177,
+			"height": 137
+		}
+	],
+	"sv_actors": [
+		{
+			"name": "Actor1_1.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor1_2.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor1_3.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor1_4.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor1_5.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor1_6.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor1_7.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor1_8.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor2_1.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor2_2.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor2_3.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor2_4.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor2_5.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor2_6.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor2_7.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor2_8.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor3_5.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor3_6.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor3_7.png",
+			"width": 576,
+			"height": 384
+		},
+		{
+			"name": "Actor3_8.png",
+			"width": 576,
+			"height": 384
 		}
 	],
 	"system": [
@@ -334,6 +1330,11 @@
 			"name": "Loading.png",
 			"width": 400,
 			"height": 100
+		},
+		{
+			"name": "MadeWithMv.png",
+			"width": 816,
+			"height": 624
 		},
 		{
 			"name": "Shadow1.png",
@@ -369,6 +1370,1059 @@
 			"name": "Window.png",
 			"width": 192,
 			"height": 192
+		}
+	],
+	"sv_enemies": [
+		{
+			"name": "Actor1_3.png",
+			"width": 203,
+			"height": 180
+		},
+		{
+			"name": "Actor1_4.png",
+			"width": 220,
+			"height": 210
+		},
+		{
+			"name": "Actor1_5.png",
+			"width": 187,
+			"height": 246
+		},
+		{
+			"name": "Actor1_6.png",
+			"width": 203,
+			"height": 190
+		},
+		{
+			"name": "Actor1_7.png",
+			"width": 242,
+			"height": 218
+		},
+		{
+			"name": "Actor2_1.png",
+			"width": 182,
+			"height": 202
+		},
+		{
+			"name": "Actor2_2.png",
+			"width": 193,
+			"height": 203
+		},
+		{
+			"name": "Actor2_3.png",
+			"width": 178,
+			"height": 225
+		},
+		{
+			"name": "Actor2_4.png",
+			"width": 128,
+			"height": 199
+		},
+		{
+			"name": "Actor2_5.png",
+			"width": 210,
+			"height": 226
+		},
+		{
+			"name": "Actor2_6.png",
+			"width": 190,
+			"height": 222
+		},
+		{
+			"name": "Actor3_1.png",
+			"width": 193,
+			"height": 214
+		},
+		{
+			"name": "Actor3_2.png",
+			"width": 224,
+			"height": 198
+		},
+		{
+			"name": "Actor3_5.png",
+			"width": 220,
+			"height": 157
+		},
+		{
+			"name": "Actor3_6.png",
+			"width": 182,
+			"height": 206
+		},
+		{
+			"name": "Angel.png",
+			"width": 202,
+			"height": 229
+		},
+		{
+			"name": "Assassin.png",
+			"width": 129,
+			"height": 141
+		},
+		{
+			"name": "Bat.png",
+			"width": 102,
+			"height": 158
+		},
+		{
+			"name": "Behemoth.png",
+			"width": 511,
+			"height": 437
+		},
+		{
+			"name": "Captain.png",
+			"width": 178,
+			"height": 216
+		},
+		{
+			"name": "Cerberus.png",
+			"width": 214,
+			"height": 225
+		},
+		{
+			"name": "Chimera.png",
+			"width": 425,
+			"height": 418
+		},
+		{
+			"name": "Cockatrice.png",
+			"width": 102,
+			"height": 106
+		},
+		{
+			"name": "Darklord-final.png",
+			"width": 777,
+			"height": 435
+		},
+		{
+			"name": "Darklord.png",
+			"width": 399,
+			"height": 350
+		},
+		{
+			"name": "Death.png",
+			"width": 398,
+			"height": 426
+		},
+		{
+			"name": "Demon.png",
+			"width": 328,
+			"height": 338
+		},
+		{
+			"name": "Dragon.png",
+			"width": 420,
+			"height": 436
+		},
+		{
+			"name": "Earthspirit.png",
+			"width": 122,
+			"height": 154
+		},
+		{
+			"name": "Evilgod.png",
+			"width": 754,
+			"height": 437
+		},
+		{
+			"name": "Fairy.png",
+			"width": 95,
+			"height": 173
+		},
+		{
+			"name": "Fanatic.png",
+			"width": 212,
+			"height": 214
+		},
+		{
+			"name": "Firespirit.png",
+			"width": 116,
+			"height": 174
+		},
+		{
+			"name": "Gargoyle.png",
+			"width": 421,
+			"height": 432
+		},
+		{
+			"name": "Garuda.png",
+			"width": 483,
+			"height": 367
+		},
+		{
+			"name": "Gazer.png",
+			"width": 183,
+			"height": 216
+		},
+		{
+			"name": "General_f.png",
+			"width": 199,
+			"height": 219
+		},
+		{
+			"name": "General_m.png",
+			"width": 241,
+			"height": 231
+		},
+		{
+			"name": "Ghost.png",
+			"width": 211,
+			"height": 235
+		},
+		{
+			"name": "God.png",
+			"width": 762,
+			"height": 440
+		},
+		{
+			"name": "Goddess.png",
+			"width": 274,
+			"height": 211
+		},
+		{
+			"name": "Hornet.png",
+			"width": 75,
+			"height": 141
+		},
+		{
+			"name": "Imp.png",
+			"width": 96,
+			"height": 175
+		},
+		{
+			"name": "Irongiant.png",
+			"width": 465,
+			"height": 415
+		},
+		{
+			"name": "Jellyfish.png",
+			"width": 102,
+			"height": 109
+		},
+		{
+			"name": "Lamia.png",
+			"width": 337,
+			"height": 334
+		},
+		{
+			"name": "Mage.png",
+			"width": 182,
+			"height": 224
+		},
+		{
+			"name": "Mimic.png",
+			"width": 104,
+			"height": 100
+		},
+		{
+			"name": "Minotaur.png",
+			"width": 375,
+			"height": 335
+		},
+		{
+			"name": "Ogre.png",
+			"width": 469,
+			"height": 417
+		},
+		{
+			"name": "Orc.png",
+			"width": 264,
+			"height": 286
+		},
+		{
+			"name": "Plant.png",
+			"width": 122,
+			"height": 110
+		},
+		{
+			"name": "Puppet.png",
+			"width": 165,
+			"height": 178
+		},
+		{
+			"name": "Rat.png",
+			"width": 79,
+			"height": 123
+		},
+		{
+			"name": "Rogue.png",
+			"width": 156,
+			"height": 196
+		},
+		{
+			"name": "Sahuagin.png",
+			"width": 132,
+			"height": 140
+		},
+		{
+			"name": "Scorpion.png",
+			"width": 94,
+			"height": 110
+		},
+		{
+			"name": "Skeleton.png",
+			"width": 186,
+			"height": 169
+		},
+		{
+			"name": "Slime.png",
+			"width": 102,
+			"height": 85
+		},
+		{
+			"name": "Snake.png",
+			"width": 110,
+			"height": 108
+		},
+		{
+			"name": "Soldier.png",
+			"width": 221,
+			"height": 182
+		},
+		{
+			"name": "Spider.png",
+			"width": 115,
+			"height": 87
+		},
+		{
+			"name": "Succubus.png",
+			"width": 191,
+			"height": 216
+		},
+		{
+			"name": "Swordsman.png",
+			"width": 249,
+			"height": 174
+		},
+		{
+			"name": "Vampire.png",
+			"width": 211,
+			"height": 206
+		},
+		{
+			"name": "Waterspirit.png",
+			"width": 145,
+			"height": 150
+		},
+		{
+			"name": "Werewolf.png",
+			"width": 201,
+			"height": 197
+		},
+		{
+			"name": "Willowisp.png",
+			"width": 97,
+			"height": 101
+		},
+		{
+			"name": "Windspirit.png",
+			"width": 144,
+			"height": 150
+		},
+		{
+			"name": "Zombie.png",
+			"width": 142,
+			"height": 110
+		}
+	],
+	"titles1": [
+		{
+			"name": "Book.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Castle.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "CrossedSwords.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Crystal.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "DemonCastle.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Devil.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Dragon.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Fountain.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Gates.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Hexagram.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Island.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Night.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Plain.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Sword.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Tower1.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Tower2.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Universe.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Volcano.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "World.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "WorldMap.png",
+			"width": 816,
+			"height": 624
+		}
+	],
+	"titles2": [
+		{
+			"name": "Floral.png",
+			"width": 816,
+			"height": 624
+		},
+		{
+			"name": "Medieval.png",
+			"width": 816,
+			"height": 624
+		}
+	],
+	"animations": [
+		{
+			"name": "Absorb.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "ArrowSpecial.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Blow.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Breath.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Claw.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "ClawPhoton.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "ClawSpecial1.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "ClawSpecial2.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Cure1.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Cure2.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Cure3.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Cure4.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Curse.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "Darkness1.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "Darkness2.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Darkness3.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Darkness4.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Darkness5.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Earth1.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Earth2.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "Earth3.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Earth4.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Earth5.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Explosion1.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Explosion2.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Fire1.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Fire2.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Fire3.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Flash.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Gun1.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Gun2.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Gun3.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "Hit1.png",
+			"width": 768,
+			"height": 192
+		},
+		{
+			"name": "Hit2.png",
+			"width": 576,
+			"height": 192
+		},
+		{
+			"name": "HitFire.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "HitIce.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "HitPhoton.png",
+			"width": 960,
+			"height": 192
+		},
+		{
+			"name": "HitSpecial1.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "HitSpecial2.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "HitThunder.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Holy1.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Holy2.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Holy3.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Holy4.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Holy5.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Howl.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Ice1.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Ice2.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Ice3.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Ice4.png",
+			"width": 960,
+			"height": 192
+		},
+		{
+			"name": "Ice5.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Laser1.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Laser2.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Light1.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Light2.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Light3.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Light4.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Magic1.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Magic2.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "Meteor.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Mist.png",
+			"width": 960,
+			"height": 192
+		},
+		{
+			"name": "Pollen.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "PreSpecial1.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "PreSpecial2.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "PreSpecial3.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Recovery1.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Recovery2.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "Recovery3.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Recovery4.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "Recovery5.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Revival1.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Revival2.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Slash.png",
+			"width": 960,
+			"height": 192
+		},
+		{
+			"name": "SlashFire.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "SlashIce.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "SlashPhoton.png",
+			"width": 768,
+			"height": 192
+		},
+		{
+			"name": "SlashSpecial1.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "SlashSpecial2.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "SlashSpecial3.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "SlashThunder.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Song.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Sonic.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Special1.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Special2.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Special3.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "StateChaos.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "StateDark.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "StateDeath.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "StateDown1.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "StateDown2.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "StateDown3.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "StateParalys.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "StatePoison.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "StateSilent.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "StateSleep.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "StateUp1.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "StateUp2.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Stick.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "StickPhoton.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "StickSpecial1.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "StickSpecial2.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "StickSpecial3.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Thunder1.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Thunder2.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Thunder3.png",
+			"width": 960,
+			"height": 192
+		},
+		{
+			"name": "Thunder4.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Thunder5.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Water1.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Water2.png",
+			"width": 960,
+			"height": 1152
+		},
+		{
+			"name": "Water3.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Water4.png",
+			"width": 960,
+			"height": 192
+		},
+		{
+			"name": "Water5.png",
+			"width": 960,
+			"height": 768
+		},
+		{
+			"name": "Wind1.png",
+			"width": 960,
+			"height": 960
+		},
+		{
+			"name": "Wind2.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Wind3.png",
+			"width": 960,
+			"height": 576
+		},
+		{
+			"name": "Wind4.png",
+			"width": 960,
+			"height": 384
+		},
+		{
+			"name": "Wind5.png",
+			"width": 960,
+			"height": 1152
 		}
 	],
 	"tilesets": [
