@@ -269,6 +269,44 @@ Imported.RS_ScreenManager = true;
  * @desc Specify the original screen size.
  * @default {"width":"816","height":"624"}
  * 
+ * @param BattleField
+ * 
+ * @param Scaled Battleback
+ * @parent BattleField
+ * @type boolean
+ * @desc it can rescale battle background images to fit with Graphics' area.
+ * @default true
+ * 
+ * @param ActorFunc.moveToStartPosition
+ * @parent BattleField
+ * @type note
+ * @desc
+ * @default "        // This value is the same as 300 in the vanilla mode.\n        var dx = Math.floor(Graphics.boxWidth * 0.36764705882352944);\n        this.startMove(dx, 0, 0);"
+ * 
+ * @param ActorFunc.setActorHome
+ * @parent BattleField
+ * @type note
+ * @desc
+ * @default "        var dx = Math.floor(Graphics.boxWidth * 0.7352941176470589);\n        var dy = Math.floor(Graphics.boxHeight * 0.44871794871794873);\n        var tileWidth = Math.floor(Graphics.boxWidth * 0.0392156862745098);\n        var tileHeight = Math.floor(Graphics.boxHeight * 0.07692307692307693);\n        this.setHome(dx + index * tileWidth, dy + index * tileHeight);"
+ * 
+ * @param ActorFunc.stepForward
+ * @parent BattleField
+ * @type note
+ * @desc
+ * @default "        var dx = Math.floor(Graphics.boxWidth * 0.058823529411764705);\n        this.startMove(-dx, 0, 12);"
+ * 
+ * @param ActorFunc.stepBack
+ * @parent BattleField
+ * @type note
+ * @desc
+ * @default "       this.startMove(0, 0, 12);"
+ * 
+ * @param ActorFunc.retreat
+ * @parent BattleField
+ * @type note
+ * @desc
+ * @default "        var dx = Math.floor(Graphics.boxWidth * 0.36764705882352944);\n        this.startMove(dx, 0, 30);"
+ * 
  * @help
  * =============================================================================
  * Introduction
@@ -490,6 +528,16 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
    * if it is to true, it adds resolution select button in the option window.
    */
   $.Params.isValidOptionWindow = Utils.isMobileDevice() ? false : true;
+
+  $.Params.isValidScaledBattleback = Boolean(parameters["Scaled Battleback"] === "true");
+
+  $.Params.actorFunc = {
+    moveToStartPosition: $.jsonParse(parameters["ActorFunc.moveToStartPosition"]),
+    setActorHome: $.jsonParse(parameters["ActorFunc.setActorHome"]),
+    stepForward: $.jsonParse(parameters["ActorFunc.stepForward"]),
+    stepBack: $.jsonParse(parameters["ActorFunc.stepBack"]),
+    retreat: $.jsonParse(parameters["ActorFunc.retreat"]),
+  }
 
   /**
    * Replace by target screen width and height values.
@@ -1639,47 +1687,33 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   //#region TilingSprite
   //============================================================================
   TilingSprite.prototype.reqeustResizeImage = function() {
-    var bitmap = this.bitmap;
 
-    if(bitmap.width <= 0) return;
-    if(bitmap.width <= 0) return;
-
-    var originSX = this.tileScale.x;
-    var originSY = this.tileScale.y;
-
-    var originalViewWidth = parseInt($.Params.originalPictureViewSize.width);
-    var originalViewHeight = parseInt($.Params.originalPictureViewSize.height);
-    var scaleX = originSX;
-    var scaleY = originSY;
-
-    if(Graphics.boxWidth > originalViewWidth) {
-      scaleX = Graphics.boxWidth / originalViewWidth;
-    } else if(Graphics.boxWidth < originalViewWidth) {
-      scaleX = originalViewWidth / Graphics.boxWidth;
+    if(!this.texture.frame) {
+      this.texture.frame = new PIXI.Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
     }
 
-    scaleY = Graphics.boxHeight / originalViewHeight;
+    this.texture.frame.width = Graphics.boxWidth;
+    this.texture.frame.height = Graphics.boxHeight;
 
-    // Perform re-scale and re-position.
-    this.tileScale.x = scaleX;
-    this.tileScale.y = scaleY;
-      
   }
 
   TilingSprite.prototype.isValidResizing = function() {
+    if(!$.Params.isValidScaledBattleback) return;
     if(!this.bitmap) return false;
     if(this.bitmap.width <= 0) return false;
     if(this.bitmap.height <= 0) return false;
     if(!this.visible) return false;
     if(this.opacity <= 0) return false;
     if(!this.bitmap._url) return false;
+    if(!this.texture) return false;
 
     var url = this.bitmap._url;
     var fileUri = url.split("/");
     var filename = fileUri.pop();
     var folderName = fileUri.pop();
     
-    if(['battlebacks1', 'battlebacks2', 'parallaxes'].contains(folderName)) {
+    if(['battlebacks1', 'battlebacks2'].contains(folderName)) {
+      this._folderName = folderName;
       return true;
     }
 
@@ -1696,63 +1730,80 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   var alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
   TilingSprite.prototype.initialize = function(bitmap) {
     alias_TilingSprite_initialize.call(this, bitmap);
-    this.on('resize', this.resizeImage, this);
-    this.once('removed', function() {
-      this.off('resize', this.resizeImage, this);
-    }, this);
+    this.once('rs-resize', this.resizeImage, this);
   };
 
   var alias_TilingSprite__onBitmapLoad = TilingSprite.prototype._onBitmapLoad;
   TilingSprite.prototype._onBitmapLoad = function() {
     alias_TilingSprite__onBitmapLoad.call(this);
-    this.emit('resize');
-  };  
-
-  Spriteset_Battle.prototype.locateBattleback = function() {
-    var width = this._battleField.width;
-    var height = this._battleField.height;
-    var sprite1 = this._back1Sprite;
-    var sprite2 = this._back2Sprite;
-    sprite1.origin.x = 0;
-    sprite2.origin.x = 0;
-    if ($gameSystem.isSideView()) {
-        sprite1.origin.y = sprite1.x + sprite1.bitmap.height - height;
-        sprite2.origin.y = sprite1.y + sprite2.bitmap.height - height;
-    }
+    this.emit('rs-resize');
   };
 
-  // These functions are worked fine in the vanilla mode only!!
-  // I couldn't test the impact yet when using the plugin named YEP_BattleEngineCore.
-  if(!Imported.YEP_BattleEngineCore) {
+  if($.Params.isValidScaledBattleback) {
 
-    Sprite_Actor.prototype.moveToStartPosition = function() {
-      // This value is the same as 300 in the vanilla mode.
-      var dx = Math.floor(Graphics.boxWidth * 0.36764705882352944);
-      this.startMove(dx, 0, 0);
+    /**
+     * Override
+     * @method createBattleback
+     */
+    Spriteset_Battle.prototype.createBattleback = function() {
+      var margin = 0;
+      var x = -this._battleField.x - margin;
+      var y = -this._battleField.y - margin;
+      var width = Graphics.width + margin * 2;
+      var height = Graphics.height + margin * 2;
+      this._back1Sprite = new TilingSprite();
+      this._back2Sprite = new TilingSprite();
+      this._back1Sprite.bitmap = this.battleback1Bitmap();
+      this._back2Sprite.bitmap = this.battleback2Bitmap();
+      this._back1Sprite.move(x, y, width, height);
+      this._back2Sprite.move(x, y, width, height);
+      this._battleField.addChild(this._back1Sprite);
+      this._battleField.addChild(this._back2Sprite);
     };
-  
-    Sprite_Actor.prototype.setActorHome = function(index) {
-      var dx = Math.floor(Graphics.boxWidth * 0.7352941176470589);
-      var dy = Math.floor(Graphics.boxHeight * 0.44871794871794873);
-      var tileWidth = Math.floor(Graphics.boxWidth * 0.0392156862745098);
-      var tileHeight = Math.floor(Graphics.boxHeight * 0.07692307692307693);
-      this.setHome(dx + index * tileWidth, dy + index * tileHeight);
-    };    
 
-    Sprite_Actor.prototype.stepForward = function() {
-      var dx = Math.floor(Graphics.boxWidth * 0.058823529411764705);
-      this.startMove(-dx, 0, 12);
+    /**
+     * Override
+     * @method locateBattleback
+     */  
+    Spriteset_Battle.prototype.locateBattleback = function() {
+
+      var sprite1 = this._back1Sprite;
+      var sprite2 = this._back2Sprite;
+      sprite1.origin.x = 0;
+      sprite2.origin.x = 0;
+      if ($gameSystem.isSideView()) {
+          sprite1.origin.y = 0;
+          sprite2.origin.y = 0;
+      }
+
     };
+
+    // These functions are worked fine in the vanilla mode only!!
+    // I couldn't test the impact yet when using the plugin named YEP_BattleEngineCore.
+    if(!Imported.YEP_BattleEngineCore) {
+
+      Sprite_Actor.prototype.moveToStartPosition = function() {
+        eval($.Params.actorFunc.moveToStartPosition);
+      };
     
-    Sprite_Actor.prototype.stepBack = function() {
-      this.startMove(0, 0, 12);
-    };
+      Sprite_Actor.prototype.setActorHome = function(index) {
+        eval($.Params.actorFunc.setActorHome);
+      };    
+
+      Sprite_Actor.prototype.stepForward = function() {
+        eval($.Params.actorFunc.stepForward);
+      };
+      
+      Sprite_Actor.prototype.stepBack = function() {
+        eval($.Params.actorFunc.stepBack);
+      };
+      
+      Sprite_Actor.prototype.retreat = function() {
+        eval($.Params.actorFunc.retreat);
+      };   
     
-    Sprite_Actor.prototype.retreat = function() {
-      var dx = Math.floor(Graphics.boxWidth * 0.36764705882352944);
-      this.startMove(dx, 0, 30);
-    };
-  
+    }    
+
   }
 
   //============================================================================
