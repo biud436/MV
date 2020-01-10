@@ -1730,7 +1730,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   var alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
   TilingSprite.prototype.initialize = function(bitmap) {
     alias_TilingSprite_initialize.call(this, bitmap);
-    this.once('rs-resize', this.resizeImage, this);
+    this.on('rs-resize', this.resizeImage, this);
+    this.on("removed", function() {
+      this.off('rs-resize', this.resizeImage, this);
+    }, this);
   };
 
   var alias_TilingSprite__onBitmapLoad = TilingSprite.prototype._onBitmapLoad;
