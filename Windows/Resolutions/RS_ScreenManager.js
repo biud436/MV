@@ -280,31 +280,31 @@ Imported.RS_ScreenManager = true;
  * @param ActorFunc.moveToStartPosition
  * @parent BattleField
  * @type note
- * @desc
+ * @desc it can change certain code blocks.
  * @default "        // This value is the same as 300 in the vanilla mode.\n        var dx = Math.floor(Graphics.boxWidth * 0.36764705882352944);\n        this.startMove(dx, 0, 0);"
  * 
  * @param ActorFunc.setActorHome
  * @parent BattleField
  * @type note
- * @desc
+ * @desc it can change certain code blocks.
  * @default "        var dx = Math.floor(Graphics.boxWidth * 0.7352941176470589);\n        var dy = Math.floor(Graphics.boxHeight * 0.44871794871794873);\n        var tileWidth = Math.floor(Graphics.boxWidth * 0.0392156862745098);\n        var tileHeight = Math.floor(Graphics.boxHeight * 0.07692307692307693);\n        this.setHome(dx + index * tileWidth, dy + index * tileHeight);"
  * 
  * @param ActorFunc.stepForward
  * @parent BattleField
  * @type note
- * @desc
+ * @desc it can change certain code blocks.
  * @default "        var dx = Math.floor(Graphics.boxWidth * 0.058823529411764705);\n        this.startMove(-dx, 0, 12);"
  * 
  * @param ActorFunc.stepBack
  * @parent BattleField
  * @type note
- * @desc
+ * @desc it can change certain code blocks.
  * @default "       this.startMove(0, 0, 12);"
  * 
  * @param ActorFunc.retreat
  * @parent BattleField
  * @type note
- * @desc
+ * @desc it can change certain code blocks.
  * @default "        var dx = Math.floor(Graphics.boxWidth * 0.36764705882352944);\n        this.startMove(dx, 0, 30);"
  * 
  * @help
@@ -537,7 +537,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     stepForward: $.jsonParse(parameters["ActorFunc.stepForward"]),
     stepBack: $.jsonParse(parameters["ActorFunc.stepBack"]),
     retreat: $.jsonParse(parameters["ActorFunc.retreat"]),
-  }
+  };
 
   /**
    * Replace by target screen width and height values.
