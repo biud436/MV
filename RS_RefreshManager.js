@@ -60,7 +60,7 @@
  * PluginManager.refreshStatus("Community_Basic", false);
  * 
  * In the script command, 
- * you are execute it safety after exiting the current event, you can call below code blocks.
+ * if you are execute it safety after exiting the current event, you can call below code blocks.
  * 
  * setTimeout(function() { PluginManager.refreshStatus("Community_Basic", false); }, 0);
  * 
