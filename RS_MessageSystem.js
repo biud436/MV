@@ -1720,6 +1720,8 @@ var Color = Color || {};
   RS.MessageSystem.Params.contentsOpacity = Number(RS.MessageSystem.popParameter('contents Opacity', "내용의 투명도"));
   RS.MessageSystem.Params.defaultOutlineWidth = Number(RS.MessageSystem.popParameter('default outline width', "테두리 크기"));
   RS.MessageSystem.Params.defaultOutlineColor = RS.MessageSystem.popParameter('default outline Color', "테두리 색상") || 'white';
+
+  RS.MessageSystem.Params.isValidShakingChoice = false;
   
   // 시스템에 설치된 폰트
   RS.MessageSystem.Params.fonts = {
@@ -4815,9 +4817,10 @@ var Color = Color || {};
       this.x = Graphics.boxWidth / 2 - this.width / 2;
       this.y = Graphics.boxHeight / 2 - this.height / 2;
       
-      this._shakingTime = performance.now();
-      PIXI.ticker.shared.add(this.shakingField, this, 0);
-
+      if(RS.MessageSystem.Params.isValidShakingChoice) {
+        this._shakingTime = performance.now();
+        PIXI.ticker.shared.add(this.shakingField, this, 0);
+      }
     }
 
   };
