@@ -59,6 +59,11 @@
  * 
  * PluginManager.refreshStatus("Community_Basic", false);
  * 
+ * In the script command, 
+ * you are execute it safety after exiting the current event, you can call below code blocks.
+ * 
+ * setTimeout(function() { PluginManager.refreshStatus("Community_Basic", false); }, 0);
+ * 
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -143,6 +148,10 @@
  * 예를 들면, 다음과 같습니다.
  *  ex) PluginManager.refreshStatus("Community_Basic", false);
  *
+ * 스크립트 커맨드에서 현재 실행 중인 이벤트가 종료된 후, 코드를 실행하려면 아래와 같이 하세요.
+ * 
+ * setTimeout(function() { PluginManager.refreshStatus("Community_Basic", false); }, 0);
+ * 
  */
 
 var Imported = Imported || {};
