@@ -4808,8 +4808,51 @@ var Color = Color || {};
       case 'left':
         this.x = messageX;
         break;
-        
     }
+
+    // 선택지 창만 달랑 있을 때는 중앙에 표시한다.
+    if(!$gameMessage.hasText() && $gameMessage.isChoice()) {
+      this.x = Graphics.boxWidth / 2 - this.width / 2;
+      this.y = Graphics.boxHeight / 2 - this.height / 2;
+      
+      this._shakingTime = performance.now();
+      PIXI.ticker.shared.add(this.shakingField, this, 0);
+
+    }
+
+  };
+
+  Window_ChoiceList.prototype.shakingField = function() {
+
+    var sx;
+
+    if(this.width < Graphics.boxWidth) {
+      var w = this.width;
+      if(w == 0) w = 1;
+      sx = Graphics.boxWidth / w;
+    } else {
+      sx = this.width / Graphics.boxWidth;
+    }
+
+    var h = this.height;
+    if(h == 0) h == 1;
+    var sy = Graphics.boxWidth / h;
+    
+    var rotation = Math.sqrt(sx * sx + sy * sy);
+
+    this._windowContentsSprite.rotation = (Math.PI / 180.0) * (-10 + Math.randomInt(5)) * rotation;
+    this._windowContentsSprite.anchor.set(0.5, 0.5);
+    this._windowContentsSprite.scale.x = Math.randomInt(rotation) * 0.5;
+    this._windowContentsSprite.scale.y = Math.randomInt(rotation) * 0.5;
+    
+    if(performance.now() - this._shakingTime >= 4000) {
+      this._windowContentsSprite.rotation = 0;
+      this._windowContentsSprite.scale.set(1.0, 1.0);
+      this._windowContentsSprite.anchor.set(0.0, 0.0);
+      PIXI.ticker.shared.remove(this.shakingField, this, 0);
+      this._shakingTime = performance.now();
+    }
+
   };
 
   var alias_Window_ChoiceList_start = Window_ChoiceList.prototype.start;
