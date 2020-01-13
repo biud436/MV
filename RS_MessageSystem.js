@@ -4825,7 +4825,7 @@ var Color = Color || {};
 
   };
 
-  Window_ChoiceList.prototype.shakingField = function() {
+  Window_ChoiceList.prototype.shakingField = function(deltaTime) {
 
     var sx;
 
@@ -4841,9 +4841,9 @@ var Color = Color || {};
     if(h == 0) h == 1;
     var sy = Graphics.boxWidth / h;
     
-    var rotation = Math.sqrt(sx * sx + sy * sy);
+    var rotation = Math.sqrt(sx * sx + sy * sy) * deltaTime;
 
-    this._windowContentsSprite.rotation = (Math.PI / 180.0) * (-10 + Math.randomInt(5)) * rotation;
+    this._windowContentsSprite.rotation = (Math.PI / 180.0) * (10 - Math.randomInt(20)) * rotation;
     this._windowContentsSprite.anchor.set(0.5, 0.5);
     this._windowContentsSprite.scale.x = Math.randomInt(rotation) * 0.25;
     this._windowContentsSprite.scale.y = Math.randomInt(rotation) * 0.25;
