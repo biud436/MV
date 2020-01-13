@@ -7,51 +7,58 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * RS_RefreshManager.js
- * @plugindesc This plugin creates or changes a file called 'js/plugins.js'
+ * @plugindesc This plugin allows you to change the plugin configuration during the game. <RS_RefreshManager>
  * @author biud436
  *
  * @param Save File ID
  * @type number
- * @desc Auto Save
+ * @desc Specify the filename that saves the current game status.
  * @default 1
- * @min 1
  *
  * @param Show Preview Window
  * @type boolean
- * @desc Indicate whether or not the preview window is visible.
+ * @desc if true, the preview window will file's contents show after saving the file named plugins.js 
  * @default false
  *
  * @param Auto Reload
  * @type boolean
- * @desc Decide whether or not to reload the game.
+ * @desc Loads a map faster after saving the file named plugins.js
  * @default true
  *
  * @param Auto closing time
  * @type number
- * @desc delay (Millisecond)
+ * @desc The preview window can be hided automatically after some seconds take.
+ * (1000ms = 1s)
  * @default 2500
  *
  * @param Target Path
- * @desc
+ * @desc Specify the file path that is saved the plugin configuration.
  * @default /js/plugins.js
  *
  * @param Save Path
- * @desc
+ * @desc Specify the file path that would be saved the plugin configuration.
  * @default /js/plugins.js
  *
  * @help
+ * This plugin allows you to change the plugin configuration during the game.
+ * You can change the configuration of a specific plugin that didn't use during 
+ * the game without restarting the program.
+ * 
+ * To change a plugin configuration scene, you need to call below plugin command.
  *
- * This plugin executes using File System functions that is built into a nw.js
- * that uses in Windows or Mac. so it does not properly execute on the browsers
- * or mobile platform which is not available them.
- *
- * =============================================================================
- * Plugin Command
- * =============================================================================
- *
- * RefreshManager open
- *
+ *    RefreshManager open
+ * 
+ * it can create a new plugin configuration and then it loads a map faster without 
+ * starting the title scene.
+ * 
+ * Note that this tool can be used only in PC platform and this tool is for game 
+ * developers, not game user.
+ * 
+ * If you change a plugin configuration without selecting the plugin in the plugin 
+ * configuration window, You must call the script code, as follows.
+ * 
+ * PluginManager.refreshStatus("Community_Basic", false);
+ * 
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -72,17 +79,19 @@
  * 2019.09.19 (v1.2.0) : 
  * - Fixed the bug that is not parsed the plugin parameter that is written with Korean.
  * - Removed the unstable JSON parser that I've written while studying the compiler theory.
+ * 2020.01.13 (v1.2.1) :
+ * - Fixed the bug that is not working a function called 'PluginManager.refreshStatus("Community_Basic", false);'
+ * - Fixed the issue that can't show the content of preview window.
  */
 /*:ko
- * @plugindesc 플러그인을 즉각적으로 사용 중지합니다.
+ * @plugindesc 플러그인 구성 파일을 게임 실행 도중 변경합니다. <RS_RefreshManager>
  * @author 러닝은빛(biud436)
  *
  * @param Save File ID
  * @text 세이브 파일 ID
  * @type number
- * @desc 자동 저장을 위한 슬롯을 지정하세요. 플러그인 설정 파일 변경 후 빠른 불러오기를 위함입니다.
+ * @desc 현재 게임 상태를 저장하기 위한 세이브 파일의 이름을 지정하세요.
  * @default 1
- * @min 1
  *
  * @param Show Preview Window
  * @text 미리보기 창 보기
@@ -93,48 +102,30 @@
  * @param Auto Reload
  * @text 자동으로 다시 불러오기
  * @type boolean
- * @desc 설정 변경 이후, 게임을 재시작하고 자동으로 동일한 지점으로 복귀합니다.
+ * @desc 게임을 재시작하고 자동으로 동일한 지점으로 복귀합니다.
  * @default true
  *
  * @param Auto closing time
  * @text 미리보기 창 닫기 딜레이
  * @type number
- * @desc 미리보기 창이 자동으로 닫힐 때 까지 걸리는 시간을 밀리초 단위로 지정하세요.
+ * @desc 미리보기 창이 몇 초후에 자동으로 숨겨집니다.
+ * (1000ms = 1초)
  * @default 2500
  *
  * @param Target Path
  * @text 타겟 경로
- * @desc 타겟 경로에 있는 설정 파일을 가져와서 저장 경로에 저장합니다.
+ * @desc 플러그인 구성 파일의 경로를 지정하십시오.
  * @default /js/plugins.js
  *
  * @param Save Path
  * @text 저장 경로
- * @desc 타겟 경로에 있는 설정 파일을 가져와서 저장 경로에 저장합니다.
+ * @desc 플러그인 구성 파일을 저장 할 경로를 지정하십시오.
  * @default /js/plugins.js
  *
  * @help
- * =============================================================================
- * 플러그인 소개
- * =============================================================================
- * 플러그인들은 스크립트를 로드하는 방식으로 일시적으로 중단할 수 없습니다.
- * 이 플러그인을 사용하면 플러그인 설정 파일을 변경한 후 게임을 재시작하여 해당
- * 플러그인 사용을 정확히 정지시킬 수 있습니다.
- * 
- * 높은 호환성을 제공하지만 플러그인 설정 파일을 직접적으로 변경하므로,
- * 설정 파일 직접 변경은 개발사에서 하지 말라고 권고하는 행위입니다. 
- * 따라서 필요한 경우에만 사용하시기 바랍니다.
- * 
- * 이 플러그인은 파일 시스템 API를 필요로 하므로 PC 환경에서만 사용할 수 있습니다.
- * 
- * 물론 모바일에서도 cordova의 파일 시스템 API가 있습니다. 
- * 하지만 플러그인 설정 파일이 파일 쓰기 권한이 없는 경로에 있기 때문에 
- * 모바일에서는 사용할 수 없습니다.
- * 
- * 또한 이 플러그인은 정규표현식으로 일일히 검출하지 않고 인터프리터 소스를 이용하여
- * 구문 분석을 거치고 직접적으로 모든 토큰을 추출하여 재조합합니다. 
- * 
- * 따라서 종종 사용할 수 없는 문자로 인해 구문 분석에 실패할 수 있습니다.
- * 그런 문제가 생긴다면 개발자에게 알려주시면 감사하겠습니다.
+ * 이 플러그인을 사용하면 게임 실행 도중에 플러그인 구성 파일을 변경할 수 있으며,
+ * 게임 프로그램을 종료하지 않고 게임 도중에 특정 플러그인의 사용 여부를 변경할 수 있습니다.
+ * 이 플러그인은 PC 플랫폼에서만 동작합니다.
  * 
  * =============================================================================
  * 플러그인 명령에 대해...
@@ -151,27 +142,7 @@
  * 
  * 예를 들면, 다음과 같습니다.
  *  ex) PluginManager.refreshStatus("Community_Basic", false);
- * 
- * =============================================================================
- * Change Log
- * =============================================================================
- * 2016.05.16 (v0.0.1) - Beta
- * 2016.05.23 (v1.0.0) - Added new function and Fixed a bug.
- * 2016.05.23 (v1.1.0) - Added the window auto reload function and the preview
- * window that could be able to show the json file.
- * 2016.07.12 (v1.1.01) - Added two plugin parameters about File Path.
- * 2016.07.20 (v1.1.02) - Added hyphen(-) and three plugin parameters.
- * 2016.07.21 (v1.1.03) - Fixed the bug that is separating wrong identifier.
- * 2016.07.25 (v1.1.04) - Fixed default save file id.
- * 2016.08.07 (v1.1.05) - Fixed save bug.
- * 2016.12.08 (v1.1.08) - Added code to remove references to URL objects.
- * 2017.01.08 (v1.1.1) - Converted sources to ES6
- * 2018.02.27 (v1.1.2) : (RMMV 1.6.0)
- * - Now that it will be restored as the previous plugins.js file after exiting the game.
- * - Fixed an encoding of of text in the preview window.
- * 2019.09.19 (v1.2.0) : 
- * - Fixed the bug that is not parsed the plugin parameter that is written with Korean.
- * - Removed the unstable JSON parser that I've written while studying the compiler theory.
+ *
  */
 
 var Imported = Imported || {};
@@ -183,12 +154,17 @@ var RS = RS || {};
 
   "use strict";
 
-  let parameters = PluginManager.parameters('RS_RefreshManager');
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_RefreshManager>');
+  });
+  
+  parameters = (parameters.length > 0) && parameters[0].parameters;
+
   let fastLoadFileId = Number(parameters['Save File ID'] || 1);
   let nClosingTime = Number(parameters['Auto closing time'] || 2500);
   let isPreviewWindow = Boolean(parameters['Show Preview Window'] === 'true');
-  let _previewWindow = null;
   let isAutoReload =  Boolean(parameters['Auto Reload'] === 'true');
+  let _previewWindow = null;
 
   let fs = require('fs');
 
@@ -248,11 +224,13 @@ var RS = RS || {};
           </body>
         </html>
         `;
-        let blob = new Blob( [finText], {encoding:"utf-8",type:"text/html;charset=utf-8"} );
+        let blob = new Blob( [finText], {endings:"native",type:"text/html;charset=utf-8"});
         let url = URL.createObjectURL(blob);
         if(isPreviewWindow) {
             _previewWindow = window.open(url, '_blank');
-            URL.revokeObjectURL(url);
+            _previewWindow.onclose = function() {
+                URL.revokeObjectURL(this.location.href);
+            };
         }
         RefreshManager._changed = true;
       });
@@ -288,10 +266,29 @@ var RS = RS || {};
   PluginManager.refreshStatus = function(pluginName, status) {
     PluginManager.setStatus(pluginName, status);
     $gameSystem.onBeforeSave();
+    
     if (DataManager.saveRefreshGame(fastLoadFileId)) {
+      
       StorageManager.cleanBackup(fastLoadFileId);
-      if(isAutoReload) window.location.reload();      
+
+      setTimeout(function() {
+        
+        if(_previewWindow) {
+          _previewWindow.close();
+        }
+        
+        RefreshManager._changed = false;
+
+        if(_previewWindow) {
+          _previewWindow = null;
+        }
+
+        window.location.reload();
+
+      }, nClosingTime);
+
     }
+
   };
 
   //============================================================================
@@ -512,8 +509,7 @@ var RS = RS || {};
             setTimeout(function() {
 
               _previewWindow.close();
-
-              // Decide whether or not to reload the game.
+              
               if(isAutoReload) window.location.reload();
 
               _previewWindow = null;
@@ -550,7 +546,6 @@ var RS = RS || {};
     }
 
     static onLoadSuccess() {
-      SoundManager.playLoad();
       Scene_PluginManager.reloadMapIfUpdated();
       SceneManager.goto(Scene_Map);
       $gameSystem.onAfterLoad();
@@ -632,7 +627,6 @@ var RS = RS || {};
     }
   }
 
-
   //============================================================================
   // Scene_Boot
   //
@@ -640,8 +634,7 @@ var RS = RS || {};
 
   var alias_Scene_Boot_start = Scene_Boot.prototype.start;
   Scene_Boot.prototype.start = function() {
-    if(DataManager.existsRefreshVariable(fastLoadFileId) &&
-      StorageManager.exists(fastLoadFileId)) {
+    if(DataManager.existsRefreshVariable(fastLoadFileId) && StorageManager.exists(fastLoadFileId)) {
       Scene_Base.prototype.start.call(this);
       SoundManager.preloadImportantSounds();
       this.checkPlayerLocation();
@@ -654,7 +647,7 @@ var RS = RS || {};
     }
   };
 
-  var _nw = (Utils.RPGMAKER_VERSION >= "1.6.0") ? nw : require('nw.gui');
+  var _nw = require('nw.gui');
   var win = _nw.Window.get();
   _nw.Window.get().on('close', function () {
     RefreshManager.restoreTempPlugins();
@@ -664,4 +657,4 @@ var RS = RS || {};
 
   window.RefreshManager = RefreshManager;
 
-  })();
+})();
