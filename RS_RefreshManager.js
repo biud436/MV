@@ -292,6 +292,8 @@ var RS = RS || {};
           _previewWindow = null;
         }
 
+        RefreshManager._counter++;
+
         window.location.reload();
 
       }, nClosingTime);
@@ -523,6 +525,8 @@ var RS = RS || {};
 
               _previewWindow = null;
 
+              RefreshManager._counter++;
+
             }, nClosingTime );
 
           } else {
@@ -659,7 +663,6 @@ var RS = RS || {};
   var _nw = require('nw.gui');
   var win = _nw.Window.get();
   _nw.Window.get().on('close', function () {
-    RefreshManager.restoreTempPlugins();
     this.hide();
     this.close(true);
   });
