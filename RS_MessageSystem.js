@@ -4845,8 +4845,8 @@ var Color = Color || {};
 
     this._windowContentsSprite.rotation = (Math.PI / 180.0) * (-10 + Math.randomInt(5)) * rotation;
     this._windowContentsSprite.anchor.set(0.5, 0.5);
-    this._windowContentsSprite.scale.x = Math.randomInt(rotation) * 0.5;
-    this._windowContentsSprite.scale.y = Math.randomInt(rotation) * 0.5;
+    this._windowContentsSprite.scale.x = Math.randomInt(rotation) * 0.25;
+    this._windowContentsSprite.scale.y = Math.randomInt(rotation) * 0.25;
     
     if(performance.now() - this._shakingTime >= 4000) {
       this._windowContentsSprite.rotation = 0;
