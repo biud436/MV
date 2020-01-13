@@ -4841,12 +4841,12 @@ var Color = Color || {};
     if(h == 0) h == 1;
     var sy = Graphics.boxWidth / h;
     
-    var rotation = Math.sqrt(sx * sx + sy * sy) * deltaTime;
+    var rotation = Math.sqrt(sx * sx + sy * sy) * Math.sin(Math.PI * 2 * deltaTime / 4);
 
     this._windowContentsSprite.rotation = (Math.PI / 180.0) * (10 - Math.randomInt(20)) * rotation;
-    this._windowContentsSprite.anchor.set(0.5, 0.5);
-    this._windowContentsSprite.scale.x = Math.randomInt(rotation) * 0.25;
-    this._windowContentsSprite.scale.y = Math.randomInt(rotation) * 0.25;
+    this._windowContentsSprite.anchor.set(1.0, 0.5);
+    this._windowContentsSprite.scale.x = 2.0 * Math.cos(deltaTime);
+    this._windowContentsSprite.scale.y = 2.0;
     
     if(performance.now() - this._shakingTime >= 4000) {
       this._windowContentsSprite.rotation = 0;
