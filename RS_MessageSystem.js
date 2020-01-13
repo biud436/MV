@@ -176,6 +176,18 @@
  * @value RMXP
  * @option Default Style
  * @value default
+ * 
+ * @param Default Choice Position
+ * @parent Choice Window
+ * @type select
+ * @desc Set the position of the choice window.
+ * @default right
+ * @option Right (Default)
+ * @value right
+ * @option Middle (Center)
+ * @value middle
+ * @option Left
+ * @value left
  *
  * @param Name Window
  *
@@ -912,6 +924,18 @@
  * @value RMXP
  * @option 기본 스타일 (MV, VXA)
  * @value default
+ * 
+ * @param Default Choice Position
+ * @parent 선택지 표시
+ * @type select
+ * @desc 선택지의 위치를 설정할 수 있습니다.
+ * @default right
+ * @option 우측 (기본)
+ * @value right
+ * @option 중앙
+ * @value middle
+ * @option 왼쪽
+ * @value left
  *
  * @param 이름 윈도우
  *
@@ -1721,6 +1745,8 @@ var Color = Color || {};
   RS.MessageSystem.Params.windowskinForNameWindow = RS.MessageSystem.popParameter('Name Windowskin', "이름 윈도우스킨") || 'Window';
   
   RS.MessageSystem.Params.choiceWindowStyle = String(RS.MessageSystem.popParameter('Choice Style', "선택지 스타일") || 'default');
+  RS.MessageSystem.Params.defaultChoicePostion = parameters["Default Choice Position"] || "right";
+
   RS.MessageSystem.Params.isTempSpriteContainerVisibility = false;
   
   RS.MessageSystem.Params.exTextColors = RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Color", "텍스트 색상"));
@@ -4741,8 +4767,13 @@ var Color = Color || {};
     var nameWindow = this._messageWindow._nameWindow;
     var nameWindowXPositionType = RS.MessageSystem.Params.namePositionTypeAtX;    
     var nameWindowPad = 0;
+    var choiceProp = {
+      positionType : RS.MessageSystem.Params.defaultChoicePostion,
+    };
+    var width = this.width;
+    var isOpenNameWindow = nameWindow.isOpen();
     
-    if(nameWindow.isOpen() && ['center', 'right'].contains(nameWindowXPositionType)) {
+    if(isOpenNameWindow && ['center', 'right'].contains(nameWindowXPositionType)) {
       nameWindowPad = nameWindow.height;
     }
 
@@ -4751,20 +4782,34 @@ var Color = Color || {};
 
       // 이름 윈도우가 가운데 또는 오른쪽에 있으면 패딩 값이 추가된다.
       this.y = messageY - nameWindowPad - this.height;
-        
+
     } else {
 
       // 메시지 윈도우가 상단에 있으면 선택지 윈도우는 메시지 윈도우 하단으로 오게 된다.
       var ty = messageY + messageHeight;
+
+      // 선택지 창의 위치가 메시지 윈도우의 위에 있어야 할 떄
       if(ty > Graphics.boxHeight - this.height) {
-        // 이름 윈도우가 가운데 또는 오른쪽에 있으면 패딩 값이 추가된다.
         this.y = messageY - nameWindowPad - this.height;     
       } else {
         this.y = messageY + messageHeight;
       }
     }
 
-    this.x = messageX + messageWidth - this.width;
+    // 선택지 창의 X좌표를 설정한다.
+    switch( choiceProp.positionType ) {
+      default:      
+      case 'right':
+        this.x = messageX + messageWidth - width;        
+        break;
+      case 'middle':
+        this.x = messageX + (messageWidth / 2 - width / 2);
+        break;
+      case 'left':
+        this.x = messageX;
+        break;
+        
+    }
   };
 
   var alias_Window_ChoiceList_start = Window_ChoiceList.prototype.start;
