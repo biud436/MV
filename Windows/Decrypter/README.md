@@ -23,7 +23,7 @@ node index.js C:\Users\U\Desktop\Exam2\201907
 
 wav 파일은 본래 지원을 하는 파일이 아니지만, 필자가 만든 ```RS_WaveSupport.js```나 ```RS_WavFileEncrypter.js```에서 wav 파일을 지원하므로 이를 감안하여 추가한 것입니다.
 
-나 ```copy /b Game.exe+app.nw MyGame.exe```과 같이 자기 자신을 압축하는 방식의 경우, 다음과 같이 해야 ```/d=실행파일명``` 인자를 전달하도록 합시다.
+```copy /b Game.exe+app.nw MyGame.exe```과 같이 자기 자신을 압축하는 방식의 경우, 다음과 같이 해야 ```/d=실행파일명``` 인자를 전달하도록 합시다.
 
 ```batch
 node index.js C:\Users\U\Desktop\Exam2\201907 /d=MyGame.exe
