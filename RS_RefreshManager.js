@@ -260,6 +260,13 @@ var RS = RS || {};
   //
   //
 
+  
+  /**
+   * 이 함수는 변경된 플러그인의 상태를 plugins.js 파일에 반영합니다. 
+   * 하지만 변경된 플러그인의 내용은 게임 프로그램을 완전히 재시작해야만 반영됩니다.
+   * @param  {String} pluginName
+   * @param  {Boolean} status
+   */
   PluginManager.setStatus = function(pluginName, status) {
 
     for(var i in $plugins) {
@@ -272,6 +279,12 @@ var RS = RS || {};
 
   };
 
+  /**
+   * plugins.js 파일을 수정하고 세이브 파일을 만든 후 게임을 완전히 재시작합니다.
+   * 이전에 저장해뒀던 세이브 파일이 있으면 타이틀이 스킵되고 이전의 세이브 파일을 바로 로드합니다.
+   * @param  {String} pluginName
+   * @param  {Boolean} status
+   */
   PluginManager.refreshStatus = function(pluginName, status) {
     PluginManager.setStatus(pluginName, status);
     $gameSystem.onBeforeSave();
@@ -291,8 +304,6 @@ var RS = RS || {};
         if(_previewWindow) {
           _previewWindow = null;
         }
-
-        RefreshManager._counter++;
 
         window.location.reload();
 
