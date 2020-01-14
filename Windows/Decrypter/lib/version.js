@@ -12,12 +12,14 @@ class Version {
         this._version = "";
         this._isReady = false;
 
+        // RPG Maker MV v1.6.2 버전인지 확인
         this._version = this.readNodeVersion(this._binaryPath);
         if(this._version !== "") {
             this._isReady = true;  
         }
 
         if(!this._isReady) {
+            // RPG Maker MV v1.5.2 이하인지 확인
             this._version = this.readNodeVersionForOlder(this._binaryPath);
         }
         
@@ -74,7 +76,7 @@ class Version {
     }
     
     /**
-     * 압축 파일을 해제합니다.
+     * 압축 파일을 실행 파일에서 추출한다.
      * @ret {Buffer}
      */
     extractZip(mainFolder) {
@@ -100,6 +102,7 @@ class Version {
         };
         var retZipBuffer;
 
+        // 내부적으로 ZIP로 압축된 것이 많아서 16바이트로 정렬한 후 검색한다.
         for(var curOffset = startOffset; curOffset <= maxOffset; curOffset = (curOffset + 0x10) & ~0x0F) {
             var buf = data.toString('ascii', curOffset, curOffset + 0x08);
             if(buf === "PK\u0003\u0004\u0014\u0000\u0002\u0000") {
