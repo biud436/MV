@@ -21,33 +21,8 @@
 const fs = require('fs-extra');
 const path = require('path');
 const args = process.argv.slice(2);
+const ZipUtils = require('./binary');
 let mainPath;
-
-if(!args[0]) {
-    if(fs.existsSync( path.join( process.cwd().replace(/\\/g, "/"), "index.html"))) {
-        console.log("... ... ...");
-        mainPath = process.cwd().replace(/\\/g, "/");
-    } else {
-        if(fs.existsSync(path.join( process.cwd().replace(/\\/g, "/"), "www", "index.html"))) {
-            mainPath = path.join( process.cwd().replace(/\\/g, "/"), "www");
-        } else {
-            throw new Error(`There is no folder called ${mainPath}`);
-        }
-    }
-} else {
-    mainPath = args[0].replace(/\\/g, "/");
-}
-
-console.log(mainPath);
-
-if(!fs.statSync(mainPath).isDirectory()) {
-    throw new Error(`You doesn't specify the project folder!`);
-}
-
-if(fs.existsSync(path.join(mainPath, "www", "index.html"))) {
-    console.log("Found a file named index.html into www folder");
-    mainPath = path.join(mainPath, "www");
-}
 
 const config = {
     EncryptExt: [".rpgmvo", ".rpgmvm", ".rpgmvw", ".rpgmvp"],
@@ -60,11 +35,57 @@ const config = {
     }
 };
 
+async function extractResourceFiles(callback) {
+    return await new Promise(resolve => {
+        if(args[1] && args[1].indexOf("/d=") >= 0) {
+            var filename = args[1].split("/d=")[1];
+            var zipUtils = new ZipUtils(mainPath, filename, callback);
+            resolve();
+        }
+    });
+}
+
+if(!args[0]) {
+    if(fs.existsSync( path.join( process.cwd().replace(/\\/g, "/"), "index.html"))) {
+        mainPath = process.cwd().replace(/\\/g, "/");
+    } else {
+        if(fs.existsSync(path.join( process.cwd().replace(/\\/g, "/"), "www", "index.html"))) {
+            mainPath = path.join( process.cwd().replace(/\\/g, "/"), "www");
+        }
+    }
+} else {
+    mainPath = args[0].replace(/\\/g, "/");
+}
+
+class App {
+    static run() {
+        if(!fs.statSync(mainPath).isDirectory()) {
+            throw new Error(`You doesn't specify the project folder!`);
+        }
+        
+        if(fs.existsSync(path.join(mainPath, "www", "index.html"))) {
+            console.log("Found a file named index.html into www folder");
+            mainPath = path.join(mainPath, "www");
+            this.decrypt();
+        } else {
+            extractResourceFiles(() => {
+                mainPath = path.join( mainPath.replace(/\\/g, "/"), "www");
+                this.decrypt();
+            });
+        }
+    }
+
+    static decrypt() {
+        this._utils = new Utils();
+        this._utils.convert();        
+    }
+}
+
 class Utils {
     constructor() {
         this._audioDir = path.join(mainPath, "audio");
         this._imgDir = path.join(mainPath, "img");
-        this._headerlength = 16;
+        this._headerlength = 16;        
     }
 
     convert() {
@@ -272,5 +293,4 @@ class Utils {
 
 }
 
-var utils = new Utils();
-utils.convert();
+App.run();

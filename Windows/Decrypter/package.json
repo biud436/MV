@@ -11,5 +11,7 @@
   },
   "author": "biud436",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "decompress-zip": "^0.2.2"
+  }
 }
