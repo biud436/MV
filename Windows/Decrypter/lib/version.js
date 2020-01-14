@@ -113,6 +113,8 @@ class Version {
             }
         }
 
+        // data.toString("binary")는 일부 문자가 잘못 인코딩되므로 체크섬에 문제가 생긴다.
+        // Uint8Array을 사용해야 정확하게 추출할 수 있다.
         if(zip.isReady) {
             var resultBuffer = new ArrayBuffer(data.length - zip.byteIndex);
             var view = new DataView(resultBuffer);
