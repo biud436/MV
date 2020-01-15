@@ -3,8 +3,9 @@
  */
 const fs = require('fs-extra');
 const path = require('path');
-const Version = require("./version");
+const RawFileReader = require("./RawFileReader");
 const DecompressZip = require('decompress-zip');
+const ConsoleColor = require("./ConsoleColor");
 
 class Utils {
     constructor(binaryPath, mainFile, callback) {
@@ -16,13 +17,13 @@ class Utils {
             throw new Error(`${mainFile} 파일이 없습니다.`);
         }
 
-        console.log("RPG Maker MV로 만들어진 게임인지 확인하고 있습니다.");
-        this._gameBin = new Version(this._binPath, mainFile);
+        console.log(`${ConsoleColor.BgBlue}RPG Maker MV${ConsoleColor.Reset}로 만들어진 게임인지 확인하고 있습니다.`);
+        this._gameBin = new RawFileReader(this._binPath, mainFile);
 
-        if(this._gameBin.version !== "v0.0.0") {
+        if(this._gameBin.isValid()) {
             
-            console.log(`Node.js ${this._gameBin.version} 버전이 감지되었습니다.`);
-            
+            console.log(`Node.js ${ConsoleColor.BgYellow}${this._gameBin.version}${ConsoleColor.Reset} 버전을 사용 중인 프로그램으로 보여집니다`);
+
             var zipFile;
 
             try {
@@ -64,7 +65,8 @@ class Utils {
             });
 
         } else {
-            throw new Error("RPG Maker MV로 만들어진 게임이 아닙니다.");
+            throw new Error(`암호화 해제에 실패하였습니다. 
+            \rRPG Maker MV로 만들어진 게임이 아니거나 암호화 방식이 뭔가 다른 것 같습니다.`);
         }
     }
 }

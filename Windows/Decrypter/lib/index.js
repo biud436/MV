@@ -22,6 +22,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const args = process.argv.slice(2);
 const ZipUtils = require('./binary');
+const ConsoleColor = require("./ConsoleColor");
 let mainPath;
 
 const config = {
@@ -113,7 +114,7 @@ class Utils {
         writeStream.write( bin );
         writeStream.end();
         writeStream.on('finish', function() {
-            console.log(`done : ${filePath}`);
+            console.log(`${ConsoleColor.BgGreen}done : ${ConsoleColor.Reset}${filePath}`);
         });
     };    
 
@@ -194,7 +195,7 @@ class Utils {
             // 전체 경로를 포함하지 않은 순수 파일명
             var tempFileName = file.split("/").slice(-1)[0];
 
-            console.log(tempFileName);
+            console.log(`${ConsoleColor.BgBlue}${tempFileName}${ConsoleColor.Reset}`);
 
             var ext = path.extname(file);
 
@@ -252,7 +253,7 @@ class Utils {
             // 전체 경로를 포함하지 않은 순수 파일명
             var tempFileName = file.split("/").slice(-1)[0];
 
-            console.log(tempFileName);
+            console.log(`${ConsoleColor.BgCyan}${tempFileName}${ConsoleColor.Reset}`);
 
             var ext = path.extname(file);
 
