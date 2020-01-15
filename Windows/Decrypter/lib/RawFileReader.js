@@ -53,6 +53,9 @@ class RawFileReader {
         }
 
         if(this._isEnigma) {
+            if(this.isValid()) {
+                console.warn(`${ConsoleColor.Bright}Node.js ${ConsoleColor.FgRed}${this.version}${ConsoleColor.Reset} 버전이 사용된 ${ConsoleColor.FgCyan}RPG Maker MV${ConsoleColor.Reset} 게임으로 보입니다.`);
+            }
             throw new Error(`${ConsoleColor.BgRed}Enigma Virtual Box를 사용한 게임은 언팩할 수 없습니다.${ConsoleColor.Reset}`);
         }
 
@@ -219,15 +222,19 @@ class RawFileReader {
         }
 
         offset += Header.IMAGE_DOS_HEADER.length;
+
         offset += Header.DOS_Stub16.length;
         offset += Header.DOS_Stub32.length;
-
+                
+        // offset = Header.IMAGE_NT_HEADERS.offset;
         var tempOffset = offset;
-        
+
         offset += 0x04; // Signature
         offset += 0x02; // machine
         
-        var numberOfSections = data.readInt16BE(offset);
+        var numberOfSections = data.readInt16LE(offset);
+
+        console.log(`${ConsoleColor.Bright}섹션의 갯수는 ${ConsoleColor.FgRed}${numberOfSections}${ConsoleColor.Reset}${ConsoleColor.Bright}개 입니다.${ConsoleColor.Reset}`);
 
         offset = tempOffset;
         offset += Header.IMAGE_NT_HEADERS.length;
@@ -235,8 +242,8 @@ class RawFileReader {
 
         for(var i = 0; i < numberOfSections; i++) {
             var buf = data.toString("ascii", offset, offset + 0x08).replace(/\0/g, '');
-            if(buf !== "" && ".enigma".indexOf(buf) >= 0) {
-                console.log(`${ConsoleColor.Blink}Enigma Virtual Box를 사용한 게임으로 보여집니다.${ConsoleColor.Reset}`);
+            if(buf !== "" && ".enigma1".indexOf(buf) >= 0) {
+                console.log(`${ConsoleColor.BgRed}${i+1}번 섹션에서 Enigma Virtual Box로 보호된 게임이라는 걸 확인하였습니다.${ConsoleColor.Reset}`);
                 isValidEnigma = true;
                 break;
             }

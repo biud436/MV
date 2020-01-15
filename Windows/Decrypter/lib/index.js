@@ -65,7 +65,7 @@ class App {
         }
         
         if(fs.existsSync(path.join(mainPath, "www", "index.html"))) {
-            console.log("Found a file named index.html into www folder");
+            console.log(`Found a file named ${ConsoleColor.Bright}index.html${ConsoleColor.Reset} into www folder`);
             mainPath = path.join(mainPath, "www");
             this.decrypt();
         } else {
@@ -184,6 +184,10 @@ class Utils {
         var types = [".rpgmvo", ".rpgmvm", ".rpgmvw"];
         this.readAllFiles(this._audioDir.replace(/\\/g, "/"), types, files);
 
+        if(files.length === 0) {
+            console.warn(`${ConsoleColor.BgRed}암호화된 오디오 파일이 없습니다.${ConsoleColor.Reset}`);
+        }
+
         files.forEach(file => {
                     
             var rootFilename = file;
@@ -239,6 +243,10 @@ class Utils {
         var files = [];
         var types = [".rpgmvp"];
         this.readAllFiles(this._imgDir.replace(/\\/g, "/"), types, files);
+
+        if(files.length === 0) {
+            console.warn(`${ConsoleColor.BgRed}암호화된 이미지 파일이 없습니다.${ConsoleColor.Reset}`);
+        }        
 
         files.forEach(file => {
                     
