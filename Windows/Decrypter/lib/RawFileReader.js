@@ -35,11 +35,12 @@ class RawFileReader {
         this._mainFileName = mainFile;
         this._version = "";
         this._isReady = false;
+        this._isEnigma = false;
 
         // Enigma Virtual Box를 사용하였는가?
         if(!this._isReady) {
             if(this.checkEnigmaPacker(binaryPath)) {
-                throw new Error(`${ConsoleColor.BgRed}Enigma Virtual Box를 사용한 게임은 언팩할 수 없습니다.${ConsoleColor.Reset}`);
+                this._isEnigma = true;
             }
         }
 
@@ -49,6 +50,10 @@ class RawFileReader {
         // RPG Maker MV v1.5.2 이하인가?
         if(!this._isReady) {
             this.version = this.readNodeVersionForOlder(this._binaryPath);            
+        }
+
+        if(this._isEnigma) {
+            throw new Error(`${ConsoleColor.BgRed}Enigma Virtual Box를 사용한 게임은 언팩할 수 없습니다.${ConsoleColor.Reset}`);
         }
 
     }
