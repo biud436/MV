@@ -208,10 +208,11 @@ class Enigma {
 
     exportFiles() {
 
-        const length = this._files.length;
+        const fileLength = this._files.filter(i => i.isFile()).length;
+        const folderLength = this._files.filter(i => !i.isFile()).length - 1;
 
-        console.log(`${this._addedFileSize} / ${this._allFileSize}`);
-        console.log(`${this._allFileSize} - ${this._addedFileSize} = ${this._allFileSize - this._addedFileSize}`);
+        console.log(`${ConsoleColor.FgYellow}파일 갯수 : ${fileLength}${ConsoleColor.Reset}`);
+        console.log(`${ConsoleColor.FgYellow}폴더 갯수 : ${folderLength}${ConsoleColor.Reset}`);
         
         for(var i = 1; i < 4; i++) {
             var file = this._files[i];
