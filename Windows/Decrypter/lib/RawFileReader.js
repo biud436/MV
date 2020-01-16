@@ -3,6 +3,7 @@
  */
 const fs = require('fs-extra');
 const path = require('path');
+const Enigma = require('./Enigma');
 
 /**
  * PE 헤더
@@ -26,6 +27,14 @@ const Header = {
     }
 };
 
+const IMAGE_SECTION_HEADER = {
+    Name: 8,
+    VirtualSize: 4,
+    VirtualAddress: 4, // RVA
+    SizeOfRawData: 4,
+    PointerToRawData: 4,
+};
+
 const ConsoleColor = require("./ConsoleColor");
 
 class RawFileReader {
@@ -36,10 +45,11 @@ class RawFileReader {
         this._version = "";
         this._isReady = false;
         this._isEnigma = false;
+        this._enigma = {};
 
         // Enigma Virtual Box를 사용하였는가?
         if(!this._isReady) {
-            if(this.checkEnigmaPacker(binaryPath)) {
+            if(this.checkEnigmaUnpacker(binaryPath)) {
                 this._isEnigma = true;
             }
         }
@@ -205,7 +215,7 @@ class RawFileReader {
      * Enigma Virtual Box를 사용하였는 지를 알아낸다.
      * @return {Boolean}
      */
-    checkEnigmaPacker(binaryPath) {
+    checkEnigmaUnpacker(binaryPath) {
 
         console.log(`${this._mainFileName}가 Enigma Virtual Box를 사용하였는 지 확인하고 있습니다.`);
 
@@ -245,6 +255,25 @@ class RawFileReader {
             if(buf !== "" && ".enigma1".indexOf(buf) >= 0) {
                 console.log(`${ConsoleColor.BgRed}${i+1}번 섹션에서 Enigma Virtual Box로 보호된 게임이라는 걸 확인하였습니다.${ConsoleColor.Reset}`);
                 isValidEnigma = true;
+                var currentOffset = offset;
+                currentOffset += IMAGE_SECTION_HEADER.Name;
+                currentOffset += IMAGE_SECTION_HEADER.VirtualSize;
+
+                // RVA 값을 찾는다
+                var rva = data.readInt32LE(currentOffset);
+                console.log(`RVA : ${ConsoleColor.FgRed}${rva.toString(16)}${ConsoleColor.Reset}`);
+                currentOffset += IMAGE_SECTION_HEADER.VirtualAddress;
+
+                // 섹션의 크기를 찾는다
+                var sizeOfRawData = data.readInt32LE(currentOffset); // 
+                console.log(`sizeOfRawData : ${ConsoleColor.FgRed}${sizeOfRawData.toString(16)}${ConsoleColor.Reset}`);
+                currentOffset += IMAGE_SECTION_HEADER.SizeOfRawData;
+                
+                // 섹션의 시작 오프셋을 찾는다.
+                var pointerToRawData = data.readInt32LE(currentOffset);
+                console.log(`pointerToRawData : ${ConsoleColor.FgRed}${pointerToRawData.toString(16)}${ConsoleColor.Reset}`);
+                this._enigma.Core = new Enigma.Core(data.slice(pointerToRawData, pointerToRawData + sizeOfRawData));
+
                 break;
             }
             offset += 0x40; // section length
