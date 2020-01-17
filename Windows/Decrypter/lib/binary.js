@@ -6,6 +6,7 @@ const path = require('path');
 const RawFileReader = require("./RawFileReader");
 const DecompressZip = require('decompress-zip');
 const ConsoleColor = require("./ConsoleColor");
+const cp = require('child_process');
 
 class Utils {
     constructor(binaryPath, mainFile, callback) {
@@ -23,7 +24,8 @@ class Utils {
         if(this._gameBin.isValid()) {
 
             if(this._gameBin._isEnigma) {
-                console.log(`Node.js ${ConsoleColor.BgYellow}${this._gameBin.version}${ConsoleColor.Reset}을 사용 중입니다.`);    
+                console.log(`${ConsoleColor.BgYellow}${this._gameBin.version}${ConsoleColor.Reset}로 패킹된 파일을 모두 추출하였습니다.`);    
+                console.log(`${ConsoleColor.BgYellow}프로그램을 재시작하세요${ConsoleColor.Reset}`);
                 return;
             }
             
