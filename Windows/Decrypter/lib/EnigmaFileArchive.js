@@ -30,7 +30,6 @@ class EnigmaFileArchive {
         /**
          * @type {Buffer}
          */
-        this._contents = null;
         this._filePath = data.filename;
 
         /**
@@ -43,10 +42,6 @@ class EnigmaFileArchive {
          */
         this._parent = null;
 
-    }
-
-    setContents(contents) {
-        this._contents = contents;
     }
 
     isFile() {
