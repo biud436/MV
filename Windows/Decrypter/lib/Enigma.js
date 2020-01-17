@@ -4,32 +4,53 @@
 const fs = require('fs-extra');
 const path = require('path');
 const ConsoleColor = require('./ConsoleColor');
+const EnigmaFileArchive = require("./EnigmaFileArchive");
 
 class Enigma {
     /**
-     * 
+     * @param {String} buf
      * @param {Buffer} buf 
      */
-    constructor(buf) {
+    constructor(outputPath, buf) {
 
         /**
          * @type {Buffer}
          */
         this._rawData = buf;
+
         this._rawBufLength = buf.length;
 
         this._isValidSignature = false;
         this._offset = 0;
         this._allFileSize = 0;
+
+        /**
+         * @type {EnigmaFileArchive[]}
+         */
         this._files = [];
+
+        /**
+         * @type {EnigmaFileArchive[]}
+         */        
+        this._sortedFiles = [];
+
         this._addedFileSize = 0;
         this._dataOffset = 0;
+
+        this._minDepth = 0;
+        this._maxDepth = 0;
+
+        this._binaryPath = "";
         
+    }
+
+    unpack(binaryPath) {
+        this._binaryPath = binaryPath;
+
         this.checkSignature();
         this.parseDataSize();
         this.parseFiles();
         this.exportFiles();
-
     }
 
     checkSignature() {
@@ -195,77 +216,157 @@ class Enigma {
                     }
                     
                     names = [];
-                } else {
-                    this._dataOffset = lastFileType == 2 ? curOffset - 0x46 : curOffset - 0x2A;
-                    this._dataOffset += 0x08;             
+                } else {    
                     break;
                 } 
             }
     
         }
 
+        this._dataOffset = curOffset;
+
     }
 
     exportFiles() {
-
         const fileLength = this._files.filter(i => i.isFile()).length;
         const folderLength = this._files.filter(i => !i.isFile()).length - 1;
 
-        console.log(`${ConsoleColor.FgYellow}파일 갯수 : ${fileLength}${ConsoleColor.Reset}`);
-        console.log(`${ConsoleColor.FgYellow}폴더 갯수 : ${folderLength}${ConsoleColor.Reset}`);
+        // 올림 차순으로 정렬한다 (1->2->3->4)
+        this._sortedFiles = this._files.slice(0).sort( (a, b) => {
+            return a._treeIndex - b._treeIndex;
+        });
+
+        this._minDepth = this._sortedFiles[0]._treeIndex;
+        this._maxDepth = this._sortedFiles[this._sortedFiles.length - 1]._treeIndex;
+
+        this._sortedFiles[0]._filePath = ".";
+
+        this.exploreFiles(this._sortedFiles[0]);
+
+    }
+
+    /**
+     * @param {Buffer} data 
+     * @return {Buffer}
+     */
+    toSafeBuffer(data) {
+
+
+        var resultBuffer = new ArrayBuffer(data.length);
+        var view = new DataView(resultBuffer);
+
+        var resultArray = new Uint8Array(resultBuffer);
+        var byteArray = new Uint8Array(data);
+
+        for (var i = 0; i < resultArray.length; i++) {
+            resultArray[i] = byteArray[i];
+            view.setUint8(i, resultArray[i]);
+        }
+
+        var buf = Buffer.alloc(resultBuffer.byteLength);
+        var headerView = new Uint8Array(resultBuffer);
+        for (var i = 0; i < resultBuffer.byteLength; i++) {
+            buf[i] = headerView[i];
+        }            
+
+        return buf;        
+    }
+
+    /**
+     * 내부 파일을 탐색하면서 파일 경로와 파일 내용을 작성한다.
+     * @param {EnigmaFileArchive} root 
+     */
+    exploreFiles(root) {
         
-        for(var i = 1; i < 4; i++) {
-            var file = this._files[i];
+        var lastFolders = [];
 
-            var contents = this._rawData.toString(
-                "ascii",
-                this._dataOffset, 
-                this._dataOffset + file._originalSize
-            );
+        this._files.forEach((file, i, files) => {
+            const nextFile = files[i + 1];
+            if(!nextFile) return;
+            const depth = nextFile._treeIndex;
             
-            this._dataOffset += 0x01;
-            this._dataOffset += (file._originalSize);
+            if(!file.isFile()) {
+                lastFolders[file._treeIndex - 1] = file;
+                if((file._treeIndex - 2) >= 0) {
+                    file._parent = lastFolders[file._treeIndex - 2];
+                    lastFolders[file._treeIndex - 2]._children.push(file);
+                } else {
+                    file._parent = {_filename: "root"};
+                }
+            } else {
+                var findDepth = file._treeIndex;
+                if(lastFolders[findDepth - 2]) {
+                    lastFolders[findDepth - 2]._children.push(file);
+                    file._parent = lastFolders[findDepth - 2];
+                }                                
+            }
 
-            console.log(`
-            \r데이터 오프셋 : ${this._dataOffset}
-            \r파일 명 : ${file._filename}
-            \r파일 크기 : ${file._originalSize}
-            `);
-            fs.writeFileSync(file._filename, contents, "utf8");
+            if(file._treeIndex !== depth) {
+                if(file._treeIndex > depth) {
+                    // console.log(`${nextFile._filename}로 진입 / 트리 깊이가 바뀝니다.`);
+                } else if (file._treeIndex < depth) {
+                    // console.log(`${file._filename}]라는 폴더가 생성되어야 합니다.`);
+                }
+            }
+        });
+
+        var folders = this._files.filter(file => {return !file._isFile;});
+
+        /**
+         * 
+         * @param {Array<string>} src 
+         * @param {EnigmaFileArchive} root 
+         */
+        var concatPath = (src, root) => {
+            if(!root) return;
+            src.push(root._filename);                
+            if(root._parent) {
+                concatPath(src, root._parent);
+            }      
         };
 
+        /**
+         * 
+         * @param {EnigmaFileArchive} root 
+         */
+        var enumerate = (root) => {
+            root._children.forEach(file => {
+                if(!file.isFile()) {
+                    enumerate(file);
+                } else {
+                    file._filePath = [];
+                    concatPath(file._filePath, file);
+                    file._filePath = `${this._binaryPath}/${file._filePath.reverse().slice(2).join("/")}`;                
+                }                
+            });
+        };
+
+        enumerate(folders.shift());
+
+        var offset = this._dataOffset;
+
+        this._files.forEach(file => {
+
+            var safeBuffer = this.toSafeBuffer(this._rawData.slice(offset, offset + file._originalSize));
+            offset += (file._originalSize);
+
+            if(!file._isFile) {
+                
+            } else {
+                if(!fs.existsSync(path.dirname(file._filePath))) {
+                    fs.ensureDirSync(path.dirname(file._filePath));
+                }
+                
+                console.log(file._filePath);
+                
+                fs.writeFileSync(file._filePath, safeBuffer, "utf8");               
+                
+            }
+
+        });
+
     }
 
-}
-
-class EnigmaFileArchive {
-
-    constructor(data) {
-        this._filename = data.filename;
-        this._originalSize = data.originalSize;
-        this._fileIndex = data.fileIndex;
-        this._treeIndex = data.treeIndex;
-        this._numberOfFiles = data.numberOfFiles;
-        this._compressedSize = data.compressedSize;
-        this._isFile = data.isFile;
-        this._rawOffset = data.fileOffset;
-    }
-
-    isFile() {
-        return this._isFile;
-    }
-
-}
-
-class EnigmaFolderArchive extends EnigmaFileArchive {
-    constructor(data) {
-        super(data);
-    }
-
-    isFile() {
-        return this._isFile;
-    }
-    
 }
 
 module.exports = {

@@ -21,6 +21,11 @@ class Utils {
         this._gameBin = new RawFileReader(this._binPath, mainFile);
 
         if(this._gameBin.isValid()) {
+
+            if(this._gameBin._isEnigma) {
+                console.log(`Node.js ${ConsoleColor.BgYellow}${this._gameBin.version}${ConsoleColor.Reset}을 사용 중입니다.`);    
+                return;
+            }
             
             console.log(`Node.js ${ConsoleColor.BgYellow}${this._gameBin.version}${ConsoleColor.Reset} 버전을 사용 중인 프로그램으로 보여집니다`);
 

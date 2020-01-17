@@ -45,28 +45,30 @@ class RawFileReader {
         this._version = "";
         this._isReady = false;
         this._isEnigma = false;
-        this._enigma = {};
+        this._enigma = null;
 
         // Enigma Virtual Box를 사용하였는가?
         if(!this._isReady) {
             if(this.checkEnigmaUnpacker(binaryPath)) {
                 this._isEnigma = true;
+                this._isReady = true;
+                this.version = "Enigma Virtual Box";
             }
         }
 
-        // RPG Maker MV v1.6.2 버전인지 확인
-        this.version = this.readNodeVersion(this._binaryPath);
+        if(!this._isEnigma) {
 
-        // RPG Maker MV v1.5.2 이하인가?
-        if(!this._isReady) {
-            this.version = this.readNodeVersionForOlder(this._binaryPath);            
-        }
+            // RPG Maker MV v1.6.2 버전인지 확인
+            this.version = this.readNodeVersion(this._binaryPath);
 
-        if(this._isEnigma) {
+            // RPG Maker MV v1.5.2 이하인가?
+            if(!this._isReady) {
+                this.version = this.readNodeVersionForOlder(this._binaryPath);            
+            }
+
             if(this.isValid()) {
                 console.warn(`${ConsoleColor.Bright}Node.js ${ConsoleColor.FgRed}${this.version}${ConsoleColor.Reset} 버전이 사용된 ${ConsoleColor.FgCyan}RPG Maker MV${ConsoleColor.Reset} 게임으로 보입니다.`);
-            }
-            throw new Error(`${ConsoleColor.BgRed}Enigma Virtual Box를 사용한 게임은 언팩할 수 없습니다.${ConsoleColor.Reset}`);
+            }            
         }
 
     }
@@ -272,8 +274,13 @@ class RawFileReader {
                 // 섹션의 시작 오프셋을 찾는다.
                 var pointerToRawData = data.readInt32LE(currentOffset);
                 console.log(`pointerToRawData : ${ConsoleColor.FgRed}${pointerToRawData.toString(16)}${ConsoleColor.Reset}`);
-                this._enigma.Core = new Enigma.Core(data.slice(pointerToRawData, pointerToRawData + sizeOfRawData));
 
+                const outputPath = this._binaryPath;
+                const enigmaContents = data.slice(pointerToRawData, pointerToRawData + sizeOfRawData);
+
+                this._enigma = new Enigma.Core(outputPath, enigmaContents);
+                this._enigma.unpack(this._binaryPath);
+                
                 break;
             }
             offset += 0x40; // section length
