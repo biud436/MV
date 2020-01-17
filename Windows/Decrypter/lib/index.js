@@ -1,22 +1,6 @@
 /**
  * @author biud436
  * @help
- * 
- * ! 사용법 :
- * 별도로 빌드된 상태에서는 명령 프롬프트를 열고 다음 인수를 필수로 전달해야 합니다.
- * 
- *  decrypter <PROJECT_PATH>
- * 
- * index.html 파일이 위치한 곳에 decrypter.exe 파일을 복사한 경우에는 그냥 decrypter 파일을 실행하세요.
- * 
- * 노드로 직접 파일을 실행하려는 경우에는 다음과 같이 해야 합니다.
- * 
- *  node index.js C:\Users\U\Desktop\Exam2\201907
- * 
- * 이때 노드로 실행하는 경우에는 명령 프롬프트의 현재 디렉토리 위치에 따라 index.js 파일의 경로를 달리 해야 합니다.
- * 
- * <PROJECT_PATH> : Windows 기반의 프로젝트 경로 또는 Unix, Posix 기반의 경로 기입
- * 
  */
 const fs = require('fs-extra');
 const path = require('path');
