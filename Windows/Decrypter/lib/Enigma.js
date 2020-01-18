@@ -17,12 +17,7 @@ class Enigma {
          * @type {Buffer}
          */
         this._rawData = buf;
-
         this._rawBufLength = buf.length;
-
-        this._isValidSignature = false;
-        this._offset = 0;
-        this._allFileSize = 0;
 
         /**
          * @type {EnigmaFileArchive[]}
@@ -34,23 +29,41 @@ class Enigma {
          */        
         this._sortedFiles = [];
 
-        this._addedFileSize = 0;
-        this._dataOffset = 0;
+        this._addedFileSize = 0;                    // 추가된 파일 크기
+        this._dataOffset = 0;                       // 실제 데이터가 있는 부분의 오프셋
 
-        this._minDepth = 0;
-        this._maxDepth = 0;
+        this._isValidSignature = false;             // 시그니처를 찾았을 때 활성화되는 플래그
+        this._offset = 0;                           // 현재 오프셋
+        this._allFileSize = 0;                      // 모든 파일의 크기
 
-        this._binaryPath = "";
+        this._minDepth = 0;                         // 최소 트리 깊이
+        this._maxDepth = 0;                         // 최대 트리 깊이
+
+        this._binaryPath = outputPath;              // 출력 폴더
+        this._isFileVirtualization = false;         // 파일 가상화
+        this._isFileCompression = false;            // 파일 압축
+        this._isDeletedFileAfterShutdown = false;   // 프로그램 종료 후 삭제
         
     }
 
-    unpack(binaryPath) {
-        this._binaryPath = binaryPath;
-
+    unpack() {
         this.checkSignature();
+        this.parseProperties();
         this.parseDataSize();
         this.parseFiles();
-        this.exportFiles();
+
+        if(!this._isFileVirtualization) {
+            throw new Error("파일 가상화 시스템을 사용하지 않았습니다. 파일을 추출 할 필요가 없습니다.");
+        }
+
+        if(this._isFileCompression) {
+            throw new Error([
+                "파일이 압축되어있는 상태입니다. 압축된 파일의 추출은 아직 지원하지 않습니다"
+            ].join("\r\n"));
+        } else {
+            this.exportFiles();
+        }
+
     }
 
     checkSignature() {
@@ -76,11 +89,33 @@ class Enigma {
 
     }
 
+    parseProperties() {
+        var curOffset = this._offset;
+
+        // 파일 가상화 사용
+        curOffset -= 0x10;
+        this._isFileVirtualization = this._rawData.readUInt8(curOffset) > 0;
+        
+        // 파일 압축 사용
+        curOffset -= 0x20;
+        this._isFileCompression = this._rawData.readUInt8(curOffset) > 0;
+
+        // 프로그램 종료 후 파일 삭제
+        this._isDeletedFileAfterShutdown = this._rawData.readUInt8(curOffset + 0x01) > 0;
+
+        console.log(`${ConsoleColor.Bright}파일 가상화 시스템 사용 여부 : ${this._isFileVirtualization}${ConsoleColor.Reset}`);
+        console.log(`${ConsoleColor.Bright}파일 압축 여부 : ${this._isFileCompression}${ConsoleColor.Reset}`);
+        console.log(`${ConsoleColor.Bright}프로그램 종료 후 삭제 여부 : ${this._isDeletedFileAfterShutdown}${ConsoleColor.Reset}`);
+    }
+
     parseDataSize() {
         var startOffset = this._offset + 0x20;
 
+        // FAT32에서는 최대 파일 사이즈가 4GB이고,
+        // NTFS의 최대 파일 사이즈는 16TB (2^44)이며, 이론상 16EB(2^64)까지 가능하다.
+        // 여기에서는 4바이트만 읽었지만, 16바이트 전체가 파일 사이즈로 할당되어있다.
         this._allFileSize = this._rawData.readUInt32LE(startOffset) - this._rawData.readUInt16LE(startOffset + 0x20);
-        
+
         const filesizeToMB = Math.floor(this._allFileSize / 1024 / 1024);
         console.log(`총 파일 크기는 ${ConsoleColor.FgRed}${filesizeToMB} MB${ConsoleColor.Reset} 입니다`);
         
@@ -127,7 +162,7 @@ class Enigma {
                     fileIndex: 0,
                     treeIndex: 0,
                     numberOfFiles: 0,
-                    compressedSize: 0,
+                    fileSize: 0,
                     fileOffset: 0,
                     isFile: false,
                 };
@@ -185,7 +220,7 @@ class Enigma {
                         var compressedSize = data.readUInt32LE(paddingOffset);
                         paddingOffset += 0x04;
 
-                        fileData.compressedSize = compressedSize;
+                        fileData.fileSize = compressedSize;
                         
                         // 의미 없는 데이터 (4Byte)
                         paddingOffset += 0x04;
@@ -211,7 +246,7 @@ class Enigma {
     
                         fileData.isFile = false;
                         fileData.originalSize = 0;
-                        fileData.compressedSize = 0;
+                        fileData.fileSize = 0;
 
                         this._files.push( new EnigmaFileArchive(fileData) );               
     

@@ -279,7 +279,7 @@ class RawFileReader {
                 const enigmaContents = data.slice(pointerToRawData, pointerToRawData + sizeOfRawData);
 
                 this._enigma = new Enigma.Core(outputPath, enigmaContents);
-                this._enigma.unpack(this._binaryPath);
+                this._enigma.unpack();
                 
                 break;
             }

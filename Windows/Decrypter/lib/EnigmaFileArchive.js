@@ -11,7 +11,7 @@ class EnigmaFileArchive {
      *          fileIndex:Number, 
      *          treeIndex:Number, 
      *          numberOfFiles:Number, 
-     *          compressedSize: Number, 
+     *          fileSize: Number, 
      *          isFile: Boolean, 
      *          fileOffset: Number
      *         }} data 
@@ -23,7 +23,7 @@ class EnigmaFileArchive {
         this._fileIndex = data.fileIndex;
         this._treeIndex = data.treeIndex;
         this._numberOfFiles = data.numberOfFiles;
-        this._compressedSize = data.compressedSize;
+        this._fileSize = data.fileSize;
         this._isFile = data.isFile;
         this._rawOffset = data.fileOffset;
 

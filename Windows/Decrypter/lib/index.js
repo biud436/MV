@@ -9,6 +9,9 @@ const ZipUtils = require('./binary');
 const ConsoleColor = require("./ConsoleColor");
 let mainPath;
 
+/**
+ * 
+ */
 const config = {
     EncryptExt: [".rpgmvo", ".rpgmvm", ".rpgmvw", ".rpgmvp"],
     DecryptExt: [".ogg", ".m4a", ".wav", ".png"],
@@ -20,6 +23,10 @@ const config = {
     }
 };
 
+/**
+ * 실행 파일 내에 압축된 파일이나 파일이 있는 지 확인하고 추출한다
+ * @param {Function} callback 
+ */
 async function extractResourceFiles(callback) {
     return await new Promise(resolve => {
         if(args[1] && args[1].indexOf("/d=") >= 0) {
