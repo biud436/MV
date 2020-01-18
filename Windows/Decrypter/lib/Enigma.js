@@ -58,7 +58,8 @@ class Enigma {
 
         if(this._isFileCompression) {
             throw new Error([
-                "파일이 압축되어있는 상태입니다. 압축된 파일의 추출은 아직 지원하지 않습니다"
+                "파일이 압축되어있는 상태입니다. 압축된 파일의 추출은 아직 지원하지 않습니다",
+                "압축 파일을 잘 모르겠습니다. 살펴보니 ZIP는 아닌 것 같습니다^^"
             ].join("\r\n"));
         } else {
             this.exportFiles();
