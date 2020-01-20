@@ -127,6 +127,7 @@ class Enigma {
         // FAT32에서는 최대 파일 사이즈가 4GB이고,
         // NTFS의 최대 파일 사이즈는 16TB (2^44)이며, 이론상 16EB(2^64)까지 가능하다.
         // 여기에서는 4바이트만 읽었지만, 16바이트 전체가 파일 사이즈로 할당되어있다.
+        // https://en.wikipedia.org/wiki/Design_of_the_FAT_file_system
         this._allFileSize = this._rawData.readUInt32LE(startOffset) - this._rawData.readUInt16LE(startOffset + 0x20);
 
         const filesizeToMB = Math.floor(this._allFileSize / 1024 / 1024);
@@ -225,10 +226,31 @@ class Enigma {
                         var paddingOffset = curOffset + 0x03;
                         
                         // 파일 크기 (4Byte)
-                        var fileSize = data.readUInt32LE(paddingOffset);
-
+                        var fileSize = data.readUInt32LE(paddingOffset);      
+                        
                         // 파일 특성(File Attribute) (2Byte)
+                        // https://en.wikipedia.org/wiki/Design_of_the_FAT_file_system
+                        // Bit  Mask    Desc
+                        // 0	0x0001	Owner delete/rename/attribute change requires permission
+                        // 1	0x0002	Owner execute requires permission (FlexOS, 4680 OS, 4690 OS only)
+                        // 2	0x0004	Owner write/modify requires permission
+                        // 3	0x0008	Owner read/copy requires permission
+                        // 4	0x0010	Group delete/rename/attribute change requires permission
+                        // 5	0x0020	Group execute requires permission (FlexOS, 4680 OS, 4690 OS only)
+                        // 6	0x0040	Group write/modify requires permission
+                        // 7	0x0080	Group read/copy requires permission
+                        // 8	0x0100	World delete/rename/attribute change requires permission
+                        // 9	0x0200	World execute requires permission (FlexOS, 4680 OS, 4690 OS only)
+                        // 10	0x0400	World write/modify requires permission
+                        // 11	0x0800	World read/copy requires permission
                         var fileAttribute = data.readUInt16LE(paddingOffset + 0x21);
+
+                        // 마지막으로 변경한 파일 시간 (2Byte)
+                        // Bits	Description
+                        // 15-11	Hours (0-23)
+                        // 10-5	Minutes (0-59)
+                        // 4-0	Seconds/2 (0-29)                                                
+
                         paddingOffset += 0x04;
                         paddingOffset += paddingOffset + 0x2B;
 
