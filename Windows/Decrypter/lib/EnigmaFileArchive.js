@@ -13,7 +13,8 @@ class EnigmaFileArchive {
      *          numberOfFiles:Number, 
      *          fileSize: Number, 
      *          isFile: Boolean, 
-     *          fileOffset: Number
+     *          fileOffset: Number,
+     *          fileAttribute: Number,
      *         }} data 
      */
     constructor(data) {
@@ -26,6 +27,7 @@ class EnigmaFileArchive {
         this._fileSize = data.fileSize;
         this._isFile = data.isFile;
         this._rawOffset = data.fileOffset;
+        this._fileAttribute = data.fileAttribute;
 
         /**
          * @type {Buffer}

@@ -29,21 +29,24 @@ class Enigma {
          */        
         this._sortedFiles = [];
 
-        this._addedFileSize = 0;                    // 추가된 파일 크기
-        this._dataOffset = 0;                       // 실제 데이터가 있는 부분의 오프셋
+        this._addedFileSize = 0;                                    // 추가된 파일 크기
+        this._dataOffset = 0;                                       // 실제 데이터가 있는 부분의 오프셋
 
-        this._isValidSignature = false;             // 시그니처를 찾았을 때 활성화되는 플래그
-        this._offset = 0;                           // 현재 오프셋
-        this._allFileSize = 0;                      // 모든 파일의 크기
+        this._isValidSignature = false;                             // 시그니처를 찾았을 때 활성화되는 플래그
+        this._offset = 0;                                           // 현재 오프셋
+        this._allFileSize = 0;                                      // 모든 파일의 크기
 
-        this._minDepth = 0;                         // 최소 트리 깊이
-        this._maxDepth = 0;                         // 최대 트리 깊이
+        this._minDepth = 0;                                         // 최소 트리 깊이
+        this._maxDepth = 0;                                         // 최대 트리 깊이
 
-        this._binaryPath = outputPath;              // 출력 폴더
-        this._isFileVirtualization = false;         // 파일 가상화
-        this._isFileCompression = false;            // 파일 압축
-        this._isDeletedFileAfterShutdown = false;   // 프로그램 종료 후 삭제
-        
+        this._binaryPath = outputPath;                              // 출력 폴더
+        this._isFileVirtualization = false;                         // 파일 가상화
+        this._isFileCompression = false;                            // 파일 압축
+        this._isDeletedFileAfterShutdown = false;                   // 프로그램 종료 후 삭제
+        this._isRegistryVirtualization = false;                     // 레지스트리 가상화
+        this._isSharedFileVirtualizationToChildProcess = false;     // 하위 프로세스에 가상 시스템 공유
+        this._isAssociateExecutableFilesWithTemporaryFiles = false  // 임시 파일을 사용하여 실행 파일들 연결
+        this._AllowVirtualExecutableFileToRun = false;              // 가상 실행 파일의 실행 허용
     }
 
     unpack() {
@@ -56,6 +59,7 @@ class Enigma {
             throw new Error("파일 가상화 시스템을 사용하지 않았습니다. 파일을 추출 할 필요가 없습니다.");
         }
 
+        // 연속적으로 등장하는 문자를 치환하는 Run-Length와 유사한 방식으로 보여지지만, Run-Length는 아님.
         if(this._isFileCompression) {
             throw new Error([
                 "파일이 압축되어있는 상태입니다. 압축된 파일의 추출은 아직 지원하지 않습니다",
@@ -96,6 +100,14 @@ class Enigma {
         // 파일 가상화 사용
         curOffset -= 0x10;
         this._isFileVirtualization = this._rawData.readUInt8(curOffset) > 0;
+        // 레지스트리 가상화
+        this._isRegistryVirtualization = this._rawData.readUInt8(curOffset + 0x01) > 0;
+        // 하위 프로세스에 가상 시스템 공유
+        this._isSharedFileVirtualizationToChildProcess = this._rawData.readUInt8(curOffset + 0x02) > 0;
+        // 임시 파일을 사용하여 실행 파일들 연결
+        this._isAssociateExecutableFilesWithTemporaryFiles = this._rawData.readUInt8(curOffset + 0x03) > 0;
+        // 가상 실행 파일의 실행 허용
+        this._AllowVirtualExecutableFileToRun = this._rawData.readUInt8(curOffset + 0x04) > 0;
         
         // 파일 압축 사용
         curOffset -= 0x20;
@@ -146,6 +158,7 @@ class Enigma {
             compressedSize: 0,
             fileOffset: 0,
             isFile: false,
+            fileAttribute: 0,
         };        
 
         var lastFileIndex = 0;
@@ -166,6 +179,7 @@ class Enigma {
                     fileSize: 0,
                     fileOffset: 0,
                     isFile: false,
+                    fileAttribute: 0, 
                 };
 
                 // 파일 순서 (4Byte)
@@ -184,7 +198,7 @@ class Enigma {
 
                 // 폴더일 경우, 파일의 갯수 (4Byte)
                 fileData.numberOfFiles = data.readUInt32LE(paddingOffset);
-                paddingOffset += 0x04;       
+                paddingOffset += 0x04;   
 
                 curOffset += 0x0C;
                 mode = "name";
@@ -212,6 +226,9 @@ class Enigma {
                         
                         // 파일 크기 (4Byte)
                         var fileSize = data.readUInt32LE(paddingOffset);
+
+                        // 파일 특성(File Attribute) (2Byte)
+                        var fileAttribute = data.readUInt16LE(paddingOffset + 0x21);
                         paddingOffset += 0x04;
                         paddingOffset += paddingOffset + 0x2B;
 
@@ -248,6 +265,7 @@ class Enigma {
                         fileData.isFile = false;
                         fileData.originalSize = 0;
                         fileData.fileSize = 0;
+                        fileData.fileAttribute = 0x00;
 
                         this._files.push( new EnigmaFileArchive(fileData) );               
     
@@ -264,6 +282,7 @@ class Enigma {
     
         }
 
+        // 압축되어있는 경우, 데이터 상단에 
         this._dataOffset = curOffset;
 
     }
