@@ -11,8 +11,8 @@
  * @author biud436
  *          
  * @help
- * 
  * This help document does not support English translation yet.
+ * This plugin is also incompatible with the YEP_MessageCore plugin.
  * 
  * ================================================================
  * 소개
