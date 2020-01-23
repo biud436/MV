@@ -119,6 +119,8 @@ RS.MessageEffects = RS.MessageEffects || {};
     $.Params = {};
     $.Params.currentEffect = "pingpong";
 
+    $.DEG_TO_RAD  = (Math.PI / 180.0);
+
     //================================================================
     // TextEffect
     //================================================================
@@ -140,7 +142,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                 default:
                 case 'pingpong':
                     if(this._power <= 60) {
-                        this.y = this._startY + ((Math.PI * 2.0) / this._power) * 4.0;
+                        this.y = this._startY + (PIXI.PI_2 / this._power) * 4.0;
                         this._power++;
                     } else {
                         this._isStarted = false;
@@ -148,7 +150,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                     break;
                 case 'slide':
                     if(this._power <= 60) {
-                        this.x = this._startX + ((Math.PI * 2.0) / this._power) * (this._index % 4) * 4;
+                        this.x = this._startX + (PIXI.PI_2 / this._power) * (this._index % 4) * 4;
                         this.opacity = 4 * this._power;
                         this._power++;
                     } else {
@@ -159,7 +161,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                     if(this._power <= this._random) {
                         let dist = this._random - this._power;
                         let tm = performance.now();
-                        let r = (Math.PI / 180.0) * dist * (this._random % 2 == 0 ? -tm : tm);
+                        let r = $.DEG_TO_RAD * dist * (this._random % 2 == 0 ? -tm : tm);
                         let c = Math.cos(r);
                         let s = Math.sin(r);
                         let tx = this._startX - dist;
@@ -175,7 +177,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                     if(this._power <= this._random) {
                         let dist = this._random - this._power;
                         let tm = performance.now();
-                        let r = (Math.PI / 180.0) * dist * (this._index % 3 == 0 ? -1 : 1);
+                        let r = $.DEG_TO_RAD * dist * (this._index % 3 == 0 ? -1 : 1);
                         let c = Math.cos(r);
                         let s = Math.sin(r);
                         let tx = (this._startX - dist);
@@ -190,7 +192,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                 case 'random_rot': 
                     if(this._power <= this._random) {
                         let dist = this._random - this._power;
-                        let r = (Math.PI / 180.0) * dist * (this._random % 2 == 0 ? -1 : 1);
+                        let r = $.DEG_TO_RAD * dist * (this._random % 2 == 0 ? -1 : 1);
                         let c = Math.cos(r);
                         let s = Math.sin(r);
                         let tx = this._startX - dist;
@@ -201,7 +203,8 @@ RS.MessageEffects = RS.MessageEffects || {};
                     } else {
                         this._isStarted = false;
                     }
-                    break;                    
+                    break; 
+                // TODO: Add desired effect..
                     
             }
         }
