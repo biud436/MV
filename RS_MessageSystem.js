@@ -8,7 +8,7 @@
 //================================================================
  /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.62) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.63) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -739,7 +739,7 @@
  */
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.62) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.63) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -1404,6 +1404,8 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2020.01.24 (v0.1.63) : 
+ * - 말풍선 모드에서 타겟 캐릭터가 움직이지 않을 때, 배경 화면이 깜빡거리는 문제를 수정하였습니다.
  * 2019.09.23 (v0.1.61) :
  * - 텍스트 정렬 명령어를 사용하지 않았을 때에도, 왼쪽으로 강제 정렬되는 문제를 수정하였습니다.
  * 2019.08.29 (v0.1.60) : 
@@ -3646,10 +3648,17 @@ var Color = Color || {};
     var ox = RS.MessageSystem.Params.windowOffset.x;
     var oy = RS.MessageSystem.Params.windowOffset.y;
 
-    this.x = (Graphics.boxWidth / 2) - (this.windowWidth() / 2) + ox;
-    this.y = n * (Graphics.boxHeight - this.windowHeight()) / 2 + oy;
-    this.width = this.windowWidth();
-    this.height = this.windowHeight();
+    var x = (Graphics.boxWidth / 2) - (this.windowWidth() / 2) + ox;
+    var y = n * (Graphics.boxHeight - this.windowHeight()) / 2 + oy;
+    var width = this.windowWidth();
+    var height = this.windowHeight();
+    
+    if(x !== this.x) this.x = x;
+    if(y !== this.y) this.y = y;
+    if(width !== this.width || height !== this.height) {
+      this.width = width;
+      this.height = height;      
+    }
     
     if(isResetOwner) {
       $gameMap.setMsgOwner($gamePlayer);
@@ -3911,11 +3920,18 @@ var Color = Color || {};
     
     data = this.setBalloonPlacement(Object.create(data));
     
-    // 말풍선 위치 및 크기 설정
-    this.setBalloonRect(data);
+    if ( (data.dx + RS.MessageSystem.Params.windowOffset.x) !== this.x ||
+        (data.dy + RS.MessageSystem.Params.windowOffset.y) !== this.y ||
+      this._bWdith !== this.width || 
+      this._bHeight !== this.height) {
+
+      // 말풍선 위치 및 크기 설정        
+      this.setBalloonRect(data);
     
-    // 멈춤 표시 스프라이트 위치 조정
-    this.updateSubBalloonElements(data);
+      // 멈춤 표시 스프라이트 위치 조정
+      this.updateSubBalloonElements(data);
+    }
+
     
   };
 
@@ -3925,11 +3941,20 @@ var Color = Color || {};
       // 말풍선 모드일 때, 말풍선 창이 캐릭터를 따라다니게 됩니다.
       if(this.pause && $gameMessage.getBalloon() !== -2 &&
       SceneManager._scene instanceof Scene_Map) {
-        this.updateBalloonPosition();
+
+        /**
+         * @type {Game_Character}
+         */
+        var owner = $gameMap.getMsgOwner();
+        if(owner && owner.isMoving()) {
+          this.updateBalloonPosition();
+        }
+
         // 멈춤 표시 스프라이트에는 애니메이션이 있어 몇 프레임 간의 여유를 두고 완전 표시된다.
         // 하지만 ES5 기준, 루비의 Fiber나 유니티의 코루틴처럼 안전하게 재진입할 수 있는 방법이 현재까지 없다.
         // 하지만 1프레임의 여유도 없으므로 투명도를 255로 설정해야 한다.
         this._windowPauseSignSprite.opacity = 255;
+
       }
       return true;
     }
