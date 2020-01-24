@@ -95,13 +95,10 @@
  * ================================================================
  * Text Codes
  * ================================================================
- * 한글 메시지 시스템을 사용 중이라면 다음과 같은 텍스트 코드를 사용할 수 있습니다.
+ * 다음과 같은 텍스트 코드를 사용할 수 있습니다.
  * 
  *  \텍스트효과<효과명>
- * 
- * 이외의 메시지 시스템 또는 한글이 아닌 언어에서는 
- * \TE<TEXT_EFFECT_NAME>이라는 텍스트 코드를 사용할 수 있습니다.
- * 따라서 실제로 사용한다면 다음과 같습니다.
+ *  \TE<TEXT_EFFECT_NAME>
  * 
  * 다음 명령은 부드럽게 상하로 부드럽게 흔들리는 이펙트를 줍니다.
  * 
@@ -189,32 +186,6 @@ RS.MessageEffects = RS.MessageEffects || {};
     $.Params.clearFlag = Boolean(parameters["Clear Flag"] === "true");
 
     $.DEG_TO_RAD  = (Math.PI / 180.0);
-
-    //============================================================================
-    // Multiple Language supports
-    //============================================================================ 
-    if(Imported.RS_MessageSystem) {
-
-        /**
-         * This function allows you to concat with a and b.
-         * @param {Array} a 
-         * @param {Array} b 
-         */
-        let concatArray = (a, b) => {
-            a = a.concat(b);
-            return a;
-        };
-
-        concatArray(RS.MessageSystem.TextCodes['Korean'], ["텍스트효과"]);
-        concatArray(RS.MessageSystem.TextCodes['Japanese'], ["TE"]);
-        concatArray(RS.MessageSystem.TextCodes['Chinese'], ["TE"]);
-        concatArray(RS.MessageSystem.TextCodes['English'], ["TE"]);
-
-        Object.assign(RS.MessageSystem.TextCodes.ENUM, {
-            TEXT_EFFECT: 200,
-        });
-
-    }
 
     //================================================================
     // TextEffect
@@ -451,7 +422,7 @@ RS.MessageEffects = RS.MessageEffects || {};
          * @param {MV.TextState} textState 
          */
         obtainTextEffectName(textState) {
-            var arr = /\<(.+?)\>/.exec(textState.text.slice(textState.index));
+            var arr = /\<(.*)\>/.exec(textState.text.slice(textState.index));
             if (arr) {
                 textState.index += arr[0].length;
                 return String(arr[1]);
@@ -469,27 +440,16 @@ RS.MessageEffects = RS.MessageEffects || {};
          * @param {String} code 
          * @param {MV.TextState} textState 
          */
-        processEscapeCharacter(code, textState) {
-            if(Imported.RS_MessageSystem) {
-                var tcGroup = RS.MessageSystem.TextCodes.ENUM;
-                var textCode = RS.MessageSystem.TextCodes.Main;
-                switch (code) {
-                    case textCode[tcGroup.TEXT_EFFECT]:
-                        this.setTextEffect(this.obtainTextEffectName(textState));
-                        break;
-                    default:
-                        super.processEscapeCharacter(code, textState);
-                        break;                    
-                }                                
-            } else {
-                switch (code) {
-                    case 'TE':
-                        this.setTextEffect(this.obtainTextEffectName(textState));
-                        break;
-                    default:
-                        super.processEscapeCharacter(code, textState);
-                        break;
-                }
+        processEscapeCharacter(code, textState) {                          
+            switch (code) {
+                case '텍스트효과':
+                case 'TE':
+                    if(this._isUsedTextWidthEx) break;
+                    this.setTextEffect(this.obtainTextEffectName(textState));
+                    break;
+                default:
+                    super.processEscapeCharacter(code, textState);
+                    break;
             }
         }
 
