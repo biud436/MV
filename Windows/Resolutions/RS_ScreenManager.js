@@ -275,7 +275,7 @@ Imported.RS_ScreenManager = true;
  * @parent BattleField
  * @type boolean
  * @desc it can rescale battle background images to fit with Graphics' area.
- * @default true
+ * @default false
  * 
  * @param ActorFunc.moveToStartPosition
  * @parent BattleField
@@ -1413,18 +1413,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
             item = $.localization.get("MobileResolutions");
           }
   
-          // index 값이 없으면 현재 해상도 값만 표시
-          // if(!idx) {
           return String(Graphics.boxWidth + " x " + Graphics.boxHeight);
-          // } else {
-          //   // 전체 화면이 아니라면,
-          //   if(!$.isFullscreen()) {
-          //     return $.localization.get("Full Screen");
-          //   } else {
-          //     this._lastIndex = idx;
-          //     return item[idx || 0];
-          //   }
-          // }
   
         // 종횡비 표시
         } else {
@@ -1741,6 +1730,41 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     alias_TilingSprite__onBitmapLoad.call(this);
     this.emit('rs-resize');
   };
+  //#endregion
+
+  //============================================================================
+  // Sprite_Actor
+  //============================================================================  
+
+    // These functions are worked fine in the vanilla mode only!!
+    // I couldn't test the impact yet when using the plugin named YEP_BattleEngineCore.
+    if(!Imported.YEP_BattleEngineCore) {
+
+      Sprite_Actor.prototype.moveToStartPosition = function() {
+        eval($.Params.actorFunc.moveToStartPosition);
+      };
+    
+      Sprite_Actor.prototype.setActorHome = function(index) {
+        eval($.Params.actorFunc.setActorHome);
+      };    
+
+      Sprite_Actor.prototype.stepForward = function() {
+        eval($.Params.actorFunc.stepForward);
+      };
+      
+      Sprite_Actor.prototype.stepBack = function() {
+        eval($.Params.actorFunc.stepBack);
+      };
+      
+      Sprite_Actor.prototype.retreat = function() {
+        eval($.Params.actorFunc.retreat);
+      };   
+    
+    }    
+
+  //============================================================================
+  // Spriteset_Battle
+  //============================================================================    
 
   if($.Params.isValidScaledBattleback) {
 
@@ -1781,35 +1805,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
     };
 
-    // These functions are worked fine in the vanilla mode only!!
-    // I couldn't test the impact yet when using the plugin named YEP_BattleEngineCore.
-    if(!Imported.YEP_BattleEngineCore) {
-
-      Sprite_Actor.prototype.moveToStartPosition = function() {
-        eval($.Params.actorFunc.moveToStartPosition);
-      };
-    
-      Sprite_Actor.prototype.setActorHome = function(index) {
-        eval($.Params.actorFunc.setActorHome);
-      };    
-
-      Sprite_Actor.prototype.stepForward = function() {
-        eval($.Params.actorFunc.stepForward);
-      };
-      
-      Sprite_Actor.prototype.stepBack = function() {
-        eval($.Params.actorFunc.stepBack);
-      };
-      
-      Sprite_Actor.prototype.retreat = function() {
-        eval($.Params.actorFunc.retreat);
-      };   
-    
-    }    
-
   }
-
-  //#endregion
 
   //============================================================================
   //#region Sprite_Picture
