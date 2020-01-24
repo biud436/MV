@@ -202,6 +202,13 @@ RS.MessageEffects = RS.MessageEffects || {};
             this.updateEffects();
         }
 
+        flush() {
+            this._isStarted = false;
+            this.x = this._startX;
+            this.y = this._startY;
+            this.opacity = this._tempOpacity;
+        }
+
         updateEffects() {
             if(!this._isStarted) return;
             switch(this._effectType) {
@@ -211,7 +218,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                         this.y = this._startY + (PIXI.PI_2 / this._power) * 4.0;
                         this._power++;
                     } else {
-                        this._isStarted = false;
+                        this.flush();
                     }
                     break;
                 case 'slide':
@@ -220,7 +227,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                         this.opacity = 4 * this._power;
                         this._power++;
                     } else {
-                        this._isStarted = false;
+                        this.flush();
                     }
                     break;            
                 case 'high_rot':
@@ -236,7 +243,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                         this.y = tx * s + ty * c;
                         this._power++;
                     } else {
-                        this._isStarted = false;
+                        this.flush();
                     }
                     break;
                 case 'normal_rot': 
@@ -252,7 +259,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                         this.y = tx * s + ty * c;
                         this._power++;
                     } else {
-                        this._isStarted = false;
+                        this.flush();
                     }
                   break;                    
                 case 'random_rot': 
@@ -267,7 +274,7 @@ RS.MessageEffects = RS.MessageEffects || {};
                         this.y = tx * s + ty * c;
                         this._power++;
                     } else {
-                        this._isStarted = false;
+                        this.flush();
                     }
                     break; 
                 // TODO: Add desired effect..
@@ -288,6 +295,7 @@ RS.MessageEffects = RS.MessageEffects || {};
             this._random = Math.floor(Math.random() * 60);
             this._effectType = effectType;
             this._index = index;
+            this._tempOpacity = this.opacity;
         };
     }
 
@@ -322,9 +330,17 @@ RS.MessageEffects = RS.MessageEffects || {};
             this._mainTextLayer.removeChildren();
         }
 
+        _updateContents() {
+            super._updateContents();
+
+        }
+
         createMainTextLayer() {
+            var w = this._width - this._padding * 2;
+            var h = this._height - this._padding * 2;
+
             this._mainTextLayer = new Sprite();
-            this._mainTextLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+            this._mainTextLayer.setFrame(this.origin.x, this.origin.y, w, h);
             this._mainTextLayer.on("effect", this.startTextEffect, this);
             this._windowContentsSprite.addChild(this._mainTextLayer);
         }
@@ -347,6 +363,7 @@ RS.MessageEffects = RS.MessageEffects || {};
          */
         startTextEffect(args) {
             if(!args[0]) return;
+            this._mainTextLayer.cacheAsBitmap = false;            
             args[0].start(args[1], args[2]);
         }
 
@@ -411,6 +428,11 @@ RS.MessageEffects = RS.MessageEffects || {};
             ]);
             
             textState.x += w;
+
+            if(Imported.RS_MessageSystem) {
+                !this._showFast && this.startWait($gameMessage.getWaitTime() || 0);
+                if((textState.index % RS.MessageSystem.Params.textSoundInterval) === 0) this._requestTextSound();                
+            }
         }
 
         initMembers() {
@@ -462,6 +484,12 @@ RS.MessageEffects = RS.MessageEffects || {};
             } else {
                 super.processNormalCharacter(textState);
             }
+        }
+
+        startPause() {
+            super.startPause();
+            this._mainTextLayer.children.forEach(i => i.flush());
+            this._mainTextLayer.cacheAsBitmap = true;
         }
 
     }
