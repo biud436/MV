@@ -9,6 +9,33 @@
 /*:
  * @plugindesc <RS_MessageEffects>
  * @author biud436
+ * 
+ * @param Default Text Effect
+ * @type select
+ * @desc Select desired text effect.
+ * @default normal_rot
+ * @option Ping Pong
+ * @value pingpong
+ * @option Slide
+ * @value slide
+ * @option high_rot
+ * @value high_rot
+ * @option normal_rot
+ * @value normal_rot
+ * @option random_rot
+ * @value random_rot
+ * @option None
+ * @value none
+ * 
+ * @param New Page
+ * 
+ * @param Clear Flag
+ * @parent New Page
+ * @type boolean
+ * @desc Clear the text effect as 'none' when opening a new page
+ * @default false
+ * @on true
+ * @off false
  *          
  * @help
  * This help document does not support English translation yet.
@@ -66,6 +93,49 @@
  * 그러나 이렇게 검증되지 않은 방식에 투자할 시간은 없습니다.
  * 
  * ================================================================
+ * Text Codes
+ * ================================================================
+ * 한글 메시지 시스템을 사용 중이라면 다음과 같은 텍스트 코드를 사용할 수 있습니다.
+ * 
+ *  \텍스트효과<효과명>
+ * 
+ * 이외의 메시지 시스템 또는 한글이 아닌 언어에서는 
+ * \TE<TEXT_EFFECT_NAME>이라는 텍스트 코드를 사용할 수 있습니다.
+ * 따라서 실제로 사용한다면 다음과 같습니다.
+ * 
+ * 다음 명령은 부드럽게 상하로 부드럽게 흔들리는 이펙트를 줍니다.
+ * 
+ * \텍스트효과<pingpong>
+ * \TE<pingpong>
+ * 
+ * 다음 명령은 투명도 증감과 함께 좌우로 살짝 흔들리는 이펙트를 줍니다.
+ * 
+ * \텍스트효과<slide>
+ * \TE<slide>
+ * 
+ * 글자가 어딘가에서 날라와 제자리를 빠르게 찾아갑니다.
+ * 
+ * \텍스트효과<high_rot>
+ * \TE<high_rot>
+ * 
+ * 규칙적으로 방향도 전환하면서 제자리를 찾는 효과입니다.
+ * 
+ * \텍스트효과<normal_rot>
+ * \TE<normal_rot>
+ * 
+ * 불규칙적인 패턴으로 제자리를 찾아갑니다.
+ * 
+ * \텍스트효과<random_rot>
+ * \TE<random_rot>
+ * 
+ * 이외로 텍스트 효과를 없애고 싶다면 다음과 같습니다.
+ * 
+ * \텍스트효과<none>
+ * \TE<none>
+ * 
+ * 주의할 점은 텍스트 효과 문자열은 대소문자를 구분한다는 점입니다.
+ * 
+ * ================================================================
  * Plugin Commmands
  * ================================================================
  * 다음 명령은 부드럽게 상하로 부드럽게 흔들리는 이펙트를 줍니다.
@@ -88,18 +158,12 @@
  * 
  * MessageEffectMap random_rot
  * 
- * 제가 다양한 효과를 더 넣을 수 있을 것 같은데요.
- * 사실 이외의 이펙트는 생각이 나지 않습니다.
+ * 대소문자를 구분하므로 소문자를 대문자를 적지 않도록 해주세요.
  * 
- * 또한 삼각 함수를 쓸 때 마다 최적화에 대한 압박감이 찾아옵니다.
- * 필자가 보유하고 있는 서적에서는 기저 벡터라는 것으로 이 문제를 해결하지만
- * 최선의 방법인지는 모르겠습니다.
- * 
- * 아무튼 검증되기 전에 쓰셔도 상관 없으나 제가 책임은 지지 않습니다.
  * ================================================================
  * Change Log
  * ================================================================
- * 2020.01.23 (v1.0.0) - First Release.
+ * 2020.01.24 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
@@ -119,9 +183,38 @@ RS.MessageEffects = RS.MessageEffects || {};
     parameters = (parameters.length > 0) && parameters[0].parameters;
 
     $.Params = {};
-    $.Params.currentEffect = "pingpong";
+    
+    $.Params.defaultTextEffect = parameters["Default Text Effect"] || "none";
+    $.Params.currentEffect = $.Params.defaultTextEffect;
+    $.Params.clearFlag = Boolean(parameters["Clear Flag"] === "true");
 
     $.DEG_TO_RAD  = (Math.PI / 180.0);
+
+    //============================================================================
+    // Multiple Language supports
+    //============================================================================ 
+    if(Imported.RS_MessageSystem) {
+
+        /**
+         * This function allows you to concat with a and b.
+         * @param {Array} a 
+         * @param {Array} b 
+         */
+        let concatArray = (a, b) => {
+            a = a.concat(b);
+            return a;
+        };
+
+        concatArray(RS.MessageSystem.TextCodes['Korean'], ["텍스트효과"]);
+        concatArray(RS.MessageSystem.TextCodes['Japanese'], ["TE"]);
+        concatArray(RS.MessageSystem.TextCodes['Chinese'], ["TE"]);
+        concatArray(RS.MessageSystem.TextCodes['English'], ["TE"]);
+
+        Object.assign(RS.MessageSystem.TextCodes.ENUM, {
+            TEXT_EFFECT: 200,
+        });
+
+    }
 
     //================================================================
     // TextEffect
@@ -242,6 +335,13 @@ RS.MessageEffects = RS.MessageEffects || {};
 
         }
 
+        clearFlags() {
+            super.clearFlags();
+            if($.Params.clearFlag) {
+                RS.MessageEffects.Params.currentEffect = 'none';
+            }
+        }
+
         /**
          * 
          * @param {MV.TextState} textState 
@@ -347,11 +447,61 @@ RS.MessageEffects = RS.MessageEffects || {};
         }
 
         /**
+         * @method obtainTextEffectName
+         * @param {MV.TextState} textState 
+         */
+        obtainTextEffectName(textState) {
+            var arr = /\<(.+?)\>/.exec(textState.text.slice(textState.index));
+            if (arr) {
+                textState.index += arr[0].length;
+                return String(arr[1]);
+            } else {
+                return "";
+            }
+        }
+
+        setTextEffect(textEffect) {
+            RS.MessageEffects.Params.currentEffect = textEffect;
+        }
+
+        /**
          * 
+         * @param {String} code 
+         * @param {MV.TextState} textState 
+         */
+        processEscapeCharacter(code, textState) {
+            if(Imported.RS_MessageSystem) {
+                var tcGroup = RS.MessageSystem.TextCodes.ENUM;
+                var textCode = RS.MessageSystem.TextCodes.Main;
+                switch (code) {
+                    case textCode[tcGroup.TEXT_EFFECT]:
+                        this.setTextEffect(this.obtainTextEffectName(textState));
+                        break;
+                    default:
+                        super.processEscapeCharacter(code, textState);
+                        break;                    
+                }                                
+            } else {
+                switch (code) {
+                    case 'TE':
+                        this.setTextEffect(this.obtainTextEffectName(textState));
+                        break;
+                    default:
+                        super.processEscapeCharacter(code, textState);
+                        break;
+                }
+            }
+        }
+
+        /**
          * @param {MV.TextState} textState 
          */        
         processNormalCharacter(textState) {
-            this.addText(textState);
+            if(RS.MessageEffects.Params.currentEffect !== "none") {
+                this.addText(textState);
+            } else {
+                super.processNormalCharacter(textState);
+            }
         }
 
     }
