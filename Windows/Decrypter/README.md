@@ -9,6 +9,7 @@ mkdir bin
 You start a file called ```build.bat``` after running called ```npm install``` and then you move as ```/bin``` folder using cd command and then you call below commands.
 
 ```cmd
+cd bin
 decrypter.exe C:\Users\U\Desktop\Exam\201907 /d=Game.exe
 ```
 
