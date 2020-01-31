@@ -11,7 +11,6 @@ var Imported = Imported || {};
 Imported.RS_GraphicsMenu = true;
 
 /*:
- *
  * @plugindesc This plugin allows you to indicate the menu as an image <RS_GraphicsMenu>
  * @author biud436
  *
@@ -103,6 +102,8 @@ Imported.RS_GraphicsMenu = true;
  * 2017.12.29 (v1.0.2) - Fixed the issue that is not changed the button index when using a button index is six or above.
  * 2018.01.29 (v1.0.3) - Added a new feature that runs the eval code when pressing certain menu button.
  * 2018.11.16 (v1.0.4) - Open Menu Screen command is not supported.
+ * 2020.01.31 (v1.0.5) : 
+ * - Fixed the bug that appears incorrect button frame when selected the button.
  */
 
 /*~struct~MenuRect:
@@ -135,7 +136,6 @@ Imported.RS_GraphicsMenu = true;
  */
 
  /*:ko
-  *
   * @plugindesc 이 플러그인은 메뉴를 그래픽으로 표시합니다<RS_GraphicsMenu>
   * @author biud436
   *
@@ -223,6 +223,8 @@ Imported.RS_GraphicsMenu = true;
   * 2017.12.29 (v1.0.2) - 메뉴 버튼이 6개 이상일 때, 5개까지만 선택되는 버그 수정
   * 2018.01.29 (v1.0.3) - 스크립트 실행 기능 추가
   * 2018.11.16 (v1.0.4) - 메뉴 화면 열기 기능으로도 열 수 있습니다.
+  * 2020.01.31 (v1.0.5) : 
+  * - 잘못된 프레임이 표시되는 문제를 수정하였습니다.
   */
 
  /*~struct~MenuRect:ko
@@ -505,7 +507,7 @@ RS.Utils = RS.Utils || {};
    */
   Scene_LinearMenu.prototype.setRect = function (rect, index) {
     var dRect = RS.GraphicsMenu.Params.RECT;
-    var H = 78;
+    var H = parseInt(parameters['H']);
 
     // 선택된 메뉴를 마우스 오버 상태의 이미지로 변경
     rect.setFrame(dRect[index].x, H, dRect[index].width, dRect[index].height);
