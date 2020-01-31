@@ -47,8 +47,6 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
     $.Params = {};
     $.Params.fontFace = parameters["Font"] || "GameFont";
 
-    $.Params.scale = new Point(1.0, 1.0);
-
     class Window_ArabicNameEdit extends Window_NameEdit {
 
         constructor(actor, maxLength) {
