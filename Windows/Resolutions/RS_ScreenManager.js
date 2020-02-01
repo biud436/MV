@@ -1099,6 +1099,16 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
   };
 
+  Graphics.getVirtualWidth = function(originValue) {
+    var ratio = 816.0 / Graphics.boxWidth;
+    return Math.floor(originValue / ratio);
+  };
+
+  Graphics.getVirtualHeight = function(originValue) {
+    var ratio = 624.0 / Graphics.boxHeight;
+    return Math.floor(originValue / ratio);
+  };
+
   Graphics.setScreenResize = function (newScr) {
     var cx, cy, xPadding, yPadding;
     var tw, th, minW, minH;
@@ -1960,14 +1970,112 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   };
 
   //============================================================================
+  // Window
+  //============================================================================
+
+  var alias_Window_Command_windowWidth = Window_Command.prototype.windowWidth;
+  Window_Command.prototype.windowWidth = function() {
+    return Graphics.getVirtualWidth(alias_Window_Command_windowWidth.call(this));
+  };
+
+  var alias_Window_Command_lineHeight = Window_Command.prototype.lineHeight;
+  Window_Command.prototype.lineHeight = function() {
+    return Graphics.getVirtualHeight(alias_Window_Command_lineHeight.call(this));
+  };  
+
+  var alias_Window_Base_standardFontSize = Window_Base.prototype.standardFontSize;
+  Window_Base.prototype.standardFontSize = function() {
+    return Graphics.getVirtualHeight(alias_Window_Base_standardFontSize.call(this));
+  };
+  
+  var alias_Window_Base_standardPadding = Window_Base.prototype.standardPadding;
+  Window_Base.prototype.standardPadding = function() {
+    return Graphics.getVirtualWidth(alias_Window_Base_standardPadding.call(this));
+  };
+  
+  var alias_Window_Selectable_spacing = Window_Selectable.prototype.spacing;
+  Window_Selectable.prototype.spacing = function() {
+    return Graphics.getVirtualWidth(alias_Window_Selectable_spacing.call(this));
+  };  
+
+  var alias_Window_Options_windowWidth = Window_Options.prototype.windowWidth;
+  Window_Options.prototype.windowWidth = function() {
+    return Graphics.getVirtualWidth( alias_Window_Options_windowWidth.call(this) );
+  };               
+
+  var alias_Window_Options_statusWidth = Window_Options.prototype.statusWidth;
+  Window_Options.prototype.statusWidth = function() {
+    return Graphics.getVirtualWidth( alias_Window_Options_statusWidth.call(this) );
+  };          
+
+  class Window_MenuCommandImpl extends Window_MenuCommand {
+    windowWidth() {
+      return Graphics.getVirtualWidth(super.windowWidth());
+    }
+  }
+
+  window.Window_MenuCommand = Window_MenuCommandImpl;   
+
+  class Window_MenuStatusImpl extends Window_MenuStatus {
+    windowWidth() {
+      return Graphics.boxWidth - Graphics.getVirtualWidth(240);
+    }   
+  }
+
+  window.Window_MenuStatus = Window_MenuStatusImpl;    
+
+  class Window_GoldImpl extends Window_Gold {
+    windowWidth() {
+      return Graphics.getVirtualWidth( super.windowWidth() );
+    }    
+  }   
+
+  window.Window_Gold = Window_GoldImpl;
+
+  class Window_GameOverImpl extends Window_GameOver {
+    windowWidth() {
+      return Graphics.getVirtualWidth( super.windowWidth() );
+    }        
+  }
+
+  window.Window_GameOver = Window_GameOverImpl;
+
+  //============================================================================
   // Scene_Title
   //============================================================================
+
+  class Window_TitleCommandImpl extends Window_TitleCommand {
+
+    updatePlacement() {
+      this.x = (Graphics.boxWidth - this.width) / 2;
+      this.y = Graphics.boxHeight - this.height - Graphics.getVirtualHeight(96);
+    }
+
+    windowWidth() {
+      return Graphics.getVirtualWidth(super.windowWidth());
+    }
+
+  }
+
+  window.Window_TitleCommand = Window_TitleCommandImpl;
 
   var alias_Scene_Title_start = Scene_Title.prototype.start;
   Scene_Title.prototype.start = function() {
     alias_Scene_Title_start.call(this);
     this.requestStretch(this._backSprite1);
     this.requestStretch(this._backSprite2);
+  };
+
+  Scene_Title.prototype.drawGameTitle = function() {
+    var x = 20;
+    var y = Graphics.height / 4;
+    var maxWidth = Graphics.width - x * 2;
+    var text = $dataSystem.gameTitle;
+
+    this._gameTitleSprite.bitmap.outlineColor = 'black';
+    this._gameTitleSprite.bitmap.outlineWidth = Graphics.getVirtualWidth(8);
+    this._gameTitleSprite.bitmap.fontSize = Graphics.getVirtualHeight(72);
+    this._gameTitleSprite.bitmap.drawText(text, x, y, maxWidth, Graphics.getVirtualWidth(48), 'center');
   };
 
   //============================================================================

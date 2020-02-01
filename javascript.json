@@ -78,4 +78,14 @@
         ],
         "description": "함수"
     },    
+    "자동생성": {
+      "prefix": "f",
+      "body": [
+        "var alias_$0_$1 = $0.prototype.$1;",
+        "$0.prototype.$1 = function() {",
+        "\t",
+        "};          ",
+      ],
+      "description": "프로토타입 방식 재정의 함수",
+    },
 }
