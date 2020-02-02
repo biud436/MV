@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * RS_VideoControl.js
- * @plugindesc This plugin allows you to indicagte the play control bar of a video
+ * @plugindesc This plugin allows you to indicate the play control bar of a video
  * @author biud436
  *
  * @param zIndex
