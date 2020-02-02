@@ -4422,8 +4422,9 @@ var Color = Color || {};
     this.contents.fontSize = RS.MessageSystem.Params.fontSize;
     this.text = this.convertEscapeCharacters(this.text);
     this.text = this.textProcessing(this.text);
+    
     // TO DO : replace this line as to this.drawTextEx(text, x, y)
-    this.drawText(this.text, 0, 0, this.width, 'left');
+    this.drawText(this.text, this.textPadding(), 0, this.width, 'left');
   };
   
   RS.Window_Name.prototype.drawName = function(text) {
