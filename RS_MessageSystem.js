@@ -4970,6 +4970,17 @@ var Color = Color || {};
   };
 
   //===========================================================================
+  // Window_BattleEnemy
+  //===========================================================================    
+
+  Window_BattleEnemy.prototype.drawItem = function(index) {
+      this.resetTextColor();
+      var name = this._enemies[index].name();
+      var rect = this.itemRectForText(index);
+      this.drawTextEx(name, rect.x, rect.y);
+  };  
+
+  //===========================================================================
   // String
   //===========================================================================
   
