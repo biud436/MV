@@ -1,0 +1,15 @@
+import "./public.js";
+import "./core.js";
+import "./localization.js";
+import "./utils.js";
+import "./loadDLL.js";
+import "./ScreenConfig.js";
+import "./Graphics.js";
+import "./Scene_Boot.js";
+import "./SceneManager.js";
+import "./ScreenManager.js";
+import "./Game_System.js";
+import "./Window_Options.js";
+import "./Window_ResolutionList.js";
+import "./ResizeGraphicsObjects.js";
+import "./Game_Interpreter.js";

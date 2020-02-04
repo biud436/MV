@@ -1751,23 +1751,25 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     if(!Imported.YEP_BattleEngineCore) {
 
       Sprite_Actor.prototype.moveToStartPosition = function() {
-        eval($.Params.actorFunc.moveToStartPosition);
+        // eval($.Params.actorFunc.moveToStartPosition);        
+        var dx = Graphics.getVirtualWidth(300);
+        this.startMove(dx, 0, 0);  
       };
     
       Sprite_Actor.prototype.setActorHome = function(index) {
-        eval($.Params.actorFunc.setActorHome);
+        // eval($.Params.actorFunc.setActorHome);
       };    
 
       Sprite_Actor.prototype.stepForward = function() {
-        eval($.Params.actorFunc.stepForward);
+        // eval($.Params.actorFunc.stepForward);
       };
       
       Sprite_Actor.prototype.stepBack = function() {
-        eval($.Params.actorFunc.stepBack);
+        // eval($.Params.actorFunc.stepBack);
       };
       
       Sprite_Actor.prototype.retreat = function() {
-        eval($.Params.actorFunc.retreat);
+        // eval($.Params.actorFunc.retreat);
       };   
     
     }    
@@ -2032,13 +2034,13 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
   window.Window_Gold = Window_GoldImpl;
 
-  class Window_GameOverImpl extends Window_GameOver {
+  class Window_GameEndImpl extends Window_GameEnd {
     windowWidth() {
       return Graphics.getVirtualWidth( super.windowWidth() );
     }        
   }
 
-  window.Window_GameOver = Window_GameOverImpl;
+  window.Window_GameEnd = Window_GameEndImpl;
 
   //============================================================================
   // Scene_Title

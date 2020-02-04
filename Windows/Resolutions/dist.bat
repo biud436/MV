@@ -1,0 +1,1 @@
+node ./build.js RS_ScreenManager.js

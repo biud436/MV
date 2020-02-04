@@ -8,5 +8,9 @@
     "nw-gyp": "^3.6.3",
     "win-version-info": "^2.0.0"
   },
-  "author": ""
+  "author": "",
+  "devDependencies": {
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
 }
