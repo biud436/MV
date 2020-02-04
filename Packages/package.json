@@ -2,7 +2,7 @@
   "name": "messageeffects",
   "version": "1.0.0",
   "description": "",
-  "main": "lib/RS_MessageEffects.js",
+  "main": "lib/RS_MessageEffects/index.js",
   "directories": {
     "lib": "lib"
   },
