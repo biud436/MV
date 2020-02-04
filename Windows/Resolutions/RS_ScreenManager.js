@@ -1751,25 +1751,23 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     if(!Imported.YEP_BattleEngineCore) {
 
       Sprite_Actor.prototype.moveToStartPosition = function() {
-        // eval($.Params.actorFunc.moveToStartPosition);        
-        var dx = Graphics.getVirtualWidth(300);
-        this.startMove(dx, 0, 0);  
+        eval($.Params.actorFunc.moveToStartPosition);        
       };
     
       Sprite_Actor.prototype.setActorHome = function(index) {
-        // eval($.Params.actorFunc.setActorHome);
+        eval($.Params.actorFunc.setActorHome);
       };    
 
       Sprite_Actor.prototype.stepForward = function() {
-        // eval($.Params.actorFunc.stepForward);
+        eval($.Params.actorFunc.stepForward);
       };
       
       Sprite_Actor.prototype.stepBack = function() {
-        // eval($.Params.actorFunc.stepBack);
+        eval($.Params.actorFunc.stepBack);
       };
       
       Sprite_Actor.prototype.retreat = function() {
-        // eval($.Params.actorFunc.retreat);
+        eval($.Params.actorFunc.retreat);
       };   
     
     }    
