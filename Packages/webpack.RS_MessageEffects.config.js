@@ -4,7 +4,7 @@ const webpack = require('webpack');
 
 module.exports = {
     mode: "production",
-    entry: './lib/index.js',
+    entry: './lib/RS_MessageEffects/index.js',
     output: {
       path: path.resolve(__dirname, 'bin'),
       filename: 'RS_MessageEffects.js'
