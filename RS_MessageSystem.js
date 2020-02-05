@@ -2578,7 +2578,9 @@ var Color = Color || {};
     if(c > 0 && c < 32) {
       color = this.textColor(color);
     }
-    this.contents.textColor = color;
+    if(!this._isUsedTextWidthEx) {
+      this.contents.textColor = color;
+    }
   }; 
   
   var alias_Window_Base_processEscapeCharacter = Window_Base.prototype.processEscapeCharacter;
