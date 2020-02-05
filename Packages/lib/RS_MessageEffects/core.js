@@ -180,8 +180,10 @@ class Window_MessageImpl extends Window_Message {
      * @param {MV.TextState} textState 
      */        
     newPage(textState) {
-        super.newPage(textState)
+        super.newPage(textState);
         this._mainTextLayer.removeChildren();
+
+        //=> this.createTextures(textState) -> this.setFrame(x, y, w, h);
     }
 
     _updateContents() {
