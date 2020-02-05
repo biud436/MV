@@ -229,8 +229,7 @@ class Window_MessageImpl extends Window_Message {
         let sprite = EffectFactory.create(effectType);
 
         sprite.bitmap = bitmap;
-
-        this._mainTextLayer.cacheAsBitmap = false;               
+             
         this._mainTextLayer.addChild(sprite);       
 
         sprite.start(textState);
@@ -357,7 +356,6 @@ class Window_MessageImpl extends Window_Message {
     startPause() {
         super.startPause();
         this._mainTextLayer.children.forEach(i => i.flush());
-        this._mainTextLayer.cacheAsBitmap = true;
     }
 
 }
