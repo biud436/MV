@@ -183,7 +183,14 @@ class Window_MessageImpl extends Window_Message {
         super.newPage(textState);
         this._mainTextLayer.removeChildren();
 
-        //=> this.createTextures(textState) -> this.setFrame(x, y, w, h);
+        /**
+         * TODO: 오버헤드 제거
+         * RPG Maker MV는 매번 새로운 텍스쳐를 만들기 때문에 GPU로 매번 업로드하는 비용이 있다.
+         * BitmapText 또는 초반에 처리를 해야 한다.
+         * 초반에 처리를 할 경우, 텍스트 색상 처리나 텍스트 크기 변경이 매우 어렵다.
+         * 이후에 처리를 할 경우, 관련 API가 있으나 이것 역시 RenderTexture를 통한 렌더링이다.
+         */
+
     }
 
     _updateContents() {
