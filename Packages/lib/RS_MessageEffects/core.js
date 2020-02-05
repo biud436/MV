@@ -193,6 +193,65 @@ class Window_MessageImpl extends Window_Message {
 
     }
 
+    /**
+     * @param {String} text 
+     * @return {String}
+     */
+    textProcessing(text) {
+        text = text.slice(0);
+
+        return text;
+    }
+
+    /**
+     * Get the text size like as RPG Maker VX Ace
+     * @param {String} text
+     */
+    getTextSize(text) {
+        var font = this.contents._makeFontNameText();
+        var textDiv = document.createElement("div");
+        
+        textDiv.style.position = 'absolute';
+        textDiv.style.float = 'left';
+        textDiv.style.whiteSpace = 'nowrap';
+        textDiv.style.visibility = 'hidden';
+        textDiv.style.font = font;
+        textDiv.innerHTML = text;
+
+        document.body.appendChild(textDiv);
+
+        const rect = new PIXI.Rectangle(
+            0, 
+            0, 
+            textDiv.clientWidth,
+            textDiv.clientHeight,
+        );
+
+        document.body.removeChild(textDiv);
+
+        return rect;
+    }    
+
+    /**
+     * Create a texture.
+     * @param {MV.TextState} textState 
+     */          
+    createLocalTexture(textState) {
+ 
+        var temp = this.textProcessing(textState.text);
+        var lines = temp.split(/[\r\n]+/i);
+
+        var rect = this.getTextSize(temp);
+        var bitmap = new Bitmap(rect.width, rect.height * lines.length);
+        
+        lines.forEach((line,i,a) => {
+            bitmap.drawText(line, 0, i * rect.height, rect.width, rect.height, "left");
+        });
+
+        return bitmap;
+
+    }
+
     _updateContents() {
         super._updateContents();
 
