@@ -33,17 +33,28 @@ class TextEffect extends Sprite {
         this.updateEffects();
     }
 
+    /**
+     * 종료
+     */
     flush() {
         this._isStarted = false;
         this.x = this._startX;
         this.y = this._startY;
+        this.rotation = this._desc.rotation;
+        this.frame = this._desc.frame;
+        this.scale = this._desc.scale;
+        this.skew = this._desc.skew;
+        this.tint = this._desc.tint;
+        this.filters = this._desc.filters;
         this.opacity = this._tempOpacity;
+        this._desc = {};
     }
 
     updateEffects() {
     }
 
     /**
+     * 시작
      * @param {MV.TextState} textState
      */
     start(textState) {
@@ -57,6 +68,20 @@ class TextEffect extends Sprite {
         this._random = Math.floor(Math.random() * 60);
         this._index = textState.index;
         this._tempOpacity = this.opacity;
+
+        this._desc = {
+            x: this.x,
+            y: this.y,
+            rotation: this.rotation,    
+            frame: this._frame,
+            scale: this.scale,
+            skew :this.skew,
+            opacity: this.opacity,
+            tint: this.tint,
+            filters: this.filters,
+        };
+        
+
     };
 }
 
@@ -99,46 +124,7 @@ class EffectFactory {
         }
 
         return sprite;
-        
-        // switch(effectType) {
-        //     case 'pingpong':
-        //         sprite = new PingPong();
-        //         break;
-        //     case 'slide':
-        //         sprite = new Slide();
-        //         break;
-        //     case 'high_rot':
-        //         sprite = new HighRotation();
-        //         break;
-        //     case 'normal_rot':
-        //         sprite = new NormalRotation();
-        //         break;
-        //     case 'random_rot':
-        //         sprite = new RandomRotation();
-        //         break;
-        //     case 'star': // 별 마스크
-        //         break;
-        //     case 'nico_cloud': // 니코동 구름 메시지
-        //         break;
-        //     case 'circular': // 원형 확대
-        //         break;
-        //     case 'blood': // 피 흘리는 메시지
-        //         break;
-        //     case 'spoiler': // 스포일러 상태; 아이템을 보여해야만 오픈됨
-        //         break;
-        //     case 'shock': // 감전
-        //         sprite = new Shock();
-        //         break;
-        //     case 'wave_electronic_board': // 사인파 전광판; 오른쪽에서 왼쪽으로 파동으로 파면서 이동함
-        //         break;
-        //     case 'pixelrate': // 글자가 표시된 후 이후 쪼개짐 (필터 효과)
-        //         break;
-        //     case 'lock_character': // 특정 문자가 모두 *로 대체됨
-        //         break;        
-        //     default:
-        //         sprite = new TextEffect();
-        //         break;                                
-        // }
+
     }
 
     static add(values) {
@@ -152,6 +138,8 @@ EffectFactory.TYPE = {
 };
 
 window.EffectFactory = EffectFactory;
+
+export {TextEffect, EffectFactory};
 
 //================================================================
 // Window_MessageImpl

@@ -1,3 +1,5 @@
+import {TextEffect, EffectFactory} from "./core";
+
 class Slide extends TextEffect {
   
   constructor(bitmap) {
