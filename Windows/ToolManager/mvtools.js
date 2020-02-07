@@ -66,7 +66,7 @@ class Impl {
     add(args) {
 
         if(Array.isArray(this._data)) {
-            const newItem = this.makeItem(args[0], args[1], args[2], args[3]);
+            const newItem = this.makeItem(args[0], args[1], args[2], args[3].replace(/\\/g, "/"));
             this._data.push(newItem);
         }
 
