@@ -86,7 +86,31 @@ Imported.RS_GraphicsMenu = true;
  *  RS.GraphicsMenu.Params.startY = Graphics.boxHeight / 2 - H / 2
  *
  * 'W' and 'H" is predefined button size values based on plugin parameters.
- *
+ * 
+ * -----------------------------------------------------------------------------
+ * Script calls : 
+ * -----------------------------------------------------------------------------
+ * In the menu plugin parameters,
+ * You can execute the javascript code block using an evaluate statement.
+ * 
+ * EVAL : x
+ * 
+ * The 'x' is the code block.
+ * For Example, if you are using the plugin named YEP_CommonEventMenu, 
+ * You will run the code as belows.
+ * 
+ * EVAL : $gameMap._interpreter.openCommonEventMenu();
+ * 
+ * But, The current scene is not a map scene. so you may also need to use 
+ * an anonymous function or lambda expression, as follows.
+ * 
+ * (function() {
+ *     setTimeout(function() {
+ *         $gameTemp.reserveCommonEvent(1);
+ *         SceneManager.push(Scene_Map);
+ *     }, 0);
+ * })();
+ * 
  * =============================================================================
  * Credits (Image)
  * -----------------------------------------------------------------------------
@@ -277,6 +301,8 @@ RS.Utils = RS.Utils || {};
 
   RS.GraphicsMenu.Params.RECT = RS.Utils.jsonParse(parameters['Menu Rect']);
   RS.GraphicsMenu.Params.MENU = RS.Utils.jsonParse(parameters['Menu Index']);
+  
+  RS.GraphicsMenu.Params.isValidGameCoreUpdate = false;
 
   //============================================================================
   // Game_System
@@ -341,13 +367,17 @@ RS.Utils = RS.Utils || {};
   Scene_LinearMenu.prototype = Object.create(Scene_MenuBase.prototype);
   Scene_LinearMenu.prototype.constructor = Scene_LinearMenu;
 
-  // Static 변수...
   Scene_LinearMenu.INDEX = 0;
 
   Scene_LinearMenu.prototype.create = function () {
     Scene_MenuBase.prototype.create.call(this);
     this._touched = false;
     this.createImage();
+
+    if(Imported.YEP_CommonEventMenu) {
+      this.createCommonEventMenuWindows();      
+    }
+
   };
 
   Scene_LinearMenu.prototype.start = function () {
@@ -363,8 +393,30 @@ RS.Utils = RS.Utils || {};
 
   Scene_LinearMenu.prototype.update = function () {
     Scene_MenuBase.prototype.update.call(this);
-    this.updateIndex();
-    this.processExit();
+
+    if(Imported.YEP_CommonEventMenu) {
+
+      /**
+       * @type {Window} targetWindow
+       */
+      var targetWindow = this._commonEventMenuWindow;
+
+      if(targetWindow.active) {
+        var active = this.isActive();
+        $gameMap.update(active);
+        $gamePlayer.update(active);
+        $gameTimer.update(active);
+        $gameScreen.update();    
+      } else {
+        this.updateIndex();
+        this.processExit();
+      }      
+
+    } else {
+      this.updateIndex();
+      this.processExit();
+    }
+
   };
 
   Scene_LinearMenu.prototype.right = function () {
