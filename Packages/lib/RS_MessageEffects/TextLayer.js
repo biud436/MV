@@ -61,7 +61,7 @@ class TextLayer extends Sprite {
     onAdded(child) {
         child.bitmap = this.getSharedBitmap();
         if(child._textureID !== this._textureID) {
-            console.log("child._textureID !== this._textureID");
+            console.log(`child._textureID !== this._textureID`);
         }
     }
 
