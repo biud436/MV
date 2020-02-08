@@ -7,9 +7,6 @@ class TextEffect extends Sprite {
         this._isStarted = false;
         this._effectType = "pingpong";
 
-        if(Graphics.isWebGL()) {
-            this.filters = [Sprite.voidFilter];
-        }        
     }
 
     update() {
