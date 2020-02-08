@@ -1178,9 +1178,6 @@ function ArabicUtils() {
       self._renderTarget = new PIXI.CanvasRenderTarget(self.width, self.height);
     }
 
-    // Create Sprite
-    self._renderSprite = new Sprite();
-
   };
 
   var alias_Window_ScrollText_standardFontFace = Window_ScrollText.prototype.standardFontFace;
@@ -1204,10 +1201,8 @@ function ArabicUtils() {
   Window_ScrollText.prototype.destroy = function (options) {
     if(alias_Window_ScrollText_destroy) alias_Window_ScrollText_destroy.call(this, options);
     if( this._renderTexture ) this._renderTexture.destroy({ destroyBase: true });
-    if( this._renderSprite ) this._renderSprite.destroy({ children: true });
     if( this._renderTarget ) this._renderTarget.destroy();
     this._renderTexture = null;
-    this._renderSprite = null;
     this._renderTarget = null;
   };
 
