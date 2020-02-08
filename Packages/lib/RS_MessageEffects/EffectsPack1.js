@@ -1,4 +1,24 @@
-import {TextEffect, EffectFactory} from "./core";
+import {TextEffect, EffectFactory} from "./TextEffect";
+
+const DEG_TO_RAD  = (Math.PI / 180.0);
+
+class PingPong extends TextEffect {
+    
+  constructor(bitmap) {
+      super(bitmap);
+      this._effectType = "pingpong";
+  }
+
+  updateEffects() {
+      if(!this._isStarted) return;            
+      if(this._power <= 60) {
+          this.y = this._startY + (PIXI.PI_2 / this._power) * 4.0;
+          this._power++;
+      } else {
+          this.flush();
+      }
+  }
+}    
 
 class Slide extends TextEffect {
   
@@ -31,7 +51,7 @@ class HighRotation extends TextEffect {
     if(this._power <= this._random) {
       let dist = this._random - this._power;
       let tm = performance.now();
-      let r = $.DEG_TO_RAD * dist * (this._random % 2 == 0 ? -tm : tm);
+      let r = DEG_TO_RAD * dist * (this._random % 2 == 0 ? -tm : tm);
       let c = Math.cos(r);
       let s = Math.sin(r);
       let tx = this._startX - dist;
@@ -57,7 +77,7 @@ class NormalRotation extends TextEffect {
     if(this._power <= this._random) {
       let dist = this._random - this._power;
       let tm = performance.now();
-      let r = $.DEG_TO_RAD * dist * (this._index % 3 == 0 ? -1 : 1);
+      let r = DEG_TO_RAD * dist * (this._index % 3 == 0 ? -1 : 1);
       let c = Math.cos(r);
       let s = Math.sin(r);
       let tx = (this._startX - dist);
@@ -82,7 +102,7 @@ class RandomRotation extends TextEffect {
     if(!this._isStarted) return;            
     if(this._power <= this._random) {
       let dist = this._random - this._power;
-      let r = $.DEG_TO_RAD * dist * (this._random % 2 == 0 ? -1 : 1);
+      let r = DEG_TO_RAD * dist * (this._random % 2 == 0 ? -1 : 1);
       let c = Math.cos(r);
       let s = Math.sin(r);
       let tx = this._startX - dist;
@@ -127,6 +147,7 @@ class Shock extends TextEffect {
 }    
 
 EffectFactory.add({
+  'pingpong': PingPong,  
   'slide': Slide,
   'high_rot': HighRotation,
   'normal_rot': NormalRotation,

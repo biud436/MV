@@ -9,12 +9,10 @@ module.exports = {
       path: path.resolve(__dirname, 'bin'),
       filename: 'RS_MessageEffects.js'
     },
-    // plugins: [
-    //     new webpack.BannerPlugin({
-    //         raw: false,
-    //         banner: () => {
-    //             return fs.readFileSync('./lib/desc.js', "utf8");
-    //         }
-    //     })
-    // ]
+    devtool: 'inline-source-map',
+    plugins: [
+      new webpack.EvalSourceMapDevToolPlugin({
+        filename: '[name].js.map',
+      })
+    ]
   };

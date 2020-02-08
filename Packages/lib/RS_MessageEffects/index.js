@@ -1,3 +1,3 @@
 import "./core";
-import "./effects";
-import "./effects2";
+import "./EffectsPack1";
+import "./EffectsPack2";

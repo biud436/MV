@@ -1,7 +1,7 @@
-window.Imported = Imported || {};
+window.Imported = window.Imported || {};
 Imported.RS_MessageEffects = true;
 
-window.RS = RS || {};
+window.RS = window.RS || {};
 window.RS.MessageEffects = window.RS.MessageEffects || {};
 
 var parameters = $plugins.filter(function (i) {
@@ -16,131 +16,6 @@ RS.MessageEffects.Params.defaultTextEffect = parameters["Default Text Effect"] |
 RS.MessageEffects.Params.currentEffect = RS.MessageEffects.Params.defaultTextEffect;
 RS.MessageEffects.Params.clearFlag = Boolean(parameters["Clear Flag"] === "true");
 
-RS.MessageEffects.DEG_TO_RAD  = (Math.PI / 180.0);
-
-//================================================================
-// TextEffect
-//================================================================
-class TextEffect extends Sprite {
-    constructor(bitmap) {
-        super(bitmap);
-        this._isStarted = false;
-        this._effectType = "pingpong";
-    }
-
-    update() {
-        super.update();
-        this.updateEffects();
-    }
-
-    /**
-     * 종료
-     */
-    flush() {
-        this._isStarted = false;
-        this.x = this._startX;
-        this.y = this._startY;
-        this.rotation = this._desc.rotation;
-        this.frame = this._desc.frame;
-        this.scale = this._desc.scale;
-        this.skew = this._desc.skew;
-        this.tint = this._desc.tint;
-        this.filters = this._desc.filters;
-        this.opacity = this._tempOpacity;
-        this._desc = {};
-    }
-
-    updateEffects() {
-    }
-
-    /**
-     * 시작
-     * @param {MV.TextState} textState
-     */
-    start(textState) {
-        this._now = performance.now();
-        this._isStarted = true;       
-        this._power = 1;   
-        this.x = textState.x;
-        this.y = textState.y;
-        this._startX = this.x;
-        this._startY = this.y;
-        this._random = Math.floor(Math.random() * 60);
-        this._index = textState.index;
-        this._tempOpacity = this.opacity;
-
-        this._desc = {
-            x: this.x,
-            y: this.y,
-            rotation: this.rotation,    
-            frame: this._frame,
-            scale: this.scale,
-            skew :this.skew,
-            opacity: this.opacity,
-            tint: this.tint,
-            filters: this.filters,
-        };
-        
-
-    };
-}
-
-window.TextEffect = TextEffect;
-
-//================================================================
-// Added TextEffects
-//================================================================    
-
-class PingPong extends TextEffect {
-    
-    constructor(bitmap) {
-        super(bitmap);
-        this._effectType = "pingpong";
-    }
-
-    updateEffects() {
-        if(!this._isStarted) return;            
-        if(this._power <= 60) {
-            this.y = this._startY + (PIXI.PI_2 / this._power) * 4.0;
-            this._power++;
-        } else {
-            this.flush();
-        }
-    }
-}    
-
-class EffectFactory {
-    static create(effectType) {
-        
-        let sprite;
-
-        var keys = Object.keys(EffectFactory.TYPE);
-
-        if(keys.contains(effectType)) {
-            var ET_CLASS = EffectFactory.TYPE[effectType];
-            sprite = new ET_CLASS();
-        } else {
-            sprite = new TextEffect();
-        }
-
-        return sprite;
-
-    }
-
-    static add(values) {
-        Object.assign( EffectFactory.TYPE, values );
-    }
-
-}
-
-EffectFactory.TYPE = {
-    'pingpong': PingPong,
-};
-
-window.EffectFactory = EffectFactory;
-
-export {TextEffect, EffectFactory};
-
 //================================================================
 // Window_MessageImpl
 //================================================================    
@@ -149,12 +24,53 @@ class Window_MessageImpl extends Window_Message {
         super();
 
         this.createMainTextLayer();
+        // this.createRenderTexture();
 
         this.once("removed", () => {
             this.terminateMainTextLayer();
         });
 
     }
+
+    // createRenderTexture() {
+    //     const gl = Graphics._renderer.gl;
+    
+    //     // Create RenderTexture
+    //     this._renderTexture = PIXI.RenderTexture.create(
+    //         this.width,
+    //         this.height,
+    //         PIXI.SCALE_MODES.NEAREST
+    //     );
+    
+    //     // Create RenderTarget
+    //     if(Graphics.isWebGL()) {
+    //         this._renderTarget = new PIXI.RenderTarget(
+    //             gl, 
+    //             this.width,
+    //             this.height,
+    //             PIXI.SCALE_MODES.NEAREST
+    //         );
+    //     } else {
+    //         this._renderTarget = new PIXI.CanvasRenderTarget(this.width, this.height);
+    //     }
+    
+    //     // Create Sprite
+    //     this._renderSprite = new Sprite();
+
+    //     this.on("removed", this.destroyRenderTexture, this);
+
+    //     this._init = true;
+
+    // }
+
+    // destroyRenderTexture() {
+    //     if( this._renderTexture ) this._renderTexture.destroy({ destroyBase: true });
+    //     if( this._renderSprite ) this._renderSprite.destroy({ children: true });
+    //     if( this._renderTarget ) this._renderTarget.destroy();
+    //     this._renderTexture = null;
+    //     this._renderSprite = null;
+    //     this._renderTarget = null;     
+    // }
 
     clearFlags() {
         super.clearFlags();
@@ -163,86 +79,79 @@ class Window_MessageImpl extends Window_Message {
         }
     }
 
-    /**
-     * 
-     * @param {MV.TextState} textState 
-     */        
-    newPage(textState) {
-        super.newPage(textState);
-        this._mainTextLayer.removeChildren();
+    // /**
+    //  * @param {String} text 
+    //  * @return {String}
+    //  */
+    // textProcessing(text) {
+    //     text = text.slice(0);
 
-        /**
-         * TODO: 오버헤드 제거
-         * RPG Maker MV는 매번 새로운 텍스쳐를 만들기 때문에 GPU로 매번 업로드하는 비용이 있다.
-         * BitmapText 또는 초반에 처리를 해야 한다.
-         * 초반에 처리를 할 경우, 텍스트 색상 처리나 텍스트 크기 변경이 매우 어렵다.
-         * 이후에 처리를 할 경우, 관련 API가 있으나 이것 역시 RenderTexture를 통한 렌더링이다.
-         */
+    //     return text;
+    // }
 
-    }
-
-    /**
-     * @param {String} text 
-     * @return {String}
-     */
-    textProcessing(text) {
-        text = text.slice(0);
-
-        return text;
-    }
-
-    /**
-     * Get the text size like as RPG Maker VX Ace
-     * @param {String} text
-     */
-    getTextSize(text) {
-        var font = this.contents._makeFontNameText();
-        var textDiv = document.createElement("div");
+    // /**
+    //  * Get the text size like as RPG Maker VX Ace
+    //  * @param {String} text
+    //  */
+    // getTextSize(text) {
+    //     var font = this.contents._makeFontNameText();
+    //     var textDiv = document.createElement("div");
         
-        textDiv.style.position = 'absolute';
-        textDiv.style.float = 'left';
-        textDiv.style.whiteSpace = 'nowrap';
-        textDiv.style.visibility = 'hidden';
-        textDiv.style.font = font;
-        textDiv.innerHTML = text;
+    //     textDiv.style.position = 'absolute';
+    //     textDiv.style.float = 'left';
+    //     textDiv.style.whiteSpace = 'nowrap';
+    //     textDiv.style.visibility = 'hidden';
+    //     textDiv.style.font = font;
+    //     textDiv.innerHTML = text;
 
-        document.body.appendChild(textDiv);
+    //     document.body.appendChild(textDiv);
 
-        const rect = new PIXI.Rectangle(
-            0, 
-            0, 
-            textDiv.clientWidth,
-            textDiv.clientHeight,
-        );
+    //     const rect = new PIXI.Rectangle(
+    //         0, 
+    //         0, 
+    //         textDiv.clientWidth,
+    //         textDiv.clientHeight,
+    //     );
 
-        document.body.removeChild(textDiv);
+    //     document.body.removeChild(textDiv);
 
-        return rect;
-    }    
+    //     return rect;
+    // }    
 
-    /**
-     * Create a texture.
-     * @param {MV.TextState} textState 
-     */          
-    createLocalTexture(textState) {
+    // /**
+    //  * Create a texture.
+    //  * @param {MV.TextState} textState 
+    //  */          
+    // createLocalTexture(textState) {
  
-        var temp = this.textProcessing(textState.text);
-        var lines = temp.split(/[\r\n]+/i);
+    //     var temp = textState.text;
+    //     var lines = temp.split(/[\r\n]+/i);
 
-        var rect = this.getTextSize(temp);
-        var bitmap = new Bitmap(rect.width, rect.height * lines.length);
+    //     var rect = this.getTextSize(temp);
+    //     var bitmap = new Bitmap(rect.width, rect.height * lines.length);
         
-        lines.forEach((line,i,a) => {
-            bitmap.drawText(line, 0, i * rect.height, rect.width, rect.height, "left");
-        });
+    //     this.contents.clear();
 
-        return bitmap;
+    //     // lines.forEach((line,i,a) => {
+    //     //     bitmap.drawText(line, 0, i * rect.height, rect.width, rect.height, "left");
+    //     // });
 
-    }
+    //     this.drawTextEx(temp, 0, this.height + 6);
+
+    //     bitmap.blt(this.contents, 0, this.height + 6, bitmap.width, bitmap.height, 0, 0, this.bitmap.width, bitmap.height);
+
+    //     return bitmap;
+
+    // }
 
     _updateContents() {
         super._updateContents();
 
+        // if(this._mainTextLayer) {
+        //     var padding = this.textPadding();
+        //     this._mainTextLayer.x = this.x + padding;
+        //     this._mainTextLayer.y = this.y + padding;
+        // }
     }
 
     createMainTextLayer() {
@@ -256,8 +165,10 @@ class Window_MessageImpl extends Window_Message {
     }
 
     terminateMainTextLayer() {
-        this._windowContentsSprite.removeChild(this._mainTextLayer);
-        this._mainTextLayer = null;
+        if(this._mainTextLayer) {
+            this._windowContentsSprite.removeChild(this._mainTextLayer);
+            this._mainTextLayer = null;
+        }
     }
 
     terminateMessage() {
@@ -358,10 +269,6 @@ class Window_MessageImpl extends Window_Message {
         }
     }
 
-    initMembers() {
-        super.initMembers();
-    }
-
     /**
      * @method obtainTextEffectName
      * @param {MV.TextState} textState 
@@ -377,6 +284,15 @@ class Window_MessageImpl extends Window_Message {
     }
 
     setTextEffect(textEffect) {
+        if(typeof(textEffect) === "number") {
+            var keys = Object.keys(EffectFactory.TYPE);
+            var effects = keys[textEffect];
+            if(keys.contains(effects)) {
+                textEffect = effects;
+            } else {
+                textEffect = RS.MessageEffects.Params.defaultTextEffect;
+            }
+        }
         RS.MessageEffects.Params.currentEffect = textEffect;
     }
 
@@ -388,10 +304,17 @@ class Window_MessageImpl extends Window_Message {
     processEscapeCharacter(code, textState) {                          
         switch (code) {
             case '텍스트효과':
-            case 'TE':
-                if(this._isUsedTextWidthEx) break;
-                this.setTextEffect(this.obtainTextEffectName(textState));
+            case 'TE': // \TE<PingPong>
+                const textEffectName = this.obtainTextEffectName(textState);
+                if(!this._isUsedTextWidthEx) {
+                    this.setTextEffect(textEffectName);
+                }
                 break;
+            case 'E': // \E[1]
+                const effectNum = this.obtainEscapeParam(textState);
+                if(!this._isUsedTextWidthEx) {                    
+                    this.setTextEffect(effectNum - 1);
+                }                
             default:
                 super.processEscapeCharacter(code, textState);
                 break;
@@ -411,8 +334,53 @@ class Window_MessageImpl extends Window_Message {
 
     startPause() {
         super.startPause();
-        this._mainTextLayer.children.forEach(i => i.flush());
+        // this._mainTextLayer.children.forEach(i => i.flush());
     }
+
+
+    // renderCanvas(renderer) {
+    //     if (!this.visible || !this.renderable) {
+    //         return;
+    //     }
+    
+    //     var layers = this.children;
+    //     for (var i = 0; i < layers.length; i++)
+    //         layers[i].renderCanvas(renderer);
+    
+    //     if(this._mainTextLayer && this._mainTextLayer.parent !== this) {
+    //       this._mainTextLayer.setParent(this);
+    //     }
+    
+    //     for (var i = 0; i <this._mainTextLayer.children.length; i++ ) {
+    //       var child = this._mainTextLayer.children[i];
+    //       if(child) renderer.plugins.sprite.render(child);
+    //     }
+        
+    // }
+
+    // /**
+    //  * 
+    //  * @param {PIXI.WebGLRenderer} renderer 
+    //  */
+    // renderWebGL(renderer) {
+
+    //     if(!this.visible || !this.renderable) {
+    //         return;
+    //     }     
+    
+    //     renderer.bindRenderTexture(this._renderTexture);
+
+    //     for(var i = 0; i < this.children.length; ++i) {
+    //         var child = this.children[i];
+    //         if(child.visible) renderer.render(child, this._renderTexture);
+    //     }
+    
+    //     if(this._mainTextLayer.visible) renderer.render(this._mainTextLayer, this._renderTexture);
+    
+    //     renderer.bindRenderTarget(this._renderTarget);
+
+    // }    
+
 
 }
 

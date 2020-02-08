@@ -1,4 +1,4 @@
-import {TextEffect, EffectFactory} from "./core";
+import {TextEffect, EffectFactory} from "./TextEffect";
 
 class ZoomOut extends TextEffect {
     

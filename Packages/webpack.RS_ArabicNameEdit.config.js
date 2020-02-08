@@ -9,4 +9,10 @@ module.exports = {
       path: path.resolve(__dirname, 'bin'),
       filename: 'RS_ArabicNameEdit.js'
     },
+    devtool: 'inline-source-map',
+    plugins: [
+      new webpack.EvalSourceMapDevToolPlugin({
+        filename: '[name].js.map',
+      })
+    ]    
   };
