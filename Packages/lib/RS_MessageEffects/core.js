@@ -146,12 +146,6 @@ class Window_MessageImpl extends Window_Message {
 
     _updateContents() {
         super._updateContents();
-
-        // if(this._mainTextLayer) {
-        //     var padding = this.textPadding();
-        //     this._mainTextLayer.x = this.x + padding;
-        //     this._mainTextLayer.y = this.y + padding;
-        // }
     }
 
     createMainTextLayer() {

@@ -407,7 +407,7 @@ function ArabicUtils() {
       }
       this._arabicTexts = new ArabicFlipSprite();
       this._arabicTexts._isMessageAracbic = true;
-      this._arabicTexts.pivot.x = this.contentsWidth();
+      this._arabicTexts.pivot.x = this.contentsWidth() - this.textPadding();
       this._arabicTexts.scale.x = -1;
       this._arabicTexts.visible = true;
 
@@ -418,12 +418,6 @@ function ArabicUtils() {
   };
 
   RS.ArabicMessageSystem.defineProtoype = function (className) {
-    // className.prototype.processNormalCharacter = Window_Base.prototype.processNormalCharacter;
-    // className.prototype.processEscapeCharacter = Window_Base.prototype.processEscapeCharacter;
-    // className.prototype.drawIcon = Window_Base.prototype.drawIcon;
-    // className.prototype.createArabicText = Window_Base.prototype.createArabicText;
-    // className.prototype.obtainLTRText = Window_Base.prototype.obtainLTRText;
-    // className.prototype.drawLeftToRightText = Window_Base.prototype.drawLeftToRightText;
   };
 
   RS.ArabicMessageSystem.defineInitialize = function (className) {
