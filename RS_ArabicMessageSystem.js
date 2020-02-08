@@ -1249,10 +1249,6 @@ function ArabicUtils() {
 
     renderer.bindRenderTarget(this._renderTarget);
 
-    if(this._arabicTexts.visible) {
-      this._renderSprite.texture = this._renderTexture;
-    }
-
   };
 
   //============================================================================
