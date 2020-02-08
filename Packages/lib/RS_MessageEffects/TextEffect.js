@@ -14,9 +14,6 @@ class TextEffect extends Sprite {
         this.updateEffects();
     }
 
-    /**
-     * 종료
-     */
     flush() {
         this._isStarted = false;
         this.x = this._startX;
@@ -36,7 +33,6 @@ class TextEffect extends Sprite {
     }
 
     /**
-     * 시작
      * @param {MV.TextState} textState
      */
     start(textState) {
