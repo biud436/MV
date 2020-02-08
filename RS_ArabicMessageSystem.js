@@ -483,72 +483,6 @@ function ArabicUtils() {
   };
 
   //============================================================================
-  // RS.ArabicFlipFilter
-  //============================================================================
-
-  RS.ArabicFlipFilter = function () {
-
-    var defaultVertexSrc = [
-      'attribute vec2 aVertexPosition;',
-      'attribute vec2 aTextureCoord;',
-
-      'uniform mat3 projectionMatrix;',
-
-      'varying vec2 vTextureCoord;',
-
-      'void main(void)',
-      '{',
-          'gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
-          'vTextureCoord = aTextureCoord;',
-      '}      '
-    ].join('\n');
-
-    var fragmentSrc = [
-      'uniform mediump float;',
-      'varying vec2 vTextureCoord;',
-      'uniform sampler2D uSampler;',
-      'uniform vec2 offset;',
-      'uniform float dir;',
-
-      'void main(void)',
-      '{',
-      '  vec2 flip = vec4(vTextureCoord, 0.0, 0.0).xy;',
-      '  if(dir == 1.0) {',
-      '    flip.y = 1.0 - flip.y;',
-      '  } else if(dir == 2.0) {',
-      '    flip.x = 1.0 - flip.x;',
-      '  }',
-      '  gl_FragColor = texture2D(uSampler, flip + offset);',
-      '}      '
-    ].join('\n');
-    PIXI.Filter.call( this, defaultVertexSrc, fragmentSrc );
-    this.uniforms.dir = 2;
-    this.uniforms.offset = {'x': 0.0, 'y': 0.0};
-  };
-
-  RS.ArabicFlipFilter.prototype = Object.create( PIXI.Filter.prototype );
-  RS.ArabicFlipFilter.prototype.constructor = RS.ArabicFlipFilter;
-
-  Object.defineProperties(RS.ArabicFlipFilter.prototype, {
-      direction: {
-        get: function() {
-            return this.uniforms.dir;
-        },
-        set: function(value) {
-            this.uniforms.dir = value;
-        }
-      },
-      offsetX: {
-        get: function() {
-            return this.uniforms.offset.x;
-        },
-        set: function(value) {
-            this.uniforms.offset.x = 1 / value;;
-        }
-      }
-    });
-
-  //============================================================================
   // ArabicFlipSprite
   //============================================================================
 
@@ -565,15 +499,6 @@ function ArabicUtils() {
     this._isMessageAracbic = false;
     if(Graphics.isWebGL()) {
       this.filters = [Sprite.voidFilter];
-    }
-  };
-
-  ArabicFlipSprite.prototype.createAracbicFilter = function () {
-    if(Graphics.isWebGL()) {
-      this._arabicFlipFilter = new RS.ArabicFlipFilter();
-      this._arabicFlipFilter.dir = 2;
-      this.filters = [this._arabicFlipFilter];
-      this.filterArea = new PIXI.Rectangle(this.x, this.y, Graphics.boxWidth, Graphics.boxHeight);
     }
   };
 
