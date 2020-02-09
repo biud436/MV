@@ -17,7 +17,6 @@ import platform
 class App:
 
 	def run(self):
-		self.check()
 		self.process_registry()
 	
 	def check(self):
