@@ -86,7 +86,7 @@ Imported.RS_EventTouch = true;
   var alias_Game_Map_update = Game_Map.prototype.update;
   Game_Map.prototype.update = function(sceneActive) {
     alias_Game_Map_update.call(this, sceneActive);
-    this.executeTouchEvent();
+    if(sceneActive) this.executeTouchEvent();
   };
 
 })();
