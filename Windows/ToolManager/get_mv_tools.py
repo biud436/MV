@@ -40,7 +40,7 @@ class App:
 			key = OpenKey(HKEY_CURRENT_USER, varSubkey)
 			value, regtype = QueryValueEx(key, "mvTools")
 			CloseKey(key)
-			print value.encode("utf-8")
+			print(value.encode("utf8") if major_version == 2 else value)
 
 		# Write
 		if sys.argv[1] == "w":
@@ -49,7 +49,6 @@ class App:
 			if isinstance(value, basestring):
 				SetValueEx(key, "mvTools", 0, REG_SZ, value)
 				CloseKey(key)
-
 
 app = App()
 app.run()
