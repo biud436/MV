@@ -1,5 +1,5 @@
 # How to use
-While Node.js is great package, it is hard to handle the registry without installing extra node library. Python is easier to use, it is included many functions so this script is used a Python to handle registry using child process. Accordingly, To use this, you need to install the Python 2.7 and need to do PATH settings.
+While Node.js is great package, it is hard to handle the registry without installing extra node library. Python is easier to use, it is included many functions so this script is used a Python to handle registry using child process. Accordingly, To use this, you need to install the ```Python 2.7``` or ```Python 3.8.1``` and need to do PATH settings.
 
 To add a new tool, you have to call at the following in the command prompt. 
 
