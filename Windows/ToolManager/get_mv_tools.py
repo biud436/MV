@@ -19,18 +19,6 @@ class App:
 	def run(self):
 		self.process_registry()
 	
-	def check(self):
-		version = platform.python_version()[0:3]
-		is_valid = False
-
-		if version != None and version == "2.7":
-			is_valid = True
-		else:
-			is_valid = False
-
-		if not is_valid:
-			raise Exception("Your python's version is not 2.7")
-
 	def process_registry(self):
 
 		varSubkey = r"Software\KADOKAWA\RPGMV"
