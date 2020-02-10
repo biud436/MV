@@ -1726,20 +1726,12 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     }
   };
 
-  var alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
-  TilingSprite.prototype.initialize = function(bitmap) {
-    alias_TilingSprite_initialize.call(this, bitmap);
-    this.on('rs-resize', this.resizeImage, this);
-    this.on("removed", function() {
-      this.off('rs-resize', this.resizeImage, this);
-    }, this);
-  };
-
   var alias_TilingSprite__onBitmapLoad = TilingSprite.prototype._onBitmapLoad;
   TilingSprite.prototype._onBitmapLoad = function() {
     alias_TilingSprite__onBitmapLoad.call(this);
-    this.emit('rs-resize');
+    this.resizeImage();
   };
+  
   //#endregion
 
   //============================================================================
