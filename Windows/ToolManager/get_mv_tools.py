@@ -20,7 +20,7 @@ import re
 Author : biud436
 Usage:
 	Open the command line and call here as follows.
-	
+
 		python get_mv_tools.py r
 		python get_mv_tools.py w jsonRaw
 		python get_mv_tools.py rw appName, hint, name, path
@@ -79,7 +79,6 @@ class App:
 		if self.data is None:
 			return False
 
-		# Array type chceck
 		if isinstance(self.data, list) is not True:
 			return False
 	
