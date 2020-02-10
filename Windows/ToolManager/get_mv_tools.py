@@ -62,6 +62,7 @@ class App:
 		
 		if isinstance(value, basestring):
 			SetValueEx(key, "mvTools", 0, REG_SZ, value)
+			print(value)
 			CloseKey(key)	
 
 	def make_item(self, appName, hint, name, path):
@@ -72,7 +73,6 @@ class App:
 			'name': name, 
 			'path': posix_path,
 		}
-		print(data)
 		return data
 
 	def add(self, data):
