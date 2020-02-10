@@ -46,7 +46,7 @@ class App:
 				args = self.commands[2:6]
 				new_data = self.make_item(*args)
 				if self.add(new_data):
-					print(self.data)
+					self.write_json(self.data)
 		else:
 			print("Cannot find the mode in command line option")
 
@@ -59,7 +59,7 @@ class App:
 
 	def write_json(self, value):
 		key = OpenKey(HKEY_CURRENT_USER, self.sub_key, 0, KEY_ALL_ACCESS)
-		value = json.dumps(value.encode("utf8")) if major_version == 2 else json.dumps(value) 
+		value = json.dumps(value).encode("utf8") if major_version == 2 else json.dumps(value) 
 		
 		if isinstance(value, basestring):
 			SetValueEx(key, "mvTools", 0, REG_SZ, value)
