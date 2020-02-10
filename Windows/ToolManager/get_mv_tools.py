@@ -3,6 +3,7 @@
 # Author : biud436
 
 import sys
+import copy
 
 major_version = sys.version_info.major
 if major_version == 2:
@@ -40,10 +41,8 @@ class App:
 		elif mode in ['rw']:
 			self.data = self.read_json()
 			
-			self.is_valid = True if self.data is not None else False
-
-			if self.is_valid and self.commands.count >= 5:
-				args = self.commands[2:6]
+			if self.commands.count >= 5:
+				args = copy.copy(self.commands[2:6])
 				new_data = self.make_item(*args)
 				if self.add(new_data):
 					self.write_json(self.data)
@@ -73,6 +72,7 @@ class App:
 			'name': name, 
 			'path': posix_path,
 		}
+		print(data)
 		return data
 
 	def add(self, data):

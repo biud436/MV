@@ -18,3 +18,9 @@ if you want to read already registered tools, you can do as follows.
 ```cmd
 node mvtools.js
 ```
+
+if your system is installed only python, You can do as follows.
+
+```cmd
+python get_mv_tools.py "rw" "vscode.bat" "Run VS Code" "Visual Studio Code" "C:/Users/U/Desktop/MV/Windows/vscode"
+```
