@@ -41,7 +41,7 @@ class App:
 		elif mode in ['rw']:
 			self.data = self.read_json()
 			
-			if self.commands.count >= 5:
+			if len(self.commands) >= 5:
 				args = copy.copy(self.commands[2:6])
 				new_data = self.make_item(*args)
 				if self.add(new_data):
