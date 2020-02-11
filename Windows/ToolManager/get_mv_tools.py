@@ -25,6 +25,7 @@ Usage:
 		python get_mv_tools.py r
 		python get_mv_tools.py w jsonRaw
 		python get_mv_tools.py rw appName, hint, name, path
+		python get_mv_tools.py p
 
 """
 
@@ -40,12 +41,15 @@ class App:
 			self.process_registry()
 		elif mode in ['rw']:
 			self.data = self.read_json()
-			
 			if len(self.commands) >= 5:
 				args = copy.copy(self.commands[2:6])
 				new_data = self.make_item(*args)
 				if self.add(new_data):
 					self.write_json(self.data)
+		elif mode in ['p']:
+			self.data = self.read_json()
+			if self.pop():
+				self.write_json(self.data)
 		else:
 			print("Cannot find the mode in command line option")
 
@@ -85,7 +89,17 @@ class App:
 		self.data.append(data)
 
 		return True
-	
+
+	def pop(self):
+		if self.data is None:
+			return False
+		
+		if isinstance(self.data, list) is not True:
+			return False
+
+		self.data.pop()
+		return True
+
 	def process_registry(self):
 
 		varSubkey = self.sub_key
