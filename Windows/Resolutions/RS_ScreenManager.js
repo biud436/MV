@@ -216,11 +216,6 @@ Imported.RS_ScreenManager = true;
  * @desc Set the list for display resolution.
  * @default ["{\"width\":\"320\",\"height\":\"480\"}","{\"width\":\"480\",\"height\":\"800\"}","{\"width\":\"720\",\"height\":\"1280\"}","{\"width\":\"1080\",\"height\":\"1920\"}"]
  * 
- * @param Localization
- * @type struct<Localization>
- * @desc Set texts that required a localization.
- * @default {"Language":"navigator.language.slice(0, 2)","Localization":"[\"{\\\"lang\\\":\\\"en\\\",\\\"Resolutions\\\":\\\"Resolutions\\\",\\\"Aspect Ratio\\\":\\\"Aspect Ratio\\\",\\\"Display Resolutions\\\":\\\"Display Resolutions\\\",\\\"Full Screen\\\":\\\"Full Screen\\\",\\\"NotFoundError\\\":\\\"Couldn't find the node library needed to set the resolution\\\",\\\"NotFoundNwExe\\\":\\\"Please you must change the name of the executable file to nw.exe\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"Low\\\\\\\", \\\\\\\"Medium\\\\\\\", \\\\\\\"High\\\\\\\", \\\\\\\"Very High\\\\\\\"]\\\",\\\"Windowed Mode\\\":\\\"Windowed Mode\\\"}\",\"{\\\"lang\\\":\\\"ko\\\",\\\"Resolutions\\\":\\\"해상도\\\",\\\"Aspect Ratio\\\":\\\"종횡비\\\",\\\"Display Resolutions\\\":\\\"해상도 목록\\\",\\\"Full Screen\\\":\\\"전체 화면\\\",\\\"NotFoundError\\\":\\\"해상도 설정에 필요한 라이브러리를 찾지 못했습니다\\\",\\\"NotFoundNwExe\\\":\\\"실행 파일명을 nw.exe로 변경하시기 바랍니다.\\\",\\\"MobileResolutions\\\":\\\"[\\\\\\\"낮음\\\\\\\",\\\\\\\"보통\\\\\\\",\\\\\\\"높음\\\\\\\",\\\\\\\"매우 높음\\\\\\\"]\\\",\\\"Windowed Mode\\\":\\\"창 모드\\\"}\"]"}
- * 
  * @param Pictures
  * 
  * @param Scaled Picture
@@ -313,6 +308,7 @@ Imported.RS_ScreenManager = true;
  * - Removed ScreenManager that can change the resolution during the game.
  * - Removed Node library dependency.
  * - Removed a feature that does resizing or scaling an actor's sprite.
+ * - Removed localization feature.
  */
 /*~struct~ScreenSize:
  *
@@ -327,49 +323,6 @@ Imported.RS_ScreenManager = true;
  * @min 0
  * @desc Specify the desired height
  * @default 240
- * 
- */
-/*~struct~Localization:
- * @param Language
- * @desc Extract the language code.
- * @default navigator.language.slice(0, 2)
- * 
- * @param Localization
- * @type struct<PrivateLocalization>[]
- * @desc Set the struct about the localization.
- * @default ["{\"lang\":\"en\",\"Resolutions\":\"Resolutions\",\"Aspect Ratio\":\"Aspect Ratio\",\"Display Resolutions\":\"Display Resolutions\",\"Full Screen\":\"Full Screen\",\"MobileResolutions\":\"[\\\"Low\\\", \\\"Medium\\\", \\\"High\\\", \\\"Very High\\\"]\"}","{\"lang\":\"ko\",\"Resolutions\":\"해상도\",\"Aspect Ratio\":\"종횡비\",\"Display Resolutions\":\"해상도 목록\",\"Full Screen\":\"전체 화면\",\"MobileResolutions\":\"[\\\"낮음\\\",\\\"보통\\\",\\\"높음\\\",\\\"매우 높음\\\"]\"}"]
- * 
- */
-/*~struct~PrivateLocalization:
- *
- * @param lang
- * @desc Specify the lang code
- * @default en
- * 
- * @param Resolutions
- * @desc Specify the text for resolution.
- * @default Resolutions
- * 
- * @param Aspect Ratio
- * @desc Specify the text for aspect ratio.
- * @default Aspect Ratio
- * 
- * @param Display Resolutions
- * @desc Specify the text that indicates a diplay resolution.
- * @default Display Resolutions
- * 
- * @param Full Screen
- * @desc Specify the text that indicates a fullscreen option.
- * @default Full Screen
- * 
- * @param MobileResolutions
- * @type string[]
- * @desc Specify four resolution types in mobile device.
- * @default ["Low", "Medium", "High", "Very High"]
- * 
- * @param Windowed Mode
- * @desc Specify the text that indicates a Windowed Mode option.
- * @default Windowed Mode
  * 
  */
 
@@ -542,27 +495,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     }    
     
   };
-
-  var PrivateLocalization = function () {};
-
-  var newLocalization = RS.ScreenManager.jsonParse(parameters["Localization"]);
-  var langCode = navigator.language.slice(0, 2);
-
-  PrivateLocalization.prototype = {
-    "code": eval(newLocalization.Language),
-    "get": function (type) {
-      var code = this.code;
-      var lang = PrivateLocalization[code];
-      return (lang) ? lang[type] : PrivateLocalization.en[type];
-    }    
-  };
-
-  newLocalization["Localization"].forEach(function(i) {
-    var lang = i.lang;
-    PrivateLocalization[lang] = i;
-  });
-
-  RS.ScreenManager.localization = new PrivateLocalization();
   
   RS.ScreenManager.restartGame = function() {
     var childProcess = require("child_process");
