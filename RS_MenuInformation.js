@@ -38,6 +38,9 @@
  * 2017.09.06 (v1.0.3) - Converted sources to ES5.
  * 2019.07.05 (v1.0.4) :
  * - Added the image text code.
+ * 2020.02.13 (v1.0.5) :
+ * - it is saved the menu information in the save file.
+ * - Now it is possible to run this plugin even in the RMMV 1.5.2 or less.
  */
 /*:ko
  * @plugindesc 간단한 텍스트를 표기할 수 있는 창을 만들 수 있습니다.
@@ -75,6 +78,9 @@
  * 2017.09.06 (v1.0.3) - 소스를 ES5로 변환했습니다.
  * 2019.07.05 (v1.0.4) :
  * - 이미지 텍스트 코드 추가
+ * 2020.02.13 (v1.0.5) :
+ * - 세이브 파일에 메뉴 정보가 저장되게 하였습니다.
+ * - 이제 1.5.2 이하 버전에서도 실행가능합니다.
  */
 
 var Imported = Imported || {};
