@@ -5,6 +5,8 @@ const fs = require('fs');
 const outputFile = args[0];
 const mainFolder = outputFile.split(".")[0];
 
+let stack = [];
+
 let child = cd.exec(`npx webpack --config=webpack.${mainFolder}.config.js --mode production`, {cwd: path.join(__dirname, "..")}, (err, stdout, stdin) => {
     if(err) {
         throw new Error(err);
@@ -12,7 +14,7 @@ let child = cd.exec(`npx webpack --config=webpack.${mainFolder}.config.js --mode
 });
 
 child.stdout.on("data", c => {
-    console.log(c);
+    stack.push(c);
 });
 
 child.on("exit", (code, signal) => {
@@ -22,6 +24,8 @@ child.on("exit", (code, signal) => {
         },
         err => {
             if(err) console.warn(err.message);
+            console.log(stack.join("\r\n"));
+            stack = [];
         }
     );
 
