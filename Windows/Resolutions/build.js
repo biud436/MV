@@ -4,14 +4,16 @@ const args = process.argv.slice(2);
 const outputFile = args[0];
 const fs = require('fs');
 
-let child = cd.exec(`npx webpack`, {cwd: __dirname}, (err, stdout, stdin) => {
+let stack = [];
+
+let child = cd.exec(`chcp 65001 | npx webpack`, {cwd: __dirname}, (err, stdout, stdin) => {
     if(err) {
         throw new Error(err);
     }
 });
 
 child.stdout.on("data", c => {
-    console.log(c);
+    stack.push(c);
 });
 
 child.on("exit", (code, signal) => {
@@ -21,6 +23,8 @@ child.on("exit", (code, signal) => {
         },
         err => {
             if(err) console.warn(err.message);
+            console.log(stack.join("\r\n"));
+            stack = [];
         }
     );
 
@@ -30,6 +34,8 @@ child.on("exit", (code, signal) => {
 
     child2.on("exit", () => {
         fs.unlinkSync(`bin/${outputFile}`);
+        fs.copyFileSync(`bin/${outputFile}.map`, `dist/${outputFile}.map`);
+        fs.unlinkSync(`bin/${outputFile}.map`);
     });    
 
 });

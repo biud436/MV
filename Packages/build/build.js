@@ -7,7 +7,7 @@ const mainFolder = outputFile.split(".")[0];
 
 let stack = [];
 
-let child = cd.exec(`npx webpack --config=webpack.${mainFolder}.config.js`, {cwd: path.join(__dirname, "..")}, (err, stdout, stdin) => {
+let child = cd.exec(`chcp 65001 | npx webpack --config=webpack.${mainFolder}.config.js`, {cwd: path.join(__dirname, "..")}, (err, stdout, stdin) => {
     if(err) {
         throw new Error(err);
     }
@@ -35,6 +35,8 @@ child.on("exit", (code, signal) => {
 
     child2.on("exit", () => {
         fs.unlinkSync(`bin/${outputFile}`);
+        fs.copyFileSync(`bin/${outputFile}.map`, `dist/${outputFile}.map`);   
+        fs.unlinkSync(`bin/${outputFile}.map`);     
     });
 
 });

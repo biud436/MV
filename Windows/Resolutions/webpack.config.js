@@ -13,10 +13,7 @@ module.exports = {
     node: {
       global: true,
     },
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     plugins: [
-      new webpack.EvalSourceMapDevToolPlugin({
-        filename: '[name].js.map',
-      })
     ]
   };
