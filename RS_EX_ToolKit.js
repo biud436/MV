@@ -54,7 +54,7 @@ RS.EX_ToolKit = RS.EX_ToolKit || {};
                 
                 var addScroll = (...args) => {
                     
-                    this._list.push({
+                    this._list.push({ // 화면의 스크롤
                         "code": 204,
                         "indent": 0,
                         "parameters": [
@@ -95,15 +95,6 @@ RS.EX_ToolKit = RS.EX_ToolKit || {};
                             "parameters": [60]
                         }, { 
                             "code": 101, // 문장의 표시
-                            "indent": 0,
-                            "parameters": [
-                                "",
-                                0,
-                                0,
-                                2
-                            ]
-                        }, {
-                            "code": 101,
                             "indent": 0,
                             "parameters": [
                                 "",
