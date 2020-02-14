@@ -53,6 +53,17 @@
  * SceneManager.push(Scene_HangulInput);
  * 
  * ==============================================================
+ * Text Comparison
+ * ==============================================================
+ * Ideally, if you want to easily compare one text, try this.
+ * 
+ * $gameVariables.value(RS.HangulInput.Params.variableId) === "안녕하세요"
+ * 
+ * or if you want to compare one text or more, try this.
+ * 
+ * ["안녕하세요", "안녕"].contains($gameVariables.value(RS.HangulInput.Params.variableId))
+ * 
+ * ==============================================================
  * Change Log
  * ==============================================================
  * 2019.06.21 (v1.0.0) - First Release.
@@ -103,11 +114,25 @@
  * 문자열 비교 방법
  * ==============================================================
  * 변수에 저장된 값을 조건 분기에서 검출하려면 다음과 같이 할 수 있습니다.
- * 조건분기 스크립트 란에서 다음과 같이 비교가 가능합니다.
+ * 문자열을 하나만 비교하려면 다음과 같이 해야 합니다.
  * 
  * $gameVariables.value(RS.HangulInput.Params.variableId) === "안녕"
  * 
  * 예를 들면, 위와 같이 하면 "안녕"이라고 입력했을 때 조건 분기 값이 참이 됩니다.
+ * 
+ * 문자열 두 개 이상 비교하고 둘 중 하나가 참일 때를 알고 싶다면 다음과 같이 해야 합니다.
+ * 
+ * ["안녕하세요", "안녕"].contains($gameVariables.value(RS.HangulInput.Params.variableId))
+ * 
+ * 맵에 있는 이벤트 중 특정 이름의 위치를 찾아내려면 다음과 같이 해야 합니다.
+ * RPG Maker MV v1.6.2를 사용하는 경우, 아래와 같이 하세요.
+ * 
+ * let joinedText = $gameVariables.value(RS.HangulInput.Params.variableId);
+ * let ret = $gameMap.events().filter(e => e.event().name === joinedText);
+ * if(ret && ret[0]) {
+ *   const target = ret[0];
+ *   $gameMessage.add(`\\말풍선[${target.eventId()}]` 아니 내 이름을 어떻게 알았지?`);
+ * } 
  * 
  * ==============================================================
  * Change Log
