@@ -100,7 +100,7 @@ class Downloader {
         console.log(needed);
         needed.forEach(i => {
             if(fs.existsSync(path.join(i.replace(/\\/g, "/"), "aria2c.exe"))) {
-                console.log("aria2c.exe 파일을 찾았습니다.")
+                console.log("aria2c.exe 파일을 찾았습니다.");
                 this._isAria2c = true;
             }
         });
