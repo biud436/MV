@@ -24,3 +24,7 @@ npm run mvtools /run v0.44.1 E:/Games/201907
 npm run mvtools /add "vscode.bat" "Run VS Code" "Visual Studio Code" "C:/Users/U/Desktop/MV/Windows/vscode"
 npm run mvtools /remove "vscode.bat"
 ```
+
+The icon image will be created automatically after executing the command called ```npm run mvtools /add "vscode.bat" "Run VS Code" "Visual Studio Code" "C:/Users/U/Desktop/MV/Windows/vscode"```, as follows.
+
+![VIEW](https://i.imgur.com/aocOXfW.png)
