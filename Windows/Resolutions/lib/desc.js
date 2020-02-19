@@ -8,7 +8,7 @@
 //================================================================
 
 /*:
- * @plugindesc (v1.0.21) <RS_ScreenManager>
+ * @plugindesc (v1.0.22) <RS_ScreenManager>
  * @author biud436
  *
  * @param Test Options
@@ -381,6 +381,8 @@
  * 2020.01.09 (v1.0.21) :
  * - Fixed the bug that couldn't change the scale of picture properly.
  * - Added the scaled battle background and then reposition actors (vanilla mode only)
+ * 2020.02.19 (v1.0.22) :
+ * - Fixed RS.ScreenManager.isFullscreen();
  */
 /*~struct~ScreenSize:
  *

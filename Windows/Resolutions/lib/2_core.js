@@ -72,9 +72,11 @@ RS.ScreenManager.switchFullScreen = function() {
 
 RS.ScreenManager.isFullscreen = function() {
     if(Utils.isNwjs()) {
-    var gui = require('nw.gui');
-    var win = gui.Window.get();
-    return win.appWindow.isFullscreen();
+        var gui = require('nw.gui');
+        var win = gui.Window.get();
+        
+        return win.isFullScreen;
+
     } else {
     return Graphics._isFullScreen();
     }

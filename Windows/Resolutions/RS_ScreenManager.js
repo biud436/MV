@@ -309,6 +309,8 @@ Imported.RS_ScreenManager = true;
  * - Removed Node library dependency.
  * - Removed a feature that does resizing or scaling an actor's sprite.
  * - Removed localization feature.
+ * 2020.02.19 (v1.1.1) :
+ * - Fixed RS.ScreenManager.isFullscreen();
  */
 /*~struct~ScreenSize:
  *
@@ -459,7 +461,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     if(Utils.isNwjs()) {
       var gui = require('nw.gui');
       var win = gui.Window.get();
-      return win.appWindow.isFullscreen();
+      return win.isFullScreen;
     } else {
      return Graphics._isFullScreen();
     }
