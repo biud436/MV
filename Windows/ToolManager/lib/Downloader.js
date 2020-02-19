@@ -65,6 +65,7 @@ class Downloader {
         this._outputPath = data.outputPath;
         this._version = data.version;
         this._projectPath = data.projectPath;
+        this._isForceHttps = data.forceHttps === "true";
 
         this._output = [];
         this._isAria2c = false;
@@ -120,9 +121,15 @@ class Downloader {
 
             if(fs.existsSync(realPath)) {
                 unzipper.on('error', (err) => console.log(err));
-                unzipper.on('extract', function (log) {
+                unzipper.on('extract', (log) => {
                     console.log('압축 해제를 완료하였습니다.');
                     fs.removeSync(realPath);
+                    
+                    let dt = file.split("."); 
+                    dt.pop();
+                    dt = dt.join(".");
+                    this.createRunFile(path.join(this._outputPath, dt, "play.bat"));
+
                 });
                 unzipper.on('progress', function (fileIndex, fileCount) {
                     console.log('압축 해제 중 : ' + (fileIndex + 1) + ' of ' + fileCount);
@@ -139,47 +146,31 @@ class Downloader {
 
     }
 
+    createRunFile(filepath) {
+
+        let contents = `
+@SETLOCAL enableextensions enabledelayedexpansion
+@ECHO OFF
+
+set ARGS1=%~dp1
+ECHO Current Path : %~dp0
+
+ECHO RUN INDEX FILE : %ARGS1%index.html
+%~dp0nw.exe %ARGS1% test
+
+@ENDLOCAL
+GOTO :EOF
+
+:ERR
+ECHO %ERRORMSG%
+GOTO :EOF`;
+
+        fs.writeFileSync(filepath, contents, "utf8");
+    }
+
     async start() {
 
         try  {
-
-            const files = await this.readOutputFolder();
-            let isValidNW = false;
-
-            for await (const file of files) {
-                const realPath = path.join(this._outputPath, file).replace(/\\/g, "/");
-                const stat = fs.lstatSync(realPath);
-                if(stat.isDirectory()) {
-                    let filename = path.join(realPath, 'nw.exe');
-                    if(fs.existsSync(filename)) {
-                        isValidNW = true;
-                        console.log(`nw.exe를 찾았습니다.`)
-                    }
-                }
-            }         
-            
-            if(isValidNW) {
-                const NodeWebkit = require('./NW');
-
-                const nwProcess = new NodeWebkit({
-                    projectPath : this._projectPath, 
-                    version: this._version, 
-                    outputPath: this._outputPath,
-                }, function(err, stdout, stderr) {
-                    if(err) {
-                        console.log(err);
-                        return;
-                    }
-                });
-
-                nwProcess.onExit((code, signal) => {
-                    console.log(`${Color.FgYellow}노드 웹킷 프로세스가 종료되었습니다.${Color.Reset}`);
-                });
-                
-                nwProcess.pendingTerminate();
-
-                return;
-            }
 
             const version = this._version;
 
@@ -192,6 +183,10 @@ class Downloader {
                 // `https://dl.nwjs.io/${version}/nwjs-${version}-win-x64.zip`,
                 // `https://codeload.github.com/biud436/MV/zip/master`,
             ]
+
+            if(this._isForceHttps) {
+                this._isAria2c = false;
+            }
     
             if(this._isAria2c) {
     

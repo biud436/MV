@@ -15,12 +15,14 @@ function getCommands() {
     let projectPath = args[2];        
     let mainPath = process.cwd().replace( /\\/g, '/' );
     let outputPath = `${mainPath}/${VERSION}`.replace( /\\/g, '/' );
+    let forceHttps = args[3];
     
     let commands = {
         mainPath: mainPath,
         outputPath: outputPath,
         version: VERSION,
         projectPath: projectPath,
+        forceHttps: forceHttps,
     };
 
     return commands;
@@ -31,7 +33,7 @@ function run() {
         case '/run': // node index.js /run v0.44.1 E:/Games/201907/
             app = new NodeWebkitRunner(getCommands()).start();
             break;
-        case '/download': // node index.js /download v0.44.1 E:/Games/201907/
+        case '/download': // node index.js /download v0.44.1 E:/Games/201907/ true
             app = new Downloader(getCommands()).start();
             break;
         case '/add': // node index.js /add appName hint name filePath
