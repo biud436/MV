@@ -166,6 +166,11 @@ ECHO %ERRORMSG%
 GOTO :EOF`;
 
         fs.writeFileSync(filepath, contents, "utf8");
+        
+        contents = `npm run mvtools /add "play.bat" "play" "play" "${path.dirname(filepath)}"`
+
+        let rootFolder = path.dirname(filepath);
+        fs.writeFileSync(path.join(rootFolder, "add.bat"), contents, "utf8");
     }
 
     async start() {
