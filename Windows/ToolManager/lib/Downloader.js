@@ -227,7 +227,6 @@ class Downloader {
                         const filename = needed_files[counter++].splitOnLast("/");
 
                         console.log(`동시 다운로드 시작 : ${fileUrl}, ${filename}`);
-    
                         fileGet.downFileZipAsync(fileUrl, path.join(outputPath, filename)).then(res => {
                             callback(null, fileUrl);
                         }).catch(err => {

@@ -56,10 +56,8 @@ const downFile = async function(url, filename, callback) {
 
 const downloadFile = promisify(downFile);
 
-const downFileZip = async function(url, callback) {
+const downFileZip = async function(url, filename, callback) {
     
-    let filename = "default.zip";
-
     const options = {
         port: 443,
         headers: {},
