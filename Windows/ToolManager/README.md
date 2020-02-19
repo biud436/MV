@@ -1,4 +1,11 @@
 # How to use
+Before starting this tool, you must run as belows.
+
+```bat
+npm install
+```
+
+This tool has four command line options. 
 
 ```bat
     npm run mvtools /download <version> <project_dir>
