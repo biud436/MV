@@ -82,7 +82,7 @@ class RegistryMan {
 
         await setExtensionData.then(value => {
             console.log(`레지스트리가 성공적으로 업데이트 되었습니다.`);
-            console.log(value);
+            console.log(this._items);
         }).catch(err => {
             throw new Error(err);            
         })
@@ -99,6 +99,8 @@ class RegistryMan {
     }
 
     addItem(appName, hint, name, filePath) {
+
+        console.log(appName, hint, name, filePath);
         
         const filename = filePath.replace(/\\/g, "/");
 
