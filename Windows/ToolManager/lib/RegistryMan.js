@@ -129,6 +129,7 @@ class RegistryMan {
         if(!fs.existsSync(iconPath)) {
             fs.writeFileSync(iconPath, text2png(name.slice(0, 2), {
                 font: '31px sans-serif',
+                strokeWidth: 1
             }));
         }
 
