@@ -25,9 +25,13 @@ npm run mvtools /add "vscode.bat" "Run VS Code" "Visual Studio Code" "C:/Users/U
 npm run mvtools /remove "vscode.bat"
 ```
 
+after downloaded node webkit, you must run the file called add.bat, as follows.
+
+![VIEW0](https://i.imgur.com/OPZzgRW.png)
+
 The icon image will be created automatically after executing the command called ```npm run mvtools /add "vscode.bat" "Run VS Code" "Visual Studio Code" "C:/Users/U/Desktop/MV/Windows/vscode"```, as follows.
 
-![VIEW](https://i.imgur.com/aocOXfW.png)
+![VIEW1](https://i.imgur.com/aocOXfW.png)
 
 its text starts with 'vs' if you passed the name text called 'vscode'.
 
