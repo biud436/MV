@@ -169,6 +169,7 @@ class Downloader {
             const needed_files = [
                 `https://dl.nwjs.io/${version}/nwjs-sdk-${version}-win-x64.zip`,
                 `https://dl.nwjs.io/${version}/nwjs-${version}-win-x64.zip`,
+                // `https://codeload.github.com/biud436/MV/zip/master`,
             ]
     
             if(this._isAria2c) {
@@ -211,16 +212,14 @@ class Downloader {
                     fs.mkdirSync(outputPath);
                 }
 
-                const matched_data = needed_files.filter(i => {
-                    return i.indexOf("github.com") >= 0;
-                });
-
-                if(matched_data.length > 0) {
-                    throw new Error("github.com는 현재 인증서 처리의 기술적인 문제로 인해 다운로드가 불가능합니다.");
-                }
-
                 let functionTables = [];
                 let counter = 0;
+
+                // fileGet.downFileZipAsync(`https://codeload.github.com/biud436/mv/zip/master`).then(v => {
+                //     console.log("다운로드 완료");
+                // }).catch(err => {
+                //     console.warn(err);
+                // })
 
                 needed_files.forEach(e => {
                     functionTables.push((callback) => {     
@@ -229,7 +228,7 @@ class Downloader {
 
                         console.log(`동시 다운로드 시작 : ${fileUrl}, ${filename}`);
     
-                        fileGet(fileUrl, path.join(outputPath, filename)).then(res => {
+                        fileGet.downFileZipAsync(fileUrl, path.join(outputPath, filename)).then(res => {
                             callback(null, fileUrl);
                         }).catch(err => {
                             callback(err, null);
