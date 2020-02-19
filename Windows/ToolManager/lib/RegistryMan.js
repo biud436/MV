@@ -4,7 +4,9 @@
  */
 
 const fs = require('fs-extra');
+const path = require('path');
 const Registry = require('winreg');
+const text2png = require('text2png');
 
 class RegistryMan {
 
@@ -98,9 +100,41 @@ class RegistryMan {
         this.refreshItems();
     }
 
-    addItem(appName, hint, name, filePath) {
+    addResources(appName, hint, name, filePath) {
+        const filename = filePath.replace(/\\/g, "/");
+        if(!fs.existsSync(filename)) {
+            throw new Error(`${filename}이 존재하지 않습니다.`);
+        }
 
-        console.log(appName, hint, name, filePath);
+        const mkdirPath = path.join(filename, "Identification");
+        if(!fs.existsSync(mkdirPath)) {
+            fs.mkdirSync(mkdirPath);
+        }
+
+        const resPath = path.join(mkdirPath, "toolbar");
+        if(!fs.pathExistsSync(resPath)) {
+            fs.mkdirSync(resPath);
+        }
+
+        const appPath = path.join(mkdirPath, "app");
+        
+        if(!fs.existsSync(appPath)) {
+            let version = 'v1.0.0';
+            let contents = [name, version, hint].join("\r\n");
+
+            fs.writeFileSync(appPath, contents, "utf8");
+        }
+
+        const iconPath = path.join(resPath, "icon.png");
+        if(!fs.existsSync(iconPath)) {
+            fs.writeFileSync(iconPath, text2png(name.slice(0, 2), {
+                font: '31px sans-serif',
+            }));
+        }
+
+    }
+
+    addItem(appName, hint, name, filePath) {
         
         const filename = filePath.replace(/\\/g, "/");
 
@@ -114,6 +148,8 @@ class RegistryMan {
 			'name': name, 
 			'path': filename,
         });
+
+        this.addResources(appName, hint, name, filePath);
 
         this.refreshItems();
     }

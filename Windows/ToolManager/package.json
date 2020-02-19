@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "decompress-zip": "^0.2.2",
+    "text2png": "^2.3.0",
     "winreg": "^1.2.4"
   }
 }
