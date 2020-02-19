@@ -1,40 +1,17 @@
 /**
  * @author biud436
  * @help
- * Aria2c is the utility that can download the file even faster.
- * 
- * node Downloader.js v0.44.1
- * 
- * /f라는 명령행 옵션을 추가하면 https 라이브러리로 파일 다운로드를 수행합니다.
- * Github의 경우, ZIP를 다운로드 할 때, 302 응답 코드를 보낸 후, 
- * 실제 다운로드가 가능한 페이지로 리다이렉션하고 200 응답 코드를 반환합니다.
- * 첫 시도에서 200 응답 코드를 받지 못하면 다운로드를 실패하게 됩니다.
- * 
- * node Downloader.js v0.44.1 /f
- * 
- * Aria2c가 없으면 https 라이브러리로 다운로드가 수행됩니다.
  */
 
 const Aria2c = require('./Aria2c');
 const fs = require('fs-extra');
 const path = require('path');
-const readline = require('readline');
 const DecompressZip = require('decompress-zip');
 const fileGet = require("./fileGet");
 const async = require('async');
-const {
-    promisify
-} = require('util');
+const { promisify } = require('util');
 
 const readdirAsync = promisify(fs.readdir);
-
-const args = process.argv.slice(2);
-
-const VERSION = args[0];
-const option = args[1];
-
-let mainPath = process.cwd().replace( /\\/g, '/' );
-let outputPath = `${mainPath}/${VERSION}`.replace( /\\/g, '/' );
 
 let Color = {
     Reset : "\x1b[0m",
@@ -78,30 +55,32 @@ String.prototype.splitOnLast = function (e) {
 
 class Downloader {
 
-    constructor() {
+    constructor(data) {
+        this.initMembers(data);
+        this.checkAria2c();
+    }
+
+    initMembers(data) {
+        this._mainPath = data.mainPath;
+        this._outputPath = data.outputPath;
+        this._version = data.version;
+        this._projectPath = data.projectPath;
+
         this._output = [];
         this._isAria2c = false;
-
-        this.checkAria2c();
     }
 
     processLine(line) {
         const filename = line.splitOnLast("/");
         this._output.push(line);
-        this._output.push(`  dir=${outputPath}`);
+        this._output.push(`  dir=${this._outputPath}`);
         this._output.push(`  out=${filename}`);
     }
 
     checkAria2c() {
         
-        if(option === "/f") {
-            this._isAria2c = false;
-            return;
-        }
-
         const env = process.env["PATH"].split(";");
         const needed = env.filter(dir => dir.indexOf("aria") >= 0);
-        console.log(needed);
         needed.forEach(i => {
             if(fs.existsSync(path.join(i.replace(/\\/g, "/"), "aria2c.exe"))) {
                 console.log("aria2c.exe 파일을 찾았습니다.");
@@ -112,8 +91,8 @@ class Downloader {
 
     removeFiles() {
         const files = {
-            input: path.join(mainPath, "input.txt").replace( /\\/g, '/' ),
-            log: path.join(mainPath, "log.txt").replace( /\\/g, '/' ),
+            input: path.join(this._mainPath, "input.txt").replace( /\\/g, '/' ),
+            log: path.join(this._mainPath, "log.txt").replace( /\\/g, '/' ),
         };
 
         if(fs.existsSync(files.input)) fs.removeSync(files.input);
@@ -122,7 +101,7 @@ class Downloader {
 
     async *readOutputFolder() {
         try {
-            const dir = await readdirAsync(outputPath);
+            const dir = await readdirAsync(this._outputPath);
             for (const file of dir) {
                 yield file;
             }
@@ -136,7 +115,7 @@ class Downloader {
         const files = await this.readOutputFolder();
 
         for await (const file of files) {
-            const realPath = path.join(outputPath, file);
+            const realPath = path.join(this._outputPath, file);
             const unzipper = new DecompressZip(realPath);       
 
             if(fs.existsSync(realPath)) {
@@ -149,7 +128,7 @@ class Downloader {
                     console.log('압축 해제 중 : ' + (fileIndex + 1) + ' of ' + fileCount);
                 });
                 unzipper.extract({
-                    path: path.join(outputPath),
+                    path: path.join(this._outputPath),
                     filter: function (file) {
                         return file.type !== "SymbolicLink";
                     }
@@ -168,7 +147,7 @@ class Downloader {
             let isValidNW = false;
 
             for await (const file of files) {
-                const realPath = path.join(outputPath, file).replace(/\\/g, "/");
+                const realPath = path.join(this._outputPath, file).replace(/\\/g, "/");
                 const stat = fs.lstatSync(realPath);
                 if(stat.isDirectory()) {
                     let filename = path.join(realPath, 'nw.exe');
@@ -183,9 +162,9 @@ class Downloader {
                 const NodeWebkit = require('./NW');
 
                 const nwProcess = new NodeWebkit({
-                    projectPath : `E:/Games/201907`, 
-                    version: VERSION, 
-                    outputPath: outputPath,
+                    projectPath : this._projectPath, 
+                    version: this._version, 
+                    outputPath: this._outputPath,
                 }, function(err, stdout, stderr) {
                     if(err) {
                         console.log(err);
@@ -202,7 +181,7 @@ class Downloader {
                 return;
             }
 
-            const version = VERSION;
+            const version = this._version;
 
             if(!version) {
                 throw new Error(`버전 텍스트가 없습니다.`);
@@ -228,7 +207,7 @@ class Downloader {
                     referrer : config.referrer,
                     userAgent : config.userAgent,
                     inputFile : `${config.inputFile}`,
-                    logFile : `${mainPath}/${config.logFile}`,
+                    logFile : `${this._mainPath}/${config.logFile}`,
                 };        
         
                 // Create Aria2c
@@ -250,8 +229,8 @@ class Downloader {
     
             } else {
     
-                if(!fs.existsSync(outputPath)) {
-                    fs.mkdirSync(outputPath);
+                if(!fs.existsSync(this._outputPath)) {
+                    fs.mkdirSync(this._outputPath);
                 }
 
                 let functionTables = [];
@@ -263,7 +242,7 @@ class Downloader {
                         const filename = needed_files[counter++].splitOnLast("/");
 
                         console.log(`동시 다운로드 시작 : ${fileUrl}, ${filename}`);
-                        fileGet.downFileZipAsync(fileUrl, path.join(outputPath, filename)).then(res => {
+                        fileGet.downFileZipAsync(fileUrl, path.join(this._outputPath, filename)).then(res => {
                             callback(null, fileUrl);
                         }).catch(err => {
                             callback(err, null);
@@ -291,6 +270,54 @@ class Downloader {
 
 }
 
-let downloader = new Downloader();
-downloader.start();
+class NodeWebkitRunner extends Downloader {
+    async start() {
+        try  {
 
+            const files = await this.readOutputFolder();
+            let isValidNW = false;
+
+            for await (const file of files) {
+                const realPath = path.join(this._outputPath, file).replace(/\\/g, "/");
+                const stat = fs.lstatSync(realPath);
+                if(stat.isDirectory()) {
+                    let filename = path.join(realPath, 'nw.exe');
+                    if(fs.existsSync(filename)) {
+                        isValidNW = true;
+                        console.log(`nw.exe를 찾았습니다.`)
+                    }
+                }
+            }         
+            
+            if(isValidNW) {
+                const NodeWebkit = require('./NW');
+
+                const nwProcess = new NodeWebkit({
+                    projectPath : this._projectPath, 
+                    version: this._version, 
+                    outputPath: this._outputPath,
+                }, function(err, stdout, stderr) {
+                    if(err) {
+                        console.log(err);
+                        return;
+                    }
+                });
+
+                nwProcess.onExit((code, signal) => {
+                    console.log(`${Color.FgYellow}노드 웹킷 프로세스가 종료되었습니다.${Color.Reset}`);
+                });
+                
+                nwProcess.pendingTerminate();
+
+                return;
+            }
+        } catch(e) {
+            throw new Error(e);
+        }
+    }    
+}
+
+module.exports = {
+    Downloader,
+    NodeWebkitRunner
+};

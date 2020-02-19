@@ -47,8 +47,8 @@ class NodeWebkit
         }
 
         this._args = [
-            `--nwapp=${this._projectPath}`,
-            `--url=${indexFile}?test`
+            this._projectPath,
+            "index.html?&test"
         ];
 
         const files = this.readNW();
