@@ -1,14 +1,18 @@
 /**
  * @author biud436
  * @help
+ * Aria2c is the utility that can download the file even faster.
  * 
- * 기본적으로는 초고속으로 다운로드를 할 수 있는 Aria2c를 사용합니다.
  * node Downloader.js v0.44.1
  * 
- * /f라는 명령행 옵션을 추가하면 기본 노드 API로 다운로드를 수행합니다.
+ * /f라는 명령행 옵션을 추가하면 https 라이브러리로 파일 다운로드를 수행합니다.
+ * Github의 경우, ZIP를 다운로드 할 때, 302 응답 코드를 보낸 후, 
+ * 실제 다운로드가 가능한 페이지로 리다이렉션하고 200 응답 코드를 반환합니다.
+ * 첫 시도에서 200 응답 코드를 받지 못하면 다운로드를 실패하게 됩니다.
+ * 
  * node Downloader.js v0.44.1 /f
  * 
- * Aria2c가 없으면 기본 API로 다운로드가 수행됩니다.
+ * Aria2c가 없으면 https 라이브러리로 다운로드가 수행됩니다.
  */
 
 const Aria2c = require('./Aria2c');
@@ -156,9 +160,47 @@ class Downloader {
 
     }
 
-    start() {
+    async start() {
 
         try  {
+
+            const files = await this.readOutputFolder();
+            let isValidNW = false;
+
+            for await (const file of files) {
+                const realPath = path.join(outputPath, file).replace(/\\/g, "/");
+                const stat = fs.lstatSync(realPath);
+                if(stat.isDirectory()) {
+                    let filename = path.join(realPath, 'nw.exe');
+                    if(fs.existsSync(filename)) {
+                        isValidNW = true;
+                        console.log(`nw.exe를 찾았습니다.`)
+                    }
+                }
+            }         
+            
+            if(isValidNW) {
+                const NodeWebkit = require('./NW');
+
+                const nwProcess = new NodeWebkit({
+                    projectPath : `E:/Games/201907`, 
+                    version: VERSION, 
+                    outputPath: outputPath,
+                }, function(err, stdout, stderr) {
+                    if(err) {
+                        console.log(err);
+                        return;
+                    }
+                });
+
+                nwProcess.onExit((code, signal) => {
+                    console.log(`${Color.FgYellow}노드 웹킷 프로세스가 종료되었습니다.${Color.Reset}`);
+                });
+                
+                nwProcess.pendingTerminate();
+
+                return;
+            }
 
             const version = VERSION;
 
@@ -168,7 +210,7 @@ class Downloader {
     
             const needed_files = [
                 `https://dl.nwjs.io/${version}/nwjs-sdk-${version}-win-x64.zip`,
-                `https://dl.nwjs.io/${version}/nwjs-${version}-win-x64.zip`,
+                // `https://dl.nwjs.io/${version}/nwjs-${version}-win-x64.zip`,
                 // `https://codeload.github.com/biud436/MV/zip/master`,
             ]
     
@@ -214,12 +256,6 @@ class Downloader {
 
                 let functionTables = [];
                 let counter = 0;
-
-                // fileGet.downFileZipAsync(`https://codeload.github.com/biud436/mv/zip/master`).then(v => {
-                //     console.log("다운로드 완료");
-                // }).catch(err => {
-                //     console.warn(err);
-                // })
 
                 needed_files.forEach(e => {
                     functionTables.push((callback) => {     

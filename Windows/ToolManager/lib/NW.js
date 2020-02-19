@@ -2,14 +2,8 @@ const __execPath = `nw.exe`;
 const cp = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const {promisify} = require('util');
 
 const args = process.argv.slice(2);
-const projectPath = path.dirname(args[0]).replace(/\\/g, "/");
-const version = args[1];
-
-const readdirAsync = promisify(fs.readdir);
-const lstatAsync = promisify(fs.lstat);
 
 class NodeWebkit
 {
@@ -18,7 +12,12 @@ class NodeWebkit
         return this._process;
     }
 
-    constructor(callback) {
+    constructor(data, callback) {
+
+        this._projectPath = data.projectPath.replace(/\\/g, "/");
+        this._version = data.version;
+        this._outputPath = data.outputPath.replace(/\\/g, "/");
+    
         this._callback = callback;
         this._process = null;
         this._args = null;
@@ -29,45 +28,45 @@ class NodeWebkit
 
     }
 
-    async *readNW() {
+    readNW() {
         try {
-            const readFiles =  await readdirAsync(version);
+            const readFiles = fs.readdirSync(this._version, "utf8");
 
-            for(const file of readFiles) {
-                yield file;
-            }
+            return readFiles;
+
         } catch(e) {
             throw new Error(e);
         }
-
     }
 
-    async makeCommand() {        
-        const indexFile = path.join(projectPath, "index.html");
+    makeCommand() {        
+        const indexFile = path.join(this._projectPath, "index.html");
 
         if(!fs.existsSync(indexFile)) {
             throw new Error("Can not find the file named index.html");
         }
 
         this._args = [
-            `--nwapp`,
+            `--nwapp=${this._projectPath}`,
             `--url=${indexFile}?test`
         ];
 
-        const files = await this.readNW();
+        const files = this.readNW();
         const applications = [];
 
-        for await (const file of files) {
-            const fileStat = await lstatAsync(file);
+        for (const file of files) {
+            const realPath = path.join(this._outputPath, file);
+            const fileStat = fs.lstatSync(realPath);
+
             if(fileStat.isDirectory()) {
-                const targetFile = path.join(file, `nw.exe`);
+                const targetFile = path.join(realPath, `nw.exe`);
                 if(fs.existsSync(targetFile) && file.indexOf("sdk") >= 0) {
                     applications.push({
                         exec: targetFile,
                         run : true,
                     });
                 }
-            }
+            }         
         }        
 
         if(applications[0] && applications[0].run) {
@@ -75,7 +74,6 @@ class NodeWebkit
         } else {
             throw new Error("Can not find the node module");
         }
-
     };
 
     run() {
