@@ -181,8 +181,8 @@ RS.WXPos = RS.WXPos || {};
         const Events = [
             "mousedown",
             "mousemove",
-            "mouseout",
-            "mouseover",
+            // "mouseout",
+            // "mouseover",
             "mouseup",
             "mouseupoutside",
             "pointercancel",
@@ -206,12 +206,16 @@ RS.WXPos = RS.WXPos || {};
 
                 const mouseX = data.global.x;
                 const mouseY = data.global.y;
-                // e.x = mouseX;
-                // e.y = mouseY;
-
             });
         })
 
+        e.on("mouseover", (ev) => {
+            e.opacity = 228;
+        })
+
+        e.on("mouseout", (ev) => {
+            e.opacity = 40;     
+        })
 
     };
 
