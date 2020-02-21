@@ -160,6 +160,12 @@ RS.WXPos = RS.WXPos || {};
      */            
     Scene_Base.prototype.prepareInteraction = function() {
         let maxIndex = 0;
+
+        this._tempCanvasIndex = parseInt(Graphics._canvas.style.zIndex);
+
+        this.on("removed", () => {
+            Graphics._canvas.style.zIndex = this._tempCanvasIndex;
+        });
         
         for(const el of document.body.children) {
             let targetIndex = parseInt(el.style.zIndex);
