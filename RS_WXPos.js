@@ -153,14 +153,14 @@ RS.WXPos = RS.WXPos || {};
         
     };
 
+    /**
+     * interactive는 버그가 있다.
+     * GameCanvas의 zIndex가 다른 모든 HtmlElement보다 위에 있어야 동작한다.
+     * 그렇게 하지 않으면, mousemove하고 pointermove만 동작하게 된다.
+     */            
     Scene_Base.prototype.prepareInteraction = function() {
         let maxIndex = 0;
         
-        /**
-         * interactive는
-         * <canvas> : GameCanvas의 zIndex가 다른 모든 것보다 위에 있어야 동작한다.
-         * 그렇게 하지 않으면, mousemove하고 pointermove만 동작하게 된다.
-         */        
         for(const el of document.body.children) {
             let targetIndex = parseInt(el.style.zIndex);
             if(targetIndex > maxIndex) {
