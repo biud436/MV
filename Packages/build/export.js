@@ -35,7 +35,7 @@ child.on("exit", (code, signal) => {
 
     child2.on("exit", () => {
         fs.unlinkSync(`bin/${outputFile}`);
-        fs.copyFileSync(`bin/${outputFile}.map`, `dist/${outputFile}.map`);
+        fs.copyFileSync(`bin/${outputFile}.map`, `../${outputFile}.map`);
         fs.unlinkSync(`bin/${outputFile}.map`);        
     });
 
