@@ -231,28 +231,24 @@ RS.ScreenShot = RS.ScreenShot || {};
       return;
     }
 
-    var gui = require('nw.gui');
-    var win = gui.Window.get();
-    var fs = require('fs');
-    var filePath;
+    const fs = require('fs');
+    const {promisify} = require('util');
+    const screenshotFolder = this.getPath();
 
-    var result = win.capturePage((buffer) => {
-      if(!fs.existsSync(this.getPath()) ) {
-        fs.mkdirSync(this.getPath());
-      }
-      var fileName = new Date().toJSON().replace(/[.:]+/g, "-");
-      filePath = this.getPath() + `${fileName}.${$.fileFormat}`;
+    let gui = require('nw.gui');
+    let win = gui.Window.get();
 
-      fs.writeFile(filePath, buffer, (err)=>{
-        if (err) throw err;
-        if($.isPlaySe) {
-          AudioManager.playStaticSe({name: $.seName, pan: 0, pitch: 100, volume: ConfigManager.seVolume});
-        }
+    if( !fs.existsSync(screenshotFolder) ) fs.mkdirSync(screenshotFolder);
+    let fileName = new Date().toJSON().replace(/[.:]+/g, "-");
+    let filePath = screenshotFolder + `${fileName}.${$.fileFormat}`;
+
+    let result = win.capturePage(buffer => {
+      promisify(fs.writeFile)(filePath, buffer).then(val => {
+        if($.isPlaySe) AudioManager.playStaticSe({name: $.seName, pan: 0, pitch: 100, volume: ConfigManager.seVolume});
+        if($.isPreviewWindow) $.previewScreenShot(fileName);
+      }).catch(err => {
+        throw new Error(err);
       });
-
-      if($.isPreviewWindow) {
-        $.previewScreenShot(fileName);
-      }
 
     }, { format : $.fileFormat, datatype : 'buffer'} );
 
