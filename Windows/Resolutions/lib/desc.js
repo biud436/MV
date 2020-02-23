@@ -95,7 +95,7 @@
  * @off false
  *
  * @param Screen Size
- * @text Screen Size
+ * @text Target Resolution
  *
  * @param Default Screen Size
  * @text Default Screen Size
@@ -201,6 +201,7 @@
  * @value 2560 x 1600
  * 
  * @param Temp
+ * @text Target Devices
  * 
  * @param PC
  * @parent Temp
