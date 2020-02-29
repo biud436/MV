@@ -122,7 +122,7 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
             this.createLines();                    
         }
 
-        async createLineBitmap() {
+        createLineBitmap() {
             const lineWidth = eval(RS.TitleMoveLine.Params.lineWidth);
             const lineHeight = Graphics.boxHeight;
             const imageName = RS.TitleMoveLine.Params.imageName;
