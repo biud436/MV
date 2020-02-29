@@ -144,7 +144,7 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
 
         initWithLines() {
             this._lines = this.getLines();
-            this.nextLines()
+            this.nextLines();
         }        
 
         nextLines() {
