@@ -15,6 +15,13 @@
  * @desc Specify the max members in followers
  * @default 100
  * 
+ * @param Test Mode
+ * @type boolean
+ * @desc Set whether the mode is test
+ * @default false
+ * @on true
+ * @off false
+ * 
  * @help
  * 이 플러그인을 사용하면 전투에 참여하지 않는 다양한 팔로워를 추가할 수 있습니다.
  * 게임 시작 시에 팔로워를 추가하고자 한다면 [데이터베이스-액터]의 메모 란에 
@@ -52,7 +59,8 @@ RS.FollowersEx = RS.FollowersEx || {};
 
     RS.FollowersEx.Params = {
         maxFollowersMembers: Number(parameters["Max Follower Members"] || 100),
-        isPassable: false,
+        isPassable: true,
+        isTestMode: Boolean(parameters["Test Mode"] === "true"),
     };
 
     /**
@@ -133,11 +141,15 @@ RS.FollowersEx = RS.FollowersEx || {};
             });
 
             return items;
+        },
+
+        isTestMode() {
+            return Utils.isOptionValid("test") && RS.FollowersEx.Params.isTestMode;
         }
 
     }
 
-    if(Utils.isOptionValid("test")) {
+    if(RS.FollowersEx.finder.isTestMode()) {
         RS.FollowersEx.Params.dataActors = RS.FollowersEx.finder.readCharacterData();
         RS.FollowersEx.Params.counter = 0;
     }
@@ -149,6 +161,9 @@ RS.FollowersEx = RS.FollowersEx || {};
     Game_Player.prototype.canPass = function(x, y, d) {
         var x2 = $gameMap.roundXWithDirection(x, d);
         var y2 = $gameMap.roundYWithDirection(y, d);
+        if(this.isDebugThrough()) { // 테스트 플레이에서 컨트롤 키를 눌렀을 때 통과
+            return true;
+        }
         if(this.isFollowerPassable(x2, y2) && !RS.FollowersEx.Params.isPassable) {
             return false;
         }
@@ -219,19 +234,14 @@ RS.FollowersEx = RS.FollowersEx || {};
 
             this._tracedMember = $dataActors[actorId];
 
-            if(Utils.isOptionValid("test") && !this._tracedMember) {
+            if(RS.FollowersEx.finder.isTestMode() && !this._tracedMember) {
                 this._tracedMember = RS.FollowersEx.Params.dataActors[RS.FollowersEx.Params.counter];
                 RS.FollowersEx.Params.counter = (RS.FollowersEx.Params.counter + 1) % RS.FollowersEx.Params.dataActors.length;
             }
 
-            this._isMovableIntelligent = false;
-
-            this._lifeTime = 45;
-            this._pending = [];
-            this._state = "move";
-            this._idleTime = performance.now();
-
-            this.setThrough(false);
+            if(!RS.FollowersEx.Params.isPassable) {
+                this.setThrough(false);
+            }
         }
         
         refresh() {
