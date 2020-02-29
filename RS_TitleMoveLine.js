@@ -105,10 +105,11 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
             super.update();
 
             const width = Graphics.boxWidth;
+            const bitmapWidth = this.width;
 
             this.x += this._power;
 
-            if(this.x > width || this.x < 0) {
+            if(this.x > width - bitmapWidth || this.x < 0) {
                 this._power *= -1;
             }
         }
