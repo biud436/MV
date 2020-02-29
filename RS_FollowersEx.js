@@ -59,6 +59,93 @@ RS.FollowersEx = RS.FollowersEx || {};
         maxFollowersMembers: Number(parameters["Max Follower Members"] || 100)
     };
 
+    /**
+     * Test Case
+     */
+    RS.FollowersEx.finder = {
+
+        readAllFiles(root, ext, files) { 
+            if(!Utils.isNwjs()) return;
+            const fs = require('fs');
+            const path = require('path');
+
+            if(!root) return;
+            if(!fs.existsSync(root)) return;
+            let contents = fs.readdirSync(root, 'utf8');
+    
+            contents = contents.map(e => {
+                return path.join(root, e);
+            });
+            contents.forEach(sub => {
+                if(fs.statSync(sub).isDirectory()) {
+                    this.readAllFiles(sub, ext, files);
+                } else if(fs.statSync(sub).isFile()) {
+                    if(ext.indexOf(path.extname(sub)) >= 0) {
+                        files.push(sub.replace(/\\/g, "/"));
+                    }
+                }
+            });
+        },
+
+        readCharacterData() {
+            if(!Utils.isNwjs()) return;
+            if(!Utils.isOptionValid("test")) return;
+            const fs = require('fs');
+            const path = require('path');
+            const mainPath = path.dirname(process.mainModule.filename);
+            const imgPath = path.join(mainPath, "img", "characters");
+            
+            let files = [];
+
+            this.readAllFiles(imgPath.replace(/\\/g, "/"), [".png"], files);
+
+            const types = [".rpgmvp"];
+            
+            let items = [];
+
+            files.forEach(file => {
+                let rootFilename = file;
+
+                if(!fs.lstatSync(rootFilename).isFile()) {
+                    return;
+                }
+
+                // 전체 경로를 포함하지 않은 순수 파일명
+                let tempFileName = file.split("/").slice(-1)[0];
+                var ext = path.extname(file);
+
+                // 암호화된 파일인가?
+                if(types.indexOf(ext) > -1) {
+                    throw new Error("암호화된 파일은 읽을 수 없습니다.");
+                }
+
+                let filename = tempFileName.split(".")[0];
+
+                if(ImageManager.isBigCharacter(filename)) {
+                    items.push({
+                        characterName: filename, 
+                        characterIndex: 0
+                    });
+                } else {
+                    for(var i = 0; i < 8; i++) {
+                        items.push({
+                            characterName: filename, 
+                            characterIndex: i
+                        });
+                    }
+                }
+            });
+
+            return items;
+        }
+
+    }
+
+    if(Utils.isOptionValid("test")) {
+        RS.FollowersEx.Params.dataActors = RS.FollowersEx.finder.readCharacterData();
+        RS.FollowersEx.Params.counter = 0;
+    }
+
     //================================================================
     // Game_Party
     //================================================================ 
@@ -116,7 +203,13 @@ RS.FollowersEx = RS.FollowersEx || {};
             super(memberIndex);
             
             const actorId = $gameParty.followerMembers()[this._memberIndex];
+
             this._tracedMember = $dataActors[actorId];
+
+            if(Utils.isOptionValid("test") && !this._tracedMember) {
+                this._tracedMember = RS.FollowersEx.Params.dataActors[RS.FollowersEx.Params.counter];
+                RS.FollowersEx.Params.counter = (RS.FollowersEx.Params.counter + 1) % RS.FollowersEx.Params.dataActors.length;
+            }
 
             this._isMovableIntelligent = false;
 
@@ -142,8 +235,6 @@ RS.FollowersEx = RS.FollowersEx || {};
 
         update() {
             super.update();
-            const moveSpeed = Math.min($gamePlayer.realMoveSpeed() - 1, 1);
-            this.setMoveSpeed(moveSpeed);
         }
 
         moveToTarget(character) {
