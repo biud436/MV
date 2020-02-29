@@ -50,6 +50,8 @@
  * @type file
  * 
  * @help
+ * This plugin allows you to move vertical lines on the screen. 
+ * if the line collides with the out of screen, it will be changed the direction of movement.
  * ================================================================
  * Version Log
  * ================================================================
@@ -142,6 +144,8 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
         createLines() {
             const maxLines = RS.TitleMoveLine.Params.maxLines;
             const boxWidth = Graphics.boxWidth;
+            const addChildAt = this.addChildAt;
+            const getIndex = this.getChildIndex;
             
             for(let i = 0; i < maxLines; i++) {
                 
@@ -151,9 +155,9 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
                 sprite.x = Math.random() * boxWidth;
                 sprite.y = 0;
 
-                const index = this.getChildIndex(this._windowLayer);
+                const index = getIndex(this._windowLayer);
 
-                this.addChildAt(sprite, index - 1);
+                addChildAt(sprite, index - 1);
 
             }
         }
