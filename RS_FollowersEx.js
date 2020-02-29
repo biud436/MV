@@ -16,12 +16,23 @@
  * @default 100
  * 
  * @help
- * This plugin allows you to add various followers. 
- * 
- * In this note, you must write at the following note tag.
+ * 이 플러그인을 사용하면 전투에 참여하지 않는 다양한 팔로워를 추가할 수 있습니다.
+ * 게임 시작 시에 팔로워를 추가하고자 한다면 [데이터베이스-액터]의 메모 란에 
+ * 다음과 같은 노트 태그를 추가하시기 바랍니다.
  * 
  *  <FOLLOWER>
  * 
+ * 게임 시작 직후, 동적으로 추가하고자 한다면 다음과 같은 플러그인 명령을 사용하세요.
+ * 
+ * AddFollower actorId
+ * Removefollower actorId
+ * 
+ * 또는 스크립트 명령어를 사용하시기 바랍니다.
+ * 
+ * $gameParty.addFollowerEx(actorId);
+ * $gameParty.removeFollowerEx(actorId);
+ * 
+ * 데이터베이스에 존재하지 않는 액터는 아직 등록할 수 없습니다.
  */
 
 var Imported = Imported || {};
