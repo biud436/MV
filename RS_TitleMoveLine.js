@@ -121,7 +121,8 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
             super.start();
 
             this.createLineBitmap();    
-            this.createLines();                    
+            this.initWithLines();
+
         }
 
         createLineBitmap() {
@@ -141,7 +142,22 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
 
         }
 
-        createLines() {
+        initWithLines() {
+            this._lines = this.getLines();
+            this.nextLines()
+        }        
+
+        nextLines() {
+            let line = this._lines.next();
+            if(!line.done) {
+                const child = line.value;
+                const index = this.getChildIndex(this._windowLayer) - 1;
+                this.addChildAt(child, index);
+                this.nextLines();
+            }
+        }        
+
+        *getLines() {
             const maxLines = RS.TitleMoveLine.Params.maxLines;
             const boxWidth = Graphics.boxWidth;
             const addChildAt = this.addChildAt;
@@ -155,12 +171,9 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
                 sprite.x = Math.random() * boxWidth;
                 sprite.y = 0;
 
-                const index = getIndex(this._windowLayer);
-
-                addChildAt(sprite, index - 1);
-
+                yield sprite;
             }
-        }
+        }        
     }
 
     window.Scene_Title = Scene_TitleMoveLine;
