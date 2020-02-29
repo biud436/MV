@@ -160,8 +160,6 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
         *getLines() {
             const maxLines = RS.TitleMoveLine.Params.maxLines;
             const boxWidth = Graphics.boxWidth;
-            const addChildAt = this.addChildAt;
-            const getIndex = this.getChildIndex;
             
             for(let i = 0; i < maxLines; i++) {
                 
