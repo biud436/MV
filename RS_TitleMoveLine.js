@@ -42,6 +42,13 @@
  * @desc Specify the evaluate expression that gets the move speed of line.
  * @default 2 + Math.random() * 4
  * 
+ * @param Replace Bitmap As Image
+ * @require 1
+ * @desc Choose the image file if you want to replace as image.
+ * @default
+ * @dir img/pictures/
+ * @type file
+ * 
  * @help
  * ================================================================
  * Version Log
@@ -73,6 +80,12 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
     RS.TitleMoveLine.Params.opacityEval = parameters["Opacity"];
     RS.TitleMoveLine.Params.scaleXEval = parameters["Scale"];
     RS.TitleMoveLine.Params.moveSpeedEval = parameters["Move Speed"];
+
+    RS.TitleMoveLine.Params.imageName = parameters["Replace Bitmap As Image"] || "";
+
+    //================================================================
+    // Sprite_MoveLine
+    //================================================================    
 
     class Sprite_MoveLine extends Sprite {
         constructor(bitmap) {
@@ -109,12 +122,21 @@ RS.TitleMoveLine = RS.TitleMoveLine || {};
             this.createLines();                    
         }
 
-        createLineBitmap() {
+        async createLineBitmap() {
             const lineWidth = eval(RS.TitleMoveLine.Params.lineWidth);
             const lineHeight = Graphics.boxHeight;
+            const imageName = RS.TitleMoveLine.Params.imageName;
+            let bitmap = null;
 
-            this._lineBitmap = new Bitmap(lineWidth, lineHeight);
-            this._lineBitmap.fillAll(RS.TitleMoveLine.Params.bitmapColor);
+            if(imageName !== "") {
+                bitmap = ImageManager.loadPicture(imageName);
+            }
+
+            this._lineBitmap = bitmap ? bitmap : new Bitmap(lineWidth, lineHeight);
+            if(!bitmap) {
+                this._lineBitmap.fillAll(RS.TitleMoveLine.Params.bitmapColor);
+            }
+
         }
 
         createLines() {
