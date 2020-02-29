@@ -53,7 +53,7 @@
  * @parent Style
  * @type note
  * @desc Edit the css as you want.
- * @default ".inputDialog {\n      font-size: 1rem;\n}"
+ * @default ".inputDialogContainer {\n    font-size: 16px;\n}\n\n.inputDialog {\n    font-size: 1rem;\n}\n\n.defaultButton {\n    opacity : 0.8;\n    font-family : arial;\n    border : 1px solid rgb(73, 73, 73);\n    background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%);\n    color : rgb(19, 19, 19);\n    text-shadow : rgba(105, 105, 105, 0.7) 0 1px 0;\n    cursor : pointer;\n    border-radius : 0.5em;\n    box-sizing : border-box;\n    box-shadow : 0 1px 4px rgba(78, 78, 78, 0.6);\n    font-size : 1rem;\n}\n\n@media screen and (min-width : 192px) and (max-width : 768px) {\n    .inputDialog {\n        font-size : 1rem;\n    }\n}\n  \n@media screen and (min-width : 768px) and (max-width : 1000px) {\n    .inputDialog {\n        font-size : 1rem;\n    }    \n}"
  *
  * @param Button Name
  *
@@ -248,7 +248,6 @@ function Scene_InputDialog() {
     CancelButton = document.querySelector(query);
 
     if(textBox) {
-      // textBox.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(2 * Graphics._realScale) + "em";      
       textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
       textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
     }
@@ -461,9 +460,7 @@ function Scene_InputDialog() {
     <table class="inputDialogContainer">
   		<tr class="row">
   			<td class="col">
-          <textarea class="inputDialog" row="4" type="text" id"=${id} placeholder=${RS.InputDialog.Params.localText}>
-
-          </textarea>
+          <textarea class="inputDialog" row="4" type="text" id"=${id} placeholder=${RS.InputDialog.Params.localText}></textarea>
   			</td>
   		</tr>
   		<tr class="row" valign="bottom">
