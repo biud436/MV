@@ -32,11 +32,6 @@
  * $gameParty.addFollowerEx(actorId);
  * $gameParty.removeFollowerEx(actorId);
  * 
- * 데이터베이스에 존재하지 않는 액터는 아직 등록할 수 없습니다.
- * 
- * 특정 상황에서 팔로워가 플레이어를 제대로 추적하지 못할 경우, 이동 속도가 증가하게끔 설계했으나
- * 사실 이 코드는 디버깅으로 컨트롤 키를 눌러 벽을 가로 지르는 상황이 아니라면 동작하지 않습니다.
- * 
  */
 
 var Imported = Imported || {};
@@ -56,7 +51,8 @@ RS.FollowersEx = RS.FollowersEx || {};
     parameters = (parameters.length > 0) && parameters[0].parameters;
 
     RS.FollowersEx.Params = {
-        maxFollowersMembers: Number(parameters["Max Follower Members"] || 100)
+        maxFollowersMembers: Number(parameters["Max Follower Members"] || 100),
+        isPassable: false,
     };
 
     /**
@@ -147,6 +143,23 @@ RS.FollowersEx = RS.FollowersEx || {};
     }
 
     //================================================================
+    // Game_Player
+    //================================================================     
+    var alias_Game_Player_canPass = Game_Player.prototype.canPass;
+    Game_Player.prototype.canPass = function(x, y, d) {
+        var x2 = $gameMap.roundXWithDirection(x, d);
+        var y2 = $gameMap.roundYWithDirection(y, d);
+        if(this.isFollowerPassable(x2, y2) && !RS.FollowersEx.Params.isPassable) {
+            return false;
+        }
+        return alias_Game_Player_canPass.call(this, x, y, d);
+    }
+  
+    Game_Player.prototype.isFollowerPassable = function (x, y) {
+        return this._followers.isFollowerPassable(x, y);
+    };    
+
+    //================================================================
     // Game_Party
     //================================================================ 
 
@@ -217,6 +230,8 @@ RS.FollowersEx = RS.FollowersEx || {};
             this._pending = [];
             this._state = "move";
             this._idleTime = performance.now();
+
+            this.setThrough(false);
         }
         
         refresh() {
@@ -286,6 +301,13 @@ RS.FollowersEx = RS.FollowersEx || {};
             this._data.push(new Game_FollowerEx(i));
         }
 
+    };
+
+    Game_Followers.prototype.isFollowerPassable = function(x, y) {
+        let result = this._data.some(function(follower) {
+          return follower.posNt(x, y);
+        }, this);
+        return result;
     };
 
     //================================================================
