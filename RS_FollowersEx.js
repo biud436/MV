@@ -192,7 +192,7 @@ RS.FollowersEx = RS.FollowersEx || {};
         actors.filter(e => {
             if(!e) return false;
             const note = e.note || "";
-            const lines = e.note.split(/[\r\n]+/).map(i => i.trim());
+            const lines = note.split(/[\r\n]+/).map(i => i.trim());
             const matched = lines.filter(j => /\<(?:FOLLOWER)\>/i.exec(j));
             if(matched && matched[0]) {
                 return true;
