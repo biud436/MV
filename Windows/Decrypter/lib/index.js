@@ -81,6 +81,8 @@ class Utils {
     }
 
     convert() {
+        this._encryptionKey = this.readEncryptionKey();
+        console.log(this._encryptionKey);
         this.readImgFolders();
         this.readAudioFolders();
         this.createProjectFile();
@@ -136,7 +138,7 @@ class Utils {
 
         // 파일 헤더를 원래대로 되돌린다.
         for (var i = 0; i < this._headerlength; i++) {
-            resultArray[i] = refBytes[i];
+            resultArray[i] = byteArray[i + 0x10] ^ parseInt(this._encryptionKey[i], 16);
             view.setUint8(i, resultArray[i]);
         }
 
@@ -280,6 +282,39 @@ class Utils {
             fs.removeSync(file);
 
         });
+
+    }
+
+    jsonParse(str) {
+        let raw = JSON.parse(str, (k, v) => {
+            try {
+                return this.jsonParse(v);
+            } catch(e) {
+                return v;
+            }
+        });
+
+        return raw;
+    }
+
+    readEncryptionKey() {
+        const targetFile = path.join(mainPath, "data", "System.json");
+
+        if(!fs.existsSync(targetFile)) {
+            throw new Error("Can not found the file called System.json");
+        }
+
+        let raw = fs.readFileSync(targetFile, "utf8");
+
+        let system = this.jsonParse(raw);
+
+        if(system.hasEncryptedAudio && system.hasEncryptedImages) {
+            if(system.encryptionKey) {
+                return system.encryptionKey.split(/(.{2})/).filter(Boolean);;
+            }
+        }
+
+        return ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];
 
     }
 
