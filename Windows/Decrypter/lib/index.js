@@ -82,7 +82,6 @@ class Utils {
 
     convert() {
         this._encryptionKey = this.readEncryptionKey();
-        console.log(this._encryptionKey);
         this.readImgFolders();
         this.readAudioFolders();
         this.createProjectFile();
