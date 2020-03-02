@@ -291,10 +291,13 @@ class Utils {
         let retKey = ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];
         
         const files = fs.readdirSync(path.join(mainPath, "data"));
-        const binFiles = files.filter(file => fs.lstatSync(file).isFile() && path.extname(file) === ".bin");
+        const binFiles = files.filter(file => {
+            file = path.join(mainPath, "data", file);
+            fs.lstatSync(file).isFile() && path.extname(file) === ".bin"
+        });
         const neededKeyOption = args.filter(command => {
             return command.indexOf("/key=") >= 0;
-        });        
+        });
 
         if(binFiles.length > 0) {
             
