@@ -308,9 +308,16 @@ class Utils {
         let system = this.jsonParse(raw);
 
         if(system.hasEncryptedAudio && system.hasEncryptedImages) {
+
+            system.hasEncryptedAudio = false;
+            system.hasEncryptedImages = false;
+
+            fs.writeFileSync(targetFile, JSON.stringify(system), "utf8");
+
             if(system.encryptionKey) {
                 return system.encryptionKey.split(/(.{2})/).filter(Boolean);;
             }
+            
         }
 
         return ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];
