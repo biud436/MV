@@ -288,9 +288,39 @@ class Utils {
 
     readEncryptionKey() {
         const targetFile = path.join(mainPath, "data", "System.json");
+        let retKey = ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];
+        
+        const files = fs.readdirSync(path.join(mainPath, "data"));
+        const binFiles = files.filter(file => fs.lstatSync(file).isFile() && path.extname(file) === ".bin");
+        const neededKeyOption = args.filter(command => {
+            return command.indexOf("/key=") >= 0;
+        });        
+
+        if(binFiles.length > 0) {
+            
+            console.warn([
+                "There are binary files in the System folder",
+                "so you must pass the decryption key manually.",
+                `Pass the option called ${ConsoleColor.FgRed}/key=${ConsoleColor.Reset} to the parameter.`,
+            ].join("\r\n"));
+
+            if(neededKeyOption.length > 0) {
+                let key = neededKeyOption[0].split("/key=")[1];
+                retKey = key.split(/(.{2})/).filter(Boolean);
+                return retKey;
+            }
+    
+        }
 
         if(!fs.existsSync(targetFile)) {
-            throw new Error("Can not found the file called System.json");
+
+            if(neededKeyOption.length > 0) {
+                let key = neededKeyOption[0].split("/key=")[1];
+                retKey = key.split(/(.{2})/).filter(Boolean);
+                return retKey;
+            } else {
+                throw new Error("Can not found the file called System.json");
+            }
         }
 
         let raw = fs.readFileSync(targetFile, "utf8");
@@ -309,12 +339,12 @@ class Utils {
             });
 
             if(system.encryptionKey) {
-                return system.encryptionKey.split(/(.{2})/).filter(Boolean);;
+                return system.encryptionKey.split(/(.{2})/).filter(Boolean);
             }
 
         }
 
-        return ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];
+        return retKey;
 
     }
 
