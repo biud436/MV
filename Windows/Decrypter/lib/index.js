@@ -7,6 +7,8 @@ const path = require('path');
 const args = process.argv.slice(2);
 const ZipUtils = require('./binary');
 const ConsoleColor = require("./ConsoleColor");
+const { deepParseJson } = require('deep-parse-json');
+const stringifyObject = require('stringify-object');
 let mainPath;
 
 /**
@@ -284,18 +286,6 @@ class Utils {
 
     }
 
-    jsonParse(str) {
-        let raw = JSON.parse(str, (k, v) => {
-            try {
-                return this.jsonParse(v);
-            } catch(e) {
-                return v;
-            }
-        });
-
-        return raw;
-    }
-
     readEncryptionKey() {
         const targetFile = path.join(mainPath, "data", "System.json");
 
@@ -305,19 +295,23 @@ class Utils {
 
         let raw = fs.readFileSync(targetFile, "utf8");
 
-        let system = this.jsonParse(raw);
+        let system = deepParseJson(raw);
 
         if(system.hasEncryptedAudio && system.hasEncryptedImages) {
 
             system.hasEncryptedAudio = false;
             system.hasEncryptedImages = false;
 
-            fs.writeFileSync(targetFile, JSON.stringify(system), "utf8");
+            let contents = JSON.stringify(system);
+
+            fs.writeFileSync(targetFile, contents, {
+                encoding: "utf8",
+            });
 
             if(system.encryptionKey) {
                 return system.encryptionKey.split(/(.{2})/).filter(Boolean);;
             }
-            
+
         }
 
         return ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];

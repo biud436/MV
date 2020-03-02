@@ -13,7 +13,9 @@
   "license": "MIT",
   "dependencies": {
     "decompress-zip": "^0.2.2",
+    "deep-parse-json": "^1.0.1",
     "lzma-native": "^6.0.0",
-    "nexe": "^3.3.2"
+    "nexe": "^3.3.2",
+    "stringify-object": "^3.3.0"
   }
 }
