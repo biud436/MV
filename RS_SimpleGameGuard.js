@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc <RS_SimpleGameGuard>
+ * @plugindesc This plugin allows you to reject requesting a specific file during the game. <RS_SimpleGameGuard>
  * @author biud436
  * 
  * @param Message
