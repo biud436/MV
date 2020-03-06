@@ -25,7 +25,7 @@
  * @param File Rules
  * @type string[]
  * @desc Specify the File Rules
- * @default ["\\/img\\/.*\\/.*\\.png","\\/audio\\/.*\\/.*\\.(?:m4a|ogg|wav)"]
+ * @default ["\\/img\\/characters\\/.*\\.png","\\/audio\\/.*\\/.*\\.(?:m4a|ogg|wav)"]
  * 
  * @help
  * ================================================================
