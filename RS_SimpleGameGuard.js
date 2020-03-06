@@ -9,9 +9,29 @@
 /*:
  * @plugindesc <RS_SimpleGameGuard>
  * @author biud436
- *          
+ * 
+ * @param Message
+ * @type string
+ * @desc Specify the error message
+ * @default Abnormal behavior (unencrypted) was detected.
+ * 
+ * @param Test Mode
+ * @type boolean
+ * @desc Check that whether the test mode is valid
+ * @default true
+ * @on true
+ * @off false
+ * 
+ * @param File Rules
+ * @type string[]
+ * @desc Specify the File Rules
+ * @default ["\\/img\\/.*\\/.*\\.png","\\/audio\\/.*\\/.*\\.(?:m4a|ogg|wav)"]
+ * 
  * @help
- *
+ * ================================================================
+ * Version Log
+ * ================================================================
+ * 2020.03.06 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
@@ -30,6 +50,13 @@ RS.SimpleGameGuard = RS.SimpleGameGuard || {};
     
     parameters = (parameters.length > 0) && parameters[0].parameters;
 
+    RS.SimpleGameGuard.Params = {};
+
+    RS.SimpleGameGuard.Params.message = parameters["Message"];
+    RS.SimpleGameGuard.Params.isValidTestMode = Boolean(parameters["Test Mode"] === "true");
+    
+    RS.SimpleGameGuard.Params.fileNotes = JSON.parse(parameters["File Rules"]);
+
     class Guard extends Scene_Boot {
 
         constructor() {
@@ -39,34 +66,39 @@ RS.SimpleGameGuard = RS.SimpleGameGuard || {};
 
         run() {
             if(!Utils.isNwjs()) return;
-            if(Utils.isOptionValid("test")) return;
+            if(RS.SimpleGameGuard.Params.isValidTestMode) return;
 
             chrome.webRequest.onBeforeRequest.addListener(details => {
-                if (details.tabId < 0)
+
+                if (details.tabId < 0) {
                     return;
+                }
                     
-                console.log([
-                    `  tabId: ${details.tabId}`,
-                    `  ${details.method} ${details.url}`
-                ].join('\n'));
-            
                 chrome.tabs.get(details.tabId, tab => {
                     if(!tab) {
-                        throw new Error(`Cannot find tab ${details.tabId}`);
+                        chrome.tabs.executeScript(details.tabId, { 
+                            code: `throw new Error("Cannot find the tab ${tab.id}");` 
+                        }, () => { console.log("Injected"); });
                     }
-
-                    console.log(`탭 제목: ${tab.title}`);
-                    console.log(`탭 URL: ${tab.url}`);
-                    console.log(`리소스 URL : ${details.url}`);
             
+                    const method = details.method; // GET, POST
                     const resUrl = details.url;
 
-                    if( /\/img\/.*\/.*\.png/gi.exec(resUrl) ||
-                        /\/audio\/.*\/.*\.(?:m4a|ogg|wav)/gi.exec(resUrl)) {
-                        chrome.tabs.executeScript(details.tabId, { 
-                            code: `throw new Error("암호화를 해제했군요. 게임을 이용할 수 없습니다.");` 
-                        }, () => { console.log("스크립트를 삽입했습니다.")});
-                    }               
+                    RS.SimpleGameGuard.Params.fileNotes.forEach(rules => {
+                        const re = new RegExp(rules, 'gi');
+                        if(re.exec(resUrl)) {
+                            chrome.tabs.executeScript(details.tabId, { 
+                                code: `throw new Error("${RS.SimpleGameGuard.Params.message}");` 
+                            }, () => { console.log("Injected"); });                            
+                        }
+                    });
+
+                    // if( /\/img\/.*\/.*\.png/gi.exec(resUrl) ||
+                    //     /\/audio\/.*\/.*\.(?:m4a|ogg|wav)/gi.exec(resUrl)) {
+                    //     chrome.tabs.executeScript(details.tabId, { 
+                    //         code: `throw new Error("${RS.SimpleGameGuard.Params.message}");` 
+                    //     }, () => { console.log("Injected"); });
+                    // }               
                     
                 });
             
