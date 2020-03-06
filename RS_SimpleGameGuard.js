@@ -92,13 +92,6 @@ RS.SimpleGameGuard = RS.SimpleGameGuard || {};
                             }, () => { console.log("Injected"); });                            
                         }
                     });
-
-                    // if( /\/img\/.*\/.*\.png/gi.exec(resUrl) ||
-                    //     /\/audio\/.*\/.*\.(?:m4a|ogg|wav)/gi.exec(resUrl)) {
-                    //     chrome.tabs.executeScript(details.tabId, { 
-                    //         code: `throw new Error("${RS.SimpleGameGuard.Params.message}");` 
-                    //     }, () => { console.log("Injected"); });
-                    // }               
                     
                 });
             
