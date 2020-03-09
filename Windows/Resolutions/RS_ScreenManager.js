@@ -80,6 +80,8 @@ Imported.RS_ScreenManager = true;
  * @value 16:9
  * @option 18:9
  * @value 18:9
+ * @option 20:9
+ * @value 20:9
  * @option 4:3
  * @value 4:3
  * 
@@ -136,6 +138,8 @@ Imported.RS_ScreenManager = true;
  * @value 1440 x 900
  * @option 1600 x 900 (16:9)
  * @value 1600 x 900
+ * @option 1600 x 720 (20:9)
+ * @value 1600 x 720
  * @option 1600 x 1200 (4:3)
  * @value 1600 x 1200
  * @option 1680 x 1050 (8:5)
@@ -146,6 +150,8 @@ Imported.RS_ScreenManager = true;
  * @value 1920 x 1200
  * @option 2048 x 1152 (16:9)
  * @value 2048 x 1152
+ * @option 2400 x 1080 (20:9) 
+ * @value 2400 x 1080
  * @option 2560 x 1440 (16:9)
  * @value 2560 x 1440
  * @option 2560 x 1600 (8:5)
@@ -191,6 +197,8 @@ Imported.RS_ScreenManager = true;
  * @value 1440 x 900
  * @option 1600 x 900 (16:9)
  * @value 1600 x 900
+ * @option 1600 x 720 (20:9)
+ * @value 1600 x 720
  * @option 1600 x 1200 (4:3)
  * @value 1600 x 1200
  * @option 1680 x 1050 (8:5)
@@ -201,6 +209,8 @@ Imported.RS_ScreenManager = true;
  * @value 1920 x 1200
  * @option 2048 x 1152 (16:9)
  * @value 2048 x 1152
+ * @option 2400 x 1080 (20:9) 
+ * @value 2400 x 1080
  * @option 2560 x 1440 (16:9)
  * @value 2560 x 1440
  * @option 2560 x 1600 (8:5)
