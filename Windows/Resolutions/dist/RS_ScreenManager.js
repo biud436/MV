@@ -114,12 +114,16 @@
  * @value 800 x 600
  * @option 816 x 624 (17:13)
  * @value 816 x 624
+ * @option 816 x 408 (18:9)
+ * @value 816 x 408
  * @option 1024 x 768 (4:3)
  * @value 1024 x 768
  * @option 1152 x 864 (4:3)
  * @value 1152 x 864
  * @option 1280 x 720 (16:9)
  * @value 1280 x 720
+ * @option 1280 x 640 (18:9)
+ * @value 1280 x 640
  * @option 1280 x 800 (8:5)
  * @value 1280 x 800
  * @option 1280 x 960 (4:3)
@@ -165,12 +169,16 @@
  * @value 800 x 600
  * @option 816 x 624 (17:13)
  * @value 816 x 624
+ * @option 816 x 408 (18:9)
+ * @value 816 x 408
  * @option 1024 x 768 (4:3)
  * @value 1024 x 768
  * @option 1152 x 864 (4:3)
  * @value 1152 x 864
  * @option 1280 x 720 (16:9)
  * @value 1280 x 720
+ * @option 1280 x 640 (18:9)
+ * @value 1280 x 640
  * @option 1280 x 800 (8:5)
  * @value 1280 x 800
  * @option 1280 x 960 (4:3)
