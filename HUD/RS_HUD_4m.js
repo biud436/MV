@@ -1413,6 +1413,34 @@ RS.HUD.param = RS.HUD.param || {};
     xhr.send();
   };
 
+  /**
+   * @example
+   * 
+   * await RS.HUD.importDataWithAjax2("Actors.json")
+   *  .then(data => RS.HUD.loadData(data))
+   *  .catch(err => console.warn(err));
+   * 
+   */
+  RS.HUD.importDataWithAjax2 = function (fileName) {
+    "use strict";
+
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      var self = RS.HUD;
+      var url = './data/' + (fileName || defaultTemplate);
+      xhr.open('GET', url);
+      xhr.onload = function() {
+        if(xhr.status < 400) {
+          resolve(xhr.responseText.slice(0));
+        }
+      }
+      xhr.onerror = function(err) {
+        reject(err);
+      };
+      xhr.send();
+    });
+  };
+
   RS.HUD.loadPicture = function (filename) {
     var bitmap = ImageManager.reservePicture(filename);
     return bitmap;
