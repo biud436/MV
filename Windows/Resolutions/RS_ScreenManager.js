@@ -78,6 +78,8 @@ Imported.RS_ScreenManager = true;
  * @default 16:9
  * @option 16:9 (Wide Screen)
  * @value 16:9
+ * @option 18:9
+ * @value 18:9
  * @option 4:3
  * @value 4:3
  * 
