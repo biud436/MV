@@ -290,15 +290,23 @@ class Utils {
         const targetFile = path.join(mainPath, "data", "System.json");
         let retKey = ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];
         
+        // data 폴더를 읽는다 (재귀적으로 처리하지 않음)
         const files = fs.readdirSync(path.join(mainPath, "data"));
+
+        // nwjc로 컴파일된 자바스크립트 파일이 존재하는 지 찾는다.        
         const binFiles = files.filter(file => {
             file = path.join(mainPath, "data", file);
             fs.lstatSync(file).isFile() && path.extname(file) === ".bin"
         });
+
+        // 명령행 옵션 /key가 커맨드 라인 인수로 주어졌는 지 확인한다.
         const neededKeyOption = args.filter(command => {
             return command.indexOf("/key=") >= 0;
         });
 
+        // nwjc로 컴파일된 자바스크립트 파일이 존재하는 지 확인한다                
+        // ASCII로 인코딩된 문자열 값들은 그대로 존재하며 std::string과 유사하여 NULL 바이트를 차지하지 않는다.
+        // JSON으로 되어있을 경우, 문자열 버퍼에 encryptionKey가 Key가 있을 경우, 근거리에 문자열로 된 Value가 존재한다.
         if(binFiles.length > 0) {
             
             console.warn([
@@ -315,6 +323,9 @@ class Utils {
     
         }
 
+        // System.json이 없는 경우, 
+        // ogg 파일을 제대로 디코딩 할 수 없기 때문에 /key 인자로 encryptionKey 값을 직접 할당 받아야 한다.
+        // 문자열은 난독화 되지 않기 때문에 Hex Editor로 직접 값을 찾아낼 수도 있다.
         if(!fs.existsSync(targetFile)) {
 
             if(neededKeyOption.length > 0) {
@@ -322,12 +333,17 @@ class Utils {
                 retKey = key.split(/(.{2})/).filter(Boolean);
                 return retKey;
             } else {
-                throw new Error("Can not found the file called System.json");
+                console.warn(`Can not found the file called System.json`);
+                throw new Error("");
             }
         }
 
+        // System.json 파일을 읽는다
         let raw = fs.readFileSync(targetFile, "utf8");
 
+        // System.json 파일을 파싱한다.
+        // JSON.parse를 재귀적으로 사용하는 경우, 
+        // 배열 파싱이 제대로 되지 않기 때문에 deepParseJson 모듈을 사용하였다.
         let system = deepParseJson(raw);
 
         if(system.hasEncryptedAudio && system.hasEncryptedImages) {

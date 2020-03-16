@@ -12,6 +12,7 @@
   "author": "biud436",
   "license": "MIT",
   "dependencies": {
+    "cuint": "^0.2.2",
     "decompress-zip": "^0.2.2",
     "deep-parse-json": "^1.0.1",
     "lzma-native": "^6.0.0",

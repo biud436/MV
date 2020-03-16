@@ -4,6 +4,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const Enigma = require('./Enigma');
+const {UINT32, UINT64} = require('cuint');
 
 /**
  * PE 헤더
@@ -180,8 +181,10 @@ class RawFileReader {
             }
         }
 
-        // data.toString("binary")는 일부 문자가 잘못 인코딩되므로 체크섬에 문제가 생긴다.
-        // Uint8Array을 사용해야 정확하게 추출할 수 있다.
+        // Javascript는 기본적으로 UINT32, UINT64를 지원하지 않는다. 
+        // 그래서 data.toString("binary")을 사용하게 되면 일부 비트가 잘못된다.
+        // ! ArraryBuffer와 Uint8Array를 사용하여 추출을 해야 한다. 
+        // 또한 cuint 모듈을 사용하는 방법도 있다. 이 모듈은 추후에 도입을 하도록 한다.
         if(zip.isReady) {
 
             console.log(`압축 파일을 추출하는 중입니다.`);

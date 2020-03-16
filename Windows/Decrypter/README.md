@@ -38,7 +38,7 @@ Note that this tool allows you to support that can decrypt files such as ```*.rp
 ## Enigma Virtual Box
 
 - 9.40 Build 20191010 ( :mag_right: Uncompression of the file doesn't support. it is still analyzing)
-
+- 9.50 Build 20200225
 
 ## NW-Self-Extraction
 

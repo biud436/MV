@@ -6,6 +6,8 @@ const path = require('path');
 const ConsoleColor = require('./ConsoleColor');
 const EnigmaFileArchive = require("./EnigmaFileArchive");
 
+const {UINT32, UINT64} = require('cuint'); // https://www.npmjs.com/package/cuint
+
 class Enigma {
     /**
      * @param {String} buf
@@ -355,6 +357,16 @@ class Enigma {
         return buf;        
     }
 
+    decompress(buffer) {
+        // ---- File Header (13 Bytes) ----
+        // Properties (5 Bytes) + Uncompressed File Size ( 8 Bytes )
+        // ---- Compression Method ----
+        // RLE + LZ77 => Dictionary<offset, length, char>
+        // RLE + LZ78 => Dictionary<index, char>
+
+        // RLE >> <0x20 0x20 0x20 0x20> => <0x20 0x03>
+    }
+
     /**
      * 내부 파일을 탐색하면서 파일 경로와 파일 내용을 작성한다.
      * @param {EnigmaFileArchive} root 
@@ -437,7 +449,12 @@ class Enigma {
         this._files.forEach(file => {
 
             var safeBuffer = this.toSafeBuffer(this._rawData.slice(offset, offset + file._originalSize));
-            offset += (file._originalSize);
+
+            if(this._isFileCompression) {
+                offset += (file._fileSize);
+            } else {
+                offset += (file._originalSize);
+            }
 
             if(!file._isFile) {
                 
