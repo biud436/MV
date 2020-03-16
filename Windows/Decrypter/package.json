@@ -16,6 +16,7 @@
     "decompress-zip": "^0.2.2",
     "deep-parse-json": "^1.0.1",
     "lzma-native": "^6.0.0",
+    "minimist": "^1.2.5",
     "nexe": "^3.3.2",
     "stringify-object": "^3.3.0"
   }

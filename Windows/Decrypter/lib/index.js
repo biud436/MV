@@ -9,6 +9,8 @@ const ZipUtils = require('./binary');
 const ConsoleColor = require("./ConsoleColor");
 const { deepParseJson } = require('deep-parse-json');
 const stringifyObject = require('stringify-object');
+const argv = require('minimist')(process.argv.slice(2));
+
 let mainPath;
 
 /**
@@ -30,16 +32,20 @@ const config = {
  * @param {Function} callback 
  */
 async function extractResourceFiles(callback) {
-    return await new Promise(resolve => {
-        if(args[1] && args[1].indexOf("/d=") >= 0) {
-            var filename = args[1].split("/d=")[1];
-            var zipUtils = new ZipUtils(mainPath, filename, callback);
-            resolve();
+    return await new Promise((resolve, reject) => {
+        if(argv.d) {
+            var filename = argv.d;
+            try  {
+                var zipUtils = new ZipUtils(mainPath, filename, callback);
+                resolve();
+            } catch(e) {
+                reject(e);
+            }
         }
     });
 }
 
-if(!args[0]) {
+if(!argv.i) {
     if(fs.existsSync( path.join( process.cwd().replace(/\\/g, "/"), "index.html"))) {
         mainPath = process.cwd().replace(/\\/g, "/");
     } else {
@@ -48,7 +54,7 @@ if(!args[0]) {
         }
     }
 } else {
-    mainPath = args[0].replace(/\\/g, "/");
+    mainPath = argv.i.replace(/\\/g, "/");
 }
 
 class App {
@@ -65,6 +71,8 @@ class App {
             extractResourceFiles(() => {
                 mainPath = path.join( mainPath.replace(/\\/g, "/"), "www");
                 this.decrypt();
+            }).catch(e => {
+                throw new Error(e.message);
             });
         }
     }
@@ -300,9 +308,10 @@ class Utils {
         });
 
         // 명령행 옵션 /key가 커맨드 라인 인수로 주어졌는 지 확인한다.
-        const neededKeyOption = args.filter(command => {
-            return command.indexOf("/key=") >= 0;
-        });
+        // const neededKeyOption = args.filter(command => {
+        //     return command.indexOf("/key=") >= 0;
+        // });
+        const neededKeyOption = argv.key;
 
         // nwjc로 컴파일된 자바스크립트 파일이 존재하는 지 확인한다                
         // ASCII로 인코딩된 문자열 값들은 그대로 존재하며 std::string과 유사하여 NULL 바이트를 차지하지 않는다.
@@ -312,11 +321,11 @@ class Utils {
             console.warn([
                 "There are binary files in the System folder",
                 "so you must pass the decryption key manually.",
-                `Pass the option called ${ConsoleColor.FgRed}/key=${ConsoleColor.Reset} to the parameter.`,
+                `Pass the option called ${ConsoleColor.FgRed}-key=${ConsoleColor.Reset} to the parameter.`,
             ].join("\r\n"));
 
-            if(neededKeyOption.length > 0) {
-                let key = neededKeyOption[0].split("/key=")[1];
+            if(neededKeyOption) {
+                let key = argv.key;
                 retKey = key.split(/(.{2})/).filter(Boolean);
                 return retKey;
             }
@@ -328,8 +337,8 @@ class Utils {
         // 문자열은 난독화 되지 않기 때문에 Hex Editor로 직접 값을 찾아낼 수도 있다.
         if(!fs.existsSync(targetFile)) {
 
-            if(neededKeyOption.length > 0) {
-                let key = neededKeyOption[0].split("/key=")[1];
+            if(neededKeyOption) {
+                let key = argv.key;
                 retKey = key.split(/(.{2})/).filter(Boolean);
                 return retKey;
             } else {
