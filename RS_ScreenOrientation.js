@@ -135,7 +135,7 @@ Imported.ScreenOrientation = true;
   Scene_Title.prototype.create = function () {
     alias_Scene_Title_create.call(this);
     if(Utils.isMobileDevice()) {
-      var userAgent = window.navigator.userAgent;
+      var userAgent = window.navigator.userAgent || "";
       if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
         // A Safari Mobile is not supported in ScreenOrientation API.
       } else if(userAgent.match(/Chrome/i) || userAgent.match(/Chromium/i) || userAgent.match(/Firefox/i)) {
