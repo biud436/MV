@@ -67,9 +67,9 @@ Imported.RS_AnimataionVisibility = true;
     if(!this._target) return false;
     if(!(this._target instanceof Sprite_Character)) return false;
     var target = this._target._character;
-    var isActivated = (target.findProperPageIndex() > -1);
-    var isTransparent = target.isTransparent();
-    var isErased = target._erased || !target._characterName;
+    var isActivated = (target.findProperPageIndex() > -1); // 이벤트 페이지가 활성화 되었는가?
+    var isTransparent = target.isTransparent(); // 투명한가?
+    var isErased = target._erased || !target._characterName; // 이벤트 일시 삭제 또는 캐릭터 이름이 없나
 
     return isActivated && !isTransparent && !isErased;
 
