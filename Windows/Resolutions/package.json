@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": ".",
   "dependencies": {
+    "deep-parse-json": "^1.0.1",
     "nan": "^2.10.0",
     "node-gyp": "^3.6.2",
-    "nw-gyp": "^3.6.3",
-    "win-version-info": "^2.0.0"
+    "nw-gyp": "^3.6.3"
   },
   "author": "",
   "devDependencies": {
