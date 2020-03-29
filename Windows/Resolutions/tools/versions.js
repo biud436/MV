@@ -6,14 +6,15 @@
  */
 
 const subprocess = require('./subprocess');
-const path = require('path')
-const fs = require('fs')
+const path = require('path');
+const fs = require('fs');
 const cp = require('child_process');
 const { deepParseJson } = require('deep-parse-json');
 
 class App {
 
     constructor() {
+        
     }
 
     async initMembers() {
