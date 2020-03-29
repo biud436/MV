@@ -1,103 +1,152 @@
 /**
  * @author biud436
+ * @help
+ * 2020.03.29 :
+ *  - Removed the node module called "win-version-info"
  */
 
-var subprocess = require('./subprocess')
-, path = require('path')
-, fs = require('fs')
-, cp = require('child_process');
+const subprocess = require('./subprocess');
+const path = require('path')
+const fs = require('fs')
+const cp = require('child_process');
+const { deepParseJson } = require('deep-parse-json');
 
-var vi = require(path.join(__dirname, '..', 'node_modules' , 'win-version-info'));
+class App {
 
-function getCoreJSFile(basePath) {
-    var filePath = path.normalize(path.win32.join(basePath, "NewData", "js", "rpg_core.js"));
-    return filePath;
-};
+    constructor() {
+    }
 
-function getRPGMV(basePath) {
-    var filePath = path.normalize(path.win32.join(basePath, "RPGMV.exe"));
-    return filePath;
-};
+    async initMembers() {
+        this._mvPath = await this.getApplicationPath();
+        this._mvVersion = await this.getApplicationVersion(this._mvPath);
 
-function readNodeVersion(rmmvPath) {
-    var dllFile = path.normalize(path.win32.join(rmmvPath, "nwjs-win", "node.dll"));
-    var data = fs.readFileSync(dllFile);
-    
-    var startOffset = ((data.length - 0x10) / 2); // 중간부터 검색
-    startOffset = (startOffset & ~0x0F); // 16바이트 기준으로 정렬
-    var maxOffset = (startOffset + (startOffset >> 1));
-    var version = "";
-    
-    // 중간부터 maxOffset까지 읽어가면서 특정 문자열을 찾는다
-    for(var curOffset = startOffset; curOffset < maxOffset; curOffset += 0x10) {
-        var buf = data.toString('ascii', curOffset, curOffset + 0x08 + 0x04);
-        if(buf === "versions\u0000\u0000\u0000\u0000") {
-            var targetOffset = curOffset - 0x10;
-            version = data.toString('ascii', targetOffset, targetOffset + 0x08);
+        const rmmvPath = path.dirname(this._mvPath);
+
+        if(this._mvVersion >= "1.6.1") {
+            console.log(this.readNodeVersion(rmmvPath));
+        } else {
+            console.log(this.readNodeVersionForOlder(rmmvPath));
         }
     }
-    
-    return version;
-};
 
-function readNodeVersionForOlder(rmmvPath) {
-    var dllFile = path.normalize(path.win32.join(rmmvPath, "nwjs-win", "Game.exe"));
-    var data = fs.readFileSync(dllFile);
+    getCoreJSFile(basePath) {
+        var filePath = path.join(basePath, "NewData", "js", "rpg_core.js");
+        return filePath;
+    }
     
-    var startOffset = ((data.length - 0x10) / 2); // 중간부터 검색
-    startOffset = (startOffset & ~0x0F); // 16바이트 기준으로 정렬
-    var maxOffset = data.length - 0x10;
-    var version = "";
-    
-    // 중간부터 끝까지 읽어가면서 특정 문자열을 찾는다
-    for(var curOffset = startOffset; curOffset < maxOffset; curOffset += 0x10) {
-        var buf = data.toString('ascii', curOffset, curOffset + 0x10);
-        if(buf === "s['node-webkit']") {
-            var targetOffset = curOffset + 0x10;
-            var str = data.toString('ascii', targetOffset, targetOffset + 0x10);
-            var re = /'(\d+\.\d+\.\d+)'/gm;
-            if(re.exec(str)) {
-                version = `v${RegExp.$1}`;
+    getRPGMV(basePath) {
+        var filePath = path.join(basePath, "RPGMV.exe");
+        return filePath;
+    }
+        
+    readNodeVersion(rmmvPath) {
+        var dllFile = path.join(rmmvPath, "nwjs-win", "node.dll");
+        var data = fs.readFileSync(dllFile);
+        
+        var startOffset = ((data.length - 0x10) / 2); // 중간부터 검색
+        startOffset = (startOffset & ~0x0F); // 16바이트 기준으로 정렬
+        var maxOffset = (startOffset + (startOffset >> 1));
+        var version = "";
+        
+        // 중간부터 maxOffset까지 읽어가면서 특정 문자열을 찾는다
+        for(var curOffset = startOffset; curOffset < maxOffset; curOffset += 0x10) {
+            var buf = data.toString('ascii', curOffset, curOffset + 0x08 + 0x04);
+            if(buf === "versions\u0000\u0000\u0000\u0000") {
+                var targetOffset = curOffset - 0x10;
+                version = data.toString('ascii', targetOffset, targetOffset + 0x08);
             }
         }
+        
+        return version;
     }
     
-    return version;
-};
-
-
-if(process.platform.includes("win") >= 0) {
-    
-    var processname = 'python';
-    var args = [];
-    args.push( path.join(__dirname, "get_steam_path.py") );
-    
-    var child = cp.execFile('python', args, {encoding: 'utf8'}, function(err, stdout, stderr) {
-        if(err) {
-            console.log("error");
-            return;
+    readNodeVersionForOlder(rmmvPath) {
+        var dllFile = path.join(rmmvPath, "nwjs-win", "Game.exe");
+        var data = fs.readFileSync(dllFile);
+        
+        var startOffset = ((data.length - 0x10) / 2); // 중간부터 검색
+        startOffset = (startOffset & ~0x0F); // 16바이트 기준으로 정렬
+        var maxOffset = data.length - 0x10;
+        var version = "";
+        
+        // 중간부터 끝까지 읽어가면서 특정 문자열을 찾는다
+        for(var curOffset = startOffset; curOffset < maxOffset; curOffset += 0x10) {
+            var buf = data.toString('ascii', curOffset, curOffset + 0x10);
+            if(buf === "s['node-webkit']") {
+                var targetOffset = curOffset + 0x10;
+                var str = data.toString('ascii', targetOffset, targetOffset + 0x10);
+                var re = /'(\d+\.\d+\.\d+)'/gm;
+                if(re.exec(str)) {
+                    version = `v${RegExp.$1}`;
+                }
+            }
         }
         
-        var rmmvPath = stdout.replace("\r\n", "");
-        var filePath = path.normalize(path.win32.join(rmmvPath, "RPGMV.exe"));
-        
-        var fullPath = filePath.split("\\");
-        var driveName = fullPath.shift(); // process.env.SystemRoot
-        fullPath = fullPath.join("/");
-        filePath = driveName + "///" + fullPath;    
-        
-        var version = vi(filePath);
-        version = String(version["ProductVersion"]);
-        if(version >= "1.6.1") {
-            console.log(readNodeVersion(rmmvPath));
-        } else {
-            console.log(readNodeVersionForOlder(rmmvPath));
-        }    
-        
-    });
+        return version;
+    }
+
+    getApplicationPath() {
+ 
+        return new Promise((resolve, reject) => {
+
+            if(!process.platform.includes("win")) {
+                reject("Your computer is not window platform");
+            }
     
-    child.stdin.end(); 
+            let subKey = process.arch === "x64" ? `Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\KADOKAWA\\RPGMV` : `Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\KADOKAWA\\RPGMV`;
+            let command = `powershell -Command "Get-ItemProperty -Path ${subKey} | ConvertTo-Json"`;
     
-} else {
+            const powershell = cp.exec(command, {
+                encoding: 'utf8',
+                shell: true
+            }, (err, stdout, stderr) => {
+                if(err) {
+                    reject(err);
+                }
+                const item = deepParseJson(stdout);
+                const rmmvPath = item["applicationpath"].replace(/\\/g, "/");
     
+                resolve(path.join(rmmvPath, "RPGMV.exe"));
+            });
+    
+            powershell.on("exit", (code, signal) => {
+    
+            });            
+            
+        });
+
+    }
+
+    getApplicationVersion(mvPath) {
+ 
+        return new Promise((resolve, reject) => {
+
+            if(!process.platform.includes("win")) {
+                reject("Your computer is not window platform");
+            }
+    
+            let command = `powershell -Command "(Get-Item '${mvPath}').VersionInfo | ConvertTo-Json"`;
+    
+            const powershell = cp.exec(command, {
+                encoding: 'utf8',
+                shell: true
+            }, (err, stdout, stderr) => {
+                if(err) {
+                    reject(err);
+                }
+                const item = deepParseJson(stdout);
+                
+                resolve(`${item.FileMajorPart}.${item.FileMinorPart}.${item.FileBuildPart}`);
+            });
+    
+            powershell.on("exit", (code, signal) => {
+    
+            });
+            
+        });
+
+    }
+
 }
+
+new App().initMembers();
