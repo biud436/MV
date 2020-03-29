@@ -29,11 +29,6 @@ class App {
             console.log(this.readNodeVersionForOlder(rmmvPath));
         }
     }
-
-    getCoreJSFile(basePath) {
-        var filePath = path.join(basePath, "NewData", "js", "rpg_core.js");
-        return filePath;
-    }
     
     getRPGMV(basePath) {
         var filePath = path.join(basePath, "RPGMV.exe");
@@ -107,7 +102,7 @@ class App {
                 const item = deepParseJson(stdout);
                 const rmmvPath = item["applicationpath"].replace(/\\/g, "/");
     
-                resolve(path.join(rmmvPath, "RPGMV.exe"));
+                resolve(this.getRPGMV(rmmvPath));
             });
     
             powershell.on("exit", (code, signal) => {
