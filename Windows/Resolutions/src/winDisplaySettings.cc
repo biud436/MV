@@ -27,7 +27,7 @@ namespace RSDisplayInfo {
 
 	NAN_METHOD(GetTaskBarSize) {
 		v8::Isolate* isolate = info.GetIsolate();
-		v8::Local<v8::Array> retArray = Nan::New<v8::Array>();
+		v8::Local<v8::Primitive> undefined = Nan::Undefined();
 
 		#if defined(_WIN32) || defined(WIN32)
 			RECT rt;
@@ -38,7 +38,7 @@ namespace RSDisplayInfo {
 			info.GetReturnValue().Set( Nan::New<v8::Number>(height) );
 						
 		#else
-			info.GetReturnValue().Set( retArray );
+			info.GetReturnValue().Set( undefined );
 		#endif 		
 	}
 
