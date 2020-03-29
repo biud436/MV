@@ -33,13 +33,9 @@ namespace RSDisplayInfo {
 			RECT rt;
 			SystemParametersInfo(SPI_GETWORKAREA, 0, &rt, 0);
 			
-			unsigned int width = GetSystemMetrics(SM_CXSCREEN) - (rt.right - rt.left);
 			unsigned int height = GetSystemMetrics(SM_CYSCREEN) - (rt.bottom - rt.top);
 
-			Nan::Set(retArray, 0, Nan::New<v8::Number>(width));
-			Nan::Set(retArray, 1, Nan::New<v8::Number>(height));
-
-			info.GetReturnValue().Set( retArray );
+			info.GetReturnValue().Set( Nan::New<v8::Number>(height) );
 						
 		#else
 			info.GetReturnValue().Set( retArray );
