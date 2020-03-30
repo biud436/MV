@@ -145,4 +145,7 @@ class App {
 
 }
 
-new App().initMembers();
+new App().initMembers()
+    .catch(err => {
+        throw new Error(err);
+    });
