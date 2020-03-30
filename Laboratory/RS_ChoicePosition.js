@@ -7,18 +7,8 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc This plugin allows you to set up the position of choice list window.
+ * @plugindesc This plugin allows you to set up the position of choice list window. <RS_ChoicePosition>
  * @author biud436
- *
- * @param x
- * @type number
- * @desc Specify the x position for choices window
- * @default 0
- *
- * @param y
- * @type number
- * @desc Specify the y position for choices window
- * @default 0
  *
  * @param Auto Disable
  * @type boolean
@@ -27,6 +17,10 @@
  * @on true
  * @off false
  *
+ * @param Interpolation Formula
+ * @desc it's result is the number between 0.0 and 1.0
+ * @default (t - this._prevTime) / 1000.0;
+ * 
  * @help
  * =============================================================================
  * Plugin Command
@@ -36,7 +30,7 @@
  * coordinates on the screen.
  * 
  * Choice pos x y
- *      - x or y : Specify the screen coordinates..
+ *      - x or y : Specify the screen coordinates.
  * 
  * This will be going to move the location of the choice window to the position of specific event
  * or player characters.
@@ -54,6 +48,9 @@
  * 
  * Choice enable
  * Choice disable
+ * 
+ * To enable the custom position, 
+ * First Up, Notice that you must call the plugin command named "Choice enable"
  * 
  * =============================================================================
  * Text Code
@@ -92,30 +89,27 @@
  * - Added the new feature that can change the position of the choice window on the center of the screen.
  * 2019.10.21 (v1.0.6) : 
  * - Fixed the performance penalty issue.
- * 2020.03.30 (v1.0.7) :
+ * 2020.03.30 (v1.0.8) :
  * - Fixed the bug that sets the original position before getting a new position.
  * - Added text codes that can use in the message window.
+ * - Fixed the bug that is not working plugin parameters.
  */
 /*:ko
- * @plugindesc This plugin allows you to set up the position of choice list window.
- * @author biud436
- *
- * @param x
- * @type number
- * @desc Specify the x position for choices window
- * @default 0
- *
- * @param y
- * @type number
- * @desc Specify the y position for choices window
- * @default 0
+ * @plugindesc 선택지 윈도우의 위치를 변경하는 플러그인입니다. <RS_ChoicePosition>
+ * @author 러닝은빛
  *
  * @param Auto Disable
+ * @text 자동 비활성화
  * @type boolean
- * @desc This plugin will be deactived after moving choice window to target area
+ * @desc 한 번 위치를 변경한 후, 원래 선택지 위치로 재설정합니다.
  * @default false
  * @on true
  * @off false
+ * 
+ * @param Interpolation Formula
+ * @text 보간 공식
+ * @desc 시간에 따른 이동 공식으로, 0 ~ 1 사이의 실수입니다.
+ * @default (t - this._prevTime) / 1000.0;
  *
  * @help
  * =============================================================================
@@ -140,6 +134,9 @@
  * Choice enable
  * Choice disable
  * 
+ * 처음에는 선택지 창의 커스텀 위치 설정 기능이 비활성화 상태입니다.
+ * 설정한 커스텀 위치로 옮기고 싶다면 "Choice enable"을 호출하세요.
+ * 
  * =============================================================================
  * 텍스트 코드 (제어 문자)
  * =============================================================================
@@ -156,6 +153,9 @@
 var Imported = Imported || {};
 Imported.RS_ChoicePosition = true;
 
+var RS = RS || {};
+RS.ChoicePosition = RS.ChoicePosition || {};
+
 (function() {
 
     "use strict";
@@ -166,9 +166,12 @@ Imported.RS_ChoicePosition = true;
       
     parameters = (parameters.length > 0) && parameters[0].parameters;
 
-    var mx = Number(parameters['x']);
-    var my = Number(parameters['y']);
-    var isAudoDisable = Boolean(parameters['Auto Disable'] === 'true');
+    RS.ChoicePosition = {
+        Params: {
+            isAutoDisable : Boolean(parameters['Auto Disable'] === 'true'),
+            interpolationFormula : parameters["Interpolation Formula"]
+        }
+    };
 
     //============================================================================
     // Window_ChoiceList
@@ -204,8 +207,8 @@ Imported.RS_ChoicePosition = true;
     Window_ChoiceList.prototype.updateCustomPosition = function() {
         
         var position = $gameSystem.getChoicePosition();
-        var mx = position.x;
-        var my = position.y;
+        var mx = position.x || 0;
+        var my = position.y || 0;
         
         if(!mx) mx = this.getChoiceX();
         if(!my) my = this.getChoiceY();
@@ -230,11 +233,19 @@ Imported.RS_ChoicePosition = true;
     };
     
     Window_ChoiceList.prototype.moveLenear = function (tx, ty) {
-        if(this.x >= tx - 0.001 && this.y >= ty - 0.001 && isAudoDisable) {
+        if(this.x >= tx - 0.001 && this.y >= ty - 0.001 && 
+            RS.ChoicePosition.Params.isAutoDisable) {
             $gameSystem.setChoiceMoveable(false);
         }
         var t = performance.now();
-        var dt =  (t - this._prevTime) / 1000.0;
+        var dt = 1.0;
+
+        try {
+            dt = eval(RS.ChoicePosition.Params.interpolationFormula);
+        } catch(e) {
+            dt = (t - this._prevTime) / 1000.0;
+        }
+
         this.x = this.x + dt * (tx - this.x);
         this.y = this.y + dt * (ty - this.y);
         this._prevTime = t;
