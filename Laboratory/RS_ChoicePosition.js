@@ -69,6 +69,9 @@
  * 
  * \CP<x,y>     : Changes the position of choice window as the custom position.
  * 
+ *                  - x is the number between 0 and Graphics.boxWidth.
+ *                  - y is the number between 0 and Graphics.boxHeight.
+ * 
  * \CP<eventId> : Changes the position of choice window as a certain event's 
  * screen position.
  * 
