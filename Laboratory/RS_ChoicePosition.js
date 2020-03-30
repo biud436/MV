@@ -93,6 +93,7 @@
  * 2019.10.21 (v1.0.6) : 
  * - Fixed the performance penalty issue.
  * 2020.03.30 (v1.0.7) :
+ * - Fixed the bug that sets the original position before getting a new position.
  * - Added text codes that can use in the message window.
  */
 /*:ko
