@@ -93,6 +93,7 @@
  * - Fixed the bug that sets the original position before getting a new position.
  * - Added text codes that can use in the message window.
  * - Fixed the bug that is not working plugin parameters.
+ * - Added a new plugin parameter that can change the interpolation formula.
  */
 /*:ko
  * @plugindesc 선택지 윈도우의 위치를 변경하는 플러그인입니다. <RS_ChoicePosition>
