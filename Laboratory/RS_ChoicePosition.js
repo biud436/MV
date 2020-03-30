@@ -89,11 +89,12 @@
  * - Added the new feature that can change the position of the choice window on the center of the screen.
  * 2019.10.21 (v1.0.6) : 
  * - Fixed the performance penalty issue.
- * 2020.03.30 (v1.0.8) :
+ * 2020.03.30 (v1.0.9) :
  * - Fixed the bug that sets the original position before getting a new position.
  * - Added text codes that can use in the message window.
  * - Fixed the bug that is not working plugin parameters.
  * - Added a new plugin parameter that can change the interpolation formula.
+ * - Fixed the bug that is not showing the text content when indicating the first message.
  */
 /*:ko
  * @plugindesc 선택지 윈도우의 위치를 변경하는 플러그인입니다. <RS_ChoicePosition>
@@ -188,7 +189,6 @@ RS.ChoicePosition = RS.ChoicePosition || {};
     Window_ChoiceList.prototype.start = function() {
         this._prevTime = performance.now();
         alias_Window_ChoiceList_start.call(this);
-        this.prepareTransform();
     };
 
     Window_ChoiceList.prototype.prepareTransform = function() {
@@ -198,6 +198,7 @@ RS.ChoicePosition = RS.ChoicePosition || {};
 
     var alias_Window_ChoiceList_updatePlacement = Window_ChoiceList.prototype.updatePlacement;
     Window_ChoiceList.prototype.updatePlacement = function() {
+        this.prepareTransform();
         if($gameSystem.isChoiceMoveable()) {
             this.updateCustomPosition();
         } else {
