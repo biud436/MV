@@ -56,6 +56,23 @@
  * Choice disable
  * 
  * =============================================================================
+ * Text Code
+ * =============================================================================
+ * In this section, it describes text codes can use in the message window.
+ * 
+ * \CC          : Changes the position of choices window with center of screen.
+ * 
+ * \CE          : Activates the logic that can change the position of choice window 
+ * as the custom position.
+ * 
+ * \CD          : Changes the position of Choice Window with original position.
+ * 
+ * \CP<x,y>     : Changes the position of choice window as the custom position.
+ * 
+ * \CP<eventId> : Changes the position of choice window as a certain event's 
+ * screen position.
+ * 
+ * =============================================================================
  * Change Log
  * =============================================================================
  * 2017.02.03 (v1.0.1) :
@@ -72,6 +89,8 @@
  * - Added the new feature that can change the position of the choice window on the center of the screen.
  * 2019.10.21 (v1.0.6) : 
  * - Fixed the performance penalty issue.
+ * 2020.03.30 (v1.0.7) :
+ * - Added text codes that can use in the message window.
  */
 /*:ko
  * @plugindesc This plugin allows you to set up the position of choice list window.
@@ -117,6 +136,17 @@
  * Choice enable
  * Choice disable
  * 
+ * =============================================================================
+ * 텍스트 코드 (제어 문자)
+ * =============================================================================
+ * 메시지 창에서 다음과 같은 텍스트 코드로 위치를 제어할 수 있습니다.
+ * 
+ * \CC          : 화면 중앙으로
+ * \CE          : 활성화
+ * \CD          : 비활성화 (원래 위치로)
+ * \CP<x,y>     : 특정 좌표로
+ * \CP<eventId> : 특정 이벤트의 위치로 
+ * 
  */
 
 var Imported = Imported || {};
@@ -160,8 +190,11 @@ Imported.RS_ChoicePosition = true;
 
     var alias_Window_ChoiceList_updatePlacement = Window_ChoiceList.prototype.updatePlacement;
     Window_ChoiceList.prototype.updatePlacement = function() {
-        alias_Window_ChoiceList_updatePlacement.call(this);
-        if($gameSystem.isChoiceMoveable()) this.updateCustomPosition();
+        if($gameSystem.isChoiceMoveable()) {
+            this.updateCustomPosition();
+        } else {
+            alias_Window_ChoiceList_updatePlacement.call(this);
+        }
     };
     
     Window_ChoiceList.prototype.updateCustomPosition = function() {
@@ -246,10 +279,10 @@ Imported.RS_ChoicePosition = true;
     var alias_Window_ChoiceList_update = Window_ChoiceList.prototype.update;
     Window_ChoiceList.prototype.update = function () {
         alias_Window_ChoiceList_update.call(this);
-        if($gameMessage.choices().length > 0 && $gameSystem.isChoiceMoveable()) {
-            this.updatePlacement();
-        }
+        if($gameMessage.choices().length <= 0) return;
+        this.updatePlacement();
     };
+
     //===========================================================================
     // ChoiceTMatrix
     //===========================================================================
@@ -352,6 +385,45 @@ Imported.RS_ChoicePosition = true;
     Game_System.prototype.isChoiceMoveable = function () {
         return this._isChoiceMoveable;
     };
+
+    //===========================================================================
+    // Window_Message
+    //===========================================================================    
+
+    Window_Message.prototype.obtainChoiceParameters = function(textState) {
+        var arr = /\<(.+?)\>/.exec(textState.text.slice(textState.index));
+        if (arr) {
+          textState.index += arr[0].length;
+          return String(arr[1]);
+        } else {
+          return "";
+        }
+      };
+
+    var alias_Window_Message_processEscapeCharacter = Window_Message.prototype.processEscapeCharacter;
+    Window_Message.prototype.processEscapeCharacter = function(code, textState) {
+        switch(code.toUpperCase()) {
+        case 'CC': //! \CC
+            $gameSystem.setChoiceWindowPos('center');
+            break;
+        case 'CE': //! \CE
+            $gameSystem.setChoiceMoveable(true);
+            break;
+        case 'CD': //! \CD 
+            $gameSystem.setChoiceMoveable(false);
+            break;            
+        case 'CP': //! \CP<x,y> \CP<eventId>
+            var method = this.obtainChoiceParameters(textState);
+            var args = method.split(",").map(function(e) { 
+                return parseInt(e.trim()); 
+            }, this);
+            $gameSystem.setChoiceWindowPos.apply($gameSystem, args);
+            break;
+        default:
+            alias_Window_Message_processEscapeCharacter.call(code, textState);
+            break;
+        }
+    }
     
     //===========================================================================
     // Game_Interpreter
