@@ -95,6 +95,8 @@
  * - Fixed the bug that is not working plugin parameters.
  * - Added a new plugin parameter that can change the interpolation formula.
  * - Fixed the bug that is not showing the text content when indicating the first message.
+ * 2020.03.31 (v1.0.10) :
+ * - Fixed the bug that is not working default text codes.
  */
 /*:ko
  * @plugindesc 선택지 윈도우의 위치를 변경하는 플러그인입니다. <RS_ChoicePosition>
@@ -305,7 +307,7 @@ RS.ChoicePosition = RS.ChoicePosition || {};
     //===========================================================================
 
     class ChoiceTMatrix extends Point {
-        constructor(x, y, dirty = false) {
+        constructor(x, y, dirty) {
             super(x, y);
             this.dirty = dirty;
         }
@@ -419,17 +421,17 @@ RS.ChoicePosition = RS.ChoicePosition || {};
 
     var alias_Window_Message_processEscapeCharacter = Window_Message.prototype.processEscapeCharacter;
     Window_Message.prototype.processEscapeCharacter = function(code, textState) {
-        switch(code.toUpperCase()) {
-        case 'CC': //! \CC
+        switch(code) {
+        case "CC": //! \CC
             $gameSystem.setChoiceWindowPos('center');
             break;
-        case 'CE': //! \CE
+        case "CE": //! \CE
             $gameSystem.setChoiceMoveable(true);
             break;
-        case 'CD': //! \CD 
+        case "CD": //! \CD 
             $gameSystem.setChoiceMoveable(false);
             break;            
-        case 'CP': //! \CP<x,y> \CP<eventId>
+        case "CP": //! \CP<x,y> \CP<eventId>
             var method = this.obtainChoiceParameters(textState);
             var args = method.split(",").map(function(e) { 
                 return parseInt(e.trim()); 
@@ -437,7 +439,7 @@ RS.ChoicePosition = RS.ChoicePosition || {};
             $gameSystem.setChoiceWindowPos.apply($gameSystem, args);
             break;
         default:
-            alias_Window_Message_processEscapeCharacter.call(code, textState);
+            alias_Window_Message_processEscapeCharacter.call(this, code, textState);
             break;
         }
     }
