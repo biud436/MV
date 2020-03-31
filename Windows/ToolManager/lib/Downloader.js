@@ -132,7 +132,12 @@ class Downloader {
                         let dt = file.split("."); 
                         dt.pop();
                         dt = dt.join(".");
-                        this.createRunFile(path.join(this._outputPath, dt, "play.bat"));
+
+                        if(process.platform === "win32") {
+                            this.createRunFile(path.join(this._outputPath, dt, "play.bat"));
+                        } else {
+                            throw new Error(`${process.platform}은 아직 지원하지 않습니다. ${Color.BgRed}(맥이 없어서 테스트 불가능!)${Color.Reset}`);
+                        }
     
                     });
                     unzipper.on('progress', function (fileIndex, fileCount) {
@@ -179,6 +184,22 @@ GOTO :EOF`;
 
         let rootFolder = path.dirname(filepath);
         fs.writeFileSync(path.join(rootFolder, "add.bat"), contents, "utf8");
+
+        const packageJson = {
+            "name": "",
+            "main": "www/index.html",
+            "js-flags": "--expose-gc",
+            "chromium-args": "--javascript-harmony",
+            "window": {
+                "title": "",
+                "toolbar": false,
+                "width": 816,
+                "height": 624
+            }
+        };
+        
+        fs.writeFileSync(path.join(rootFolder, "package.json"), JSON.stringify(packageJson, null, "  "), "utf8");
+
     }
 
     async start() {
@@ -192,9 +213,19 @@ GOTO :EOF`;
             }
 
             const NW_SDK = version > "v0.12.3" ? "nwjs-sdk":"nwjs";
+
+            let osType = {
+                "win32": "win",
+                "linux": "linux",
+                "darwin": "osx",
+            };
+
+            if(!osType[process.platform]) {
+                throw new Error(`지원하지 않는 OS 입니다.`);
+            }
     
             const needed_files = [
-                `https://dl.nwjs.io/${version}/${NW_SDK}-${version}-win-${process.arch}.zip`
+                `https://dl.nwjs.io/${version}/${NW_SDK}-${version}-${osType[process.platform]}-${process.arch}.${process.platform === "linux" ? "tar.gz" : "zip"}`
             ];
 
             if(this._isForceHttps) {
