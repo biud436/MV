@@ -48,7 +48,7 @@ class NodeWebkit
 
         this._args = [
             this._projectPath,
-            "index.html?&test"
+            this._version <= "v0.12.3" ? `--url=${indexFile}?&test` : "index.html?&test"
         ];
 
         const files = this.readNW();
@@ -60,7 +60,7 @@ class NodeWebkit
 
             if(fileStat.isDirectory()) {
                 const targetFile = path.join(realPath, `nw.exe`);
-                if(fs.existsSync(targetFile) && file.indexOf("sdk") >= 0) {
+                if(fs.existsSync(targetFile) && file.indexOf("nwjs") >= 0) {
                     applications.push({
                         exec: targetFile,
                         run : true,

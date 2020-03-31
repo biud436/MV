@@ -31,10 +31,14 @@ function getCommands() {
 function run() {
     switch(args[0]) {
         case '/run': // node index.js /run v0.44.1 E:/Games/201907/
-            app = new NodeWebkitRunner(getCommands()).start();
+            app = new NodeWebkitRunner(getCommands()).start().catch(err => {
+                throw new Error(err);
+            });
             break;
         case '/download': // node index.js /download v0.44.1 E:/Games/201907/ true
-            app = new Downloader(getCommands()).start();
+            app = new Downloader(getCommands()).start().catch(err => {
+                throw new Error(err);
+            });
             break;
         case '/add': // node index.js /add appName hint name filePath
             app = new RegistryMan("add", args.slice(1));

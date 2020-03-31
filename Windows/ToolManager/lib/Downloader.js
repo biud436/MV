@@ -102,7 +102,9 @@ class Downloader {
 
     async *readOutputFolder() {
         try {
-            const dir = await readdirAsync(this._outputPath);
+            const dir = await readdirAsync(this._outputPath).catch(err => {
+                throw new Error(err);
+            });
             for (const file of dir) {
                 yield file;
             }
@@ -113,35 +115,41 @@ class Downloader {
 
     async unzip() {
 
-        const files = await this.readOutputFolder();
+        try {
 
-        for await (const file of files) {
-            const realPath = path.join(this._outputPath, file);
-            const unzipper = new DecompressZip(realPath);       
+            const files = await this.readOutputFolder();
 
-            if(fs.existsSync(realPath)) {
-                unzipper.on('error', (err) => console.log(err));
-                unzipper.on('extract', (log) => {
-                    console.log('압축 해제를 완료하였습니다.');
-                    fs.removeSync(realPath);
-                    
-                    let dt = file.split("."); 
-                    dt.pop();
-                    dt = dt.join(".");
-                    this.createRunFile(path.join(this._outputPath, dt, "play.bat"));
-
-                });
-                unzipper.on('progress', function (fileIndex, fileCount) {
-                    console.log('압축 해제 중 : ' + (fileIndex + 1) + ' of ' + fileCount);
-                });
-                unzipper.extract({
-                    path: path.join(this._outputPath),
-                    filter: function (file) {
-                        return file.type !== "SymbolicLink";
-                    }
-                });
+            for await (const file of files) {
+                const realPath = path.join(this._outputPath, file);
+                const unzipper = new DecompressZip(realPath);
+    
+                if(fs.existsSync(realPath)) {
+                    unzipper.on('error', (err) => console.log(err));
+                    unzipper.on('extract', (log) => {
+                        console.log('압축 해제를 완료하였습니다.');
+                        fs.removeSync(realPath);
+                        
+                        let dt = file.split("."); 
+                        dt.pop();
+                        dt = dt.join(".");
+                        this.createRunFile(path.join(this._outputPath, dt, "play.bat"));
+    
+                    });
+                    unzipper.on('progress', function (fileIndex, fileCount) {
+                        console.log('압축 해제 중 : ' + (fileIndex + 1) + ' of ' + fileCount);
+                    });
+                    unzipper.extract({
+                        path: path.join(this._outputPath),
+                        filter: function (file) {
+                            return file.type !== "SymbolicLink";
+                        }
+                    });
+                }
+    
             }
 
+        } catch(err) {
+            console.error(err);
         }
 
     }
@@ -182,9 +190,11 @@ GOTO :EOF`;
             if(!version) {
                 throw new Error(`버전 텍스트가 없습니다.`);
             }
+
+            const NW_SDK = version > "v0.12.3" ? "nwjs-sdk":"nwjs";
     
             const needed_files = [
-                `https://dl.nwjs.io/${version}/nwjs-sdk-${version}-win-x64.zip`,
+                `https://dl.nwjs.io/${version}/${NW_SDK}-${version}-win-x64.zip`,
                 // `https://dl.nwjs.io/${version}/nwjs-${version}-win-x64.zip`,
                 // `https://codeload.github.com/biud436/MV/zip/master`,
             ]
@@ -222,7 +232,9 @@ GOTO :EOF`;
                     console.log(`${Color.FgRed}다운로드가 완료되었습니다${Color.Reset}`);
                     
                     this.removeFiles();
-                    this.unzip();
+                    this.unzip().catch(e => {
+                        throw new Error(e);
+                    })
                 });
                 
                 aria2cProcess.pendingTerminate();   
@@ -284,10 +296,10 @@ class NodeWebkitRunner extends Downloader {
                     let filename = path.join(realPath, 'nw.exe');
                     if(fs.existsSync(filename)) {
                         isValidNW = true;
-                        console.log(`nw.exe를 찾았습니다.`)
+                        console.log(`nw.exe를 찾았습니다.`);
                     }
                 }
-            }         
+            }       
             
             if(isValidNW) {
                 const NodeWebkit = require('./NW');
