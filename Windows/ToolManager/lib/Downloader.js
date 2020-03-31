@@ -164,7 +164,7 @@ set ARGS1=%~dp1
 ECHO Current Path : %~dp0
 
 ECHO RUN INDEX FILE : %ARGS1%index.html
-%~dp0nw.exe %ARGS1% test
+${this._version > "v0.12.3" ? "%~dp0nw.exe %ARGS1% test": "start %~dp0nw.exe --url=%ARGS1%index.html?test"}
 
 @ENDLOCAL
 GOTO :EOF
@@ -195,8 +195,6 @@ GOTO :EOF`;
     
             const needed_files = [
                 `https://dl.nwjs.io/${version}/${NW_SDK}-${version}-win-x64.zip`,
-                // `https://dl.nwjs.io/${version}/nwjs-${version}-win-x64.zip`,
-                // `https://codeload.github.com/biud436/MV/zip/master`,
             ]
 
             if(this._isForceHttps) {
