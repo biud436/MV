@@ -24,7 +24,6 @@ class Window_MessageImpl extends Window_Message {
         super();
 
         this.createMainTextLayer();
-        // this.createRenderTexture();
 
         this.once("removed", () => {
             this.terminateMainTextLayer();
@@ -32,117 +31,12 @@ class Window_MessageImpl extends Window_Message {
 
     }
 
-    // createRenderTexture() {
-    //     const gl = Graphics._renderer.gl;
-    
-    //     // Create RenderTexture
-    //     this._renderTexture = PIXI.RenderTexture.create(
-    //         this.width,
-    //         this.height,
-    //         PIXI.SCALE_MODES.NEAREST
-    //     );
-    
-    //     // Create RenderTarget
-    //     if(Graphics.isWebGL()) {
-    //         this._renderTarget = new PIXI.RenderTarget(
-    //             gl, 
-    //             this.width,
-    //             this.height,
-    //             PIXI.SCALE_MODES.NEAREST
-    //         );
-    //     } else {
-    //         this._renderTarget = new PIXI.CanvasRenderTarget(this.width, this.height);
-    //     }
-    
-    //     // Create Sprite
-    //     this._renderSprite = new Sprite();
-
-    //     this.on("removed", this.destroyRenderTexture, this);
-
-    //     this._init = true;
-
-    // }
-
-    // destroyRenderTexture() {
-    //     if( this._renderTexture ) this._renderTexture.destroy({ destroyBase: true });
-    //     if( this._renderSprite ) this._renderSprite.destroy({ children: true });
-    //     if( this._renderTarget ) this._renderTarget.destroy();
-    //     this._renderTexture = null;
-    //     this._renderSprite = null;
-    //     this._renderTarget = null;     
-    // }
-
     clearFlags() {
         super.clearFlags();
         if(RS.MessageEffects.Params.clearFlag) {
             RS.MessageEffects.Params.currentEffect = 'none';
         }
     }
-
-    // /**
-    //  * @param {String} text 
-    //  * @return {String}
-    //  */
-    // textProcessing(text) {
-    //     text = text.slice(0);
-
-    //     return text;
-    // }
-
-    // /**
-    //  * Get the text size like as RPG Maker VX Ace
-    //  * @param {String} text
-    //  */
-    // getTextSize(text) {
-    //     var font = this.contents._makeFontNameText();
-    //     var textDiv = document.createElement("div");
-        
-    //     textDiv.style.position = 'absolute';
-    //     textDiv.style.float = 'left';
-    //     textDiv.style.whiteSpace = 'nowrap';
-    //     textDiv.style.visibility = 'hidden';
-    //     textDiv.style.font = font;
-    //     textDiv.innerHTML = text;
-
-    //     document.body.appendChild(textDiv);
-
-    //     const rect = new PIXI.Rectangle(
-    //         0, 
-    //         0, 
-    //         textDiv.clientWidth,
-    //         textDiv.clientHeight,
-    //     );
-
-    //     document.body.removeChild(textDiv);
-
-    //     return rect;
-    // }    
-
-    // /**
-    //  * Create a texture.
-    //  * @param {MV.TextState} textState 
-    //  */          
-    // createLocalTexture(textState) {
- 
-    //     var temp = textState.text;
-    //     var lines = temp.split(/[\r\n]+/i);
-
-    //     var rect = this.getTextSize(temp);
-    //     var bitmap = new Bitmap(rect.width, rect.height * lines.length);
-        
-    //     this.contents.clear();
-
-    //     // lines.forEach((line,i,a) => {
-    //     //     bitmap.drawText(line, 0, i * rect.height, rect.width, rect.height, "left");
-    //     // });
-
-    //     this.drawTextEx(temp, 0, this.height + 6);
-
-    //     bitmap.blt(this.contents, 0, this.height + 6, bitmap.width, bitmap.height, 0, 0, this.bitmap.width, bitmap.height);
-
-    //     return bitmap;
-
-    // }
 
     _updateContents() {
         super._updateContents();
@@ -330,51 +224,6 @@ class Window_MessageImpl extends Window_Message {
         super.startPause();
         // this._mainTextLayer.children.forEach(i => i.flush());
     }
-
-
-    // renderCanvas(renderer) {
-    //     if (!this.visible || !this.renderable) {
-    //         return;
-    //     }
-    
-    //     var layers = this.children;
-    //     for (var i = 0; i < layers.length; i++)
-    //         layers[i].renderCanvas(renderer);
-    
-    //     if(this._mainTextLayer && this._mainTextLayer.parent !== this) {
-    //       this._mainTextLayer.setParent(this);
-    //     }
-    
-    //     for (var i = 0; i <this._mainTextLayer.children.length; i++ ) {
-    //       var child = this._mainTextLayer.children[i];
-    //       if(child) renderer.plugins.sprite.render(child);
-    //     }
-        
-    // }
-
-    // /**
-    //  * 
-    //  * @param {PIXI.WebGLRenderer} renderer 
-    //  */
-    // renderWebGL(renderer) {
-
-    //     if(!this.visible || !this.renderable) {
-    //         return;
-    //     }     
-    
-    //     renderer.bindRenderTexture(this._renderTexture);
-
-    //     for(var i = 0; i < this.children.length; ++i) {
-    //         var child = this.children[i];
-    //         if(child.visible) renderer.render(child, this._renderTexture);
-    //     }
-    
-    //     if(this._mainTextLayer.visible) renderer.render(this._mainTextLayer, this._renderTexture);
-    
-    //     renderer.bindRenderTarget(this._renderTarget);
-
-    // }    
-
 
 }
 
