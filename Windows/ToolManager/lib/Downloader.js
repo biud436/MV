@@ -194,8 +194,8 @@ GOTO :EOF`;
             const NW_SDK = version > "v0.12.3" ? "nwjs-sdk":"nwjs";
     
             const needed_files = [
-                `https://dl.nwjs.io/${version}/${NW_SDK}-${version}-win-x64.zip`,
-            ]
+                `https://dl.nwjs.io/${version}/${NW_SDK}-${version}-win-${process.arch}.zip`
+            ];
 
             if(this._isForceHttps) {
                 this._isAria2c = false;
