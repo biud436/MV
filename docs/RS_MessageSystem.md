@@ -8,6 +8,8 @@
 
 **RPG Maker MV <font color='red'>v1.5.1</font> 이상 버전에서만 동작합니다.**
 
+<p>버그 제보 (Feedback) : <a href="https://biud436.tistory.com/121">티스토리 블로그</a></p>
+
 ## 최신 버전 다운로드
 [다운로드][1]
 
