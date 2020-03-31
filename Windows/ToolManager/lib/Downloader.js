@@ -232,7 +232,7 @@ GOTO :EOF`;
                     this.removeFiles();
                     this.unzip().catch(e => {
                         throw new Error(e);
-                    })
+                    });
                 });
                 
                 aria2cProcess.pendingTerminate();   
@@ -267,7 +267,9 @@ GOTO :EOF`;
 
                     console.log(`${Color.FgRed}다운로드가 완료되었습니다${Color.Reset}`);
 
-                    this.unzip();
+                    this.unzip().catch(e => {
+                        throw new Error(e);
+                    });
                 });
 
             }
