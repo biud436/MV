@@ -262,9 +262,9 @@ class Utils {
 
         this._encryptionKey = [];
 
-        for(var i = 0x10; i < 0x20; i++) {
-            const offset = i - 0x10;
-            this._encryptionKey[offset] = buffer.readUInt8(i) ^ config.OriginHeaders.png[offset];
+        for(var i = 0x00; i < 0x10; i++) {
+            const offset = i;
+            this._encryptionKey[offset] = buffer.readUInt8(i + 0x10) ^ parseInt(config.OriginHeaders.png[offset], 16);
         }
 
         this._encryptionKey = this._encryptionKey.map(i => {
