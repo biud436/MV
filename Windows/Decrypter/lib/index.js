@@ -267,6 +267,10 @@ class Utils {
             this._encryptionKey[offset] = buffer.readUInt8(i) ^ config.OriginHeaders.png[offset];
         }
 
+        this._encryptionKey = this._encryptionKey.map(i => {
+            return Number(i).toString(16);
+        });
+
         this._isFoundEncryptionKey = true;
 
         return this._encryptionKey;
