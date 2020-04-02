@@ -253,6 +253,26 @@ class Utils {
     }
 
     /**
+     * Make Encrypted Key from rpgmvp file.
+     * @param {Buffer} buffer
+     * @return {Array}
+     */
+    makeEncryptedKey(buffer) {
+        if(this._isFoundEncryptionKey) return;
+
+        this._encryptionKey = [];
+
+        for(var i = 0x10; i < 0x20; i++) {
+            const offset = i - 0x10;
+            this._encryptionKey[offset] = buffer.readUInt8(i) ^ config.OriginHeaders.png[offset];
+        }
+
+        this._isFoundEncryptionKey = true;
+
+        return this._encryptionKey;
+    }
+
+    /**
      * 복호화 키가 없을 때, OGG 헤더의 SerialNumber 값을 추정하여 복구하는 기능으로 
      * Version는 0x02로 가정하고, Flags, GranulePosition는 0x00으로 채운다.
      * 
@@ -359,6 +379,10 @@ class Utils {
             var data = fs.readFileSync(file);
 
             var filename = tempFileName.split(".")[0];
+
+            if(!this._isFoundEncryptionKey) {
+                this.makeEncryptedKey(data);
+            }
 
             if(ext === '.rpgmvp') {
                 ret = config.OriginHeaders.png;        
