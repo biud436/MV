@@ -16,7 +16,7 @@ cd bin
 decrypter.exe -i="C:\Users\U\Desktop\Exam\201907" -d="Game.exe"
 ```
 
-if the www folder is already existed, it doesn't need to use an option called ```\d=```, so you can pass a command in the command line, as follows.
+if the www folder is already existed, it doesn't need to use an option called ```-d=```, so you can pass a command in the command line, as follows.
 
 ```cmd
 decrypter.exe -i="C:\Users\U\Desktop\몽환(夢幻) Ver 0.31"
@@ -25,6 +25,12 @@ decrypter.exe -i="C:\Users\U\Desktop\몽환(夢幻) Ver 0.31"
 A first argument is the ```Project Path``` that will decrypt and the second argument is to a name of the executable file. if the project is used an ```Enigma``` or ```NW-Self-Extraction```, you must pass the second parameter. if not, it doesn't need to pass it.
 
 Note that this tool allows you to support that can decrypt files such as ```*.rpgmvp```, ```*.rpgmvo```, ```*.rpgmvm```, ```*.rpgmvw```
+
+Normally, this tool will find the key from the file called ```System.json```. However some games would be difficult to extract the key, because of they have a few different structures for handling data files.
+
+if you pass a command parameter called ```--force```, you can create a file header of such as ```.ogg``` by finding the signature called ```OggS``` and serial key manually.
+
+if you pass a command option called ```--key=<KEY>```, it can create the key manually when the game is using binary files.
 
 
 ```cmd
@@ -39,7 +45,7 @@ decrypter.exe -i="C:\Users\U\Desktop\Exam\201907" -d="Game.exe" --key=<Key>
 - rpgmvp
 - rpgmvo
 - rpgmvm
-- rpgmvw
+- rpgmvw (w means ```*.wav``` file)
 
 ## Enigma Virtual Box
 
