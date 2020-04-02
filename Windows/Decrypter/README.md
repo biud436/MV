@@ -16,6 +16,14 @@ cd bin
 decrypter.exe -i="C:\Users\U\Desktop\Exam\201907" -d="Game.exe"
 ```
 
+```cmd
+decrypter.exe -i="C:\Users\U\Desktop\Exam\201907" --force
+```
+
+```cmd
+decrypter.exe -i="C:\Users\U\Desktop\Exam\201907" -d="Game.exe" --key=<Key>
+```
+
 if the www folder is already existed, it doesn't need to use an option called ```\d=```, so you can pass a command in the command line, as follows.
 
 ```cmd

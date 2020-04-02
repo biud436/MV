@@ -10,6 +10,7 @@ const ConsoleColor = require("./ConsoleColor");
 const { deepParseJson } = require('deep-parse-json');
 const stringifyObject = require('stringify-object');
 const argv = require('minimist')(process.argv.slice(2));
+const os = require('os');
 
 let mainPath;
 
@@ -20,7 +21,7 @@ const config = {
     EncryptExt: [".rpgmvo", ".rpgmvm", ".rpgmvw", ".rpgmvp"],
     DecryptExt: [".ogg", ".m4a", ".wav", ".png"],
     OriginHeaders: {
-        ogg: ["4F", "67", "67", "53" , "00", "02", "00", "00", "00" ,"00" ,"00" ,"00" ,"00" ,"00" ,"E0" ,"4B"],
+        ogg: ["4F", "67", "67", "53" , "00", "02", "00", "00", "00" ,"00" ,"00" ,"00" ,"00" ,"00"],
         m4a: ["00", "00", "00", "20", "66", "74", "79", "70", "4D", "34", "41", "20", "00", "00", "00", "00"],
         png: ["89", "50", "4E", "47", "0D", "0A", "1A", "0A", "00", "00", "00", "0D", "49", "48", "44", "52"],
         wav: ["52", "49", "46", "46", "24", "3C", "00", "00", "57", "41", "56", "45", "66", "6D", "74", "20"]
@@ -87,7 +88,8 @@ class Utils {
     constructor() {
         this._audioDir = path.join(mainPath, "audio");
         this._imgDir = path.join(mainPath, "img");
-        this._headerlength = 16;        
+        this._headerlength = 16;     
+        this._isFoundEncryptionKey = false;
     }
 
     convert() {
@@ -147,7 +149,16 @@ class Utils {
 
         // 파일 헤더를 원래대로 되돌린다.
         for (var i = 0; i < this._headerlength; i++) {
-            resultArray[i] = byteArray[i + 0x10] ^ parseInt(this._encryptionKey[i], 16);
+
+            // ! 암호화 키를 찾았는가?
+            if(this._isFoundEncryptionKey) {
+                // 암호화 키가 있다
+                resultArray[i] = byteArray[i + 0x10] ^ parseInt(this._encryptionKey[i], 16);
+            } else {
+                // 암호화 키가 없다
+                resultArray[i] = byteArray[i + 0x10] ^ parseInt(refBytes[i], 16);
+            }
+
             view.setUint8(i, resultArray[i]);
         }
 
@@ -221,7 +232,7 @@ class Utils {
             switch(ext) {
                 default:
                 case '.rpgmvo':
-                    ret = config.OriginHeaders.ogg;        
+                    ret = this.getOggDecryptedHeader(data);
                     retPath = path.join(path.dirname(file), `${filename}.ogg`);
                     break;
                 case '.rpgmvm':
@@ -240,6 +251,75 @@ class Utils {
 
         });
     }
+
+    /**
+     * 복호화 키가 없을 때, OGG 헤더의 SerialNumber 값을 추정하여 복구하는 기능으로 
+     * Version는 0x02로 가정하고, Flags, GranulePosition는 0x00으로 채운다.
+     * 
+     * @param {Buffer} buffer
+     * @return {Array}
+     */
+    getOggDecryptedHeader(buffer) {
+        
+        // https://svn.xiph.org/trunk/vorbis-tools/oggenc/oggenc.c
+        // struct _ogg_header (27바이트)
+        // {
+        //     quint32 Signature; (4 바이트) => OggS
+        //     quint8 Version; (1바이트) => 0x00
+        //     quint8 Flags; (1바이트) => 0x02
+        //     quint64 GranulePosition; (8바이트) => 00000000
+        //     quint32 SerialNumber; (4바이트) => 무작위 값이며 rand()와 같다.
+        //     quint32 SequenceNumber; (4바이트)
+        //     quint32 Checksum; (4바이트)
+        //     quint8 TotalSegments; (1바이트)
+        // };      
+
+        let offset = 0x00;
+
+        // rpgmvo의 헤더 (16 Byte)
+        offset += 0x10;
+
+        let header = {
+            signature: "",
+            serialNumber: 0x00,
+            totalSegments: 0x01,
+        };
+
+        // ! OGG 헤더 1
+        offset += 0x04;
+        offset += 0x16;
+        header.totalSegments = buffer.readUInt8(offset);
+        offset += 0x02;
+        offset += header.totalSegments;
+        
+        // ! OGG Vorbis 헤더 2
+        offset += 0x1B; // 27 Byte
+        offset += 0x01;
+        offset += header.totalSegments;
+
+        // 리틀 엔디언인가, 아니면 빅 엔디언인가를 구분한다.
+        const isLE = os.endianness() === "LE";
+
+        // ! OGG 데이터 헤더
+        header.signature = buffer.toString("ascii", offset, offset + 0x04);
+        if(header.signature === "OggS") {
+            offset += 0x04;
+        } else {
+            throw new Error("Failed to parse the Ogg Header");
+        }
+
+        offset += 0x02;
+        offset += 0x08;
+
+        let serialNumber = isLE ? buffer.readUInt32LE(offset) : buffer.readUInt32BE(offset) ;
+        serialNumber = serialNumber.toString(16).match(/.{2}/g);
+
+        header.serialNumber = isLE ? serialNumber.reverse() : serialNumber;
+
+        // ? 제정신으로 코딩했다면 아래가 잘 동작할 것이다.
+        return config.OriginHeaders.ogg.concat(header.serialNumber);
+
+    }    
 
     readImgFolders() {
         var files = [];
@@ -298,6 +378,12 @@ class Utils {
         const targetFile = path.join(mainPath, "data", "System.json");
         let retKey = ["d4", "1d", "8c", "d9", "8f", "00", "b2", "04", "e9", "80", "09", "98", "ec", "f8", "42", "7e"];
         
+        // 키 없이 강제로 
+        if(argv.force) {
+            this._isFoundEncryptionKey = false;
+            return retKey;
+        }
+
         // data 폴더를 읽는다 (재귀적으로 처리하지 않음)
         const files = fs.readdirSync(path.join(mainPath, "data"));
 
@@ -307,10 +393,7 @@ class Utils {
             fs.lstatSync(file).isFile() && path.extname(file) === ".bin"
         });
 
-        // 명령행 옵션 /key가 커맨드 라인 인수로 주어졌는 지 확인한다.
-        // const neededKeyOption = args.filter(command => {
-        //     return command.indexOf("/key=") >= 0;
-        // });
+        // 명령행 옵션 --key가 커맨드 라인 인수로 주어졌는 지 확인한다.
         const neededKeyOption = argv.key;
 
         // nwjc로 컴파일된 자바스크립트 파일이 존재하는 지 확인한다                
@@ -327,6 +410,7 @@ class Utils {
             if(neededKeyOption) {
                 let key = argv.key;
                 retKey = key.split(/(.{2})/).filter(Boolean);
+                this._isFoundEncryptionKey = true;
                 return retKey;
             }
     
@@ -340,10 +424,12 @@ class Utils {
             if(neededKeyOption) {
                 let key = argv.key;
                 retKey = key.split(/(.{2})/).filter(Boolean);
+                this._isFoundEncryptionKey = true;
                 return retKey;
             } else {
                 console.warn(`Can not found the file called System.json`);
-                throw new Error("");
+                this._isFoundEncryptionKey = false;
+                return retKey;
             }
         }
 
@@ -367,10 +453,13 @@ class Utils {
             });
 
             if(system.encryptionKey) {
+                this._isFoundEncryptionKey = true;
                 return system.encryptionKey.split(/(.{2})/).filter(Boolean);
             }
 
         }
+
+        this._isFoundEncryptionKey = true;
 
         return retKey;
 
