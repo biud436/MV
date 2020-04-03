@@ -449,7 +449,7 @@ class Utils {
             console.warn([
                 "There are binary files in the System folder",
                 "so you must pass the decryption key manually.",
-                `Pass the option called ${ConsoleColor.FgRed}-key=${ConsoleColor.Reset} to the parameter.`,
+                `Pass the option called ${ConsoleColor.FgRed}--key=${ConsoleColor.Reset} to the parameter.`,
             ].join("\r\n"));
 
             if(neededKeyOption) {
