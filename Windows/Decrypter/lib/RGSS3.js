@@ -301,7 +301,7 @@ class App {
         if(this._isValidRGSS3) {
             // 파일 헤더를 찾습니다.
             let header = new RGSS3.FileHeader();
-            offset = header.read(buffer, key.toNumber(), this.convert.bind(this), offset);
+            offset = header.read(buffer, key.toNumber(), this.convert(key), offset);
 
             this._dataOffset = header._offset;
 
@@ -310,16 +310,16 @@ class App {
             // 추정치이다. 
             // 4바이트 정렬이 기본으로 보이는데 정확히 확인할 시간이 없다.
             // 일단은 대략적으로 헤더의 크기는 35 ~ 40 사이이다.
-            const expectNextHeader = 40;
+            const expectNextHeader = 50;
 
             while(offset + expectNextHeader < this._dataOffset) {
                 const file = new RGSS3.FileHeader();
                 offset = file.read(buffer, key.toNumber(), this.convert(key), offset);
+                console.log(`[${file._name}]`);
                 this._files.push(file);
             }
         } else {
             while (offset < buffer.byteLength) {
-                const tempOffset = offset;
                 const file = new RGSS.FileHeader();
                 offset = file.read(buffer, key, this.convert, offset);
                 offset += file._size;
@@ -339,9 +339,11 @@ class App {
             const retPath = path.join(this._root, file._name);
 
             // 디렉토리를 알아서 생성해주는 fs-extra 모듈의 기능이다.
-            fs.ensureFileSync(retPath);
+            fs.ensureFileSync(retPath);                
+
             // UTF-8로 저장하면 바이너리 파일이 손상된다.
             fs.writeFileSync(retPath, decryptedData, "binary");
+
 
         });
     }
