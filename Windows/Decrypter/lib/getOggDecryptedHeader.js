@@ -2,22 +2,24 @@ const fs = require('fs');
 const argv = require('minimist')(process.argv.slice(2));
 const os = require('os');
 
-/**
- * @help
- * Open the command line and try this.
- * 
- * node testCase2.js --file <ProjectDir>audio/bgm/*.rpgmvo
- * 
- * and then you can see at the following the result.
- * 
- * [
- * '4F', '67', '67', '53',
- * '00', '02', '00', '00',
- * '00', '00', '00', '00',
- * '00', '00', '1d', '68'
- * ]
- * 
- */
+if(argv.help) {
+    console.log(`
+Open the command line and try this.
+
+node getOggDecryptedHeader.js --file <ProjectDir>audio/bgm/*.rpgmvo
+
+and then you can see at the following the result.
+
+[
+'4F', '67', '67', '53',
+'00', '02', '00', '00',
+'00', '00', '00', '00',
+'00', '00', '1d', '68'
+]
+    `);
+
+    return;
+}
 
 const config = {
     EncryptExt: [".rpgmvo", ".rpgmvm", ".rpgmvw", ".rpgmvp"],

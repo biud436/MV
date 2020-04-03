@@ -1,6 +1,17 @@
 const fs = require('fs');
 const argv = require('minimist')(process.argv.slice(2));
 
+if(argv.help) {
+    console.log(`
+Open the command line and try this.
+
+node makeEncryptedKey.js --file <root>/www/img/characters/*.rpgmvp
+
+    `);
+
+    return;
+}
+
 const config = {
     EncryptExt: [".rpgmvo", ".rpgmvm", ".rpgmvw", ".rpgmvp"],
     DecryptExt: [".ogg", ".m4a", ".wav", ".png"],
