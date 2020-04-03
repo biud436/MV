@@ -17,10 +17,15 @@ let mainPath;
 if(argv.help) {
 console.log(`
 ${ConsoleColor.FgYellow}--help${ConsoleColor.Reset}          - Prints out all of commands to console.
-${ConsoleColor.FgYellow}--force${ConsoleColor.Reset}         - Find out the key and then can extract files forcly.
+
+${ConsoleColor.FgYellow}--force${ConsoleColor.Reset}         - Find out the key from rpgmvp file and then can extract files forcly. 
+if you omitted this command, it would be going to find out a key in the file System.json
+
 ${ConsoleColor.FgYellow}--key=<KEY>${ConsoleColor.Reset}     - Creates the key manually when the game is using binary files.
+
 ${ConsoleColor.FgYellow}-d=<Game.exe>${ConsoleColor.Reset}   - if the game would be used Enigma Virtual Box Or NW Self Extraction. 
-                  You must pass a name of an executable file to this command option. 
+You must pass a name of an executable file to this command option. 
+
 ${ConsoleColor.FgYellow}-i="<root>"${ConsoleColor.Reset}     - Specify that the root directory contains the www folder.
 `);
     return;
