@@ -16,36 +16,6 @@ if(argv.help) {
     return;
 }
 
-class Key {
-
-    constructor(key) {
-        this._key = key;
-        this._buffer = [];
-        
-        this.makeBuffers();
-    }
-
-    makeBuffers() {
-        let key = this._key;
-
-        this._buffer = [
-            key >> 0 & 0xFF,
-            key >> 8 & 0xFF,
-            key >> 16 & 0xFF,
-            key >> 24 & 0xFF
-        ];
-
-    }
-
-    key() {
-        return this._key;
-    }
-
-    buffer() {
-        return this._buffer;
-    }
-}
-
 const RGSS3 = {};
 RGSS3.FileHeader = class {
     constructor() {
