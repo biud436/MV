@@ -19,7 +19,7 @@ console.log(`
 ${ConsoleColor.FgYellow}--help${ConsoleColor.Reset}          - Prints out all of commands to console.
 
 ${ConsoleColor.FgYellow}--force${ConsoleColor.Reset}         - Find out the key from rpgmvp file and then can extract files forcly. 
-if you omitted this command, it would be going to find out a key in the file System.json
+if you omitted this command, it would be going to find out a key in the file named "System.json"
 
 ${ConsoleColor.FgYellow}--key=<KEY>${ConsoleColor.Reset}     - Creates the key manually when the game is using binary files.
 
