@@ -1,0 +1,27 @@
+{
+  "name": "mv",
+  "version": "1.0.0",
+  "description": "This plugin package includes helpful features to get you on your way to create your game in RPG Maker MV.",
+  "main": "RS_AnimataionVisibility.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biud436/MV.git"
+  },
+  "author": "biud436",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/biud436/MV/issues"
+  },
+  "homepage": "https://github.com/biud436/MV#readme",
+  "dependencies": {
+    "iconv": "^2.3.5",
+    "minimist": "^1.2.5"
+  }
+}

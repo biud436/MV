@@ -6,3 +6,5 @@ jsconfig.json
 tsconfig.json
 nwjs
 Practice
+node_modules
+getFontName.js
