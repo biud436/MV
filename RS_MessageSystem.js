@@ -5225,7 +5225,9 @@ var Color = Color || {};
           (err, stdout, stderr) => {
             let fontFamily = stdout;
             if(fontFamily) {
-              resolve(fontFamily.trim().replace(/[\r\n]+/, ""));
+              const fontFamilyTrim = fontFamily.trim().replace(/[\r\n]+/, "");
+              console.log(fontFamilyTrim);
+              resolve(fontFamilyTrim);
             } else {
               reject("폰트 명을 구하지 못했습니다");
             }
@@ -5285,10 +5287,26 @@ var Color = Color || {};
     // fonts 폴더에 있는 폰트 파일을 자동으로 로드합니다.
     if(Utils.isNwjs()) {
       try {
+        const os = require('os');
+        let isValidPowershell = false;
+        
+        if((process.platform === "win32") && /(\d+\.\d+).\d+/i.exec(os.release())) {
+          const version = parseFloat(RegExp.$1);
+          if(version >= "6.1") {
+            isValidPowershell = true;
+          }
+        }
+
         const fontList = FontFinder.getLocalFontList();
-        fontList.forEach(async fontFile => {
-          const fontFamily = (process.platform === "win32") ? await FontFinder.getFontFamily(fontFile) : FontFinder.getNativeFontFamily(fontFile);
-          Graphics.loadFont(fontFamily, fontFile);
+        fontList.forEach(fontFile => {
+          if(isValidPowershell) {
+            FontFinder.getFontFamily(fontFile).then(fontFamily => {
+              Graphics.loadFont(fontFamily, fontFile);
+            });
+          } else {
+            const fontFamily = FontFinder.getNativeFontFamily(fontFile);
+            Graphics.loadFont(fontFamily, fontFile);
+          }
         });
       } catch(e) {
         console.warn(e);
