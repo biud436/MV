@@ -1649,6 +1649,10 @@ var Color = Color || {};
   });
   
   parameters = (parameters.length > 0) && parameters[0].parameters;
+
+  if(!Utils.RPGMAKER_VERSION || Utils.RPGMAKER_VERSION < '1.6.0') {
+    throw new Error("This plugin will be worked only in RPG Maker MV v1.6.x or more");
+  }
   
   /**
   * @method popParameter
