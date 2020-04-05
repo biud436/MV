@@ -5298,15 +5298,9 @@ var Color = Color || {};
         }
 
         const fontList = FontFinder.getLocalFontList();
-        fontList.forEach(fontFile => {
-          if(isValidPowershell) {
-            FontFinder.getFontFamily(fontFile).then(fontFamily => {
-              Graphics.loadFont(fontFamily, fontFile);
-            });
-          } else {
-            const fontFamily = FontFinder.getNativeFontFamily(fontFile);
-            Graphics.loadFont(fontFamily, fontFile);
-          }
+        fontList.forEach(async fontFile => {
+          const fontFamily = (isValidPowershell) ? await FontFinder.getFontFamily(fontFile) : FontFinder.getNativeFontFamily(fontFile);
+          Graphics.loadFont(fontFamily, fontFile);
         });
       } catch(e) {
         console.warn(e);
