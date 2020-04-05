@@ -5193,7 +5193,16 @@ var Color = Color || {};
           return i.PlatformID === platformId;
       });
 
-      return fontFamiles[0];
+      if(Array.isArray(fontFamiles)) {
+        if(fontFamiles.length > 0) {
+          console.log(fontFamiles[0].Name);
+          return fontFamiles[0].Name;
+        } else {
+          return "";
+        }
+      } else {
+        return "";
+      }
 
     }
 
