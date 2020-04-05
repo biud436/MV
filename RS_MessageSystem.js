@@ -8,7 +8,7 @@
 //================================================================
  /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.63) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.64) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -739,7 +739,7 @@
  */
  /*:ko
  * RS_MessageSystem.js
- * @plugindesc (v0.1.63) 한글 메시지 시스템 <RS_MessageSystem>
+ * @plugindesc (v0.1.64) 한글 메시지 시스템 <RS_MessageSystem>
  * @author 러닝은빛(biud436)
  *
  * @param 글꼴 크기
@@ -1404,6 +1404,10 @@
  * =============================================================================
  * 버전 로그(Version Log)
  * =============================================================================
+ * 2020.04.05 (v0.1.64) :
+ * - 커스텀 폰트가 로드되지 않는 현상을 수정하였습니다.
+ * - fonts 폴더에 있는 모든 폰트를 자동으로 로드하는 기능을 추가하였습니다.
+ * - 이 버전부터는 RPG Maker MV v1.6.x 이상에서만 실행할 수 있습니다.
  * 2020.01.24 (v0.1.63) : 
  * - 말풍선 모드에서 타겟 캐릭터가 움직이지 않을 때, 배경 화면이 깜빡거리는 문제를 수정하였습니다.
  * 2019.09.23 (v0.1.61) :
@@ -5006,16 +5010,289 @@ var Color = Color || {};
     return this.reverse().match(/.{1,3}/g).join(",").reverse();
   };
   
-  
+  //===========================================================================
+  // FontFinder
+  //===========================================================================
+
+  const FontFinder = new class {
+
+    /**
+     * Browser에 로드되어있는 Font List를 구합니다.
+     * @return {Array} fonts
+     */
+    getBrowserFontList() {
+      let fonts = [];
+      for(let elem of document.querySelectorAll('*')) { 
+       let font = getComputedStyle(elem).font;
+       let raw = font.split(/[,\/]+/).pop().trim();
+       if(/\"(.*)\"/i.exec(raw)) {
+         fonts.push(RegExp.$1);
+       } else if(/(?:normal|bold|bolder|lighter|number|initial|inherit)[ ]*(.*)/i.exec(raw)) {
+         fonts.push(RegExp.$1);
+       } else if(/\d+px[ ]*(.*)/i.exec(raw)) {
+         fonts.push(RegExp.$1);
+       }
+      }
+      
+      fonts = [...new Set(fonts)].filter(i => i.length > 0);
+      
+      return fonts;
+
+    }
+
+    /**
+     * fonts 폴더에 있는 ttf 파일을 가져옵니다.
+     */
+    getLocalFontList() {
+      if(!Utils.isNwjs()) return [];
+      const os = require('os');
+      const fs = require('fs');
+      const path = require('path');
+      const root = path.dirname(process.mainModule.filename);
+
+      let fonts = fs.readdirSync(path.join(root, "fonts"), "utf8");
+
+      fonts = fonts.filter(e => {
+        return e.lastIndexOf(".ttf") >= 0;
+      });
+
+      return fonts.map(e => path.join(root, "fonts", e).replace(/\\/g, "/"));
+    }
+
+    /**
+     * TTF 파일에서 폰트명을 취득하는 함수로 폰트명은 영어로 반환합니다.
+     * Obtains the font name from specific TTF file.
+     * 
+     * https://www.codeguru.com/cpp/g-m/gdi/fonthandlinganddetection/article.php/c3659/Retrieving-the-Font-Name-from-a-TTF-File.htm
+     * https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6name.html
+     * 
+     * @param {String} filename 
+     * @return {String}
+     */
+    getNativeFontFamily(filename) {
+      if(!Utils.isNwjs()) return "";
+
+      const fs = require('fs');
+      const path = require('path');
+      // const font = path.join(path.dirname(process.mainModule.filename), "fonts", filename);
+      const font = filename.replace(/\\/g, "/");
+      
+      if(!fs.existsSync(font)) {
+        throw new Error(`${font} didn't exist!`);
+      }      
+
+      let buffer = fs.readFileSync(font);
+
+      let offset = 0x00;
+
+      // ! 폰트 테이블을 읽는다.
+      // 폰트 테이블 : 0x00 ~ 0x0C
+      let fontOffsetTableBuffer = buffer.slice(0, 12);
+      
+      // Big Endian으로 읽어야 한다.
+      const fontOffsetTable = {
+          majorVersion : fontOffsetTableBuffer.readInt16BE(0x00),
+          minorVersion : fontOffsetTableBuffer.readInt16BE(0x02),
+          numOfTables : fontOffsetTableBuffer.readInt16BE(0x04),
+      };
+      
+      // ! 트루타입 폰트가 맞는 지 확인한다.
+      if(fontOffsetTable.majorVersion !== 1 || fontOffsetTable.minorVersion !== 0) {
+          throw new Error("This font is not True Type Font");    
+      }
+      
+      offset += 12;
+      
+      let isFoundNameTable = false;
+      let nameTableOffset = 0x00;
+      let nameTableLength = 0x00;
+      
+      // ! name 테이블을 찾는다.
+      for(let i = 0; i < fontOffsetTable.numOfTables; i++) {
+          const tagName = buffer.toString("utf8", offset, offset + 4);
+          let dataOffset = offset;
+          offset += 16;
+
+          // 이름 테이블을 찾았다.
+          // 한글 이름은 cmap 테이블에서 찾아야 한다.
+          if(tagName === "name") {
+              isFoundNameTable = true;
+              let checkSum = buffer.readInt32BE(dataOffset + 4);
+              nameTableOffset = buffer.readInt32BE(dataOffset + 8);
+              nameTableLength = buffer.readInt32BE(dataOffset + 12);
+              break;
+          }
+      }
+      
+      if(!isFoundNameTable) {
+          throw new Error("이름 테이블을 찾지 못했습니다.");
+      }
+      
+      offset = nameTableOffset;
+      
+      // ! 이름 테이블의 헤더 선언
+      const nameHeader = {};
+      nameHeader.formatSelector = buffer.readUInt16BE(offset);
+      nameHeader.nameRecordCount = buffer.readUInt16BE(offset + 0x02);
+      nameHeader.storageOffset = buffer.readUInt16BE(offset + 0x04);
+      offset += 0x06;
+      
+      const nameTable = [];
+      const PLATFORM = {
+          UNICODE: 0,
+          Macintosh: 1,
+          Microsoft: 3,
+      };
+      
+      for(let i = 0; i < nameHeader.nameRecordCount; i++) {
+      
+          let nameRecord = {
+              PlatformID : buffer.readUInt16BE(offset),
+              EncodingID : buffer.readUInt16BE(offset + 2),
+              LanguageID : buffer.readUInt16BE(offset + 4),
+              NameID : buffer.readUInt16BE(offset + 6),
+              StringLength : buffer.readUInt16BE(offset + 8),
+              StringOffset : buffer.readUInt16BE(offset + 10),
+              Name : "",
+          };
+      
+          offset += 12;
+      
+          // ! Font Family 취득
+          if(nameRecord.NameID === 1) { 
+              const tempOffset = offset;
+              offset = nameTableOffset + nameRecord.StringOffset + nameHeader.storageOffset;
+              // 폰트의 영어명만 취득한다.
+              // UTF-16은 다른 테이블인 cmap 테이블에 있다.
+              nameRecord.Name = buffer.toString("ascii", offset, offset + nameRecord.StringLength).replace(/\u0000/gi, "");
+              nameTable.push(nameRecord);
+              offset = tempOffset;
+          }
+      
+      }
+
+      let platformId = PLATFORM.Microsoft;
+
+      switch(process.platform) {
+        default:        
+        case 'darwin':
+          platformId = PLATFORM.Macintosh;
+          break;
+        case 'win32':
+          platformId = PLATFORM.Microsoft;
+          break;
+      }
+      
+      // 한글의 경우, EncodingID가 3이므로 name 테이블에 존재하지 않는다.
+      // 이 함수는 영어명만 반환한다.
+      const fontFamiles = nameTable.filter(i => {
+          return i.PlatformID === platformId;
+      });
+
+      return fontFamiles[0];
+
+    }
+
+    /**
+     * EncodingID가 3이면 (UTF-16)의 경우, cmap 테이블을 검색해야 합니다.
+     * https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6cmap.html
+     * 
+     * Windows에서는 powershell로 해결이 가능합니다.
+     * 
+     * @param {String} filename
+     */
+    getFontFamily(filename) {
+      return new Promise((resolve, reject) => {
+        if(!Utils.isNwjs()) {
+          reject("This function will be going to work only in PC platform");
+        }
+
+        const fs = require('fs');
+        const path = require('path');
+        const cp = require('child_process');
+        const font = path.join(path.dirname(process.mainModule.filename), "fonts", filename);
+
+        if(!fs.existsSync(font)) {
+          reject(`${file} didn't exist!`);
+        }
+        
+        if(process.platform.contains("win")) {
+
+          const powershellProcess = cp.exec(`powershell -Command "(New-Object -TypeName Windows.Media.GlyphTypeface -ArgumentList '${font}').Win32FamilyNames.Values"`, {
+            shell: true, 
+            encoding: "utf8",
+          },
+          (err, stdout, stderr) => {
+            let fontFamily = stdout;
+            if(fontFamily) {
+              resolve(fontFamily.trim().replace(/[\r\n]+/, ""));
+            } else {
+              reject("폰트 명을 구하지 못했습니다");
+            }
+          });
+    
+          powershellProcess.on("beforeExit", () => powershellProcess.kill());  
+
+        } else {
+          reject("This function will be going to work in Windows platform only");
+        }      
+
+      });
+      
+    }
+
+    /**
+     * 
+     * @example
+     * Font.getSystemFontList().then(fontList => {
+     *  if(fontList.includes("나눔고딕")) {
+     *    console.log("나눔고딕 폰트가 설치되어 있습니다");
+     *  }
+     * }).catch(err => console.warn(err));
+     */
+    getSystemFontList() {
+      return new Promise((resolve, reject) => {
+        if(!Utils.isNwjs()) {
+          reject("This function will be going to work only in PC platform");
+        }
+        chrome.fontSettings.getFontList(e => {
+          resolve(JSON.stringify( e.map(i => i.fontId) ) );
+        });
+      });
+    }
+
+  }
+
+  window.FontFinder = FontFinder;
+
   //===========================================================================
   // Scene_Boot
-  //===========================================================================
-  
-  var alias_Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
-  Scene_Boot.prototype.loadSystemImages = function() {
+  //===========================================================================  
+
+  var alias_Scene_Boot_loadSystemImages = Scene_Boot.loadSystemImages;
+  Scene_Boot.loadSystemImages = function() {
     alias_Scene_Boot_loadSystemImages.call(this);
-    if(RS.MessageSystem.Params.customFont) { // 커스텀 폰트 로드 처리
+
+    // 커스텀 폰트 로드 처리
+    if(RS.MessageSystem.Params.customFont) {
       Graphics.loadFont(RS.MessageSystem.Params.customFontName, RS.MessageSystem.Params.customFontSrc);
+    }
+
+    var langCode = RS.MessageSystem.Params.langCode || navigator.language.slice(0, 2);
+    var fonts = RS.MessageSystem.Params.fonts[langCode];
+    var retFonts = fonts ? fonts : RS.MessageSystem.Params.fonts.default;
+
+    // fonts 폴더에 있는 폰트 파일을 자동으로 로드합니다.
+    if(Utils.isNwjs()) {
+      try {
+        const fontList = FontFinder.getLocalFontList();
+        fontList.forEach(fontFile => {
+          const fontFamily = FontFinder.getNativeFontFamily(fontFile);
+          Graphics.loadFont(fontFamily, fontFile);
+        });
+      } catch(e) {
+        console.warn(e);
+      }
     }
   };
   
