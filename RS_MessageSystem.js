@@ -5305,6 +5305,8 @@ var Color = Color || {};
         
         if((process.platform === "win32") && /(\d+\.\d+).\d+/i.exec(os.release())) {
           const version = parseFloat(RegExp.$1);
+          
+          // Windows 7 이상인가?
           if(version >= "6.1") {
             isValidPowershell = true;
           }
