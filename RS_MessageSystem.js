@@ -5210,15 +5210,15 @@ var Color = Color || {};
         const fs = require('fs');
         const path = require('path');
         const cp = require('child_process');
-        const font = path.join(path.dirname(process.mainModule.filename), "fonts", filename);
+        const font = filename;
 
         if(!fs.existsSync(font)) {
-          reject(`${file} didn't exist!`);
+          reject(`${font} didn't exist!`);
         }
         
         if(process.platform.contains("win")) {
 
-          const powershellProcess = cp.exec(`powershell -Command "(New-Object -TypeName Windows.Media.GlyphTypeface -ArgumentList '${font}').Win32FamilyNames.Values"`, {
+          const powershellProcess = cp.exec(`powershell -Command "Add-Type -AssemblyName PresentationCore; (New-Object -TypeName Windows.Media.GlyphTypeface -ArgumentList '${font}').Win32FamilyNames.Values"`, {
             shell: true, 
             encoding: "utf8",
           },
@@ -5286,8 +5286,8 @@ var Color = Color || {};
     if(Utils.isNwjs()) {
       try {
         const fontList = FontFinder.getLocalFontList();
-        fontList.forEach(fontFile => {
-          const fontFamily = FontFinder.getNativeFontFamily(fontFile);
+        fontList.forEach(async fontFile => {
+          const fontFamily = (process.platform === "win32") ? await FontFinder.getFontFamily(fontFile) : FontFinder.getNativeFontFamily(fontFile);
           Graphics.loadFont(fontFamily, fontFile);
         });
       } catch(e) {
