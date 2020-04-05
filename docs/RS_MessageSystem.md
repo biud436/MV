@@ -6,7 +6,7 @@
 
 이 플러그인은 영어 위주로 되어있는 기존 텍스트 코드들을 한국어로 사용할 수 있게 해주는 플러그인입니다. 
 
-**RPG Maker MV <font color='red'>v1.5.1</font> 이상 버전에서만 동작합니다.**
+**RPG Maker MV <font color='red'>v1.6.2</font> 이상 버전에서만 동작합니다.**
 
 <p>버그 제보 (Feedback) : <a href="https://biud436.tistory.com/121">티스토리 블로그</a></p>
 
