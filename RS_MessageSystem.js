@@ -5064,8 +5064,7 @@ var Color = Color || {};
     }
 
     /**
-     * TTF 파일에서 폰트명을 취득하는 함수로 폰트명은 영어로 반환합니다.
-     * Obtains the font name from specific TTF file.
+     * TTF 파일에서 폰트명을 취득하는 함수입니다.
      * 
      * https://www.codeguru.com/cpp/g-m/gdi/fonthandlinganddetection/article.php/c3659/Retrieving-the-Font-Name-from-a-TTF-File.htm
      * https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6name.html
@@ -5118,7 +5117,6 @@ var Color = Color || {};
           offset += 16;
 
           // 이름 테이블을 찾았다.
-          // 한글 이름은 cmap 테이블에서 찾아야 한다.
           if(tagName === "name") {
               isFoundNameTable = true;
               let checkSum = buffer.readInt32BE(dataOffset + 4);
@@ -5153,7 +5151,7 @@ var Color = Color || {};
           let nameRecord = {
               PlatformID : buffer.readUInt16BE(offset),
               EncodingID : buffer.readUInt16BE(offset + 2),
-              LanguageID : buffer.readUInt16BE(offset + 4),
+              LanguageID : buffer.readUInt16BE(offset + 4), // 23인 경우, EUC-KR로 인코딩 필요
               NameID : buffer.readUInt16BE(offset + 6),
               StringLength : buffer.readUInt16BE(offset + 8),
               StringOffset : buffer.readUInt16BE(offset + 10),
@@ -5166,8 +5164,6 @@ var Color = Color || {};
           if(nameRecord.NameID === 1) { 
               const tempOffset = offset;
               offset = nameTableOffset + nameRecord.StringOffset + nameHeader.storageOffset;
-              // 폰트의 영어명만 취득한다.
-              // UTF-16은 다른 테이블인 cmap 테이블에 있다.
               nameRecord.Name = buffer.toString("ascii", offset, offset + nameRecord.StringLength).replace(/\u0000/gi, "");
               nameTable.push(nameRecord);
               offset = tempOffset;
@@ -5187,8 +5183,9 @@ var Color = Color || {};
           break;
       }
       
-      // 한글의 경우, EncodingID가 3이므로 name 테이블에 존재하지 않는다.
-      // 이 함수는 영어명만 반환한다.
+      // 한글의 경우, 
+      // UTF16-BE에서 EUC-KR로 문자열 변환을 해야 하며 iconv-lite가 필요하다.
+      // (루비나 파이썬의 경우, EUC-KR을 지원한다)
       const fontFamiles = nameTable.filter(i => {
           return i.PlatformID === platformId;
       });
@@ -5207,10 +5204,6 @@ var Color = Color || {};
     }
 
     /**
-     * EncodingID가 3이면 (UTF-16)의 경우, cmap 테이블을 검색해야 합니다.
-     * https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6cmap.html
-     * 
-     * Windows에서는 powershell로 해결이 가능합니다.
      * 
      * @param {String} filename
      */
