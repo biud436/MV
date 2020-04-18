@@ -5182,6 +5182,11 @@ var Color = Color || {};
           platformId = PLATFORM.Microsoft;
           break;
       }
+
+      // $eucKr = [System.Text.Encoding]::GetEncoding(51949);
+      // $bytes = [byte[]]@(0xB3, 0xAA, 0xB4, 0xAE, 0xB0, 0xED, 0xB5, 0xF1)
+      // $eucKr.GetString($bytes)
+      // => 나눔고딕
       
       // 한글의 경우, 
       // UTF16-BE에서 EUC-KR로 문자열 변환을 해야 하며 iconv-lite가 필요하다.
