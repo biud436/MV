@@ -395,7 +395,7 @@ function Sprite_Mirror() {
     graphics.y = y;
     graphics.drawRoundedRect( 0, 0, w, h, 1 );
     graphics.endFill();
-
+    SceneManager._scene.addChild(graphics);
     return graphics;
   };
 
