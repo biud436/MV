@@ -317,8 +317,12 @@ function Sprite_Mirror() {
       if(version >= '5.0.0') {
         this._maskSprite = mask;
       } else if(version >= "4.5.4") {
-        this._maskSprite = new Sprite();
-        this._maskSprite.texture = Graphics._renderer.generateTexture(mask);
+        if(Graphics._renderer) {
+          this._maskSprite = new Sprite();          
+          this._maskSprite.texture = Graphics._renderer.generateTexture(mask);
+        } else {
+          this._maskSprite = mask;
+        }
       } else {
         this._maskSprite = mask;
       }
