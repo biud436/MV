@@ -305,8 +305,23 @@ function Sprite_Mirror() {
       this._targetEvent = targetEvent;
       this._offset = offset;
 
-      this._maskSprite = new Sprite();
-      this._maskSprite.texture = Graphics._renderer.generateTexture(mask);
+      var version = PIXI.VERSION || "4.5.4";
+      version = version.replace(/[Vv]/, "");
+
+      // MV v1.5.1 => PIXI v4.5.4
+      // MV v1.4.1 => PIXI v4.0.3
+      // MV v1.3.5 => PIXI v4.0.3
+      // MV v1.2.0 => PIXI v2.2.9
+      // MV v1.1.0 => PIXI v2.2.10
+      // MV v1.0.1 => PIXI v2.2.9
+      if(version >= '5.0.0') {
+        this._maskSprite = mask;
+      } else if(version >= "4.5.4") {
+        this._maskSprite = new Sprite();
+        this._maskSprite.texture = Graphics._renderer.generateTexture(mask);
+      } else {
+        this._maskSprite = mask;
+      }
 
       SceneManager._scene.getMirrorSprite().addChild(this._maskSprite);
 
@@ -395,7 +410,6 @@ function Sprite_Mirror() {
     graphics.y = y;
     graphics.drawRoundedRect( 0, 0, w, h, 1 );
     graphics.endFill();
-    SceneManager._scene.addChild(graphics);
     return graphics;
   };
 
