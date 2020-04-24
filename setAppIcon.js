@@ -27,6 +27,7 @@ function setAppIcon(filename) {
     
     const fs = require('fs');
     const path = require('path');
+    const cp = require("child_process");
     const root = path.dirname(process.mainModule.filename);
     const relativePath = (name)=>{ return path.join(root, name)};
     
@@ -48,33 +49,6 @@ function setAppIcon(filename) {
             "icon": filename
         }
     };
-
-    //#region powershell
-    const powershell = `
-Add-Type -AssemblyName System.Drawing
-Add-Type @"
-using System;
-using System.Runtime.InteropServices;
-public class MyApp {
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    public static extern IntPtr FindWindow(IntPtr sClassName, string lpWindowName);  
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    public static extern IntPtr FindWindow(string sClassName, string lpWindowName);      
-}
-"@
-
-$WM_SETICON = 0x80;
-$myBitmap = [System.Drawing.Bitmap]::FromFile("${relativePath(filename)}");
-
-$hIcon = $myBitmap.GetHicon();
-$hWnd = [MyApp]::FindWindow([IntPtr]::Zero, "${document.title}");
-
-[MyApp]::SendMessage($hWnd, $WM_SETICON, 0, $hIcon);
-[MyApp]::SendMessage($hWnd, $WM_SETICON, 1, $hIcon);   
-    `;
-    //#endregion
     
     // Stringify the data that changed app icon
     let contents = JSON.stringify(data, null, "\t");
