@@ -9,20 +9,13 @@ I recently added some features to this tool. This tool provides a few features s
 
 Using the ```Aria2c``` can be pretty fast downloading the file. But that's no problem even if you don't install ```Aria2c```. ```https``` module is also worked well.
 
-```bat
-npm run mvtools /download <version> <project_dir> <force_https>
-npm run mvtools /run <version> <project_dir>
-npm run mvtools /add appName hint name filePath
-npm run mvtools /remove appName
-```
-
 Here's an example.
 
 ```
-npm run mvtools /download v0.44.1 E:/Games/201907 true
-npm run mvtools /run v0.44.1 E:/Games/201907
-npm run mvtools /add "vscode.bat" "Run VS Code" "Visual Studio Code" "C:/Users/U/Desktop/MV/Windows/vscode"
-npm run mvtools /remove "vscode.bat"
+npm run download -- -v="v0.45.4" -p=E:/Games/201907 -f
+npm run play -- -v=v0.45.4 -p=E:/Games/201907
+npm run add "vscode.bat" "Run VS Code" "Visual Studio Code" "C:/Users/U/Desktop/MV/Windows/vscode"
+npm run remove "vscode.bat"
 ```
 
 after downloaded node webkit, you must run the file called add.bat, as follows.

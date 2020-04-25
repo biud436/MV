@@ -7,6 +7,8 @@ const fs = require('fs-extra');
 const path = require('path');
 const Registry = require('winreg');
 const text2png = require('text2png');
+const mergeImages = require('merge-images');
+const { Canvas, Image } = require('canvas');
 
 class RegistryMan {
 
@@ -133,6 +135,29 @@ class RegistryMan {
             }));
         }
 
+        this.merge(resPath).catch(err => {
+            throw new Error(err);
+        });
+    }
+
+    async merge(resPath) {
+        const iconPath = path.join(resPath, "icon0.png");
+        const outputPath = path.join(resPath, "icon.png");
+        const backgroundImgPath = path.join(__dirname, "..", "res", "icon.png");
+
+        // 이미지 A와 이미지 B를 Merge합니다.
+        await mergeImages([backgroundImgPath, iconPath], { 
+            Canvas: Canvas, 
+            Image: Image
+        }).then(b64 => {
+            const ret = b64.replace(/^data:image\/png;base64,/, "");
+            fs.writeFileSync(outputPath, ret, 'base64');
+            if(fs.existsSync(iconPath)) {
+                fs.removeSync(iconPath);
+            }
+        }).catch(err => {
+            throw new Error(err);
+        });
     }
 
     addItem(appName, hint, name, filePath) {

@@ -10,36 +10,8 @@ const DecompressZip = require('decompress-zip');
 const fileGet = require("./fileGet");
 const async = require('async');
 const { promisify } = require('util');
-
 const readdirAsync = promisify(fs.readdir);
-
-let Color = {
-    Reset : "\x1b[0m",
-    Bright : "\x1b[1m",
-    Dim : "\x1b[2m",
-    Underscore : "\x1b[4m",
-    Blink : "\x1b[5m",
-    Reverse : "\x1b[7m",
-    Hidden : "\x1b[8m",
-    
-    FgBlack : "\x1b[30m",
-    FgRed : "\x1b[31m",
-    FgGreen : "\x1b[32m",
-    FgYellow : "\x1b[33m",
-    FgBlue : "\x1b[34m",
-    FgMagenta : "\x1b[35m",
-    FgCyan : "\x1b[36m",
-    FgWhite : "\x1b[37m",
-    
-    BgBlack : "\x1b[40m",
-    BgRed : "\x1b[41m",
-    BgGreen : "\x1b[42m",
-    BgYellow : "\x1b[43m",
-    BgBlue : "\x1b[44m",
-    BgMagenta : "\x1b[45m",
-    BgCyan : "\x1b[46m",
-    BgWhite : "\x1b[47m",       
-};
+const Color = require("./ConsoleColor");
 
 let config = {
     referrer : `https://dl.nwjs.io/`,
@@ -179,8 +151,15 @@ ECHO %ERRORMSG%
 GOTO :EOF`;
 
         fs.writeFileSync(filepath, contents, "utf8");
+
+        // 버전 텍스트에서 중간 버전 문자열을 획득한다.
+        let v = 0;
+        if(/^[Vv](\d+)\.(\d+)\.(\d+)$/i.exec(this._version)) {
+            v = RegExp.$2;
+        }
         
-        contents = `npm run mvtools /add "play.bat" "play" "play" "${path.dirname(filepath)}"`
+        // package.json 때문에 충돌 문제가 생기므로 npm run add에서 node로 변경해야 한다.
+        contents = `node ..\\..\\index.js --add "play.bat" "${this._version}" "${v}" "${path.dirname(filepath)}"`
 
         let rootFolder = path.dirname(filepath);
         fs.writeFileSync(path.join(rootFolder, "add.bat"), contents, "utf8");

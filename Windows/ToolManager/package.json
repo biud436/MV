@@ -4,12 +4,18 @@
   "description": "While Node.js is great package, it is hard to handle the registry without installing extra node library. Python is easier to use, it is included many functions so this script is used a Python to handle registry using child process. Accordingly, To use this, you need to install the ```Python 2.7``` or ```Python 3.8.1``` and need to do PATH settings.",
   "main": "lib/Downloader.js",
   "scripts": {
-    "mvtools": "node bin/index.js"
+    "mvtools": "node ./lib/index.js",
+    "add": "node ./lib/index.js --add",
+    "download": "node ./lib/index.js --download",
+    "play": "node ./lib/index.js --run",
+    "remove": "node ./lib/index.js --remove",
+    "help": "node ./lib/index.js --help"
   },
   "author": "biud436",
   "license": "MIT",
   "dependencies": {
     "decompress-zip": "^0.2.2",
+    "merge-images": "^2.0.0",
     "minimist": "^1.2.5",
     "text2png": "^2.3.0",
     "winreg": "^1.2.4"
