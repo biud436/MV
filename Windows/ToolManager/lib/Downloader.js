@@ -150,6 +150,28 @@ GOTO :EOF
 ECHO %ERRORMSG%
 GOTO :EOF`;
 
+        if(this._version >= "v0.45.4") {
+            contents = `
+@SETLOCAL enableextensions enabledelayedexpansion
+@ECHO OFF
+
+set ARGS1=%~dp1
+ECHO Current Path : %~dp0
+
+ECHO RUN INDEX FILE : %ARGS1%index.html
+set TEMP_DIR=%cd%
+cd %ARGS1%
+%~dp0nw.exe . test
+cd %TEMP_DIR%
+
+@ENDLOCAL
+GOTO :EOF
+
+:ERR
+ECHO %ERRORMSG%
+GOTO :EOF`;
+        }
+
         fs.writeFileSync(filepath, contents, "utf8");
 
         // 버전 텍스트에서 중간 버전 문자열을 획득한다.
