@@ -199,7 +199,9 @@ GOTO :EOF`;
             }
         };
         
-        fs.writeFileSync(path.join(rootFolder, "package.json"), JSON.stringify(packageJson, null, "  "), "utf8");
+        if(this._version < "v0.45.4") {
+            fs.writeFileSync(path.join(rootFolder, "package.json"), JSON.stringify(packageJson, null, "  "), "utf8");
+        }
 
     }
 
