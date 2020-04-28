@@ -186,23 +186,6 @@ GOTO :EOF`;
         let rootFolder = path.dirname(filepath);
         fs.writeFileSync(path.join(rootFolder, "add.bat"), contents, "utf8");
 
-        const packageJson = {
-            "name": "",
-            "main": "www/index.html",
-            "js-flags": "--expose-gc",
-            "chromium-args": "--javascript-harmony",
-            "window": {
-                "title": "",
-                "toolbar": false,
-                "width": 816,
-                "height": 624
-            }
-        };
-        
-        if(this._version < "v0.45.4") {
-            fs.writeFileSync(path.join(rootFolder, "package.json"), JSON.stringify(packageJson, null, "  "), "utf8");
-        }
-
     }
 
     async start() {
