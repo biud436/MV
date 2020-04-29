@@ -159,10 +159,9 @@ set ARGS1=%~dp1
 ECHO Current Path : %~dp0
 
 ECHO RUN INDEX FILE : %ARGS1%index.html
-set TEMP_DIR=%cd%
-cd %ARGS1%
-%~dp0nw.exe . test
-cd %TEMP_DIR%
+
+set ARGS2=%~dp0
+"%~dp0..\..\..\bin\main.exe" %ARGS1% %ARGS2%
 
 @ENDLOCAL
 GOTO :EOF
