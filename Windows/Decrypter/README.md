@@ -38,6 +38,14 @@ decrypter.exe -i="C:\Users\U\Desktop\Exam\201907" --force
 decrypter.exe -i="C:\Users\U\Desktop\Exam\201907" -d="Game.exe" --key=<Key>
 ```
 
+# RGSS
+if you are using another tool such as RPG Maker VX Ace, VX, XP, it can't decrypt using decrypter.exe directly. However You can try to decrypt using other script that separated from main script, as follows.
+
+```cmd
+cd lib
+node RGSS3.js --file="C:\Users\U\Desktop\Project11\Game.exe"
+```
+
 # Environment
 
 ## Decryptable files
