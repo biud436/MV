@@ -3326,10 +3326,17 @@ var Color = Color || {};
 
   Window_Message.prototype.subWindows = function () {
     var children = [];
-    var includes = ["gold", "choice", "number", "item", "name"];
+    var includes = [
+      "_goldWindow", 
+      "_choiceWindow", 
+      "_numberWindow", 
+      "_itemWindow", 
+      "_nameWindow"
+    ];
     for(var i in this) { 
       var child = this[i];
       if(child instanceof Window) {
+
         if(includes.contains(i)) {
           children.push(child);
         }
