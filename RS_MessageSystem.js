@@ -3324,6 +3324,8 @@ var Color = Color || {};
     this.updateNameWindow();
   };
 
+  RS.MessageSystem.Params.extraSubWindows = [];
+
   Window_Message.prototype.subWindows = function () {
     var children = [];
     var includes = [
@@ -3333,6 +3335,9 @@ var Color = Color || {};
       "_itemWindow", 
       "_nameWindow"
     ];
+    
+    includes = includes.concat(RS.MessageSystem.Params.extraSubWindows);
+
     for(var i in this) { 
       var child = this[i];
       if(child instanceof Window) {
