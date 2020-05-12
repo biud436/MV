@@ -1,11 +1,11 @@
 "use strict";
 
-window.Imported = Imported || {};
+window.Imported = window.Imported || {};
 window.Imported.RS_ScreenManager = true;
 
-window.RS = RS || {};
-window.RS.ScreenManager = RS.ScreenManager || {};
-window.RS.ScreenManager.Params = RS.ScreenManager.Params || {};
+window.RS = window.RS || {};
+window.RS.ScreenManager = window.RS.ScreenManager || {};
+window.RS.ScreenManager.Params = window.RS.ScreenManager.Params || {};
 
 import parameters from "./parameters";
 

@@ -1,4 +1,3 @@
-
 //============================================================================
 // Window_ResolutionList
 //============================================================================
@@ -35,13 +34,13 @@ Window_ResolutionList.prototype.lineHeight = function () {
 };
 
 Window_ResolutionList.prototype.initWithAspectRatio = function (data) {
-    if(RS.ScreenManager.Params.options.aspectRatio) {
+    if (RS.ScreenManager.Params.options.aspectRatio) {
 
-    var config = new CustomScreenConfig(RS.ScreenManager.Params.settings.customAspectRatio[0], RS.ScreenManager.Params.settings.customAspectRatio[1]);
-    var insData = parseInt(window.screen.availWidth / RS.ScreenManager.Params.settings.customAspectRatio[0]) * RS.ScreenManager.Params.settings.customAspectRatio[0];
-    var fullscreenData = config.getSize(insData);
+        var config = new CustomScreenConfig(RS.ScreenManager.Params.settings.customAspectRatio[0], RS.ScreenManager.Params.settings.customAspectRatio[1]);
+        var insData = parseInt(window.screen.availWidth / RS.ScreenManager.Params.settings.customAspectRatio[0]) * RS.ScreenManager.Params.settings.customAspectRatio[0];
+        var fullscreenData = config.getSize(insData);
 
-    data.push(new Point(fullscreenData[0], fullscreenData[1]));
+        data.push(new Point(fullscreenData[0], fullscreenData[1]));
 
     }
 
@@ -55,7 +54,7 @@ Window_ResolutionList.prototype.initWithItemPoint = function () {
 
     // 배열 내 중복된 데이터를 제거합니다.
     this.uniqWithPoint(data.slice(0), function (newData) {
-    ret = newData;
+        ret = newData;
     });
 
     ret = this.initWithAspectRatio(ret);
@@ -65,23 +64,23 @@ Window_ResolutionList.prototype.initWithItemPoint = function () {
 
 Window_ResolutionList.prototype.uniqWithPoint = function (data, callback) {
     var ret = [];
-    ret = data.filter(function(e, i, a) {
+    ret = data.filter(function (e, i, a) {
 
-    if(a[i-1] instanceof Point) {
+        if (a[i - 1] instanceof Point) {
 
-        if(a[i-1].x === e.x && a[i-1].y === e.y) {
+            if (a[i - 1].x === e.x && a[i - 1].y === e.y) {
 
-        return false;
+                return false;
+
+            }
+
+            return true;
+
+        } else {
+
+            return true;
 
         }
-
-        return true;
-
-    } else {
-
-        return true;
-
-    }
     });
 
     callback(ret);
@@ -92,33 +91,33 @@ Window_ResolutionList.prototype.getCurrentItemToPoint = function () {
     return this._itemToPoint && this._index >= 0 ? this._itemToPoint[this._index] : null;
 };
 
-Window_ResolutionList.prototype.maxItems = function() {
+Window_ResolutionList.prototype.maxItems = function () {
     return this._data ? this._data.length : 1;
 };
 
-Window_ResolutionList.prototype.item = function() {
+Window_ResolutionList.prototype.item = function () {
     return this._data && this._index >= 0 ? this._data[this._index] : null;
 };
 
-Window_ResolutionList.prototype.makeItemList = function() {
+Window_ResolutionList.prototype.makeItemList = function () {
     this._data = Graphics.getAvailGraphicsArray('String');
-    if(RS.ScreenManager.Params.options.aspectRatio) this._data = this.uniq(this._data.slice(0));
-    if(!RS.ScreenManager.isFullscreen()) {
-    this._data.push(RS.ScreenManager.localization.get("Full Screen"));
+    if (RS.ScreenManager.Params.options.aspectRatio) this._data = this.uniq(this._data.slice(0));
+    if (!RS.ScreenManager.isFullscreen()) {
+        this._data.push(RS.ScreenManager.localization.get("Full Screen"));
     } else {
-    this._data.push(RS.ScreenManager.localization.get("Windowed Mode"));
+        this._data.push(RS.ScreenManager.localization.get("Windowed Mode"));
     }
 };
 
-Window_ResolutionList.prototype.isCurrentItemEnabled = function() {
+Window_ResolutionList.prototype.isCurrentItemEnabled = function () {
     return this.isEnabled(this._data[this.index()]);
 };
 
-Window_ResolutionList.prototype.isEnabled = function(item) {
+Window_ResolutionList.prototype.isEnabled = function (item) {
     return !!item;
 };
 
-Window_ResolutionList.prototype.resetFontSettings = function() {
+Window_ResolutionList.prototype.resetFontSettings = function () {
     this.contents.fontFace = this.standardFontFace();
     this.contents.fontSize = this.standardFontSize();
     this.contents.outlineColor = Utils.rgbToCssColor(128, 0, 0);
@@ -126,7 +125,7 @@ Window_ResolutionList.prototype.resetFontSettings = function() {
     this.resetTextColor();
 };
 
-Window_ResolutionList.prototype.drawItem = function(index) {
+Window_ResolutionList.prototype.drawItem = function (index) {
     var rect = this.itemRectForText(index);
     var text = this._data[index];
 
@@ -136,7 +135,7 @@ Window_ResolutionList.prototype.drawItem = function(index) {
 
 };
 
-Window_ResolutionList.prototype.refresh = function() {
+Window_ResolutionList.prototype.refresh = function () {
     this.makeItemList();
     this.createContents();
     this.drawAllItems();
@@ -144,7 +143,7 @@ Window_ResolutionList.prototype.refresh = function() {
 
 Window_ResolutionList.prototype.uniq = function (data) {
     data = data.filter(function (e, i, a) {
-    return a.indexOf(e) === i;
+        return a.indexOf(e) === i;
     }, this);
     return data;
 };
@@ -182,7 +181,7 @@ Window_ResolutionListForMobile.prototype.lineHeight = function () {
     return Math.round(Graphics.boxHeight / 10);
 };
 
-Window_ResolutionListForMobile.prototype.makeItemList = function() {
+Window_ResolutionListForMobile.prototype.makeItemList = function () {
     this._data = RS.ScreenManager.localization.get("MobileResolutions");
 };
 
@@ -190,7 +189,7 @@ Window_ResolutionListForMobile.prototype.getCurrentItemToPoint = function () {
     return this._itemToPoint && this._index >= 0 ? this._itemToPoint[this._index] : null;
 };
 
-Window_ResolutionListForMobile.prototype.drawItem = function(index) {
+Window_ResolutionListForMobile.prototype.drawItem = function (index) {
     var rect = this.itemRectForText(index);
     var text = this._data[index];
     this.resetTextColor();

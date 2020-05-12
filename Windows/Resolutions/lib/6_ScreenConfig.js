@@ -16,7 +16,7 @@ ScreenConfig.prototype.initialize = function (originWidth, originHeight, orienta
 
 ScreenConfig.prototype.gcd = function (p, q) {
     var self = this;
-    if(q === 0) return p;
+    if (q === 0) return p;
 
     return this.gcd(q, p % q);
 
@@ -34,7 +34,7 @@ ScreenConfig.prototype.getSize = function (virtualWidth) {
 
 ScreenConfig.prototype.getRatio = function (width, height) {
     var gcd, ret;
-    if(width === height) return [1, 1];
+    if (width === height) return [1, 1];
     gcd = this.gcd(width, height);
     ret = [(width / gcd), (height / gcd)];
     return ret;
@@ -42,11 +42,11 @@ ScreenConfig.prototype.getRatio = function (width, height) {
 
 ScreenConfig.prototype.getRatioAsString = function (width, height) {
     var gcd, temp, ret;
-    if(width === height) return [1, 1];
-    if(width < height) {
-    temp = width;
-    width = height;
-    height = temp;
+    if (width === height) return [1, 1];
+    if (width < height) {
+        temp = width;
+        width = height;
+        height = temp;
     }
     gcd = this.gcd(width, height);
     ret = Number(width / gcd) + ':' + Number(height / gcd);
@@ -98,5 +98,5 @@ window.CustomScreenConfig = CustomScreenConfig;
 // Point
 //============================================================================
 Point.prototype.toString = function () {
-    return this.x + ' x ' +  this.y;
+    return this.x + ' x ' + this.y;
 };

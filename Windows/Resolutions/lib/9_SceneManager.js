@@ -2,7 +2,7 @@
 // SceneManager
 //============================================================================
 
-SceneManager.initResolution = function() {
+SceneManager.initResolution = function () {
     var self = this;
     var type, size, orientation, config, mobile;
     var sw, sh, bw, bh;
@@ -32,13 +32,13 @@ SceneManager.initResolution = function() {
     bh = (mobile === true) ? size[1] : defScrHeight;
 
     // Calls the function changes the resolution in case of the PC.
-    if(Utils.isNwjs()) {
-    var newSize = new Point(sw, sh);
-    Graphics.setScreenResize(newSize);
+    if (Utils.isNwjs()) {
+        var newSize = new Point(sw, sh);
+        Graphics.setScreenResize(newSize);
     } else {
-    Graphics.width = sw;
-    Graphics.height = sh;
-    Graphics.boxWidth = sw;
-    Graphics.boxHeight = sh;
+        Graphics.width = sw;
+        Graphics.height = sh;
+        Graphics.boxWidth = sw;
+        Graphics.boxHeight = sh;
     }
 };
