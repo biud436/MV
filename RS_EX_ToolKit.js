@@ -119,6 +119,8 @@ RS.EX_ToolKit = RS.EX_ToolKit || {};
     }
 
     /**
+     * This function allows you to gain a certain item randomly.
+     * 
      * @param {Number} min 아이템 인덱스 최소 범위
      * @param {Number} max 아이템 인덱스 최대 범위
      * @param {Number} type 아이템의 타입 (1: 아이템, 2: 무기구, 3: 방어구)
