@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc (v1.0.14) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.15) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -71,6 +71,8 @@
  * - Fixed the issue that is added the spaces from the second line when the text alignment is the left.
  * 2019.09.23 (v1.0.14) :
  * - Fixed issues that conflict with YEP_StatAllocation and YEP_StatusMenuCore plugins.
+ * 2020.05.13 (v1.0.15) :
+ * - Removed unused value.
  */
 
 var Imported = Imported || {};
@@ -310,7 +312,6 @@ RS.MessageAlign = RS.MessageAlign || {};
     };
     
     Window_Base.prototype.setAlignLeft = function(textState) {
-        tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x = this.newLineX();
         textState.left = textState.x;
     };
