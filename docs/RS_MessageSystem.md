@@ -6,8 +6,6 @@
 
 이 플러그인은 영어 위주로 되어있는 기존 텍스트 코드들을 한국어로 사용할 수 있게 해주는 플러그인입니다. 
 
-**RPG Maker MV <font color='red'>v1.6.2</font> 이상 버전에서만 동작합니다.**
-
 <p>버그 제보 (Feedback) : <a href="https://biud436.tistory.com/121">티스토리 블로그</a></p>
 
 ## 최신 버전 다운로드
@@ -16,6 +14,7 @@
 [1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
 
 ## 버전 별 다운로드
+<p>2020.05.14 (v0.1.64) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/2337b631eca1d5e0860540754dc0730ba18cab1e/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2020.01.24 (v0.1.63) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/e7489fdea35b26f6b610a93acfd35cabef5d17e6/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.09.23 (v0.1.61) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/9b713e8157fffada26566f84406fa2afbb05e4e5/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2019.08.29 (v0.1.60) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/915813543c7d61cc4a84db61ad251ba9c087f478/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -34,10 +33,14 @@
 ## 버전 로그
 
 ```text
-2020.04.05 (v0.1.64) :
+2020.05.14 (v0.1.64) :
 - 커스텀 폰트가 로드되지 않는 현상을 수정하였습니다.
 - fonts 폴더에 있는 모든 폰트를 자동으로 로드하는 기능을 추가하였습니다.
-- 이 버전부터는 RPG Maker MV v1.6.x 이상에서만 실행할 수 있습니다.
+- RPG Maker MV v1.5.2 이하 버전에서도 동작할 수 있게 하였습니다.
+- 이름 윈도우의 텍스트 패딩 값을 수정하여 정확히 가운데에 표시되도록 하였습니다.
+- 적군의 이름에서도 텍스트 코드를 사용할 수 있습니다.
+- 텍스트 색상 변경 함수를 수정하였습니다.
+- RS.MessageSystem.Params.extraSubWindows 변수를 추가하였습니다.
 2020.01.24 (v0.1.63) : 
 - 말풍선 모드에서 타겟 캐릭터가 움직이지 않을 때, 배경 화면이 깜빡거리는 문제를 수정하였습니다.
 2019.09.23 (v0.1.61) :
