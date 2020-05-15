@@ -661,6 +661,151 @@ var $gameInventory;
     }
 
     //==========================================================
+    // ToolTip
+    //==========================================================  
+    
+    Params.Tooltip = {
+        fontFace: "나눔고딕",
+        fontSize: 18,
+        textColor: "white",
+        outlineWidth: 1,
+        outlineColor: "blue",
+    };
+
+    class Tooltip extends Sprite {
+        constructor(bitmap) {
+            super(bitmap);
+            this.createChildren();
+        }
+
+        initMembers() {
+            this._size = new PIXI.Rectangle(0, 0, 128, 256);
+        }
+
+        makeNormalColor(width, fontSize = 16) {
+            const wordWrapWidth = width || this._size.width;
+            const style = new PIXI.TextStyle({
+                breakWords: true,
+                dropShadowBlur: 6,
+                dropShadowColor: "#71f4ca",
+                dropShadowDistance: 0,
+                fillGradientStops: [
+                    0
+                ],
+                fontSize: fontSize,
+                fontWeight: 600,
+                stroke: "white",
+                strokeThickness: 2,
+                wordWrap: true,
+                wordWrapWidth: wordWrapWidth
+            });
+
+            return style;           
+        }
+
+        makeRedColor(fontSize = 16) {
+            const style = new PIXI.TextStyle({
+                breakWords: true,
+                dropShadow: true,
+                dropShadowBlur: 1,
+                dropShadowColor: "#262626",
+                dropShadowDistance: 0,
+                fill: "#f20000",
+                fontSize: fontSize,
+                strokeThickness: 1
+            });    
+            
+            return style;
+        }
+
+        makeYellowColor(fontSize = 16) {
+            const style = new PIXI.TextStyle({
+                breakWords: true,
+                dropShadow: true,
+                dropShadowBlur: 1,
+                dropShadowColor: "#262626",
+                dropShadowDistance: 0,
+                fill: [
+                    "#eff2b7",
+                    "#e3e97e"
+                ],
+                fillGradientStops: [
+                    0
+                ],
+                fontSize: fontSize,
+                strokeThickness: 1
+            });
+            
+            return style;
+        }
+
+        makeBlueGlowColor(fontSize = 16) {
+            const style = new PIXI.TextStyle({
+                breakWords: true,
+                dropShadow: true,
+                dropShadowBlur: 6,
+                dropShadowColor: "#71f4ca",
+                dropShadowDistance: 0,
+                fillGradientStops: [
+                    0
+                ],
+                fontSize: fontSize,
+                fontWeight: 600,
+                stroke: "white",
+                strokeThickness: 2
+            });
+            
+            return style;
+        }
+
+        makeColor(color, fontSize = 16, width = 0) {
+            width = width || this._size.width;
+
+            switch (color) {
+                default:
+                case 'normal':
+                    return this.makeNormalColor(fontSize, width);
+                case 'red':
+                    return this.makeRedColor(fontSize, width);
+                case 'yellow':
+                    return this.makeYellowColor(fontSize, width);
+                case 'blue':
+                    return this.makeBlueGlowColor(fontSize, width);
+            }
+        }
+
+        drawText(x, y, text, color) {
+            const textObj = new PIXI.Text(text, this.makeColor(color));
+            textObj.x = x;
+            textObj.y = y;
+
+            this.addChild(textObj);
+
+            return textObj.height;
+        }
+   
+        /**
+         * @param {RPG.BaseItem} item
+         */
+        refresh(item) {
+
+            // Background
+            // it must be replaced with real image.
+            if(!this.bitmap) {
+                this.bitmap = new Bitmap(128, 256);
+            }
+
+            this.bitmap.clear();
+            this.bitmap.fillAll("rgba(0, 0, 0, 0.6)");
+            
+            let lineHeight = 0;
+            
+            // Draw Item Name
+            lineHeight += this.drawText(0, 0, item.name, 'red');
+        }
+    }
+
+    //==========================================================
     // InventoryView
     //==========================================================    
 
@@ -714,24 +859,17 @@ var $gameInventory;
 
         refresh() {
             if(!this._backgroundBitmap) return;
-            // 인벤토리에서 슬롯을 가지고 온다.
-            this._data = $gameInventory.slots();
-            // 비트맵을 비운다
+            this._data = $gameInventory.slots(); // 인벤토리에서 슬롯을 가지고 온다.
             this._backgroundBitmap.clear();
-            // 아이템 스프라이트를 모두 제거한다.
-            this.removeChild.apply(this, this._itemLayer);
-            // 비트맵 재생성
+            this.removeChild.apply(this, this._itemLayer); // 아이템 스프라이트를 모두 제거한다.
             this.initBitmaps();
-            // 슬롯 재생성
             this.initSlots();
-            // 비트맵 재할당
             this._background.bitmap = this._backgroundBitmap;
         }
 
         initBitmaps() {
-            // 인벤토리를 검은색으로 채운다.
-            this._backgroundBitmap.fillAll("black");    
-            this._backgroundBitmap.fontSize = 14;        
+            this._backgroundBitmap.fillAll("black"); // 인벤토리를 검은색으로 채운다.
+            this._backgroundBitmap.fontSize = 14;    
         }
 
         initBackground() {

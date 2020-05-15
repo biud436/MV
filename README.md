@@ -14,7 +14,7 @@ This describes how to use the plugin that didn't list in the my website.
 |Name|Summary|
 |--|--|
 |RS_HangulBitmapText.js|(Optimization Required) 색상 변경 기능을 구현하기 위해 Bitmap을 사용하였습니다. 하지만 비트맵 방식은 최적화에 좋지 않습니다. Sprite Sheet와 Shader(Filter)를 통한 색상 데이터 전달 방식으로 변경해야 합니다.|
-|RS_Inventory.js|임시 리소스의 퀄리티가 좋지 않습니다. 툴팁를 구현하고 리소스를 변경해야 합니다. 검은 사막과 비슷한 방식이 좋을 것 같습니다만 자꾸 딴짓을 하게돼 구현이 잘 되지 않고 있습니다.|
+|RS_Inventory.js| - 툴팁를 구현하고 리소스 변경하기 <br> - 아이템을 사용했을 때 칸이 재정렬되는 문제 수정하기 |
 |RS_ArabicMessageSystem.js|(Optimization Required)|
 |RS_MessageEffects.js|(Optimization Required) 셰이더를 통해 입력 데이터만 전달하는 방식으로 변경해야 합니다.|
 |JGSSAD|암호화 방식을 RPG Maker VX Ace와 비슷하게 변경하는 프로젝트를 생각 중에 있습니다.|
