@@ -18,7 +18,6 @@ This describes how to use the plugin that didn't list in the my website.
 |RS_ArabicMessageSystem.js|(Optimization Required)|
 |RS_MessageEffects.js|(Optimization Required) 셰이더를 통해 입력 데이터만 전달하는 방식으로 변경해야 합니다.|
 |JGSSAD|암호화 방식을 RPG Maker VX Ace와 비슷하게 변경하는 프로젝트를 생각 중에 있습니다.|
-|node-canvas로 변경|기존의 canvas를 <a href="https://github.com/Automattic/node-canvas">node-canvas</a>로 변경해보려고 합니다|
 
 # To send feedback
 If you have feedback to send me, please write your feedback at the following site.
