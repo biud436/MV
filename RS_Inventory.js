@@ -208,6 +208,7 @@ var $gameInventory;
             this._startX = this.x;
             this._startY = this.y;
             this._draggingTime = 0;
+            this._currentState = "";
         }
 
         /**
@@ -331,6 +332,7 @@ var $gameInventory;
             }
 
             if(!skipEmit) this.emitOnDragStart(event);
+            this.onButtonExit(event);
 
         }
         
@@ -356,7 +358,28 @@ var $gameInventory;
          * @param {Boolean} skipEmit true이면 자식에게 이벤트가 전파되지 않습니다.
          */        
         onDragMove(event, skipEmit) {
+
+            if(!this.dragging) {
+                const data = new PIXI.Point(
+                    Graphics.pageToCanvasX(event.pageX), 
+                    Graphics.pageToCanvasY(event.pageY)
+                );            
+    
+                if(this.isInside(data)) {
+                    if(this._currentState !== "MOUSE_OVER") {
+                        this._currentState = "MOUSE_OVER";
+                    }
+                    this.onButtonEnter(event);
+                } else {
+                    if(this._currentState === "MOUSE_OVER") {
+                        this.onButtonExit(event);
+                    }
+                    this._currentState = "MOUSE_OUT";
+                }
+            }
+
             if ( this.dragging ) {
+                this._currentState = "DRAGGING";
                 this.data = new PIXI.Point(
                     Graphics.pageToCanvasX(event.pageX), 
                     Graphics.pageToCanvasY(event.pageY)
@@ -367,7 +390,6 @@ var $gameInventory;
                 if(!this._draggingTime) this._draggingTime = 0;
                 this._draggingTime++;
             }        
-
             if(!skipEmit) this.emitOnDragMove(event);  
         }       
 
@@ -474,6 +496,10 @@ var $gameInventory;
             this._startY = this.y;    
             this._lastButton = 0;      
         }        
+
+        getItem() {
+            return this._item.item;
+        }
 
         initBitmaps() {
 
@@ -585,7 +611,6 @@ var $gameInventory;
             this._isDragEnd = false;
             this.savePosition();
             super.onDragStart(event, true);
-
         }
 
         onDragEnd(event) {
@@ -596,7 +621,7 @@ var $gameInventory;
             }
             // 이 플래그가 없으면 그리드 함수가 6번 연속으로 실행되면서 버그를 일으킨다.
             this._isDragEnd = true;
-            this._lastButton = event.button;
+            this._lastButton = event.button;            
         }
 
         onDragMove(event) {
@@ -617,6 +642,23 @@ var $gameInventory;
                 this.scale.y = 0.8;
                 this._fire = true;
             }
+        }
+
+        onButtonEnter(event, skipEmit) {
+            super.onButtonEnter(event, skipEmit);
+            console.log("onButtonEnter");
+            if(this.parent) {
+                this.parent.openTooltip(this);
+            }        
+
+        }
+
+        onButtonExit(event, skipEmit) {
+            super.onButtonExit(event, skipEmit);
+            console.log("onButtonExit");
+            if(this.parent) {
+                this.parent.closeTooltip();
+            }                 
         }
 
         /**
@@ -675,11 +717,20 @@ var $gameInventory;
     class Tooltip extends Sprite {
         constructor(bitmap) {
             super(bitmap);
-            this.createChildren();
+            this.initMembers();
+            this.createTextLayer();
         }
 
         initMembers() {
             this._size = new PIXI.Rectangle(0, 0, 128, 256);
+        }
+
+        /**
+         * Init with text layer.
+         */
+        createTextLayer() {
+            this._textLayer = new Sprite();
+            this.addChild(this._textLayer);
         }
 
         makeNormalColor(width, fontSize = 16) {
@@ -774,14 +825,49 @@ var $gameInventory;
             }
         }
 
-        drawText(x, y, text, color) {
+        addDescription(textObject) {
+            if(!this._textLayer) {
+                this.createTextLayer();
+            }
+            if(!(textObject instanceof PIXI.Text)) return;
+            this._textLayer.addChild(textObject);
+        }
+
+        /**
+         * 
+         * @param {*} x 
+         * @param {*} y 
+         * @param {*} text 
+         * @param {*} color 
+         * 
+         * @return {PIXI.Text}
+         */
+        makeText(x, y, text, color) {
+
             const textObj = new PIXI.Text(text, this.makeColor(color));
             textObj.x = x;
             textObj.y = y;
 
-            this.addChild(textObj);
+            return textObj;
+        }
 
-            return textObj.height;
+        clear() {
+            this.removeChildren();
+            this.createTextLayer();
+
+            if(!this.bitmap) {
+                this.bitmap = new Bitmap(128, 256);
+            }
+
+            this.bitmap.clear();
+            this.bitmap.fillAll("rgba(0, 0, 0, 0.6)");
+        }
+
+        /**
+         * @param {RPG.BaseItem} item
+         */
+        isValid(item) {
+            return DataManager.isItem(item) || DataManager.isWeapon(item) || DataManager.isArmor(item);
         }
    
         /**
@@ -789,19 +875,28 @@ var $gameInventory;
          */
         refresh(item) {
 
-            // Background
-            // it must be replaced with real image.
-            if(!this.bitmap) {
-                this.bitmap = new Bitmap(128, 256);
+            if(!this.isValid(item)) {
+                return;
             }
 
-            this.bitmap.clear();
-            this.bitmap.fillAll("rgba(0, 0, 0, 0.6)");
+            this.clear();
             
+            // 누적 변수를 선언합니다.
             let lineHeight = 0;
+            const pad = 2;
             
-            // Draw Item Name
-            lineHeight += this.drawText(0, 0, item.name, 'red');
+            // 아이템 이름 (빨강)
+            const itemName = this.makeText(0, 0, item.name, 'red');
+            lineHeight += itemName.height;
+            lineHeight += pad;
+            
+            this.addDescription(itemName);
+
+            // 아이템 설명 (노랑)
+            const itemDesc = this.makeText(0, lineHeight, item.description, 'yellow');
+            lineHeight += itemDesc.height;
+            lineHeight += pad;
+
         }
     }
 
@@ -816,6 +911,7 @@ var $gameInventory;
             this.initBitmaps();
             this.initBackground();
             this.initSlots();
+            this.initTooltip();
             this.drawAllItems();
         }
 
@@ -876,6 +972,28 @@ var $gameInventory;
             this._background.bitmap = this._backgroundBitmap;
             this._background.opacity = 200;
             this.addChild(this._background);            
+        }
+
+        initTooltip() {
+            this._tooltip = new Tooltip();
+            this._tooltip.visible = false;
+            this.addChild(this._tooltip);
+        }
+
+        /**
+         * @param {InventoryItem} item
+         */
+        openTooltip(item) {
+            if(!this._tooltip) return; 
+            this._tooltip.visible = true;
+            this._tooltip.x = item.x;
+            this._tooltip.y = item.y + item._size.height;
+            this._tooltip.refresh(item.getItem());
+        }
+
+        closeTooltip() {
+            if(!this._tooltip) return; 
+            this._tooltip.visible = false;
         }
 
         resetIndex() {
@@ -1077,7 +1195,7 @@ var $gameInventory;
             super.onDragEnd(event, false);
             // 메뉴 진입 시 인벤토리 위치를 기억한다.
             $gameSystem.inventoryX = this.x;
-            $gameSystem.inventoryY = this.y;
+            $gameSystem.inventoryY = this.y;       
         }
 
         onDragMove(event) {
