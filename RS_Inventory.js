@@ -898,7 +898,7 @@ var $gameInventory;
             
             this.addDescription(itemName);
 
-            // 아이템 설명 (보통)
+            // 아이템 설명 (노랑)
             const itemDesc = this.makeText(0, lineHeight, item.description, 'yellow');
             lineHeight += itemDesc.height;
             lineHeight += pad;
