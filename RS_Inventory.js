@@ -737,15 +737,12 @@ var $gameInventory;
             const wordWrapWidth = width || this._size.width;
             const style = new PIXI.TextStyle({
                 breakWords: true,
-                dropShadowBlur: 6,
-                dropShadowColor: "#71f4ca",
-                dropShadowDistance: 0,
                 fillGradientStops: [
                     0
                 ],
+                fill: "white",
                 fontSize: fontSize,
-                fontWeight: 600,
-                stroke: "white",
+                stroke: "black",
                 strokeThickness: 2,
                 wordWrap: true,
                 wordWrapWidth: wordWrapWidth
@@ -754,7 +751,8 @@ var $gameInventory;
             return style;           
         }
 
-        makeRedColor(fontSize = 16) {
+        makeRedColor(width, fontSize = 16) {
+            const wordWrapWidth = width || this._size.width;
             const style = new PIXI.TextStyle({
                 breakWords: true,
                 dropShadow: true,
@@ -763,13 +761,16 @@ var $gameInventory;
                 dropShadowDistance: 0,
                 fill: "#f20000",
                 fontSize: fontSize,
-                strokeThickness: 1
+                strokeThickness: 1,
+                wordWrap: true,
+                wordWrapWidth: wordWrapWidth                
             });    
             
             return style;
         }
 
-        makeYellowColor(fontSize = 16) {
+        makeYellowColor(width, fontSize = 16) {
+            const wordWrapWidth = width || this._size.width;
             const style = new PIXI.TextStyle({
                 breakWords: true,
                 dropShadow: true,
@@ -784,13 +785,16 @@ var $gameInventory;
                     0
                 ],
                 fontSize: fontSize,
-                strokeThickness: 1
+                strokeThickness: 1,
+                wordWrap: true,
+                wordWrapWidth: wordWrapWidth                  
             });
             
             return style;
         }
 
-        makeBlueGlowColor(fontSize = 16) {
+        makeBlueGlowColor(width, fontSize = 16) {
+            const wordWrapWidth = width || this._size.width;            
             const style = new PIXI.TextStyle({
                 breakWords: true,
                 dropShadow: true,
@@ -803,7 +807,9 @@ var $gameInventory;
                 fontSize: fontSize,
                 fontWeight: 600,
                 stroke: "white",
-                strokeThickness: 2
+                strokeThickness: 2,
+                wordWrap: true,
+                wordWrapWidth: wordWrapWidth                  
             });
             
             return style;
@@ -815,13 +821,13 @@ var $gameInventory;
             switch (color) {
                 default:
                 case 'normal':
-                    return this.makeNormalColor(fontSize, width);
+                    return this.makeNormalColor(width, fontSize);
                 case 'red':
-                    return this.makeRedColor(fontSize, width);
+                    return this.makeRedColor(width, fontSize);
                 case 'yellow':
-                    return this.makeYellowColor(fontSize, width);
+                    return this.makeYellowColor(width, fontSize);
                 case 'blue':
-                    return this.makeBlueGlowColor(fontSize, width);
+                    return this.makeBlueGlowColor(width, fontSize);
             }
         }
 
@@ -892,10 +898,12 @@ var $gameInventory;
             
             this.addDescription(itemName);
 
-            // 아이템 설명 (노랑)
+            // 아이템 설명 (보통)
             const itemDesc = this.makeText(0, lineHeight, item.description, 'yellow');
             lineHeight += itemDesc.height;
             lineHeight += pad;
+
+            this.addDescription(itemDesc);
 
         }
     }
