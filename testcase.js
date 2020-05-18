@@ -200,8 +200,22 @@ class Game_Inventory {
      * @param {Object} item 
      */
     createItem(item) {
+
+        this._slots.sort((a, b) => {
+            return a.slotId - b.slotId;
+        });
+
+        let max = -1;
+        const maxSlot = this._slots.forEach(i => {
+            if(max < i.slotId) {
+                max = i.slotId;
+            }
+        })
+
+        const nextId = max + 1;
+
         // 아이템을 특정 슬롯에 설정한다.
-        var newItem = this.newItem(this._id, item);
+        var newItem = this.newItem(nextId, item);
 
         // 슬롯에 아이템을 추가한다.
         this._slots.push(newItem);
@@ -303,3 +317,27 @@ console.log(data);
 
 console.log("아이템 인덱스 찾기"); // find index
 console.log("인덱스는 %d", inven.indexOf(data.item));
+
+console.log("아이템 추가 로드");
+inven.createItem({
+    id: 6,
+    animationId: 41,
+    consumable: 1,
+    description: '',
+    effects: [ [Object] ],
+    hitType: 0,
+    iconIndex: 176,
+    itypeId: 1,
+    name: '새로 추가하는 아이템!',
+    note: '',
+    occasion: 0,
+    price: 100,
+    repeats: 1,
+    scope: 7,
+    speed: 0,
+    successRate: 100,
+    tpGain: 0,
+    damage: { critical: 0, elementId: 0, formula: 0, type: 0, variance: 20 }
+});
+
+console.log(inven._slots);
