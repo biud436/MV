@@ -26,6 +26,9 @@ const $gameParty = {
     },
     gainItem(item, number, equip) {
 
+    },
+    numItems(item) {
+        return 0;
     }
 };
 
@@ -270,23 +273,25 @@ class Game_Inventory {
      */
     removeItem(item) {
         const type = typeof(item);
-        
-        if(type === "number") { // 숫자를 전달하였는가?
-            const slotId = item;
-            let deleteItem = this.isExist(slotId);
-            var deleteIndex = this._slots.indexOf(deleteItem);
-            if(deleteIndex >= 0) {
-                // 해당 인덱스의 원소를 삭제한다.
-                $gameParty.gainItem(deleteItem.item, -1, true);
-                this._slots.splice(deleteIndex, 1);
-                this.save();
-            }
-        } else { // 오브젝트를 전달하였는가?
+        let slotId = 0;
+
+        if(type === "object") {
             if($gameParty.numItems(item) > 0) return;
-            const ret = this._slots.filter(i => i.item == item);
+            const ret = this._slots.filter(i => {
+                return i.name == item.name
+            });
             const slot = ret[0];
-            const idx = this._slots.indexOf(slot);
+            slotId = slot.slotId;
         }
+        
+        let deleteItem = this.isExist(slotId);
+        var deleteIndex = this._slots.indexOf(deleteItem);
+        if(deleteIndex >= 0) {
+            // 해당 인덱스의 원소를 삭제한다.
+            $gameParty.gainItem(deleteItem.item, -1, true);
+            this._slots.splice(deleteIndex, 1);
+            this.save();
+        }          
     }
 
     refresh() {
@@ -340,4 +345,27 @@ inven.createItem({
     damage: { critical: 0, elementId: 0, formula: 0, type: 0, variance: 20 }
 });
 
+console.log(inven._slots);
+
+console.log("아이템 삭제!");
+inven.removeItem({
+    id: 6,
+    animationId: 41,
+    consumable: 1,
+    description: '',
+    effects: [ [Object] ],
+    hitType: 0,
+    iconIndex: 176,
+    itypeId: 1,
+    name: '새로 추가하는 아이템!',
+    note: '',
+    occasion: 0,
+    price: 100,
+    repeats: 1,
+    scope: 7,
+    speed: 0,
+    successRate: 100,
+    tpGain: 0,
+    damage: { critical: 0, elementId: 0, formula: 0, type: 0, variance: 20 }
+});
 console.log(inven._slots);
