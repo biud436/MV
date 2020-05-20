@@ -11,7 +11,7 @@ var Imported = Imported || {};
 Imported.RS_ScreenManager = true;
 
 /*:
- * @plugindesc (v1.1.0) <RS_ScreenManager>
+ * @plugindesc (v1.1.2) <RS_ScreenManager>
  * @author biud436
  *
  * @param Test Options
@@ -331,6 +331,8 @@ Imported.RS_ScreenManager = true;
  * - Removed localization feature.
  * 2020.02.19 (v1.1.1) :
  * - Fixed RS.ScreenManager.isFullscreen();
+ * 2020.05.20 (v1.1.2) :
+ * - Fixed the issue that applies an aspect ratio option like as mobile device in the chrome browser on Windows.
  */
 /*~struct~ScreenSize:
  *
@@ -528,20 +530,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       ], function(err) {
     if(err) console.warn(err);
     });
-  };
-
-  //============================================================================
-  // Utils
-  //============================================================================   
-
-  Utils.getAbsolutePath = function(defaultPath) {
-    defaultPath = defaultPath.replace(/\\/g, "/");
-    var fileName = defaultPath.split("/");
-    var driveName = fileName.shift();
-    fileName = driveName + "//" + fileName.join("/");
-
-    return fileName;
-
   };
 
   //============================================================================
@@ -976,7 +964,9 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var maxSW, maxSH;
     var defScrWidth, defScrHeight;
 
-    RS.ScreenManager.readManifestFile();
+    if(Utils.isNwjs()) {
+      RS.ScreenManager.readManifestFile();
+    }
 
     maxSW = window.innerWidth;
     maxSH = window.innerHeight;
@@ -992,7 +982,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     // Changes the resolution depended on the aspect ratio in the mobile device.
     size = config.getSize(defScrWidth);
 
-    mobile = !Utils.isNwjs() || RS.ScreenManager.options.aspectRatio;
+    mobile = Utils.isMobileDevice() || RS.ScreenManager.options.aspectRatio;
+
     sw = (mobile === true) ? size[0] : defScrWidth;
     sh = (mobile === true) ? size[1] : defScrHeight;
     bw = (mobile === true) ? size[0] : defScrWidth;

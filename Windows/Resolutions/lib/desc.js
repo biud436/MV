@@ -404,6 +404,8 @@
  * - Added the scaled battle background and then reposition actors (vanilla mode only)
  * 2020.02.19 (v1.0.22) :
  * - Fixed RS.ScreenManager.isFullscreen();
+ * 2020.05.20 (v1.0.23) :
+ * - Fixed the issue that applies an aspect ratio option like as mobile device in the chrome browser on Windows.
  */
 /*~struct~ScreenSize:
  *

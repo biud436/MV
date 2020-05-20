@@ -25,7 +25,7 @@ SceneManager.initResolution = function () {
     // Changes the resolution depended on the aspect ratio in the mobile device.
     size = config.getSize(defScrWidth);
 
-    mobile = !Utils.isNwjs() || RS.ScreenManager.Params.options.aspectRatio;
+    mobile = Utils.isMobileDevice() || RS.ScreenManager.options.aspectRatio;
     sw = (mobile === true) ? size[0] : defScrWidth;
     sh = (mobile === true) ? size[1] : defScrHeight;
     bw = (mobile === true) ? size[0] : defScrWidth;
