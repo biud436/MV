@@ -532,6 +532,39 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     });
   };
 
+  /**
+   * Get a height value of Windows Taskbar using powershell C# WPF.
+   * 
+   * @return {Number}
+   */
+  RS.ScreenManager.getTaskBarHeight = function() {
+    if(!Utils.isNwjs()) return 0;
+    var os = require('os');
+    var fs = require('fs');
+    var cp = require('child_process');
+    var isValidPowershell = false;
+    
+    if ((process.platform === "win32") && /(\d+\.\d+).\d+/i.exec(os.release())) {
+      const version = parseFloat(RegExp.$1);
+
+      // Windows 7 이상인가?
+      if (version >= "6.1") {
+        isValidPowershell = true;
+      }
+    }    
+
+    if(!isValidPowershell) return 0;
+    var raw = cp.execSync(`powershell -Command "Add-Type -AssemblyName PresentationFramework; [System.Windows.SystemParameters]::PrimaryScreenHeight - [System.Windows.SystemParameters]::WorkArea.Height"`, {
+      shell: true,
+      encoding: "utf8"
+    });
+    var data = parseInt(raw);
+    if(type(data) === "number") return data;
+
+    return 0;
+
+  }
+
   //============================================================================
   // ScreenConfig
   //============================================================================
