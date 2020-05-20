@@ -465,8 +465,44 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
   };
 
+  /**
+   * Get a height value of Windows Taskbar using powershell C# WPF.
+   * 
+   * @return {Number}
+   */
+  RS.ScreenManager.getTaskBarHeight = function() {
+    const defaultTaskBar = screen.height - screen.availHeight;
+    if(!Utils.isNwjs()) return defaultTaskBar;
+    var os = require('os');
+    var fs = require('fs');
+    var cp = require('child_process');
+    var isValidPowershell = false;
+    
+    if ((process.platform === "win32") && /(\d+\.\d+).\d+/i.exec(os.release())) {
+      const version = parseFloat(RegExp.$1);
+
+      // Windows 7 이상인가?
+      if (version >= "6.1") {
+        isValidPowershell = true;
+      }
+    }    
+
+    if(!isValidPowershell) return defaultTaskBar;
+    var raw = cp.execSync(`powershell -Command "Add-Type -AssemblyName PresentationFramework; [System.Windows.SystemParameters]::PrimaryScreenHeight - [System.Windows.SystemParameters]::WorkArea.Height"`, {
+      shell: true,
+      encoding: "utf8"
+    });
+    var data = parseInt(raw);
+    if(typeof(data) === "number") return data;
+
+    return defaultTaskBar;
+
+  }  
+
   RS.ScreenManager.isWindowsTaskbarShown = function() {
-    return screen.availHeight !== screen.height;
+    const ret = RS.ScreenManager.getTaskBarHeight();
+    if(ret === 0) return screen.availHeight !== screen.height;
+    return true;
   };
 
   RS.ScreenManager.switchFullScreen = function() {
@@ -531,39 +567,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     if(err) console.warn(err);
     });
   };
-
-  /**
-   * Get a height value of Windows Taskbar using powershell C# WPF.
-   * 
-   * @return {Number}
-   */
-  RS.ScreenManager.getTaskBarHeight = function() {
-    if(!Utils.isNwjs()) return 0;
-    var os = require('os');
-    var fs = require('fs');
-    var cp = require('child_process');
-    var isValidPowershell = false;
-    
-    if ((process.platform === "win32") && /(\d+\.\d+).\d+/i.exec(os.release())) {
-      const version = parseFloat(RegExp.$1);
-
-      // Windows 7 이상인가?
-      if (version >= "6.1") {
-        isValidPowershell = true;
-      }
-    }    
-
-    if(!isValidPowershell) return 0;
-    var raw = cp.execSync(`powershell -Command "Add-Type -AssemblyName PresentationFramework; [System.Windows.SystemParameters]::PrimaryScreenHeight - [System.Windows.SystemParameters]::WorkArea.Height"`, {
-      shell: true,
-      encoding: "utf8"
-    });
-    var data = parseInt(raw);
-    if(type(data) === "number") return data;
-
-    return 0;
-
-  }
 
   //============================================================================
   // ScreenConfig
@@ -795,7 +798,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   };
 
   Graphics.isAvailScreenHeight = function(height) {
-    var task_height = screen.height - screen.availHeight;
+    var task_height = RS.ScreenManager.getTaskBarHeight();
     var maxHeight = screen.availHeight - task_height;
     return height <= maxHeight;
   };  
@@ -842,7 +845,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var maxSW, maxSH;
     var temp;
     
-    var taskHeight = 0;
+    var taskHeight = RS.ScreenManager.getTaskBarHeight();
 
     // Get the screen width and height (Excepted in Windows Taskbar)
     maxSW = window.screen.availWidth;
@@ -889,6 +892,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
       !this.isAvailScreenHeight(newScr.y) && 
       !Utils.isMobileDevice() &&
       RS.ScreenManager.options.autoScaling ) {
+
+      // newScr.y = Math.min(newScr.y, newScr.y - taskHeight);
 
       var data = Graphics.getAvailGraphicsArray('Number');
       var ret = [];
