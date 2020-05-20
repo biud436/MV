@@ -407,6 +407,9 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   RS.ScreenManager.Params.isValidOptionWindow = Utils.isMobileDevice() ? false : true;
   RS.ScreenManager.Params.isValidScaledBattleback = Boolean(parameters["Scaled Battleback"] === "true");
 
+  RS.ScreenManager.settings.isCatchedTaskBar = false;
+  RS.ScreenManager.settings.taskBarHeight = -1;
+
   /**
    * Replace by target screen width and height values.
    */
@@ -473,6 +476,9 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   RS.ScreenManager.getTaskBarHeight = function() {
     const defaultTaskBar = screen.height - screen.availHeight;
     if(!Utils.isNwjs()) return defaultTaskBar;
+    if(RS.ScreenManager.settings.isCatchedTaskBar) {
+      return RS.ScreenManager.settings.taskBarHeight;
+    }
     var os = require('os');
     var fs = require('fs');
     var cp = require('child_process');
@@ -846,6 +852,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     var temp;
     
     var taskHeight = RS.ScreenManager.getTaskBarHeight();
+    if(!RS.ScreenManager.settings.isCatchedTaskBar) {
+      RS.ScreenManager.settings.taskBarHeight = taskHeight;    
+      RS.ScreenManager.settings.isCatchedTaskBar = true;
+    }
 
     // Get the screen width and height (Excepted in Windows Taskbar)
     maxSW = window.screen.availWidth;
