@@ -135,7 +135,7 @@
 
             // 테이블 생성
             db.transaction(function(tx) {
-                tx.executeSql("CREATE TABLE IF NOT EXISTS Dictionary (name)")
+                tx.executeSql("CREATE TABLE IF NOT EXISTS Dictionary (name varchar(30))")
             });                
 
             words.forEach(i => {
