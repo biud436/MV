@@ -32,7 +32,7 @@
             var words = [
                 "안녕하세요", "사과", "바나나", 
                 "사과나무", "사과쥬스", "사과농장", 
-                "사과하세요","오이쥬스", "사과하세요", "오렌지", "초콜릿",
+                "사과하세요","오이쥬스", "오렌지", "초콜릿",
                 "blue", "green", "practice","program","dream","grass"
             ];            
 
@@ -88,7 +88,7 @@
                 deltaTime: performance.now()
             };
 
-            function onInput() {
+            async function onInput() {
                 // 데이터 찾기
                 console.clear();
                 removeBoard();
@@ -112,7 +112,7 @@
                     });    
                 });
 
-                promise.then(value => {
+                await promise.then(value => {
                     removeBoard();
                     value.forEach(i => {
                         addBoard(i);
