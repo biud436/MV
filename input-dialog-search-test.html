@@ -22,8 +22,33 @@
 </head>
 <body style="background-color: blanchedalmond;">
     <div>
+        <div class="search-list"></div>
         <input type="text" oninput="onInput.call(this);" onfocus="document.querySelector('.board').style.opacity=1.0;" onblur="document.querySelector('.board').style.opacity=0.0;">
+        <div class="board">
+        </div>
         <script>
+
+            // This is a list for searchable in the input dialog.
+            var words = [
+                "안녕하세요", "사과", "바나나", 
+                "사과나무", "사과쥬스", "사과농장", 
+                "사과하세요","오이쥬스", "사과하세요", "오렌지", "초콜릿",
+                "blue", "green", "practice","program","dream","grass"
+            ];            
+
+            const listElem = document.querySelector(".search-list");
+            const spanElem = document.createElement("span");
+            spanElem.textContent = "검색 가능한 목록 : ";   
+            listElem.appendChild(spanElem);
+
+            words.forEach(i => {
+                const divElem = document.createElement("div");
+                const spanElem = document.createElement("span");
+
+                spanElem.textContent = JSON.stringify(i);                
+                divElem.appendChild(spanElem);
+                listElem.appendChild(divElem);
+            });            
             
             function over() {
                 this.className = 'on-over';
@@ -101,14 +126,6 @@
             // DB 생성
             var db = openDatabase("Dictionary", "1.0", "test", 2 * 1024 * 1024);
 
-            // This is a list for searchable in the input dialog.
-            var words = [
-                "안녕하세요", "사과", "바나나", 
-                "사과나무", "사과쥬스", "사과농장", 
-                "사과하세요","오이쥬스", "사과하세요", "오렌지", "초콜릿",
-                "blue", "green", "practice","program","dream","grass"
-            ];
-
             // 테이블 삭제
             db.transaction(function (tx) {
                 tx.executeSql('DROP TABLE Dictionary')
@@ -126,9 +143,7 @@
                 })});                    
             });
 
-        </script>
-        <div class="board">
-        </div>
+        </script>        
     </div>
 
 </body>
