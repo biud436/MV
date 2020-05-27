@@ -88,6 +88,20 @@
                 deltaTime: performance.now()
             };
 
+            function searchQuery(query, count) {
+                return new Promise((resolve, reject) => {
+                    db.transaction(function(tx) {
+                        tx.executeSql(`SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit ${count}`, [], function(table, result) {
+                            let data = [];
+                            for(var i of result.rows) { 
+                                data.push(i["name"]);
+                            }
+                            resolve(data);
+                        }, reject);
+                    });    
+                });
+            }
+
             async function onInput() {
                 // 데이터 찾기
                 console.clear();
@@ -100,18 +114,7 @@
                     rs.deltaTime = performance.now();
                     return;
                 }
-                var promise = new Promise((resolve, reject) => {
-                    db.transaction(function(tx) {
-                        tx.executeSql(`SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit 6`, [], function(table, result) {
-                            let data = [];
-                            for(var i of result.rows) { 
-                                data.push(i["name"]);
-                            }
-                            resolve(data);
-                        }, reject);
-                    });    
-                });
-
+                var promise = searchQuery(query, 6);
                 await promise.then(value => {
                     removeBoard();
                     value.forEach(i => {
@@ -119,8 +122,7 @@
                     })
                 }).catch(err => {
                     console.warn("Error!");
-                })
-                            
+                });         
             }
             
             // DB 생성
