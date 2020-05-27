@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <style>
+        .on-over {
+            background-color: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+        .board {
+            width: 200px; 
+            height: 200px; 
+            background-color:rgba(255, 255, 255, 0.7); 
+            line-height: 1.2em; 
+            border: 2px solid; 
+            border-color: gray;     
+            opacity: 0.0;       
+        }
+    </style>
+</head>
+<body style="background-color: blanchedalmond;">
+    <div>
+        <input type="text" oninput="onInput.call(this);" onfocus="document.querySelector('.board').style.opacity=1.0;" onblur="document.querySelector('.board').style.opacity=0.0;">
+        <script>
+            
+            function over() {
+                this.className = 'on-over';
+            }
+
+            function out() {
+                this.className = '';
+            }
+
+            function setText() {
+                document.querySelector("input").value = this.firstChild.textContent;
+            }
+
+            function removeBoard() {
+                const board = document.querySelector(".board");
+                for(let elem of board.children) {
+                    board.removeChild(elem);
+                }
+            }
+
+            function addBoard(word) {
+                const board = document.querySelector(".board");
+
+                let divElem = document.createElement("div");
+                let spanElem = document.createElement("span");
+                spanElem.textContent = word;
+                
+                divElem.appendChild(spanElem);
+                divElem.onmouseout = out;
+                divElem.onmouseover = over;
+                divElem.onmousedown = setText;
+
+                board.appendChild(divElem);
+            }   
+            
+            var rs = {
+                deltaTime: performance.now()
+            };
+
+            function onInput() {
+                // 데이터 찾기
+                console.clear();
+                removeBoard();
+                const query = document.querySelector('input').value;
+                if(query.length < 2) {
+                    return;
+                }
+                if(performance.now() - rs.deltaTime < 1800) {
+                    rs.deltaTime = performance.now();
+                    return;
+                }
+                var promise = new Promise((resolve, reject) => {
+                    db.transaction(function(tx) {
+                        tx.executeSql(`SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit 6`, [], function(table, result) {
+                            let data = [];
+                            for(var i of result.rows) { 
+                                data.push(i["name"]);
+                            }
+                            resolve(data);
+                        }, reject);
+                    });    
+                });
+
+                promise.then(value => {
+                    removeBoard();
+                    value.forEach(i => {
+                        addBoard(i);
+                    })
+                }).catch(err => {
+                    console.warn("오류!");
+                })
+                            
+            }
+            
+            // DB 생성
+            var db = openDatabase("Dictionary", "1.0", "test", 2 * 1024 * 1024);
+
+            // This is a list for searchable in the input dialog.
+            var words = [
+                "안녕하세요", "사과", "바나나", 
+                "사과나무", "사과쥬스", "사과농장", 
+                "사과하세요","오이쥬스", "사과하세요", "오렌지", "초콜릿",
+                "blue", "green", "practice","program","dream","grass"
+            ];
+
+            // 테이블 삭제
+            db.transaction(function (tx) {
+                tx.executeSql('DROP TABLE Dictionary')
+            });
+
+            // 테이블 생성
+            db.transaction(function(tx) {
+                tx.executeSql("CREATE TABLE IF NOT EXISTS Dictionary (name)")
+            });                
+
+            words.forEach(i => {
+                // 데이터 추가
+                db.transaction(function(tx) {
+                    tx.executeSql("INSERT INTO Dictionary(name) VALUES(?)", [i], (tx, result) => {
+                })});                    
+            });
+
+        </script>
+        <div class="board">
+        </div>
+    </div>
+
+</body>
+</html>
