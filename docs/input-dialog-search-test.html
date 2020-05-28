@@ -134,7 +134,7 @@
                     if(!this._db) return;
                     const db = this._db;
                     db.transaction(function(tx) {
-                        tx.executeSql("CREATE TABLE IF NOT EXISTS Dictionary (name varchar(30))")
+                        tx.executeSql("CREATE TABLE IF NOT EXISTS Dictionary (name varchar(30))");
                     });                                
                 }
                 
@@ -142,7 +142,7 @@
                     if(!this._db) return;
                     const db = this._db;     
                     db.transaction(function (tx) {
-                        tx.executeSql('DROP TABLE Dictionary')
+                        tx.executeSql('DROP TABLE Dictionary');
                     });
                 }
                 
@@ -154,55 +154,57 @@
                         // 데이터 추가
                         db.transaction(function(tx) {
                             tx.executeSql("INSERT INTO Dictionary(name) VALUES(?)", [i], (tx, result) => {
-                            })});                    
+                                // 오류 처리 필요
+                            })
                         });                    
-                    }
-                    
-                    static removeData(words) {
-                        if(!this._db) return;
-                        if(!words) return;
-                        const db = this._db;
-                        words.forEach(i => {
-                            // 데이터 추가
-                            db.transaction(function(tx) {
-                                tx.executeSql(`DELETE FROM Dictionary WHERE WORD="?"`, [word], (tx, result) => {
-                                    
-                                })
-                            });                    
-                        });                      
-                    }
-                    
-                    static searchQuery(query, count) {
-                        if(!this._db) return;
-                        const db = this._db;                    
-                        return new Promise((resolve, reject) => {
-                            db.transaction(function(tx) {
-                                tx.executeSql(`SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit ${count}`, [], function(table, result) {
-                                    let data = [];
-                                    for(var i of result.rows) { 
-                                        data.push(i["name"]);
-                                    }
-                                    resolve(data);
-                                }, reject);
-                            });    
-                        });
-                    }                
+                    });                    
                 }
+                    
+                static removeData(words) {
+                    if(!this._db) return;
+                    if(!words) return;
+                    const db = this._db;
+                    words.forEach(i => {
+                        // 데이터 추가
+                        db.transaction(function(tx) {
+                            tx.executeSql(`DELETE FROM Dictionary WHERE WORD="?"`, [word], (tx, result) => {
+                                // 오류 처리 필요
+                            })
+                        });                    
+                    });                      
+                }
+                
+                static searchQuery(query, count) {
+                    if(!this._db) return;
+                    const db = this._db;                    
+                    return new Promise((resolve, reject) => {
+                        db.transaction(function(tx) {
+                            tx.executeSql(`SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit ${count}`, [], function(table, result) {
+                                let data = [];
+                                for(var i of result.rows) { 
+                                    data.push(i["name"]);
+                                }
+                                resolve(data);
+                            }, reject);
+                        });    
+                    });
+                }                
+            }
 
-                // 앱 생성
-                const App = new AppImpl();                
-                                
-                // DB 생성
-                Database.open();
-                
-                // 테이블 삭제
-                Database.remove();
-                
-                // 테이블 생성
-                Database.create();
-                
-                // 데이터 추가
-                Database.addItems(words);
+            // 앱 생성
+            const App = new AppImpl();                
+                            
+            // DB 생성
+            Database.open();
+            
+            // 테이블 삭제
+            Database.remove();
+            
+            // 테이블 생성
+            Database.create();
+            
+            // 데이터 추가
+            Database.addItems(words);
                 
             </script>        
         </div>
