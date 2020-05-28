@@ -166,10 +166,10 @@
                     if(!this._db) return;
                     if(!words) return;
                     const db = this._db;
-                    words.forEach(i => {
+                    words.forEach(word => {
                         // 데이터 추가
                         db.transaction(function(tx) {
-                            tx.executeSql(`DELETE FROM Dictionary WHERE WORD="?"`, [word], (tx, result) => {
+                            tx.executeSql(`DELETE FROM Dictionary WHERE name='${word}'`, [], (tx, result) => {
                                 
                             }, (err) => {
 
@@ -177,6 +177,22 @@
                         });                    
                     });                      
                 }
+
+                static removeAllData() {
+                    if(!this._db) return;
+                    if(!words) return;
+                    const db = this._db;
+                    words.forEach(word => {
+                        // 데이터 추가
+                        db.transaction(function(tx) {
+                            tx.executeSql(`DELETE FROM Dictionary`, [], (tx, result) => {
+                                
+                            }, (err) => {
+
+                            });
+                        });                    
+                    });                      
+                }                    
                 
                 static searchQuery(query, count) {
                     if(!this._db) return;
