@@ -154,7 +154,9 @@
                         // 데이터 추가
                         db.transaction(function(tx) {
                             tx.executeSql("INSERT INTO Dictionary(name) VALUES(?)", [i], (tx, result) => {
-                                // 오류 처리 필요
+     
+                            }, (err) => {
+
                             })
                         });                    
                     });                    
@@ -168,8 +170,10 @@
                         // 데이터 추가
                         db.transaction(function(tx) {
                             tx.executeSql(`DELETE FROM Dictionary WHERE WORD="?"`, [word], (tx, result) => {
-                                // 오류 처리 필요
-                            })
+                                
+                            }, (err) => {
+
+                            });
                         });                    
                     });                      
                 }
