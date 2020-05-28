@@ -167,7 +167,6 @@
                     if(!words) return;
                     const db = this._db;
                     words.forEach(word => {
-                        // 데이터 추가
                         db.transaction(function(tx) {
                             tx.executeSql(`DELETE FROM Dictionary WHERE name='${word}'`, [], (tx, result) => {
                                 
@@ -183,7 +182,6 @@
                     if(!words) return;
                     const db = this._db;
                     words.forEach(word => {
-                        // 데이터 추가
                         db.transaction(function(tx) {
                             tx.executeSql(`DELETE FROM Dictionary`, [], (tx, result) => {
                                 
