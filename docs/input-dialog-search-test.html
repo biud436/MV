@@ -23,130 +23,189 @@
 <body style="background-color: blanchedalmond;">
     <div>
         <div class="search-list"></div>
-        <input type="text" oninput="onInput.call(this);" onfocus="document.querySelector('.board').style.opacity=1.0;" onblur="document.querySelector('.board').style.opacity=0.0;">
+        <input type="text" oninput="AppImpl.onInput.call(this);" onfocus="document.querySelector('.board').style.opacity=1.0;" onblur="document.querySelector('.board').style.opacity=0.0;">
         <div class="board">
         </div>
         <script>
-
+            
             // This is a list for searchable in the input dialog.
-            var words = [
+            let words = [
                 "안녕하세요", "사과", "바나나", 
                 "사과나무", "사과쥬스", "사과농장", 
                 "사과하세요","오이쥬스", "오렌지", "초콜릿",
                 "blue", "green", "practice","program","dream","grass"
-            ];            
+            ];          
 
-            const listElem = document.querySelector(".search-list");
-            const spanElem = document.createElement("span");
-            spanElem.textContent = "검색 가능한 목록 : ";   
-            listElem.appendChild(spanElem);
+            const RSEvent = {
 
-            words.forEach(i => {
-                const divElem = document.createElement("div");
-                const spanElem = document.createElement("span");
-
-                spanElem.textContent = JSON.stringify(i);                
-                divElem.appendChild(spanElem);
-                listElem.appendChild(divElem);
-            });            
-            
-            function over() {
-                this.className = 'on-over';
-            }
-
-            function out() {
-                this.className = '';
-            }
-
-            function setText() {
-                document.querySelector("input").value = this.firstChild.textContent;
-            }
-
-            function removeBoard() {
-                const board = document.querySelector(".board");
-                for(let elem of board.children) {
-                    board.removeChild(elem);
-                }
-            }
-
-            function addBoard(word) {
-                const board = document.querySelector(".board");
-
-                let divElem = document.createElement("div");
-                let spanElem = document.createElement("span");
-                spanElem.textContent = word;
+                over() {
+                    this.className = 'on-over';
+                },
                 
-                divElem.appendChild(spanElem);
-                divElem.onmouseout = out;
-                divElem.onmouseover = over;
-                divElem.onmousedown = setText;
-
-                board.appendChild(divElem);
-            }   
-            
-            var rs = {
+                out() {
+                    this.className = '';
+                },
+                
+                setText() {
+                    document.querySelector("input").value = this.firstChild.textContent;
+                }
+            }
+                        
+            let rs = {
                 deltaTime: performance.now()
-            };
+            };        
+              
+            class AppImpl {
 
-            function searchQuery(query, count) {
-                return new Promise((resolve, reject) => {
+                constructor() {
+                    this.initWithScreen();
+                }
+
+                initWithScreen() {
+                    const listElem = document.querySelector(".search-list");
+                    const spanElem = document.createElement("span");
+                    spanElem.textContent = "검색 가능한 목록 : ";   
+                    listElem.appendChild(spanElem);
+                    
+                    words.forEach(i => {
+                        const divElem = document.createElement("div");
+                        const spanElem = document.createElement("span");
+                        
+                        spanElem.textContent = JSON.stringify(i);                
+                        divElem.appendChild(spanElem);
+                        listElem.appendChild(divElem);
+                    }); 
+                }
+   
+                removeBoard() {
+                    const board = document.querySelector(".board");
+                    for(let elem of board.children) {
+                        board.removeChild(elem);
+                    }
+                }
+                
+                addBoard(word) {
+                    const board = document.querySelector(".board");
+                    
+                    let divElem = document.createElement("div");
+                    let spanElem = document.createElement("span");
+                    spanElem.textContent = word;
+                    
+                    divElem.appendChild(spanElem);
+                    divElem.onmouseout = RSEvent.out;
+                    divElem.onmouseover = RSEvent.over;
+                    divElem.onmousedown = RSEvent.setText;
+                    
+                    board.appendChild(divElem);
+                }
+
+                static async onInput() {
+                    // 데이터 찾기
+                    console.clear();
+                    if(!App) return;
+                    App.removeBoard();
+                    const query = document.querySelector('input').value;
+                    if(query.length < 2) {
+                        return;
+                    }
+                    if(performance.now() - rs.deltaTime < 1800) {
+                        rs.deltaTime = performance.now();
+                        return;
+                    }
+                    var promise = Database.searchQuery(query, 6);
+                    await promise.then(value => {
+                        App.removeBoard();
+                        value.forEach(i => {
+                            App.addBoard(i);
+                        })
+                    }).catch(err => {
+                        console.warn("Error!");
+                    });         
+                }                
+            }
+                        
+            class Database {
+                
+                static open() {
+                    this._db = openDatabase("Dictionary", "1.0", "test", 2 * 1024 * 1024);
+                }
+                
+                static create() {
+                    if(!this._db) return;
+                    const db = this._db;
                     db.transaction(function(tx) {
-                        tx.executeSql(`SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit ${count}`, [], function(table, result) {
-                            let data = [];
-                            for(var i of result.rows) { 
-                                data.push(i["name"]);
-                            }
-                            resolve(data);
-                        }, reject);
-                    });    
-                });
-            }
-
-            async function onInput() {
-                // 데이터 찾기
-                console.clear();
-                removeBoard();
-                const query = document.querySelector('input').value;
-                if(query.length < 2) {
-                    return;
+                        tx.executeSql("CREATE TABLE IF NOT EXISTS Dictionary (name varchar(30))")
+                    });                                
                 }
-                if(performance.now() - rs.deltaTime < 1800) {
-                    rs.deltaTime = performance.now();
-                    return;
+                
+                static remove() {
+                    if(!this._db) return;
+                    const db = this._db;     
+                    db.transaction(function (tx) {
+                        tx.executeSql('DROP TABLE Dictionary')
+                    });
                 }
-                var promise = searchQuery(query, 6);
-                await promise.then(value => {
-                    removeBoard();
-                    value.forEach(i => {
-                        addBoard(i);
-                    })
-                }).catch(err => {
-                    console.warn("Error!");
-                });         
-            }
-            
-            // DB 생성
-            var db = openDatabase("Dictionary", "1.0", "test", 2 * 1024 * 1024);
+                
+                static addItems(words) {
+                    if(!this._db) return;
+                    if(!words) return;
+                    const db = this._db;
+                    words.forEach(i => {
+                        // 데이터 추가
+                        db.transaction(function(tx) {
+                            tx.executeSql("INSERT INTO Dictionary(name) VALUES(?)", [i], (tx, result) => {
+                            })});                    
+                        });                    
+                    }
+                    
+                    static removeData(words) {
+                        if(!this._db) return;
+                        if(!words) return;
+                        const db = this._db;
+                        words.forEach(i => {
+                            // 데이터 추가
+                            db.transaction(function(tx) {
+                                tx.executeSql(`DELETE FROM Dictionary WHERE WORD="?"`, [word], (tx, result) => {
+                                    
+                                })
+                            });                    
+                        });                      
+                    }
+                    
+                    static searchQuery(query, count) {
+                        if(!this._db) return;
+                        const db = this._db;                    
+                        return new Promise((resolve, reject) => {
+                            db.transaction(function(tx) {
+                                tx.executeSql(`SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit ${count}`, [], function(table, result) {
+                                    let data = [];
+                                    for(var i of result.rows) { 
+                                        data.push(i["name"]);
+                                    }
+                                    resolve(data);
+                                }, reject);
+                            });    
+                        });
+                    }                
+                }
 
-            // 테이블 삭제
-            db.transaction(function (tx) {
-                tx.executeSql('DROP TABLE Dictionary')
-            });
-
-            // 테이블 생성
-            db.transaction(function(tx) {
-                tx.executeSql("CREATE TABLE IF NOT EXISTS Dictionary (name varchar(30))")
-            });                
-
-            words.forEach(i => {
+                // 앱 생성
+                const App = new AppImpl();                
+                                
+                // DB 생성
+                Database.open();
+                
+                // 테이블 삭제
+                Database.remove();
+                
+                // 테이블 생성
+                Database.create();
+                
                 // 데이터 추가
-                db.transaction(function(tx) {
-                    tx.executeSql("INSERT INTO Dictionary(name) VALUES(?)", [i], (tx, result) => {
-                })});                    
-            });
-
-        </script>        
-    </div>
-
-</body>
-</html>
+                Database.addItems(words);
+                
+            </script>        
+        </div>
+        
+    </body>
+    </html>
