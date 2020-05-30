@@ -89,6 +89,10 @@
  * if you'll going to set the hint list, Try to call script command as belows before opening the input dialog.
  * 
  * RS.InputDialog.Params.words = ["godmother", "godfather", "goddess"];
+ * RS.InputDialog.Params.words = ["빨리 없애버려", "뭐하는 거냐?", "나가자!"];
+ * RS.InputDialog.Params.words = ["きのうの明洞わにぎやかでしたか？"];
+ * 
+ * Note that you must set the screen size as HD (1280x720) or more.
  * 
  * =============================================================================
  * Plugin Commands
