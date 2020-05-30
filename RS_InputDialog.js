@@ -484,9 +484,9 @@ function Scene_InputDialog() {
       switch (keyCode) {
       case 33:    // pageup
       case 34:    // pagedown
-      case 37:    // left arrow
+      // case 37:    // left arrow
       case 38:    // up arrow
-      case 39:    // right arrow
+      // case 39:    // right arrow
       case 40:    // down arrow
           return true;
       }
