@@ -7,7 +7,6 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * RS_InputDialog.js
  * @plugindesc This plugin allows you to display Text Edit Box on the screen. <RS_InputDialog>
  * @author biud436
  *
@@ -84,6 +83,13 @@
  * @default center
  *
  * @help
+ * This plugin allows you to type the text and save to certain game variable.
+ * and it also provides a hint list that is possible the auto-complete when clicking a list.
+ * 
+ * if you'll going to set the hint list, Try to call script command as belows before opening the input dialog.
+ * 
+ * RS.InputDialog.Params.words = ["godmother", "godfather", "goddess"];
+ * 
  * =============================================================================
  * Plugin Commands
  * =============================================================================
@@ -157,200 +163,8 @@
  * - In the chromium 69+ more over, The input element is always displayed even though <canvas>'s z-index is large than <input> element's z-index. so I've fixed that.
  * 2019.03.05 (v1.1.16) :
  * - Fixed the issue that can not create a background when using Irina_PerformanceUpgrade.
- */
-/*:ko
- * @plugindesc 화면에 텍스트 에디터 띄워 텍스트 값을 변수로 받습니다 <RS_InputDialog>
- * @author 러닝은빛(biud436)
- *
- * @param textBox Width
- * @text 텍스트박스 가로 크기
- * @type number
- * @desc 텍스트 박스의 가로 크기를 지정하세요.
- * @default 488
- * @decimals 0
- * @min 28
- *
- * @param textBox Height
- * @text 텍스트박스 세로 크기
- * @type number
- * @desc 텍스트 박스의 세로 크기를 지정하세요.
- * @default 36
- * @decimals 0
- * @min 8
- *
- * @param variable ID
- * @text 변수 ID
- * @type variable
- * @desc 텍스트 입력 결과값을 전달 받을 변수의 ID 값을 지정하세요.
- * @default 3
- *
- * @param debug
- * @text 디버그 여부
- * @type boolean
- * @desc 디버그 용도로 alert 창을 표시할 지 여부를 설정하세요.
- * @default false
- *
- * @param Text Hint
- * @text 텍스트 힌트
- * @desc 텍스트 박스 내부에 가이드 글자를 남깁니다.
- * @default Please enter the value...
- *
- * @param direction
- * @text 텍스트 방향
- * @type select
- * @desc 텍스트의 방향을 선택하십시오.
- * @default ltr
- * @option 왼쪽에서 오른쪽으로 (기본)
- * @value ltr
- * @option 오른쪽에서 왼쪽으로
- * @value rtl
- *
- * @param Max Length
- * @text 텍스트 최대 길이
- * @type number
- * @desc 텍스트 입력 필드에서 최대로 입력할 수 있는 텍스트 길이 값을 지정하십시오.
- * @default 255
- * @min 1
- * @max 255
- *
- * @param Style
- * @text 스타일시트
- *
- * @param CSS
- * @parent Style
- * @type note
- * @desc 스타일시트를 수정할 수 있습니다 (잘 아시는 분만 사용하십시오)
- * @default ""
- *
- * @param Button Name
- * @text 버튼 명
- *
- * @param Ok
- * @text 확인 버튼
- * @parent Button Name
- * @desc 확인 버튼의 이름을 지정합니다.
- * @default 확인
- *
- * @param Cancel
- * @text 취소 버튼
- * @parent Button Name
- * @desc 취소 버튼의 이름을 지정합니다.
- * @default 취소
- *
- * @param Position
- * @text 초기 위치
- * @desc 초기 위치를 지정하세요.
- * ('center' 또는 '0, 0')
- * @default center
- *
- * @help
- * =============================================================================
- * 플러그인 명령에 대해...
- * =============================================================================
- * 텍스트 입력창을 열려면 다음 플러그인 명령을 호출해야 합니다. 이 명령은 맵이나 전투
- * 에서 호출이 가능합니다. 전투일 경우에는 동작이 약간 달라집니다. 
- *
- * 전투 장면에서는 Yanfly님의 Battle Core Engine과 같이 사용하면 편리합니다.
- * 
- * InputDialog open
- *
- * 텍스트 입력창의 가로 길이를 변경하는 명령어입니다.
- * 
- * InputDialog width 488
- *
- * 텍스트 입력창의 가이드 텍스트를 바꿀 수 있는 명령입니다. 문장 형식으로 작성할 수
- * 있습니다. 내부에서 문장으로 조합됩니다.
- * 
- * InputDialog text Please enter the string...
- *
- * 입력된 텍스트 값을 전달 받을 변수를 변경할 수 있습니다. 변수의 ID 값을 지정하세요.
- * 
- * InputDialog variableID 3
- *
- * 텍스트 입력 이후에 결과 값을 alert 창에 표시하려면 사용하십시오.
- * 
- * InputDialog debug true
- *
- * 텍스트 입력창에 입력할 수 있는 최대 텍스트 길이를 변경할 수 있습니다.
- * 
- * InputDialog maxLength 10
- *
- * 텍스트 입력 상자의 위치를 바꾸려면 pos 명령을 사용해야 합니다.
- * 첫번째 인자에 "center"라는 문자열을 넘기면 화면 중앙에 텍스트 입력 상자가 정렬됩니다.
- * 모바일에서는 중앙 정렬을 되도록이면 사용하지 않는 것이 좋습니다.
- * 키보드 레이아웃에 의해 텍스트 입력 상자가 가려질 가능성이 있습니다.
- * 
- * 문자열이 아닌 좌표 x, y 값을 지정하면 해당 화면 좌표에 텍스트 입력 상자를 설정하게 됩니다.
- * 
- * InputDialog pos center
- * InputDialog pos 0 0
- * 
- * =============================================================================
- * UI 수정에 대해
- * =============================================================================
- * CSS 매개변수에서 CSS를 이용하여 UI를 수정할 수 있습니다. 
- * 주로 색상 값과 폰트 크기를 조절할 수 있으며, 모바일 장치에서만 바뀌게 할 수도 있습니다.
- * 
- * 또한 텍스트 입력 상자는 화면 중앙에만 고정되는 것이 아닙니다. 플러그인 명령을 통해 손 쉽게 바꿀 수 있고,
- * UI도 CSS를 편집하면 바꿀 수 있습니다. 
- * (플러그인 파일을 텍스트 에디터로 열어서 직접 편집하는 것이 더 좋습니다)
- *
- * 스크립트 명령어로 위치를 수정하려면, 먼저 아래 변수 값을 false로 설정해야 합니다.
- * RS.InputDialog.Params.isCenterAlignment = false;
- *
- * 그 후, 포인트 값을 수정하여 위치를 조절할 수 있습니다.
- *
- * RS.InputDialog.Params.pos.x = 0;
- * RS.InputDialog.Params.pos.y = 0;
- *
- * =============================================================================
- * 변동 사항
- * =============================================================================
- * 2016.08.09 (v1.0.0) - First Release.
- * 2016.08.09 (v1.0.1) - Added Background Color.
- * 2016.08.10 (v1.0.1a) - Added ID Variables.
- * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
- * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
- * 2016.08.16 (v1.1.1a) - Fixed a whitespace bug.
- * 2016.10.14 (v1.1.2) - Fixed the issue that is not working in Battle.
- * 2016.10.14 (v1.1.3) :
- * - Fixed the bug that does not change the background color.
- * - Fixed the bug that does not change the variable ID.
- * 2016.10.17 (v1.1.4) - Fixed the frame works of input dialog in battle.
- * 2016.10.18 (v1.1.5) - Fixed an issue that battler's movement is too fast.
- * 2016.10.29 (v1.1.6) - Added the function that allows you to specify the maximum number of character for an input field.
- * 2016.11.13 (v1.1.6a) - Fixed the issue that is directly calling the requestUpdate function of SceneManager.
- * 2016.12.02 (v1.1.6e) :
- * - Added some style codes such as a text shadow and an outline into the text box.
- * - Fixed the way that can temporarily stop attack and skill actions with an enemy when the text box is activated in the battle.
- * - It will not process the text input when the text box is not shown in the battle.
- * - In the debug mode, It adds the result value to a log window after the text input is done.
- * 2016.12.08 (v1.1.6h) - Removed the text hint window.
- * 2016.12.17 (v1.1.6i) - Fixed an issue that an integer value could not be checked due to the text type issue.
- * 2017.01.30 (v1.1.7) - Fixed an issue that is not working properly if the text dialog has a string to start with a number.
- * 2017.02.16 (v1.1.8) :
- * - Fixed incorrect position and width, height values in the text box.
- * - Added new feature that indicates the input dialog at the top position of the screen when pressing any key on your own mobile device.
- * - Added new feature that automatically returns a result of the text box if you did not press anything.
- * 2018.01.25 (v1.1.8a) - test...
- * 2018.01.30 (v1.1.9) :
- * - Added the button called 'OK'.
- * - Added the button called 'Cancel'.
- * - Removed the feature that can change the background-color of the input dialog.
- * - Fixed the issue that is not clicking the button in the mobile.
- * 2018.02.03 (v1.1.10) :
- * - Fixed the issue that is not working in RMMV 1.5.1
- * - Fixed the default value of the plugin parameter  called 'CSS'.
- * 2018.02.06 (v1.1.11) :
- * - Fixed the issue that is not working in the battle scene.
- * 2018.10.22 (v1.1.15) :
- * - 텍스트 입력 상자의 위치를 정확히 조절할 수 있는 플러그인 커맨드가 추가되었습니다.
- * - 모바일에서 키보드 레이아웃이 사라졌을 때 텍스트 입력 상자를 터치하면 키보드 레이아웃을 다시 표시할 수 있습니다.
- * - 모바일에서의 폰트 크기를 1rem(16px)로 설정하였습니다.
- * - 기본 디자인을 초록색 테마에서 검정색 테마로 변경하였습니다. 
- * - 크로미움 69+ 버전에서 <input> 태그의 z-index가 <canvas> 태그의 z-index보다 낮더라도 화면에 표시되는 버그가 있었습니다.
- * 2019.03.05 (v1.1.16) :
- * - Fixed the issue that can not create a background when using Irina_PerformanceUpgrade.
+ * 2020.05.30 (v1.1.17) :
+ * - Added autocomplete (experimental)
  */
 
 var Imported = Imported || {};
