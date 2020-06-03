@@ -43,8 +43,8 @@ class Window_MessageImpl extends Window_Message {
     }
 
     createMainTextLayer() {
-        var w = this._width - this._padding * 2;
-        var h = this._height - this._padding * 2;
+        var w = this._width - this.standardPadding() * 2;
+        var h = this._height - this.standardPadding() * 2;
 
         this._mainTextLayer = new Sprite();
         this._mainTextLayer.setFrame(this.origin.x, this.origin.y, w, h);
@@ -72,6 +72,9 @@ class Window_MessageImpl extends Window_Message {
      */
     startTextEffect(args) {
 
+        var w = this._width - this.standardPadding() * 2;
+        var h = this._height - this.standardPadding() * 2;
+
         /**
          * @type {TextEffect}
          */
@@ -84,7 +87,7 @@ class Window_MessageImpl extends Window_Message {
         let sprite = EffectFactory.create(effectType);
 
         sprite.bitmap = bitmap;
-             
+        
         this._mainTextLayer.addChild(sprite);       
 
         sprite.start(textState);
@@ -144,11 +147,13 @@ class Window_MessageImpl extends Window_Message {
 
         bitmap.drawText(c, 0, 0, w * 2 , h, "left");
 
-        this._mainTextLayer.emit("effect", [
-            bitmap,
-            textState
-        ]);
-        
+        if(!this._isUsedTextWidthEx) {
+            this._mainTextLayer.emit("effect", [
+                bitmap,
+                textState
+            ]);
+        }
+
         textState.x += w;
 
         if(Imported.RS_MessageSystem) {
