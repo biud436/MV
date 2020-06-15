@@ -388,6 +388,11 @@ RS.WaveConfig = RS.WaveConfig || {};
     console.error('This plugin does not support in your project');
     return;
   }
+
+  if(PIXI.VERSION >= "5.2.4") {
+    PIXI.filters.VoidFilter = PIXI.filters.AlphaFilter;
+  }
+
   //----------------------------------------------------------------------------
   // PIXI.WaveFilter
   //
