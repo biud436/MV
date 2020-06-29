@@ -1,6 +1,6 @@
 const $gameMap = {
     requestRefresh() {
-
+        "test"
     }
 };
 
