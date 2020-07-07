@@ -291,19 +291,24 @@ RS.ScreenShot = RS.ScreenShot || {};
   var alias_Scene_Map_start = Scene_Map.prototype.start;
   Scene_Map.prototype.start = function() {
     alias_Scene_Map_start.call(this);
-    this._screenshotHooker = new Window_ScreenshotHooker();
-    this.addChild(this._screenshotHooker);
+    if($.isInGamePreview) {    
+      this._screenshotHooker = new Window_ScreenshotHooker();
+      this.addChild(this._screenshotHooker);
 
-    this.on("screenshot_hookat", this.screenshotHookAt, this);
+      this.on("screenshot_hookat", this.screenshotHookAt, this);
+    }
   };
 
   var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
     alias_Scene_Map_terminate.call(this);
-    this.off("screenshot_hookat", this.screenshotHookAt, this);
+    if($.isInGamePreview) {  
+      this.off("screenshot_hookat", this.screenshotHookAt, this);
+    }
   };
 
   Scene_Map.prototype.screenshotHookAt = function(canvas, fileName) {
+    if(!this._screenshotHooker) return;
     this._screenshotHooker.on(canvas, fileName);
   };
 
