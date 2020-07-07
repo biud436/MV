@@ -15,17 +15,23 @@
  *
  * @param key
  * @type number
- * @desc Type the keyCode.
+ * @desc Please set the virtual key code value.
+ * Default button sets to F7 (118)
  * @default 118
  *
  * @param Screenshot Preview Window
  * @type boolean
- * @desc
+ * @desc To activate the preview window, change to true.
  * @default true
+ * 
+ * @param In-Game Preview Window
+ * @type boolean
+ * @desc To activate the in-game preview, change to true.
+ * @default false
  *
  * @param Play Se
  * @type boolean
- * @desc Yes - true, No - false
+ * @desc Change to true to play sound when taking screenshots.
  * @default true
  *
  * @param Se Name
@@ -64,70 +70,11 @@
  * - Fixed the getPath function issue in RMMV 1.6.0.
  * - Changed the source code for RMMV 1.6.0.
  * 2018.04.25 (v1.0.6) - Added a feature that allows you to select the file format in the screenshot.
-* 2019.03.13 (v1.0.7) :
-* - Fixed the issue that is not showing the image to preview window in the RMMV 1.6.2
+ * 2019.03.13 (v1.0.7) :
+ * - Fixed the issue that is not showing the image to preview window in the RMMV 1.6.2
+ * 2020.07.07 (v1.0.8) :
+ * - Added in-game screenshot preview window.
  */
-/*:ko
-* RS_ScreenShot.js
-* @plugindesc <RS_ScreenShot>
-*
-* @author biud436
-* @date 2015.12.22
-*
-* @param key
-* @type number
-* @desc 키 코드를 입력하세요
-* @default 118
-*
-* @param Screenshot Preview Window
-* @type boolean
-* @desc 스크린샷을 미리 볼 지 여부를 결정합니다.
-* @default true
-*
-* @param Play Se
-* @type boolean
-* @desc 재생 - true, 재생하지 않음 - false
-* @default true
-*
-* @param Se Name
-* @desc audio/se 폴더에 있는 사운드 파일을 지정하세요.
-* @default Save
-* @require 1
-* @dir audio/se/
-* @type file
-*
-* @param file format
-* @text 파일 형식
-* @type select
-* @desc 원하는 스크린샷 파일 형식을 지정하세요.
-* @default png
-* @option png
-* @value png
-* @option jpeg
-* @value jpeg
-*
-* @reference http://stackoverflow.com/questions/32613060/how-to-take-screenshot-with-node-webkit
-*
-* @help
-* - Key Code Link
-* https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
-*
-* - Change Log
-* 2015.12.22 (v1.0.0) - First Release.
-* 2016.03.20 (v1.0.1) - Added parameter called key.
-* 2016.08.13 (v1.0.2) - Added preview window.
-* 2016.11.27 (v1.0.3) - Added the code that can delete the texture from the memory.
-* 2016.11.27 (v1.0.4) : Fixed preview window in the html format instead of an image.
-* - Displays the name of the screen shot file in the preview window.
-* - Plays the sound when you are taking a screenshot.
-* 2016.12.08 (v1.0.42) - Added code to remove references to URL objects.
-* 2018.02.27 (v1.0.5) :
-* - Fixed the getPath function issue in RMMV 1.6.0.
-* - Changed the source code for RMMV 1.6.0.
-* 2018.04.25 (v1.0.6) - Added a feature that allows you to select the file format in the screenshot.
-* 2019.03.13 (v1.0.7) :
-* - Fixed the issue that is not showing the image to preview window in the RMMV 1.6.2
-*/
 
 var Imported = Imported || {};
 Imported.RS_ScreenShot = true;
@@ -150,6 +97,7 @@ RS.ScreenShot = RS.ScreenShot || {};
   $.isPlaySe = Boolean(parameters['Play Se'] === 'true');
   $.seName = parameters['Se Name'] || 'Save';
   $.fileFormat = parameters["file format"] || "png";
+  $.isInGamePreview = true;
 
   $.localFilePath = function (fileName) {
     if(!Utils.isNwjs()) return '';
@@ -176,51 +124,57 @@ RS.ScreenShot = RS.ScreenShot || {};
     if(stage) {
       renderer.render(stage, renderTexture);
       let canvas = renderer.extract.base64(renderTexture);
-      
-      let html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-          .preview {
-              position: absolute;
-              background-color: #888888;
-              font-size: 18px;
-              color: white;
-              text-align: center;
-              width: 256px;
-              height: 19px;
-              opacity: 0.7;
-              word-wrap: break-word;
-            }
-          </style>
-          <title>ScreenShots Preview</title>
-        </head>
-        <div class="preview">${fileName}.${$.fileFormat}</div>
-        <body>
-          <img src=\'${canvas}\'>
-        </body>
-        </html>
-      `;
 
-      const blob = new Blob([html], {type : 'text/html'});
-      let url = URL.createObjectURL(blob);
-      let win = window.open(url, '_blank');
-      
-      if(Utils.RPGMAKER_VERSION >= "1.6.0") {
-        url = canvas.toDataURL(`image/${$.fileFormat}`);
-        win = window.open(url, '_blank');
+      if($.isInGamePreview) {
+        stage.emit("screenshot_hookat", canvas, fileName);
+      } else {
+        let html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+            .preview {
+                position: absolute;
+                background-color: #888888;
+                font-size: 18px;
+                color: white;
+                text-align: center;
+                width: 256px;
+                height: 19px;
+                opacity: 0.7;
+                word-wrap: break-word;
+              }
+            </style>
+            <title>ScreenShots Preview</title>
+          </head>
+          <div class="preview">${fileName}.${$.fileFormat}</div>
+          <body>
+            <img src=\'${canvas}\'>
+          </body>
+          </html>
+        `;
+  
+        const blob = new Blob([html], {type : 'text/html'});
+        let url = URL.createObjectURL(blob);
+        let win = window.open(url, '_blank');
+        
+        if(Utils.RPGMAKER_VERSION >= "1.6.0") {
+          url = canvas.toDataURL(`image/${$.fileFormat}`);
+          win = window.open(url, '_blank');
+        }
       }
-     
+
     }
 
     if(renderTexture) {
       renderTexture.destroy( { destroyBase: true } );
     }
 
-    // Call this method when it doesn't need to keep the reference to URL object any longer.
-    URL.revokeObjectURL(url);
+    if(!$.isInGamePreview) {
+      // Call this method when it doesn't need to keep the reference to URL object any longer.
+      URL.revokeObjectURL(url);
+    }
 
   };
 
@@ -264,6 +218,93 @@ RS.ScreenShot = RS.ScreenShot || {};
         break;
         }
       }
+  };
+
+  /**
+   * This class allows you to hook a new screenshot in the game.
+   */
+  class Window_ScreenshotHooker extends Window_Base {
+
+    constructor() {
+      super(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+      this._isWindow = false;
+      this.opacity = 0;
+
+      this.setVisible(false);
+    }
+
+    setVisible(value) {
+      this.children.forEach(e => {
+        if(e.constructor.name.contains("_window")) {
+          e.visible = value;
+        }
+      });   
+    }
+
+    on(canvas, filename) {
+      this.setVisible(true);
+
+      this._screenshot = PIXI.Sprite.from(canvas);
+
+      const style = {
+        "dropShadow": true,
+        "dropShadowAlpha": 0.4,
+        "dropShadowDistance": 1,
+        "stroke": "white",
+        "strokeThickness": 2
+      };
+
+      this._text = new PIXI.Text(`${filename}.${$.fileFormat}`, style);
+
+      this._screenshot.addChild(this._text);
+
+      this.addChildAt(this._screenshot, 1);
+      this._updateContents();
+
+      this.visible = true;
+    }
+
+    off() {
+      this.setVisible(false);
+
+      if(this._screenshot) {
+        this._windowContentsSprite.removeChild(this._screenshot);
+      }
+
+      this.visible = false;
+
+    }
+
+    update() {
+      super.update();
+
+      if(Input.isTriggered("ok") || Input.isTriggered("escape")) {
+        if(this.visible) {
+          this.off();
+        }
+      }
+
+    }
+
+  }
+
+  var alias_Scene_Map_start = Scene_Map.prototype.start;
+  Scene_Map.prototype.start = function() {
+    alias_Scene_Map_start.call(this);
+    this._screenshotHooker = new Window_ScreenshotHooker();
+    this.addChild(this._screenshotHooker);
+
+    this.on("screenshot_hookat", this.screenshotHookAt, this);
+  };
+
+  var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
+  Scene_Map.prototype.terminate = function() {
+    alias_Scene_Map_terminate.call(this);
+    this.off("screenshot_hookat", this.screenshotHookAt, this);
+  };
+
+  Scene_Map.prototype.screenshotHookAt = function(canvas, fileName) {
+    this._screenshotHooker.on(canvas, fileName);
   };
 
 })(RS.ScreenShot);
