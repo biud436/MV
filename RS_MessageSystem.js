@@ -1404,6 +1404,8 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
+* 2020.07.11 (v0.1.65) :
+* - optimized color transformation.
 * 2020.05.14 (v0.1.64) :
 * - 커스텀 폰트가 로드되지 않는 현상을 수정하였습니다.
 * - fonts 폴더에 있는 모든 폰트를 자동으로 로드하는 기능을 추가하였습니다.
@@ -2105,7 +2107,7 @@ var Color = Color || {};
     var r = (n) & 255;
     var g = (n >> 8) & 255;
     var b = (n >> 16) & 255;
-    var result = 'rgba(%1,%2,%3,1)'.format(r, g, b);
+    var result = `rgba(${r},${g},${b},1)`;
     return result;
   };
 
@@ -2143,294 +2145,245 @@ var Color = Color || {};
 
   };
 
+  const KOREAN_COLORS = {
+    "청록": "rgba(0,255,255,1)",
+    "청록색": "rgba(0,255,255,1)",
+    "c_aqua": "rgba(0,255,255,1)",
+    "검은색": "rgba(0,0,0,1)",
+    "검정": "rgba(0,0,0,1)",
+    "c_black": "rgba(0,0,0,1)",
+    "파란색": "rgba(0,0,255,1)",
+    "파랑": "rgba(0,0,255,1)",
+    "c_blue": "rgba(0,0,255,1)",
+    "짙은회색": "rgba(64,64,64,1)",
+    "c_dkgray": "rgba(64,64,64,1)",
+    "자홍색": "rgba(255,0,255,1)",
+    "자홍": "rgba(255,0,255,1)",
+    "c_fuchsia": "rgba(255,0,255,1)",
+    "회색": "rgba(128,128,128,1)",
+    "c_gray": "rgba(128,128,128,1)",
+    "녹색": "rgba(0,128,0,1)",
+    "c_green": "rgba(0,128,0,1)",
+    "밝은녹색": "rgba(0,255,0,1)",
+    "라임": "rgba(0,255,0,1)",
+    "c_lime": "rgba(0,255,0,1)",
+    "밝은회색": "rgba(192,192,192,1)",
+    "c_ltgray": "rgba(192,192,192,1)",
+    "밤색": "rgba(128,0,0,1)",
+    "마룬": "rgba(128,0,0,1)",
+    "c_maroon": "rgba(128,0,0,1)",
+    "감청색": "rgba(0,0,128,1)",
+    "네이비": "rgba(0,0,128,1)",
+    "c_navy": "rgba(0,0,128,1)",
+    "황록색": "rgba(128,128,0,1)",
+    "올리브": "rgba(128,128,0,1)",
+    "c_olive": "rgba(128,128,0,1)",
+    "주황색": "rgba(255,160,64,1)",
+    "주황": "rgba(255,160,64,1)",
+    "오렌지": "rgba(255,160,64,1)",
+    "c_orange": "rgba(255,160,64,1)",
+    "보라색": "rgba(128,0,128,1)",
+    "보라": "rgba(128,0,128,1)",
+    "c_purple": "rgba(128,0,128,1)",
+    "빨간색": "rgba(255,0,0,1)",
+    "빨강": "rgba(255,0,0,1)",
+    "c_red": "rgba(255,0,0,1)",
+    "은색": "rgba(192,192,192,1)",
+    "은": "rgba(192,192,192,1)",
+    "c_silver": "rgba(192,192,192,1)",
+    "민트색": "rgba(0,128,128,1)",
+    "c_teal": "rgba(0,128,128,1)",
+    "흰색": "rgba(255,255,255,1)",
+    "흰": "rgba(255,255,255,1)",
+    "c_white": "rgba(255,255,255,1)",
+    "노란색": "rgba(255,255,0,1)",
+    "노랑": "rgba(255,255,0,1)",
+    "c_yellow": "rgba(255,255,0,1)"
+  };
+
+  const CHINESE_COLOR = {
+    "水色": "rgba(0,255,255,1)",
+    "c_aqua": "rgba(0,255,255,1)",
+    "黑色": "rgba(0,0,0,1)",
+    "c_black": "rgba(0,0,0,1)",
+    "蓝色": "rgba(0,0,255,1)",
+    "c_blue": "rgba(0,0,255,1)",
+    "深灰色": "rgba(64,64,64,1)",
+    "c_dkgray": "rgba(64,64,64,1)",
+    "紫红色": "rgba(255,0,255,1)",
+    "c_fuchsia": "rgba(255,0,255,1)",
+    "灰色": "rgba(128,128,128,1)",
+    "c_gray": "rgba(128,128,128,1)",
+    "绿色": "rgba(0,128,0,1)",
+    "c_green": "rgba(0,128,0,1)",
+    "浅绿色": "rgba(0,255,0,1)",
+    "c_lime": "rgba(0,255,0,1)",
+    "浅灰色": "rgba(192,192,192,1)",
+    "c_ltgray": "rgba(192,192,192,1)",
+    "栗色": "rgba(128,0,0,1)",
+    "c_maroon": "rgba(128,0,0,1)",
+    "绀青色": "rgba(0,0,128,1)",
+    "c_navy": "rgba(0,0,128,1)",
+    "黄绿色": "rgba(128,128,0,1)",
+    "c_olive": "rgba(128,128,0,1)",
+    "橙黄色": "rgba(255,160,64,1)",
+    "c_orange": "rgba(255,160,64,1)",
+    "紫色": "rgba(128,0,128,1)",
+    "c_purple": "rgba(128,0,128,1)",
+    "红色": "rgba(255,0,0,1)",
+    "c_red": "rgba(255,0,0,1)",
+    "银白色": "rgba(192,192,192,1)",
+    "c_silver": "rgba(192,192,192,1)",
+    "水鸭色": "rgba(0,128,128,1)",
+    "c_teal": "rgba(0,128,128,1)",
+    "白色": "rgba(255,255,255,1)",
+    "c_white": "rgba(255,255,255,1)",
+    "黄色": "rgba(255,255,0,1)",
+    "c_yellow": "rgba(255,255,0,1)"
+  };
+
+  const ENGLISH_COLOR = {
+    "AQUA": "rgba(0,255,255,1)",
+    "c_aqua": "rgba(0,255,255,1)",
+    "BLACK": "rgba(0,0,0,1)",
+    "c_black": "rgba(0,0,0,1)",
+    "BLUE": "rgba(0,0,255,1)",
+    "c_blue": "rgba(0,0,255,1)",
+    "DKGRAY": "rgba(64,64,64,1)",
+    "c_dkgray": "rgba(64,64,64,1)",
+    "FUCHSIA": "rgba(255,0,255,1)",
+    "c_fuchsia": "rgba(255,0,255,1)",
+    "GRAY": "rgba(128,128,128,1)",
+    "c_gray": "rgba(128,128,128,1)",
+    "GREEN": "rgba(0,128,0,1)",
+    "c_green": "rgba(0,128,0,1)",
+    "LIME": "rgba(0,255,0,1)",
+    "c_lime": "rgba(0,255,0,1)",
+    "LTGRAY": "rgba(192,192,192,1)",
+    "c_ltgray": "rgba(192,192,192,1)",
+    "MAROON": "rgba(128,0,0,1)",
+    "c_maroon": "rgba(128,0,0,1)",
+    "NAVY": "rgba(0,0,128,1)",
+    "c_navy": "rgba(0,0,128,1)",
+    "OLIVE": "rgba(128,128,0,1)",
+    "c_olive": "rgba(128,128,0,1)",
+    "ORANGE": "rgba(255,160,64,1)",
+    "c_orange": "rgba(255,160,64,1)",
+    "PURPLE": "rgba(128,0,128,1)",
+    "c_purple": "rgba(128,0,128,1)",
+    "RED": "rgba(255,0,0,1)",
+    "c_red": "rgba(255,0,0,1)",
+    "SILVER": "rgba(192,192,192,1)",
+    "c_silver": "rgba(192,192,192,1)",
+    "TEAL": "rgba(0,128,128,1)",
+    "c_teal": "rgba(0,128,128,1)",
+    "WHITE": "rgba(255,255,255,1)",
+    "c_white": "rgba(255,255,255,1)",
+    "YELLOW": "rgba(255,255,0,1)",
+    "c_yellow": "rgba(255,255,0,1)"
+  };
+
+  const JAPANESE_COLOR = {
+    "水色": "rgba(0,255,255,1)",
+    "アクア色": "rgba(0,255,255,1)",
+    "c_aqua": "rgba(0,255,255,1)",
+    "黑色": "rgba(0,0,0,1)",
+    "c_black": "rgba(0,0,0,1)",
+    "靑色": "rgba(0,0,255,1)",
+    "c_blue": "rgba(0,0,255,1)",
+    "ふか灰色": "rgba(64,64,64,1)",
+    "c_dkgray": "rgba(64,64,64,1)",
+    "紫紅色": "rgba(255,0,255,1)",
+    "c_fuchsia": "rgba(255,0,255,1)",
+    "灰色": "rgba(128,128,128,1)",
+    "c_gray": "rgba(128,128,128,1)",
+    "綠色": "rgba(0,128,0,1)",
+    "c_green": "rgba(0,128,0,1)",
+    "黃綠": "rgba(0,255,0,1)",
+    "c_lime": "rgba(0,255,0,1)",
+    "鼠色": "rgba(192,192,192,1)",
+    "c_ltgray": "rgba(192,192,192,1)",
+    "―色": "rgba(128,0,0,1)",
+    "c_maroon": "rgba(128,0,0,1)",
+    "群青色": "rgba(0,0,128,1)",
+    "ネイビー": "rgba(0,0,128,1)",
+    "c_navy": "rgba(0,0,128,1)",
+    "黃綠色": "rgba(128,128,0,1)",
+    "オリーブ色": "rgba(128,128,0,1)",
+    "c_olive": "rgba(128,128,0,1)",
+    "橙色": "rgba(255,160,64,1)",
+    "オレンジ色": "rgba(255,160,64,1)",
+    "c_orange": "rgba(255,160,64,1)",
+    "紫色": "rgba(128,0,128,1)",
+    "c_purple": "rgba(128,0,128,1)",
+    "赤色": "rgba(255,0,0,1)",
+    "レッド": "rgba(255,0,0,1)",
+    "c_red": "rgba(255,0,0,1)",
+    "銀色": "rgba(192,192,192,1)",
+    "c_silver": "rgba(192,192,192,1)",
+    "ミント色": "rgba(0,128,128,1)",
+    "薄荷色": "rgba(0,128,128,1)",
+    "c_teal": "rgba(0,128,128,1)",
+    "白色": "rgba(255,255,255,1)",
+    "c_white": "rgba(255,255,255,1)",
+    "黃色": "rgba(255,255,0,1)",
+    "c_yellow": "rgba(255,255,0,1)"
+  };
+
   RS.MessageSystem.getKoreanColor = function (string) {
-    switch (string) {
-      case '청록':
-      case '청록색':
-      case 'c_aqua':
-        return Color.getColor(16776960);
-      case '검은색':
-      case '검정':
-      case 'c_black':
-        return Color.getColor(0);
-      case '파란색':
-      case '파랑':
-      case 'c_blue':
-        return Color.getColor(16711680);
-      case '짙은회색':
-      case 'c_dkgray':
-        return Color.getColor(4210752);
-      case '자홍색':
-      case '자홍':
-      case 'c_fuchsia':
-        return Color.getColor(16711935);
-      case '회색':
-      case 'c_gray':
-        return Color.getColor(8421504);
-      case '녹색':
-      case 'c_green':
-        return Color.getColor(32768);
-      case '밝은녹색':
-      case '라임':
-      case 'c_lime':
-        return Color.getColor(65280);
-      case '밝은회색':
-      case 'c_ltgray':
-        return Color.getColor(12632256);
-      case '밤색':
-      case '마룬':
-      case 'c_maroon':
-        return Color.getColor(128);
-      case '감청색':
-      case '네이비':
-      case 'c_navy':
-        return Color.getColor(8388608);
-      case '황록색':
-      case '올리브':
-      case 'c_olive':
-        return Color.getColor(32896);
-      case '주황색':
-      case '주황':
-      case '오렌지':
-      case 'c_orange':
-        return Color.getColor(4235519);
-      case '보라색':
-      case '보라':
-      case 'c_purple':
-        return Color.getColor(8388736);
-      case '빨간색':
-      case '빨강':
-      case 'c_red':
-        return Color.getColor(255);
-      case '은색':
-      case '은':
-      case 'c_silver':
-        return Color.getColor(12632256);
-      case '민트색':
-      case 'c_teal':
-        return Color.getColor(8421376);
-      case '흰색':
-      case '흰':
-      case 'c_white':
-        return Color.getColor(16777215);
-      case '노란색':
-      case '노랑':
-      case 'c_yellow':
-        return Color.getColor(65535);
-      case '기본':
-      case '기본색':
-      case 'c_normal':
-        return Color.getBaseColor();
-      default:
-        return Color.getUserCustomColor(string);
+    let color = KOREAN_COLORS[string];
+    
+    if(color) {
+      return color;
     }
+
+    if(["기본", "기본색", "c_normal"].contains(string)) {
+      return Color.getBaseColor();
+    }
+
+    return Color.getUserCustomColor(string);
   };
 
   RS.MessageSystem.getChineseColor = function (string) {
-    switch (string) {
-      case '水色':
-      case 'c_aqua':
-        return Color.getColor(16776960);
-      case '黑色':
-      case 'c_black':
-        return Color.getColor(0);
-      case '蓝色':
-      case 'c_blue':
-        return Color.getColor(16711680);
-      case '深灰色':
-      case 'c_dkgray':
-        return Color.getColor(4210752);
-      case '紫红色':
-      case 'c_fuchsia':
-        return Color.getColor(16711935);
-      case '灰色':
-      case 'c_gray':
-        return Color.getColor(8421504);
-      case '绿色':
-      case 'c_green':
-        return Color.getColor(32768);
-      case '浅绿色':
-      case 'c_lime':
-        return Color.getColor(65280);
-      case '浅灰色':
-      case 'c_ltgray':
-        return Color.getColor(12632256);
-      case '栗色':
-      case 'c_maroon':
-        return Color.getColor(128);
-      case '绀青色':
-      case 'c_navy':
-        return Color.getColor(8388608);
-      case '黄绿色':
-      case 'c_olive':
-        return Color.getColor(32896);
-      case '橙黄色':
-      case 'c_orange':
-        return Color.getColor(4235519);
-      case '紫色':
-      case 'c_purple':
-        return Color.getColor(8388736);
-      case '红色':
-      case 'c_red':
-        return Color.getColor(255);
-      case '银白色':
-      case 'c_silver':
-        return Color.getColor(12632256);
-      case '水鸭色':
-      case 'c_teal':
-        return Color.getColor(8421376);
-      case '白色':
-      case 'c_white':
-        return Color.getColor(16777215);
-      case '黄色':
-      case 'c_yellow':
-        return Color.getColor(65535);
-      case '通常':
-      case 'c_normal':
-        return Color.getBaseColor();
-      default:
-        return Color.getUserCustomColor(string);
+    let color = CHINESE_COLOR[string];
+    
+    if(color) {
+      return color;
     }
+
+    if(['通常', 'c_normal'].contains(string)) {
+      return Color.getBaseColor();
+    }
+
+    return Color.getUserCustomColor(string);
   };
 
   RS.MessageSystem.getEnglishColor = function (string) {
-    switch (string) {
-      case 'AQUA':
-      case 'c_aqua':
-        return Color.getColor(16776960);
-      case 'BLACK':
-      case 'c_black':
-        return Color.getColor(0);
-      case 'BLUE':
-      case 'c_blue':
-        return Color.getColor(16711680);
-      case 'DKGRAY':
-      case 'c_dkgray':
-        return Color.getColor(4210752);
-      case 'FUCHSIA':
-      case 'c_fuchsia':
-        return Color.getColor(16711935);
-      case 'GRAY':
-      case 'c_gray':
-        return Color.getColor(8421504);
-      case 'GREEN':
-      case 'c_green':
-        return Color.getColor(32768);
-      case 'LIME':
-      case 'c_lime':
-        return Color.getColor(65280);
-      case 'LTGRAY':
-      case 'c_ltgray':
-        return Color.getColor(12632256);
-      case 'MAROON':
-      case 'c_maroon':
-        return Color.getColor(128);
-      case 'NAVY':
-      case 'c_navy':
-        return Color.getColor(8388608);
-      case 'OLIVE':
-      case 'c_olive':
-        return Color.getColor(32896);
-      case 'ORANGE':
-      case 'c_orange':
-        return Color.getColor(4235519);
-      case 'PURPLE':
-      case 'c_purple':
-        return Color.getColor(8388736);
-      case 'RED':
-      case 'c_red':
-        return Color.getColor(255);
-      case 'SILVER':
-      case 'c_silver':
-        return Color.getColor(12632256);
-      case 'TEAL':
-      case 'c_teal':
-        return Color.getColor(8421376);
-      case 'WHITE':
-      case 'c_white':
-        return Color.getColor(16777215);
-      case 'YELLOW':
-      case 'c_yellow':
-        return Color.getColor(65535);
-      case 'NORMAL':
-      case 'c_normal':
-        return Color.getBaseColor();
-      default:
-        return Color.getUserCustomColor(string);
+    let color = ENGLISH_COLOR[string];
+    
+    if(color) {
+      return color;
     }
+
+    if('c_normal' === string) {
+      return Color.getBaseColor();
+    }
+
+    return Color.getUserCustomColor(string);    
   };
 
   RS.MessageSystem.getJapaneseColor = function (string) {
-    switch (string) {
-      case '水色':
-      case 'アクア色':
-      case 'c_aqua': // 아쿠아
-        return Color.getColor(16776960);
-      case '黑色':
-      case 'c_black': // 검정
-        return Color.getColor(0);
-      case '靑色':
-      case 'c_blue': // 파란색
-        return Color.getColor(16711680);
-      case 'ふか灰色':
-      case 'c_dkgray': // 짙은회색
-        return Color.getColor(4210752);
-      case '紫紅色':
-      case 'c_fuchsia': // 자홍색
-        return Color.getColor(16711935);
-      case '灰色':
-      case 'c_gray': // 회색
-        return Color.getColor(8421504);
-      case '綠色':
-      case 'c_green': // 녹색
-        return Color.getColor(32768);
-      case '黃綠':
-      case 'c_lime': // 연두색
-        return Color.getColor(65280);
-      case '鼠色':
-      case 'c_ltgray': // 쥐색
-        return Color.getColor(12632256);
-      case '―色':
-      case 'c_maroon': // 밤색
-        return Color.getColor(128);
-      case '群青色':
-      case 'ネイビー':
-      case 'c_navy': // 군청색
-        return Color.getColor(8388608);
-      case '黃綠色':
-      case 'オリーブ色':
-      case 'c_olive': // 황록색
-        return Color.getColor(32896);
-      case '橙色':
-      case 'オレンジ色':
-      case 'c_orange': // 주황색
-        return Color.getColor(4235519);
-      case '紫色':
-      case 'c_purple': // 보라색, 자색
-        return Color.getColor(8388736);
-      case '赤色':
-      case 'レッド':
-      case 'c_red': //빨간색 (아카이)
-        return Color.getColor(255);
-      case '銀色':
-      case 'c_silver': // 은색
-        return Color.getColor(12632256);
-      case 'ミント色':
-      case '薄荷色':
-      case 'c_teal': // 민트색, 박하색
-        return Color.getColor(8421376);
-      case '白色':
-      case 'c_white': // 흰색
-        return Color.getColor(16777215);
-      case '黃色':
-      case 'c_yellow': // 노란색
-        return Color.getColor(65535);
-      case '基本色':
-      case 'c_normal': // 기본색
-        return Color.getBaseColor();
-      default:
-        return Color.getUserCustomColor(string);
+    let color = JAPANESE_COLOR[string];
+    
+    if(color) {
+      return color;
     }
+
+    if(['基本色', 'c_normal'].contains(string)) {
+      return Color.getBaseColor();
+    }
+
+    return Color.getUserCustomColor(string);
   };
 
   RS.MessageSystem.getBrowser = function () {
