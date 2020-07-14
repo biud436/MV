@@ -29,6 +29,14 @@
  * @min 0
  * @max 255
  *
+ * @param helpWindow_Opacity
+ * @text Help Window Opacity
+ * @type number
+ * @desc The opacity can set as number between 0 and 255.
+ * @default 225
+ * @min 0
+ * @max 255
+ *
  * @param askingText
  * @desc This is a text hint
  * @default Please enter the name
@@ -96,6 +104,14 @@
  * @parent Error Message
  * @desc Write here a warning message to be displayed when texts are the same name.
  * @default Cannot set as the same name
+ * 
+ * @param Show Error Message
+ * @parent Error Message
+ * @type boolean
+ * @desc Specify whether the error messsage shows.
+ * @default true
+ * @on true
+ * @off false
  * 
  * @param Keyboard Editor Hidden
  * @type boolean
@@ -169,6 +185,8 @@
  * - Added a new feature that can select whether input method editor shows on the screen. 
  * its feature can be resolved many of issues on the mobile device.
  * - Added a new feature that can hide the face image on the name edit window.
+ * 2020.07.14 (v1.6.10) :
+ * - Fixed the issue, https://github.com/biud436/MV/issues/18
  */
 /*~struct~TextBox:
  * 
@@ -242,6 +260,14 @@
  * @min 0
  * @max 255
  *
+ * @param helpWindow_Opacity
+ * @text Help Window 투명도
+ * @type number
+ * @desc 이름 윈도우의 투명도 값으로 0 ~ 255 사이의 숫자 값을 입력하세요.
+ * @default 225
+ * @min 0
+ * @max 255
+ * 
  * @param askingText
  * @text 안내 텍스트
  * @desc 텍스트 힌트
@@ -325,7 +351,16 @@
  * @parent Error Message
  * @desc 같은 이름으로 설정하려 할 때 띄울 메시지를 적으십시오.
  * @default 같은 이름으로 설정할 수 없습니다!
- *
+ * 
+ * @param Show Error Message
+ * @text 오류 메시지 표시 여부
+ * @parent Error Message
+ * @type boolean
+ * @desc 오류 메시지를 표시할 지 여부를 설정합니다.
+ * @default true
+ * @on 표시한다
+ * @off 표시안함
+ * 
  * @param Keyboard Editor Hidden
  * @type boolean
  * @desc 모바일에서 입력 양식을 터치하여 수동으로 가상 키보드 입력기를 띄울 수 있게 하는 기능입니다.
@@ -424,6 +459,8 @@
  * 2019.11.23 (v1.6.9) :
  * - 입력 에디터를 화면에 표시하거나 숨길 수 있는 매개변수를 추가했습니다.
  * - 얼굴 이미지를 감출 수 있는 기능을 추가하였습니다.
+ * 2020.07.14 (v1.6.10) :
+ * - Fixed the issue, https://github.com/biud436/MV/issues/18
  */
 /*~struct~TextBox:ko
  * 
@@ -522,6 +559,9 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
   $.Params.cant_type_same_name = parameters["cant_type_same_name"] || "같은 이름으로 설정할 수 없습니다.";
 
   $.Params.isKeyboardEditorHidden = Boolean(parameters["Keyboard Editor Hidden"] === "true");
+
+  $.Params.helpWindowOpacity = Number(parameters['helpWindow_Opacity'] || 225);
+  $.Params.isValidErrorMessage = Boolean(parameters["Show Error Message"] === "true");
   
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
   var dialog_Input_shouldPreventDefault = function(keyCode) {
@@ -688,7 +728,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
           this._alertFunc($.Params.didnt_type_anytext);
         } else if( this._defaultName === this._textBox.value ) {
           // e.preventDefault();
-          // this._alertFunc($.Params.cant_type_same_name);
+          this._alertFunc($.Params.cant_type_same_name);
           if(this._okFunc) this._okFunc();
         }
       }
@@ -974,8 +1014,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
       this._commandWindow.activate();    
       
     } else {
-      var name = this._editWindow._name;
-      
+
       this._editWindow.deactivate();
       this._textBox.blur();
 
@@ -1031,6 +1070,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
   };
   
   Scene_KorName.prototype.onAlert = function(text) {
+    if(!$.Params.isValidErrorMessage) return;
     if(!this._helpWindow) return;
     this._helpWindow.show();
     this._helpWindow.setText(text);
@@ -1041,7 +1081,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     this._helpWindow = new Window_Help(1);
     this._helpWindow.x = 0;
     this._helpWindow.y = Graphics.boxHeight - Math.ceil(Graphics.boxHeight / 6) - this._helpWindow.height;
-    this._helpWindow.opacity = 0;
+    this._helpWindow.opacity = $.Params.helpWindowOpacity;
     this._helpWindowLife = 0;    
     this._helpWindow.hide();
     this.addWindow(this._helpWindow);
