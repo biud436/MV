@@ -548,6 +548,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     this._wavePhase = 360;
     this._waveFilter = null;
     this._wave = false;
+    this._isWaveDirty = false;
   };
 
   var alias_Sprite_update = Sprite.prototype.update;
@@ -641,6 +642,7 @@ RS.WaveConfig = RS.WaveConfig || {};
      },
      set: function(value) {
        this._wave = value;
+       this._isWaveDirty = true;
 
        if(this._wave) {
          if(!this._waveFilter) {
@@ -649,7 +651,7 @@ RS.WaveConfig = RS.WaveConfig || {};
          this.filterArea = new PIXI.Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
          this.filters = [this._waveFilter];
        } else {
-         this.filters = [new PIXI.filters.VoidFilter()];
+         this.filters = [Sprite.voidFilter];
        }
      },
      configurable: true
@@ -784,7 +786,10 @@ RS.WaveConfig = RS.WaveConfig || {};
 
   Sprite_Picture.prototype.updateWave = function() {
     var picture = this.picture();
-    this.wave = picture.wave();
+    const isValidWave = picture.wave();
+    if(isValidWave !== this.wave) {
+      this.wave = isValidWave;
+    }
     this.wave_speed = picture.waveSpeed();
     this.wave_amp = picture.waveAmp();
   };
@@ -1049,8 +1054,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     if(!this._character) return;
     if(!(this._character instanceof Game_Event)) return;
     const isValidWave = this._character.wave();
-    if(!isValidWave) return;
-    this.wave = isValidWave;
+    if(this.wave !== isValidWave) this.wave = isValidWave;
     if(this.wave) {
       this.waveFrequency = this._character.waveFrequency();
       this.waveSpeed = this._character.waveSpeed();
