@@ -174,6 +174,8 @@
  * - Fixed the bug that causes an error when calling Erase Event event command.
  * 2019.02.24 (v1.5.11) :
  * - Fixed an issue that is not loaded a save file that you saved before using this script.
+ * 2020.08.03 (v1.6.0) :
+ * - Performance optimization.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -361,6 +363,8 @@
  * - Fixed the bug that causes an error when calling Erase Event event command.
  * 2019.02.24 (v1.5.11) :
  * - Fixed an issue that is not loaded a save file that you saved before using this script.
+ * 2020.08.03 (v1.6.0) :
+ * - Performance optimization.
  * =============================================================================
  * Terms of Use
  * =============================================================================
@@ -533,12 +537,16 @@ RS.WaveConfig = RS.WaveConfig || {};
   var alias_Sprite_initialize = Sprite.prototype.initialize;
   Sprite.prototype.initialize = function(bitmap) {
     alias_Sprite_initialize.call(this, bitmap);
+    this.initWithWaveFeatures();
+  };
+
+  Sprite.prototype.initWithWaveFeatures = function() {
     this._waveTime = 0;
     this._waveHeight = 0.5;
     this._waveSpeed = 0.25;
     this._waveFrequency = 0.02;
     this._wavePhase = 360;
-    this._waveFilter = new PIXI.WaveFilter();
+    this._waveFilter = null;
     this._wave = false;
   };
 
@@ -654,15 +662,17 @@ RS.WaveConfig = RS.WaveConfig || {};
   var alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
   TilingSprite.prototype.initialize = function(bitmap) {
     alias_TilingSprite_initialize.call(this, bitmap);
+    this.initWithWaveFeatures();
+  };
 
+  TilingSprite.prototype.initWithWaveFeatures = function() {
     this._waveTime = 0;
     this._waveHeight = 0.5;
     this._waveSpeed = 0.25;
     this._waveFrequency = 0.02;
     this._wavePhase = 360;
-    this._waveFilter = new PIXI.WaveFilter();
+    this._waveFilter = null;
     this._wave = false;
-
   };
 
   var alias_TilingSprite_update = TilingSprite.prototype.update;
@@ -1038,7 +1048,9 @@ RS.WaveConfig = RS.WaveConfig || {};
     alias_Sprite_Character_updatePosition.call(this);
     if(!this._character) return;
     if(!(this._character instanceof Game_Event)) return;
-    this.wave = this._character.wave();
+    const isValidWave = this._character.wave();
+    if(!isValidWave) return;
+    this.wave = isValidWave;
     if(this.wave) {
       this.waveFrequency = this._character.waveFrequency();
       this.waveSpeed = this._character.waveSpeed();
