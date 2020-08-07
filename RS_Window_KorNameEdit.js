@@ -187,6 +187,8 @@
  * - Added a new feature that can hide the face image on the name edit window.
  * 2020.07.14 (v1.6.10) :
  * - Fixed the issue, https://github.com/biud436/MV/issues/18
+ * 2020.08.07 (v1.6.11) :
+ * - Fixed the bug that can't hide IME.
  */
 /*~struct~TextBox:
  * 
@@ -461,6 +463,8 @@
  * - 얼굴 이미지를 감출 수 있는 기능을 추가하였습니다.
  * 2020.07.14 (v1.6.10) :
  * - Fixed the issue, https://github.com/biud436/MV/issues/18
+ * 2020.08.07 (v1.6.11) :
+ * - 에디터가 감춰지지 않는 문제를 수정하였습니다.
  */
 /*~struct~TextBox:ko
  * 
@@ -617,7 +621,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     //
     // as the result, you must change the visibility of input form manually.
     var isMobileDevice = Utils.isMobileDevice();
-    return $.Params.isKeyboardEditorHidden && !isMobileDevice;
+    return $.Params.isKeyboardEditorHidden && isMobileDevice;
   };
   
   TextBox.prototype.createTextBox = function() {
