@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * @target MZ
- * @plugindesc (v0.5.0) This plugin allows you to type in korean in the Name Input Proccessing <RS_Window_KorNameEdit>
+ * @plugindesc (v0.5.2) This plugin allows you to type in korean in the Name Input Proccessing <RS_Window_KorNameEdit>
  * @author biud436
  * @url https://biud436.tistory.com/
  *
@@ -145,7 +145,8 @@
  * ============================================
  * Change Log
  * ============================================
- * 2020.08.07 (v0.5.0) - test
+ * 2020.08.07 (v0.5.2) :
+ * - Fixed the bug that can't hide IME.
  * 
  * @command KNE
  * @text Korean Name Input
@@ -262,7 +263,7 @@
  */
 /*:ko
  * @target MZ
- * @plugindesc (v0.5.0) 한글 이름 입력 플러그인 <RS_Window_KorNameEdit>
+ * @plugindesc 한글 이름 입력 플러그인 <RS_Window_KorNameEdit>
  * @author 러닝은빛(biud436)
  * @url https://biud436.blog.me
  * 
@@ -421,11 +422,6 @@
  * # 라이센스(License)
  * The MIT License (MIT)
  * 
- * ============================================
- * Change Log
- * ============================================
- * 2020.08.07 (v0.5.0) - 테스트 버전
- * 
  * @command KNE
  * @text Korean Name Input
  * @desc IME를 이용하여 액터의 이름을 설정할 수 있습니다.
@@ -565,6 +561,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     });
 
     const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
+    console.log(pluginName);
     const parameters = (pluginParams.length > 0) && pluginParams[0].parameters;
 
     $.Params.windowWidth = parameters['windowWidth'];
@@ -672,7 +669,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
 
         isKeyboardEditorHidden() {
             const isMobileDevice = Utils.isMobileDevice();
-            return $.Params.isKeyboardEditorHidden && !isMobileDevice;
+            return $.Params.isKeyboardEditorHidden && isMobileDevice;
         }
 
         createTextBox() {
