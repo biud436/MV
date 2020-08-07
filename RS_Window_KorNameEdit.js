@@ -561,7 +561,6 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     });
 
     const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
-    console.log(pluginName);
     const parameters = (pluginParams.length > 0) && pluginParams[0].parameters;
 
     $.Params.windowWidth = parameters['windowWidth'];
