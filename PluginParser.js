@@ -178,7 +178,7 @@ class App {
     }
 
     processLine(line) {
-        if(line.indexOf("/*:ko") >= 0) this._isValid = true;
+        if(line.indexOf("/*:") >= 0) this._isValid = true;
         if(line.indexOf("~struct~") >= 0) this._isValid = false;
         if(this._isValid) {
             const cmt = Parser.parse(line);
