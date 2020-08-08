@@ -103,6 +103,8 @@ class App {
                 lastKey: "",
                 lastValue: "",
                 data : {},
+                name: "",
+                description: "",
             }
         };
 
@@ -124,8 +126,10 @@ class App {
                 crlfDelay: Infinity,
             });
             console.log("%s%s%s", Color.BgBlue, filename, Color.Reset);
+            tempData.param.name = f;
             rl.on('line', line => {
                 if(line.indexOf("/*:") >= 0) isValid = true;
+                if(line.indexOf("~struct~") >= 0) isValid = false;
                 if(isValid) {
                     const cmt = Parser.parse(line);
 
@@ -134,6 +138,10 @@ class App {
                     }
 
                     switch(cmt.type) {
+                        case "plugindesc":
+                            console.log("@plugindesc %s%s%s", Color.BgRed, cmt.desc, Color.Reset);
+                            tempData.param.description = cmt.desc.slice(0);
+                            break;
                         case "param":
                             console.log("@param %s%s%s", Color.BgBlack, cmt.desc, Color.Reset);
                             lastCommand = "param";
@@ -186,9 +194,16 @@ class App {
             });
             rl.on('close', () => {
                 for(const i in tempData) {
-                    if(i === "param") continue;
-                    // const data = JSON.stringify(tempData[i].data, null,i === "param" ? "\t":"");
-                    const data = JSON.stringify(tempData[i].data);
+                    let data = JSON.stringify(tempData[i].data);
+
+                    if(i === "param") {
+                        data = JSON.stringify({
+                            name: tempData.param.name.split(".")[0],
+                            status: true,
+                            description: tempData.param.description,
+                            parameters: tempData[i].data,
+                        });
+                    }
                     console.log(`${i} parse : %s%s%s`, Color.FgYellow, data, Color.Reset);
                     fs.writeFileSync(`./output_${i}.json`, data, "utf8");
                     console.log("파일 작성 완료");
