@@ -1,5 +1,5 @@
 /**
- * node PluginParser.js -f="C:\Users\U\Desktop\TrashcanDungeon\gamedata"
+ * node PluginParser.js -f="C:\Users\U\Desktop\TrashcanDungeon\gamedata\js\plugins\RS_Window_KorNameEdit.js"
  */
 
 const fs = require('fs-extra');
