@@ -1,0 +1,22 @@
+{
+  "name": "mz",
+  "version": "1.0.0",
+  "description": "This plugin package includes helpful features to get you on your way to create your game in RPG Maker MZ.",
+  "main": "RS_Window_KorNameEdit.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biud436/MZ.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/biud436/MZ/issues"
+  },
+  "homepage": "https://github.com/biud436/MZ#readme",
+  "dependencies": {
+    "minimist": "^1.2.5"
+  }
+}
