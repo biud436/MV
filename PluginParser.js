@@ -186,6 +186,7 @@ class App {
             });
             rl.on('close', () => {
                 for(const i in tempData) {
+                    if(i === "param") continue;
                     // const data = JSON.stringify(tempData[i].data, null,i === "param" ? "\t":"");
                     const data = JSON.stringify(tempData[i].data);
                     console.log(`${i} parse : %s%s%s`, Color.FgYellow, data, Color.Reset);
