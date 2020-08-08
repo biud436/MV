@@ -84,132 +84,331 @@ class Parser extends String {
     }
 }
 
+class PluginParams {
+    constructor() {
+        this.lastKey = "";
+        this.lastValue = "";
+        this.data = {};
+        this.name = "";
+        this.description = "";
+    }
+}
+
+class ArgParams {
+    constructor() {
+        this.lastKey = "";
+        this.lastValue = "";
+        this.data = {};
+        this.texts = [];
+    }
+}
+
+class ParamFile {
+    /**
+     * 
+     * @param {String} pluginName 
+     * @param {{
+        lastKey: "",
+        lastValue: "",
+        data : {},
+        name: "",
+        description: "",
+    }} data 
+     */
+    constructor(pluginName, data) {
+        this._name = pluginName;
+        this._data = data;
+    }
+
+    create() {
+        const data = JSON.stringify(this._data);
+        console.log("output(param) : %s%s%s", Color.BgRed, data, Color.Reset);        
+        fs.writeFileSync(`./data/output_param.json`, JSON.stringify(this._data), "utf8");
+    }
+}
+
+class ArgFile {
+    constructor(pluginName, data) {
+        this._name = pluginName;
+        this._data = data;
+    }
+
+    create() {
+        const data = JSON.stringify(this._data);
+        console.log("output(arg) : %s%s%s", Color.BgRed, data, Color.Reset);
+        fs.writeFileSync(`./data/output_arg.json`, data, "utf8");
+    }    
+}
+
 class App {
 
-    start() {
+    constructor() {
+        this._list = [];
+        this._targetDir = "";
+        this._isValid = false;
 
-        let targetDir;
-        let list = [];
-        let isValid = false;
-        let lastCommand = "";
+        this._commands = [];
+        this._lastComment = "";
+        this._lastCommand = "";
+        this._commandIndex = -1;
+        this._lastCommandIndex = -1;
 
-        let tempData = {
-            arg: {
-                lastKey: "",
-                lastValue: "",
-                data : {},
-            },
-            param: {
-                lastKey: "",
-                lastValue: "",
-                data : {},
-                name: "",
-                description: "",
-            }
-        };
+        /**
+         * @type{{arg: ArgParams[], param: PluginParams}}
+         */
+        this._flushData = {
+            arg: [],
+            param: new PluginParams()
+        };        
+    }
 
+    /**
+     * 플러그인 파일을 읽습니다.
+     */
+    readPluginFiles() {
         const targetFile = argv.f.replace( /\\/g, '/' );
         const stat = fs.lstatSync(targetFile);
         if(stat.isDirectory()) {
-            targetDir = path.join(targetFile, "js", "plugins");
-            list = fs.readdirSync(targetDir.replace( /\\/g, '/' ));
+            this._targetDir = path.join(targetFile, "js", "plugins");
+            this._list = fs.readdirSync(this._targetDir.replace( /\\/g, '/' ));
         } else {
-            targetDir = path.dirname(targetFile);
-            list.push(Parser.ready(targetFile).splitOnLast("/"));
+            this._targetDir = path.dirname(targetFile);
+            this._list.push(Parser.ready(targetFile).splitOnLast("/"));
         }
+    }
 
-        list.forEach(f => {
-            const filename = path.join(targetDir, f);
+    processLine(line) {
+        if(line.indexOf("/*:ko") >= 0) this._isValid = true;
+        if(line.indexOf("~struct~") >= 0) this._isValid = false;
+        if(this._isValid) {
+            const cmt = Parser.parse(line);
+
+            if(!cmt) {
+                return;
+            }
+
+            this.parseComments(cmt);
+
+            if(line.indexOf("*/") >= 0) {
+                this._isValid = false;
+            }
+        }
+    }
+
+    setParams(type, data) {
+        this._lastCommand = "param";        
+        this._flushData.param[type] = data;
+    }
+
+    getParams(type) {
+        return this._flushData.param[type];
+    }
+
+    setOutputParamData(key, value) {
+        this._flushData.param.data[key] = value;
+    }
+
+    isValidParam(type) {
+        return !!this._flushData.param[type];
+    }
+
+    createCommand(data) {
+        this._lastCommand = "command";        
+        this._commands.push(data);        
+        this._flushData.arg.push(new ArgParams());
+        this._commandIndex++;
+        this._lastCommandIndex = this._flushData.arg.length - 1;
+    }
+
+    setArgs(type, data) {
+        const index = this._lastCommandIndex;
+        this._flushData.arg[index][type] = data;
+        this._flushData.arg[index].texts.push(data);
+    }
+
+    setOutputArgsData(key, value) {
+        const index = this._lastCommandIndex;
+        this._flushData.arg[index].data[key] = value;
+    }    
+
+    isValidArgs(type) {
+        const index = this._lastCommandIndex;
+        return !!this._flushData.arg[index][type];
+    }
+
+    getArgs(type) {
+        const index = this._lastCommandIndex;
+        return this._flushData.arg[index][type];
+    }
+
+    setCommandArgsText(data) {
+        if(this._lastCommand === "command" || this._lastComment === "args") {
+            const index = this._lastCommandIndex;
+            this._flushData.arg[index].texts.push(data);
+        }
+    }
+
+    /**
+     * @param {Parser} cmt 
+     */
+    parseComments(cmt) {
+        this._lastComment = cmt.type;
+
+        switch(cmt.type) {
+            case "plugindesc":
+                console.log("@plugindesc %s%s%s", Color.BgRed, cmt.desc, Color.Reset);
+                this.setParams("description", cmt.desc.slice(0));
+                break;
+            case "param":
+                console.log("@param %s%s%s", Color.BgBlack, cmt.desc, Color.Reset);
+                this.setParams("lastKey", cmt.desc.slice(0));
+                break;
+            case "command":
+                console.log("@command %s%s%s", Color.BgRed, cmt.desc, Color.Reset);
+                this.createCommand(cmt.desc);
+                break;
+            case "arg":
+                console.log("@arg %s%s%s", Color.BgGreen, cmt.name, Color.Reset);
+                this.setArgs("lastKey", cmt.desc.slice(0));
+                break;
+            case "text":
+                console.log("@text %s%s%s", Color.FgRed, cmt.desc, Color.Reset);
+                this.setCommandArgsText(cmt.desc.slice(0));
+                break;
+            case "type":
+                if(["command", "param"].includes(this._lastCommand)) {
+                    console.log("@type %s%s%s", Color.FgRed, cmt.name, Color.Reset);
+                }
+                break;                            
+            case "desc":
+                // 한 줄만 지원.
+                console.log("@desc %s%s%s", Color.FgWhite, cmt.desc, Color.Reset);
+                break;
+            case "default":
+                console.log("@default %s%s%s", Color.FgYellow, cmt.desc, Color.Reset);
+
+                let outputData;
+                let type = "";
+
+                const index = this._commandIndex;
+                const data = this._flushData;
+
+                if(this._lastCommand === "param") { // 플러그인 매개변수
+                    let key = "";
+
+                    if(this.isValidParam("lastKey")) {
+                        this.setParams("lastValue", cmt.desc.slice(0));
+                    }
+
+                    if((key = this.getParams("lastKey")) != "") {
+                        const value = this.getParams("lastValue");
+                        this.setOutputParamData(key, value);
+                        this.setParams("lastKey", "");
+                        this.setParams("lastValue", "");
+                    }                       
+
+                } else if(this._lastCommand === "command") { // 플러그인 명령
+                    let key = "";
+
+                    if(this.isValidArgs("lastKey")) {
+                        this.setArgs("lastValue", cmt.desc.slice(0));
+                    }
+
+                    if((key = this.getArgs("lastKey")) != "") {
+                        const value = this.getArgs("lastValue");
+                        this.setOutputArgsData(key, value);
+                        this.setArgs("lastKey", "");
+                        this.setArgs("lastValue", "");
+                    }                            
+                }
+
+                break;
+            case "":
+                break;
+        }
+    }    
+
+    processEndOfFile() {
+        const pluginName = this._flushData.param.name.split(".")[0];
+
+        for(const type in this._flushData) {
+            let data = JSON.stringify(this._flushData[type].data);
+
+            if(type === "param") {
+                const outputFile = new ParamFile(pluginName, {
+                    name: pluginName,
+                    status: true,
+                    description: this._flushData.param.description,
+                    parameters: this._flushData[type].data,
+                });
+                outputFile.create();
+
+            } else if(type === "arg") {
+
+                for(let i = 0; i < this._commandIndex; i++) {
+                    const commandIndex = i;
+                    if(!this._flushData.arg[i]) {
+                        console.warn("ARGS 출력 데이터가 없습니다.");
+                    }
+
+                    const tempJsonData = this._flushData.arg[i].data;
+
+                    // 맵 데이터의 이벤트 인터프리터 데이터를 생성합니다.
+                    let temp = [{
+                        "code": 357,
+                        "indent": 0,
+                        "parameters": [
+                            pluginName, 
+                            this._commands[i], 
+                            "", 
+                            tempJsonData,
+                        ]
+                    }];
+                    
+                    // 키를 열거합니다.
+                    // Object.keys(tempJsonData).forEach((e, i, a) => {
+                        
+                    //     // 키와 값을 가져옵니다.
+                    //     const key = this._flushData.arg[commandIndex].texts[i];
+                    //     const value = tempJsonData[e];
+    
+                    //     // 세부 데이터를 설정합니다.
+                    //     temp.push({
+                    //         "code": 657,                                
+                    //         "indent": 0,
+                    //         "parameters": [
+                    //             `${key} = ${value}`
+                    //         ]
+                    //     });
+                    // })
+
+                    const outputFile = new ArgFile(pluginName, temp);
+                    outputFile.create();
+                }
+                       
+            }
+        }
+    }
+
+    readList() {
+        this._list.forEach(f => {
+            const filename = path.join(this._targetDir, f);
             const fileStream = fs.createReadStream(filename, 'utf8');
             const rl = readline.createInterface({
                 input: fileStream,
                 crlfDelay: Infinity,
             });
             console.log("%s%s%s", Color.BgBlue, filename, Color.Reset);
-            tempData.param.name = f;
-            rl.on('line', line => {
-                if(line.indexOf("/*:") >= 0) isValid = true;
-                if(line.indexOf("~struct~") >= 0) isValid = false;
-                if(isValid) {
-                    const cmt = Parser.parse(line);
+            this._flushData.param.name = f;
 
-                    if(!cmt) {
-                        return;
-                    }
-
-                    switch(cmt.type) {
-                        case "plugindesc":
-                            console.log("@plugindesc %s%s%s", Color.BgRed, cmt.desc, Color.Reset);
-                            tempData.param.description = cmt.desc.slice(0);
-                            break;
-                        case "param":
-                            console.log("@param %s%s%s", Color.BgBlack, cmt.desc, Color.Reset);
-                            lastCommand = "param";
-                            tempData.param.lastKey = cmt.desc.slice(0);
-                            break;
-                        case "command":
-                            console.log("@command %s%s%s", Color.BgRed, cmt.desc, Color.Reset);
-                            lastCommand = "command";
-                            break;
-                        case "arg":
-                            console.log("@arg %s%s%s", Color.BgGreen, cmt.name, Color.Reset);
-                            tempData.arg.lastKey = cmt.desc.slice(0);
-                            break;
-                        case "type":
-                            if(["command", "param"].includes(lastCommand)) {
-                                console.log("@type %s%s%s", Color.FgRed, cmt.name, Color.Reset);
-                            }
-                            break;                            
-                        case "desc":
-                            // 한 줄만 지원.
-                            console.log("@desc %s%s%s", Color.FgWhite, cmt.desc, Color.Reset);
-                            break;
-                        case "default":
-                            console.log("@default %s%s%s", Color.FgYellow, cmt.desc, Color.Reset);
-                            
-                            let type = "";
-                            if(lastCommand === "param") {
-                                type = "param";
-                            } else if(lastCommand === "command") {
-                                type = "arg";
-                            }
-   
-                            if(tempData[type].lastKey) {
-                                tempData[type].lastValue = cmt.desc.slice(0);
-                            }
-                            if(tempData[type].lastKey != "") {
-                                tempData[type].data[tempData[type].lastKey] = tempData[type].lastValue;
-                                tempData[type].lastKey = "";
-                                tempData[type].lastValue = "";
-                            }         
-                            break;
-                        case "":
-                            break;
-                    }
-
-                    if(line.indexOf("*/") >= 0) {
-                        isValid = false;
-                    }
-                }
-            });
-            rl.on('close', () => {
-                for(const i in tempData) {
-                    let data = JSON.stringify(tempData[i].data);
-
-                    if(i === "param") {
-                        data = JSON.stringify({
-                            name: tempData.param.name.split(".")[0],
-                            status: true,
-                            description: tempData.param.description,
-                            parameters: tempData[i].data,
-                        });
-                    }
-                    console.log(`${i} parse : %s%s%s`, Color.FgYellow, data, Color.Reset);
-                    fs.writeFileSync(`./data/output_${i}.json`, data, "utf8");
-                    console.log("파일 작성 완료");
-                }
-            });            
+            rl.on('line', this.processLine.bind(this));
+            rl.on('close', this.processEndOfFile.bind(this));            
         })
+    }
+
+    start() {
+        this.readPluginFiles();
+        this.readList();
     }
 }
 
