@@ -205,7 +205,7 @@ class App {
                         });
                     }
                     console.log(`${i} parse : %s%s%s`, Color.FgYellow, data, Color.Reset);
-                    fs.writeFileSync(`./output_${i}.json`, data, "utf8");
+                    fs.writeFileSync(`./data/output_${i}.json`, data, "utf8");
                     console.log("파일 작성 완료");
                 }
             });            
