@@ -1,1 +1,1 @@
-[{"code":357,"indent":0,"parameters":["RS_Window_KorNameEdit","KNE","",{"width":"580","center":"true","outlineWidth":"1","outlineColor":"black","textColor":"white","fontSize":"28","opacity":"225","askText":"Please enter the name"}]}]
+[{"code":357,"indent":0,"parameters":["RS_HangulInput","HangulInput","",{}]}]
