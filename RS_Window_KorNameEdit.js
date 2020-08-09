@@ -411,16 +411,15 @@
  * @off 감추기
  * 
  * @help
- * 화면에서 보이지 않는 <input> 폼을 생성하여 텍스트를 직접 입력 받을 수 있게 하는 플러그인입니다.
+ * MZ용 한글 이름 입력 플러그인입니다.
  * 
- * # 크레딧
- * Biud436
+ * 한글 이름 입력 방식에는 크게는 유니코드와 키보드 이벤트를 이용하여 초성, 중성, 종성을 직접 조합하는 방법이 있고,
+ * 유니티나 cocos2d-x 같은 게임 엔진에서 사용하는 방법처럼 IME를 이용하는 방법이 있습니다.
  * 
- * # 사용 조건(Terms of Use)
- * Free for commercial and non-commercial use.
+ * 본 플러그인은 IME를 사용합니다.
+ * IME는 인터넷 게시판에서 글을 작성할 때와 동일한 한글 조합 기능을 제공하며 한국어, 중국어, 일본어 등 여러가지 언어도 입력할 수 있습니다.
  * 
- * # 라이센스(License)
- * The MIT License (MIT)
+ * IME는 화면에서는 보이지 않는 <input> 폼을 생성하여 처리합니다.
  * 
  * @command KNE
  * @text Korean Name Input
@@ -667,8 +666,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
         }
 
         isKeyboardEditorHidden() {
-            const isMobileDevice = Utils.isMobileDevice();
-            return $.Params.isKeyboardEditorHidden && isMobileDevice;
+            return $.Params.isKeyboardEditorHidden;
         }
 
         createTextBox() {
