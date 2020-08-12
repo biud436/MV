@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "target":"es6",
+    "module": "commonjs"
+  },
+  "files": [
+    "./rmmv.d.ts",
+    // "./rpg_core.d.ts",
+    "./External/*.d.ts",
+    // "./rmmv-pixi.d.ts",
+  ],
+  "include": [
+    "./*.*",
+    "./*.js",
+    "./*/*.js",
+  ],
+}
