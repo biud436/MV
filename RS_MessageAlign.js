@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc (v1.0.15) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.16) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -73,6 +73,8 @@
  * - Fixed issues that conflict with YEP_StatAllocation and YEP_StatusMenuCore plugins.
  * 2020.05.13 (v1.0.15) :
  * - Removed unused value.
+ * 2020.08.13 (v1.0.16) :
+ * - Fixed an issue that worked twicely when using text codes such as "\!", "\.", "\|" in the vanilla mode.
  */
 
 var Imported = Imported || {};
@@ -408,6 +410,22 @@ RS.MessageAlign = RS.MessageAlign || {};
         }
     };    
 
+    if(!Imported.YEP_MessageCore) {
+
+        var alias_Window_Message_startPause = Window_Message.prototype.startPause;
+        Window_Message.prototype.startPause = function () {
+            if (this.isUsedTextWidthEx()) return;
+            alias_Window_Message_startPause.call(this);
+        };    
+
+        var alias_Window_Message_startWait = Window_Message.prototype.startWait;
+        Window_Message.prototype.startWait = function (count) {
+            if (this.isUsedTextWidthEx()) return;
+            alias_Window_Message_startWait.call(this, count);
+        };
+
+    }
+  
     var alias_Window_Message_startMessage_setAlignCenter = Window_Message.prototype.startMessage;
     Window_Message.prototype.startMessage = function() {
         alias_Window_Message_startMessage_setAlignCenter.call(this);
