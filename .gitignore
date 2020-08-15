@@ -121,3 +121,4 @@ ReadWoff.js
 RS_Hangul.js
 External
 *.ts
+data/*.*
