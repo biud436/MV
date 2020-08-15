@@ -849,9 +849,12 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
         }
 
         faceWidth() {
-            return $.Params.isValidFace ? 144 : 0;
+            return $.Params.isValidFace ? ImageManager.faceWidth : 0;
         }
 
+        /**
+         * MZ에서 Deprecated된 메서드이지만 다시 복구하였다.
+         */
         getStandardFontFace() {
             if ($gameSystem.isChinese()) {
                 return $.Params.fonts.ChineseFonts;
@@ -862,10 +865,17 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
             }
         }
 
+        /**
+         * MZ에서 deprecated된 메서드이지만 호환성을 위해 복구하였다.
+         */        
         textPadding() {
             return 6;
         }
 
+        /**
+         * 이름 편집 윈도우의 가로 크기는 처음에 고정된 값이 주어진다.
+         * 자동으로 설정된 경우에는 안내 텍스트의 크기에 맞게 동적으로 변경한다.
+         */
         updateWindowWidth() {
             const padding = this.padding * 2;
             const faceWidth = $.Params.isValidFace ? this.faceWidth() : 0;
@@ -877,6 +887,9 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
             }
         };
 
+        /**
+         * 텍스트를 묘화하기 전에 폰트 재설정하는 역할을 한다.
+         */
         resetFontSettings() {
             super.resetFontSettings();
             this.contents.fontFace = this.getStandardFontFace();
@@ -886,13 +899,17 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
             this.contents.fontSize = $.Params.standardFontSize;
         }
 
+        /**
+         * 일본어의 경우, 반각이나 전각 등 글자의 크기가 절반이 되는 경우가 있지만
+         * 한자나 한글의 경우 그런 경우가 없다.
+         */
         charWidth() {
             let text = $.Params.defaultCharWidth;
-            if (navigator.language.match(/^zh/)) { // isChinese
+            if (navigator.language.match(/^zh/)) { // 중국어
                 text = '\u4E00';
-            } else if (navigator.language.match(/^ko/)) { // isKorean
+            } else if (navigator.language.match(/^ko/)) { // 한국어
                 text = '\uAC00';
-            } else if (navigator.language.match(/^ja/)) { // isJapanese
+            } else if (navigator.language.match(/^ja/)) { // 일본어
                 text = '\u3042';
             }
             return this.textWidth(text);
@@ -922,17 +939,22 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
 
         refresh() {
             this.contents.clear();
+            this.resetFontSettings();
             this.drawActorFace(this._actor, 0, 0);
 
             const rect = this.itemRect(Math.max(this._index - 1, 0));
 
+            // 문자 하단의 밑줄을 그린다.
             for (let i = 0; i < this._maxLength; i++) {
                 this.drawUnderline(i);
             }
+
+            // 반복문을 통해 모든 문자를 제위치에 묘화한다.
             for (let j = 0; j < this._name.length; j++) {
                 this.drawChar(j);
             }
 
+            // 커서의 위치를 설정한다.
             if (this._index === 0) {
                 this.setCursorRect(rect.x, rect.y, 1, rect.height);
             } else {
