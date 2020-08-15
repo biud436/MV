@@ -1029,6 +1029,14 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
 
         }
 
+        createCancelButton() {
+            
+        }
+
+        needsCancelButton() {
+            return false;
+        };        
+
         createPlatformFeatures() {
             if (Utils.isMobileDevice()) {
                 this.createCommandWindow();
