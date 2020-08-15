@@ -590,6 +590,13 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     $.Params.helpWindowOpacity = Number(parameters['helpWindow_Opacity'] || 225);
     $.Params.isValidErrorMessage = Boolean(parameters["Show Error Message"] === "true");
 
+    // TODO: 아래 윈도우 폭 값은 하드 코딩되었다. 그러나 장기적으로 플러그인 매개변수로 변경하는 것이 좋다.
+    $.Params.refWindowWidth = 580;
+
+    /**
+     * ! <input> 태그에서 pageup, pagedown, left, right, up, down 키의 동작을 무시하기 위한 함수
+     * ! Keyboard Input Dialog와 달리, Name Input Window에서는 키입력을 무시해야 한다.
+     */
     const original_Input_shouldPreventDefault = Input._shouldPreventDefault;
     const dialog_Input_shouldPreventDefault = function (keyCode) {
         switch (keyCode) {
@@ -623,6 +630,11 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     // Plugin Commands
     //===========================================================================
 
+    /**
+     * 플러그인 커맨드를 통해 한 번에 조작이 가능한 플러그인 매개변수를 8개나 만들었지만 ,
+     * 본래는 각 플러그인 매개변수마다 하나의 플러그인 커맨드를 가져야 한다.
+     * 그러나 그렇게 하면 라인을 낭비하기 때문에 하나의 플러그인 커맨드로 처리하였다.
+     */
     PluginManager.registerCommand(pluginName, "KNE", args => {
         $.Params.windowWidth = (args.width === "auto") ? "auto" : Number(args.width);
         $.Params.windowCenter = Boolean(args.center == "true")
@@ -635,6 +647,10 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     });
 
     /**
+     * 기본 이름 입력 이벤트 커맨드는 입력 받을 수 있는 이름의 자릿수 제한이 있다.
+     * 자릿수 제한을 해제하기 위해 다음 플러그인 명령을 사용할 수 있다.
+     * 그러나 필수로 사용해야 하는 건 아니다.
+     * 
      * @example
      * PluginManager.callCommand($gameMap._interpreter, "RS_Window_KorNameEdit", "OpenXNameInput", {actorId: -1, digits: 6});
      */
@@ -652,10 +668,12 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
         }
     });    
 
-    //===========================================================================
-    // TextBox Class
-    //===========================================================================
-
+    /**
+     * MZ에서 ES6을 완벽하게 사용하기에는 제한이 되므로 부분적으로 ES6을 사용하고 있다.
+     * 타입 스크립트 인터페이스가 완성되지 않았기 때문에 상세한 타입 설정 주석문은 생략하였다.
+     * 
+     * @class TextBox
+     */
     class TextBox {
 
         constructor(_editWindow) {
@@ -729,6 +747,10 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
 
         }
 
+        /**
+         * 기본 버튼의 동작을 무시하기 위해 기존 콜백 함수를 변경하여야 한다.
+         * 이렇게 하면 pageup, pagedown, left, right, up, down 키를 조작할 수 없게 된다.
+         */
         startToConvertInput() {
             Input._shouldPreventDefault = dialog_Input_shouldPreventDefault;
         }
@@ -883,7 +905,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
             if ($.Params.windowWidth === 'auto') {
                 this.width = Math.max(Math.min(padding + faceWidth + textWidth, Graphics.boxWidth - padding), 580);
             } else {
-                this.width = Number($.Params.windowWidth || 580);
+                this.width = Number($.Params.windowWidth || $.Params.refWindowWidth);
             }
         };
 
@@ -1165,7 +1187,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
         }
 
         createEditWindowRect() {
-            const ww = 580;
+            const ww = $.Params.refWindowWidth;
             const wh = this.calcWindowHeight(4, false);
             const wx = (Graphics.boxWidth - ww) / 2;
             let wy = 0;
