@@ -35,6 +35,14 @@ const Color = {
     BgWhite : "\x1b[47m",    
 };
 
+if(argv.help) {
+    console.log([
+        `${Color.FgRed}-f=\"<경로>\"를 전달하세요${Color.Reset}`,
+        `${Color.FgYellow}node PluginParser.js -f="*.js"가 되어야 합니다.${Color.Reset}`
+    ].join("\r\n"));
+    return;
+}
+
 class Parser extends String {
     constructor(str) {
         super(str);
@@ -122,8 +130,12 @@ class ParamFile {
 
     create() {
         const data = JSON.stringify(this._data);
+        const filepath = `./data/output_param.json`;
         console.log("output(param) : %s%s%s", Color.BgRed, data, Color.Reset);        
-        fs.writeFileSync(`./data/output_param.json`, JSON.stringify(this._data), "utf8");
+        if(!fs.existsSync("./data")) {
+            fs.mkdirSync("./data");
+        }
+        fs.writeFileSync(filepath, JSON.stringify(this._data), "utf8");
     }
 }
 
