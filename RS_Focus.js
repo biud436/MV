@@ -27,7 +27,7 @@ RS.Focus = RS.Focus || {};
     "use strict";
 
     const pluginParams = $plugins.filter(i => {
-        return i.description.contains('<RS_Window_KorNameEdit>');
+        return i.description.contains('<RS_Focus>');
     });
 
     const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
