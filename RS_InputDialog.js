@@ -157,30 +157,22 @@
  * - In the chromium 69+ more over, The input element is always displayed even though <canvas>'s z-index is large than <input> element's z-index. so I've fixed that.
  * 2019.03.05 (v1.1.16) :
  * - Fixed the issue that can not create a background when using Irina_PerformanceUpgrade.
- * 
+ *
  * @command open
- * @text open
- * @desc Open the input dialog.
- * 
- * 
- * @command width
- * @text width
- * @desc Specify the width value.
- * 
+ * @desc This command allows you to open the input dialog.
+ *  
+ * @command ChangeParams
+ * @text Change Parameters
  * 
  * @arg width
  * @text width
  * @type number
- * @desc Specify the width value.
+ * @desc This arg allows you to change the width of Input Dialog.
  * @default 488
- * 
- * 
- * @command text
- * @desc Specify the place holder text in the input dialog.
  * 
  * @arg text
  * @type string
- * @desc Specify the text
+ * @desc This arg allows you to changes the text of Input Dialog for representing the description.
  * 
  * 
  */
