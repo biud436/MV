@@ -212,8 +212,6 @@ function Scene_InputDialog() {
 
     "use strict";
 
-    return;
-
     const pluginParams = plugins.filter(i => {
         return i.description.contains('<RS_InputDialog>');
     });

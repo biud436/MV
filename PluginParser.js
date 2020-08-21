@@ -165,6 +165,8 @@ class App {
         this._commandIndex = -1;
         this._lastCommandIndex = -1;
 
+        this._argsData = [];
+
         /**
          * @type{{arg: ArgParams[], param: PluginParams}}
          */
@@ -225,6 +227,11 @@ class App {
     }
 
     createCommand(data) {
+        const args = this._flushData.arg;
+        const pluginName = this._flushData.param.name.split(".")[0];
+        if(args.length > 0) {
+            this.flushArgData(pluginName);
+        }
         this._lastCommand = "command";        
         this._commands.push(data);        
         this._flushData.arg.push(new ArgParams());
@@ -276,6 +283,7 @@ class App {
                 this.setParams("lastKey", cmt.desc.slice(0));
                 break;
             case "command":
+                // 다중 커맨드 파싱 필요
                 console.log("@command %s%s%s", Color.BgRed, cmt.desc, Color.Reset);
                 this.createCommand(cmt.desc);
                 break;
@@ -340,6 +348,37 @@ class App {
         }
     }    
 
+    flushArgData(pluginName, flushToFile = true) {
+        for(let i = 0; i < this._commandIndex; i++) {
+            const commandIndex = i;
+            if(!this._flushData.arg[i]) {
+                console.warn("ARGS 출력 데이터가 없습니다.");
+            }
+
+            const tempJsonData = this._flushData.arg[i].data;
+
+            // 맵 데이터의 이벤트 인터프리터 데이터를 생성합니다.
+            let temp = [{
+                "code": 357,
+                "indent": 0,
+                "parameters": [
+                    pluginName, 
+                    this._commands[i], 
+                    "", 
+                    tempJsonData,
+                ]
+            }];
+
+            if(flushToFile) {
+                const outputFile = new ArgFile(pluginName, temp);
+                outputFile.create();
+            } else {
+                this._argsData.push(temp);
+            }
+
+        }
+    }
+
     processEndOfFile() {
         const pluginName = this._flushData.param.name.split(".")[0];
 
@@ -356,48 +395,7 @@ class App {
                 outputFile.create();
 
             } else if(type === "arg") {
-
-                for(let i = 0; i < this._commandIndex; i++) {
-                    const commandIndex = i;
-                    if(!this._flushData.arg[i]) {
-                        console.warn("ARGS 출력 데이터가 없습니다.");
-                    }
-
-                    const tempJsonData = this._flushData.arg[i].data;
-
-                    // 맵 데이터의 이벤트 인터프리터 데이터를 생성합니다.
-                    let temp = [{
-                        "code": 357,
-                        "indent": 0,
-                        "parameters": [
-                            pluginName, 
-                            this._commands[i], 
-                            "", 
-                            tempJsonData,
-                        ]
-                    }];
-                    
-                    // 키를 열거합니다.
-                    // Object.keys(tempJsonData).forEach((e, i, a) => {
-                        
-                    //     // 키와 값을 가져옵니다.
-                    //     const key = this._flushData.arg[commandIndex].texts[i];
-                    //     const value = tempJsonData[e];
-    
-                    //     // 세부 데이터를 설정합니다.
-                    //     temp.push({
-                    //         "code": 657,                                
-                    //         "indent": 0,
-                    //         "parameters": [
-                    //             `${key} = ${value}`
-                    //         ]
-                    //     });
-                    // })
-
-                    const outputFile = new ArgFile(pluginName, temp);
-                    outputFile.create();
-                }
-                       
+                this.flushArgData(pluginName); 
             }
         }
     }
