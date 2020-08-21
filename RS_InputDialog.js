@@ -172,9 +172,30 @@
  * 
  * @arg text
  * @type string
- * @desc This arg allows you to changes the text of Input Dialog for representing the description.
+ * @desc This arg allows you to change the text of Input Dialog for representing the description.
+ * @default Please enter the string...
  * 
+ * @arg variableId
+ * @type variable
+ * @desc This arg allows you to change an id of the variable for saving the value.
+ * @default 3
  * 
+ * @arg debug
+ * @type boolean
+ * @desc This arg allows you to display a alert window of the browser when you are pressing the enter.
+ * @default true
+ * @on true
+ * @off false
+ * 
+ * @arg maxLength
+ * @type number
+ * @desc This arg allows you to specifie the maximum number of character for an input field.
+ * @default 10
+ * 
+ * @arg pos
+ * @type string
+ * @default center
+ * @desc This arg allows you to decide how to set the position of the input dialog. (center or 0, 0)
  */
 
 var Imported = Imported || {};
