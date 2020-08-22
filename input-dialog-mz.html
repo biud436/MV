@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Dialog MZ - TEST</title>
+    <style>
+        #container {
+            overflow: hidden;
+            margin: 0 auto;
+            width: 200px;
+            height: auto;
+            background:  rgba(40,89,148,0.8);
+            background-clip: padding-box;
+        }
+        input[type="text"]:enabled {
+            width: 200px;
+            margin: 0px;
+            padding: 0;
+            background-color: rgba(235, 239, 243, 0.8);
+            height: 2em;
+        }
+        input[type="radio"]:nth-of-type(2):checked ~ div#backgronud > div > input:nth-child(1) {
+            display:none;
+        }
+        input[type="radio"]:nth-of-type(1):checked ~ div#backgronud > div > input:nth-child(2) {
+            display:none;
+        }
+        section.buttons {
+            overflow: hidden;
+        }
+        input[type="radio"]:nth-of-type(1) {
+            display:none;
+        }
+        input[type="radio"]:nth-of-type(2) {
+            display:none;
+        }        
+        section.buttons > label {
+            float: left;
+            display: block;
+            box-sizing: border-box;
+            border: 1px solid black;
+            width: 100px;
+            height: 30px;
+            text-align:center;
+            background: linear-gradient(0deg, rgba(138,76,103,1) 0%, rgba(40,89,148,1) 100%);
+            color: white;            
+        }
+        section.buttons > label:first-child {
+            border-radius: 1em 0em 0em 0em;
+        }
+        section.buttons > label:last-child {
+            border-radius: 0em 1em 0em 0em;
+        }
+        input[type="radio"]:nth-of-type(2):checked ~ div > section.buttons > label[for*="first"] {
+            background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(40,89,148,1) 100%);
+            color: #bbb;
+        }
+        input[type="radio"]:nth-of-type(1):checked ~ div > section.buttons > label[for*="second"] {
+            background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(40,89,148,1) 100%);
+            color: #bbb;
+        }        
+        #submit-buttons {
+            overflow: hidden;
+        }
+        #submit-buttons > button {
+            float:right;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <form action="">
+            <input id="first-tab-button" type="radio" name="checked" checked>
+            <input id="second-tab-button" type="radio" name="checked">
+            <div id="backgronud">
+                <section class="buttons">
+                    <label for="first-tab-button">항목 1</label>
+                    <label for="second-tab-button">항목 2</label>            
+                </section>
+                <div id="inputField">
+                    <input type="text" placeholder="첫번째">
+                    <input type="text" placeholder="두번째">                                  
+                </div>
+                <div id="submit-buttons">
+                    <button>버튼</button>            
+                </div>
+            </div>
+
+        </form>
+    </div>
+</body>
+</html>
