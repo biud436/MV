@@ -167,12 +167,15 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
         }
 
         refresh() {
+
+            const faceWidth = this._actor.faceName() ? ImageManager.faceWidth : 0;
+
             this.contents.clear();
 
             let rect = 
                 new Rectangle
                     (
-                        this.innerWidth - ImageManager.faceWidth - this.itemPadding(),
+                        this.innerWidth - faceWidth - this.itemPadding(),
                         this.itemPadding(),
                         this.innerWidth,
                         this.innerHeight
@@ -194,7 +197,7 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
 
             rect.x = px;
             rect.y = py;
-            rect.x -= ImageManager.faceWidth;
+            rect.x -= faceWidth;
 
             this.drawUnderline2(rect, textWidth);      
             this.drawArabicText(rect, text);
