@@ -7,6 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
+ * @target MZ
  * @plugindesc <RS_ArabicNameEdit>
  * @author biud436
  * 
@@ -15,6 +16,7 @@
  * @default Simplified Arabic, Times New Roman, Segoe UI, rmmz-mainfont
  *    
  * @help
+ * 2020.08.23 (v1.0.0) - First Release.
  */
 
 var Imported = Imported || {};
@@ -25,8 +27,6 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
 
 ($ => {
 
-    return;
-    
     "use strict";
 
     const pluginParams = $plugins.filter(function (i) {
@@ -57,10 +57,6 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
         }
 
         standardFontFace() {
-            if(!navigator.language.match(/^ar/)) {
-                return $gameSystem.mainFontFace();
-            }
-
             return $.Params.fontFace;
         }
 
@@ -173,26 +169,36 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
         refresh() {
             this.contents.clear();
 
-            // Make an arabic text
-            var text = this.makeText(this._name || '');
-            var textWidth = this.textWidth(text);
+            let rect = 
+                new Rectangle
+                    (
+                        this.innerWidth - ImageManager.faceWidth - this.itemPadding(),
+                        this.itemPadding(),
+                        this.innerWidth,
+                        this.innerHeight
+                    );
 
-            var rect = this.itemRect2(textWidth);
+            if(!this._actorSprite) {
+                this.createActorFace();                
+            }
 
-            const size = this.textSizeEx(text);
-            const px = this.right(size.width);            
-            const py = this.innerHeight / 2 - size.height / 2;
+            this.drawActorFace2(rect);
+            const text = this.makeText(this._name || '');
+            const textWidth = this.textWidth(text);                          
+
+            rect = this.itemRect2(textWidth);
+
+            const width = this.textWidth(text);
+            const px = this.right(width);            
+            const py = this.innerHeight / 2 - rect.height / 2;
 
             rect.x = px;
             rect.y = py;
-            
-            // if(!this._actorSprite) {
-            //     this.createActorFace();                
-            // }
+            rect.x -= ImageManager.faceWidth;
 
-            // this.drawActorFace2(rect);
-            this.drawUnderline2(rect, textWidth);
+            this.drawUnderline2(rect, textWidth);      
             this.drawArabicText(rect, text);
+            this.setCursorRect(rect.x, rect.y, width, rect.height);
         
         }
     }
@@ -230,10 +236,6 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
         }
 
         standardFontFace() {
-            if(!navigator.language.match(/^ar/)) {
-                return $gameSystem.mainFontFace();
-            }
-
             return $.Params.fontFace;
         }
 
