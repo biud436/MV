@@ -149,8 +149,8 @@
  * - Fixed the bug that can't hide IME.
  * 
  * @command KNE
- * @text Korean Name Input
- * @desc This plugin command allows you to type the name using IME.
+ * @text Change Plugin Parameters
+ * @desc This plugin command allows you to change plugin parameters.
  * 
  * @arg width
  * @desc Specify the width of name edit window.
@@ -422,8 +422,8 @@
  * IME는 화면에서는 보이지 않는 <input> 폼을 생성하여 처리합니다.
  * 
  * @command KNE
- * @text Korean Name Input
- * @desc IME를 이용하여 액터의 이름을 설정할 수 있습니다.
+ * @text 플러그인 매개변수 변경
+ * @desc 플러그인 매개변수를 변경할 수 있습니다.
  * 
  * @arg width
  * @text 폭
