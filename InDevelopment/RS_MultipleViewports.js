@@ -267,11 +267,9 @@ Imported.RS_MultipleViewports = true;
 var RS = RS || {};
 RS.MultipleViewports = RS.MultipleViewports || {};
 
-(function () {
+($ => {
 
   "use strict";
-
-  return;
 
   let isMultipleViewport = false;
   let isShake = 0;
@@ -656,7 +654,10 @@ RS.MultipleViewports = RS.MultipleViewports || {};
       let w, h;
       let vx, vy;
       let size = this._maxDisplayCounts;
-      const margin = 4;
+      
+      // TODO: 이 값을 정밀하게 측정해서 결정해야 한다.
+      const margin = 0;
+
       switch (this._maxDisplayCounts) {
         case 2:
         case 3:
@@ -1067,4 +1068,4 @@ RS.MultipleViewports = RS.MultipleViewports || {};
 
   window.V5 = V5;
 
-})();
+})(RS.MultipleViewports);
