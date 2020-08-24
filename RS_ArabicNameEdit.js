@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * @target MZ
- * @plugindesc <RS_ArabicNameEdit>
+ * @plugindesc This plugin allows you to type the name in Arabic <RS_ArabicNameEdit>
  * @author biud436
  * 
  * @param Font
