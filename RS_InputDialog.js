@@ -534,7 +534,10 @@ function Scene_InputDialog() {
       opacity : 0.8;
       font-family : arial;
       border : 1px solid rgb(73, 73, 73);
-      background-image: -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%);
+      background-image: 
+        -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%),
+        -moz-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%),
+        -o-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%);
       color : rgb(19, 19, 19);
       text-shadow : rgba(105, 105, 105, 0.7) 0 1px 0;
       cursor : pointer;
