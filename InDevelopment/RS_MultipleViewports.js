@@ -122,6 +122,24 @@
  * 2018.12.25 (v1.2.2) :
  * - Fixed the issue that couldn't set a number of viewports less than 4.
  * - Fixed the issue that causes the size error when setting a number of viewports less than 4.
+ *
+ * @command Enable
+ * @text Enable
+ * @desc
+ * 
+ * @commmand Disable
+ * @text Disable
+ * @desc
+ * 
+ * @command StartShake
+ * @text Start Shake
+ * @desc
+ * 
+ * @arg shakePower
+ * @text Shake Power
+ * @type number
+ * @default 10
+ * 
  */
 /*:ko
  * RS_MultipleViewports.js
@@ -267,11 +285,9 @@ Imported.RS_MultipleViewports = true;
 var RS = RS || {};
 RS.MultipleViewports = RS.MultipleViewports || {};
 
-(function () {
+($ => {
 
   "use strict";
-
-  return;
 
   let isMultipleViewport = false;
   let isShake = 0;
@@ -581,7 +597,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     }
 
     clear() {
-      for (var i = 0; i < this._maxDisplayCounts; i++) {
+      for (let i = 0; i < this._maxDisplayCounts; i++) {
         this._viewportDisplayPos[i].clearTarget();
       }
     }
@@ -599,7 +615,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     }
 
     restore() {
-      for (var i = 0; i < this._maxDisplayCounts; i++) {
+      for (let i = 0; i < this._maxDisplayCounts; i++) {
         Graphics.viewport.setDisplayPos(i + 1, $gameMap._multipleViewportTargetIds[i]);
       }
     }
@@ -656,7 +672,10 @@ RS.MultipleViewports = RS.MultipleViewports || {};
       let w, h;
       let vx, vy;
       let size = this._maxDisplayCounts;
-      const margin = 4;
+      
+      // TODO: 이 값을 정밀하게 측정해서 결정해야 한다.
+      const margin = 0;
+
       switch (this._maxDisplayCounts) {
         case 2:
         case 3:
@@ -742,7 +761,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
         if (evt) target = evt;
       }
       $gameMap._multipleViewportTargetIds[viewID - 1] = targetId;
-      var targetPos = this._viewportDisplayPos[viewID - 1];
+      const targetPos = this._viewportDisplayPos[viewID - 1];
       if (targetPos) targetPos.setTarget(target || $gamePlayer);
     }
 
@@ -844,7 +863,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
   //============================================================================
   // Game_Map
   //============================================================================
-  var alias_Game_Map_initialize = Game_Map.prototype.initialize;
+  const alias_Game_Map_initialize = Game_Map.prototype.initialize;
   Game_Map.prototype.initialize = function () {
     alias_Game_Map_initialize.call(this);
     this._multipleViewportEnabled = false;
@@ -853,7 +872,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     this._multipleViewportTargetIds = [];
   };
 
-  var alias_Game_Map_setup = Game_Map.prototype.setup;
+  const alias_Game_Map_setup = Game_Map.prototype.setup;
   Game_Map.prototype.setup = function (mapId) {
     alias_Game_Map_setup.call(this, mapId);
   };
@@ -874,7 +893,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
   // Game_Player
   //============================================================================
 
-  var alias_Game_Player_clearTransferInfo = Game_Player.prototype.clearTransferInfo
+  const alias_Game_Player_clearTransferInfo = Game_Player.prototype.clearTransferInfo
   Game_Player.prototype.clearTransferInfo = function () {
     alias_Game_Player_clearTransferInfo.call(this);
 
@@ -883,7 +902,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     Graphics.viewport.clear();
 
     // initializing the target as the player when transferring
-    for (var i = 0; i < Graphics.viewport._maxDisplayCounts; i++) {
+    for (let i = 0; i < Graphics.viewport._maxDisplayCounts; i++) {
       Graphics.viewport.setDisplayPos(i + 1, $gamePlayer);
     }
   };
@@ -892,14 +911,14 @@ RS.MultipleViewports = RS.MultipleViewports || {};
   // DataManager
   //============================================================================
 
-  var alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
+  const alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
   DataManager.makeSaveContents = function () {
-    var contents = alias_DataManager_makeSaveContents.call(this);
+    const contents = alias_DataManager_makeSaveContents.call(this);
     contents.viewportTargetIds = $gameMap._multipleViewportTargetIds;
     return contents;
   };
 
-  var alias_DataManager_extractSaveContents = DataManager.extractSaveContents;
+  const alias_DataManager_extractSaveContents = DataManager.extractSaveContents;
   DataManager.extractSaveContents = function (contents) {
     alias_DataManager_extractSaveContents.call(this, contents);
     $gameMap._multipleViewportTargetIds = contents.viewportTargetIds;
@@ -917,7 +936,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
       $gameMap.setViewport(true);
       Graphics.viewport.video.playAll();
       Graphics.viewport.setTarget($gamePlayer);
-      for (var i = 0; i < Graphics.viewport._maxDisplayCounts; i++) {
+      for (let i = 0; i < Graphics.viewport._maxDisplayCounts; i++) {
         Graphics.viewport.setDisplayPos(i + 1, $gamePlayer);
       }
     }
@@ -939,10 +958,10 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     }
 
     image(args) {
-      var viewID = Number(args[1] || 1).clamp(1, 4);
-      var name = args.slice(2, args.length).join(' ');
-      var imageName = 'img/pictures/' + name + '.png';
-      var texture = PIXI.Texture.from(imageName);
+      const viewID = Number(args[1] || 1).clamp(1, 4);
+      const name = args.slice(2, args.length).join(' ');
+      const imageName = 'img/pictures/' + name + '.png';
+      const texture = PIXI.Texture.from(imageName);
       Graphics.viewport.image.clear(viewID);
       Graphics.viewport.image.set(viewID, texture);
     }
@@ -952,14 +971,14 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     }
 
     video(args) {
-      var viewID = Number(args[1] || 1).clamp(1, 4);
-      var name = args[2];
-      var looping = (args[3] === 'true');
-      var videoName = 'movies/' + name + '.webm';
+      const viewID = Number(args[1] || 1).clamp(1, 4);
+      const name = args[2];
+      const looping = (args[3] === 'true');
+      const videoName = 'movies/' + name + '.webm';
       /**
        * @type {PIXI.Texture}
        */
-      var videoTexture = new V5.VideoTexture(videoName);
+      const videoTexture = new V5.VideoTexture(videoName);
       videoTexture.setLooping(looping);
       Graphics.viewport.video.stop(viewID);
       Graphics.viewport.image.clear(viewID);
@@ -967,41 +986,41 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     }
 
     playVideo(args) {
-      var viewID = Number(args[1] || 1);
+      const viewID = Number(args[1] || 1);
       Graphics.viewport.video.play(viewID);
     }
 
     pauseVideo(args) {
-      var viewID = Number(args[1] || 1);
+      const viewID = Number(args[1] || 1);
       Graphics.viewport.video.pause(viewID);
     }
 
     moveBackSeconds(args) {
-      var viewID = Number(args[1] || 1);
-      var sec = parseInt(args[2] || 0);
+      const viewID = Number(args[1] || 1);
+      const sec = parseInt(args[2] || 0);
       Graphics.viewport.video.move(viewID, 'Move Back', sec);
     }
 
     moveForwardSeconds(args) {
-      var viewID = Number(args[1] || 1);
-      var sec = parseInt(args[2] || 0);
+      const viewID = Number(args[1] || 1);
+      const sec = parseInt(args[2] || 0);
       Graphics.viewport.video.move(viewID, 'Move Forward', sec);
     }
 
     stopVideo(args) {
-      var viewID = Number(args[1] || 1);
+      const viewID = Number(args[1] || 1);
       Graphics.viewport.video.stop(viewID);
     }
 
     clearVideo(args) {
-      var viewID = Number(args[1] || 1);
+      const viewID = Number(args[1] || 1);
       Graphics.viewport.video.stop(viewID);
       Graphics.viewport.image.clear(viewID);
     }
 
     target(args) {
-      var viewID = Number(args[1] || 1).clamp(1, 4);
-      var eventId = parseInt(args[2] || 0);
+      const viewID = Number(args[1] || 1).clamp(1, 4);
+      const eventId = parseInt(args[2] || 0);
       Graphics.viewport.setDisplayPos(viewID, eventId);
     }
 
@@ -1067,4 +1086,4 @@ RS.MultipleViewports = RS.MultipleViewports || {};
 
   window.V5 = V5;
 
-})();
+})(RS.MultipleViewports);
