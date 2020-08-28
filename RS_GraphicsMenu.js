@@ -29,13 +29,13 @@ Imported.RS_GraphicsMenu = true;
  * @parent Starting Position
  * @type string
  * @desc Set up the starting x-position of the menu panel
- * @default Graphics.boxWidth / 2 - ((W * RECT.length) / 2)
+ * @default Graphics.width / 2 - ((W * RECT.length) / 2)
  *
  * @param Start Y
  * @parent Starting Position
  * @type string
  * @desc Set up the starting y-position of the menu panel
- * @default Graphics.boxHeight / 2 - H / 2
+ * @default Graphics.height / 2 - H / 2
  *
  * @param Rect
  *
@@ -84,8 +84,8 @@ Imported.RS_GraphicsMenu = true;
  * The starting position will set to fit in the center of the screen. The default
  * values are as follows:
  *
- *  RS.GraphicsMenu.Params.startX = Graphics.boxWidth / 2 - ((W * menu.length) / 2)
- *  RS.GraphicsMenu.Params.startY = Graphics.boxHeight / 2 - H / 2
+ *  RS.GraphicsMenu.Params.startX = Graphics.width / 2 - ((W * menu.length) / 2)
+ *  RS.GraphicsMenu.Params.startY = Graphics.height / 2 - H / 2
  *
  * 'W' and 'H" is predefined button size values based on plugin parameters.
  * 
@@ -183,14 +183,14 @@ Imported.RS_GraphicsMenu = true;
  * @parent Starting Position
  * @type string
  * @desc 메뉴 이미지의 시작 위치 X 값을 설정하세요
- * @default Graphics.boxWidth / 2 - ((W * RECT.length) / 2)
+ * @default Graphics.width / 2 - ((W * RECT.length) / 2)
  *
  * @param Start Y
  * @text 시작 Y
  * @parent Starting Position
  * @type string
  * @desc 메뉴 이미지의 시작 위치 Y 값을 설정하세요
- * @default Graphics.boxHeight / 2 - H / 2
+ * @default Graphics.height / 2 - H / 2
  *
  * @param W
  * @text 버튼의 가로 크기
