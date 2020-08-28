@@ -316,11 +316,7 @@ RS.InputDialog = RS.InputDialog || {};
 RS.InputDialog.Params = RS.InputDialog.Params || {};
 RS.Utils = RS.Utils || {};
 
-function Scene_InputDialog() {
-    this.initialize.apply(this, arguments);
-}
-
-(function () {
+(() => {
 
     "use strict";
 
@@ -958,6 +954,8 @@ function Scene_InputDialog() {
             };
         }
     }
+
+    window.Scene_InputDialog = Scene_InputDialog;
 
     //============================================================================
     // Game_Troop
