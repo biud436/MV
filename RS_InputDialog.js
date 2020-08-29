@@ -537,7 +537,7 @@ RS.Utils = RS.Utils || {};
         color : rgb(19, 19, 38); 
       } 
 
-      .defaultButton:hover {
+      .defaultButton:hover, .defaultButton:focus {
         transform: scale(1.1);
         font-weight: bold;
       }     
