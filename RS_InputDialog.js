@@ -506,8 +506,9 @@ RS.Utils = RS.Utils || {};
           z-index : 1000;
           opacity : 0.8;
           position : relative;
-          background-color : #ffffff;
-          border : 2px solid #414141;
+          background-image: 
+            repeating-linear-gradient(to bottom, #ccc, white 50%, #ccc);
+          border : 2px solid #ccc;
           border-radius : 10px;
           text-shadow : 0px 1px 3px #696969;
           font-family : arial;
@@ -519,11 +520,9 @@ RS.Utils = RS.Utils || {};
       .defaultButton {
           opacity : 0.8;
           font-family : arial;
-          border : 1px solid rgb(73, 73, 73);
+          border : 2px solid #ccc;
           background-image: 
-            -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%),
-            -moz-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%),
-            -o-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 100%);
+            repeating-linear-gradient(to bottom, #ccc, white 50%, #ccc);
           color : rgb(19, 19, 19);
           text-shadow : rgba(105, 105, 105, 0.7) 0 1px 0;
           cursor : pointer;
