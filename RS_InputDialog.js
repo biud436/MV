@@ -507,7 +507,7 @@ RS.Utils = RS.Utils || {};
           opacity : 0.8;
           position : relative;
           background-image: 
-            repeating-linear-gradient(to bottom, #ccc, white 50%, #ccc);
+            linear-gradient(to bottom, #ccc, white 50%, #ccc);
           border : 2px solid #ccc;
           border-radius : 10px;
           text-shadow : 0px 1px 3px #696969;
@@ -522,7 +522,7 @@ RS.Utils = RS.Utils || {};
           font-family : arial;
           border : 2px solid #ccc;
           background-image: 
-            repeating-linear-gradient(to bottom, #ccc, white 50%, #ccc);
+            linear-gradient(to bottom, #ccc, white 50%, #ccc);
           color : rgb(19, 19, 19);
           text-shadow : rgba(105, 105, 105, 0.7) 0 1px 0;
           cursor : pointer;
