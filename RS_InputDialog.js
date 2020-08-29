@@ -532,7 +532,16 @@ RS.Utils = RS.Utils || {};
           box-shadow : 0 1px 4px rgba(78, 78, 78, 0.6);
           font-size : 1rem!important;
       }
-      
+
+      .defaultButton:active {
+        color : rgb(19, 19, 38); 
+      } 
+
+      .defaultButton:hover {
+        transform: scale(1.1);
+        font-weight: bold;
+      }     
+
       .row {
           width : 70%;
           height: 1rem;
