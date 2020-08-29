@@ -334,7 +334,7 @@ let onPlayerStateChange = null;
           transform: rotate(360deg);
         }
       }
-      #ytb-close-button:hover{ 
+      #ytb-close-button:hover, #ytb-close-button:focus{ 
         transform: scale(1.05); 
         transition: .2s ease-in; 
         animation-name: ytb-anime;
