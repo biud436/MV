@@ -47,21 +47,6 @@
  * the video until the end.
  *
  * =============================================================================
- * Plugin Command
- * =============================================================================
- * - This plugin command will start playback of the YouTube video. Please enter
- * the URL as follows. If the Internet had not connected, It could have caused
- * the error.
- *
- * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
- * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
- * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
- *
- * - Stop playback of the YouTube Video.
- *
- * YTPlayer stop
- *
- * =============================================================================
  * Script Calls
  * =============================================================================
  * Graphics.playYoutube("https://www.youtube.com/watch?v=C4ze-KCSxQY");
@@ -137,18 +122,6 @@
  * 안드로이드 '크롬'과 모바일 '사파리'에서는 동영상이 자동으로 재생되지 않습니다.
  * 유튜브 플레이어를 종료하고자 한다면 동영상 영역의 바깥 쪽을 클릭하시거나,
  * 동영상이 끝날 때 까지 기다려주세요.
- *
- * =============================================================================
- * Plugin Command
- * =============================================================================
- * 인터넷이 연결되어있으면 동영상이 재생됩니다.
- * 아래에 기입된 주소 형식만 제대로 재생됩니다.
- *
- * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
- * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
- * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
- *
- * YTPlayer stop // 유튜브 동영상 재생을 중단합니다.
  *
  * =============================================================================
  * 스크립트 명령
@@ -231,18 +204,6 @@
  * アンドロイドクロムとモバイルのサファリでは、自動で動画が再生されません。
  * ユーチューブプレーヤーを終了するには、動画領域の外側をクリックすればいいです
  * それとも動画が終わるまで待ってください。
- *
- * =============================================================================
- * プラグインコマンドについて
- * =============================================================================
- * インターネットがつながっていれば動画が再生されます。
- * きちんと表示されるアドレス形式は次のようです。
- *
- * YTPlayer play https://www.youtube.com/watch?v=C4ze-KCSxQY
- * YTPlayer play https://youtu.be/ycjhNtMia5s?t=310
- * YTPlayer play https://www.youtube.com/watch?v=ycjhNtMia5s&feature=youtu.be&t=1021
- *
- * YTPlayer stop // ユーチューブ動画再生を中断します。
  *
  * =============================================================================
  * スクリプトコマンドについて
