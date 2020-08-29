@@ -301,6 +301,7 @@ let onPlayerStateChange = null;
       Graphics._centerElement(this._ytPlayer);
 
       this._exitButton = document.createElement("button");
+      this._exitButton.id = "ytb-close-button";
       this._exitButton.style.border = "1px solid #ccc";
       this._exitButton.style.borderRadius = "50%";
       this._exitButton.style.background = "rgba(255,255,255,0.8)";
@@ -322,6 +323,30 @@ let onPlayerStateChange = null;
       p.style.textAlign = "center";
       p.style.fontWeight = "bold";
       p.style.color = "black";
+
+      const extraStyle = document.createElement('style');
+      const css = `
+      @keyframes ytb-anime {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #ytb-close-button:hover{ 
+        transform: scale(1.05); 
+        transition: .2s ease-in; 
+        animation-name: ytb-anime;
+        animation-duration: .2s;
+        animation-direction: alternate;
+        animation-delay: .4s;
+        animation-timing-function: ease-in-out;        
+      }        
+      `;
+      extraStyle.appendChild(document.createTextNode(css));
+
+      document.getElementsByTagName('head')[0].appendChild(extraStyle);
 
       this._exitButton.appendChild(p);
       
