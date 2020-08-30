@@ -2216,16 +2216,8 @@ var RS = RS || {};
         }
     
         createFace() {
-            var player = this.getPlayer();
-            if (Imported["SumRndmDde Character Creator EX"]) {
-                if (player.hasSetImage()) {
-                    this._faceBitmap = player.getCreatorBitmapFace();
-                } else {
-                    this._faceBitmap = RS.HUD.loadFace(player.faceName());
-                }
-            } else {
-                this._faceBitmap = RS.HUD.loadFace(player.faceName());
-            }
+            const player = this.getPlayer();
+            this._faceBitmap = RS.HUD.loadFace(player.faceName());
             this._maskBitmap = RS.HUD.loadPicture(RS.HUD.param.imgMasking);
             this._maskBitmap.addLoadListener(() => {
                 this._faceBitmap.addLoadListener(
