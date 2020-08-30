@@ -2043,7 +2043,7 @@ var RS = RS || {};
                 allHud.removeChildren(0, allHud.children.length);
             }
     
-            items.forEach(function (item, index) {
+            items.forEach((item, index) => {
                 // This code runs only when there is a party member at a specific index.
                 if (!!$gameParty.members()[index]) {
                     if (item !== null) allHud.addChild(new HUD({
@@ -2051,7 +2051,7 @@ var RS = RS || {};
                         nIndex: index
                     }));
                 }
-            }, this);
+            });
     
             // It sorts objects by party number.
             this.sort();
