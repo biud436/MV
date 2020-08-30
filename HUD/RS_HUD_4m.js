@@ -1500,9 +1500,8 @@ var RS = RS || {};
          */
         importDataWithAjax2(fileName) {
             return new Promise((resolve, reject) => {
-                var xhr = new XMLHttpRequest();
-                var self = RS.HUD;
-                var url = './data/' + (fileName || defaultTemplate);
+                const xhr = new XMLHttpRequest();
+                const url = './data/' + (fileName || defaultTemplate);
                 xhr.open('GET', url);
                 xhr.onload = function () {
                     if (xhr.status < 400) {
@@ -1552,7 +1551,7 @@ var RS = RS || {};
          * @static
          */
         static mix(vec1, vec2, t) {
-            var vec = Vector2.empty();
+            const vec = Vector2.empty();
             vec.x = vec1.x + t * (vec2.x - vec1.x);
             vec.y = vec1.x + t * (vec2.y - vec1.y);
             return vec;
@@ -1583,7 +1582,7 @@ var RS = RS || {};
          * @static
          */
         static quadraticBezier(vec1, vec2, vec3, t) {
-            var d, e, p;
+            let d, e, p;
             d = Vector2.mix(vec1, vec2, t);
             e = Vector2.mix(vec2, vec3, t);
             p = Vector2.mix(d, e, t);
@@ -1612,8 +1611,7 @@ var RS = RS || {};
          * @static
          */
         static distance(vec1, vec2) {
-            var val;
-            val = Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2);
+            const val = Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2);
             return Math.sqrt(val);
         };        
 
@@ -1721,7 +1719,7 @@ var RS = RS || {};
          */
         getAngle(vec) {
             if (Vector2.isNormalize(this) && Vector2.isNormalize(vec)) {
-                var val = this.dot(vec);
+                const val = this.dot(vec);
                 return Math.acos(val);
             } else {
                 console.error("This is not normalize vector");
@@ -1733,7 +1731,7 @@ var RS = RS || {};
          * @return {Vector2} rel
          */
         normalize() {
-            var rel = Vector2.empty();
+            const rel = Vector2.empty();
             if (this.length != 0) {
                 rel.x = this.x / this.length;
                 rel.y = this.y / this.length;
@@ -1775,7 +1773,7 @@ var RS = RS || {};
          * @return {Boolean} result
          */
         isEqual(vec) {
-            var eps = 0.001;
+            const eps = 0.001;
             if ((this.x - vec.x) < eps &&
                 (this.y - vec.y) < eps) {
                 return true;
@@ -1975,7 +1973,7 @@ var RS = RS || {};
         };
     
         isRefresh() {
-            var currentText = this._callbackFunction();
+            const currentText = this._callbackFunction();
             return currentText.localeCompare(this._log) !== 0;
         };
     
@@ -2004,7 +2002,8 @@ var RS = RS || {};
         };
     
         defaultFontSettings() {
-            var param = this._params;
+            const param = this._params;
+
             this.bitmap.fontFace = this.standardFontFace();
             this.bitmap.fontSize = param[0];
             this.bitmap.textColor = param[1];
@@ -2036,8 +2035,8 @@ var RS = RS || {};
         }
     
         drawAllHud() {
-            var allHud = this._items;
-            var items = RS.HUD.param.arrangement;
+            const allHud = this._items;
+            const items = RS.HUD.param.arrangement;
     
             // This removes any drawing objects that have already been created.
             if (allHud.children.length > 0) {
@@ -2063,8 +2062,8 @@ var RS = RS || {};
         }
     
         update() {
-            var members = $gameParty.members();
-            this.children.forEach(function (child, idx) {
+            const members = $gameParty.members();
+            this.children.forEach((child, idx) => {
                 if (child.update && members[idx]) {
                     child.update();
                 }
@@ -2072,41 +2071,35 @@ var RS = RS || {};
         }
     
         sort() {
-            var allHud = this._items;
-            var array = allHud.children;
-            allHud.children = array.sort(function (a, b) {
+            const allHud = this._items;
+            const array = allHud.children;
+
+            allHud.children = array.sort((a, b) => {
                 return a._memberIndex - b._memberIndex;
             });
         }
     
         refresh() {
-            var allHud = this._items;
-            allHud.children.forEach(function (i) {
-                allHud.removeChild(i);
-            }, this);
+            const allHud = this._items;
+            allHud.children.forEach(i => allHud.removeChild(i));
             this.drawAllHud();
             this.show = $gameSystem._rs_hud.show;
         }
     
         updateText() {
-            var allHud = this._items;
-            allHud.children.forEach(function (i) {
-                i.updateText();
-            }, this);
+            const allHud = this._items;
+            allHud.children.forEach(i => i.updateText());
         }
     
         updateFrame() {
             var allHud = this._items;
-            allHud.children.forEach(function (i) {
-                i.paramUpdate();
-            }, this);
+            allHud.children.forEach(i => i.paramUpdate());
         }
     
         remove(index) {
-            var self = this;
-            setTimeout(function () {
-                while ($gameParty.size() !== self._items.children.length) {
-                    self.drawAllHud();
+            setTimeout(() => {
+                while ($gameParty.size() !== this._items.children.length) {
+                    this.drawAllHud();
                 }
             }, 0);
         }
@@ -2230,10 +2223,10 @@ var RS = RS || {};
     
             this._face = new Sprite();
     
-            var fw = ImageManager.faceWidth;
-            var fh = ImageManager.faceHeight;
-            var sx = (faceIndex % 4) * fw;
-            var sy = Math.floor(faceIndex / 4) * fh;
+            const fw = ImageManager.faceWidth;
+            const fh = ImageManager.faceHeight;
+            const sx = (faceIndex % 4) * fw;
+            const sy = Math.floor(faceIndex / 4) * fh;
     
             this._face.bitmap = new Bitmap(nFaceDiameter, nFaceDiameter);
     
@@ -2326,7 +2319,7 @@ var RS = RS || {};
         }
     
         getHp() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return HUD.GAUGE_EMPTY_TEXT;
             if (RS.HUD.param.showComma) {
                 return HUD.GAUGE_TEMPLATE_TEXT.appendComma(player.hp, player.mhp);
@@ -2336,7 +2329,7 @@ var RS = RS || {};
         }
     
         getMp() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return HUD.GAUGE_EMPTY_TEXT;
             if (RS.HUD.param.showComma) {
                 return HUD.GAUGE_TEMPLATE_TEXT.appendComma(player.mp, player.mmp);
@@ -2346,7 +2339,7 @@ var RS = RS || {};
         }
     
         getExp() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return HUD.GAUGE_EMPTY_TEXT;
             if (player.isMaxLevel()) return RS.HUD.param.maxExpText;
             if (RS.HUD.param.showComma) {
@@ -2357,7 +2350,7 @@ var RS = RS || {};
         }
     
         getLevel() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return HUD.LEVEL_EMPTY_TEXT;
             if (RS.HUD.param.showComma) {
                 return HUD.LEVEL_TEMPLATE_TEXT.appendComma(player.level);
@@ -2367,9 +2360,9 @@ var RS = RS || {};
         }
     
         getName() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return "";
-            var name = player && player.name();
+            const name = player && player.name();
             if (name) {
                 return name;
             } else {
@@ -2378,25 +2371,25 @@ var RS = RS || {};
         }
     
         getHpRate() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return 0;
             return this._hp.bitmap.width * (player.hp / player.mhp);
         }
     
         getMpRate() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return 0;
             return this._mp.bitmap.width * (player.mp / player.mmp);
         }
     
         getExpRate() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return 0;
             return this._exp.bitmap.width * (player.relativeExp() / player.relativeMaxExp());
         }
     
         getRealExpRate() {
-            var player = this.getPlayer();
+            const player = this.getPlayer();
             if (!player) return 0;
             if (this.inBattle() && $dataSystem.optDisplayTp) {
                 return (player.tp / player.maxTp());
@@ -2408,12 +2401,12 @@ var RS = RS || {};
         setOpacityisNotGlobal(value) {
             this.children.forEach(i => {
                 i.opacity = value.clamp(0, 255);
-            }, this);
+            });
         }
     
         getOpacityValue(dir) {
-            var value = this._hud.opacity;
-            var maxOpaicty = $gameSystem._rs_hud.opacity;
+            let value = this._hud.opacity;
+            const maxOpaicty = $gameSystem._rs_hud.opacity;
             if (maxOpaicty <= 0) return 0;
             if (dir) {
                 value -= nOpacityEps;
