@@ -1827,40 +1827,40 @@ var RS = RS || {};
 
     Object.assign(Bitmap.prototype, {
 
-        drawClippingImage(bitmap, maskImage, _x, _y, _sx, _sy) {
-            try {
-                const maskImageFromInternal = maskImage._canvas || maskImage._image;
-                const sourceImage = bitmap._canvas || bitmap._image;
+        drawClippingImage(bitmap, maskSource, _x, _y, _sx, _sy) {
+                const maskImage = maskSource._image;
+                const sourceImage = bitmap._image;
                 const context = this._context;
+
+                if(!maskImage.complete || !sourceImage.complete) {
+                    return;
+                }
     
                 context.save();
-                context.drawImage(maskImageFromInternal, _x, _y, nFaceDiameter, nFaceDiameter);
+                context.drawImage(maskImage, _x, _y, nFaceDiameter, nFaceDiameter);
                 context.globalCompositeOperation = 'source-atop';
                 context.drawImage(sourceImage, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
                 context.restore();
     
                 this._baseTexture.update();
-            } catch(e) {
-
-            }
         },
 
         drawClippingImageNonBlur(source, _x, _y, _sx, _sy) {
-            try {
-                const context = this._context;
-                const image = source._canvas || source._image;
-    
-                context.save();
-                context.beginPath();
-                context.arc(_x + 45, _y + 45, 45, 0, Math.PI * 2, false);
-                context.clip();
-                context.drawImage(image, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
-                context.restore();
-    
-                this._baseTexture.update();
-            } catch(e) {
+            const context = this._context;
+            const image = source._image;
 
+            if(!image.complete) {
+                return;
             }
+
+            context.save();
+            context.beginPath();
+            context.arc(_x + 45, _y + 45, 45, 0, Math.PI * 2, false);
+            context.clip();
+            context.drawImage(image, _sx, _sy, 144, 144, 0, 0, nFaceDiameter, nFaceDiameter);
+            context.restore();
+
+            this._baseTexture.update();
         }
 
     });
