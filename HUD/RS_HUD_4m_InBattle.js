@@ -411,8 +411,8 @@ RS.HUD.param = RS.HUD.param || {};
         drawActorIcons(actor, x, y, width) {
             if (this._Iconlayer) this._Iconlayer.bitmap.clear();
             width = width || 144;
-            var icons = actor.allIcons().slice(0, Math.floor(width / 32));
-            for (var i = 0; i < icons.length; i++) {
+            const icons = actor.allIcons().slice(0, Math.floor(width / 32));
+            for (let i = 0; i < icons.length; i++) {
                 this.drawIcon(icons[i], x + 32 * i, y + 2);
             }
         },
@@ -495,11 +495,11 @@ RS.HUD.param = RS.HUD.param || {};
     Scene_Battle.prototype.createAllWindows = function () {
         Scene_Battle_createAllWindows.call(this);
         if (RS.HUD.param.isWndsAlignment) {
-            this._windowLayer.children.forEach(function (i) {
+            this._windowLayer.children.forEach(i => {
                 if (!(i === this._logWindow || i === this._helpWindow)) {
                     i.y = Graphics.height / 2 - i.height / 2;
                 }
-            }, this);
+            });
         }
     };
 
@@ -644,7 +644,5 @@ RS.HUD.param = RS.HUD.param || {};
             this._AtbArrow.bitmap.blt(bitmap, 132, 24, 20, 20, 0, 0);
         },
     });
-
-
 
 })();
