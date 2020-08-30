@@ -87,9 +87,6 @@
  * 
  * @help
  * This plugin is RS_InputDialog for MZ version.
- * However, it is not done yet.
- * 
- * I will be going to change an <input> element's CSS.
  * 
  * @command open
  * @desc Opens Input Dialog.
@@ -239,7 +236,6 @@
  *
  * @help
  * 텍스트 입력창 MZ 버전입니다.
- * <input> element의 CSS를 변경할 예정입니다.
  *
  * @command open
  * @text 입력창 열기
@@ -364,7 +360,7 @@ RS.Utils = RS.Utils || {};
     RS.InputDialog.Params.exStyle = RS.Utils.jsonParse(parameters['CSS']);
 
     RS.InputDialog.Params.pos = new PIXI.Point(0, 0);
-    RS.InputDialog.Params.isCenterAlignment = (function () {
+    RS.InputDialog.Params.isCenterAlignment = (() => {
 
         let position = parameters['Position'];
         position = position.trim();
@@ -385,53 +381,57 @@ RS.Utils = RS.Utils || {};
     // public methods in RS.InputDialog
     //============================================================================
 
-    RS.InputDialog.createInstance = function () {
-        const scene = SceneManager._scene;
-        if (scene instanceof Scene_Battle) {
-            scene.showTextBox();
-        } else {
-            SceneManager.push(Scene_InputDialog);
+    Object.assign(RS.InputDialog, {
+
+        createInstance() {
+            const scene = SceneManager._scene;
+            if (scene instanceof Scene_Battle) {
+                scene.showTextBox();
+            } else {
+                SceneManager.push(Scene_InputDialog);
+            }
+        },
+    
+        setRect() {
+            "use strict";
+    
+            let query, textBox, OkButton, CancelButton;
+    
+            query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=text]`;
+            textBox = document.querySelector(query);
+    
+            query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=inputDialog-OkBtn]`;
+            OkButton = document.querySelector(query);
+    
+            query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=inputDialog-CancelBtn]`;
+            CancelButton = document.querySelector(query);
+    
+            if (textBox) {
+                textBox.style.fontSize = (Utils.isMobileDevice()) ? '1rem' : (2 * Graphics._realScale) + "em";
+                textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
+                textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
+            }
+    
+            if (OkButton) OkButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem' : (1 * Graphics._realScale) + "em";
+            if (CancelButton) CancelButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem' : (1 * Graphics._realScale) + "em";
+    
+        },
+    
+        startBattleBlur(target, value) {
+            var blur = "blur(%1px)".format(value);
+            target.style.webkitFilter = blur;
+            target.style.filter = blur;
+        },
+    
+        getScreenWidth(value) {
+            return value;
+        },
+    
+        getScreenHeight(value) {
+            return value;
         }
-    };
 
-    RS.InputDialog.setRect = function () {
-        "use strict";
-
-        let query, textBox, OkButton, CancelButton;
-
-        query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=text]`;
-        textBox = document.querySelector(query);
-
-        query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=inputDialog-OkBtn]`;
-        OkButton = document.querySelector(query);
-
-        query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=inputDialog-CancelBtn]`;
-        CancelButton = document.querySelector(query);
-
-        if (textBox) {
-            textBox.style.fontSize = (Utils.isMobileDevice()) ? '1rem' : (2 * Graphics._realScale) + "em";
-            textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
-            textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
-        }
-
-        if (OkButton) OkButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem' : (1 * Graphics._realScale) + "em";
-        if (CancelButton) CancelButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem' : (1 * Graphics._realScale) + "em";
-
-    };
-
-    RS.InputDialog.startBattleBlur = function (target, value) {
-        var blur = "blur(%1px)".format(value);
-        target.style.webkitFilter = blur;
-        target.style.filter = blur;
-    };
-
-    RS.InputDialog.getScreenWidth = function (value) {
-        return value;
-    };
-
-    RS.InputDialog.getScreenHeight = function (value) {
-        return value;
-    };
+    });
 
     //============================================================================
     // Input
@@ -969,117 +969,113 @@ RS.Utils = RS.Utils || {};
     // Game_Troop
     //============================================================================
 
-    Game_Troop.prototype.battleInterpreterTaskLock = function () {
-        this._interpreter._waitMode = 'IME Mode';
-    };
-
-    Game_Troop.prototype.battleInterpreterTaskUnlock = function () {
-        this._interpreter._waitMode = '';
-    };
+    Object.assign(Game_Troop.prototype, {
+        battleInterpreterTaskLock() {
+            this._interpreter._waitMode = 'IME Mode';
+        },
+        battleInterpreterTaskUnlock() {
+            this._interpreter._waitMode = '';
+        }
+    });
 
     //============================================================================
     // Scene_Battle
     //============================================================================
 
     const alias_Scene_Battle_initialize = Scene_Battle.prototype.initialize;
-    Scene_Battle.prototype.initialize = function () {
-        alias_Scene_Battle_initialize.call(this);
-        this.createTextBox();
-    };
-
     const alias_Scene_Battle_create = Scene_Battle.prototype.create;
-    Scene_Battle.prototype.create = function () {
-        alias_Scene_Battle_create.call(this);
-    };
-
     const alias_Scene_Battle_update = Scene_Battle.prototype.update;
-    Scene_Battle.prototype.update = function () {
-        alias_Scene_Battle_update.call(this);
-        // TODO: 모바일에서 취소키를 누르면 키입력 창이 사라지는 버그가 있다.
-        // 그래서 추가했지만 화면을 누르면 꺼진다는 것을 모르는 유저들이 버그로 착각할 수 있다.
-        if (this.isScreenLock() && TouchInput.isTriggered()) {
-            this.okResult();
-        }
-    };
-
     const alias_Scene_Battle_terminate = Scene_Battle.prototype.terminate;
-    Scene_Battle.prototype.terminate = function () {
-        alias_Scene_Battle_terminate.call(this);
-        if (this._textBox) {
-            this._textBox.terminate();
-            this._textBox = null;
-        }
-        if ($gameTemp.isCommonEventReserved()) {
-            $gameTemp.clearCommonEvent();
-        }
-    };
 
-    Scene_Battle.prototype.createTextBox = function () {
-        this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
-        this._textBox.setEvent(this.okResult.bind(this), this.cancelResult.bind(this));
-    };
+    Object.assign(Scene_Battle.prototype, {
 
-    Scene_Battle.prototype.textBoxIsBusy = function () {
-        return this._textBox.isBusy();
-    };
-
-    Scene_Battle.prototype.showTextBox = function () {
-        this._textBox.setText('');
-        this._textBox.show();
-        this._textBox.getFocus();
-        this._textBox.setTextHint();
-        this._textBox.setRect();
-        this._textBox.onResize();
-        $gameTroop.battleInterpreterTaskLock();
-        this._textBox.addAllEventListener();
-    };
-
-    Scene_Battle.prototype.hideTextBox = function () {
-        if (!this.textBoxIsBusy()) return false;
-        this._textBox.hide();
-        Input.clear();
-        $gameTroop.battleInterpreterTaskUnlock();
-    };
-
-    Scene_Battle.prototype.isScreenLock = function () {
-        return this._textBox.isScreenLock();
-    };
-
-    Scene_Battle.prototype.okResult = function () {
-        if (!this._textBox) return '';
-        if (this.textBoxIsBusy()) {
-            let text = this._textBox.getText() || '';
-            if (text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
-            $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
-            this._textBox.setText('');
-            if (RS.InputDialog.Params.debug) {
-                const dmsg = 'You typed the text is same as '.concat($gameVariables.value(RS.InputDialog.Params.variableID) + '' || 'NONE');
-                this._logWindow.push('addText', dmsg);
+        initialize() {
+            alias_Scene_Battle_initialize.call(this);
+            this.createTextBox();
+        },
+    
+        create() {
+            alias_Scene_Battle_create.call(this);
+        },
+    
+        update() {
+            alias_Scene_Battle_update.call(this);
+            // TODO: 모바일에서 취소키를 누르면 키입력 창이 사라지는 버그가 있다.
+            // 그래서 추가했지만 화면을 누르면 꺼진다는 것을 모르는 유저들이 버그로 착각할 수 있다.
+            if (this.isScreenLock() && TouchInput.isTriggered()) {
+                this.okResult();
             }
-            this.hideTextBox();
-        }
-    };
-
-    Scene_Battle.prototype.cancelResult = function () {
-        if (!this._textBox) return '';
-        if (this.textBoxIsBusy()) {
+        },
+    
+        terminate() {
+            alias_Scene_Battle_terminate.call(this);
+            if (this._textBox) {
+                this._textBox.terminate();
+                this._textBox = null;
+            }
+            if ($gameTemp.isCommonEventReserved()) {
+                $gameTemp.clearCommonEvent();
+            }
+        },
+    
+        createTextBox() {
+            this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
+            this._textBox.setEvent(this.okResult.bind(this), this.cancelResult.bind(this));
+        },
+    
+        textBoxIsBusy() {
+            return this._textBox.isBusy();
+        },
+    
+        showTextBox() {
             this._textBox.setText('');
-            this.hideTextBox();
+            this._textBox.show();
+            this._textBox.getFocus();
+            this._textBox.setTextHint();
+            this._textBox.setRect();
+            this._textBox.onResize();
+            $gameTroop.battleInterpreterTaskLock();
+            this._textBox.addAllEventListener();
+        },
+    
+        hideTextBox() {
+            if (!this.textBoxIsBusy()) return false;
+            this._textBox.hide();
+            Input.clear();
+            $gameTroop.battleInterpreterTaskUnlock();
+        },
+    
+        isScreenLock() {
+            return this._textBox.isScreenLock();
+        },
+    
+        okResult() {
+            if (!this._textBox) return '';
+            if (this.textBoxIsBusy()) {
+                let text = this._textBox.getText() || '';
+                if (text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
+                $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
+                this._textBox.setText('');
+                if (RS.InputDialog.Params.debug) {
+                    const dmsg = 'You typed the text is same as '.concat($gameVariables.value(RS.InputDialog.Params.variableID) + '' || 'NONE');
+                    this._logWindow.push('addText', dmsg);
+                }
+                this.hideTextBox();
+            }
+        },
+    
+        cancelResult() {
+            if (!this._textBox) return '';
+            if (this.textBoxIsBusy()) {
+                this._textBox.setText('');
+                this.hideTextBox();
+            }
         }
-    };
+    });
 
     //============================================================================
-    // Game_Interpreter
-    //============================================================================
-
-    const alias_Game_Interpreter_updateWaitMode = Game_Interpreter.prototype.updateWaitMode;
-    Game_Interpreter.prototype.updateWaitMode = function () {
-        if (this._waitMode === 'IME Mode') {
-            return true;
-        } else {
-            return alias_Game_Interpreter_updateWaitMode.call(this);
-        }
-    };
+    // RS.InputDialog.isEqual
+    //============================================================================    
 
     RS.InputDialog.isEqual = function (eq) {
         const data = String($gameVariables.value(RS.InputDialog.Params.variableID));
@@ -1087,9 +1083,26 @@ RS.Utils = RS.Utils || {};
         return (data === eq);
     };
 
-    Game_Interpreter.prototype.isEqualInputData = function (eq) {
-        return RS.InputDialog.isEqual(eq);
-    };
+    //============================================================================
+    // Game_Interpreter
+    //============================================================================
+
+    const alias_Game_Interpreter_updateWaitMode = Game_Interpreter.prototype.updateWaitMode;
+
+    Object.assign(Game_Interpreter.prototype, {
+
+        updateWaitMode() {
+            if (this._waitMode === 'IME Mode') {
+                return true;
+            } else {
+                return alias_Game_Interpreter_updateWaitMode.call(this);
+            }
+        },
+        
+        isEqualInputData(eq) {
+            return RS.InputDialog.isEqual(eq);
+        }
+    });
 
     //============================================================================
     // Plugin Commands
