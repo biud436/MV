@@ -88,6 +88,57 @@
  * @help
  * This plugin is RS_InputDialog for MZ version.
  * 
+ * =============================================================================
+ * Change Log
+ * =============================================================================
+ * 2016.08.09 (v1.0.0) - First Release.
+ * 2016.08.09 (v1.0.1) - Added Background Color.
+ * 2016.08.10 (v1.0.1a) - Added ID Variables.
+ * 2016.08.10 (v1.1.0) - Fixed Window_DialogHelp class into the plugin.
+ * 2016.08.16 (v1.1.1) - Added the direction property setting the direction of content flow.
+ * 2016.08.16 (v1.1.1a) - Fixed a whitespace bug.
+ * 2016.10.14 (v1.1.2) - Fixed the issue that is not working in Battle.
+ * 2016.10.14 (v1.1.3) :
+ * - Fixed the bug that does not change the background color.
+ * - Fixed the bug that does not change the variable ID.
+ * 2016.10.17 (v1.1.4) - Fixed the frame works of input dialog in battle.
+ * 2016.10.18 (v1.1.5) - Fixed an issue that battler's movement is too fast.
+ * 2016.10.29 (v1.1.6) - Added the function that allows you to specify the maximum number of character for an input field.
+ * 2016.11.13 (v1.1.6a) - Fixed the issue that is directly calling the requestUpdate function of SceneManager.
+ * 2016.12.02 (v1.1.6e) :
+ * - Added some style codes such as a text shadow and an outline into the text box.
+ * - Fixed the way that can temporarily stop attack and skill actions with an enemy when the text box is activated in the battle.
+ * - It will not process the text input when the text box is not shown in the battle.
+ * - In the debug mode, It adds the result value to a log window after the text input is done.
+ * 2016.12.08 (v1.1.6h) - Removed the text hint window.
+ * 2016.12.17 (v1.1.6i) - Fixed an issue that an integer value could not be checked due to the text type issue.
+ * 2017.01.30 (v1.1.7) - Fixed an issue that is not working properly if the text dialog has a string to start with a number.
+ * 2017.02.16 (v1.1.8) :
+ * - Fixed incorrect position and width, height values in the text box.
+ * - Added new feature that indicates the input dialog at the top position of the screen when pressing any key on your own mobile device.
+ * - Added new feature that automatically returns a result of the text box if you did not press anything.
+ * 2018.01.25 (v1.1.8a) - test...
+ * 2018.01.30 (v1.1.9) :
+ * - Added the button called 'OK'.
+ * - Added the button called 'Cancel'.
+ * - Removed the feature that can change the background-color of the input dialog.
+ * - Fixed the issue that is not clicking the button in the mobile.
+ * 2018.02.03 (v1.1.10) :
+ * - Fixed the issue that is not working in RMMV 1.5.1
+ * - Fixed the default value of the plugin parameter  called 'CSS'.
+ * 2018.02.06 (v1.1.11) :
+ * - Fixed the issue that is not working in the battle scene.
+ * 2018.10.22 (v1.1.15) :
+ * - Added a plugin command that sets the position of the input dialog.
+ * - Added a feature that the keyboard layout is displayed again if you touch the text box from android devices.
+ * - On the mobile device, the font size is now set to 1rem (16px).
+ * - Fixed the default UI-theme is to black.
+ * - In the chromium 69+ more over, The input element is always displayed even though <canvas>'s z-index is large than <input> element's z-index. so I've fixed that.
+ * 2019.03.05 (v1.1.16) :
+ * - Fixed the issue that can not create a background when using Irina_PerformanceUpgrade.
+ * 2020.08.28 (v2.0.0) : 
+ * - Ported with MZ.
+ * 
  * @command open
  * @desc Opens Input Dialog.
  * 
