@@ -69,6 +69,11 @@ Imported.RS_GraphicsMenu = true;
  * @type multiline_string
  * @desc Specify the evaluate code block.
  * @default 
+ * 
+ * @param Menu After Eval
+ * @type multiline_string
+ * @desc Specify the evaluate code block.
+ * @default 
  *
  * @help
  * =============================================================================
@@ -232,6 +237,11 @@ Imported.RS_GraphicsMenu = true;
  * @param Menu Before Eval
  * @type multiline_string
  * @desc 메뉴 시작 전에 실행할 스크립트를 지정하세요.
+ * @default
+ *  
+ * @param Menu After Eval
+ * @type multiline_string
+ * @desc 메뉴가 종료된 이후 실행할 스크립트를 지정하세요.
  * @default 
  * 
  * @help
@@ -321,6 +331,7 @@ RS.Utils = RS.Utils || {};
     RS.GraphicsMenu.Params.isValidGameCoreUpdate = false;
 
     RS.GraphicsMenu.Params.menuBeforeEval = parameters["Menu Before Eval"];
+    RS.GraphicsMenu.Params.menuAfterEval = parameters["Menu After Eval"];
 
     //============================================================================
     // Game_System
@@ -404,6 +415,7 @@ RS.Utils = RS.Utils || {};
         }
 
         terminate() {
+            eval(RS.GraphicsMenu.Params.menuAfterEval);
             super.terminate();
         }
 
