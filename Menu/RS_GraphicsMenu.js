@@ -130,6 +130,7 @@ Imported.RS_GraphicsMenu = true;
  * 2018.11.16 (v1.0.4) - Open Menu Screen command is not supported.
  * 2020.01.31 (v1.0.5) : 
  * - Fixed the bug that appears incorrect button frame when selected the button.
+ * 2020.09.01 (v2.0.0) : First Release for MZ.
  */
 
 /*~struct~MenuRect:
@@ -173,7 +174,7 @@ Imported.RS_GraphicsMenu = true;
  * @dir img/pictures/
  * @require 1
  * @desc 사용 할 메뉴 이미지를 선택하세요
- * @default inter
+ * @default inter_alpha
  *
  * @param Starting Position
  * @text 시작 위치
@@ -246,13 +247,7 @@ Imported.RS_GraphicsMenu = true;
  * =============================================================================
  * Version Log
  * -----------------------------------------------------------------------------
- * 2017.07.11 (v1.0.0) - 공개
- * 2017.12.19 (v1.0.1) - 게임 종료 기능 추가
- * 2017.12.29 (v1.0.2) - 메뉴 버튼이 6개 이상일 때, 5개까지만 선택되는 버그 수정
- * 2018.01.29 (v1.0.3) - 스크립트 실행 기능 추가
- * 2018.11.16 (v1.0.4) - 메뉴 화면 열기 기능으로도 열 수 있습니다.
- * 2020.01.31 (v1.0.5) : 
- * - 잘못된 프레임이 표시되는 문제를 수정하였습니다.
+ * 2020.09.01 (v2.0.0) : MZ 버전으로 변환
  */
 
 /*~struct~MenuRect:ko
@@ -354,13 +349,9 @@ RS.Utils = RS.Utils || {};
     // TouchInput
     //============================================================================
 
-    const alias_TouchInput_onMouseMove = TouchInput._onMouseMove;
-    TouchInput._onMouseMove = function (event) {
-        alias_TouchInput_onMouseMove.call(this, event);
-        // 마우스의 움직임이 감지되면 마우스 좌표를 업데이트 합니다
-        // 일반 마우스 좌표는 업데이트를 하지 않으므로 호환성을 위해 그대로 두었습니다
-        const x = Graphics.pageToCanvasX(event.pageX);
-        const y = Graphics.pageToCanvasY(event.pageY);
+    const alias_TouchInput_onHover = TouchInput._onHover;
+    TouchInput._onHover = function(x, y) {
+        alias_TouchInput_onHover.call(this, x, y);
         if ($gameSystem) {
             $gameSystem.menuMouseX = x;
             $gameSystem.menuMouseY = y;
@@ -380,12 +371,22 @@ RS.Utils = RS.Utils || {};
             this.createImage();
         };
 
+        needsCancelButton() {
+            return false;
+        }
+
         createHelpWindow() {
 
         }
 
         terminate() {
             super.terminate();
+        }
+
+        update() {
+            super.update();
+            this.updateIndex();
+            this.processExit();            
         }
 
         right() {
@@ -485,7 +486,7 @@ RS.Utils = RS.Utils || {};
         };
 
         processExit() {
-            if (super.isMenuCalled()) {
+            if (Scene_Map.prototype.isMenuCalled.call(this)) {
                 // goto : 메뉴 스택에 누적하지 않고 씬 오브젝트 생성
                 this._touched = false;
                 SceneManager.goto(Scene_Map);
@@ -503,6 +504,8 @@ RS.Utils = RS.Utils || {};
 
         createImage() {
             const RECT = RS.GraphicsMenu.Params.RECT;
+            var W = parseInt(parameters['W']);
+            var H = parseInt(parameters['H']);            
 
             RS.GraphicsMenu.Params.startX = eval(parameters['Start X']);
             RS.GraphicsMenu.Params.startY = eval(parameters['Start Y']);
