@@ -384,6 +384,9 @@ RS.Utils = RS.Utils || {};
             this.createImage();
         };
 
+        /**
+         * YEP_BattleEngine의 Lunatic Mode와 같은 기능으로 메뉴 시작전에 스크립트를 실행합니다.
+         */
         executeBeforeEval() {
             try {
                 eval(RS.GraphicsMenu.Params.menuBeforeEval);
