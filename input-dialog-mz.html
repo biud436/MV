@@ -62,11 +62,11 @@
         section.buttons > label:last-child {
             border-radius: 0em 1em 0em 0em;
         }
-        input[type="radio"]:nth-of-type(2):checked ~ div > section.buttons > label[for*="first"] {
+        #backgronud input[type="radio"]:nth-of-type(2):checked ~ div > section.buttons > label[for*="first"] {
             background: linear-gradient(0deg, rgb(124, 124, 124) 0%, rgb(163, 163, 163) 100%);
             color: #bbb;
         }
-        input[type="radio"]:nth-of-type(1):checked ~ div > section.buttons > label[for*="second"] {
+        ##backgronud input[type="radio"]:nth-of-type(1):checked ~ div > section.buttons > label[for*="second"] {
             background: linear-gradient(0deg, rgb(124, 124, 124) 0%, rgb(163, 163, 163) 100%);
             color: #bbb;
         }        
@@ -77,11 +77,15 @@
             float:right;
             border-radius: 1em 1em 1em 1em;
         }
+        .container fieldset {
+            width: 520px;
+            height: 18px;
+            padding: 0 15px 0 15px;
+        }
     </style>
 </head>
 <body>
     <div id="container">
-        <!-- <form action=""> -->
             <input id="first-tab-button" type="radio" name="checked" checked>
             <input id="second-tab-button" type="radio" name="checked">
             <div id="backgronud">
@@ -98,7 +102,6 @@
                     <button id="cancel">Cancel</button>            
                 </div>
             </div>
-        <!-- </form> -->
     </div>
 </body>
 </html>

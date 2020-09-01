@@ -548,6 +548,10 @@ RS.Utils = RS.Utils || {};
           resize : both;
           font-size: 16px!important;
       }
+
+      .inputDialogContainer > tr:last-child {
+            position:relative;
+      }
       
       .inputDialog {
           top : 0em;
@@ -563,7 +567,7 @@ RS.Utils = RS.Utils || {};
           border-radius : 10px;
           text-shadow : 0px 1px 3px #696969;
           font-family : arial;
-          color : #1a1a1a;
+          font-weight: bold;
           outline : none;
           font-size: 1rem!important;
       }
@@ -573,11 +577,12 @@ RS.Utils = RS.Utils || {};
           font-family : arial;
           border : 2px solid #ccc;
           background-image: 
-            linear-gradient(to bottom, #ccc, white 50%, #ccc);
+            linear-gradient(to bottom, #ffffff 0%, #f4f4f4 100%);
           color : rgb(19, 19, 19);
           text-shadow : rgba(105, 105, 105, 0.7) 0 1px 0;
           cursor : pointer;
-          border-radius : 0.5em;
+          color: #9c9c9c;
+          border-radius: 5px;
           box-sizing : border-box;
           box-shadow : 0 1px 4px rgba(78, 78, 78, 0.6);
           font-size : 1rem!important;

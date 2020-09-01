@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        body {
+            overflow: hidden;   
+            height: 624px;             
+        }
+
+        .center-wrapper {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: 624px;
+            display:flex;
+            justify-content: center;     
+            align-items: center;     
+        }
+
+        .container {
+            width: calc(240px + 48px + 24px);
+            height: 40px;
+            margin: 0 auto;
+            padding-left: 0px;
+            border: 0px solid #ccc;               
+        }
+
+        .container fieldset {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            overflow:hidden; 
+            border: 0px;     
+
+        }
+
+        .container p {
+            width: 240px;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .container input {
+            width: 240px;
+            height: 32px;
+            padding: 0;
+            margin: 0;          
+        }
+
+        .container fieldset button {
+            width: 64px;
+            height: 37px;
+            padding: 0;
+            margin: 0;       
+            border: 1px solid #ccc;     
+            color: #444444;   
+            background-color: #f4f4f4;
+            background-image: linear-gradient(to bottom, #f3f3f3 0%, #ffffff 100%);
+            position: absolute;
+            top: 0;
+            right: 0;    
+        }
+
+        .container fieldset button:hover, .container fieldset button:focus {
+            font-size: large;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="center-wrapper">
+        <div class="container">
+            <fieldset>
+                <p><label for="name"></label><input type="text" id="name"></p>
+                <p><button>OK</button></p>
+            </fieldset>
+        </div>
+    </div>
+</body>
+</html>
