@@ -64,6 +64,11 @@ Imported.RS_GraphicsMenu = true;
  * @desc Specify the name of Scene constructor.
  * (you can exit the game when setting the text as :exit)
  * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
+ * 
+ * @param Menu Before Eval
+ * @type multiline_string
+ * @desc Specify the evaluate code block.
+ * @default 
  *
  * @help
  * =============================================================================
@@ -223,7 +228,12 @@ Imported.RS_GraphicsMenu = true;
  * @desc Scene 함수(클래스)의 이름를 정확하게 입력하세요.
  * :exit라고 적으면 게임을 즉각 종료할 수 있습니다.
  * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
- *
+ * 
+ * @param Menu Before Eval
+ * @type multiline_string
+ * @desc 메뉴 시작 전에 실행할 스크립트를 지정하세요.
+ * @default 
+ * 
  * @help
  * =============================================================================
  * 사용법
@@ -310,6 +320,8 @@ RS.Utils = RS.Utils || {};
 
     RS.GraphicsMenu.Params.isValidGameCoreUpdate = false;
 
+    RS.GraphicsMenu.Params.menuBeforeEval = parameters["Menu Before Eval"];
+
     //============================================================================
     // Game_System
     //============================================================================
@@ -368,8 +380,17 @@ RS.Utils = RS.Utils || {};
             super.create();
 
             this._touched = false;
+            this.executeBeforeEval();
             this.createImage();
         };
+
+        executeBeforeEval() {
+            try {
+                eval(RS.GraphicsMenu.Params.menuBeforeEval);
+            } catch(e) {
+                console.warn(e);
+            }
+        }
 
         needsCancelButton() {
             return false;
