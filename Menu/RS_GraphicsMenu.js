@@ -60,7 +60,7 @@ Imported.RS_GraphicsMenu = true;
  * @default ["{\"x\":\"0\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"78\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"156\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"234\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}","{\"x\":\"312\",\"y\":\"[\\\"0\\\",\\\"78\\\"]\",\"width\":\"78\",\"height\":\"78\"}"]
  *
  * @param Menu Index
- * @type string[]
+ * @type multiline_string[]
  * @desc Specify the name of Scene constructor.
  * (you can exit the game when setting the text as :exit)
  * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
@@ -219,7 +219,7 @@ Imported.RS_GraphicsMenu = true;
  *
  * @param Menu Index
  * @text 메뉴 인덱스
- * @type note[]
+ * @type multiline_string[]
  * @desc Scene 함수(클래스)의 이름를 정확하게 입력하세요.
  * :exit라고 적으면 게임을 즉각 종료할 수 있습니다.
  * @default ["Scene_Status","Scene_Item","Scene_Skill","Scene_Map","Scene_Map"]
@@ -468,7 +468,7 @@ RS.Utils = RS.Utils || {};
 
                 return;
             }
-            if (sceneObject.match(/(?:EVAL[ ]*:[ ]*)(.*)/i)) {
+            if (sceneObject.replace(/[\n]+/, ";").match(/(?:EVAL[ ]*:[ ]*)(.*)/mi)) {
                 try {
                     this._touched = false;
                     eval(RegExp.$1);
