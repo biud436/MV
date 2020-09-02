@@ -2772,7 +2772,6 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Window_Base.prototype.changeTextColor = function (color) {
-        console.log("실행됨 : " + color);
         var c = parseInt(color);
         // 색상 코드가 숫자인 경우
         if (c > 0 && c < 32) {
@@ -2792,7 +2791,6 @@ RS.MessageSystem = RS.MessageSystem || {};
                 this.changeTextColor(this.textColor(this.obtainEscapeParam(textState)));
                 break;
             case textCode[tcGroup.COLOR]:
-                console.log("실행되었다");
                 this.changeTextColor(this.obtainNameColor(textState));
                 break;
             case 'I':
@@ -2953,7 +2951,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         if(textState.rtl) {
             return;
         }
-        
+
         switch ($gameMessage.getAlign()) {
             case 0:
                 this.setAlignLeft(textState);
