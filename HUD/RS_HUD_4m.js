@@ -549,7 +549,9 @@
  * 2018.03.15 (v1.2.7c) - Removed some event listeners.
  * 2018.05.09 (v1.2.8) - Supported a face image that is made using SumRndmDde's CharacterCreatorEX plugin.
  * 2018.05.09 (v1.2.8b) - Fixed an issue that is not showing the image after it has been added.
- * 2020.08.30 (v2.0.0) - This plugin is now also available in MZ
+ * 2020.08.30 (v2.0.0) - This plugin is now also available in MZ.
+ * 2020.09.02 (v2.0.1) : 
+ * - Fixed the bug that is not working the game in the event test mode.
  * 
  * @command opacity
  * @desc This plugin command allows you to change the opacity of HUD.
@@ -1219,6 +1221,8 @@
  * 2018.05.09 (v1.2.8) - Supported a face image that is made using SumRndmDde's CharacterCreatorEX plugin.
  * 2018.05.09 (v1.2.8b) - Fixed an issue that is not showing the image after it has been added.
  * 2020.08.30 (v2.0.0) - This plugin is now also available in MZ.
+ * 2020.09.02 (v2.0.1) : 
+ * - 이벤트 테스트에서 오류가 나는 문제를 수정하였습니다.
  * 
  * @command opacity
  * @text 투명도 조절
@@ -2556,7 +2560,7 @@ var RS = RS || {};
             alias_Scene_Map_createDisplayObjects.call(this);
 
             if ( RS.HUD.param.battleOnly || 
-                 ($dataMap && $dataMap.meta.DISABLE_HUD)
+                 ($dataMap.meta && $dataMap.meta.DISABLE_HUD)
                 ) {
                 $gameHud = new RS.HUD.EmptyLayer();
 
