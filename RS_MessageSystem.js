@@ -10,7 +10,7 @@
  * @target MZ
  * @plugindesc <RS_MessageSystem>
  * @author biud436
- * @url biud436.tistory.com
+ * @url https://biud436.tistory.com
  *
  * @param Font Size
  * @type number
@@ -742,7 +742,7 @@
  * @target MZ
  * @plugindesc <RS_MessageSystem>
  * @author biud436
- * @url biud436.tistory.com
+ * @url start https://biud436.tistory.com
  *
  * @param 글꼴 크기
  * @type number
@@ -1653,7 +1653,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
     const parameters = (pluginParams.length > 0) && pluginParams[0].parameters;
 
-    RS.MessageSystem.jsonParse = function(str) {
+    RS.MessageSystem.jsonParse = function (str) {
         const retData = JSON.parse(str, function (k, v) {
             try {
                 return RS.MessageSystem.jsonParse(v);
@@ -1668,16 +1668,16 @@ RS.MessageSystem = RS.MessageSystem || {};
     /**
      * @method popParameter
      */
-    RS.MessageSystem.popParameter = function(...args) {
-       const k = Object.keys(args);
-       let lastUsed = "";
+    RS.MessageSystem.popParameter = function (...args) {
+        const k = Object.keys(args);
+        let lastUsed = "";
 
-       while (k.length > 0) {
-           lastUsed = args[parseInt(k.pop())];
-           if (parameters[lastUsed]) return parameters[lastUsed];
-       }
+        while (k.length > 0) {
+            lastUsed = args[parseInt(k.pop())];
+            if (parameters[lastUsed]) return parameters[lastUsed];
+        }
 
-       return "";
+        return "";
     };
 
     RS.MessageSystem.Reg = {
@@ -1781,13 +1781,11 @@ RS.MessageSystem = RS.MessageSystem || {};
     // Multiple Language supports
     //============================================================================
 
-    Object.assign(RS.MessageSystem.Reg, {
-        KoreanEscapeCode: /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-ퟻ]+[!]*/i,
-        ChineseEscapeCode: /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z一-鼣]+[!]*/i,
-        EnglishEscapeCode: /^[\$\.\|\^!><\{\}\\]|^[A-Z]+[!]*/i,
-        JapaneseEscapeCode: /^[\$\.\|\^!><\{\}\\]|^[A-Z\u3040-\u309F\u30A0-\u30FF\u3300-\u33FF\u4E00-\u9FFF\uFF00-\uFFEF]+[!]*/i,
-        defaultEscapeCode: /^[\$\.\|\^!><\{\}\\]|^[A-Z가-ퟻ]+[!]*/i,
-    });
+    RS.MessageSystem.Reg.KoreanEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-ퟻ]+[!]*/i;
+    RS.MessageSystem.Reg.ChineseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z一-鼣]+[!]*/i;
+    RS.MessageSystem.Reg.EnglishEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+[!]*/i;
+    RS.MessageSystem.Reg.JapaneseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z\u3040-\u309F\u30A0-\u30FF\u3300-\u33FF\u4E00-\u9FFF\uFF00-\uFFEF]+[!]*/i;
+    RS.MessageSystem.Reg.defaultEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z가-ퟻ]+[!]*/i;
 
     RS.MessageSystem.TextCodes = (function () {
         const rowData = RS.MessageSystem.popParameter('Text Code', "텍스트 코드");
@@ -2089,67 +2087,49 @@ RS.MessageSystem = RS.MessageSystem || {};
     // Color
     //=============================================================================
 
-    class Color {
-        static getColor(n) {
-            var r = (n) & 255;
-            var g = (n >> 8) & 255;
-            var b = (n >> 16) & 255;
-            var result = `rgba(${r},${g},${b},1)`;
-            return result;
-        }
+    const Color = {};
 
-        static getBaseColor() {
-            return Color.baseColor;
-        }
-
-        static getUserCustomColor(string) {
-            "use strict";
-
-            var obj = RS.MessageSystem.Params.exTextColors;
-            var ret = string;
-
-            if (!typeof (obj[0]) === "object") return ret;
-            if (!obj[0].hasOwnProperty("Color Name")) return ret;
-
-            obj.forEach(function (e, i, a) {
-
-                if (e["Color Name"] === string) {
-
-                    var r = parseInt(e["Red"]) || 0;
-                    var g = parseInt(e["Green"]) || 0;
-                    var b = parseInt(e["Blue"]) || 0;
-                    var a = parseFloat(e["Alpha"]) || 1.0;
-
-                    ret = `rgba(${r},${g},${b},${a})`;
-
-                }
-
-            }, this);
-
-            return ret;
-
-        }
-
-        static gmColor(string) {
-            var type = RS.MessageSystem.Params.langCode;
-            if (type.match(/ko/)) {
-                return RS.MessageSystem.getKoreanColor(string);
-            }
-            if (type.match(/zh/)) {
-                return RS.MessageSystem.getChineseColor(string);
-            }
-            if (type.match(/en/)) {
-                return RS.MessageSystem.getEnglishColor(string);
-            }
-            if (type.match(/ja/)) {
-                return RS.MessageSystem.getJapaneseColor(string);
-            }
-            return RS.MessageSystem.getEnglishColor(string);
-        }
-
-    }
+    Color.getColor = function (n) {
+        var r = (n) & 255;
+        var g = (n >> 8) & 255;
+        var b = (n >> 16) & 255;
+        var result = `rgba(${r},${g},${b},1)`;
+        return result;
+    };
 
     Color.baseColor = Color.getColor(16777215);
+
+    Color.getBaseColor = function () {
+        return Color.baseColor;
+    };
+
+    Color.getUserCustomColor = function (string) {
+        "use strict";
+
+        var obj = RS.MessageSystem.Params.exTextColors;
+        var ret = string;
+
+        if (!typeof (obj[0]) === "object") return ret;
+        if (!obj[0].hasOwnProperty("Color Name")) return ret;
+
+        obj.forEach(function (e, i, a) {
+
+            if (e["Color Name"] === string) {
+
+                var r = parseInt(e["Red"]) || 0;
+                var g = parseInt(e["Green"]) || 0;
+                var b = parseInt(e["Blue"]) || 0;
+                var a = parseFloat(e["Alpha"]) || 1.0;
+
+                ret = `rgba(${r},${g},${b},${a})`;
+
+            }
+
+        }, this);
+
+        return ret;
+
+    };
 
     const KOREAN_COLORS = {
         "청록": "rgba(0,255,255,1)",
@@ -2438,8 +2418,86 @@ RS.MessageSystem = RS.MessageSystem || {};
             version: M[1]
         };
 
-    };
+    };    
 
+    Color.gmColor = function (string) {
+        var type = RS.MessageSystem.Params.langCode;
+        if (type.match(/ko/)) {
+          return RS.MessageSystem.getKoreanColor(string);
+        }
+        if (type.match(/zh/)) {
+          return RS.MessageSystem.getChineseColor(string);
+        }
+        if (type.match(/en/)) {
+          return RS.MessageSystem.getEnglishColor(string);
+        }
+        if (type.match(/ja/)) {
+          return RS.MessageSystem.getJapaneseColor(string);
+        }
+        return RS.MessageSystem.getEnglishColor(string);
+      };    
+
+    // class Color {
+    //     static getColor(n) {
+    //         var r = (n) & 255;
+    //         var g = (n >> 8) & 255;
+    //         var b = (n >> 16) & 255;
+    //         var result = `rgba(${r},${g},${b},1)`;
+    //         return result;
+    //     }
+
+    //     static getBaseColor() {
+    //         return Color.baseColor;
+    //     }
+
+    //     static getUserCustomColor(string) {
+    //         "use strict";
+
+    //         var obj = RS.MessageSystem.Params.exTextColors;
+    //         var ret = string;
+
+    //         if (!typeof (obj[0]) === "object") return ret;
+    //         if (!obj[0].hasOwnProperty("Color Name")) return ret;
+
+    //         obj.forEach(function (e, i, a) {
+
+    //             if (e["Color Name"] === string) {
+
+    //                 var r = parseInt(e["Red"]) || 0;
+    //                 var g = parseInt(e["Green"]) || 0;
+    //                 var b = parseInt(e["Blue"]) || 0;
+    //                 var a = parseFloat(e["Alpha"]) || 1.0;
+
+    //                 ret = `rgba(${r},${g},${b},${a})`;
+
+    //             }
+
+    //         }, this);
+
+    //         return ret;
+
+    //     }
+
+    //     static gmColor(string) {
+    //         var type = RS.MessageSystem.Params.langCode;
+    //         if (type.match(/ko/)) {
+    //             return RS.MessageSystem.getKoreanColor(string);
+    //         }
+    //         if (type.match(/zh/)) {
+    //             return RS.MessageSystem.getChineseColor(string);
+    //         }
+    //         if (type.match(/en/)) {
+    //             return RS.MessageSystem.getEnglishColor(string);
+    //         }
+    //         if (type.match(/ja/)) {
+    //             return RS.MessageSystem.getJapaneseColor(string);
+    //         }
+    //         return RS.MessageSystem.getEnglishColor(string);
+    //     }
+
+    // }
+
+    // Color.baseColor = Color.getColor(16777215);
 
     //============================================================================
     // Bitmap
@@ -2682,5 +2740,208 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
 
     }
+
+    //============================================================================
+    // Window_Base
+    //============================================================================    
+
+    Window_Base.prototype.obtainEscapeCode = function (textState) {
+        var regExp = RS.MessageSystem.Reg.defaultEscapeCode;
+        var arr = regExp.exec(textState.text.slice(textState.index));
+        if (arr) {
+            textState.index += arr[0].length;
+            return arr[0].toUpperCase();
+        } else {
+            return '';
+        }
+    };
+
+    /**
+     * 확장된 색상 변경 텍스트 코드 처리
+     * \색[빨강]과 웹색상 처리를 위한 정규 표현식 처리
+     * @param {}} textState 
+     */
+    Window_Base.prototype.obtainNameColor = function (textState) {
+        var arr = /\[(.+?)\]/gi.exec(textState.text.slice(textState.index));
+        if (arr) {
+            textState.index += arr[0].length;
+            return Color.gmColor(arr[1]);
+        } else {
+            return ColorManager.textColor(0);
+        }
+    };
+
+    Window_Base.prototype.changeTextColor = function (color) {
+        console.log("실행됨 : " + color);
+        var c = parseInt(color);
+        // 색상 코드가 숫자인 경우
+        if (c > 0 && c < 32) {
+            color = ColorManager.textColor(color);
+        }
+        if (!this._isUsedTextWidthEx) {
+            this.contents.textColor = color;
+        }
+    };
+
+    var alias_Window_Base_processEscapeCharacter = Window_Base.prototype.processEscapeCharacter;
+    Window_Base.prototype.processEscapeCharacter = function (code, textState) {
+        var tcGroup = RS.MessageSystem.TextCodes.ENUM;
+        var textCode = RS.MessageSystem.TextCodes.Main;
+        switch (code) {
+            case 'C':
+                this.changeTextColor(this.textColor(this.obtainEscapeParam(textState)));
+                break;
+            case textCode[tcGroup.COLOR]:
+                console.log("실행되었다");
+                this.changeTextColor(this.obtainNameColor(textState));
+                break;
+            case 'I':
+            case textCode[tcGroup.ICON]:
+                this.processDrawIcon(this.obtainEscapeParam(textState), textState);
+                break;
+            case '{':
+            case textCode[tcGroup.INCREASE]:
+                this.makeFontBigger();
+                break;
+            case '}':
+            case textCode[tcGroup.DECREASE]:
+                this.makeFontSmaller();
+                break;
+            case 'AEND':
+                $gameMessage.clearAlignLast();
+                break;
+            default:
+                alias_Window_Base_processEscapeCharacter.call(this, code, textState);
+                break;
+        }
+    };
+
+    var alias_loadWindowskin = Window_Base.prototype.loadWindowskin;
+    Window_Base.prototype.loadWindowskin = function () {
+        alias_loadWindowskin.call(this);
+        this.windowskin.addLoadListener(() => {
+            Color.baseColor = ColorManager.textColor(0);
+        });
+    };
+
+    Window_Base.prototype.getFontFace = function () {
+        var langCode = RS.MessageSystem.Params.langCode || navigator.language.slice(0, 2);
+        var fonts = RS.MessageSystem.Params.fonts[langCode];
+        if (fonts) {
+            return fonts;
+        } else {
+            return RS.MessageSystem.Params.fonts.default;
+        }
+    };
+
+    Window_Base.prototype.makeFontSmaller = function () {
+        if (this.contents.fontSize >= RS.MessageSystem.Params.minFontSize) {
+            this.contents.fontSize -= 12;
+        }
+    };
+
+    Window_Base.prototype.resetFontSettings = function() {
+        this.contents.fontFace = this.getFontFace();
+        this.contents.fontSize = RS.MessageSystem.Params.fontSize;
+        this.contents.fontBold = false;
+        this.contents.fontItalic = false;
+        this.contents.textColor = this.textColor;
+        this.contents.outlineWidth = RS.MessageSystem.Params.defaultOutlineWidth;
+        this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
+        this.contents.fontGradient = false;
+        this.contents.highlightTextColor = null;        
+        this.resetTextColor();
+    };
+    
+    Window_Base.prototype.makeFontBigger = function () {
+        if (this.contents.fontSize <= RS.MessageSystem.Params.maxFontSize) {
+            this.contents.fontSize += 12;
+        }
+    };
+
+    Window_Base.prototype.save = function () {
+        this._messageDesc = new MessageDesc();
+        this._messageDesc.save(this.contents);
+    };
+
+    Window_Base.prototype.restore = function () {
+        if (!this._messageDesc) return;
+        this._messageDesc.restore(this.contents);
+        this._messageDesc = undefined;
+    };
+
+    var alias_Window_Base_convertEscapeCharacters = Window_Base.prototype.convertEscapeCharacters;
+    Window_Base.prototype.convertEscapeCharacters = function (text) {
+        const regGroup = RS.MessageSystem.Reg.Group;
+        const tcGroup = RS.MessageSystem.TextCodes.ENUM;
+        const textCode = RS.MessageSystem.TextCodes.Main;
+
+        text = alias_Window_Base_convertEscapeCharacters.call(this, text);
+        text = text.replace(regGroup[tcGroup.VAR], function () {
+            return $gameVariables.value(parseInt(arguments[1]));
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.VAR], function () {
+            return $gameVariables.value(parseInt(arguments[1]));
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.PLAYER], function () {
+            return this.actorName(parseInt(arguments[1]));
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.PARTY_MEMBER], function () {
+            return this.partyMemberName(parseInt(arguments[1]));
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.NUM], function () {
+            return arguments[1].toComma();
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.GOLD], TextManager.currencyUnit);
+        text = text.replace(regGroup[tcGroup.CLASSES], function () {
+            return $dataClasses[parseInt(arguments[1])].name || '';
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.ITEM], function () {
+            return $dataItems[parseInt(arguments[1])].name || '';
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.WEAPON], function () {
+            return $dataWeapons[parseInt(arguments[1])].name || '';
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.ARMOR], function () {
+            return $dataArmors[parseInt(arguments[1])].name || '';
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.ENEMY], function () {
+            return $dataEnemies[parseInt(arguments[1])].name || '';
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.STATE], function () {
+            return $dataStates[parseInt(arguments[1])].name || '';
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.SKILL], function () {
+            return $dataSkills[parseInt(arguments[1])].name || '';
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.ALIGN_LEFT], function () {
+            return '\x1b' + textCode[tcGroup.ALIGN] + "[0]";
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.ALIGN_CENTER], function () {
+            return '\x1b' + textCode[tcGroup.ALIGN] + "[1]";
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.ALIGN_RIGHT], function () {
+            return '\x1b' + textCode[tcGroup.ALIGN] + "[2]";
+        }.bind(this));
+        text = text.replace(regGroup[tcGroup.ALIGN], function () {
+            if (!this._isUsedTextWidthEx) {
+                $gameMessage.setAlign(Number(arguments[1] || 0));
+            }
+            return '';
+        }.bind(this));
+        text = text.replace(/<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi, function () {
+            return regGroup[tcGroup.ALIGN_CLEAR].source;
+        }.bind(this));
+        return text;
+    };
+
+    /**
+     * @deprecated
+     */
+    Window_Base.prototype.textPadding = function() {
+        return this.itemPadding();
+    }
+
+    RS.MessageSystem.initSystem();
 
 })(RS.MessageSystem);
