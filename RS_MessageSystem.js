@@ -2948,6 +2948,12 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     Window_Base.prototype.processAlign = function (textState) {
         textState = textState || this._textState;
+
+        // 아랍어 인가?
+        if(textState.rtl) {
+            return;
+        }
+        
         switch ($gameMessage.getAlign()) {
             case 0:
                 this.setAlignLeft(textState);
