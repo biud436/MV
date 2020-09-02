@@ -2418,24 +2418,24 @@ RS.MessageSystem = RS.MessageSystem || {};
             version: M[1]
         };
 
-    };    
+    };
 
     Color.gmColor = function (string) {
         var type = RS.MessageSystem.Params.langCode;
         if (type.match(/ko/)) {
-          return RS.MessageSystem.getKoreanColor(string);
+            return RS.MessageSystem.getKoreanColor(string);
         }
         if (type.match(/zh/)) {
-          return RS.MessageSystem.getChineseColor(string);
+            return RS.MessageSystem.getChineseColor(string);
         }
         if (type.match(/en/)) {
-          return RS.MessageSystem.getEnglishColor(string);
+            return RS.MessageSystem.getEnglishColor(string);
         }
         if (type.match(/ja/)) {
-          return RS.MessageSystem.getJapaneseColor(string);
+            return RS.MessageSystem.getJapaneseColor(string);
         }
         return RS.MessageSystem.getEnglishColor(string);
-      };    
+    };
 
     // class Color {
     //     static getColor(n) {
@@ -2840,7 +2840,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    Window_Base.prototype.resetFontSettings = function() {
+    Window_Base.prototype.resetFontSettings = function () {
         this.contents.fontFace = this.getFontFace();
         this.contents.fontSize = RS.MessageSystem.Params.fontSize;
         this.contents.fontBold = false;
@@ -2849,10 +2849,10 @@ RS.MessageSystem = RS.MessageSystem || {};
         this.contents.outlineWidth = RS.MessageSystem.Params.defaultOutlineWidth;
         this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
         this.contents.fontGradient = false;
-        this.contents.highlightTextColor = null;        
+        this.contents.highlightTextColor = null;
         this.resetTextColor();
     };
-    
+
     Window_Base.prototype.makeFontBigger = function () {
         if (this.contents.fontSize <= RS.MessageSystem.Params.maxFontSize) {
             this.contents.fontSize += 12;
@@ -2938,9 +2938,51 @@ RS.MessageSystem = RS.MessageSystem || {};
     /**
      * @deprecated
      */
-    Window_Base.prototype.textPadding = function() {
+    Window_Base.prototype.textPadding = function () {
         return this.itemPadding();
     }
+
+    Window_Base.prototype.newLineX = function (textState) {
+        return this.textPadding();
+    };
+
+    Window_Base.prototype.processAlign = function (textState) {
+        textState = textState || this._textState;
+        switch ($gameMessage.getAlign()) {
+            case 0:
+                this.setAlignLeft(textState);
+                break;
+            case 1:
+                this.setAlignCenter(textState);
+                break;
+            case 2:
+                this.setAlignRight(textState);
+                break;
+        }
+    };
+
+    var alias_Window_Base_processNewLine_align = Window_Base.prototype.processNewLine;
+    Window_Base.prototype.processNewLine = function (textState) {
+        alias_Window_Base_processNewLine_align.call(this, textState);
+        this.processAlign(textState);
+    };
+
+    Window_Base.prototype.setAlignLeft = function (textState) {
+        textState.x = this.newLineX(textState);
+        textState.startX = textState.x;
+    };
+
+    Window_Base.prototype.setAlignCenter = function (textState) {
+        var padding = this.textPadding();
+        textState.x = (this.newLineX(textState) + this.contentsWidth() + padding) / 2 - textState.outputWidth / 2;
+        textState.startX = textState.x;
+    };
+
+    Window_Base.prototype.setAlignRight = function (textState) {
+        var padding = this.textPadding();
+        textState.x = (this.contentsWidth() - padding) - textState.outputWidth;
+        textState.startX = textState.x;
+    };
 
     RS.MessageSystem.initSystem();
 
