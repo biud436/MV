@@ -2832,6 +2832,23 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
+    Window_Base.prototype.drawTextEx = function(text, x, y, width) {
+        this.save();
+        this.resetFontSettings();
+        const textState = this.createTextState(text, x, y, width);
+        this.processAllText(textState);
+        this.restore();
+        return textState.outputWidth;
+    };
+
+    Window_Base.prototype.processAllText = function(textState) {
+        this._isUsedTextWidthEx = !textState.draing;
+        while (textState.index < textState.text.length) {
+            this.processCharacter(textState);
+        }
+        this.flushTextState(textState);
+    };
+
     Window_Base.prototype.makeFontSmaller = function () {
         if (this.contents.fontSize >= RS.MessageSystem.Params.minFontSize) {
             this.contents.fontSize -= 12;
@@ -2843,7 +2860,6 @@ RS.MessageSystem = RS.MessageSystem || {};
         this.contents.fontSize = RS.MessageSystem.Params.fontSize;
         this.contents.fontBold = false;
         this.contents.fontItalic = false;
-        this.contents.textColor = this.textColor;
         this.contents.outlineWidth = RS.MessageSystem.Params.defaultOutlineWidth;
         this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
         this.contents.fontGradient = false;
@@ -2875,42 +2891,42 @@ RS.MessageSystem = RS.MessageSystem || {};
         const textCode = RS.MessageSystem.TextCodes.Main;
 
         text = alias_Window_Base_convertEscapeCharacters.call(this, text);
-        text = text.replace(regGroup[tcGroup.VAR], function () {
-            return $gameVariables.value(parseInt(arguments[1]));
+        text = text.replace(regGroup[tcGroup.VAR], function (...args) {
+            return $gameVariables.value(parseInt(args[1]));
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.VAR], function () {
-            return $gameVariables.value(parseInt(arguments[1]));
+        text = text.replace(regGroup[tcGroup.VAR], function (...args) {
+            return $gameVariables.value(parseInt(args[1]));
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.PLAYER], function () {
-            return this.actorName(parseInt(arguments[1]));
+        text = text.replace(regGroup[tcGroup.PLAYER], function (...args) {
+            return this.actorName(parseInt(args[1]));
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.PARTY_MEMBER], function () {
-            return this.partyMemberName(parseInt(arguments[1]));
+        text = text.replace(regGroup[tcGroup.PARTY_MEMBER], function (...args) {
+            return this.partyMemberName(parseInt(args[1]));
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.NUM], function () {
-            return arguments[1].toComma();
+        text = text.replace(regGroup[tcGroup.NUM], function (...args) {
+            return args[1].toComma();
         }.bind(this));
         text = text.replace(regGroup[tcGroup.GOLD], TextManager.currencyUnit);
-        text = text.replace(regGroup[tcGroup.CLASSES], function () {
-            return $dataClasses[parseInt(arguments[1])].name || '';
+        text = text.replace(regGroup[tcGroup.CLASSES], function (...args) {
+            return $dataClasses[parseInt(args[1])].name || '';
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.ITEM], function () {
-            return $dataItems[parseInt(arguments[1])].name || '';
+        text = text.replace(regGroup[tcGroup.ITEM], function (...args) {
+            return $dataItems[parseInt(args[1])].name || '';
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.WEAPON], function () {
-            return $dataWeapons[parseInt(arguments[1])].name || '';
+        text = text.replace(regGroup[tcGroup.WEAPON], function (...args) {
+            return $dataWeapons[parseInt(args[1])].name || '';
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.ARMOR], function () {
-            return $dataArmors[parseInt(arguments[1])].name || '';
+        text = text.replace(regGroup[tcGroup.ARMOR], function (...args) {
+            return $dataArmors[parseInt(args[1])].name || '';
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.ENEMY], function () {
-            return $dataEnemies[parseInt(arguments[1])].name || '';
+        text = text.replace(regGroup[tcGroup.ENEMY], function (...args) {
+            return $dataEnemies[parseInt(args[1])].name || '';
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.STATE], function () {
-            return $dataStates[parseInt(arguments[1])].name || '';
+        text = text.replace(regGroup[tcGroup.STATE], function (...args) {
+            return $dataStates[parseInt(args[1])].name || '';
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.SKILL], function () {
-            return $dataSkills[parseInt(arguments[1])].name || '';
+        text = text.replace(regGroup[tcGroup.SKILL], function (...args) {
+            return $dataSkills[parseInt(args[1])].name || '';
         }.bind(this));
         text = text.replace(regGroup[tcGroup.ALIGN_LEFT], function () {
             return '\x1b' + textCode[tcGroup.ALIGN] + "[0]";
@@ -2921,9 +2937,9 @@ RS.MessageSystem = RS.MessageSystem || {};
         text = text.replace(regGroup[tcGroup.ALIGN_RIGHT], function () {
             return '\x1b' + textCode[tcGroup.ALIGN] + "[2]";
         }.bind(this));
-        text = text.replace(regGroup[tcGroup.ALIGN], function () {
+        text = text.replace(regGroup[tcGroup.ALIGN], function (...args) {
             if (!this._isUsedTextWidthEx) {
-                $gameMessage.setAlign(Number(arguments[1] || 0));
+                $gameMessage.setAlign(Number(args[1] || 0));
             }
             return '';
         }.bind(this));
@@ -2948,7 +2964,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         textState = textState || this._textState;
 
         // 아랍어 인가?
-        if(textState.rtl) {
+        if (textState.rtl) {
             return;
         }
 
@@ -2987,6 +3003,323 @@ RS.MessageSystem = RS.MessageSystem || {};
         textState.x = (this.contentsWidth() - padding) - textState.outputWidth;
         textState.startX = textState.x;
     };
+
+    //============================================================================
+    // Window_Message
+    //============================================================================
+
+    Window_Message.prototype.obtainTextSpeed = function (textState) {
+        var arr = /\[(\d+)\]/.exec(textState.text.slice(textState.index));
+        if (arr) {
+            textState.index += arr[0].length;
+            return parseInt(arr[1]);
+        } else {
+            return 0;
+        }
+    };
+
+    Window_Message.prototype.obtainGradientText = function (textState) {
+        var arr = /^<(.+?)>/.exec(textState.text.slice(textState.index));
+        if (arr) {
+            textState.index += arr[0].length;
+            return String(arr[1]);
+        } else {
+            return 'Empty Text';
+        }
+    };
+
+    Window_Message.prototype.obtainSoundName = function (textState) {
+        var arr = /\<(.+?)\>/.exec(textState.text.slice(textState.index));
+        if (arr) {
+            textState.index += arr[0].length;
+            return String(arr[1]);
+        } else {
+            return "";
+        }
+    };
+
+    var alias_Window_Message_processEscapeCharacter = Window_Message.prototype.processEscapeCharacter;
+    Window_Message.prototype.processEscapeCharacter = function (code, textState) {
+        var tcGroup = RS.MessageSystem.TextCodes.ENUM;
+        var textCode = RS.MessageSystem.TextCodes.Main;
+        switch (code) {
+            case textCode[tcGroup.TEXT_SPEED]:
+                $gameMessage.setWaitTime(this.obtainEscapeParam(textState));
+                break;
+            case textCode[tcGroup.TEXT_SIZE]:
+                this.setTextSize(this.obtainEscapeParam(textState));
+                break;
+            case textCode[tcGroup.OUTLINE_COLOR]:
+                this.setStrokeColor(this.obtainNameColor(textState));
+                break;
+            case textCode[tcGroup.INDENT]:
+                this.setTextIndent(textState);
+                break;
+            case textCode[tcGroup.OUTLINE_WIDTH]:
+                this.setStrokeWidth(this.obtainEscapeParam(textState));
+                break;
+            case textCode[tcGroup.BOLD]:
+                this.setTextBold(!this.contents.fontBold);
+                break;
+            case textCode[tcGroup.BOLD_START]:
+                this.setTextBold(true);
+                break;
+            case textCode[tcGroup.BOLD_END]:
+                this.setTextBold(false);
+                break;
+            case textCode[tcGroup.ITALIC]:
+                this.setTextItalic(!this.contents.fontItalic);
+                break;
+            case textCode[tcGroup.ITALIC_START]:
+                this.setTextItalic(true);
+                break;
+            case textCode[tcGroup.ITALIC_END]:
+                this.setTextItalic(false);
+                break;
+            case textCode[tcGroup.GRADIENT]:
+                this.setTextGradient(textState);
+                break;
+            case textCode[tcGroup.HIGHLIGHT_TEXT_COLOR]:
+                this.setHighlightTextColor(this.obtainNameColor(textState));
+                break;
+            case textCode[tcGroup.TAB]:
+                textState.x += Number(this.textWidth("A") * RS.MessageSystem.Params.TabSize);
+                break;
+            case textCode[tcGroup.CARRIAGE_RETURN]:
+                textState.x = Number(textState.left || 0);
+                if (!this._isUsedTextWidthEx) this.startWait(1);
+                break;
+            case textCode[tcGroup.PLAY_SE]:
+                if (!this._isUsedTextWidthEx) this.playSe(this.obtainSoundName(textState));
+                break;
+            case textCode[tcGroup.SHOW_PICTURE]:
+                if (this._isUsedTextWidthEx) break;
+                this.showPicture(this.obtainSoundName(textState));
+                this.startWait(15);
+            case textCode[tcGroup.HIDE_PICTURE]:
+                if (this._isUsedTextWidthEx) break;
+                this.erasePicture(this.obtainEscapeParam(textState));
+                this.startWait(15);
+            case textCode[tcGroup.FACE]:
+                if (this._isUsedTextWidthEx) break;
+                var params = this.obtainSoundName(textState).split(',');
+                // this.redrawFaceImage(textState, params[0], params[1], 0, 0);
+                this.startWait(1);
+                break;
+            default:
+                alias_Window_Message_processEscapeCharacter.call(this, code, textState);
+                break;
+        }
+    };
+
+    Window_Message.prototype.setTextItalic = function (...args) {
+        this.contents.fontItalic = args[0];
+    };
+
+    Window_Message.prototype.setTextBold = function (...args) {
+        this.contents.fontBold = args[0];
+    };
+
+    Window_Message.prototype.setTextSize = function (...args) {
+        this.contents.fontSize = args[0].clamp(
+            RS.MessageSystem.Params.minFontSize, 
+            RS.MessageSystem.Params.maxFontSize
+        );
+    };
+
+    Window_Message.prototype.setStrokeWidth = function (...args) {
+        this.contents.outlineWidth = args[0];
+    };
+
+    Window_Message.prototype.setStrokeColor = function (...args) {
+        this.contents.outlineColor = args[0];
+    };
+
+    Window_Message.prototype.setTextIndent = function (textState) {
+        textState.x += this.obtainEscapeParam(textState);
+    };
+
+    Window_Message.prototype.setHighlightTextColor = function (...args) {
+        var color = args[0];
+        if (color === "null" || color === "없음") {
+            color = null;
+        }
+        this.contents.highlightTextColor = color;
+    };
+
+    Window_Message.prototype.setTextGradient = function (textState) {
+
+        // TODO: 여기에서는 텍스트를 그리지 않는다.
+        // TODO: 그레디언트 모드임을 명시하고 flush 단계에서 한 번에 그려야 한다 (배경색도 마찬가지이다)
+        this.contents.fontGradient = true;
+    };
+
+    Window_Message.prototype.playSe = function (seName) {
+        var realName = seName.trim();
+        var data = {
+            "name": realName,
+            "pan": 0,
+            "pitch": 100,
+            "volume": ConfigManager.seVolume
+        };
+        AudioManager.playSe(data);
+    };
+
+    Window_Message.prototype.showPicture = function (param) {
+        var param = param.split(',');
+        var params = [
+            Number(param[0].trim()), param[1].trim(), 
+            Number(param[2].trim()), Number(param[3].trim()), 
+            Number(param[4].trim()), 100, 100, 255, 0
+        ];
+        var ret = true;
+
+        // 모든 요소 검증
+        if (params) {
+            params.forEach(function (e, i, a) {
+                if (e === undefined || e === null) {
+                    ret = false;
+                }
+            });
+        }
+        // 검증 결과가 참이라면 그림 표시
+        if (ret) {
+            $gameScreen.showPicture.apply($gameScreen, params);
+            return true;
+        }
+        return false;
+    };
+
+    Window_Message.prototype.erasePicture = function (picId) {
+        if (typeof picId !== 'number') return;
+        $gameScreen.erasePicture(picId);        
+    };
+
+    Window_Message.prototype.resetFontSettings = function () {
+        Window_Base.prototype.resetFontSettings.call(this);
+        
+        // pause 아이콘 표시 위치 초기화
+        if(this._pauseSignSprite) {
+            this._pauseSignSprite.move(this._width / 2, this._height);
+            this._pauseSignSprite.scale.y = 1;
+        }
+
+        $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
+    };    
+
+    Window_Message.prototype.resetGradient = function(textState) {
+        this.contents.fontGradient = false;
+    };
+
+    Window_Message.prototype.numVisibleRows = function () {
+        return RS.MessageSystem.Params.numVisibleRows;
+    };
+
+    Window_Message.prototype.processWordWrap = function (textState, w, width, isValid) {
+        const rtl = textState.rtl;
+        const faceWidth = ImageManager.faceWidth;
+        const faceDirection = RS.MessageSystem.Params.faceDirection;
+
+        // 아랍어 모드인가?
+        if(rtl) return;
+
+        // 문자의 현재 위치에 글자가 그려지면 컨텐츠가 그려지는 비트맵의 폭보다 커지는 가?
+        if (Math.floor(textState.x + (w * 2)) > width) {
+            if (isValid) {
+                this.processNewLine(textState);
+                if (this.needsNewPage(textState)) {
+                    textState.index--;
+                    this.startPause();
+                }
+            }
+        }
+
+        // 얼굴 이미지가 있고 오른쪽인가?
+        if ($gameMessage.faceName() !== "") {
+            // 내부 컨텐츠의 가로 크기 - 얼굴의 가로 크기로 길이를 조정한다.
+            width = this.innerWidth - faceWidth;
+            isValid = (faceDirection === 2);
+            this.processWordWrap(textState, width, innerWidth, isValid);    
+        }
+
+    };
+
+    Window_Message.prototype.isNextControlCharacter = function (c) {
+        return c.charCodeAt(0) < 0x20;
+    };
+
+    Window_Message.prototype.processCharacter = function(textState) {
+        const c = textState.text[textState.index++];
+        let isValid = ($gameMessage.getBalloon() === -2) && 
+                                  !this._isUsedTextWidthEx && RS.MessageSystem.Params.isParagraphMinifier;
+        const innerWidth = this.innerWidth;
+
+        // 다음 문자가 알만툴 이스케이프 문자인가?
+        if (this.isNextControlCharacter(c)) {
+            // 모아둔 텍스트 버퍼를 방출하고 화면에 그린다.
+            this.flushTextState(textState);
+            // 이스케이프 문자 처리
+            this.processControlCharacter(textState, c);
+        } else {
+            
+            // 자동 개행 처리
+            const width = this.textWidth(c);
+            this.processWordWrap(textState, width, innerWidth, isValid);            
+
+            textState.buffer += c;
+        }
+    };    
+
+    Window_Message.prototype.processNormalCharacter = function(textState, text, x, y, width, height) {
+        const contents = this.contents;
+
+        // 배경색을 그린다.
+        if (contents.highlightTextColor !== null) {
+            const pad = 1.0;
+            contents.fillRect(x, y, width + pad, height, contents.highlightTextColor);
+        }
+
+        this.contents.drawText(text, x, y, width, height);
+        this.resetGradient();
+
+        !this._showFast && this.startWait($gameMessage.getWaitTime() || 0);
+    }
+
+    const alias_Window_Message_processAllText = Window_Message.prototype.processAllText
+    Window_Message.prototype.processAllText = function(textState) {
+        this._isUsedTextWidthEx = !textState.drawing;
+        alias_Window_Message_processAllText.call(this, textState);
+    };
+
+    /**
+     * 이 메소드는 텍스트를 한 번에 또는 각 글자마다 그리기 위해 만들어졌고,
+     * 한글 메시지 시스템의 그레디언트 기능과 배경색 기능 그리고 자동 개행 기능을
+     * 구현하려면 여기에 구현을 해야 한다.
+     * 
+     * @param {MZ.TextState}
+     */
+    Window_Message.prototype.flushTextState = function(textState) {
+        const text = textState.buffer;
+        const rtl = textState.rtl;
+        const width = this.textWidth(text);
+        const height = textState.height;
+        const x = rtl ? textState.x - width : textState.x;
+        const y = textState.y;
+
+        if (textState.drawing) {
+            this.processNormalCharacter(textState, text, x, y, width, height);
+        }
+
+        textState.x += rtl ? -width : width;
+        textState.buffer = this.createTextBuffer(rtl);
+
+        const outputWidth = Math.abs(textState.x - textState.startX);
+        if (textState.outputWidth < outputWidth) {
+            textState.outputWidth = outputWidth;
+        }
+
+        textState.outputHeight = y - textState.startY + height;
+    };    
 
     RS.MessageSystem.initSystem();
 
