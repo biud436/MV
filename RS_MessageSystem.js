@@ -2437,68 +2437,6 @@ RS.MessageSystem = RS.MessageSystem || {};
         return RS.MessageSystem.getEnglishColor(string);
     };
 
-    // class Color {
-    //     static getColor(n) {
-    //         var r = (n) & 255;
-    //         var g = (n >> 8) & 255;
-    //         var b = (n >> 16) & 255;
-    //         var result = `rgba(${r},${g},${b},1)`;
-    //         return result;
-    //     }
-
-    //     static getBaseColor() {
-    //         return Color.baseColor;
-    //     }
-
-    //     static getUserCustomColor(string) {
-    //         "use strict";
-
-    //         var obj = RS.MessageSystem.Params.exTextColors;
-    //         var ret = string;
-
-    //         if (!typeof (obj[0]) === "object") return ret;
-    //         if (!obj[0].hasOwnProperty("Color Name")) return ret;
-
-    //         obj.forEach(function (e, i, a) {
-
-    //             if (e["Color Name"] === string) {
-
-    //                 var r = parseInt(e["Red"]) || 0;
-    //                 var g = parseInt(e["Green"]) || 0;
-    //                 var b = parseInt(e["Blue"]) || 0;
-    //                 var a = parseFloat(e["Alpha"]) || 1.0;
-
-    //                 ret = `rgba(${r},${g},${b},${a})`;
-
-    //             }
-
-    //         }, this);
-
-    //         return ret;
-
-    //     }
-
-    //     static gmColor(string) {
-    //         var type = RS.MessageSystem.Params.langCode;
-    //         if (type.match(/ko/)) {
-    //             return RS.MessageSystem.getKoreanColor(string);
-    //         }
-    //         if (type.match(/zh/)) {
-    //             return RS.MessageSystem.getChineseColor(string);
-    //         }
-    //         if (type.match(/en/)) {
-    //             return RS.MessageSystem.getEnglishColor(string);
-    //         }
-    //         if (type.match(/ja/)) {
-    //             return RS.MessageSystem.getJapaneseColor(string);
-    //         }
-    //         return RS.MessageSystem.getEnglishColor(string);
-    //     }
-
-    // }
-
-    // Color.baseColor = Color.getColor(16777215);
-
     //============================================================================
     // Bitmap
     //============================================================================
