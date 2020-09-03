@@ -2832,7 +2832,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    Window_Base.prototype.drawTextEx = function(text, x, y, width) {
+    Window_Base.prototype.drawTextEx = function (text, x, y, width) {
         this.save();
         this.resetFontSettings();
         const textState = this.createTextState(text, x, y, width);
@@ -2841,7 +2841,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         return textState.outputWidth;
     };
 
-    Window_Base.prototype.processAllText = function(textState) {
+    Window_Base.prototype.processAllText = function (textState) {
         this._isUsedTextWidthEx = !textState.draing;
         while (textState.index < textState.text.length) {
             this.processCharacter(textState);
@@ -3122,7 +3122,7 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     Window_Message.prototype.setTextSize = function (...args) {
         this.contents.fontSize = args[0].clamp(
-            RS.MessageSystem.Params.minFontSize, 
+            RS.MessageSystem.Params.minFontSize,
             RS.MessageSystem.Params.maxFontSize
         );
     };
@@ -3168,8 +3168,8 @@ RS.MessageSystem = RS.MessageSystem || {};
     Window_Message.prototype.showPicture = function (param) {
         var param = param.split(',');
         var params = [
-            Number(param[0].trim()), param[1].trim(), 
-            Number(param[2].trim()), Number(param[3].trim()), 
+            Number(param[0].trim()), param[1].trim(),
+            Number(param[2].trim()), Number(param[3].trim()),
             Number(param[4].trim()), 100, 100, 255, 0
         ];
         var ret = true;
@@ -3192,22 +3192,22 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     Window_Message.prototype.erasePicture = function (picId) {
         if (typeof picId !== 'number') return;
-        $gameScreen.erasePicture(picId);        
+        $gameScreen.erasePicture(picId);
     };
 
     Window_Message.prototype.resetFontSettings = function () {
         Window_Base.prototype.resetFontSettings.call(this);
-        
+
         // pause 아이콘 표시 위치 초기화
-        if(this._pauseSignSprite) {
+        if (this._pauseSignSprite) {
             this._pauseSignSprite.move(this._width / 2, this._height);
             this._pauseSignSprite.scale.y = 1;
         }
 
         $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
-    };    
+    };
 
-    Window_Message.prototype.resetGradient = function(textState) {
+    Window_Message.prototype.resetGradient = function (textState) {
         this.contents.fontGradient = false;
     };
 
@@ -3221,7 +3221,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         const faceDirection = RS.MessageSystem.Params.faceDirection;
 
         // 아랍어 모드인가?
-        if(rtl) return;
+        if (rtl) return;
 
         // 문자의 현재 위치에 글자가 그려지면 컨텐츠가 그려지는 비트맵의 폭보다 커지는 가?
         if (Math.floor(textState.x + (w * 2)) > width) {
@@ -3239,7 +3239,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             // 내부 컨텐츠의 가로 크기 - 얼굴의 가로 크기로 길이를 조정한다.
             width = this.innerWidth - faceWidth;
             isValid = (faceDirection === 2);
-            this.processWordWrap(textState, width, innerWidth, isValid);    
+            this.processWordWrap(textState, width, innerWidth, isValid);
         }
 
     };
@@ -3248,10 +3248,10 @@ RS.MessageSystem = RS.MessageSystem || {};
         return c.charCodeAt(0) < 0x20;
     };
 
-    Window_Message.prototype.processCharacter = function(textState) {
+    Window_Message.prototype.processCharacter = function (textState) {
         const c = textState.text[textState.index++];
-        let isValid = ($gameMessage.getBalloon() === -2) && 
-                                  !this._isUsedTextWidthEx && RS.MessageSystem.Params.isParagraphMinifier;
+        let isValid = ($gameMessage.getBalloon() === -2) &&
+            !this._isUsedTextWidthEx && RS.MessageSystem.Params.isParagraphMinifier;
         const innerWidth = this.innerWidth;
 
         // 다음 문자가 알만툴 이스케이프 문자인가?
@@ -3261,16 +3261,16 @@ RS.MessageSystem = RS.MessageSystem || {};
             // 이스케이프 문자 처리
             this.processControlCharacter(textState, c);
         } else {
-            
+
             // 자동 개행 처리
             const width = this.textWidth(c);
-            this.processWordWrap(textState, width, innerWidth, isValid);            
+            this.processWordWrap(textState, width, innerWidth, isValid);
 
             textState.buffer += c;
         }
-    };    
+    };
 
-    Window_Message.prototype.processNormalCharacter = function(textState, text, x, y, width, height) {
+    Window_Message.prototype.processNormalCharacter = function (textState, text, x, y, width, height) {
         const contents = this.contents;
 
         // 배경색을 그린다.
@@ -3286,7 +3286,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     }
 
     const alias_Window_Message_processAllText = Window_Message.prototype.processAllText
-    Window_Message.prototype.processAllText = function(textState) {
+    Window_Message.prototype.processAllText = function (textState) {
         this._isUsedTextWidthEx = !textState.drawing;
         alias_Window_Message_processAllText.call(this, textState);
     };
@@ -3298,7 +3298,7 @@ RS.MessageSystem = RS.MessageSystem || {};
      * 
      * @param {MZ.TextState}
      */
-    Window_Message.prototype.flushTextState = function(textState) {
+    Window_Message.prototype.flushTextState = function (textState) {
         const text = textState.buffer;
         const rtl = textState.rtl;
         const width = this.textWidth(text);
@@ -3319,7 +3319,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
 
         textState.outputHeight = y - textState.startY + height;
-    };    
+    };
 
     RS.MessageSystem.initSystem();
 
