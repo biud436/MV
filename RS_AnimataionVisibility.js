@@ -26,6 +26,8 @@
  * Version Log
  * ================================================================
  * 2019.03.24 (v1.0.0) - First Release.
+ * 2020.09.13 (v1.0.1) :
+ * - Fixed the issue that is not working when playing a animation to player.
  */
 /*:ko
  * @plugindesc 애니메이션을 바로 정지시킵니다. <RS_AnimataionVisibility>
@@ -46,6 +48,8 @@
  * Version Log
  * ================================================================
  * 2019.03.24 (v1.0.0) - First Release.
+ * 2020.09.13 (v1.0.1) :
+ * - 플레이어에 애니메이션 재생 시 오류가 나는 문제를 수정하였습니다.
  */
  
 var Imported = Imported || {};
@@ -67,7 +71,8 @@ Imported.RS_AnimataionVisibility = true;
     if(!this._target) return false;
     if(!(this._target instanceof Sprite_Character)) return false;
     var target = this._target._character;
-    var isActivated = (target.findProperPageIndex() > -1); // 이벤트 페이지가 활성화 되었는가?
+
+    var isActivated = (target instanceof Game_Player) ? true : (target.findProperPageIndex() > -1); // 이벤트 페이지가 활성화 되었는가?
     var isTransparent = target.isTransparent(); // 투명한가?
     var isErased = target._erased || !target._characterName; // 이벤트 일시 삭제 또는 캐릭터 이름이 없나
 
