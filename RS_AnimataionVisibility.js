@@ -30,6 +30,8 @@
  * - Fixed the issue that is not working when playing a animation to player.
  * 2020.09.14 (v1.0.2) :
  * - Fixed the bug that is not playing the animation to object character.
+ * 2020.09.17 (v1.0.3) :
+ * - Fixed the issue that is not working an animation in tile event.
  */
 /*:ko
  * @plugindesc 애니메이션을 바로 정지시킵니다. <RS_AnimataionVisibility>
@@ -54,6 +56,8 @@
  * - 플레이어에 애니메이션 재생 시 오류가 나는 문제를 수정하였습니다.
  * 2020.09.14 (v1.0.2) :
  * - 애니메이션이 재생되지 않는 문제를 수정하였습니다.
+ * 2020.09.17 (v1.0.3) :
+ * - 타일 이벤트에서 애니메이션이 동작하지 않는 문제를 수정하였습니다.
  */
  
 var Imported = Imported || {};
@@ -71,7 +75,7 @@ Imported.RS_AnimataionVisibility = true;
     this.updateVisibility();
   };
 
-  Sprite_Animation.prototype.isTargetReady = function() {
+  Sprite_Animation.prototype.isTargetReady = function() {  
     if(!this._target) return false;
     if(!(this._target instanceof Sprite_Character)) return false;
     const target = this._target._character;
@@ -87,7 +91,9 @@ Imported.RS_AnimataionVisibility = true;
     }
 
     var isTransparent = target.isTransparent(); // 투명한가?
-    var isErased = target._erased || !target._characterName; // 이벤트 일시 삭제 또는 캐릭터 이름이 없나
+    var isErased = target._erased;
+    
+    isErased = target.isTile() ? isErased : !target._characterName;
 
     return isActivated && !isTransparent && !isErased;
 
