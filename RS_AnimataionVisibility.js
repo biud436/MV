@@ -93,7 +93,10 @@ Imported.RS_AnimataionVisibility = true;
     var isTransparent = target.isTransparent(); // 투명한가?
     var isErased = target._erased;
     
-    isErased = target.isTile() ? isErased : !target._characterName;
+    if(!isErased) {
+      isErased = target.isTile() ? isErased : !target._characterName;      
+    }
+    
 
     return isActivated && !isTransparent && !isErased;
 
