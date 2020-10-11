@@ -6,34 +6,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const readline = require('readline');
 const argv = require('minimist')(process.argv.slice(2));
-
-const Color = {
-    Reset : "\x1b[0m",
-    Bright : "\x1b[1m",
-    Dim : "\x1b[2m",
-    Underscore : "\x1b[4m",
-    Blink : "\x1b[5m",
-    Reverse : "\x1b[7m",
-    Hidden : "\x1b[8m",
-    
-    FgBlack : "\x1b[30m",
-    FgRed : "\x1b[31m",
-    FgGreen : "\x1b[32m",
-    FgYellow : "\x1b[33m",
-    FgBlue : "\x1b[34m",
-    FgMagenta : "\x1b[35m",
-    FgCyan : "\x1b[36m",
-    FgWhite : "\x1b[37m",
-    
-    BgBlack : "\x1b[40m",
-    BgRed : "\x1b[41m",
-    BgGreen : "\x1b[42m",
-    BgYellow : "\x1b[43m",
-    BgBlue : "\x1b[44m",
-    BgMagenta : "\x1b[45m",
-    BgCyan : "\x1b[46m",
-    BgWhite : "\x1b[47m",    
-};
+const Color = require("./color");
 
 if(argv.help) {
     console.log([
@@ -43,6 +16,13 @@ if(argv.help) {
     return;
 }
 
+/**
+ * 플러그인 주석 값을 획득하는 기능을 가집니다.
+ * At Sigh 토큰(@)이 머릿말에 있을 경우에만 값을 가지고 올 수 있습니다.
+ * 
+ * @parent String
+ * @class Parser
+ */
 class Parser extends String {
     constructor(str) {
         super(str);
@@ -80,6 +60,7 @@ class Parser extends String {
 
     /**
      * @param {String} line 
+     * @return {Parser|null}
      */
     static parse(line) {
         if(line.trim().includes("@")) {
@@ -87,11 +68,18 @@ class Parser extends String {
         }
     }
 
+    /**
+     * @param {String} line 
+     * @return {Parser} parser
+     */    
     static ready(line) {
         return new Parser(line);
     }
 }
 
+/**
+ * 플러그인 매개변수 데이터입니다.
+ */
 class PluginParams {
     constructor() {
         this.lastKey = "";
@@ -102,6 +90,9 @@ class PluginParams {
     }
 }
 
+/**
+ * 인자 매개변수 데이터입니다.
+ */
 class ArgParams {
     constructor() {
         this.lastKey = "";
@@ -111,6 +102,11 @@ class ArgParams {
     }
 }
 
+/**
+ * 매개변수 값을 JSON 파일로 출력합니다.
+ * 
+ * @class ParamFile
+ */
 class ParamFile {
     /**
      * 
@@ -139,6 +135,11 @@ class ParamFile {
     }
 }
 
+/**
+ * 파싱이 완료된 인자 값들을 JSON 파일로 출력합니다.
+ * 
+ * @class ArgFile
+ */
 class ArgFile {
     constructor(pluginName, data) {
         this._name = pluginName;
@@ -196,7 +197,7 @@ class App {
         if(line.indexOf("~struct~") >= 0) this._isValid = false;
         if(this._isValid) {
             const cmt = Parser.parse(line);
-
+            
             if(!cmt) {
                 return;
             }
