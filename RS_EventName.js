@@ -9,7 +9,7 @@
 /*:
  * RS_EventName.js
  *
- * @plugindesc (v1.3.11) This plugin displays an event's name above a head. <RS_EventName>
+ * @plugindesc (v1.4.0) This plugin displays an event's name above a head. <RS_EventName>
  * @author biud436
  *
  * @param text Size
@@ -126,7 +126,7 @@
 /*:ko
  * RS_EventName.js
  * 
- * @plugindesc (v1.3.11) 이벤트 이름 표시 플러그인 <RS_EventName>
+ * @plugindesc (v1.4.0) 이벤트 이름 표시 플러그인 <RS_EventName>
  * @author 러닝은빛
  *
  * @param text Size
