@@ -99,6 +99,25 @@
  * - Refactoring the code.
  * 2019.10.20 (v1.3.11) :
  * - Refactoring the code.
+ * 
+ * ==================================================================================
+ * Commands
+ * ==================================================================================
+ * 
+ * @command ChangeEventName
+ * @text 
+ * @desc
+ * 
+ * @arg eventId
+ * @type number
+ * @desc
+ * @default 1
+ * 
+ * @arg name
+ * @type string
+ * @desc
+ * @default ""
+ * 
  */
 
 /*:ko
@@ -179,6 +198,25 @@
  * 실제 사용 예는 다음과 같습니다.
  * 
  *      ChangeEventName 0 RPG Maker MV
+ * 
+ * ==================================================================================
+ * Commands
+ * ==================================================================================
+ * 
+ * @command ChangeEventName
+ * @text 
+ * @desc
+ * 
+ * @arg eventId
+ * @type number
+ * @desc
+ * @default 1
+ * 
+ * @arg name
+ * @type string
+ * @desc
+ * @default ""
+ * 
  */
 
 var Imported = Imported || {};
@@ -188,7 +226,7 @@ var RS = RS || {};
 RS.EventName = RS.EventName || {};
 RS.EventName.Params = RS.EventName.Params || {};
 
-(function() {
+(() => {
 
     "use strict";
     
@@ -198,37 +236,56 @@ RS.EventName.Params = RS.EventName.Params || {};
 
     parameters = (parameters.length > 0) && parameters[0].parameters;  
     
-    RS.EventName.Params.textSize = Number(parameters['textSize'] || 14 );
+    const pluginName = (parameters.length > 0) && parameters[0].name;
+
+    //===========================================================================
+    // RS.EventName.Params
+    //===========================================================================
+
+    Object.assign(RS.EventName.Params, {
+
+        textSize : Number(parameters['textSize'] || 14 ),
+
+        regExpr : /(?:@color|#color)\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/,
+        showPlayerText : String(parameters['Show Player Text'] || 'true'),
+
+        airshipName : String(parameters['AirShip'] || 'AirShip'),
+        shipName : String(parameters['Ship'] || 'Ship'),
+        boatName : String(parameters['Boat'] || 'Boat'),
     
-    RS.EventName.Params.regExpr = /(?:@color|#color)\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/;
-    RS.EventName.Params.showPlayerText = String(parameters['Show Player Text'] || 'true');
-
-    RS.EventName.Params.airshipName = String(parameters['AirShip'] || 'AirShip');
-    RS.EventName.Params.shipName = String(parameters['Ship'] || 'Ship');
-    RS.EventName.Params.boatName = String(parameters['Boat'] || 'Boat');
-
-    RS.EventName.Params.isRefreshName = Boolean(parameters["Refresh Name"] === "true");
-
-    RS.EventName.Params.defaultOutlineWidth = 2;
-    RS.EventName.Params.nameBoxYPadding = 10;
-    RS.EventName.Params.mousePointerNearDst = 48;    
-
-    RS.EventName.Params.nameLayerZ = 20;
-    RS.EventName.Params.nameBoxRect = {
-        x: 0,
-        y: 0,
-        width: 120,
-        height: 40
-    };
-
-    RS.EventName.Params.playerNameColor = [255, 255, 255];
-    RS.EventName.Params.vehicleNameColor = [255, 255, 255];
-
-    RS.EventName.Params.nameAnchor = {
-        x : 0.5,
-        y : 1.0
-    };
+        isRefreshName : Boolean(parameters["Refresh Name"] === "true"),
     
+        defaultOutlineWidth : 2,
+        nameBoxYPadding : 10,
+        mousePointerNearDst : 48,
+    
+        nameLayerZ : 20,
+        nameBoxRect : {
+            x: 0,
+            y: 0,
+            width: 120,
+            height: 40
+        },
+    
+        playerNameColor : [255, 255, 255],
+        vehicleNameColor : [255, 255, 255],
+    
+        nameAnchor : {
+            x : 0.5,
+            y : 1.0
+        },
+
+    });
+
+    Object.assign(RS.EventName, {
+        get boxWidth() {
+            return Utils.RPGMAKER_NAME === "MZ" ? Graphics.width : Graphics.boxWidth;
+        },
+        get boxHeight() {
+            return Utils.RPGMAKER_NAME === "MZ" ? Graphics.width : Graphics.boxWidth;
+        },
+    });
+
     //===========================================================================
     // Vector2
     //===========================================================================
@@ -585,18 +642,23 @@ RS.EventName.Params = RS.EventName.Params || {};
     Sprite_Name.MOUSE_EVENT = Vector2.empty();
     
     //===========================================================================
-    // TouchInput
+    // Mouse
     //===========================================================================
+
+    (() => {
+        const canvas = document.querySelector("canvas");
+        if(canvas) {
+            canvas.addEventListener("mousemove", event => {
+                const x = Graphics.pageToCanvasX(event.pageX);
+                const y = Graphics.pageToCanvasY(event.pageY);
     
-    var alias_TouchInput_onMouseMove = TouchInput._onMouseMove;
-    TouchInput._onMouseMove = function(event) {
-        alias_TouchInput_onMouseMove.call(this, event);
-        var x = Graphics.pageToCanvasX(event.pageX);
-        var y = Graphics.pageToCanvasY(event.pageY);
-        if(Sprite_Name.MOUSE_EVENT instanceof Vector2) {
-            Sprite_Name.MOUSE_EVENT.set(x, y);
+                if(Sprite_Name.MOUSE_EVENT instanceof Vector2) {
+                    Sprite_Name.MOUSE_EVENT.set(x, y);
+                }            
+                
+            });
         }
-    };
+    })();
     
     //===========================================================================
     // Sprite_PlayerName
@@ -767,7 +829,7 @@ RS.EventName.Params = RS.EventName.Params || {};
         
         // Create Name Layer
         this._nameLayer = new Sprite();
-        this._nameLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+        this._nameLayer.setFrame(0, 0, RS.EventName.boxWidth, RS.EventName.boxHeight);
         this._nameLayer.z = RS.EventName.Params.nameLayerZ;
         this.addChild(this._nameLayer);
         
@@ -887,7 +949,27 @@ RS.EventName.Params = RS.EventName.Params || {};
             }
         }
     };
+
+    if(Utils.RPGMAKER_NAME === "MZ") {
+        PluginManager.registerCommand(pluginName, "ChangeEventName", args => {
+        
+            if(!RS.EventName.Params.isRefreshName) {
+                return;
+            }
+            
+            const eventId = Number(args.eventId);
+            const name = args.name;
     
+            if(eventId <= 0) eventId = this._eventId;
+            if(eventId <= 0) return;
+    
+            if($dataMap.events[eventId]) {
+                $dataMap.events[eventId].name = name;
+            }        
+                    
+        });
+    }
+
     window.Vector2 = Vector2;
     window.Sprite_Name = Sprite_Name;
     window.Sprite_PlayerName = Sprite_PlayerName;
