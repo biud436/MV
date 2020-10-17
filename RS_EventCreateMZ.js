@@ -1090,7 +1090,7 @@ RS.Event = RS.Event || {};
     $.getMapData = function (x, y, mapID, eventId) {
         var self = this;
         var xhr = new XMLHttpRequest();
-        var url = $.getParentFolder() + defaultFolder + mapID.padZero(3) + ".json";
+        var url = $.getParentFolder() + defaultFolder + mapID.padStart(3, "0") + ".json";
         xhr.open('GET', url);
         xhr.overrideMimeType('application/json');
         xhr.onload = function () {
