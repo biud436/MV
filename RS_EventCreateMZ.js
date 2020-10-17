@@ -933,7 +933,7 @@ RS.Event = RS.Event || {};
     const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
     const parameters = (pluginParams.length > 0) && pluginParams[0].parameters;
 
-    var defaultFolder = "data/Map";
+    let defaultFolder = "data/Map";
 
     $.Params = {};
 
@@ -949,7 +949,7 @@ RS.Event = RS.Event || {};
 
     Object.defineProperty(Array.prototype, "last", {
         get: function () {
-            var idx = this.length - 1;
+            const idx = this.length - 1;
             return this[idx];
         }
     });
@@ -972,7 +972,7 @@ RS.Event = RS.Event || {};
     };
 
     $.makeEventName = function (eventId) {
-        return "EV" + String(eventId).padZero(3);
+        return "EV" + String(eventId).padStart(2, "0");
     };
 
     $.jsonParse = function (str) {
@@ -990,7 +990,7 @@ RS.Event = RS.Event || {};
 
     $.getTemplate = function (key) {
 
-        var matches = $.Params.template.filter(function (e, i, a) {
+        var matches = $.Params.template.filter((e, i, a) => {
             return e.key;
         }, this);
 
