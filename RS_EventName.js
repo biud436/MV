@@ -282,7 +282,7 @@ RS.EventName.Params = RS.EventName.Params || {};
             return Utils.RPGMAKER_NAME === "MZ" ? Graphics.width : Graphics.boxWidth;
         },
         get boxHeight() {
-            return Utils.RPGMAKER_NAME === "MZ" ? Graphics.width : Graphics.boxWidth;
+            return Utils.RPGMAKER_NAME === "MZ" ? Graphics.height : Graphics.boxHeight;
         },
     });
 
