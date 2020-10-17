@@ -646,9 +646,9 @@ RS.EventName.Params = RS.EventName.Params || {};
     //===========================================================================
 
     (() => {
-        const canvas = document.querySelector("canvas");
-        if(canvas) {
-            canvas.addEventListener("mousemove", event => {
+        const body = document.body;
+        if(body) {
+            body.addEventListener("mousemove", event => {
                 const x = Graphics.pageToCanvasX(event.pageX);
                 const y = Graphics.pageToCanvasY(event.pageY);
     
