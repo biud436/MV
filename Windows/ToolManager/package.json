@@ -14,7 +14,9 @@
   "author": "biud436",
   "license": "MIT",
   "dependencies": {
+    "async": "^3.2.0",
     "decompress-zip": "^0.2.2",
+    "fs-extra": "^9.0.1",
     "merge-images": "^2.0.0",
     "minimist": "^1.2.5",
     "text2png": "^2.3.0",
