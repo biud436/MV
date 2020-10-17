@@ -9,8 +9,10 @@
 /*:
  * RS_EventName.js
  *
+ * @target MZ
  * @plugindesc (v1.4.0) This plugin displays an event's name above a head. <RS_EventName>
  * @author biud436
+ * @url https://biud436.tistory.com/
  *
  * @param text Size
  * @type number
@@ -126,8 +128,10 @@
 /*:ko
  * RS_EventName.js
  * 
+ * @target MZ
  * @plugindesc (v1.4.0) 이벤트 이름 표시 플러그인 <RS_EventName>
  * @author 러닝은빛
+ * @url https://biud436.blog.me
  *
  * @param text Size
  * @text 텍스트 크기
