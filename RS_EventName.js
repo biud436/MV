@@ -105,7 +105,7 @@
  * ==================================================================================
  * 
  * @command ChangeEventName
- * @text 
+ * @text ChangeEventName
  * @desc
  * 
  * @arg eventId
@@ -204,7 +204,7 @@
  * ==================================================================================
  * 
  * @command ChangeEventName
- * @text 
+ * @text ChangeEventName
  * @desc
  * 
  * @arg eventId
