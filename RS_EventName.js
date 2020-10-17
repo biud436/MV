@@ -99,7 +99,10 @@
  * - Refactoring the code.
  * 2019.10.20 (v1.3.11) :
  * - Refactoring the code.
- * 
+ * 2020.10.17 (v1.4.0) :
+ * + Removed RPG Maker MV dependency.
+ *      - Removed Utils.rgbToCssColor that can't work in MZ.
+ *      - Fixed font and Graphics settings.
  * ==================================================================================
  * Commands
  * ==================================================================================
@@ -518,7 +521,7 @@ RS.EventName.Params = RS.EventName.Params || {};
         }
 
         setFontName() {
-            this.bitmap.fontFace = Window_Base.prototype.standardFontFace.call(this);
+            this.bitmap.fontFace = (Utils.RPGMAKER_NAME === "MZ") ? $gameSystem.mainFontFace() : Window_Base.prototype.standardFontFace.call(this);
         }
 
         setTextSize(n) {
@@ -578,7 +581,7 @@ RS.EventName.Params = RS.EventName.Params || {};
         }
 
         setTextColor(color) {
-            this.bitmap.textColor = Utils.rgbToCssColor.apply(this, color);
+            this.bitmap.textColor = `rgba(${color.join(",")}, 1.0)`;
         }
 
         obtainName() {
