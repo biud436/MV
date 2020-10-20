@@ -2017,10 +2017,22 @@ var RS = RS || {};
     }
 
     //=================================================
-    // RS.HUD.Layer
+    // SpriteInterface
     //=================================================
 
-    RS.HUD.Layer = class extends Sprite {
+    class SpriteInterface extends Sprite {
+        updateText() {}
+        refresh() {}
+        createItemLayer() {}
+        drawAllHud() {}
+        updateFrame() {}
+    }
+
+    //=================================================
+    // RS.HUD.Layer
+    //=================================================    
+
+    RS.HUD.Layer = class extends SpriteInterface {
 
         constructor(bitmap) {
             super(bitmap);
@@ -2132,7 +2144,7 @@ var RS = RS || {};
     // RS.HUD.EmptyLayer
     //=================================================
     
-    RS.HUD.EmptyLayer = class extends Sprite {
+    RS.HUD.EmptyLayer = class extends SpriteInterface {
 
         constructor(bitmap) {
             super(bitmap);
