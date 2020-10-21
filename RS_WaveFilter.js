@@ -578,7 +578,7 @@ RS.WaveConfig = RS.WaveConfig || {};
       this._waveFilter.waveFrequency = this._waveFrequency;
       this._waveFilter.wavePhase = this._wavePhase;
       this._waveFilter.origin.x = $gameMap.canvasToMapX(this.x);
-      this._waveFilter.origin.x = $gameMap.canvasToMapY(this.y);
+      this._waveFilter.origin.y = $gameMap.canvasToMapY(this.y);
     }
   }
 
