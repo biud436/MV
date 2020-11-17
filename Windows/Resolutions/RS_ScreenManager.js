@@ -375,14 +375,16 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
   RS.ScreenManager.settings = {};
 
   // Options
-  RS.ScreenManager.options.resize = Boolean(parameters['isGraphicsRendererResize'] === 'true');
-  RS.ScreenManager.options.autoScaling = Boolean(parameters['isGraphicsRendererResize'] === 'true');
-  RS.ScreenManager.options.minWidth = Boolean(parameters['isMaintainingMinimumWidth'] === 'true');
-  RS.ScreenManager.options.minHeight = Boolean(parameters['isMaintainingMinimumHeight'] === 'true');
-  RS.ScreenManager.options.recreate = Boolean(parameters['isMaintainingMinimumHeight'] === 'true');
-  RS.ScreenManager.options.allResolutions = true;
-  RS.ScreenManager.options.aspectRatio = Boolean(parameters['Enable Custom Aspect Ratio'] === 'true');
-  RS.ScreenManager.options.isAutoSyncManifest = Boolean(parameters['Auto Sync Manifest file'] === 'true');
+  Object.assign(RS.ScreenManager.options, {
+    resize: Boolean(parameters['isGraphicsRendererResize'] === 'true'),
+    autoScaling: Boolean(parameters['isGraphicsRendererResize'] === 'true'),
+    minWidth: Boolean(parameters['isMaintainingMinimumWidth'] === 'true'),
+    minHeight: Boolean(parameters['isMaintainingMinimumHeight'] === 'true'),
+    recreate: Boolean(parameters['isMaintainingMinimumHeight'] === 'true'),
+    aspectRatio: Boolean(parameters['Enable Custom Aspect Ratio'] === 'true'),
+    isAutoSyncManifest: Boolean(parameters['Auto Sync Manifest file'] === 'true'),
+    allResolutions: true,
+  });
 
   // Settings
   RS.ScreenManager.settings.customAspectRatio = parameters['Custom Aspect Ratio'] || "16:9";
