@@ -55,6 +55,8 @@
  * ============================================================================
  * 2018.11.14 (v1.0.0) - First Release.
  * 2018.11.16 (v1.0.1) - Added the opacity mode.
+ * 2021.01.09 (v1.0.2) :
+ * - Fixed the bug that causes an error when using the erase event command.
  */
 /*~struct~Fog:
  *
@@ -229,6 +231,8 @@
  * ============================================================================
  * 2018.11.14 (v1.0.0) - First Release.
  * 2018.11.16 (v1.0.1) - Added the opacity mode.
+ * 2021.01.09 (v1.0.2) :
+ * - Fixed the bug that causes an error when using the erase event command.
  */
 /*~struct~Fog:ko
  *
@@ -431,6 +435,9 @@ function Scene_LoadFog() {
     //============================================================================      
 
     Game_Event.prototype.readComments = function() {
+        if(this._erased) {
+            return;
+        }
 
         var data = {note: "", meta: {}}; 
 
