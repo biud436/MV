@@ -187,6 +187,8 @@
  * - Added a new feature that can hide the face image on the name edit window.
  * 2020.07.14 (v1.6.10) :
  * - Fixed the issue, https://github.com/biud436/MV/issues/18
+ * 2021.01.11 (v1.6.11) :
+ * - Now it is possible to use a text code in the asking text.
  */
 /*~struct~TextBox:
  * 
@@ -461,6 +463,8 @@
  * - 얼굴 이미지를 감출 수 있는 기능을 추가하였습니다.
  * 2020.07.14 (v1.6.10) :
  * - Fixed the issue, https://github.com/biud436/MV/issues/18
+ * 2021.01.11 (v1.6.11) :
+ * - 안내 텍스트에서 이제 텍스트 코드를 사용할 수 있습니다.
  */
 /*~struct~TextBox:ko
  * 
@@ -837,7 +841,7 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
       this.drawFace(actor.faceName(), actor.faceIndex(), x, y, width, height);
     }
     this.changeTextColor(this.hpColor(actor));
-    this.drawText($.Params.askText, this.left(), y + this.fittingHeight(1) / 2, this.width);
+    this.drawTextEx($.Params.askText, this.left(), y + this.fittingHeight(1) / 2);
   };
 
   Window_KorNameEdit.prototype.itemRect = function(index) {
