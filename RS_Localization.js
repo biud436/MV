@@ -314,6 +314,8 @@
 * 2018.11.13 (v1.0.5) :
 * - Now it would be reloaded the map and data base when calling the function called 'RS.Localization.changeSystemLanguage'
 * - Added the scene for loading database files.
+* 2021.01.15 (v1.0.6) :
+* - Fixed the bug that causes the error after starting battle when using a plugin named SRD_BattleStatusCustomizer.
 */
 /*:ko
 * RS_Localization.js
@@ -645,6 +647,8 @@
 * 2018.11.13 (v1.0.5) :
 * - RS.Localization.changeSystemLanguage 함수 호출 시 해당 언어에 맞는 맵과 데이터베이스를 새로 가져옵니다.
 * - 데이터베이스 파일을 안전하게 로드하기 위한 장면을 새로 추가하였습니다.
+* 2021.01.15 (v1.0.6) :
+* - SRD_BattleStatusCustomizer 사용 시, 전투 시작 직후 오류가 발생하는 문제를 수정했습니다.
 */
 
 var Imported = Imported || {};
@@ -1113,7 +1117,13 @@ function Scene_LoadDatabase() {
       }
     }
     this.updateDocumentTitle();
+
+    if(Imported["SumRndmDde Battle Status Customizer"]) {
+      SRD.BattleStatusCustomizer.loadNotetags();
+    }
+
     SceneManager.pop();
+
   };
 
   Scene_LoadDatabase.prototype.updateDocumentTitle = function() {
