@@ -2,7 +2,7 @@
 // RS_MessageSystem.js
 // ---------------------------------------------------------------
 // The MIT License
-// Copyright (c) 2020 biud436
+// Copyright (c) 2021 biud436
 // ---------------------------------------------------------------
 // Free for commercial and non commercial use.
 //================================================================
@@ -10,7 +10,7 @@
  * @target MZ
  * @plugindesc <RS_MessageSystem>
  * @author biud436
- * @url https://biud436.tistory.com
+ * @url https://biud436.tistory.com/
  *
  * @param Font Size
  * @type number
@@ -742,7 +742,7 @@
  * @target MZ
  * @plugindesc <RS_MessageSystem>
  * @author biud436
- * @url start https://biud436.tistory.com
+ * @url https://biud436.tistory.com
  *
  * @param 글꼴 크기
  * @type number
