@@ -1520,7 +1520,7 @@ var RS = RS || {};
         },
 
         loadPicture(filename) {
-            const bitmap = ImageManager.loadPicture(filename);
+            const bitmap = ImageManager.loadBitmap(`img/pictures/`, filename);
             return bitmap;
         },
 
