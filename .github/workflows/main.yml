@@ -33,4 +33,4 @@ jobs:
             cp -rf ~/MZ/* ~/MV
             git add .
             git commit -m "pull files from the other repository"
-            git push origin mz                        
+            git push                 
