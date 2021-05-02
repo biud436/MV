@@ -26,11 +26,9 @@ jobs:
           envs: GIT_USERNAME,GIT_PASSWORD
           script: |
             cd ~/MV
-            git config user.name $GIT_USERNAME
-            git config user.email $GIT_USEREMAIL
             git checkout mz
-            date > generated.txt
             git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV mz
+            date > generated.txt
             cp -rf ~/MZ/* ~/MV
             git add .
             git commit -m "pull files from the other repository"
