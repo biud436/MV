@@ -29,6 +29,7 @@ jobs:
             git config user.name $GIT_USERNAME
             git config user.email $GIT_USEREMAIL
             git checkout mz
+            git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV mz
             cp -rf ~/MZ/* ~/MV
             git add .
             git commit -m "pull files from the other repository"
