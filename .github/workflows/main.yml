@@ -29,7 +29,8 @@ jobs:
             git checkout mz
             git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV mz
             date > generated.txt
+            commit_message=$(date)
             cp -rf ~/MZ/* ~/MV
             git add .
-            git commit -m "pull files from the other repository"
+            git commit -m "AUTO COMMIT : $commit_message"
             git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV.git
