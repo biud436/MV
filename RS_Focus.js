@@ -8,21 +8,16 @@
 //================================================================
 /*:
  * @target MZ
- * @plugindesc <RS_Focus>
+ * @plugindesc This plugin allows you to maintain the window focus during the game. <RS_Focus>
  * @author biud436
  * @url https://biud436.tistory.com/
  *          
  * @help
- */
-/*:ko
- * @target MZ
- * @plugindesc <RS_Focus>
- * @author biud436
- * @url https://biud436.tistory.com/
- *          
- * @help
- * 이 플러그인을 사용하면 포커스가 아닌 상태에서도 게임 루프가 중단되지 않습니다.
- * 또한 F12 버튼을 눌렀을 때 개발자 도구가 뜨는 것을 방지합니다.
+ * =======================================================================
+ * Change Log
+ * =======================================================================
+ * 2021.05.08 (v1.0.1) : 
+ * - Removed the strikethrough on the KeyboardEvent.keycode.
  */
 var Imported = Imported || {};
 Imported.RS_Focus = true;
@@ -51,16 +46,21 @@ RS.Focus = RS.Focus || {};
         }
     };
 
+    /**
+     * @param {KeyboardEvent} event 
+     */
     SceneManager.onKeyDown = function(event) {
+        const code = event.code || event.key;
+
         if (!event.ctrlKey && !event.altKey) {
-            switch (event.keyCode) {
-                case 116: // F5
+            switch (code) {
+                case "F5": // F5
                     this.reloadGame();
                     break;
-                case 119: // F8
+                case "F8": // F8
                     this.showDevTools();
                     break;
-                case 123: // F12 
+                case "F12": // F12 
                     event.preventDefault();
                     break;
             }
