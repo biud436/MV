@@ -25,6 +25,9 @@ jobs:
           key: ${{ secrets.ORACLE_PRIVATE_KEY }}
           envs: GIT_USERNAME,GIT_PASSWORD
           script: |
+            cd ~/MZ
+            git checkout master
+            git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MZ master
             cd ~/MV
             git checkout mz
             git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV mz
