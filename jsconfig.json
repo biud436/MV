@@ -1,15 +1,8 @@
 {
-  "compilerOptions": {
-    "target":"es6",
-    "module": "commonjs"    
-  },
-  "files": [
-    "./lunalite-pixi-mz.d.ts",
-  ],
-  "include": [
-    "./*.*",
-    "./*.js",
-    "./*/*.js",
-    "./test/*.js"
-  ],
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs"
+    },
+    "files": ["./lunalite-pixi-mz.d.ts"],
+    "include": ["./*.*", "./*.js", "./*/*.js", "./test/*.js"]
 }

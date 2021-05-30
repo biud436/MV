@@ -26,9 +26,9 @@
  * =============================================================================
  * Plugin Command
  * =============================================================================
- * To copy the event from other map or currently map and create it, 
+ * To copy the event from other map or currently map and create it,
  * you can use at the following plugin command.
- * 
+ *
  * Event Copy X Y MapID EventID
  *  - X : Number.
  *  - Y : Number.
@@ -36,21 +36,21 @@
  *  - EventId : Specify the id of the event that will copy.
  *
  * To delete certain event in the currently map, please use this plugin command.
- * 
+ *
  * Event Delete EventID
  *  - EventId : Specify the id of the event that is going to remove.
  *
  * This plugin command allows you to create a new event on currently map.
- * 
+ *
  * Event Create X Y CharacterName CharacterIndex
  *  - X : Number
  *  - Y : Number
  *  - CharacterName : Specify the image name of the character.
  *  - CharacterIndex : Specify the image index of the character.
- * 
+ *
  * To create a certain event that you created directly to currently map,
  * You can use this plugin command.
- * 
+ *
  * Event Template Key X Y
  *  - Key : Specify the key of the event data that created from the event template.
  *  - X : Number
@@ -59,9 +59,9 @@
  * =============================================================================
  * Script Calls
  * =============================================================================
- * To copy the event from other map or currently map and create it, 
+ * To copy the event from other map or currently map and create it,
  * you can use at the following script command.
- * 
+ *
  * RS.Event.instanceCopy(x, y, mapID, eventId, customData);
  *  - x : Set the x coordinate value.
  *  - y : Specify the y coordinate value.
@@ -70,30 +70,30 @@
  *  - customData : if null, it'll specify a existing event data.
  *
  * To delete certain event in the currently map, please use this script command.
- * 
+ *
  * RS.Event.instanceDestroy($gameMap.events().last);
- * 
+ *
  * To create a certain event that you created directly to currently map,
  * You can use these two script commands,
- * 
+ *
  * RS.Event.instanceCreate(x, y, charName, charIdx);
  * RS.Event.instanceCreate2(key, x, y);
- * 
+ *
  * This plugin command you to create a event from the plugin parameter called default event data
  * and change name or index values of the character image.
- * 
+ *
  * RS.Event.instanceCreate(x, y, charName, charIdx);
  *  - x : Specify the x-coordinate.
  *  - y : Specify the y-coordinate.
  *  - charName : Specify a character image's name.
- *  - charIdx : Specify the index value of character image. 
+ *  - charIdx : Specify the index value of character image.
  *      This is pattern value. it starts with 0, so its value is range between 0 and 7.
- * 
+ *
  * RS.Event.instanceCreate2(key, x, y);
  *  - key : Specify the key of the template data that you created in the plugin parameter called 'Template'
  *  - x : Specify the x-coordinate.
  *  - y : Specify the y-coordinate.
- * 
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -407,16 +407,16 @@
  *
  */
 /*~struct~Template:
- * 
+ *
  * @param key
  * @type string
  * @desc Please specify the name to find a specific event data from the template data.
- * @default 
+ * @default
  *
  * @param data
  * @type struct<EventData>
  * @default
- * 
+ *
  */
 /*:ko
  * @target MZ
@@ -448,55 +448,55 @@
  * Event Delete EventID
  *  - EventID : 이벤트의 ID 값.
  *
- * 현재 맵에 새로운 이벤트를 생성합니다. 
+ * 현재 맵에 새로운 이벤트를 생성합니다.
  * 이벤트 데이터는 기본 이벤트 데이터에서 가져옵니다.
  * Event Create X Y CharacterName CharacterIndex
  *  - X : 이벤트의 X 좌표 (맵의 폭 크기 내로 기입 바랍니다)
  *  - Y : 이벤트의 Y 좌표 (맵의 높이 크기 내로 기입 바랍니다)
  *  - CharacterName : 캐릭터 이름
  *  - CharacterIndex : 캐릭터 인덱스
- * 
+ *
  * 이벤트 템플릿으로부터 이벤트 데이터를 가져와서 이벤트를 생성하는 플러그인 명령입니다.
  * Event Template Key X Y
  *  - Key : 템플릿의 키 값입니다 (모두 붙어있어야 하며 공백을 사용할 수 없습니다)
  *  - X : 이벤트의 X 좌표 (맵의 폭 크기 내로 기입 바랍니다)
  *  - Y : 이벤트의 Y 좌표 (맵의 높이 크기 내로 기입 바랍니다)
- * 
+ *
  * =============================================================================
  * 스크립트 호출에 대해
  * =============================================================================
- * 
+ *
  * 이벤트를 복사 생성하는 메서드입니다.
- * 
+ *
  * RS.Event.instanceCopy(x, y, mapID, eventId, customData);
- * 
+ *
  *  - customData : RPG Maker MV에는 이벤트 클래스가 따로 없어서 커스텀 데이터를 정의
  * 하기가 힘듭니다. 기존 데이터를 복제하여 적당히 바꾸는 방법을 사용해야 합니다.
  * 기존 데이터는 $dataMap.events[eventId]로 가져올 수 있으며 복제해서 내부 속성을
  * 적당히 바꿀 수 있습니다. 객체화할 수도 있지만 기존 데이터를 복제하는 게 더 효율적
  * 입니다. 이 부분을 생략하면 기존 맵 데이터에서 가져오게 됩니다.
- * 
+ *
  * 이벤트를 삭제하는 메서드입니다. 예제에서 인자로 사용된 $gameMap.events().last는
- * 이벤트 배열의 마지막 원소(이벤트)를 가져옵니다. 
+ * 이벤트 배열의 마지막 원소(이벤트)를 가져옵니다.
  *
  * RS.Event.instanceDestroy($gameMap.events().last);
- * 
- * 이벤트를 생성하는 메서드는 두 가지가 있습니다. 
- * 
- * 다음 메서드는 "기본 이벤트 데이터" 매개변수에 지정된 JSON 데이터 값을 기반으로 
- * 이벤트를 생성합니다. 
- * 
+ *
+ * 이벤트를 생성하는 메서드는 두 가지가 있습니다.
+ *
+ * 다음 메서드는 "기본 이벤트 데이터" 매개변수에 지정된 JSON 데이터 값을 기반으로
+ * 이벤트를 생성합니다.
+ *
  * RS.Event.instanceCreate(x, y, charName, charIdx);
- * 
+ *
  * 다음 메서드는 템플릿 데이터에서 키와 일치하는 이벤트 데이터를 찾아서 특정 좌표에
  * 생성합니다.
- * 
+ *
  * RS.Event.instanceCreate2(key, x, y);
- * 
+ *
  * 예를 들면, 아래와 같이 하면 특정 좌표에 금전이 든 상자를 생성할 수 있습니다.
- * 
+ *
  * RS.Event.instanceCreate2('myChest', $gamePlayer.x + 1, $gamePlayer.y);
- * 
+ *
  * =============================================================================
  * 변동 사항
  * =============================================================================
@@ -518,79 +518,79 @@
  * - 이벤트가 계속 생성되고 삭제될 때 커스텀 데이터 오류가 나는 문제 수정.
  * 2020.01.27 (v1.0.10) :
  * - 이벤트를 템플릿 데이터에서 찾아 생성할 수 있는 기능을 추가하였습니다.
- * 
+ *
  * =============================================================
  * 플러그인 명령
  * =============================================================
- * 
+ *
  * @command create
- * @desc 현재 맵에 새로운 이벤트를 생성합니다. 
- * 
+ * @desc 현재 맵에 새로운 이벤트를 생성합니다.
+ *
  * @args x
  * @type number
  * @desc 생성할 위치 : X 좌표
  * @default 0
- * 
+ *
  * @args y
  * @type number
  * @desc 생성할 위치 : Y 좌표
  * @default 0
- * 
+ *
  * @args charName
  * @type string
  * @desc 캐릭터 이미지를 지정하세요.
  * @default Actor1
- * 
+ *
  * @args charIdx
  * @type number
  * @desc 캐릭터의 인덱스 번호를 지정하세요.
  * @default 0
  * @min 0
  * @max 7
- * 
+ *
  * @command copy
  * @desc 이벤트를 특정 맵에서 복사해오는 플러그인 명령입니다.
- * 
+ *
  * @args x
  * @type number
  * @desc 이벤트의 X 좌표 (맵의 폭 크기 내로 기입 바랍니다)
  * @default 0
- * 
+ *
  * @args y
  * @type number
  * @desc 이벤트의 Y 좌표 (맵의 높이 크기 내로 기입 바랍니다)
  * @default 0
- * 
+ *
  * @args mapId
  * @type number
  * @desc 0이나 -1로 적으면 현재 맵의 ID 값과 동일하게 설정됩니다.
  * @default 1
- * 
+ *
  * @args eventId
  * @type number
  * @desc 복사할 이벤트의 ID 값.
  * @default 1
- * 
+ *
  * @command delete
  * @desc 현재 맵에 존재하는 이벤트를 삭제하는 명령입니다.
- * 
+ *
  * @args eventId
  * @type number
  * @desc 삭제할 이벤트 ID를 입력해주십시오.
  * @default 1
- * 
+ *
  * @command template
  * @desc  이벤트 템플릿으로부터 이벤트 데이터를 가져와서 이벤트를 생성하는 플러그인 명령입니다.
- * 
+ *
  * @args key
  * @type string
  * @desc 템플릿의 키 값입니다.
- * 
+ *
  * @args x
  * @type number
  * @desc 이벤트의 X 좌표 (맵의 가로 크기 내로 기입 바랍니다)
  * @default 0
- * 
+ *
  * @args y
  * @type number
  * @desc 이벤트의 Y 좌표 (맵의 세로 크기 내로 기입 바랍니다)
@@ -904,16 +904,16 @@
  *
  */
 /*~struct~Template:ko
- * 
+ *
  * @param key
  * @type string
  * @desc 템플릿 데이터에서 특정 이벤트 에디터를 찾으려면 이 데이터의 이름을 지정해야 합니다.
- * @default 
+ * @default
  *
  * @param data
  * @type struct<EventData>
  * @default
- * 
+ *
  */
 
 var Imported = Imported || {};
@@ -923,15 +923,14 @@ var RS = RS || {};
 RS.Event = RS.Event || {};
 
 (function ($) {
-
     "use strict";
 
-    const pluginParams = $plugins.filter(i => {
-        return i.description.contains('<RS_EventCreate>');
+    const pluginParams = $plugins.filter((i) => {
+        return i.description.contains("<RS_EventCreate>");
     });
 
-    const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
-    const parameters = (pluginParams.length > 0) && pluginParams[0].parameters;
+    const pluginName = pluginParams.length > 0 && pluginParams[0].name;
+    const parameters = pluginParams.length > 0 && pluginParams[0].parameters;
 
     let defaultFolder = "data/Map";
 
@@ -944,22 +943,20 @@ RS.Event = RS.Event || {};
     Object.defineProperty(Array.prototype, "first", {
         get: function () {
             return this[0];
-        }
+        },
     });
 
     Object.defineProperty(Array.prototype, "last", {
         get: function () {
             const idx = this.length - 1;
             return this[idx];
-        }
+        },
     });
 
     Array.prototype.delete = function (deleteItem) {
-        var tmp = this.filter(
-            function (findValue) {
-                return findValue !== deleteItem;
-            }
-        );
+        var tmp = this.filter(function (findValue) {
+            return findValue !== deleteItem;
+        });
         return tmp;
     };
 
@@ -989,7 +986,6 @@ RS.Event = RS.Event || {};
     $.Params.template = $.jsonParse(parameters["Template"]);
 
     $.getTemplate = function (key) {
-
         var matches = $.Params.template.filter((e, i, a) => {
             return e.key;
         }, this);
@@ -999,7 +995,6 @@ RS.Event = RS.Event || {};
         } else {
             return $.jsonParse(parameters["Default Event Data"]);
         }
-
     };
 
     $.makeEventData = function (x, y, charName, charIdx, eventId, eventName) {
@@ -1021,7 +1016,6 @@ RS.Event = RS.Event || {};
         defaultEventData.y = y;
 
         return defaultEventData;
-
     };
 
     $.applyEventOnMap = function (ev) {
@@ -1033,12 +1027,18 @@ RS.Event = RS.Event || {};
     $.instanceCreate = function (x, y, charName, charIdx) {
         var eventId = $.makeEventId();
         var eventName = $.makeEventName(eventId);
-        var newEvent = $.makeEventData(x, y, charName, charIdx, eventId, eventName);
+        var newEvent = $.makeEventData(
+            x,
+            y,
+            charName,
+            charIdx,
+            eventId,
+            eventName
+        );
 
         $.applyEventOnMap(newEvent);
 
         return $.instanceCopy(x, y, $gameMap.mapId(), eventId, newEvent);
-
     };
 
     $.instanceCreate2 = function (key, x, y) {
@@ -1049,16 +1049,18 @@ RS.Event = RS.Event || {};
         $.applyEventOnMap(newEvent);
 
         return $.instanceCopy(x, y, $gameMap.mapId(), eventId, newEvent);
-    }
+    };
 
     $.instanceCopy = function (x, y, mapID, eventId) {
         var eventData, scene;
 
         // Check that the map ID is the same.
         if ($gameMap.mapId() === mapID) {
-
             // Create a new event.
-            var eventData = new Game_Event(mapID || $gameMap.mapId(), eventId || 1);
+            var eventData = new Game_Event(
+                mapID || $gameMap.mapId(),
+                eventId || 1
+            );
 
             // Set up the position of the event itself.
             eventData.locate(x, y);
@@ -1077,7 +1079,9 @@ RS.Event = RS.Event || {};
             if (scene instanceof Scene_Map) {
                 // Add the child of Sprite_Character
                 var spriteset = scene._spriteset;
-                spriteset._characterSprites.push(new Sprite_Character(eventData));
+                spriteset._characterSprites.push(
+                    new Sprite_Character(eventData)
+                );
                 spriteset._tilemap.addChild(spriteset._characterSprites.last);
             }
 
@@ -1090,23 +1094,32 @@ RS.Event = RS.Event || {};
     $.getMapData = function (x, y, mapID, eventId) {
         var self = this;
         var xhr = new XMLHttpRequest();
-        var url = $.getParentFolder() + defaultFolder + mapID.padStart(3, "0") + ".json";
-        xhr.open('GET', url);
-        xhr.overrideMimeType('application/json');
+        var url =
+            $.getParentFolder() +
+            defaultFolder +
+            mapID.padStart(3, "0") +
+            ".json";
+        xhr.open("GET", url);
+        xhr.overrideMimeType("application/json");
         xhr.onload = function () {
             if (xhr.status < 400) {
                 var item = JSON.parse(xhr.responseText);
                 var event = item.events[eventId];
                 event.id = $.makeEventId();
                 $.applyEventOnMap(event);
-                var newEvent = self.instanceCopy(x, y, $gameMap.mapId(), event.id);
+                var newEvent = self.instanceCopy(
+                    x,
+                    y,
+                    $gameMap.mapId(),
+                    event.id
+                );
                 if (newEvent) {
                     newEvent.setCustomData(event);
                 }
             }
-        }
+        };
         xhr.onerror = function () {
-            throw new Error('Failed to load map data.');
+            throw new Error("Failed to load map data.");
         };
         xhr.send(null);
     };
@@ -1114,30 +1127,30 @@ RS.Event = RS.Event || {};
     $.getParentFolder = function (url2) {
         url2 = url2 || location.href;
         var i = 0;
-        var ret = '';
+        var ret = "";
         while (url2[i] !== undefined) {
             i++;
         }
-        while (url2[i] !== '/') {
+        while (url2[i] !== "/") {
             i--;
         }
-        ret = url2.slice(0, i).concat('/');
+        ret = url2.slice(0, i).concat("/");
         return ret;
     };
 
     $.checkCharacterImage = function (imageName, func) {
         var self = this;
         var xhr = new XMLHttpRequest();
-        var url = $.getParentFolder() + 'img/characters/' + imageName + '.png';
-        xhr.open('GET', url);
-        xhr.overrideMimeType('application/json');
+        var url = $.getParentFolder() + "img/characters/" + imageName + ".png";
+        xhr.open("GET", url);
+        xhr.overrideMimeType("application/json");
         xhr.onload = function () {
             if (xhr.status < 400) {
                 func();
             }
-        }
+        };
         xhr.onerror = function () {
-            throw new Error('Failed to load an image ' + imageName);
+            throw new Error("Failed to load an image " + imageName);
         };
         xhr.send(null);
     };
@@ -1149,24 +1162,25 @@ RS.Event = RS.Event || {};
             if ($gameMap._events[eventId]) {
                 delete $gameMap._events[eventId];
                 $.deleteSpriteCharacter(_event);
-                $gameSelfSwitches.setValue([mapId, eventId, 'A'], false);
-                $gameSelfSwitches.setValue([mapId, eventId, 'B'], false);
-                $gameSelfSwitches.setValue([mapId, eventId, 'C'], false);
-                $gameSelfSwitches.setValue([mapId, eventId, 'D'], false);
+                $gameSelfSwitches.setValue([mapId, eventId, "A"], false);
+                $gameSelfSwitches.setValue([mapId, eventId, "B"], false);
+                $gameSelfSwitches.setValue([mapId, eventId, "C"], false);
+                $gameSelfSwitches.setValue([mapId, eventId, "D"], false);
             }
         }
     };
 
     $.deleteSpriteCharacter = function (owner) {
-        var target, spriteItem = [];
+        var target,
+            spriteItem = [];
         var scene = SceneManager._scene;
         var index = -1;
-        if ((scene instanceof Scene_Map)) {
+        if (scene instanceof Scene_Map) {
             target = scene._spriteset;
             spriteItem = target._characterSprites.forEach(function (e, idx, a) {
                 if (e._character === owner) {
                     index = idx;
-                };
+                }
             }, this);
             if (index !== -1) {
                 target._tilemap.removeChild(target._characterSprites[index]);
@@ -1179,13 +1193,15 @@ RS.Event = RS.Event || {};
     //============================================================================
 
     function pluginCommandAdapter(command, args) {
-        
         const character = (...args) => {
-            return Game_Interpreter.prototype.character.apply($gameMap._interpreter, ...args);
+            return Game_Interpreter.prototype.character.apply(
+                $gameMap._interpreter,
+                ...args
+            );
         };
 
         switch (args[0].toLowerCase()) {
-            case 'create':
+            case "create":
                 var x = Number(args[1]).clamp(0, $gameMap.width() - 1);
                 var y = Number(args[2]).clamp(0, $gameMap.height() - 1);
                 var charName = args[3];
@@ -1194,63 +1210,65 @@ RS.Event = RS.Event || {};
                     $.instanceCreate(x, y, charName, charIdx);
                 });
                 break;
-            case 'copy':
+            case "copy":
                 var mapId = Number(args[3]);
                 if (mapId <= 0) mapId = $gameMap.mapId();
-                $.instanceCopy(Number(args[1]), Number(args[2]), mapId, Number(args[4]));
+                $.instanceCopy(
+                    Number(args[1]),
+                    Number(args[2]),
+                    mapId,
+                    Number(args[4])
+                );
                 break;
-            case 'delete':
+            case "delete":
                 $.instanceDestroy(character(Number(args[1])));
                 break;
-            case 'template':
+            case "template":
                 var key = args[1];
                 var x = Number(args[2]).clamp(0, $gameMap.width() - 1);
                 var y = Number(args[3]).clamp(0, $gameMap.height() - 1);
                 $.instanceCreate2(key, x, y);
                 break;
-        }           
+        }
     }
 
-    var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+    var alias_Game_Interpreter_pluginCommand =
+        Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function (command, args) {
         alias_Game_Interpreter_pluginCommand.call(this, command, args);
         if (command === "Event") {
             pluginCommandAdapter(command, args);
-        }             
+        }
     };
 
     (() => {
-
         if (Utils.RPGMAKER_NAME === "MZ") {
-
             function getArgs(command, args) {
                 const keyToArgs = Object.keys(args);
                 const retArgs = [command, ...keyToArgs];
-                
+
                 return retArgs;
             }
 
             const pluginCommands = {
-                "create": args => {
+                create: (args) => {
                     pluginCommandAdapter("Event", getArgs("create", args));
                 },
-                "copy": args => {
+                copy: (args) => {
                     pluginCommandAdapter("Event", getArgs("copy", args));
                 },
-                "delete": args => {
+                delete: (args) => {
                     pluginCommandAdapter("Event", getArgs("delete", args));
                 },
-                "template": args => {
+                template: (args) => {
                     pluginCommandAdapter("Event", getArgs("template", args));
                 },
-            }
+            };
 
             for (let i in pluginCommands) {
                 PluginManager.registerCommand(pluginName, i, pluginCommands[i]);
             }
-
         }
-
     })();
 
     //============================================================================
@@ -1269,7 +1287,7 @@ RS.Event = RS.Event || {};
             this._customData = data;
             return this;
         }
-    }
+    };
 
     Game_Event.prototype.event = function () {
         if (this._isCustomData) {
@@ -1278,5 +1296,4 @@ RS.Event = RS.Event || {};
             return $dataMap.events[this._eventId];
         }
     };
-
 })(RS.Event);

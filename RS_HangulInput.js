@@ -10,65 +10,65 @@
  * @target MZ
  * @plugindesc This plugin allows you to type the Korean <RS_HangulInput>
  * @author biud436
- * 
+ *
  * @param variableId
  * @text Variable ID
  * @type number
  * @desc Specify the variable ID
  * @default 10
- * 
+ *
  * @help
- * 
+ *
  * This plugin combines the korean alphabet so you can type the Korean, without Input Method Editor.
- * 
+ *
  * Q. What is Hangul?
- * Hangul is the the Korean alphabet and it has been used to write the Korean language 
+ * Hangul is the the Korean alphabet and it has been used to write the Korean language
  * since its creation in the 15th century by King Sejong the Great.
- * 
+ *
  * See more information : https://en.wikipedia.org/wiki/Hangul
- * 
+ *
  * There are 19 consonants and 21 vowels and 28 final letters used in the modern alphabet.
- * 
+ *
  * Initial Consonants : ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ
  * Vowels : ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ
  * Final Consonants : (none)ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ
  * ("none" means there is no final letter)
- * 
+ *
  * = Initial Consonants + Vowels + Final Consonants
  * = ㄷ + ㅏ + ㄺ
  * = 닭
- * 
+ *
  * ==============================================================
  * Plugin Command
  * ==============================================================
- * To open the Hangul Input, 
+ * To open the Hangul Input,
  * you can call the plugin command called
- * 
+ *
  * HangulInput
- * 
+ *
  * ==============================================================
  * Script Command
  * ==============================================================
- * you can call the script command called 
- * 
+ * you can call the script command called
+ *
  * SceneManager.push(Scene_HangulInput);
- * 
+ *
  * ==============================================================
  * Text Comparison
  * ==============================================================
  * Ideally, if you want to easily compare one text, try this.
- * 
+ *
  * $gameVariables.value(RS.HangulInput.Params.variableId) === "안녕하세요"
- * 
+ *
  * or if you want to compare one text or more, try this.
- * 
+ *
  * ["안녕하세요", "안녕"].contains($gameVariables.value(RS.HangulInput.Params.variableId))
- * 
+ *
  * ==============================================================
  * Change Log
  * ==============================================================
  * 2020.08.09 (v1.0.0) - First Release.
- * 
+ *
  * @command HangulInput
  * @text Hangul Name Input
  * @desc This plugin command allows you to save the result to certain game variable after composing hangul.
@@ -77,51 +77,51 @@
  * @target MZ
  * @plugindesc 한글 조합 입력기 <RS_HangulInput>
  * @author 러닝은빛(biud436)
- * 
+ *
  * @param variableId
  * @text 변수 ID
  * @type number
  * @desc OK 이후 값이 저장됩니다. 변수 ID 값을 기입하세요.
  * @default 10
- * 
+ *
  * @help
  * 직접 만든 한글 조합 라이브러리를 내장하여 만든 한글 입력기입니다.
  * HangulInput라는 플러그인 명령을 실행하면 한글 입력 씬이 뜹니다.
  * 또는 스크립트 명령 'SceneManager.push(Scene_HangulInput);' 코드를 실행하면 됩니다.
  * 입력이 끝나면 지정된 변수에 값이 저장됩니다.
- * 
+ *
  * ==============================================================
  * 문자열 비교 방법
  * ==============================================================
  * 변수에 저장된 값을 조건 분기에서 검출하려면 다음과 같이 할 수 있습니다.
  * 문자열을 하나만 비교하려면 다음과 같이 해야 합니다.
- * 
+ *
  * $gameVariables.value(RS.HangulInput.Params.variableId) === "안녕"
- * 
+ *
  * 예를 들면, 위와 같이 하면 "안녕"이라고 입력했을 때 조건 분기 값이 참이 됩니다.
- * 
+ *
  * 문자열 두 개 이상 비교하고 둘 중 하나가 참일 때를 알고 싶다면 다음과 같이 해야 합니다.
- * 
+ *
  * ["안녕하세요", "안녕"].contains($gameVariables.value(RS.HangulInput.Params.variableId))
- * 
+ *
  * 맵에 있는 이벤트 중 특정 이름의 위치를 찾아내려면 다음과 같이 해야 합니다.
- * 
+ *
  * let joinedText = $gameVariables.value(RS.HangulInput.Params.variableId);
  * let ret = $gameMap.events().filter(e => e.event().name === joinedText);
  * if(ret && ret[0]) {
  *   const target = ret[0];
  *   $gameMessage.add(`\\말풍선[${target.eventId()}]` 아니 내 이름을 어떻게 알았지?`);
- * } 
- * 
+ * }
+ *
  * ==============================================================
  * Change Log
  * ==============================================================
  * 2020.08.09 (v1.0.0) - First Release.
- * 
+ *
  * @command HangulInput
  * @text 한글 이름 입력
  * @desc 한글 조합 결과를 변수에 저장할 수 있습니다.
- * 
+ *
  */
 
 var Imported = Imported || {};
@@ -134,20 +134,89 @@ RS.Hangul = RS.Hangul || {};
 RS.Keyboard = RS.Keyboard || {};
 
 (() => {
-
     "use strict";
 
     // 한글 음절표 19 * 21 * (27 + 1) = 11172;
 
     // 초성 19자
-    const chosung = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+    const chosung = [
+        "ㄱ",
+        "ㄲ",
+        "ㄴ",
+        "ㄷ",
+        "ㄸ",
+        "ㄹ",
+        "ㅁ",
+        "ㅂ",
+        "ㅃ",
+        "ㅅ",
+        "ㅆ",
+        "ㅇ",
+        "ㅈ",
+        "ㅉ",
+        "ㅊ",
+        "ㅋ",
+        "ㅌ",
+        "ㅍ",
+        "ㅎ",
+    ];
     // 중성 21자
-    const joongsung = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"];
+    const joongsung = [
+        "ㅏ",
+        "ㅐ",
+        "ㅑ",
+        "ㅒ",
+        "ㅓ",
+        "ㅔ",
+        "ㅕ",
+        "ㅖ",
+        "ㅗ",
+        "ㅘ",
+        "ㅙ",
+        "ㅚ",
+        "ㅛ",
+        "ㅜ",
+        "ㅝ",
+        "ㅞ",
+        "ㅟ",
+        "ㅠ",
+        "ㅡ",
+        "ㅢ",
+        "ㅣ",
+    ];
     // 종성 28자 (공백 포함)
-    const jongsung = [" ", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+    const jongsung = [
+        " ",
+        "ㄱ",
+        "ㄲ",
+        "ㄳ",
+        "ㄴ",
+        "ㄵ",
+        "ㄶ",
+        "ㄷ",
+        "ㄹ",
+        "ㄺ",
+        "ㄻ",
+        "ㄼ",
+        "ㄽ",
+        "ㄾ",
+        "ㄿ",
+        "ㅀ",
+        "ㅁ",
+        "ㅂ",
+        "ㅄ",
+        "ㅅ",
+        "ㅆ",
+        "ㅇ",
+        "ㅈ",
+        "ㅊ",
+        "ㅋ",
+        "ㅌ",
+        "ㅍ",
+        "ㅎ",
+    ];
 
     class HangulIME {
-
         constructor() {
             this.initMembers();
         }
@@ -156,9 +225,9 @@ RS.Keyboard = RS.Keyboard || {};
             this._composing = false; // 조합중
             this._messTexts = null; // 조합전 텍스트
             this._hanTexts = {
-                'first': -1,
-                'middle': -1,
-                'final': -1,
+                first: -1,
+                middle: -1,
+                final: -1,
             }; // 조합후 텍스트
             this._retTexts = ""; // 조합후 텍스트
             this._index = 0;
@@ -181,7 +250,6 @@ RS.Keyboard = RS.Keyboard || {};
             var depth = 0;
 
             for (;;) {
-
                 // 문장이 너무 길어지는 것 방지
                 if (1000 < depth) {
                     func(this._retTexts);
@@ -195,7 +263,7 @@ RS.Keyboard = RS.Keyboard || {};
                 }
 
                 switch (this._currentStep) {
-                    case HangulIME.STEP11: // 초성1 처리(겹받침 및 겹모음 처리)       
+                    case HangulIME.STEP11: // 초성1 처리(겹받침 및 겹모음 처리)
                         this.startStep11();
                         break;
                     case HangulIME.STEP12: // 초성 2 처리
@@ -222,7 +290,6 @@ RS.Keyboard = RS.Keyboard || {};
                 }
 
                 depth++;
-
             }
         }
 
@@ -241,12 +308,18 @@ RS.Keyboard = RS.Keyboard || {};
             }
 
             // 겹받침 또는 겹모음인가?
-            if (ret = this.processDoubleFinalConsonant(currentChar, nextChar, lastChar)) {
+            if (
+                (ret = this.processDoubleFinalConsonant(
+                    currentChar,
+                    nextChar,
+                    lastChar
+                ))
+            ) {
                 this._currentStep = HangulIME.STEP42;
-            } else { // 그외 글자라면 
+            } else {
+                // 그외 글자라면
                 this._currentStep = HangulIME.STEP12;
             }
-
         }
 
         isHangul(text) {
@@ -265,8 +338,8 @@ RS.Keyboard = RS.Keyboard || {};
 
         /**
          * 한글 자모 분리
-         * @param {String}} text 
-         * @param {Boolean} isNumber 
+         * @param {String}} text
+         * @param {Boolean} isNumber
          */
         decompress(texts, isNumber) {
             const ret = [];
@@ -276,10 +349,10 @@ RS.Keyboard = RS.Keyboard || {};
                 if (!this.isHangul(c)) {
                     ret.push(c);
                     continue;
-                };
+                }
 
                 const code = c.charCodeAt();
-                const offset = code - 0xAC00;
+                const offset = code - 0xac00;
 
                 const first = Math.floor(offset / 588);
                 const middle = Math.floor((offset % 588) / 28);
@@ -291,13 +364,11 @@ RS.Keyboard = RS.Keyboard || {};
             }
 
             return ret;
-
         }
 
         // 1.2. 쌍자음 또는 1.1이 아닌 정상 범주라면 정상 추가한다.
         // = true이면 글자 처리 후 2-1로 이동, false면 4.3으로 이동.
         startStep12() {
-
             const c = this._messTexts[this._index];
             const idx = this.isFirst(c);
 
@@ -310,18 +381,20 @@ RS.Keyboard = RS.Keyboard || {};
                 this._index++;
                 this._currentStep = HangulIME.STEP21;
                 return true;
-            } else { // 초성이 아니라면, 다른 글자이므로 그냥 추가한다.
+            } else {
+                // 초성이 아니라면, 다른 글자이므로 그냥 추가한다.
 
-                if (this.isMiddle(c) >= 0) { // 중성이면 바로 중성 단계로
+                if (this.isMiddle(c) >= 0) {
+                    // 중성이면 바로 중성 단계로
                     this._currentStep = HangulIME.STEP21;
                     return true;
-                } else { // 중성이 아니면 영어나 특수 문자, 공백이므로 그냥 추가한다.
+                } else {
+                    // 중성이 아니면 영어나 특수 문자, 공백이므로 그냥 추가한다.
                     this._composing = false;
                     this._currentStep = HangulIME.STEP43;
                     return false;
                 }
             }
-
         }
 
         // 2.1. 중성이 겹모음이 될 가능성이 있나? ㅗㅜㅡ인가?
@@ -333,10 +406,13 @@ RS.Keyboard = RS.Keyboard || {};
             let ret = false;
 
             // 겹홀소리 중 조합 가능하다면 처리 후 종성 단계로
-            if (ret = this.processDoubleVowel(currentChar, nextChar, lastChar)) {
+            if (
+                (ret = this.processDoubleVowel(currentChar, nextChar, lastChar))
+            ) {
                 this._currentStep = HangulIME.STEP31;
                 return true;
-            } else { // 홀소리, 조합되지 않는 겹홀소리라면 중성 처리로
+            } else {
+                // 홀소리, 조합되지 않는 겹홀소리라면 중성 처리로
                 this._currentStep = HangulIME.STEP22;
                 return false;
             }
@@ -352,15 +428,14 @@ RS.Keyboard = RS.Keyboard || {};
 
             // 중성이 맞다면 종성 단계로 진입한다.
             if (idx >= 0) {
-
                 // 중성을 설정한다.
                 this.setMiddle(idx);
                 // 다음 단계로
                 this._currentStep = HangulIME.STEP31;
                 this._index++;
                 return true;
-
-            } else { // 중성이 아니라면, 다른 글자이므로 그냥 추가한다.
+            } else {
+                // 중성이 아니라면, 다른 글자이므로 그냥 추가한다.
                 this._index--; // 중성이 없기 때문에 인덱스를 줄여 현재 인덱스로 설정한다.
                 // this._composing = false;
                 this._currentStep = HangulIME.STEP43;
@@ -382,12 +457,22 @@ RS.Keyboard = RS.Keyboard || {};
             }
 
             // 종성이 겹받침이 될 수 있나? 가능하다면 겹받침 처리
-            if (ret = this.processDoubleFinalConsonant(currentChar, nextChar, lastChar)) {
+            if (
+                (ret = this.processDoubleFinalConsonant(
+                    currentChar,
+                    nextChar,
+                    lastChar
+                ))
+            ) {
                 this._composing = false;
                 this._currentStep = HangulIME.STEP42;
-            } else { // 조합이 불가능하다면 일반 종성 처리로
+            } else {
+                // 조합이 불가능하다면 일반 종성 처리로
 
-                if (this.isFirst(currentChar) >= 0 && this.isMiddle(nextChar) >= 0) {
+                if (
+                    this.isFirst(currentChar) >= 0 &&
+                    this.isMiddle(nextChar) >= 0
+                ) {
                     this._composing = false;
                     this._currentStep = HangulIME.STEP42;
                     return false;
@@ -412,19 +497,17 @@ RS.Keyboard = RS.Keyboard || {};
 
             // 종성이 맞다면 종성 단계로 진입한다.
             if (idx >= 0) {
-
                 this.setFinal(idx);
                 // 다음 단계로
                 this._composing = false;
                 this._currentStep = HangulIME.STEP42;
                 this._index++;
                 return true;
-
             } else {
                 // 중성이 아니라면, 다른 글자이므로 그냥 추가한다.
                 // 종성이 없으므로 인덱스를 줄여 현재 인덱스로 맞춘다.
                 // 현재까지 조합된 것을 완료한다.
-                // this.makeWansung(c.first, c.middle, c.final);      
+                // this.makeWansung(c.first, c.middle, c.final);
                 this._composing = false;
                 this._currentStep = HangulIME.STEP42;
                 return false;
@@ -453,7 +536,7 @@ RS.Keyboard = RS.Keyboard || {};
 
         /**
          * 초성 인덱스
-         * @param {Number} index 
+         * @param {Number} index
          */
         setFirst(index) {
             this._hanTexts.first = index;
@@ -461,7 +544,7 @@ RS.Keyboard = RS.Keyboard || {};
 
         /**
          * 중성 인덱스
-         * @param {Number} index 
+         * @param {Number} index
          */
         setMiddle(index) {
             this._hanTexts.middle = index;
@@ -469,7 +552,7 @@ RS.Keyboard = RS.Keyboard || {};
 
         /**
          * 종성 인덱스
-         * @param {Number} index 
+         * @param {Number} index
          */
         setFinal(index) {
             this._hanTexts.final = index;
@@ -477,17 +560,17 @@ RS.Keyboard = RS.Keyboard || {};
 
         isFirst(text) {
             const ret = chosung.indexOf(text);
-            return (ret >= 0) ? ret : -1;
+            return ret >= 0 ? ret : -1;
         }
 
         isMiddle(text) {
             const ret = joongsung.indexOf(text);
-            return (ret >= 0) ? ret : -1;
+            return ret >= 0 ? ret : -1;
         }
 
         isFinal(text) {
             const ret = jongsung.indexOf(text);
-            return (ret >= 0) ? ret : -1;
+            return ret >= 0 ? ret : -1;
         }
 
         isComposite() {
@@ -506,7 +589,7 @@ RS.Keyboard = RS.Keyboard || {};
                 return false;
             }
 
-            // 중성인가? 겹모음인가? 
+            // 중성인가? 겹모음인가?
             if (this.isMiddle(currentChar) >= 0) {
                 this.processDoubleVowel(currentChar, nextChar, lastChar);
                 return false;
@@ -518,38 +601,38 @@ RS.Keyboard = RS.Keyboard || {};
             }
 
             if (currentChar === "ㄱ" && nextChar === "ㅅ") {
-                ret = 'ㄳ';
+                ret = "ㄳ";
             } else if (currentChar === "ㄴ" && nextChar === "ㅈ") {
-                ret = 'ㄵ';
+                ret = "ㄵ";
             } else if (currentChar === "ㄴ" && nextChar === "ㅎ") {
-                ret = 'ㄶ';
+                ret = "ㄶ";
             } else if (currentChar === "ㄹ" && nextChar === "ㄱ") {
-                ret = 'ㄺ';
+                ret = "ㄺ";
             } else if (currentChar === "ㄹ" && nextChar === "ㅁ") {
-                ret = 'ㄻ';
+                ret = "ㄻ";
             } else if (currentChar === "ㄹ" && nextChar === "ㅂ") {
-                ret = 'ㄼ';
+                ret = "ㄼ";
             } else if (currentChar === "ㄹ" && nextChar === "ㅅ") {
-                ret = 'ㄽ';
+                ret = "ㄽ";
             } else if (currentChar === "ㄹ" && nextChar === "ㅌ") {
-                ret = 'ㄾ';
+                ret = "ㄾ";
             } else if (currentChar === "ㄹ" && nextChar === "ㅍ") {
-                ret = 'ㄿ';
+                ret = "ㄿ";
             } else if (currentChar === "ㄹ" && nextChar === "ㅎ") {
-                ret = 'ㅀ';
+                ret = "ㅀ";
             } else if (currentChar === "ㅂ" && nextChar === "ㅅ") {
-                ret = 'ㅄ';
+                ret = "ㅄ";
             }
 
             if (ret !== "") {
-
                 // 겹받침이 분리된 부분을 제거한다.
                 this._index++;
                 this._index++;
 
                 // 종성을 설정한다.
                 const idx = this.isFinal(ret);
-                if (idx >= 0) { // 종성인가?
+                if (idx >= 0) {
+                    // 종성인가?
                     if (this._currentStep < HangulIME.STEP21) {
                         this.setFirst(-1);
                         this.setMiddle(-1);
@@ -559,14 +642,14 @@ RS.Keyboard = RS.Keyboard || {};
                 } else {
                     return false;
                 }
-            } else { // 아니면 초성 설정으로
+            } else {
+                // 아니면 초성 설정으로
                 return false;
             }
         }
 
         // 겹모음 처리 후 리턴 위치로
         processDoubleVowel(currentChar, nextChar, lastChar) {
-
             // 겹모음으로 조합이 가능한 ㅗㅜㅡ인가?
             const middles = "ㅗㅜㅡ";
 
@@ -593,7 +676,6 @@ RS.Keyboard = RS.Keyboard || {};
             }
 
             if (ret !== "") {
-
                 this._index++;
                 this._index++;
 
@@ -601,7 +683,6 @@ RS.Keyboard = RS.Keyboard || {};
 
                 // 중성인가?
                 if (idx >= 0) {
-
                     this.setMiddle(idx); // 중성 설정
 
                     // 초성이 없는 상태라면
@@ -615,14 +696,13 @@ RS.Keyboard = RS.Keyboard || {};
         }
 
         makeWansung(first, middle, final) {
-
             // 초성 글자만 있다면
-            if ((first >= 0) && (middle < 0) && final < 0) {
+            if (first >= 0 && middle < 0 && final < 0) {
                 return chosung[first];
             }
 
             // 종성 글자만 있다면
-            if ((first < 0) && (middle < 0) && final > 0) {
+            if (first < 0 && middle < 0 && final > 0) {
                 return jongsung[final];
             }
 
@@ -630,13 +710,11 @@ RS.Keyboard = RS.Keyboard || {};
 
             // 초성, 중성, 종성 OK
             const startCode = 44032;
-            const code = startCode + (first * 588) + (middle * 28) + final;
+            const code = startCode + first * 588 + middle * 28 + final;
             const ret = String.fromCharCode(code);
 
             return ret;
-
         }
-
     }
 
     HangulIME.STEP11 = 1;
@@ -649,15 +727,12 @@ RS.Keyboard = RS.Keyboard || {};
     HangulIME.STEP43 = 8;
 
     RS.Hangul = new HangulIME();
-
 })();
 
 (() => {
-
     "use strict";
 
     class VirtualKeyboardMV {
-
         constructor() {
             this.initMembers();
         }
@@ -674,7 +749,7 @@ RS.Keyboard = RS.Keyboard || {};
             this._composeCursorIndex = 0;
             this._cursor = {
                 curIndex: 0,
-                savedIndex: 0
+                savedIndex: 0,
             };
         }
 
@@ -696,8 +771,7 @@ RS.Keyboard = RS.Keyboard || {};
             }
 
             // 이전 글자가 중성이고, 현재 종성이 비어있다면 띄어쓰기를 두번 한다.
-            if (
-                RS.Hangul.isFinal(text) <= 0) {
+            if (RS.Hangul.isFinal(text) <= 0) {
                 if (!RS.Hangul.isSpecialCharacter(text)) {
                     this._texts.splice(pos, 0, " ");
                 }
@@ -709,7 +783,6 @@ RS.Keyboard = RS.Keyboard || {};
             }
             this._texts = this._texts.join("");
             this._cursorIndex++;
-
         }
 
         processBackspace() {
@@ -719,7 +792,6 @@ RS.Keyboard = RS.Keyboard || {};
             if (pos < 0) pos = 0;
 
             if (RS.Hangul.isComposite()) {
-
                 const text = texts[pos];
                 let deletedCharacter = -2;
 
@@ -732,19 +804,18 @@ RS.Keyboard = RS.Keyboard || {};
 
                 const compositedChars = texts.slice(0, deletedCharacter);
 
-                RS.Hangul.startWithComposite(compositedChars, function (ret) {
-                    this._texts = ret;
-                    this._cursorIndex = ret.length;
-                }.bind(this));
-
+                RS.Hangul.startWithComposite(
+                    compositedChars,
+                    function (ret) {
+                        this._texts = ret;
+                        this._cursorIndex = ret.length;
+                    }.bind(this)
+                );
             } else {
-
                 joinedText.splice(pos, 1);
                 this._texts = joinedText.join("");
                 this._cursorIndex = this._texts.length;
-
             }
-
         }
 
         processHangul(text) {
@@ -759,9 +830,8 @@ RS.Keyboard = RS.Keyboard || {};
             if (!this._composeMode) {
                 this._composeCursorIndex = this._lastTexts.length;
                 this._cursor.savedIndex = this._cursor.curIndex; // 이전 인덱스 저장
-                this._cursor.curIndex = this._cursorIndex; // 갱신            
+                this._cursor.curIndex = this._cursorIndex; // 갱신
             }
-
         }
 
         getTexts() {
@@ -839,7 +909,6 @@ RS.Keyboard = RS.Keyboard || {};
         }
 
         currentCursorPosition(offset) {
-
             const min = 0;
             const max = this._texts.length; // 한 글자 기준.
 
@@ -858,8 +927,8 @@ RS.Keyboard = RS.Keyboard || {};
         }
 
         /**
-         * 
-         * @param {KeyboardEvent} event 
+         *
+         * @param {KeyboardEvent} event
          */
         onKeyDown(event) {
             const keyCode = event.which;
@@ -867,17 +936,18 @@ RS.Keyboard = RS.Keyboard || {};
             const keys = VirtualKeyboardMV.KEYS[lang];
             const hans = Object.keys(keys);
 
-            if (!this.isValid()) { // 키보드 포커스가 없다면 입력 실패        
+            if (!this.isValid()) {
+                // 키보드 포커스가 없다면 입력 실패
                 return event.preventDefault();
             }
 
             this._lastKeyCode = keyCode;
 
-            const c = keys[keyCode]; // 입력된 텍스트       
+            const c = keys[keyCode]; // 입력된 텍스트
             let text = "";
 
             if (hans.indexOf(String(keyCode)) >= 0) {
-                text = (event.shiftKey && c.length > 1) ? c[1] : c[0];
+                text = event.shiftKey && c.length > 1 ? c[1] : c[0];
             }
 
             // 한영 키 처리
@@ -902,7 +972,10 @@ RS.Keyboard = RS.Keyboard || {};
             if (VirtualKeyboardMV.IS_NOT_CHAR === keyCode) {
                 this.processSpacebar();
                 this._prevComposeCursorIndex = this._lastTexts.length;
-                RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
+                RS.Hangul.startWithComposite(
+                    this._texts,
+                    this.processHangul.bind(this)
+                );
                 return;
             }
 
@@ -910,7 +983,10 @@ RS.Keyboard = RS.Keyboard || {};
             if (VirtualKeyboardMV.BACK_SPACE === keyCode) {
                 this.processBackspace();
                 this._prevComposeCursorIndex = this._lastTexts.length;
-                RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
+                RS.Hangul.startWithComposite(
+                    this._texts,
+                    this.processHangul.bind(this)
+                );
                 event.preventDefault();
                 return;
             }
@@ -933,8 +1009,10 @@ RS.Keyboard = RS.Keyboard || {};
             this._prevComposeCursorIndex = this._lastTexts.length;
 
             // 조합 처리
-            RS.Hangul.startWithComposite(this._texts, this.processHangul.bind(this));
-
+            RS.Hangul.startWithComposite(
+                this._texts,
+                this.processHangul.bind(this)
+            );
         }
     }
 
@@ -945,7 +1023,7 @@ RS.Keyboard = RS.Keyboard || {};
     VirtualKeyboardMV.HAN_EN = 21; // 한영키
 
     VirtualKeyboardMV.KEYS = {
-        "ko": {
+        ko: {
             8: [""],
             21: [""],
             32: [" "],
@@ -1010,9 +1088,9 @@ RS.Keyboard = RS.Keyboard || {};
             219: ["[", "{"],
             220: ["\\", "|"],
             221: ["]", "}"],
-            222: ["'", "\""]
+            222: ["'", '"'],
         },
-        "en": {
+        en: {
             8: [""],
             21: [""],
             32: [" "],
@@ -1077,31 +1155,29 @@ RS.Keyboard = RS.Keyboard || {};
             219: ["[", "{"],
             220: ["\\", "|"],
             221: ["]", "}"],
-            222: ["'", "\""]
-        }
+            222: ["'", '"'],
+        },
     };
 
     window.VirtualKeyboardMV = VirtualKeyboardMV;
-
 })();
 
 (function ($) {
-
     "use strict";
 
-    const pluginParams = $plugins.filter(i => {
-        return i.description.contains('<RS_HangulInput>');
+    const pluginParams = $plugins.filter((i) => {
+        return i.description.contains("<RS_HangulInput>");
     });
 
-    const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
-    const parameters = (pluginParams.length > 0) && pluginParams[0].parameters;
+    const pluginName = pluginParams.length > 0 && pluginParams[0].name;
+    const parameters = pluginParams.length > 0 && pluginParams[0].parameters;
 
     $.Params = {};
     $.Params.variableId = parseInt(parameters["variableId"] || 10);
 
     //===============================================================
     // Window_Hangul
-    //===============================================================     
+    //===============================================================
 
     class Window_Hangul extends Window_Base {
         constructor(rect) {
@@ -1110,7 +1186,7 @@ RS.Keyboard = RS.Keyboard || {};
             RS.Keyboard.valid();
 
             // Window_Hangul이 제거될 때, 실행되어야 하는 콜백 함수
-            this.on('removed', () => RS.Keyboard.inValid(), this);
+            this.on("removed", () => RS.Keyboard.inValid(), this);
         }
 
         setOkCallback(callback) {
@@ -1122,7 +1198,8 @@ RS.Keyboard = RS.Keyboard || {};
             if (RS.Keyboard.isValid()) {
                 $gameSystem.disableMenu();
                 this.visible = true;
-                if (RS.Keyboard.lastKeyCode() === 13) { // Enter가 눌렸나?
+                if (RS.Keyboard.lastKeyCode() === 13) {
+                    // Enter가 눌렸나?
                     this._okCallback(RS.Keyboard.getTexts());
                     RS.Keyboard.clear();
                 }
@@ -1138,12 +1215,20 @@ RS.Keyboard = RS.Keyboard || {};
             this.changeTextColor(ColorManager.normalColor());
             const text = RS.Keyboard.getTexts();
             const pos = RS.Keyboard.currentCursorPosition();
-            const textWidth = this.contents.measureTextWidth(text.slice(0, pos));
+            const textWidth = this.contents.measureTextWidth(
+                text.slice(0, pos)
+            );
             const rect = this.baseTextRect();
             this.drawTextEx(text, rect.x, rect.y, rect.width);
             // this.drawText(text, this.itemPadding(), 0, this.contentsWidth());
             if (Graphics.frameCount % 15 === 0) {
-                this.contents.fillRect(textWidth + 1, 0, 2, this.contentsHeight(), 'white');
+                this.contents.fillRect(
+                    textWidth + 1,
+                    0,
+                    2,
+                    this.contentsHeight(),
+                    "white"
+                );
             }
         }
     }
@@ -1153,7 +1238,6 @@ RS.Keyboard = RS.Keyboard || {};
     //=========================================================
 
     class Scene_HangulInput extends Scene_Base {
-
         create() {
             super.create();
 
@@ -1166,12 +1250,20 @@ RS.Keyboard = RS.Keyboard || {};
 
         addKeyboardListener() {
             RS.Keyboard = new VirtualKeyboardMV();
-            document.addEventListener('keydown', RS.Keyboard.onKeyDown.bind(RS.Keyboard), false);
+            document.addEventListener(
+                "keydown",
+                RS.Keyboard.onKeyDown.bind(RS.Keyboard),
+                false
+            );
         }
 
         removeKeyboardListener() {
             RS.Keyboard = null;
-            document.removeEventListener('keydown', RS.Keyboard.onKeyDown.bind(RS.Keyboard), false);
+            document.removeEventListener(
+                "keydown",
+                RS.Keyboard.onKeyDown.bind(RS.Keyboard),
+                false
+            );
         }
 
         terminate() {
@@ -1186,7 +1278,9 @@ RS.Keyboard = RS.Keyboard || {};
         }
 
         hangulWindowRect() {
-            const ww = Math.floor(Graphics.boxWidth) - Math.floor(Graphics.boxWidth / 8);
+            const ww =
+                Math.floor(Graphics.boxWidth) -
+                Math.floor(Graphics.boxWidth / 8);
             const wh = this.calcWindowHeight(1, false);
             const rect = new Rectangle(0, 0, ww, wh);
 
@@ -1195,8 +1289,10 @@ RS.Keyboard = RS.Keyboard || {};
 
         createHangul() {
             this._hangul = new Window_Hangul(this.hangulWindowRect());
-            this._hangul.x = Graphics.boxWidth / 2 - this._hangul.itemWidth() / 2;
-            this._hangul.y = Graphics.boxHeight / 2 - this._hangul.itemHeight() / 2;
+            this._hangul.x =
+                Graphics.boxWidth / 2 - this._hangul.itemWidth() / 2;
+            this._hangul.y =
+                Graphics.boxHeight / 2 - this._hangul.itemHeight() / 2;
             this._hangul.setOkCallback(this.okCallback.bind(this));
             this.addWindow(this._hangul);
         }
@@ -1214,8 +1310,7 @@ RS.Keyboard = RS.Keyboard || {};
      * @example
      * PluginManager.callCommand($gameMap._interpreter, "RS_HangulInput", "HangulInput", {});
      */
-    PluginManager.registerCommand(pluginName, "HangulInput", args => {
+    PluginManager.registerCommand(pluginName, "HangulInput", (args) => {
         SceneManager.push(Scene_HangulInput);
     });
-
 })(RS.HangulInput);

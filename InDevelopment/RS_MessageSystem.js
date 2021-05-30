@@ -55,7 +55,7 @@
  * @type number
  * @desc The starting x position of the text in case of using a large face bitmap.
  * @default 6
- * 
+ *
  * @param Bust Option
  *
  * @param Big Face OX
@@ -69,7 +69,7 @@
  * @type number
  * @desc Sets the large face bitmap's offset y
  * @default 0
- * 
+ *
  * @param face Opacity
  * @parent Bust Option
  * @text Big Face Opacity
@@ -86,7 +86,7 @@
  * @default false
  * @on true
  * @off false
- *  
+ *
  * @param face Direction
  * @parent Bust Option
  * @text Face Position
@@ -138,9 +138,9 @@
  * @default Window
  * @dir img/system/
  * @type file
- * 
+ *
  * @param System Font Settings
- * 
+ *
  * @param systemFont
  * @parent System Font Settings
  * @text System Font
@@ -177,7 +177,7 @@
  * @value RMXP
  * @option Default Style
  * @value default
- * 
+ *
  * @param Default Choice Position
  * @parent Choice Window
  * @type select
@@ -265,7 +265,7 @@
  * @desc Specify the size of the text sound pool.
  * @default 2
  * @min 1
- * 
+ *
  * @param Text Sound Interval
  * @parent Sound Effects
  * @type number
@@ -298,14 +298,14 @@
  * @type file[]
  * @desc preload windowskin files
  * @default
- * 
+ *
  * @param Window Width
  * @text Window Width
  * @type string
  * @desc Specify the window width
  * (Graphics.boxWidth is the same as the screen width)
  * @default Graphics.boxWidth
- * 
+ *
  * @param Gradient Style
  * @text Gradient Style
  * @type select
@@ -321,7 +321,7 @@
  * @value axial-vertical
  * @option radial
  * @value radial
- * 
+ *
  * @param Paragraph Minifier
  * @text Automatic New Line
  * @type boolean
@@ -330,20 +330,20 @@
  * @default false
  * @on true
  * @off false
- * 
+ *
  * @help
  * //! ===================================================================
  * //! Introduction
  * //! ===================================================================
  * This plugin allows you to use text codes in English, Korean, Chinese, Japanese.
- * 
+ *
  * To send me general feedback, simply send an e-mail to biud436(gmail.com)
  * and mention the plugin name via the subject of your message.
- * 
+ *
  * But, This plugin also provide the text codes in English instead of Korean.
- * To use the text codes in English, 
+ * To use the text codes in English,
  * You must set with 'en' in the plugin parameter named 'Language Code'
- * 
+ *
  * English Text Codes :
  *
  *   \COLOR[html_color_name]
@@ -391,36 +391,36 @@
  *   <RIGHT></RIGHT>
  *   \HC[color_name]
  *   \FD[face_position]
- * 
+ *
  * //? ===================================================================
  * //? Opening the name window
  * //? ===================================================================
  * The name window is executed once before all the text codes start.
  * and automatically transforms the name window to fit the width of the text area.
- * 
+ *
  * To open the name window, do as follows.
  * You put the name text between Less-than sign and Greater-than sign.
- * 
+ *
  * \NAME<text>
- * 
+ *
  * You can add a certain command by attaching a colon(:) at the end of the name text.
  * To change the position of the name window, as follows.
- * 
+ *
  * \NAME<text:left>
  * \NAME<text:right>
  * \NAME<text:center>
- * 
+ *
  * To change the opacity of the name window, as follows.
- * 
+ *
  * \NAME<text:opacity0>
  * \NAME<text:defaultOpacity>
- * 
+ *
  * To set the name window above the speech balloon, as follows
- * 
+ *
  * \BALLOON[0]\NAME<eric>\COLOR[red]hello?
- * 
+ *
  * To change the text color in the name window, as follows
- * 
+ *
  * \NAME<\COLOR[red]eric>
  *
  * //? ===================================================================
@@ -428,32 +428,32 @@
  * //? ===================================================================
  * The speech balloon window is executed once before all the text codes start.
  * and transforms the message window to fit with a target sprite and changes the position of it, too.
- * 
+ *
  * To create a new speech balloon window and indicate, do as follows.
- * 
+ *
  * You put the index between square brackets.
  * if the index sets to 0, it'll set to a current event.
  * if the index sets to -1, it'll set to a player.
- * 
+ *
  * \BALLOON[event_id]
  * \BALLOON[0] ** current event
  * \BALLOON[-1] ** player
- * 
+ *
  * In the battle, To indicate the window in above the battler, do as follows.
  * it can obtain the nth battler of the party members and indicate the message window.
- * 
+ *
  * \FRIENDLY_TROOPS[nth]
  * \FRIENDLY_TROOPS[1] is the same as \BALLOON[1] and it can obtain the second FRIENDLY battler.
  * \FRIENDLY_TROOPS[2] is the same as \BALLOON[2]
- * 
+ *
  * This can obtain the nth battler of the enemy troops and indicate the message window.
- * 
+ *
  * \ENEMY_TROOPS[nth]
  * \ENEMY_TROOPS[1] is the same as \BALLOON[-1]
  * \ENEMY_TROOPS[2] is the same as \BALLOON[-2]
- * 
+ *
  * Note that it will appear as the normal message window if the battler is in a dead state or does not exist.
- * 
+ *
  * \BALLOON[1] // party member 1
  * \BALLOON[2] // party member 2
  * \BALLOON[3] // party member 3
@@ -461,195 +461,195 @@
  * \BALLOON[5] // if the party member 5 is not existed, the target sets as party member 4.
  * \BALLOON[-1] // enemy 1
  * \BALLOON[-2] // enemy 2
- * 
+ *
  * In the battle, it must put a negative or positive numbers between square brackets.
  * if you put to 0, it indicates as the normal message window.
- * 
+ *
  * \BALLOON[0] // normal message window
- * 
+ *
  * //? ===================================================================
  * //? Changing the text speed.
  * //? ===================================================================
  * This text code is applied once in the one page so in the other page has been invalid.
- * 
+ *
  * To change the text speed in the message window, as follows.
- * 
+ *
  * \TEXT_SPEED[frame]
- * 
+ *
  * You put the speed value between square brackets.
  * if the value is to 0, The text will be drawn without delay.
  * if the value is to 1, The text will be drawn every 1 frame.
- * 
+ *
  * Note that it will be reset with initial value when starting the next page.
- * 
+ *
  * //? ===================================================================
  * //? Making the bold and the italic text.
  * //? ===================================================================
- * To change the font setting, it is possible to do bold and italic 
+ * To change the font setting, it is possible to do bold and italic
  * settings by using a html tag such as <B></B><I></I>.
- * 
+ *
  * For Example, you could use the following things.
- * 
+ *
  * \BALLOON[0]\NAME<Wanderers>Hello. <B>Eric.</B> <I>Welcome to the game.</I>
- * 
+ *
  * //? ===================================================================
  * //? Indenting the text
  * //? ===================================================================
  * To indent the text in the current page, as follows.
  * you can put the number for indent between square brackets.
- * 
+ *
  * \INDENT[value]
- * 
+ *
  * For instance, you are possible to use as follows.
- * 
+ *
  * \indent[10]Leaves change their color in the fall
- * 
+ *
  * Notice that the indent settings resets with initial value in the next page starts up.
- * 
+ *
  * //? ===================================================================
  * //? A Text Alingment
  * //? ===================================================================
  * You can use a html tag such as <CENTER>, <LEFT>, <RIGHT> in the message window.
  * For instance, You can use as follows.
- * 
+ *
  * <CENTER>The god appeared in the from of a fairy</CENTER>
  * <RIGHT>The robbers hid in the bushes and fell on me from four sides.</RIGHT>
- * 
+ *
  * //? ===================================================================
  * //? Setting the standing CG.
  * //? ===================================================================
  * This plugin allows you to show up the large face image on the message window.
- * 
- * To set the large face image that means the standing CG, 
- * You must place Big_*.png that starts with prefix called Big_ from the img/faces folder 
+ *
+ * To set the large face image that means the standing CG,
+ * You must place Big_*.png that starts with prefix called Big_ from the img/faces folder
  * on your root project folder.
- * 
+ *
  * so it will be going to create using img/faces/Big_*.png
- * 
+ *
  * and then you select the face index that can set the position of it.
- * 
+ *
  * The face image has an index, as follows:
- *    
+ *
  *  0 1 2 3
  *  4 5 6 7
- * 
- * For instance, 
+ *
+ * For instance,
  * if the face index is to 0, the face image will show up on the left of message window.
  * if the face index is to 1 or more, the face image will show up on the right of message window.
- * 
+ *
  * To change a standing CG after the message window starts up, you can use this text code.
- * 
+ *
  * \FACE<face_name,face_index>
- * 
+ *
  * You put the face name and face index between Less-than sign and Greater-than sign, as follows
- * 
+ *
  * \FACE<Big_ScaredActor,0>
- * 
+ *
  * But, this text code should be used for a special purpose.
  * You should preload the face image because loading image is the asynchronous.
  * Otherwise, You will not be going to show anything.
- * 
+ *
  * //? ===================================================================
  * //? Changing the position of face image.
  * //? ===================================================================
  * To change the face image to the right side of message window, as follows.
- * 
- * You can use the text code called \FD[2] or 
+ *
+ * You can use the text code called \FD[2] or
  * use the plugin command called 'Message facePos 2'
- * 
- * To show up the face image again to the left side on the message window, 
+ *
+ * To show up the face image again to the left side on the message window,
  * You can use the text code called \FD[0] or use the plugin command called 'Message facePos 0'
- * 
+ *
  * //? ===================================================================
  * //? Dealing with colors
  * //? ===================================================================
  * You can various color code such as web hex code or built-in color.
  * it can use them everywhere that can use text codes.
- * 
+ *
  * \COLOR[c_red]
  * \COLOR[c_silver]
  * \COLOR[c_normal]
  * \COLOR[#ffffff]
  * \COLOR[aqua]
  * \COLOR[rgb(255, 0, 0)]
- * 
+ *
  * \OUTLINE_COLOR[color_name]
- * 
+ *
  * To change the background color of your text area, do as follows.
  * \HC[color_name]
- * 
+ *
  * To use web colors, you must pass hex format like as #RRGGBB.
  * For example, the lime color is to \COLOR[#00FF00] or \COLOR[lime]
- * 
+ *
  * //! ===================================================================
  * //! Plugin Commands
  * //! ===================================================================
- * 
+ *
  * Changes the text speed. The n is the delay frame of each character:
- *  
+ *
  *  Message textSpeed [n]
- * 
+ *
  *  Message fontSize [n]
- * 
+ *
  * Changes the offset position of the message window. the n is the number value:
- * 
+ *
  *  Message offsetX [n]
  *  Message offsetY [n]
- * 
+ *
  *  Message minFontSize [n]
  *  Message maxFontSize [n]
- * 
+ *
  * Changes the number of lines in which it appears on the message window.
  * Notice that the number of lines must restore as default value after changing lines:
- * 
+ *
  *  Message line [n]
- * 
+ *
  *  Message textStartX [n]
- * 
+ *
  * Changes the offset or the padding of the name window in which it appears above the message window.
  *  Message name x [n]
  *  Message name y [n]
  *  Message name padding [n]
- * 
- * Changes the windowskin in which it appears on the name window. 
+ *
+ * Changes the windowskin in which it appears on the name window.
  * Notice that you need to preload the window skin before starting the name window.
  * if not, it can fail to correctly get the text color table inside the window skin.
  *  Message name windowskin [...]
- * 
+ *
  * Changes the offset of the large face image in which it appears on the screen.
  *  Message faceOX [n]
  *  Message faceOY [n]
- * 
+ *
  * Changes the large face image's z-index in which it appears on the message window.
  * if the z-index is to 0, the face image will show up in front of the message window.
  * if it is to -1, the face image will show up behind the background image of the message window.
- * 
+ *
  *  Message faceZ -1
  *  Message faceZ [n]
- * 
+ *
  * Changes the position of the normal face image in which it appears on the message window.
  * By default, the face image will be located at the left side of the message window.
  * if you use this plugin command, you can change the position of the face image.
  * if the value is to 2, it will be located at the right side of the message window.
  * if the value is t0 0, it will be located at the left side of the message window.
- * 
+ *
  *  Message facePos [n]
- * 
+ *
  * Changes the size of the tab, which adds a space when you are used the text code called '\TAB!'
  *  Message setTabSize [n]
- * 
+ *
  *  Message backgroundOpacity [n]
  *  Message contentsOpacity [n]
- * 
- * Changes the windowskin in which it appears on the message window. 
+ *
+ * Changes the windowskin in which it appears on the message window.
  * Notice that you need to preload the window skin before starting the message window.
  * if not, it can fail to correctly get the text color table inside the window skin.
- * 
+ *
  *  Message windowskin [...]
- * 
- * Changes the word wrap settings. 
+ *
+ * Changes the word wrap settings.
  * if true, it will be going to remove a custom line break in all of lines and it fills the texts finely.
- * 
+ *
  *  Message minifier true
  *  Message minifier false
  *
@@ -678,7 +678,7 @@
  * @type string[]
  * @desc To work this, Note that you can set the system lanuage is to Japanese.
  * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","AS太字!","AE太字!","AS斜体!","AE斜体!","LEFT","CENTER","RIGHT","B","B","I","I","AEND", "HC", "FD"]
- * 
+ *
  */
 /*~struct~TextColor:
  *
@@ -717,26 +717,26 @@
  *
  */
 /*~struct~SystemFont:
- * 
+ *
  * @param settings
  * @text Settings
  * @type struct<SystemFontDescriptor>[]
  * @desc Set the font for each language.
  * @default ["{\"languageCode\":\"ko\",\"fontName\":\"나눔고딕, Dotum, AppleGothic, sans-serif\"}","{\"languageCode\":\"zh\",\"fontName\":\"SimHei, Heiti TC, sans-serif\"}"]
- *  
+ *
  */
 /*~struct~SystemFontDescriptor:
- * 
+ *
  * @param languageCode
  * @text Language Code
  * @desc Please enter the language code.
  * @default en
- * 
+ *
  * @param fontName
  * @text Font Name
  * @desc Specify multiple fonts. (Separated by commas)
  * @default GameFont
- * 
+ *
  */
 /*:ko
  * @target MZ
@@ -1570,7 +1570,7 @@
  * @type string[]
  * @desc 시스템 언어가 '일본어'일 때에만 동작합니다.
  * @default ["色","テキストスピード","輪郭の色","輪郭のサイズ","インデント","太字!","斜体!","名前","グラデーション","パーティーメンバー","アクタ","変数","アイコン","INCREASE!","DECREASE!","通貨単位表示","フキダシ","整列","数字","テキストのサイズ","TAB!","CR!","効果音","ピクチャの表示","ピクチャの消去","アイテム","武器","防具","職業","敵キャラ","ステート","スキル","顔","FRIENDLY_TROOPS","ENEMY_TROOPS","[.]","[|]","[!]","[<]","[>]","[\\^]","AS太字!","AE太字!","AS斜体!","AE斜体!","LEFT","CENTER","RIGHT","B","B","I","I","AEND","HC","FD"]
- * 
+ *
  */
 /*~struct~TextColor:ko
  *
@@ -1614,26 +1614,26 @@
  *
  */
 /*~struct~SystemFont:ko
- * 
+ *
  * @param settings
  * @text 시스템 폰트 설정
  * @type struct<SystemFontDescriptor>[]
  * @desc 언어 별 폰트를 설정합니다.
  * @default ["{\"languageCode\":\"ko\",\"fontName\":\"나눔고딕, Dotum, AppleGothic, sans-serif\"}","{\"languageCode\":\"zh\",\"fontName\":\"SimHei, Heiti TC, sans-serif\"}"]
- *  
+ *
  */
 /*~struct~SystemFontDescriptor:ko
- * 
+ *
  * @param languageCode
  * @text 언어 코드
  * @desc 언어 코드를 기입해주세요. 한국어는 ko입니다.
  * @default ko
- * 
+ *
  * @param fontName
  * @text 폰트명
  * @desc 여러 개의 폰트를 쓸 수 있습니다. (콤마로 구분합니다)
  * @default 나눔고딕, Dotum, AppleGothic, sans-serif
- * 
+ *
  */
 
 var Imported = Imported || {};
@@ -1642,16 +1642,15 @@ Imported.RS_MessageSystem = true;
 var RS = RS || {};
 RS.MessageSystem = RS.MessageSystem || {};
 
-($ => {
-
+(($) => {
     "use strict";
 
-    const pluginParams = $plugins.filter(i => {
-        return i.description.contains('<RS_MessageSystem>');
+    const pluginParams = $plugins.filter((i) => {
+        return i.description.contains("<RS_MessageSystem>");
     });
 
-    const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
-    const parameters = (pluginParams.length > 0) && pluginParams[0].parameters;
+    const pluginName = pluginParams.length > 0 && pluginParams[0].name;
+    const parameters = pluginParams.length > 0 && pluginParams[0].parameters;
 
     RS.MessageSystem.jsonParse = function (str) {
         const retData = JSON.parse(str, function (k, v) {
@@ -1698,38 +1697,111 @@ RS.MessageSystem = RS.MessageSystem || {};
         FONT_SIZE: 28,
         STD_PADDING: 18,
         isValidShakingChoice: false,
-        fontSize: Number(RS.MessageSystem.popParameter('Font Size', "글꼴 크기") || 28),
-        textSpeed: Number(RS.MessageSystem.popParameter('Text Speed', "기본 텍스트 출력 속도") || 0),
-        minFontSize: Number(RS.MessageSystem.popParameter('Text Min Size', "폰트 최소 크기") || 24),
-        maxFontSize: Number(RS.MessageSystem.popParameter('Text Max Size', "폰트 최대 크기") || 96),
-        textStartX: Number(RS.MessageSystem.popParameter('Text Start X', "텍스트 시작 X")),
-        numVisibleRows: Number(RS.MessageSystem.popParameter('numVisibleRows', "라인 갯수") || 4),
-        gradientColor1: String(RS.MessageSystem.popParameter('gradientColor1', "그레디언트 시작 색상") || '#FFFFFF'),
-        gradientColor2: String(RS.MessageSystem.popParameter('gradientColor2', "그레디언트 중간 색상") || '#F29661'),
-        gradientColor3: String(RS.MessageSystem.popParameter('gradientColor3', "그레디언트 끝 색상") || '#CC3D3D'),
-        nameWindowX: Number(RS.MessageSystem.popParameter('Name Window X', "이름 윈도우 X") || 0),
-        nameWindowY: Number(RS.MessageSystem.popParameter('Name Window Y', "이름 윈도우 Y") || 0),
-        nameWindowStdPadding: Number(RS.MessageSystem.popParameter('Name Window Inner Padding', "이름 윈도우 안쪽 여백") || 18),
-        namePositionTypeAtX: RS.MessageSystem.popParameter("Name Window Position", "이름 윈도우 위치") || "left",
-        faceOX: Number(RS.MessageSystem.popParameter('Big Face OX', "큰 페이스칩 OX") || 0),
-        faceOY: Number(RS.MessageSystem.popParameter('Big Face OY', "큰 페이스칩 OY") || 0),
-        faceSide: Boolean(RS.MessageSystem.popParameter('Show Big Face Back', "대화창 뒤에 얼굴 표시") === 'true' || false),
-        WIDTH: (this.FONT_SIZE * 6) + this.STD_PADDING,
-        HEIGHT: this.FONT_SIZE + (this.STD_PADDING / 2),
-        TabSize: Number(RS.MessageSystem.popParameter('Tab Size', "탭 크기")),
-        backOpacity: Number(RS.MessageSystem.popParameter('back Opacity', "배경 그림의 투명도")),
-        translucentOpacity: Number(RS.MessageSystem.popParameter('translucent Opacity', "반투명도")),
-        defaultOpacity: Number(RS.MessageSystem.popParameter('default Opacity', "기본 투명도")),
-        contentsOpacity: Number(RS.MessageSystem.popParameter('contents Opacity', "내용의 투명도")),
-        defaultOutlineWidth: Number(RS.MessageSystem.popParameter('default outline width', "테두리 크기")),
-        defaultOutlineColor: RS.MessageSystem.popParameter('default outline Color', "테두리 색상") || 'white',
+        fontSize: Number(
+            RS.MessageSystem.popParameter("Font Size", "글꼴 크기") || 28
+        ),
+        textSpeed: Number(
+            RS.MessageSystem.popParameter(
+                "Text Speed",
+                "기본 텍스트 출력 속도"
+            ) || 0
+        ),
+        minFontSize: Number(
+            RS.MessageSystem.popParameter("Text Min Size", "폰트 최소 크기") ||
+                24
+        ),
+        maxFontSize: Number(
+            RS.MessageSystem.popParameter("Text Max Size", "폰트 최대 크기") ||
+                96
+        ),
+        textStartX: Number(
+            RS.MessageSystem.popParameter("Text Start X", "텍스트 시작 X")
+        ),
+        numVisibleRows: Number(
+            RS.MessageSystem.popParameter("numVisibleRows", "라인 갯수") || 4
+        ),
+        gradientColor1: String(
+            RS.MessageSystem.popParameter(
+                "gradientColor1",
+                "그레디언트 시작 색상"
+            ) || "#FFFFFF"
+        ),
+        gradientColor2: String(
+            RS.MessageSystem.popParameter(
+                "gradientColor2",
+                "그레디언트 중간 색상"
+            ) || "#F29661"
+        ),
+        gradientColor3: String(
+            RS.MessageSystem.popParameter(
+                "gradientColor3",
+                "그레디언트 끝 색상"
+            ) || "#CC3D3D"
+        ),
+        nameWindowX: Number(
+            RS.MessageSystem.popParameter("Name Window X", "이름 윈도우 X") || 0
+        ),
+        nameWindowY: Number(
+            RS.MessageSystem.popParameter("Name Window Y", "이름 윈도우 Y") || 0
+        ),
+        nameWindowStdPadding: Number(
+            RS.MessageSystem.popParameter(
+                "Name Window Inner Padding",
+                "이름 윈도우 안쪽 여백"
+            ) || 18
+        ),
+        namePositionTypeAtX:
+            RS.MessageSystem.popParameter(
+                "Name Window Position",
+                "이름 윈도우 위치"
+            ) || "left",
+        faceOX: Number(
+            RS.MessageSystem.popParameter("Big Face OX", "큰 페이스칩 OX") || 0
+        ),
+        faceOY: Number(
+            RS.MessageSystem.popParameter("Big Face OY", "큰 페이스칩 OY") || 0
+        ),
+        faceSide: Boolean(
+            RS.MessageSystem.popParameter(
+                "Show Big Face Back",
+                "대화창 뒤에 얼굴 표시"
+            ) === "true" || false
+        ),
+        WIDTH: this.FONT_SIZE * 6 + this.STD_PADDING,
+        HEIGHT: this.FONT_SIZE + this.STD_PADDING / 2,
+        TabSize: Number(RS.MessageSystem.popParameter("Tab Size", "탭 크기")),
+        backOpacity: Number(
+            RS.MessageSystem.popParameter("back Opacity", "배경 그림의 투명도")
+        ),
+        translucentOpacity: Number(
+            RS.MessageSystem.popParameter("translucent Opacity", "반투명도")
+        ),
+        defaultOpacity: Number(
+            RS.MessageSystem.popParameter("default Opacity", "기본 투명도")
+        ),
+        contentsOpacity: Number(
+            RS.MessageSystem.popParameter("contents Opacity", "내용의 투명도")
+        ),
+        defaultOutlineWidth: Number(
+            RS.MessageSystem.popParameter(
+                "default outline width",
+                "테두리 크기"
+            )
+        ),
+        defaultOutlineColor:
+            RS.MessageSystem.popParameter(
+                "default outline Color",
+                "테두리 색상"
+            ) || "white",
         fonts: {
-            'default': "rmmz-mainfont"
+            default: "rmmz-mainfont",
         },
     };
 
     (() => {
-        const systemFonts = RS.MessageSystem.jsonParse(parameters["systemFont"]);
+        const systemFonts = RS.MessageSystem.jsonParse(
+            parameters["systemFont"]
+        );
         if (!RS.MessageSystem.Params.fonts) return;
 
         systemFonts.settings.forEach((i) => {
@@ -1737,7 +1809,6 @@ RS.MessageSystem = RS.MessageSystem || {};
             params[i.languageCode] = i.fontName;
             Object.assign(RS.MessageSystem.Params.fonts, params);
         });
-
     })();
 
     Object.assign(RS.MessageSystem.Params, {
@@ -1745,23 +1816,85 @@ RS.MessageSystem = RS.MessageSystem || {};
         lineHeight: 36,
         windowOffset: new Point(0, 0),
         fontSmoothingEnabled: true,
-        customFont: Boolean(RS.MessageSystem.popParameter('Using Custom Font', "사용자 지정 폰트 사용 여부") === 'true'),
-        customFontName: String(RS.MessageSystem.popParameter('Custom Font Name', "사용자 지정 폰트명") || 'GameFont'),
-        customFontSrc: String(RS.MessageSystem.popParameter('Custom Font Src', "사용자 지정 폰트 경로") || 'fonts/mplus-1m-regular.ttf'),
-        windowskin: RS.MessageSystem.popParameter('Default Windowskin', "기본 윈도우스킨") || 'Window',
-        windowskinForNameWindow: RS.MessageSystem.popParameter('Name Windowskin', "이름 윈도우스킨") || 'Window',
-        choiceWindowStyle: String(RS.MessageSystem.popParameter('Choice Style', "선택지 스타일") || 'default'),
+        customFont: Boolean(
+            RS.MessageSystem.popParameter(
+                "Using Custom Font",
+                "사용자 지정 폰트 사용 여부"
+            ) === "true"
+        ),
+        customFontName: String(
+            RS.MessageSystem.popParameter(
+                "Custom Font Name",
+                "사용자 지정 폰트명"
+            ) || "GameFont"
+        ),
+        customFontSrc: String(
+            RS.MessageSystem.popParameter(
+                "Custom Font Src",
+                "사용자 지정 폰트 경로"
+            ) || "fonts/mplus-1m-regular.ttf"
+        ),
+        windowskin:
+            RS.MessageSystem.popParameter(
+                "Default Windowskin",
+                "기본 윈도우스킨"
+            ) || "Window",
+        windowskinForNameWindow:
+            RS.MessageSystem.popParameter(
+                "Name Windowskin",
+                "이름 윈도우스킨"
+            ) || "Window",
+        choiceWindowStyle: String(
+            RS.MessageSystem.popParameter("Choice Style", "선택지 스타일") ||
+                "default"
+        ),
         defaultChoicePostion: parameters["Default Choice Position"] || "right",
-        exTextColors: RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Color", "텍스트 색상")),
-        isPlayTextSound: Boolean(RS.MessageSystem.popParameter('Text Sound ON/OFF', "텍스트 효과음 재생 여부") === "true"),
-        pathTextSound: String(RS.MessageSystem.popParameter('Text Sound', "텍스트 효과음") || "Cursor1.ogg"),
-        textSoundEval1: RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Execution Condition", "텍스트 효과음 실행 조건") || "Math.randomInt(100) < 45"),
-        textSoundEval2: RS.MessageSystem.jsonParse(RS.MessageSystem.popParameter("Text Sound Volume", "텍스트 효과음 볼륨") || "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)"),
-        textSoundInterval: parseInt(RS.MessageSystem.popParameter("Text Sound Interval", "텍스트 사운드 재생 간격")),
-        textSoundPoolSize: parseInt(RS.MessageSystem.popParameter('텍스트 사운드 풀 크기', "Text Sound Pool Size") || 6),
-        langCode: RS.MessageSystem.popParameter('언어 코드', "Language Code") || "ko",
-        preloadWindowskins: JSON.parse(parameters["preload windowskin"] || "[]"),
-        isParagraphMinifier: Boolean(parameters["Paragraph Minifier"] === "true"),
+        exTextColors: RS.MessageSystem.jsonParse(
+            RS.MessageSystem.popParameter("Text Color", "텍스트 색상")
+        ),
+        isPlayTextSound: Boolean(
+            RS.MessageSystem.popParameter(
+                "Text Sound ON/OFF",
+                "텍스트 효과음 재생 여부"
+            ) === "true"
+        ),
+        pathTextSound: String(
+            RS.MessageSystem.popParameter("Text Sound", "텍스트 효과음") ||
+                "Cursor1.ogg"
+        ),
+        textSoundEval1: RS.MessageSystem.jsonParse(
+            RS.MessageSystem.popParameter(
+                "Text Sound Execution Condition",
+                "텍스트 효과음 실행 조건"
+            ) || "Math.randomInt(100) < 45"
+        ),
+        textSoundEval2: RS.MessageSystem.jsonParse(
+            RS.MessageSystem.popParameter(
+                "Text Sound Volume",
+                "텍스트 효과음 볼륨"
+            ) ||
+                "(0.4 + (RS.MessageSystem.randomNormal(0.8)[0])).clamp(0.0, 0.8)"
+        ),
+        textSoundInterval: parseInt(
+            RS.MessageSystem.popParameter(
+                "Text Sound Interval",
+                "텍스트 사운드 재생 간격"
+            )
+        ),
+        textSoundPoolSize: parseInt(
+            RS.MessageSystem.popParameter(
+                "텍스트 사운드 풀 크기",
+                "Text Sound Pool Size"
+            ) || 6
+        ),
+        langCode:
+            RS.MessageSystem.popParameter("언어 코드", "Language Code") || "ko",
+        preloadWindowskins: JSON.parse(
+            parameters["preload windowskin"] || "[]"
+        ),
+        isParagraphMinifier: Boolean(
+            parameters["Paragraph Minifier"] === "true"
+        ),
         gradientStyle: parameters["Gradient Style"],
         faceOpacity: parseInt(parameters["face Opacity"] || 21),
         faceDirection: parseInt(parameters["face Direction"] || 0),
@@ -1774,21 +1907,30 @@ RS.MessageSystem = RS.MessageSystem || {};
     var alias_Game_Temp_initialize = Game_Temp.prototype.initialize;
     Game_Temp.prototype.initialize = function () {
         alias_Game_Temp_initialize.call(this);
-        RS.MessageSystem.Params.windowWidth = eval(parameters["Window Width"]) || Graphics.boxWidth;
+        RS.MessageSystem.Params.windowWidth =
+            eval(parameters["Window Width"]) || Graphics.boxWidth;
     };
 
     //============================================================================
     // Multiple Language supports
     //============================================================================
 
-    RS.MessageSystem.Reg.KoreanEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-ퟻ]+[!]*/i;
-    RS.MessageSystem.Reg.ChineseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z一-鼣]+[!]*/i;
-    RS.MessageSystem.Reg.EnglishEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z]+[!]*/i;
-    RS.MessageSystem.Reg.JapaneseEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z\u3040-\u309F\u30A0-\u30FF\u3300-\u33FF\u4E00-\u9FFF\uFF00-\uFFEF]+[!]*/i;
-    RS.MessageSystem.Reg.defaultEscapeCode = /^[\$\.\|\^!><\{\}\\]|^[A-Z가-ퟻ]+[!]*/i;
+    RS.MessageSystem.Reg.KoreanEscapeCode =
+        /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-ퟻ]+[!]*/i;
+    RS.MessageSystem.Reg.ChineseEscapeCode =
+        /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z一-鼣]+[!]*/i;
+    RS.MessageSystem.Reg.EnglishEscapeCode =
+        /^[\$\.\|\^!><\{\}\\]|^[A-Z]+[!]*/i;
+    RS.MessageSystem.Reg.JapaneseEscapeCode =
+        /^[\$\.\|\^!><\{\}\\]|^[A-Z\u3040-\u309F\u30A0-\u30FF\u3300-\u33FF\u4E00-\u9FFF\uFF00-\uFFEF]+[!]*/i;
+    RS.MessageSystem.Reg.defaultEscapeCode =
+        /^[\$\.\|\^!><\{\}\\]|^[A-Z가-ퟻ]+[!]*/i;
 
     RS.MessageSystem.TextCodes = (function () {
-        const rowData = RS.MessageSystem.popParameter('Text Code', "텍스트 코드");
+        const rowData = RS.MessageSystem.popParameter(
+            "Text Code",
+            "텍스트 코드"
+        );
         const data = JSON.parse(rowData);
         const retData = {};
 
@@ -1798,7 +1940,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         retData.Japanese = [undefined].concat(JSON.parse(data.Japanese));
 
         return retData;
-    }());
+    })();
 
     RS.MessageSystem.TextCodes.Main = [];
 
@@ -1862,24 +2004,24 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     /**
      * 주어진 ID 값으로 텍스트 코드를 현지화하여 반환합니다.
-     * @param {Number} idx 
+     * @param {Number} idx
      */
     RS.MessageSystem.getTextCode = function (idx) {
         const langCode = RS.MessageSystem.Params.langCode;
 
         if (langCode.match(/ko/)) {
-            return RS.MessageSystem.TextCodes['Korean'][idx];
+            return RS.MessageSystem.TextCodes["Korean"][idx];
         }
         if (langCode.match(/zh/)) {
-            return RS.MessageSystem.TextCodes['Chinese'][idx];
+            return RS.MessageSystem.TextCodes["Chinese"][idx];
         }
         if (langCode.match(/en/)) {
-            return RS.MessageSystem.TextCodes['English'][idx];
+            return RS.MessageSystem.TextCodes["English"][idx];
         }
         if (langCode.match(/ja/)) {
-            return RS.MessageSystem.TextCodes['Japanese'][idx];
+            return RS.MessageSystem.TextCodes["Japanese"][idx];
         }
-        return RS.MessageSystem.TextCodes['English'][idx];
+        return RS.MessageSystem.TextCodes["English"][idx];
     };
 
     /**
@@ -1891,17 +2033,16 @@ RS.MessageSystem = RS.MessageSystem || {};
     RS.MessageSystem.getEventComments = function (eventId, index) {
         var data = {
             note: "",
-            meta: {}
+            meta: {},
         };
         try {
-
             // 리스트를 가져옵니다.
             var list = $gameMap.event(eventId).list();
 
             // 바로 이전 인덱스에 노트 태그가 있었는 지 확인합니다.
             if (index < 0) index = 0;
 
-            // 부모 이벤트 없이 호출되는 공통 이벤트가 있는 지 확인합니다. 
+            // 부모 이벤트 없이 호출되는 공통 이벤트가 있는 지 확인합니다.
             if (eventId <= 0) {
                 var commonEvent = $gameTemp.reservedCommonEvent();
                 if (commonEvent) {
@@ -1937,7 +2078,6 @@ RS.MessageSystem = RS.MessageSystem || {};
                 if (param.code === 108) {
                     data.note += param.parameters[0] + "\r\n";
                 }
-
             }
 
             // 노트 태그를 추출합니다 (DataManager.extractMetadata의 변형입니다)
@@ -1946,7 +2086,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             for (;;) {
                 var match = re.exec(data.note);
                 if (match) {
-                    if (match[2] === ':') {
+                    if (match[2] === ":") {
                         data.meta[match[1].trim()] = match[3];
                     } else {
                         data.meta[match[1].trim()] = true;
@@ -1959,14 +2099,14 @@ RS.MessageSystem = RS.MessageSystem || {};
             // 리스트를 읽지 못할 경우 try-catch 문에 의해 예외 처리가 됩니다.
             return {
                 note: "",
-                meta: {}
+                meta: {},
             };
         }
         return data.meta;
     };
 
     (function () {
-        'use strict';
+        "use strict";
         var regData = ["Korean", "English", "Chinese", "Japanese"];
         regData.forEach(function (e, i, a) {
             var tcGroup = RS.MessageSystem.TextCodes[e];
@@ -1980,106 +2120,273 @@ RS.MessageSystem = RS.MessageSystem || {};
                         continue;
                     }
                     var text = str.charCodeAt().toString(16);
-                    data.push('\\u' + "{" + text + "}");
+                    data.push("\\u" + "{" + text + "}");
                 }
                 ret = data.join("");
                 return ret;
             }, this);
             RS.MessageSystem.Reg[e][0] = undefined;
-            RS.MessageSystem.Reg[e][1] = new RegExp(`(?:\x1bC|\x1b${tcGroup[1]})\\[(.+?)\\]`, 'gi'); // 색
-            RS.MessageSystem.Reg[e][2] = new RegExp(`\x1b${tcGroup[2]}\\[(\\d+)\\]`, 'gi'); // 속도
-            RS.MessageSystem.Reg[e][3] = new RegExp(`\x1b${tcGroup[3]}\\[(.+?)\\]`, 'gi'); // 테두리색
-            RS.MessageSystem.Reg[e][4] = new RegExp(`\x1b${tcGroup[4]}\\[(\\d+)\\]`, 'gi'); // 테두리크기
-            RS.MessageSystem.Reg[e][5] = new RegExp(`\x1b${tcGroup[5]}\\[(\\d+)\\]`, 'gi'); // 들여쓰기
-            RS.MessageSystem.Reg[e][6] = new RegExp(`\x1b${tcGroup[6]}`, 'gi'); // 굵게!
-            RS.MessageSystem.Reg[e][7] = new RegExp(`\x1b${tcGroup[7]}`, 'gi'); // 이탤릭!
-            RS.MessageSystem.Reg[e][8] = new RegExp(`\x1b${tcGroup[8]}\\<(.+?)\\>`, 'gi'); // 이름
-            RS.MessageSystem.Reg[e][9] = new RegExp(`\x1b${tcGroup[9]}\\<(.+)\\>`, 'gi'); // 그레디언트
-            RS.MessageSystem.Reg[e][10] = new RegExp(`(?:\x1bP|\x1b${tcGroup[10]})\\[(\\d+)\\]`, 'gi'); // 파티원
-            RS.MessageSystem.Reg[e][11] = new RegExp(`(?:\x1bN|\x1b${tcGroup[11]})\\[(\\d+)\\]`, 'gi'); // 주인공
-            RS.MessageSystem.Reg[e][12] = new RegExp(`(?:\x1bV|\x1b${tcGroup[12]})\\[(\\d+)\\]`, 'gi'); // 변수
-            RS.MessageSystem.Reg[e][13] = new RegExp(`(?:\x1bI|\x1b${tcGroup[13]})\\[(\\d+)\\]`, 'g'); // 아이콘
-            RS.MessageSystem.Reg[e][14] = new RegExp(`(?:\x1b{|\x1b${tcGroup[14]})`, 'gi'); // 확대!
-            RS.MessageSystem.Reg[e][15] = new RegExp(`(?:\x1b}|\x1b${tcGroup[15]})`, 'gi'); // 축소!
-            RS.MessageSystem.Reg[e][16] = new RegExp(`(?:\x1bG|\x1b${tcGroup[16]})`, 'gi'); // 골드
-            RS.MessageSystem.Reg[e][17] = new RegExp(`\x1b${tcGroup[17]}\\[(.*?)\\]`, 'gi'); // 말풍선
-            RS.MessageSystem.Reg[e][18] = new RegExp(`\x1b${tcGroup[18]}\\[(\\d+)\\]`, 'gi'); // 정렬자
-            RS.MessageSystem.Reg[e][19] = new RegExp(`\x1b${tcGroup[19]}\\[(\\d+)\\]`, 'gi'); // 숫자
-            RS.MessageSystem.Reg[e][20] = new RegExp(`\x1b${tcGroup[20]}\\[(\\d+)\\]`, 'gi'); // 크기
-            RS.MessageSystem.Reg[e][21] = new RegExp(`\x1b${tcGroup[21]}`, 'gi'); // r
-            RS.MessageSystem.Reg[e][22] = new RegExp(`\x1b${tcGroup[22]}`, 'gi'); // t
-            RS.MessageSystem.Reg[e][23] = new RegExp(`\x1b${tcGroup[23]}\\<(.+?)\\>`, 'gi'); // 효과음
-            RS.MessageSystem.Reg[e][24] = new RegExp(`\x1b${tcGroup[24]}\\<(.+?)\\>`, 'gi'); // 그림 표시
-            RS.MessageSystem.Reg[e][25] = new RegExp(`\x1b${tcGroup[25]}\\[(\\d+)\\]`, 'gi'); // 그림 제거
-            RS.MessageSystem.Reg[e][26] = new RegExp(`(?:\x1b${tcGroup[26]})\\[(\\d+)\\]`, 'g'); // 아이템
-            RS.MessageSystem.Reg[e][27] = new RegExp(`(?:\x1b${tcGroup[27]})\\[(\\d+)\\]`, 'g'); // 무기구
-            RS.MessageSystem.Reg[e][28] = new RegExp(`(?:\x1b${tcGroup[28]})\\[(\\d+)\\]`, 'g'); // 방어구
-            RS.MessageSystem.Reg[e][29] = new RegExp(`(?:\x1b${tcGroup[29]})\\[(\\d+)\\]`, 'g'); // 직업
-            RS.MessageSystem.Reg[e][30] = new RegExp(`(?:\x1b${tcGroup[30]})\\[(\\d+)\\]`, 'g'); // 적군
-            RS.MessageSystem.Reg[e][31] = new RegExp(`(?:\x1b${tcGroup[31]})\\[(\\d+)\\]`, 'g'); // 상태
-            RS.MessageSystem.Reg[e][32] = new RegExp(`(?:\x1b${tcGroup[32]})\\[(\\d+)\\]`, 'g'); // 스킬
-            RS.MessageSystem.Reg[e][33] = new RegExp(`\x1b${tcGroup[33]}\\<(.*)\\>`, 'gi'); // 얼굴
-            RS.MessageSystem.Reg[e][34] = new RegExp(`(?:\x1b${tcGroup[34]})\\[(\\d+)\\]`, 'gi'); // 아군
-            RS.MessageSystem.Reg[e][35] = new RegExp(`(?:\x1b${tcGroup[35]})\\[(\\d+)\\]`, 'gi'); // 적군
+            RS.MessageSystem.Reg[e][1] = new RegExp(
+                `(?:\x1bC|\x1b${tcGroup[1]})\\[(.+?)\\]`,
+                "gi"
+            ); // 색
+            RS.MessageSystem.Reg[e][2] = new RegExp(
+                `\x1b${tcGroup[2]}\\[(\\d+)\\]`,
+                "gi"
+            ); // 속도
+            RS.MessageSystem.Reg[e][3] = new RegExp(
+                `\x1b${tcGroup[3]}\\[(.+?)\\]`,
+                "gi"
+            ); // 테두리색
+            RS.MessageSystem.Reg[e][4] = new RegExp(
+                `\x1b${tcGroup[4]}\\[(\\d+)\\]`,
+                "gi"
+            ); // 테두리크기
+            RS.MessageSystem.Reg[e][5] = new RegExp(
+                `\x1b${tcGroup[5]}\\[(\\d+)\\]`,
+                "gi"
+            ); // 들여쓰기
+            RS.MessageSystem.Reg[e][6] = new RegExp(`\x1b${tcGroup[6]}`, "gi"); // 굵게!
+            RS.MessageSystem.Reg[e][7] = new RegExp(`\x1b${tcGroup[7]}`, "gi"); // 이탤릭!
+            RS.MessageSystem.Reg[e][8] = new RegExp(
+                `\x1b${tcGroup[8]}\\<(.+?)\\>`,
+                "gi"
+            ); // 이름
+            RS.MessageSystem.Reg[e][9] = new RegExp(
+                `\x1b${tcGroup[9]}\\<(.+)\\>`,
+                "gi"
+            ); // 그레디언트
+            RS.MessageSystem.Reg[e][10] = new RegExp(
+                `(?:\x1bP|\x1b${tcGroup[10]})\\[(\\d+)\\]`,
+                "gi"
+            ); // 파티원
+            RS.MessageSystem.Reg[e][11] = new RegExp(
+                `(?:\x1bN|\x1b${tcGroup[11]})\\[(\\d+)\\]`,
+                "gi"
+            ); // 주인공
+            RS.MessageSystem.Reg[e][12] = new RegExp(
+                `(?:\x1bV|\x1b${tcGroup[12]})\\[(\\d+)\\]`,
+                "gi"
+            ); // 변수
+            RS.MessageSystem.Reg[e][13] = new RegExp(
+                `(?:\x1bI|\x1b${tcGroup[13]})\\[(\\d+)\\]`,
+                "g"
+            ); // 아이콘
+            RS.MessageSystem.Reg[e][14] = new RegExp(
+                `(?:\x1b{|\x1b${tcGroup[14]})`,
+                "gi"
+            ); // 확대!
+            RS.MessageSystem.Reg[e][15] = new RegExp(
+                `(?:\x1b}|\x1b${tcGroup[15]})`,
+                "gi"
+            ); // 축소!
+            RS.MessageSystem.Reg[e][16] = new RegExp(
+                `(?:\x1bG|\x1b${tcGroup[16]})`,
+                "gi"
+            ); // 골드
+            RS.MessageSystem.Reg[e][17] = new RegExp(
+                `\x1b${tcGroup[17]}\\[(.*?)\\]`,
+                "gi"
+            ); // 말풍선
+            RS.MessageSystem.Reg[e][18] = new RegExp(
+                `\x1b${tcGroup[18]}\\[(\\d+)\\]`,
+                "gi"
+            ); // 정렬자
+            RS.MessageSystem.Reg[e][19] = new RegExp(
+                `\x1b${tcGroup[19]}\\[(\\d+)\\]`,
+                "gi"
+            ); // 숫자
+            RS.MessageSystem.Reg[e][20] = new RegExp(
+                `\x1b${tcGroup[20]}\\[(\\d+)\\]`,
+                "gi"
+            ); // 크기
+            RS.MessageSystem.Reg[e][21] = new RegExp(
+                `\x1b${tcGroup[21]}`,
+                "gi"
+            ); // r
+            RS.MessageSystem.Reg[e][22] = new RegExp(
+                `\x1b${tcGroup[22]}`,
+                "gi"
+            ); // t
+            RS.MessageSystem.Reg[e][23] = new RegExp(
+                `\x1b${tcGroup[23]}\\<(.+?)\\>`,
+                "gi"
+            ); // 효과음
+            RS.MessageSystem.Reg[e][24] = new RegExp(
+                `\x1b${tcGroup[24]}\\<(.+?)\\>`,
+                "gi"
+            ); // 그림 표시
+            RS.MessageSystem.Reg[e][25] = new RegExp(
+                `\x1b${tcGroup[25]}\\[(\\d+)\\]`,
+                "gi"
+            ); // 그림 제거
+            RS.MessageSystem.Reg[e][26] = new RegExp(
+                `(?:\x1b${tcGroup[26]})\\[(\\d+)\\]`,
+                "g"
+            ); // 아이템
+            RS.MessageSystem.Reg[e][27] = new RegExp(
+                `(?:\x1b${tcGroup[27]})\\[(\\d+)\\]`,
+                "g"
+            ); // 무기구
+            RS.MessageSystem.Reg[e][28] = new RegExp(
+                `(?:\x1b${tcGroup[28]})\\[(\\d+)\\]`,
+                "g"
+            ); // 방어구
+            RS.MessageSystem.Reg[e][29] = new RegExp(
+                `(?:\x1b${tcGroup[29]})\\[(\\d+)\\]`,
+                "g"
+            ); // 직업
+            RS.MessageSystem.Reg[e][30] = new RegExp(
+                `(?:\x1b${tcGroup[30]})\\[(\\d+)\\]`,
+                "g"
+            ); // 적군
+            RS.MessageSystem.Reg[e][31] = new RegExp(
+                `(?:\x1b${tcGroup[31]})\\[(\\d+)\\]`,
+                "g"
+            ); // 상태
+            RS.MessageSystem.Reg[e][32] = new RegExp(
+                `(?:\x1b${tcGroup[32]})\\[(\\d+)\\]`,
+                "g"
+            ); // 스킬
+            RS.MessageSystem.Reg[e][33] = new RegExp(
+                `\x1b${tcGroup[33]}\\<(.*)\\>`,
+                "gi"
+            ); // 얼굴
+            RS.MessageSystem.Reg[e][34] = new RegExp(
+                `(?:\x1b${tcGroup[34]})\\[(\\d+)\\]`,
+                "gi"
+            ); // 아군
+            RS.MessageSystem.Reg[e][35] = new RegExp(
+                `(?:\x1b${tcGroup[35]})\\[(\\d+)\\]`,
+                "gi"
+            ); // 적군
 
-            RS.MessageSystem.Reg[e][36] = new RegExp(`\x1b${tcGroup[36]}`, 'gi'); // [.]
-            RS.MessageSystem.Reg[e][37] = new RegExp(`\x1b${tcGroup[37]}`, 'gi'); // [|]
-            RS.MessageSystem.Reg[e][38] = new RegExp(`\x1b${tcGroup[38]}`, 'gi'); // [!]
-            RS.MessageSystem.Reg[e][39] = new RegExp(`\x1b${tcGroup[39]}`, 'gi'); // [<]
-            RS.MessageSystem.Reg[e][40] = new RegExp(`\x1b${tcGroup[40]}`, 'gi'); // [>]
-            RS.MessageSystem.Reg[e][41] = new RegExp(`\x1b${tcGroup[41]}`, 'gi'); // [\^]
+            RS.MessageSystem.Reg[e][36] = new RegExp(
+                `\x1b${tcGroup[36]}`,
+                "gi"
+            ); // [.]
+            RS.MessageSystem.Reg[e][37] = new RegExp(
+                `\x1b${tcGroup[37]}`,
+                "gi"
+            ); // [|]
+            RS.MessageSystem.Reg[e][38] = new RegExp(
+                `\x1b${tcGroup[38]}`,
+                "gi"
+            ); // [!]
+            RS.MessageSystem.Reg[e][39] = new RegExp(
+                `\x1b${tcGroup[39]}`,
+                "gi"
+            ); // [<]
+            RS.MessageSystem.Reg[e][40] = new RegExp(
+                `\x1b${tcGroup[40]}`,
+                "gi"
+            ); // [>]
+            RS.MessageSystem.Reg[e][41] = new RegExp(
+                `\x1b${tcGroup[41]}`,
+                "gi"
+            ); // [\^]
 
-            RS.MessageSystem.Reg[e][42] = new RegExp(`\x1b${tcGroup[42]}`, 'gi'); // AS굵게!
-            RS.MessageSystem.Reg[e][43] = new RegExp(`\x1b${tcGroup[43]}`, 'gi'); // AE굵게!
-            RS.MessageSystem.Reg[e][44] = new RegExp(`\x1b${tcGroup[44]}`, 'gi'); // AS이탤릭!
-            RS.MessageSystem.Reg[e][45] = new RegExp(`\x1b${tcGroup[45]}`, 'gi'); // AE이탤릭!
+            RS.MessageSystem.Reg[e][42] = new RegExp(
+                `\x1b${tcGroup[42]}`,
+                "gi"
+            ); // AS굵게!
+            RS.MessageSystem.Reg[e][43] = new RegExp(
+                `\x1b${tcGroup[43]}`,
+                "gi"
+            ); // AE굵게!
+            RS.MessageSystem.Reg[e][44] = new RegExp(
+                `\x1b${tcGroup[44]}`,
+                "gi"
+            ); // AS이탤릭!
+            RS.MessageSystem.Reg[e][45] = new RegExp(
+                `\x1b${tcGroup[45]}`,
+                "gi"
+            ); // AE이탤릭!
 
-            RS.MessageSystem.Reg[e][46] = new RegExp(`(?:<${tcGroup[46]}>)`, 'gi'); // LEFT
-            RS.MessageSystem.Reg[e][47] = new RegExp(`(?:<${tcGroup[47]}>)`, 'gi'); // CENTER
-            RS.MessageSystem.Reg[e][48] = new RegExp(`(?:<${tcGroup[48]}>)`, 'gi'); // RIGHT
+            RS.MessageSystem.Reg[e][46] = new RegExp(
+                `(?:<${tcGroup[46]}>)`,
+                "gi"
+            ); // LEFT
+            RS.MessageSystem.Reg[e][47] = new RegExp(
+                `(?:<${tcGroup[47]}>)`,
+                "gi"
+            ); // CENTER
+            RS.MessageSystem.Reg[e][48] = new RegExp(
+                `(?:<${tcGroup[48]}>)`,
+                "gi"
+            ); // RIGHT
 
-            RS.MessageSystem.Reg[e][49] = new RegExp(`(?:<[${tcGroup[49]}]>)`, 'gi'); // B
-            RS.MessageSystem.Reg[e][50] = new RegExp(`(?:<\/[${tcGroup[50]}]>)`, 'gi'); // B
-            RS.MessageSystem.Reg[e][51] = new RegExp(`(?:<[${tcGroup[51]}]>)`, 'gi'); // I
-            RS.MessageSystem.Reg[e][52] = new RegExp(`(?:<\/[${tcGroup[52]}]>)`, 'gi'); // I
-            RS.MessageSystem.Reg[e][53] = new RegExp(`\x1b${tcGroup[53]}`, 'gi'); // AEND : ALIGN_CLEAR
-            RS.MessageSystem.Reg[e][54] = new RegExp(`\x1b${tcGroup[54]}\\[(.*)\\]`, 'gi'); // \배경색[색상] \HC[색상]
-            RS.MessageSystem.Reg[e][55] = new RegExp(`\x1b${tcGroup[55]}\\[(\\d+)\\]`, 'gi'); // \FD
-
+            RS.MessageSystem.Reg[e][49] = new RegExp(
+                `(?:<[${tcGroup[49]}]>)`,
+                "gi"
+            ); // B
+            RS.MessageSystem.Reg[e][50] = new RegExp(
+                `(?:<\/[${tcGroup[50]}]>)`,
+                "gi"
+            ); // B
+            RS.MessageSystem.Reg[e][51] = new RegExp(
+                `(?:<[${tcGroup[51]}]>)`,
+                "gi"
+            ); // I
+            RS.MessageSystem.Reg[e][52] = new RegExp(
+                `(?:<\/[${tcGroup[52]}]>)`,
+                "gi"
+            ); // I
+            RS.MessageSystem.Reg[e][53] = new RegExp(
+                `\x1b${tcGroup[53]}`,
+                "gi"
+            ); // AEND : ALIGN_CLEAR
+            RS.MessageSystem.Reg[e][54] = new RegExp(
+                `\x1b${tcGroup[54]}\\[(.*)\\]`,
+                "gi"
+            ); // \배경색[색상] \HC[색상]
+            RS.MessageSystem.Reg[e][55] = new RegExp(
+                `\x1b${tcGroup[55]}\\[(\\d+)\\]`,
+                "gi"
+            ); // \FD
         }, this);
-    }());
+    })();
 
     RS.MessageSystem.initSystem = function () {
         var type = RS.MessageSystem.Params.langCode;
         var ret = false;
         if (type.match(/ko/)) {
             RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Korean;
-            RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.KoreanEscapeCode;
+            RS.MessageSystem.Reg.defaultEscapeCode =
+                RS.MessageSystem.Reg.KoreanEscapeCode;
             RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.Korean;
             ret = true;
         }
         if (type.match(/zh/)) {
             RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Chinese;
-            RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.ChineseEscapeCode;
-            RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.Chinese;
+            RS.MessageSystem.Reg.defaultEscapeCode =
+                RS.MessageSystem.Reg.ChineseEscapeCode;
+            RS.MessageSystem.TextCodes.Main =
+                RS.MessageSystem.TextCodes.Chinese;
             ret = true;
         }
         if (type.match(/en/)) {
             RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.English;
-            RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.EnglishEscapeCode;
-            RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.English;
+            RS.MessageSystem.Reg.defaultEscapeCode =
+                RS.MessageSystem.Reg.EnglishEscapeCode;
+            RS.MessageSystem.TextCodes.Main =
+                RS.MessageSystem.TextCodes.English;
             ret = true;
         }
         if (type.match(/ja/)) {
             RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Japanese;
-            RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.JapaneseEscapeCode;
-            RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.Japanese;
+            RS.MessageSystem.Reg.defaultEscapeCode =
+                RS.MessageSystem.Reg.JapaneseEscapeCode;
+            RS.MessageSystem.TextCodes.Main =
+                RS.MessageSystem.TextCodes.Japanese;
             ret = true;
         }
         if (ret === false) {
             RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.English;
-            RS.MessageSystem.Reg.defaultEscapeCode = RS.MessageSystem.Reg.EnglishEscapeCode;
-            RS.MessageSystem.TextCodes.Main = RS.MessageSystem.TextCodes.English;
+            RS.MessageSystem.Reg.defaultEscapeCode =
+                RS.MessageSystem.Reg.EnglishEscapeCode;
+            RS.MessageSystem.TextCodes.Main =
+                RS.MessageSystem.TextCodes.English;
         }
     };
 
@@ -2090,7 +2397,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     const Color = {};
 
     Color.getColor = function (n) {
-        var r = (n) & 255;
+        var r = n & 255;
         var g = (n >> 8) & 255;
         var b = (n >> 16) & 255;
         var result = `rgba(${r},${g},${b},1)`;
@@ -2109,211 +2416,206 @@ RS.MessageSystem = RS.MessageSystem || {};
         var obj = RS.MessageSystem.Params.exTextColors;
         var ret = string;
 
-        if (!typeof (obj[0]) === "object") return ret;
+        if (!typeof obj[0] === "object") return ret;
         if (!obj[0].hasOwnProperty("Color Name")) return ret;
 
         obj.forEach(function (e, i, a) {
-
             if (e["Color Name"] === string) {
-
                 var r = parseInt(e["Red"]) || 0;
                 var g = parseInt(e["Green"]) || 0;
                 var b = parseInt(e["Blue"]) || 0;
                 var a = parseFloat(e["Alpha"]) || 1.0;
 
                 ret = `rgba(${r},${g},${b},${a})`;
-
             }
-
         }, this);
 
         return ret;
-
     };
 
     const KOREAN_COLORS = {
-        "청록": "rgba(0,255,255,1)",
-        "청록색": "rgba(0,255,255,1)",
-        "c_aqua": "rgba(0,255,255,1)",
-        "검은색": "rgba(0,0,0,1)",
-        "검정": "rgba(0,0,0,1)",
-        "c_black": "rgba(0,0,0,1)",
-        "파란색": "rgba(0,0,255,1)",
-        "파랑": "rgba(0,0,255,1)",
-        "c_blue": "rgba(0,0,255,1)",
-        "짙은회색": "rgba(64,64,64,1)",
-        "c_dkgray": "rgba(64,64,64,1)",
-        "자홍색": "rgba(255,0,255,1)",
-        "자홍": "rgba(255,0,255,1)",
-        "c_fuchsia": "rgba(255,0,255,1)",
-        "회색": "rgba(128,128,128,1)",
-        "c_gray": "rgba(128,128,128,1)",
-        "녹색": "rgba(0,128,0,1)",
-        "c_green": "rgba(0,128,0,1)",
-        "밝은녹색": "rgba(0,255,0,1)",
-        "라임": "rgba(0,255,0,1)",
-        "c_lime": "rgba(0,255,0,1)",
-        "밝은회색": "rgba(192,192,192,1)",
-        "c_ltgray": "rgba(192,192,192,1)",
-        "밤색": "rgba(128,0,0,1)",
-        "마룬": "rgba(128,0,0,1)",
-        "c_maroon": "rgba(128,0,0,1)",
-        "감청색": "rgba(0,0,128,1)",
-        "네이비": "rgba(0,0,128,1)",
-        "c_navy": "rgba(0,0,128,1)",
-        "황록색": "rgba(128,128,0,1)",
-        "올리브": "rgba(128,128,0,1)",
-        "c_olive": "rgba(128,128,0,1)",
-        "주황색": "rgba(255,160,64,1)",
-        "주황": "rgba(255,160,64,1)",
-        "오렌지": "rgba(255,160,64,1)",
-        "c_orange": "rgba(255,160,64,1)",
-        "보라색": "rgba(128,0,128,1)",
-        "보라": "rgba(128,0,128,1)",
-        "c_purple": "rgba(128,0,128,1)",
-        "빨간색": "rgba(255,0,0,1)",
-        "빨강": "rgba(255,0,0,1)",
-        "c_red": "rgba(255,0,0,1)",
-        "은색": "rgba(192,192,192,1)",
-        "은": "rgba(192,192,192,1)",
-        "c_silver": "rgba(192,192,192,1)",
-        "민트색": "rgba(0,128,128,1)",
-        "c_teal": "rgba(0,128,128,1)",
-        "흰색": "rgba(255,255,255,1)",
-        "흰": "rgba(255,255,255,1)",
-        "c_white": "rgba(255,255,255,1)",
-        "노란색": "rgba(255,255,0,1)",
-        "노랑": "rgba(255,255,0,1)",
-        "c_yellow": "rgba(255,255,0,1)"
+        청록: "rgba(0,255,255,1)",
+        청록색: "rgba(0,255,255,1)",
+        c_aqua: "rgba(0,255,255,1)",
+        검은색: "rgba(0,0,0,1)",
+        검정: "rgba(0,0,0,1)",
+        c_black: "rgba(0,0,0,1)",
+        파란색: "rgba(0,0,255,1)",
+        파랑: "rgba(0,0,255,1)",
+        c_blue: "rgba(0,0,255,1)",
+        짙은회색: "rgba(64,64,64,1)",
+        c_dkgray: "rgba(64,64,64,1)",
+        자홍색: "rgba(255,0,255,1)",
+        자홍: "rgba(255,0,255,1)",
+        c_fuchsia: "rgba(255,0,255,1)",
+        회색: "rgba(128,128,128,1)",
+        c_gray: "rgba(128,128,128,1)",
+        녹색: "rgba(0,128,0,1)",
+        c_green: "rgba(0,128,0,1)",
+        밝은녹색: "rgba(0,255,0,1)",
+        라임: "rgba(0,255,0,1)",
+        c_lime: "rgba(0,255,0,1)",
+        밝은회색: "rgba(192,192,192,1)",
+        c_ltgray: "rgba(192,192,192,1)",
+        밤색: "rgba(128,0,0,1)",
+        마룬: "rgba(128,0,0,1)",
+        c_maroon: "rgba(128,0,0,1)",
+        감청색: "rgba(0,0,128,1)",
+        네이비: "rgba(0,0,128,1)",
+        c_navy: "rgba(0,0,128,1)",
+        황록색: "rgba(128,128,0,1)",
+        올리브: "rgba(128,128,0,1)",
+        c_olive: "rgba(128,128,0,1)",
+        주황색: "rgba(255,160,64,1)",
+        주황: "rgba(255,160,64,1)",
+        오렌지: "rgba(255,160,64,1)",
+        c_orange: "rgba(255,160,64,1)",
+        보라색: "rgba(128,0,128,1)",
+        보라: "rgba(128,0,128,1)",
+        c_purple: "rgba(128,0,128,1)",
+        빨간색: "rgba(255,0,0,1)",
+        빨강: "rgba(255,0,0,1)",
+        c_red: "rgba(255,0,0,1)",
+        은색: "rgba(192,192,192,1)",
+        은: "rgba(192,192,192,1)",
+        c_silver: "rgba(192,192,192,1)",
+        민트색: "rgba(0,128,128,1)",
+        c_teal: "rgba(0,128,128,1)",
+        흰색: "rgba(255,255,255,1)",
+        흰: "rgba(255,255,255,1)",
+        c_white: "rgba(255,255,255,1)",
+        노란색: "rgba(255,255,0,1)",
+        노랑: "rgba(255,255,0,1)",
+        c_yellow: "rgba(255,255,0,1)",
     };
 
     const CHINESE_COLOR = {
-        "水色": "rgba(0,255,255,1)",
-        "c_aqua": "rgba(0,255,255,1)",
-        "黑色": "rgba(0,0,0,1)",
-        "c_black": "rgba(0,0,0,1)",
-        "蓝色": "rgba(0,0,255,1)",
-        "c_blue": "rgba(0,0,255,1)",
-        "深灰色": "rgba(64,64,64,1)",
-        "c_dkgray": "rgba(64,64,64,1)",
-        "紫红色": "rgba(255,0,255,1)",
-        "c_fuchsia": "rgba(255,0,255,1)",
-        "灰色": "rgba(128,128,128,1)",
-        "c_gray": "rgba(128,128,128,1)",
-        "绿色": "rgba(0,128,0,1)",
-        "c_green": "rgba(0,128,0,1)",
-        "浅绿色": "rgba(0,255,0,1)",
-        "c_lime": "rgba(0,255,0,1)",
-        "浅灰色": "rgba(192,192,192,1)",
-        "c_ltgray": "rgba(192,192,192,1)",
-        "栗色": "rgba(128,0,0,1)",
-        "c_maroon": "rgba(128,0,0,1)",
-        "绀青色": "rgba(0,0,128,1)",
-        "c_navy": "rgba(0,0,128,1)",
-        "黄绿色": "rgba(128,128,0,1)",
-        "c_olive": "rgba(128,128,0,1)",
-        "橙黄色": "rgba(255,160,64,1)",
-        "c_orange": "rgba(255,160,64,1)",
-        "紫色": "rgba(128,0,128,1)",
-        "c_purple": "rgba(128,0,128,1)",
-        "红色": "rgba(255,0,0,1)",
-        "c_red": "rgba(255,0,0,1)",
-        "银白色": "rgba(192,192,192,1)",
-        "c_silver": "rgba(192,192,192,1)",
-        "水鸭色": "rgba(0,128,128,1)",
-        "c_teal": "rgba(0,128,128,1)",
-        "白色": "rgba(255,255,255,1)",
-        "c_white": "rgba(255,255,255,1)",
-        "黄色": "rgba(255,255,0,1)",
-        "c_yellow": "rgba(255,255,0,1)"
+        水色: "rgba(0,255,255,1)",
+        c_aqua: "rgba(0,255,255,1)",
+        黑色: "rgba(0,0,0,1)",
+        c_black: "rgba(0,0,0,1)",
+        蓝色: "rgba(0,0,255,1)",
+        c_blue: "rgba(0,0,255,1)",
+        深灰色: "rgba(64,64,64,1)",
+        c_dkgray: "rgba(64,64,64,1)",
+        紫红色: "rgba(255,0,255,1)",
+        c_fuchsia: "rgba(255,0,255,1)",
+        灰色: "rgba(128,128,128,1)",
+        c_gray: "rgba(128,128,128,1)",
+        绿色: "rgba(0,128,0,1)",
+        c_green: "rgba(0,128,0,1)",
+        浅绿色: "rgba(0,255,0,1)",
+        c_lime: "rgba(0,255,0,1)",
+        浅灰色: "rgba(192,192,192,1)",
+        c_ltgray: "rgba(192,192,192,1)",
+        栗色: "rgba(128,0,0,1)",
+        c_maroon: "rgba(128,0,0,1)",
+        绀青色: "rgba(0,0,128,1)",
+        c_navy: "rgba(0,0,128,1)",
+        黄绿色: "rgba(128,128,0,1)",
+        c_olive: "rgba(128,128,0,1)",
+        橙黄色: "rgba(255,160,64,1)",
+        c_orange: "rgba(255,160,64,1)",
+        紫色: "rgba(128,0,128,1)",
+        c_purple: "rgba(128,0,128,1)",
+        红色: "rgba(255,0,0,1)",
+        c_red: "rgba(255,0,0,1)",
+        银白色: "rgba(192,192,192,1)",
+        c_silver: "rgba(192,192,192,1)",
+        水鸭色: "rgba(0,128,128,1)",
+        c_teal: "rgba(0,128,128,1)",
+        白色: "rgba(255,255,255,1)",
+        c_white: "rgba(255,255,255,1)",
+        黄色: "rgba(255,255,0,1)",
+        c_yellow: "rgba(255,255,0,1)",
     };
 
     const ENGLISH_COLOR = {
-        "AQUA": "rgba(0,255,255,1)",
-        "c_aqua": "rgba(0,255,255,1)",
-        "BLACK": "rgba(0,0,0,1)",
-        "c_black": "rgba(0,0,0,1)",
-        "BLUE": "rgba(0,0,255,1)",
-        "c_blue": "rgba(0,0,255,1)",
-        "DKGRAY": "rgba(64,64,64,1)",
-        "c_dkgray": "rgba(64,64,64,1)",
-        "FUCHSIA": "rgba(255,0,255,1)",
-        "c_fuchsia": "rgba(255,0,255,1)",
-        "GRAY": "rgba(128,128,128,1)",
-        "c_gray": "rgba(128,128,128,1)",
-        "GREEN": "rgba(0,128,0,1)",
-        "c_green": "rgba(0,128,0,1)",
-        "LIME": "rgba(0,255,0,1)",
-        "c_lime": "rgba(0,255,0,1)",
-        "LTGRAY": "rgba(192,192,192,1)",
-        "c_ltgray": "rgba(192,192,192,1)",
-        "MAROON": "rgba(128,0,0,1)",
-        "c_maroon": "rgba(128,0,0,1)",
-        "NAVY": "rgba(0,0,128,1)",
-        "c_navy": "rgba(0,0,128,1)",
-        "OLIVE": "rgba(128,128,0,1)",
-        "c_olive": "rgba(128,128,0,1)",
-        "ORANGE": "rgba(255,160,64,1)",
-        "c_orange": "rgba(255,160,64,1)",
-        "PURPLE": "rgba(128,0,128,1)",
-        "c_purple": "rgba(128,0,128,1)",
-        "RED": "rgba(255,0,0,1)",
-        "c_red": "rgba(255,0,0,1)",
-        "SILVER": "rgba(192,192,192,1)",
-        "c_silver": "rgba(192,192,192,1)",
-        "TEAL": "rgba(0,128,128,1)",
-        "c_teal": "rgba(0,128,128,1)",
-        "WHITE": "rgba(255,255,255,1)",
-        "c_white": "rgba(255,255,255,1)",
-        "YELLOW": "rgba(255,255,0,1)",
-        "c_yellow": "rgba(255,255,0,1)"
+        AQUA: "rgba(0,255,255,1)",
+        c_aqua: "rgba(0,255,255,1)",
+        BLACK: "rgba(0,0,0,1)",
+        c_black: "rgba(0,0,0,1)",
+        BLUE: "rgba(0,0,255,1)",
+        c_blue: "rgba(0,0,255,1)",
+        DKGRAY: "rgba(64,64,64,1)",
+        c_dkgray: "rgba(64,64,64,1)",
+        FUCHSIA: "rgba(255,0,255,1)",
+        c_fuchsia: "rgba(255,0,255,1)",
+        GRAY: "rgba(128,128,128,1)",
+        c_gray: "rgba(128,128,128,1)",
+        GREEN: "rgba(0,128,0,1)",
+        c_green: "rgba(0,128,0,1)",
+        LIME: "rgba(0,255,0,1)",
+        c_lime: "rgba(0,255,0,1)",
+        LTGRAY: "rgba(192,192,192,1)",
+        c_ltgray: "rgba(192,192,192,1)",
+        MAROON: "rgba(128,0,0,1)",
+        c_maroon: "rgba(128,0,0,1)",
+        NAVY: "rgba(0,0,128,1)",
+        c_navy: "rgba(0,0,128,1)",
+        OLIVE: "rgba(128,128,0,1)",
+        c_olive: "rgba(128,128,0,1)",
+        ORANGE: "rgba(255,160,64,1)",
+        c_orange: "rgba(255,160,64,1)",
+        PURPLE: "rgba(128,0,128,1)",
+        c_purple: "rgba(128,0,128,1)",
+        RED: "rgba(255,0,0,1)",
+        c_red: "rgba(255,0,0,1)",
+        SILVER: "rgba(192,192,192,1)",
+        c_silver: "rgba(192,192,192,1)",
+        TEAL: "rgba(0,128,128,1)",
+        c_teal: "rgba(0,128,128,1)",
+        WHITE: "rgba(255,255,255,1)",
+        c_white: "rgba(255,255,255,1)",
+        YELLOW: "rgba(255,255,0,1)",
+        c_yellow: "rgba(255,255,0,1)",
     };
 
     const JAPANESE_COLOR = {
-        "水色": "rgba(0,255,255,1)",
-        "アクア色": "rgba(0,255,255,1)",
-        "c_aqua": "rgba(0,255,255,1)",
-        "黑色": "rgba(0,0,0,1)",
-        "c_black": "rgba(0,0,0,1)",
-        "靑色": "rgba(0,0,255,1)",
-        "c_blue": "rgba(0,0,255,1)",
-        "ふか灰色": "rgba(64,64,64,1)",
-        "c_dkgray": "rgba(64,64,64,1)",
-        "紫紅色": "rgba(255,0,255,1)",
-        "c_fuchsia": "rgba(255,0,255,1)",
-        "灰色": "rgba(128,128,128,1)",
-        "c_gray": "rgba(128,128,128,1)",
-        "綠色": "rgba(0,128,0,1)",
-        "c_green": "rgba(0,128,0,1)",
-        "黃綠": "rgba(0,255,0,1)",
-        "c_lime": "rgba(0,255,0,1)",
-        "鼠色": "rgba(192,192,192,1)",
-        "c_ltgray": "rgba(192,192,192,1)",
+        水色: "rgba(0,255,255,1)",
+        アクア色: "rgba(0,255,255,1)",
+        c_aqua: "rgba(0,255,255,1)",
+        黑色: "rgba(0,0,0,1)",
+        c_black: "rgba(0,0,0,1)",
+        靑色: "rgba(0,0,255,1)",
+        c_blue: "rgba(0,0,255,1)",
+        ふか灰色: "rgba(64,64,64,1)",
+        c_dkgray: "rgba(64,64,64,1)",
+        紫紅色: "rgba(255,0,255,1)",
+        c_fuchsia: "rgba(255,0,255,1)",
+        灰色: "rgba(128,128,128,1)",
+        c_gray: "rgba(128,128,128,1)",
+        綠色: "rgba(0,128,0,1)",
+        c_green: "rgba(0,128,0,1)",
+        黃綠: "rgba(0,255,0,1)",
+        c_lime: "rgba(0,255,0,1)",
+        鼠色: "rgba(192,192,192,1)",
+        c_ltgray: "rgba(192,192,192,1)",
         "―色": "rgba(128,0,0,1)",
-        "c_maroon": "rgba(128,0,0,1)",
-        "群青色": "rgba(0,0,128,1)",
-        "ネイビー": "rgba(0,0,128,1)",
-        "c_navy": "rgba(0,0,128,1)",
-        "黃綠色": "rgba(128,128,0,1)",
-        "オリーブ色": "rgba(128,128,0,1)",
-        "c_olive": "rgba(128,128,0,1)",
-        "橙色": "rgba(255,160,64,1)",
-        "オレンジ色": "rgba(255,160,64,1)",
-        "c_orange": "rgba(255,160,64,1)",
-        "紫色": "rgba(128,0,128,1)",
-        "c_purple": "rgba(128,0,128,1)",
-        "赤色": "rgba(255,0,0,1)",
-        "レッド": "rgba(255,0,0,1)",
-        "c_red": "rgba(255,0,0,1)",
-        "銀色": "rgba(192,192,192,1)",
-        "c_silver": "rgba(192,192,192,1)",
-        "ミント色": "rgba(0,128,128,1)",
-        "薄荷色": "rgba(0,128,128,1)",
-        "c_teal": "rgba(0,128,128,1)",
-        "白色": "rgba(255,255,255,1)",
-        "c_white": "rgba(255,255,255,1)",
-        "黃色": "rgba(255,255,0,1)",
-        "c_yellow": "rgba(255,255,0,1)"
+        c_maroon: "rgba(128,0,0,1)",
+        群青色: "rgba(0,0,128,1)",
+        ネイビー: "rgba(0,0,128,1)",
+        c_navy: "rgba(0,0,128,1)",
+        黃綠色: "rgba(128,128,0,1)",
+        オリーブ色: "rgba(128,128,0,1)",
+        c_olive: "rgba(128,128,0,1)",
+        橙色: "rgba(255,160,64,1)",
+        オレンジ色: "rgba(255,160,64,1)",
+        c_orange: "rgba(255,160,64,1)",
+        紫色: "rgba(128,0,128,1)",
+        c_purple: "rgba(128,0,128,1)",
+        赤色: "rgba(255,0,0,1)",
+        レッド: "rgba(255,0,0,1)",
+        c_red: "rgba(255,0,0,1)",
+        銀色: "rgba(192,192,192,1)",
+        c_silver: "rgba(192,192,192,1)",
+        ミント色: "rgba(0,128,128,1)",
+        薄荷色: "rgba(0,128,128,1)",
+        c_teal: "rgba(0,128,128,1)",
+        白色: "rgba(255,255,255,1)",
+        c_white: "rgba(255,255,255,1)",
+        黃色: "rgba(255,255,0,1)",
+        c_yellow: "rgba(255,255,0,1)",
     };
 
     RS.MessageSystem.getKoreanColor = function (string) {
@@ -2337,7 +2639,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             return color;
         }
 
-        if (['通常', 'c_normal'].contains(string)) {
+        if (["通常", "c_normal"].contains(string)) {
             return Color.getBaseColor();
         }
 
@@ -2351,7 +2653,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             return color;
         }
 
-        if ('c_normal' === string) {
+        if ("c_normal" === string) {
             return Color.getBaseColor();
         }
 
@@ -2365,7 +2667,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             return color;
         }
 
-        if (['基本色', 'c_normal'].contains(string)) {
+        if (["基本色", "c_normal"].contains(string)) {
             return Color.getBaseColor();
         }
 
@@ -2373,41 +2675,44 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     RS.MessageSystem.getBrowser = function () {
-
         /* Refer to https://stackoverflow.com/a/16938481 */
         var ua = navigator.userAgent,
-            tem, M = ua.match(/(opera|chrome|edge|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+            tem,
+            M =
+                ua.match(
+                    /(opera|chrome|edge|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i
+                ) || [];
 
         if (/trident/i.test(M[1])) {
-
             tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
 
             return {
-                name: 'IE',
-                version: (tem[1] || '')
+                name: "IE",
+                version: tem[1] || "",
             };
-
         }
 
-        if (M[1] === 'Chrome') {
+        if (M[1] === "Chrome") {
             tem = ua.match(/\bOPR\/(\d+)/);
             if (tem != null) {
                 return {
-                    name: 'Opera',
-                    version: tem[1]
+                    name: "Opera",
+                    version: tem[1],
                 };
             }
 
             tem = ua.match(/\bEdge\/(\d+)/);
             if (tem != null) {
                 return {
-                    name: 'Edge',
-                    version: tem[1]
+                    name: "Edge",
+                    version: tem[1],
                 };
             }
         }
 
-        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+        M = M[2]
+            ? [M[1], M[2]]
+            : [navigator.appName, navigator.appVersion, "-?"];
 
         if ((tem = ua.match(/version\/(\d+)/i)) != null) {
             M.splice(1, 1, tem[1]);
@@ -2415,9 +2720,8 @@ RS.MessageSystem = RS.MessageSystem || {};
 
         return {
             name: M[0],
-            version: M[1]
+            version: M[1],
         };
-
     };
 
     Color.gmColor = function (string) {
@@ -2449,14 +2753,21 @@ RS.MessageSystem = RS.MessageSystem || {};
         this.highlightTextColor = null;
     };
 
-    Bitmap.prototype.setGradient = function (text, color1, color2, color3, tx, ty) {
+    Bitmap.prototype.setGradient = function (
+        text,
+        color1,
+        color2,
+        color3,
+        tx,
+        ty
+    ) {
         var context = this._context;
         var tWidth = this.measureTextWidth(text);
         context.save();
         var gradient = context.createLinearGradient(tx, 0, tx + tWidth, 0);
-        gradient.addColorStop('0', color1);
-        gradient.addColorStop('0.6', color2);
-        gradient.addColorStop('1', color3);
+        gradient.addColorStop("0", color1);
+        gradient.addColorStop("0.6", color2);
+        gradient.addColorStop("1", color3);
         context.restore();
 
         this._baseTexture.update();
@@ -2464,7 +2775,14 @@ RS.MessageSystem = RS.MessageSystem || {};
         return gradient;
     };
 
-    Bitmap.prototype.setGradientStyle = function (text, color1, color2, color3, tx, ty) {
+    Bitmap.prototype.setGradientStyle = function (
+        text,
+        color1,
+        color2,
+        color3,
+        tx,
+        ty
+    ) {
         var context = this._context;
         var width = this.measureTextWidth(text);
         var height = RS.MessageSystem.Params.lineHeight;
@@ -2483,19 +2801,19 @@ RS.MessageSystem = RS.MessageSystem || {};
         } else {
             var ws = parseFloat(width * 0.5);
             var hs = parseFloat(height * 0.5);
-            grd = context.createRadialGradient(ws, hs, 0.000, ws, hs, ws);
+            grd = context.createRadialGradient(ws, hs, 0.0, ws, hs, ws);
         }
 
         if (style === "radial") {
-            grd.addColorStop('0.0', color1);
-            grd.addColorStop('1.0', color2);
+            grd.addColorStop("0.0", color1);
+            grd.addColorStop("1.0", color2);
         } else if (style.contains("axial")) {
-            grd.addColorStop('0.0', color1);
-            grd.addColorStop('0.5', color2);
-            grd.addColorStop('1.0', color3);
+            grd.addColorStop("0.0", color1);
+            grd.addColorStop("0.5", color2);
+            grd.addColorStop("1.0", color3);
         } else {
-            grd.addColorStop('0.0', color1);
-            grd.addColorStop('1.0', color2);
+            grd.addColorStop("0.0", color1);
+            grd.addColorStop("1.0", color2);
         }
 
         context.restore();
@@ -2506,22 +2824,30 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Bitmap.prototype._makeFontNameText = function () {
-        return (this.fontItalic ? 'Italic ' : '') + (this.fontBold ? 'bold ' : '') +
-            this.fontSize + 'px ' + this.fontFace;
+        return (
+            (this.fontItalic ? "Italic " : "") +
+            (this.fontBold ? "bold " : "") +
+            this.fontSize +
+            "px " +
+            this.fontFace
+        );
     };
 
     Bitmap.prototype._drawTextBody = function (text, tx, ty, maxWidth) {
         var context = this._context;
-        context.save(); // 드로잉 상태 저장    
-        context.imageSmoothingEnabled = RS.MessageSystem.Params.fontSmoothingEnabled;
+        context.save(); // 드로잉 상태 저장
+        context.imageSmoothingEnabled =
+            RS.MessageSystem.Params.fontSmoothingEnabled;
 
         if (this.fontGradient) {
-            var gradient = this.setGradientStyle(text,
+            var gradient = this.setGradientStyle(
+                text,
                 RS.MessageSystem.Params.gradientColor1,
                 RS.MessageSystem.Params.gradientColor2,
                 RS.MessageSystem.Params.gradientColor3,
                 tx,
-                ty);
+                ty
+            );
             context.fillStyle = gradient;
         } else {
             context.fillStyle = this.textColor;
@@ -2539,7 +2865,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     Game_Message.prototype.clear = function () {
         alias_Game_Message_clear.call(this);
         this._waitTime = 0;
-        this._gradientText = '';
+        this._gradientText = "";
         this._balloon = -2;
         this._align = [];
         this._balloonPatternHeight = 0;
@@ -2619,7 +2945,7 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     //============================================================================
     // MessageDesc
-    //============================================================================  
+    //============================================================================
 
     class MessageDesc {
         constructor() {
@@ -2638,8 +2964,8 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
 
         /**
-         * 
-         * @param {Bitmap} contents 
+         *
+         * @param {Bitmap} contents
          */
         save(contents) {
             this.fontFace = contents.fontFace;
@@ -2676,12 +3002,11 @@ RS.MessageSystem = RS.MessageSystem || {};
             }
             this._isSaved = false;
         }
-
     }
 
     //============================================================================
     // Window_Base
-    //============================================================================    
+    //============================================================================
 
     Window_Base.prototype.obtainEscapeCode = function (textState) {
         var regExp = RS.MessageSystem.Reg.defaultEscapeCode;
@@ -2690,14 +3015,14 @@ RS.MessageSystem = RS.MessageSystem || {};
             textState.index += arr[0].length;
             return arr[0].toUpperCase();
         } else {
-            return '';
+            return "";
         }
     };
 
     /**
      * 확장된 색상 변경 텍스트 코드 처리
      * \색[빨강]과 웹색상 처리를 위한 정규 표현식 처리
-     * @param {}} textState 
+     * @param {}} textState
      */
     Window_Base.prototype.obtainNameColor = function (textState) {
         var arr = /\[(.+?)\]/gi.exec(textState.text.slice(textState.index));
@@ -2720,34 +3045,44 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    var alias_Window_Base_processEscapeCharacter = Window_Base.prototype.processEscapeCharacter;
+    var alias_Window_Base_processEscapeCharacter =
+        Window_Base.prototype.processEscapeCharacter;
     Window_Base.prototype.processEscapeCharacter = function (code, textState) {
         var tcGroup = RS.MessageSystem.TextCodes.ENUM;
         var textCode = RS.MessageSystem.TextCodes.Main;
         switch (code) {
-            case 'C':
-                this.changeTextColor(this.textColor(this.obtainEscapeParam(textState)));
+            case "C":
+                this.changeTextColor(
+                    this.textColor(this.obtainEscapeParam(textState))
+                );
                 break;
             case textCode[tcGroup.COLOR]:
                 this.changeTextColor(this.obtainNameColor(textState));
                 break;
-            case 'I':
+            case "I":
             case textCode[tcGroup.ICON]:
-                this.processDrawIcon(this.obtainEscapeParam(textState), textState);
+                this.processDrawIcon(
+                    this.obtainEscapeParam(textState),
+                    textState
+                );
                 break;
-            case '{':
+            case "{":
             case textCode[tcGroup.INCREASE]:
                 this.makeFontBigger();
                 break;
-            case '}':
+            case "}":
             case textCode[tcGroup.DECREASE]:
                 this.makeFontSmaller();
                 break;
-            case 'AEND':
+            case "AEND":
                 $gameMessage.clearAlignLast();
                 break;
             default:
-                alias_Window_Base_processEscapeCharacter.call(this, code, textState);
+                alias_Window_Base_processEscapeCharacter.call(
+                    this,
+                    code,
+                    textState
+                );
                 break;
         }
     };
@@ -2761,7 +3096,8 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Window_Base.prototype.getFontFace = function () {
-        var langCode = RS.MessageSystem.Params.langCode || navigator.language.slice(0, 2);
+        var langCode =
+            RS.MessageSystem.Params.langCode || navigator.language.slice(0, 2);
         var fonts = RS.MessageSystem.Params.fonts[langCode];
         if (fonts) {
             return fonts;
@@ -2798,8 +3134,10 @@ RS.MessageSystem = RS.MessageSystem || {};
         this.contents.fontSize = RS.MessageSystem.Params.fontSize;
         this.contents.fontBold = false;
         this.contents.fontItalic = false;
-        this.contents.outlineWidth = RS.MessageSystem.Params.defaultOutlineWidth;
-        this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
+        this.contents.outlineWidth =
+            RS.MessageSystem.Params.defaultOutlineWidth;
+        this.contents.outlineColor =
+            RS.MessageSystem.Params.defaultOutlineColor;
         this.contents.fontGradient = false;
         this.contents.highlightTextColor = null;
         this.resetTextColor();
@@ -2822,68 +3160,120 @@ RS.MessageSystem = RS.MessageSystem || {};
         this._messageDesc = undefined;
     };
 
-    var alias_Window_Base_convertEscapeCharacters = Window_Base.prototype.convertEscapeCharacters;
+    var alias_Window_Base_convertEscapeCharacters =
+        Window_Base.prototype.convertEscapeCharacters;
     Window_Base.prototype.convertEscapeCharacters = function (text) {
         const regGroup = RS.MessageSystem.Reg.Group;
         const tcGroup = RS.MessageSystem.TextCodes.ENUM;
         const textCode = RS.MessageSystem.TextCodes.Main;
 
         text = alias_Window_Base_convertEscapeCharacters.call(this, text);
-        text = text.replace(regGroup[tcGroup.VAR], function (...args) {
-            return $gameVariables.value(parseInt(args[1]));
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.VAR], function (...args) {
-            return $gameVariables.value(parseInt(args[1]));
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.PLAYER], function (...args) {
-            return this.actorName(parseInt(args[1]));
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.PARTY_MEMBER], function (...args) {
-            return this.partyMemberName(parseInt(args[1]));
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.NUM], function (...args) {
-            return args[1].toComma();
-        }.bind(this));
+        text = text.replace(
+            regGroup[tcGroup.VAR],
+            function (...args) {
+                return $gameVariables.value(parseInt(args[1]));
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.VAR],
+            function (...args) {
+                return $gameVariables.value(parseInt(args[1]));
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.PLAYER],
+            function (...args) {
+                return this.actorName(parseInt(args[1]));
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.PARTY_MEMBER],
+            function (...args) {
+                return this.partyMemberName(parseInt(args[1]));
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.NUM],
+            function (...args) {
+                return args[1].toComma();
+            }.bind(this)
+        );
         text = text.replace(regGroup[tcGroup.GOLD], TextManager.currencyUnit);
-        text = text.replace(regGroup[tcGroup.CLASSES], function (...args) {
-            return $dataClasses[parseInt(args[1])].name || '';
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.ITEM], function (...args) {
-            return $dataItems[parseInt(args[1])].name || '';
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.WEAPON], function (...args) {
-            return $dataWeapons[parseInt(args[1])].name || '';
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.ARMOR], function (...args) {
-            return $dataArmors[parseInt(args[1])].name || '';
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.ENEMY], function (...args) {
-            return $dataEnemies[parseInt(args[1])].name || '';
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.STATE], function (...args) {
-            return $dataStates[parseInt(args[1])].name || '';
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.SKILL], function (...args) {
-            return $dataSkills[parseInt(args[1])].name || '';
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.ALIGN_LEFT], function () {
-            return '\x1b' + textCode[tcGroup.ALIGN] + "[0]";
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.ALIGN_CENTER], function () {
-            return '\x1b' + textCode[tcGroup.ALIGN] + "[1]";
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.ALIGN_RIGHT], function () {
-            return '\x1b' + textCode[tcGroup.ALIGN] + "[2]";
-        }.bind(this));
-        text = text.replace(regGroup[tcGroup.ALIGN], function (...args) {
-            if (!this._isUsedTextWidthEx) {
-                $gameMessage.setAlign(Number(args[1] || 0));
-            }
-            return '';
-        }.bind(this));
-        text = text.replace(/<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi, function () {
-            return regGroup[tcGroup.ALIGN_CLEAR].source;
-        }.bind(this));
+        text = text.replace(
+            regGroup[tcGroup.CLASSES],
+            function (...args) {
+                return $dataClasses[parseInt(args[1])].name || "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ITEM],
+            function (...args) {
+                return $dataItems[parseInt(args[1])].name || "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.WEAPON],
+            function (...args) {
+                return $dataWeapons[parseInt(args[1])].name || "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ARMOR],
+            function (...args) {
+                return $dataArmors[parseInt(args[1])].name || "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ENEMY],
+            function (...args) {
+                return $dataEnemies[parseInt(args[1])].name || "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.STATE],
+            function (...args) {
+                return $dataStates[parseInt(args[1])].name || "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.SKILL],
+            function (...args) {
+                return $dataSkills[parseInt(args[1])].name || "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ALIGN_LEFT],
+            function () {
+                return "\x1b" + textCode[tcGroup.ALIGN] + "[0]";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ALIGN_CENTER],
+            function () {
+                return "\x1b" + textCode[tcGroup.ALIGN] + "[1]";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ALIGN_RIGHT],
+            function () {
+                return "\x1b" + textCode[tcGroup.ALIGN] + "[2]";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ALIGN],
+            function (...args) {
+                if (!this._isUsedTextWidthEx) {
+                    $gameMessage.setAlign(Number(args[1] || 0));
+                }
+                return "";
+            }.bind(this)
+        );
+        text = text.replace(
+            /<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi,
+            function () {
+                return regGroup[tcGroup.ALIGN_CLEAR].source;
+            }.bind(this)
+        );
         return text;
     };
 
@@ -2892,7 +3282,7 @@ RS.MessageSystem = RS.MessageSystem || {};
      */
     Window_Base.prototype.textPadding = function () {
         return this.itemPadding();
-    }
+    };
 
     Window_Base.prototype.newLineX = function (textState) {
         return this.textPadding();
@@ -2919,7 +3309,8 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    var alias_Window_Base_processNewLine_align = Window_Base.prototype.processNewLine;
+    var alias_Window_Base_processNewLine_align =
+        Window_Base.prototype.processNewLine;
     Window_Base.prototype.processNewLine = function (textState) {
         alias_Window_Base_processNewLine_align.call(this, textState);
         this.processAlign(textState);
@@ -2932,13 +3323,15 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     Window_Base.prototype.setAlignCenter = function (textState) {
         var padding = this.textPadding();
-        textState.x = (this.newLineX(textState) + this.contentsWidth() + padding) / 2 - textState.outputWidth / 2;
+        textState.x =
+            (this.newLineX(textState) + this.contentsWidth() + padding) / 2 -
+            textState.outputWidth / 2;
         textState.startX = textState.x;
     };
 
     Window_Base.prototype.setAlignRight = function (textState) {
         var padding = this.textPadding();
-        textState.x = (this.contentsWidth() - padding) - textState.outputWidth;
+        textState.x = this.contentsWidth() - padding - textState.outputWidth;
         textState.startX = textState.x;
     };
 
@@ -2962,7 +3355,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             textState.index += arr[0].length;
             return String(arr[1]);
         } else {
-            return 'Empty Text';
+            return "Empty Text";
         }
     };
 
@@ -2976,8 +3369,12 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    var alias_Window_Message_processEscapeCharacter = Window_Message.prototype.processEscapeCharacter;
-    Window_Message.prototype.processEscapeCharacter = function (code, textState) {
+    var alias_Window_Message_processEscapeCharacter =
+        Window_Message.prototype.processEscapeCharacter;
+    Window_Message.prototype.processEscapeCharacter = function (
+        code,
+        textState
+    ) {
         var tcGroup = RS.MessageSystem.TextCodes.ENUM;
         var textCode = RS.MessageSystem.TextCodes.Main;
         switch (code) {
@@ -3021,14 +3418,17 @@ RS.MessageSystem = RS.MessageSystem || {};
                 this.setHighlightTextColor(this.obtainNameColor(textState));
                 break;
             case textCode[tcGroup.TAB]:
-                textState.x += Number(this.textWidth("A") * RS.MessageSystem.Params.TabSize);
+                textState.x += Number(
+                    this.textWidth("A") * RS.MessageSystem.Params.TabSize
+                );
                 break;
             case textCode[tcGroup.CARRIAGE_RETURN]:
                 textState.x = Number(textState.left || 0);
                 if (!this._isUsedTextWidthEx) this.startWait(1);
                 break;
             case textCode[tcGroup.PLAY_SE]:
-                if (!this._isUsedTextWidthEx) this.playSe(this.obtainSoundName(textState));
+                if (!this._isUsedTextWidthEx)
+                    this.playSe(this.obtainSoundName(textState));
                 break;
             case textCode[tcGroup.SHOW_PICTURE]:
                 if (this._isUsedTextWidthEx) break;
@@ -3040,12 +3440,16 @@ RS.MessageSystem = RS.MessageSystem || {};
                 this.startWait(15);
             case textCode[tcGroup.FACE]:
                 if (this._isUsedTextWidthEx) break;
-                var params = this.obtainSoundName(textState).split(',');
+                var params = this.obtainSoundName(textState).split(",");
                 // this.redrawFaceImage(textState, params[0], params[1], 0, 0);
                 this.startWait(1);
                 break;
             default:
-                alias_Window_Message_processEscapeCharacter.call(this, code, textState);
+                alias_Window_Message_processEscapeCharacter.call(
+                    this,
+                    code,
+                    textState
+                );
                 break;
         }
     };
@@ -3086,7 +3490,6 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Window_Message.prototype.setTextGradient = function (textState) {
-
         // TODO: 여기에서는 텍스트를 그리지 않는다.
         // TODO: 그레디언트 모드임을 명시하고 flush 단계에서 한 번에 그려야 한다 (배경색도 마찬가지이다)
         this.contents.fontGradient = true;
@@ -3095,20 +3498,26 @@ RS.MessageSystem = RS.MessageSystem || {};
     Window_Message.prototype.playSe = function (seName) {
         var realName = seName.trim();
         var data = {
-            "name": realName,
-            "pan": 0,
-            "pitch": 100,
-            "volume": ConfigManager.seVolume
+            name: realName,
+            pan: 0,
+            pitch: 100,
+            volume: ConfigManager.seVolume,
         };
         AudioManager.playSe(data);
     };
 
     Window_Message.prototype.showPicture = function (param) {
-        var param = param.split(',');
+        var param = param.split(",");
         var params = [
-            Number(param[0].trim()), param[1].trim(),
-            Number(param[2].trim()), Number(param[3].trim()),
-            Number(param[4].trim()), 100, 100, 255, 0
+            Number(param[0].trim()),
+            param[1].trim(),
+            Number(param[2].trim()),
+            Number(param[3].trim()),
+            Number(param[4].trim()),
+            100,
+            100,
+            255,
+            0,
         ];
         var ret = true;
 
@@ -3129,7 +3538,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Window_Message.prototype.erasePicture = function (picId) {
-        if (typeof picId !== 'number') return;
+        if (typeof picId !== "number") return;
         $gameScreen.erasePicture(picId);
     };
 
@@ -3153,7 +3562,12 @@ RS.MessageSystem = RS.MessageSystem || {};
         return RS.MessageSystem.Params.numVisibleRows;
     };
 
-    Window_Message.prototype.processWordWrap = function (textState, w, width, isValid) {
+    Window_Message.prototype.processWordWrap = function (
+        textState,
+        w,
+        width,
+        isValid
+    ) {
         const rtl = textState.rtl;
         const faceWidth = ImageManager.faceWidth;
         const faceDirection = RS.MessageSystem.Params.faceDirection;
@@ -3162,7 +3576,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         if (rtl) return;
 
         // 문자의 현재 위치에 글자가 그려지면 컨텐츠가 그려지는 비트맵의 폭보다 커지는 가?
-        if (Math.floor(textState.x + (w * 2)) > width) {
+        if (Math.floor(textState.x + w * 2) > width) {
             if (isValid) {
                 this.processNewLine(textState);
                 if (this.needsNewPage(textState)) {
@@ -3176,10 +3590,9 @@ RS.MessageSystem = RS.MessageSystem || {};
         if ($gameMessage.faceName() !== "") {
             // 내부 컨텐츠의 가로 크기 - 얼굴의 가로 크기로 길이를 조정한다.
             width = this.innerWidth - faceWidth;
-            isValid = (faceDirection === 2);
+            isValid = faceDirection === 2;
             this.processWordWrap(textState, width, innerWidth, isValid);
         }
-
     };
 
     Window_Message.prototype.isNextControlCharacter = function (c) {
@@ -3188,8 +3601,10 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     Window_Message.prototype.processCharacter = function (textState) {
         const c = textState.text[textState.index++];
-        let isValid = ($gameMessage.getBalloon() === -2) &&
-            !this._isUsedTextWidthEx && RS.MessageSystem.Params.isParagraphMinifier;
+        let isValid =
+            $gameMessage.getBalloon() === -2 &&
+            !this._isUsedTextWidthEx &&
+            RS.MessageSystem.Params.isParagraphMinifier;
         const innerWidth = this.innerWidth;
 
         // 다음 문자가 알만툴 이스케이프 문자인가?
@@ -3199,7 +3614,6 @@ RS.MessageSystem = RS.MessageSystem || {};
             // 이스케이프 문자 처리
             this.processControlCharacter(textState, c);
         } else {
-
             // 자동 개행 처리
             const width = this.textWidth(c);
             this.processWordWrap(textState, width, innerWidth, isValid);
@@ -3208,22 +3622,36 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    Window_Message.prototype.processNormalCharacter = function (textState, text, x, y, width, height) {
+    Window_Message.prototype.processNormalCharacter = function (
+        textState,
+        text,
+        x,
+        y,
+        width,
+        height
+    ) {
         const contents = this.contents;
 
         // 배경색을 그린다.
         if (contents.highlightTextColor !== null) {
             const pad = 1.0;
-            contents.fillRect(x, y, width + pad, height, contents.highlightTextColor);
+            contents.fillRect(
+                x,
+                y,
+                width + pad,
+                height,
+                contents.highlightTextColor
+            );
         }
 
         this.contents.drawText(text, x, y, width, height);
         this.resetGradient();
 
         !this._showFast && this.startWait($gameMessage.getWaitTime() || 0);
-    }
+    };
 
-    const alias_Window_Message_processAllText = Window_Message.prototype.processAllText
+    const alias_Window_Message_processAllText =
+        Window_Message.prototype.processAllText;
     Window_Message.prototype.processAllText = function (textState) {
         this._isUsedTextWidthEx = !textState.drawing;
         alias_Window_Message_processAllText.call(this, textState);
@@ -3233,7 +3661,7 @@ RS.MessageSystem = RS.MessageSystem || {};
      * 이 메소드는 텍스트를 한 번에 또는 각 글자마다 그리기 위해 만들어졌고,
      * 한글 메시지 시스템의 그레디언트 기능과 배경색 기능 그리고 자동 개행 기능을
      * 구현하려면 여기에 구현을 해야 한다.
-     * 
+     *
      * @param {MZ.TextState}
      */
     Window_Message.prototype.flushTextState = function (textState) {
@@ -3260,5 +3688,4 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     RS.MessageSystem.initSystem();
-
 })(RS.MessageSystem);

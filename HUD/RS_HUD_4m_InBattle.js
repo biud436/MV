@@ -136,7 +136,7 @@
  * @default [(W * 4) + PD, BH - H - PD]
  *
  * @help
- * 
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -173,13 +173,13 @@
  * 2018.05.09 (v1.2.5) - Fixed an issue that is not showing the image after it has been added.
  * 2019.11.19 (v1.2.6) :
  * - Supported a plugin called 'MPP_ActiveTimeBattle'
- * 2020.08.30 (v2.0.1) : 
+ * 2020.08.30 (v2.0.1) :
  * - This plugin is now also available in MZ.
  * - Fixed the issue that is not displayed a state icon on the hud.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m_InBattle = '2.0.0';
+Imported.RS_HUD_4m_InBattle = "2.0.0";
 
 var $gameHud = $gameHud || null;
 var RS = RS || {};
@@ -187,37 +187,43 @@ RS.HUD = RS.HUD || {};
 RS.HUD.param = RS.HUD.param || {};
 
 (() => {
-
     "use strict";
 
-    const pluginParams = $plugins.filter(i => {
-        return i.description.contains('<RS_HUD_4m_InBattle>');
+    const pluginParams = $plugins.filter((i) => {
+        return i.description.contains("<RS_HUD_4m_InBattle>");
     });
 
-    const pluginName = (pluginParams.length > 0) && pluginParams[0].name;
-    const parameters = (pluginParams.length > 0) && pluginParams[0].parameters;
+    const pluginName = pluginParams.length > 0 && pluginParams[0].name;
+    const parameters = pluginParams.length > 0 && pluginParams[0].parameters;
 
     Object.assign(RS.HUD.param, {
-        isWndsAlignment: Boolean(parameters['Auto Windows Alignment'] === 'true'),
-        imgEmptyBattleHUD: String(parameters['HUD Battle Background'] || 'hud_window_empty_inbattle'),
-        arrangementInBattle: eval(parameters['Arrangement']),
+        isWndsAlignment: Boolean(
+            parameters["Auto Windows Alignment"] === "true"
+        ),
+        imgEmptyBattleHUD: String(
+            parameters["HUD Battle Background"] || "hud_window_empty_inbattle"
+        ),
+        arrangementInBattle: eval(parameters["Arrangement"]),
 
         nBttleMememberSize: parseInt(parameters["Max Battle Members"] || 4),
 
         // Add TP Settings
-        imgTP: String(parameters['TP Gauge'] || 'exr'),
-        ptTP: RS.HUD.loadImagePosition(parameters['TP Position'] || '83, 91, true'),
-        tpTextSize: Number(parameters['TP Text Size']) || 12,
-        szTpColor: String(parameters['TP Color'] || '#ffffff'),
-        szTpOutlineColor: String(parameters['TP Outline Color'] || 'rgba(0, 0, 0, 0.5)'),
-        szTpOutlineWidth: Number(parameters['EXP Outline Width']) || 4,
+        imgTP: String(parameters["TP Gauge"] || "exr"),
+        ptTP: RS.HUD.loadImagePosition(
+            parameters["TP Position"] || "83, 91, true"
+        ),
+        tpTextSize: Number(parameters["TP Text Size"]) || 12,
+        szTpColor: String(parameters["TP Color"] || "#ffffff"),
+        szTpOutlineColor: String(
+            parameters["TP Outline Color"] || "rgba(0, 0, 0, 0.5)"
+        ),
+        szTpOutlineWidth: Number(parameters["EXP Outline Width"]) || 4,
 
         // Custom HUD Anchor
         ptCustormBattleAnchor: [],
     });
 
     Object.assign(RS.HUD, {
-
         loadCustomBattlePosition(sources) {
             const W = RS.HUD.param.nWidth;
             const H = RS.HUD.param.nHeight;
@@ -231,15 +237,20 @@ RS.HUD.param = RS.HUD.param || {};
                 return new Point(0, 0);
             }
         },
-    
+
         initBattleParameters() {
-            RS.HUD.param.nBttleMememberSize = Math.max(RS.HUD.param.nBttleMememberSize, $gameParty.size());
+            RS.HUD.param.nBttleMememberSize = Math.max(
+                RS.HUD.param.nBttleMememberSize,
+                $gameParty.size()
+            );
             for (let i = 0; i < RS.HUD.param.nBttleMememberSize; i++) {
                 const idx = parseInt(i + 1);
-                RS.HUD.param.ptCustormBattleAnchor[i] = RS.HUD.loadCustomBattlePosition(parameters['Pos ' + idx] || '0, 0');
+                RS.HUD.param.ptCustormBattleAnchor[i] =
+                    RS.HUD.loadCustomBattlePosition(
+                        parameters["Pos " + idx] || "0, 0"
+                    );
             }
-        }
-    
+        },
     });
 
     const alias_Scene_Boot_start = Scene_Boot.prototype.start;
@@ -253,41 +264,40 @@ RS.HUD.param = RS.HUD.param || {};
     //=================================================
 
     Object.assign(RS.HUD.Layer, {
-
         drawAllHud() {
-
             const allHud = this._items;
 
             let items = [];
-            if (SceneManager._scene instanceof Scene_Battle ||
+            if (
+                SceneManager._scene instanceof Scene_Battle ||
                 $gameParty.inBattle() ||
-                DataManager.isBattleTest()) {
+                DataManager.isBattleTest()
+            ) {
                 RS.HUD.initBattleParameters();
                 items = RS.HUD.param.arrangementInBattle;
             } else {
                 items = RS.HUD.param.arrangement;
             }
-    
+
             if (allHud.children.length > 0) {
                 allHud.removeChildren(0, allHud.children.length);
             }
-    
+
             items.forEach((item, index) => {
                 if (!!$gameParty.members()[index]) {
                     const m = new HUD({
                         szAnchor: item,
-                        nIndex: index
+                        nIndex: index,
                     });
                     allHud.addChild(m);
                 }
             });
-    
+
             this.sort();
-    
+
             this.show = $gameSystem._rs_hud.show;
             this.opacity = $gameSystem._rs_hud.opacity;
-    
-        }
+        },
     });
 
     //=================================================
@@ -297,13 +307,12 @@ RS.HUD.param = RS.HUD.param || {};
     const alias_HUD_getExp = HUD.prototype.getExp;
 
     Object.assign(HUD.prototype, {
-
         createVector() {
             alias_HUD_createVector.call(this);
             if (!this.inBattle()) return;
             this.createAllIcon();
         },
-    
+
         updateDeathEffect() {
             if (!this.inBattle()) return;
             if (this.getPlayer().isDead()) {
@@ -312,87 +321,148 @@ RS.HUD.param = RS.HUD.param || {};
                 this.setOpacityisNotGlobal(this.getOpacityValue(false));
             }
         },
-    
+
         updateSelectEffect() {
             if (!this.inBattle()) return;
             const target = this._face;
             const cond = BattleManager._actorIndex === this.getPlayer().index();
             this.checkForToneUpdate(target, cond);
         },
-    
+
         createHud() {
-            const name = (this.inBattle() && $dataSystem.optDisplayTp) ? RS.HUD.param.imgEmptyBattleHUD : RS.HUD.param.imgEmptyHUD;
+            const name =
+                this.inBattle() && $dataSystem.optDisplayTp
+                    ? RS.HUD.param.imgEmptyBattleHUD
+                    : RS.HUD.param.imgEmptyHUD;
             this._hud = new Sprite(RS.HUD.loadPicture(name));
             this.addChild(this._hud);
         },
-    
+
         createExp(dirty) {
-            const name = (this.inBattle() && $dataSystem.optDisplayTp) ? RS.HUD.param.imgTP : RS.HUD.param.imgEXP;
+            const name =
+                this.inBattle() && $dataSystem.optDisplayTp
+                    ? RS.HUD.param.imgTP
+                    : RS.HUD.param.imgEXP;
             this._exp = new Sprite(RS.HUD.loadPicture(name));
             this.addImage(this._exp, this.createExp.bind(this), dirty);
         },
-    
-        getTextParams(src) {
 
+        getTextParams(src) {
             const param = RS.HUD.param;
 
             const textProperties = {
-                'HP': [param.hpTextSize, param.szHpColor, param.szHpOutlineColor, param.szHpOutlineWidth],
-                'MP': [param.mpTextSize, param.szMpColor, param.szMpOutlineColor, param.szMpOutlineWidth],
-                'EXP': [param.expTextSize, param.szExpColor, param.szExpOutlineColor, param.szExpOutlineWidth],
-                'TP': [param.tpTextSize, param.szTpColor, param.szTpOutlineColor, param.szTpOutlineWidth],
-                'LEVEL': [param.levelTextSize, param.szLevelColor, param.szLevelOutlineColor, param.szLevelOutlineWidth],
-                'NAME': [param.nameTextSize, param.szNameColor, param.szNameOutlineColor, param.szNameOutlineWidth]
+                HP: [
+                    param.hpTextSize,
+                    param.szHpColor,
+                    param.szHpOutlineColor,
+                    param.szHpOutlineWidth,
+                ],
+                MP: [
+                    param.mpTextSize,
+                    param.szMpColor,
+                    param.szMpOutlineColor,
+                    param.szMpOutlineWidth,
+                ],
+                EXP: [
+                    param.expTextSize,
+                    param.szExpColor,
+                    param.szExpOutlineColor,
+                    param.szExpOutlineWidth,
+                ],
+                TP: [
+                    param.tpTextSize,
+                    param.szTpColor,
+                    param.szTpOutlineColor,
+                    param.szTpOutlineWidth,
+                ],
+                LEVEL: [
+                    param.levelTextSize,
+                    param.szLevelColor,
+                    param.szLevelOutlineColor,
+                    param.szLevelOutlineWidth,
+                ],
+                NAME: [
+                    param.nameTextSize,
+                    param.szNameColor,
+                    param.szNameOutlineColor,
+                    param.szNameOutlineWidth,
+                ],
             };
 
             return textProperties[src];
         },
-    
-        createText() {
-            const param = (this.inBattle() && $dataSystem.optDisplayTp) ? 'TP' : 'EXP';
 
-            this._hpText = this.addText(this.getHp.bind(this), this.getTextParams('HP'));
-            this._mpText = this.addText(this.getMp.bind(this), this.getTextParams('MP'));
-            this._expText = this.addText(this.getExp.bind(this), this.getTextParams(param));
-            this._levelText = this.addText(this.getLevel.bind(this), this.getTextParams('LEVEL'));
-            this._nameText = this.addText(this.getName.bind(this), this.getTextParams('NAME'));
+        createText() {
+            const param =
+                this.inBattle() && $dataSystem.optDisplayTp ? "TP" : "EXP";
+
+            this._hpText = this.addText(
+                this.getHp.bind(this),
+                this.getTextParams("HP")
+            );
+            this._mpText = this.addText(
+                this.getMp.bind(this),
+                this.getTextParams("MP")
+            );
+            this._expText = this.addText(
+                this.getExp.bind(this),
+                this.getTextParams(param)
+            );
+            this._levelText = this.addText(
+                this.getLevel.bind(this),
+                this.getTextParams("LEVEL")
+            );
+            this._nameText = this.addText(
+                this.getName.bind(this),
+                this.getTextParams("NAME")
+            );
         },
-    
+
         createAllIcon() {
-            this._Iconlayer = new Sprite(new Bitmap(Graphics.width, Graphics.height));
+            this._Iconlayer = new Sprite(
+                new Bitmap(Graphics.width, Graphics.height)
+            );
             this._Iconlayer.x = ImageManager.faceWidth + 10;
             this._hud.addChild(this._Iconlayer);
         },
-    
+
         getAnchor(magnet) {
             const anchor = RS.HUD.getDefaultHUDAnchor();
-    
+
             // Add Custom Anchor
             for (let i = 0; i < RS.HUD.param.nMaxMembers; i++) {
                 const idx = parseInt(i + 1);
-                anchor['Custom Pos ' + idx] = RS.HUD.param.ptCustormAnchor[i];
+                anchor["Custom Pos " + idx] = RS.HUD.param.ptCustormAnchor[i];
             }
-    
+
             if (this.inBattle()) {
                 // Set the offset
                 anchor["LeftTop"].x += Graphics.width / 8;
-                anchor["LeftTop"].y = Graphics.height - RS.HUD.param.nHeight * 2 - RS.HUD.param.nPD;
+                anchor["LeftTop"].y =
+                    Graphics.height -
+                    RS.HUD.param.nHeight * 2 -
+                    RS.HUD.param.nPD;
                 anchor["RightBottom"].x -= Graphics.width / 8;
-                anchor["LeftBottom"].y = Graphics.height - RS.HUD.param.nHeight - RS.HUD.param.nPD;
-                anchor["RightTop"].y = Graphics.height - RS.HUD.param.nHeight * 2 - RS.HUD.param.nPD;
-                anchor["RightBottom"].y = Graphics.height - RS.HUD.param.nHeight - RS.HUD.param.nPD;
-    
+                anchor["LeftBottom"].y =
+                    Graphics.height - RS.HUD.param.nHeight - RS.HUD.param.nPD;
+                anchor["RightTop"].y =
+                    Graphics.height -
+                    RS.HUD.param.nHeight * 2 -
+                    RS.HUD.param.nPD;
+                anchor["RightBottom"].y =
+                    Graphics.height - RS.HUD.param.nHeight - RS.HUD.param.nPD;
+
                 // Add Custom Anchor
                 for (let i = 0; i < RS.HUD.param.nBttleMememberSize; i++) {
                     const idx = parseInt(i + 1);
-                    anchor['Pos ' + idx] = RS.HUD.param.ptCustormBattleAnchor[i];
+                    anchor["Pos " + idx] =
+                        RS.HUD.param.ptCustormBattleAnchor[i];
                 }
-    
             }
-    
+
             return anchor[magnet];
         },
-    
+
         update() {
             this.paramUpdate();
             if (this.inBattle()) {
@@ -404,12 +474,13 @@ RS.HUD.param = RS.HUD.param || {};
             }
             this.updateToneForAll();
         },
-    
+
         refreshIcon() {
-            const x = 0, y = 0;
+            const x = 0,
+                y = 0;
             this.drawActorIcons(this.getPlayer(), x, y);
         },
-    
+
         drawActorIcons(actor, x, y, width) {
             if (this._Iconlayer) this._Iconlayer.bitmap.clear();
             width = width || 144;
@@ -418,32 +489,38 @@ RS.HUD.param = RS.HUD.param || {};
                 this.drawIcon(icons[i], x + 32 * i, y + 2);
             }
         },
-    
+
         drawIcon(iconIndex, x, y) {
-            const bitmap = ImageManager.loadSystem('IconSet');
+            const bitmap = ImageManager.loadSystem("IconSet");
             const pw = ImageManager.iconWidth;
             const ph = ImageManager.iconHeight;
             const sx = (iconIndex % 16) * pw;
             const sy = Math.floor(iconIndex / 16) * ph;
             this._Iconlayer.bitmap.blt(bitmap, sx, sy, pw, ph, x, y);
         },
-    
+
         getExp() {
             const player = this.getPlayer();
             if (!player) return HUD.GAUGE_EMPTY_TEXT;
             if (this.inBattle() && $dataSystem.optDisplayTp) {
-                return HUD.GAUGE_TEMPLATE_TEXT.format(player.tp, player.maxTp());
+                return HUD.GAUGE_TEMPLATE_TEXT.format(
+                    player.tp,
+                    player.maxTp()
+                );
             }
             return alias_HUD_getExp.call(this);
         },
-    
+
         getExpRate() {
             const player = this.getPlayer();
             if (!player) return 0.0;
             if (this.inBattle() && $dataSystem.optDisplayTp) {
                 return this._exp.bitmap.width * (player.tp / player.maxTp());
             } else {
-                return this._exp.bitmap.width * (player.relativeExp() / player.relativeMaxExp());
+                return (
+                    this._exp.bitmap.width *
+                    (player.relativeExp() / player.relativeMaxExp())
+                );
             }
         },
     });
@@ -483,21 +560,21 @@ RS.HUD.param = RS.HUD.param || {};
         $gameHud = null;
     };
 
-    const alias_Scene_Battle_createStatusWindow = Scene_Battle.prototype.createStatusWindow;
+    const alias_Scene_Battle_createStatusWindow =
+        Scene_Battle.prototype.createStatusWindow;
     Scene_Battle.prototype.createStatusWindow = function () {
         alias_Scene_Battle_createStatusWindow.call(this);
         this._statusWindow.hide();
     };
 
-    Window_BattleStatus.prototype.show = function() {
-        
-    };
+    Window_BattleStatus.prototype.show = function () {};
 
-    const Scene_Battle_createAllWindows = Scene_Battle.prototype.createAllWindows;
+    const Scene_Battle_createAllWindows =
+        Scene_Battle.prototype.createAllWindows;
     Scene_Battle.prototype.createAllWindows = function () {
         Scene_Battle_createAllWindows.call(this);
         if (RS.HUD.param.isWndsAlignment) {
-            this._windowLayer.children.forEach(i => {
+            this._windowLayer.children.forEach((i) => {
                 if (!(i === this._logWindow || i === this._helpWindow)) {
                     i.y = Graphics.height / 2 - i.height / 2;
                 }
@@ -509,11 +586,12 @@ RS.HUD.param = RS.HUD.param || {};
     // Window_BattleStatus
     //=================================================
 
-    const alias_Window_BattleStatus_update = Window_BattleStatus.prototype.update;
-    Window_BattleStatus.prototype.update = function() {
+    const alias_Window_BattleStatus_update =
+        Window_BattleStatus.prototype.update;
+    Window_BattleStatus.prototype.update = function () {
         alias_Window_BattleStatus_update.call(this);
         if (!$gameHud) return;
-        $gameHud._items.children.forEach(i => i.refreshIcon());
+        $gameHud._items.children.forEach((i) => i.refreshIcon());
     };
 
     //=================================================
@@ -524,7 +602,7 @@ RS.HUD.param = RS.HUD.param || {};
         getAtbRate() {
             return this.tpbChargeTime() / 1.0;
         },
-    
+
         getChargeRate() {
             return this.tpbChargeTime();
         },
@@ -534,27 +612,33 @@ RS.HUD.param = RS.HUD.param || {};
         rsDrawArc(x, y, r, startingAngle, endingAngle, color) {
             const ctx = this._context;
             const grd = ctx.createLinearGradient(0, 0, 110, 65);
-    
+
             grd.addColorStop(0, color);
-            grd.addColorStop(1, 'rgba(230,230,230,0.0)');
-    
+            grd.addColorStop(1, "rgba(230,230,230,0.0)");
+
             ctx.save();
             ctx.beginPath();
             ctx.lineWidth = "3";
-            ctx.arc(x + r + 1, y + r + 4, r - 1, startingAngle, endingAngle, true);
+            ctx.arc(
+                x + r + 1,
+                y + r + 4,
+                r - 1,
+                startingAngle,
+                endingAngle,
+                true
+            );
             ctx.strokeStyle = grd;
             ctx.globalAlpha = 0.9;
             ctx.stroke();
             ctx.restore();
-    
+
             this._baseTexture.update();
-    
-        }
+        },
     });
 
     //=================================================
     // TPB
-    //=================================================    
+    //=================================================
 
     HUD.RAD = Math.PI / 180.0;
     HUD.PI2 = Math.PI * 2;
@@ -562,26 +646,27 @@ RS.HUD.param = RS.HUD.param || {};
     const alias_HUD_ATB_createVector = HUD.prototype.createVector;
 
     Object.assign(HUD.prototype, {
-
         createVector() {
             alias_HUD_ATB_createVector.call(this);
             if (!BattleManager.isActiveTpb()) return;
             if (!this.inBattle()) return;
             this.createATBGauge();
             this.createArrow();
-        },                    
+        },
 
         createATBGauge() {
             if (!BattleManager.isActiveTpb()) return;
             if (!this.inBattle()) return;
 
-            this._AtbGauge = new Sprite(new Bitmap(RS.HUD.param.nWidth, RS.HUD.param.nHeight * 2));
+            this._AtbGauge = new Sprite(
+                new Bitmap(RS.HUD.param.nWidth, RS.HUD.param.nHeight * 2)
+            );
             this._AtbGauge.x = this._hud.x;
             this._AtbGauge.y = this._hud.y;
 
             this.addChild(this._AtbGauge);
         },
-    
+
         createArrow() {
             if (!BattleManager.isActiveTpb()) return;
             if (!this.inBattle()) return;
@@ -594,18 +679,18 @@ RS.HUD.param = RS.HUD.param || {};
             this.drawArraow(45.0, 0.0);
             this.addChild(this._AtbArrow);
         },
-         
+
         convertRad(degree) {
             return (Math.PI / 180.0) * degree;
         },
-    
+
         updateBattleHud() {
             if (!BattleManager.isActiveTpb()) return;
             if (!this.inBattle()) return;
             const player = this.getPlayer();
             this.drawAtbGauge(player.getAtbRate());
         },
-    
+
         drawAtbGauge(rate) {
             if (!BattleManager.isActiveTpb()) return;
             if (!this.inBattle()) return;
@@ -613,38 +698,37 @@ RS.HUD.param = RS.HUD.param || {};
             const y = 0;
             const r = 45;
             const sAngle = 0;
-            const eAngle = (HUD.PI2) * rate.clamp(0, 1);
-            let color = 'rgba(147,112,219,0.9)';
+            const eAngle = HUD.PI2 * rate.clamp(0, 1);
+            let color = "rgba(147,112,219,0.9)";
             if (rate >= 1) {
-                color = 'rgba(205,92,92,0.9)';
+                color = "rgba(205,92,92,0.9)";
                 this._AtbArrow.visible = false;
             } else {
-                color = 'rgba(147,112,219,0.9)';
+                color = "rgba(147,112,219,0.9)";
                 this._AtbArrow.visible = true;
             }
             this._AtbGauge.bitmap.clear();
             this._AtbGauge.bitmap.rsDrawArc(x, y, r, sAngle, -eAngle, color);
             this.setArraowPosition(r, rate);
         },
-    
+
         setArraowPosition(r, rate) {
             if (!BattleManager.isActiveTpb()) return;
             if (!this.inBattle()) return;
 
-            const dx = (this._hud.x + r + 1) + r * Math.cos(HUD.PI2 * rate);
-            const dy = (this._hud.y + r + 4) + r * Math.sin(-HUD.PI2 * rate);
+            const dx = this._hud.x + r + 1 + r * Math.cos(HUD.PI2 * rate);
+            const dy = this._hud.y + r + 4 + r * Math.sin(-HUD.PI2 * rate);
 
-            this._AtbArrow.rotation = (-HUD.PI2) * rate;
+            this._AtbArrow.rotation = -HUD.PI2 * rate;
             this._AtbArrow.x = dx;
             this._AtbArrow.y = dy;
         },
-    
+
         drawArraow(r, rate) {
             if (!BattleManager.isActiveTpb()) return;
             if (!this.inBattle()) return;
-            const bitmap = ImageManager.loadSystem('Window');
+            const bitmap = ImageManager.loadSystem("Window");
             this._AtbArrow.bitmap.blt(bitmap, 132, 24, 20, 20, 0, 0);
         },
     });
-
 })();

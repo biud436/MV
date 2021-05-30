@@ -119,7 +119,6 @@ RS_FontFinder.js
 mplus-1m-regular.woff
 RS_Hangul.js
 External
-*.ts
 data/*.*
 .dat
 .txt
