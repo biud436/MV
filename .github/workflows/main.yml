@@ -2,38 +2,39 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master ]
+    # Triggers the workflow on push or pull request events but only for the master branch
+    push:
+        branches: [master]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Oracle Cloud에 ssh로 접속해서 scripts 실행시키기
-        uses: appleboy/ssh-action@master
-        env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
-          GIT_USEREMAIL: ${{ secrets.GIT_USEREMAIL }}
-        with:
-          host: ${{ secrets.ORACLE_HOST }}
-          username: ${{ secrets.ORACLE_USERNAME }}
-          key: ${{ secrets.ORACLE_PRIVATE_KEY }}
-          envs: GIT_USERNAME,GIT_PASSWORD
-          script: |
-            cd ~/MZ
-            git checkout master
-            git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MZ master
-            cd ~/MV
-            git checkout mz
-            git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV mz
-            date > generated.txt
-            commit_message=$(date)
-            cp -rf ~/MZ/* ~/MV
-            git add .
-            git commit -m "AUTO COMMIT : $commit_message"
-            git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV.git
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Oracle Cloud에 ssh로 접속해서 scripts 실행시키기
+              uses: appleboy/ssh-action@master
+              env:
+                  GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+                  GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
+                  GIT_USEREMAIL: ${{ secrets.GIT_USEREMAIL }}
+              with:
+                  host: ${{ secrets.ORACLE_HOST }}
+                  username: ${{ secrets.ORACLE_USERNAME }}
+                  key: ${{ secrets.ORACLE_PRIVATE_KEY }}
+                  envs: GIT_USERNAME,GIT_PASSWORD
+                  script: |
+                      cd ~/MZ
+                      git checkout master
+                      git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MZ master
+                      git log -1 | tail -1 > generated.txt
+                      cd ~/MV
+                      git checkout mz
+                      git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV mz
+                      commit_message=$(cat ../MZ/generated.txt)
+                      rm -rf ../MZ/generated.txt
+                      cp -rf ~/MZ/* ~/MV
+                      git add .
+                      git commit -m "AUTO COMMIT : $commit_message"
+                      git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV.git
