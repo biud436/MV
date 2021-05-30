@@ -32,8 +32,8 @@ jobs:
                       cd ~/MV
                       git checkout mz
                       git pull https://$GIT_USERNAME:$GIT_PASSWORD@github.com/biud436/MV mz
-                      commit_message=$(cat ../MZ/generated.txt)
-                      rm -rf ../MZ/generated.txt
+                      commit_message=$(cat ~/MZ/generated.txt)
+                      rm -rf ~/MZ/generated.txt
                       cp -rf ~/MZ/* ~/MV
                       git add .
                       git commit -m "AUTO COMMIT : $commit_message"
