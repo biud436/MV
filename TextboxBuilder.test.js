@@ -105,7 +105,7 @@ class TextBoxBuilder {
 
             // set injected style.
             if (root.injectedStyle) {
-                elem.setAttribute(style, root.injectedStyle);
+                elem.setAttribute("style", root.injectedStyle);
             }
 
             // set children.
