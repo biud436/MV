@@ -103,6 +103,11 @@ class TextBoxBuilder {
                 }
             }
 
+            // set injected style.
+            if (root.injectedStyle) {
+                elem.setAttribute(style, root.injectedStyle);
+            }
+
             // set children.
             if (root.children) {
                 // parent node를 이것으로 설정
