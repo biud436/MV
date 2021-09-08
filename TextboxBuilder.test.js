@@ -1,27 +1,34 @@
 function createVirutalElement(tagName) {
     // check whether the browser or node.js
     if (typeof document === "undefined") {
-        var jsdom = require("jsdom").JSDOM;
-        var doc = new jsdom("<html><body></body></html>");
-        var document = doc.window.document;
+        const jsdom = require("jsdom").JSDOM;
+        const doc = new jsdom("<html><body></body></html>");
+        const document = doc.window.document;
 
         return document.createElement(tagName);
     } else {
+        if (tagName === "body") return document.body;
         return document.createElement(tagName);
     }
+}
 
-    // return {
-    //     tagName: tagName,
-    //     attributes: {},
-    //     className: "",
-    //     children: [],
-    //     setAttribute(name, value) {
-    //         this.attributes[name] = value;
-    //     },
-    //     appendChild(child) {
-    //         this.children.push(child);
-    //     },
-    // };
+function toCamelCase(name) {
+    const snake = name || "";
+
+    let nodes = snake.split(/[\s\-]/);
+    let nodesTail = nodes.slice(1);
+
+    const camel = nodes[0].concat(
+        nodesTail.map((i) => {
+            return i[0].toUpperCase() + i.slice(1);
+        })
+    );
+    return camel;
+}
+
+function getClassName(name) {
+    const str = toCamelCase(name);
+    return str.slice(0, 1).toUpperCase() + str.slice(1);
 }
 
 /**
