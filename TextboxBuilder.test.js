@@ -1,18 +1,32 @@
 function createVirutalElement(tagName) {
-    return {
-        tagName: tagName,
-        attributes: {},
-        className: "",
-        children: [],
-        setAttribute(name, value) {
-            this.attributes[name] = value;
-        },
-        appendChild(child) {
-            this.children.push(child);
-        },
-    };
+    // check whether the browser or node.js
+    if (typeof document === "undefined") {
+        var jsdom = require("jsdom").JSDOM;
+        var doc = new jsdom("<html><body></body></html>");
+        var document = doc.window.document;
+
+        return document.createElement(tagName);
+    } else {
+        return document.createElement(tagName);
+    }
+
+    // return {
+    //     tagName: tagName,
+    //     attributes: {},
+    //     className: "",
+    //     children: [],
+    //     setAttribute(name, value) {
+    //         this.attributes[name] = value;
+    //     },
+    //     appendChild(child) {
+    //         this.children.push(child);
+    //     },
+    // };
 }
 
+/**
+ * @type {HTMLElement}
+ */
 const body = createVirutalElement("body");
 
 /**
@@ -83,8 +97,6 @@ class TextBoxBuilder {
         };
 
         virtualRender(rootElement);
-
-        console.log(JSON.stringify(body));
     }
 
     prepareElement() {
