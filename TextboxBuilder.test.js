@@ -123,6 +123,68 @@ class TextBoxBuilder {
 
         virtualRender(rootElement);
     }
+
+    prepareElement() {
+        return {
+            root: {
+                class: "inputDialogContainer",
+                tagName: "table",
+                children: [
+                    {
+                        tagName: "tr",
+                        children: [
+                            {
+                                tagName: "td",
+                                class: "col",
+                                children: [
+                                    {
+                                        tagName: "input",
+                                        type: "text",
+                                        id: "RS.InputDialog.Params.szTextBoxId",
+                                        class: "inputDialog",
+                                        placeholder:
+                                            "RS.InputDialog.Params.localText",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        tagName: "tr",
+                        class: "row",
+                        attributes: {
+                            valign: "bottom",
+                        },
+                        children: [
+                            {
+                                tagName: "td",
+                                class: "col",
+                                attributes: {
+                                    align: "right",
+                                },
+                                children: [
+                                    {
+                                        tagName: "input",
+                                        type: "button",
+                                        class: "defaultButton",
+                                        id: "inputDialog-OkBtn",
+                                        value: "RS.InputDialog.Params.okButtonName",
+                                    },
+                                    {
+                                        tagName: "input",
+                                        type: "button",
+                                        class: "defaultButton",
+                                        id: "inputDialog-CancelBtn",
+                                        value: "RS.InputDialog.Params.cancelButtonName",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        };
+    }
 }
 
 const textBoxBuilder = new TextBoxBuilder();
