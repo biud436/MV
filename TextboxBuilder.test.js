@@ -93,6 +93,16 @@ class TextBoxBuilder {
                 elem.setAttribute("value", root.value);
             }
 
+            // set style.
+            if (root.style) {
+                // change snake to camel.
+                const propertyName = utils.toCamelCase(style);
+
+                for (const style in root.style) {
+                    elem.style[propertyName] = root.style[style];
+                }
+            }
+
             // set children.
             if (root.children) {
                 // parent node를 이것으로 설정
