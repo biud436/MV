@@ -18,6 +18,8 @@
  * =======================================================================
  * 2021.05.08 (v1.0.1) :
  * - Removed the strikethrough on the KeyboardEvent.keycode.
+ * 2021.10.11 (v1.0.2) :
+ * - Fixed an event listener for the key code of the 'F12' key.
  */
 var Imported = Imported || {};
 Imported.RS_Focus = true;
@@ -58,9 +60,6 @@ RS.Focus = RS.Focus || {};
                     break;
                 case "F8": // F8
                     this.showDevTools();
-                    break;
-                case "F12": // F12
-                    event.preventDefault();
                     break;
             }
         }
