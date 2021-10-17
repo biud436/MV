@@ -14,7 +14,7 @@ Imported.RS_GraphicsMenu = true;
  * @target MZ
  * @plugindesc This plugin allows you to indicate the menu as an image <RS_GraphicsMenu>
  * @author biud436
- * @url biud436.tistory.com
+ * @url https://biud436.tistory.com
  *
  * @param Menu Image
  * @type file

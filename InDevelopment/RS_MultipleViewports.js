@@ -10,6 +10,7 @@
  * @target MZ
  * @plugindesc (v1.2.2) This plugin provides the multiple viewports. <RS_MultipleViewports>
  * @author biud436
+ * @url https://biud436.tistory.com
  *
  * @param Maximum viewport
  * @type number

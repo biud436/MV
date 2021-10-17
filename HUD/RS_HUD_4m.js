@@ -11,7 +11,7 @@
  * @target MZ
  * @plugindesc (v2.0.0) This plugin allows you show up the HUD elements. <RS_HUD_4m>
  * @author biud436
- * @url biud436.tistory.com
+ * @url https://biud436.tistory.com
  *
  * @param --- Image Name
  *

@@ -10,6 +10,7 @@
  * @target MZ
  * @plugindesc This plugin allows you to type the Korean <RS_HangulInput>
  * @author biud436
+ * @url https://biud436.tistory.com
  *
  * @param variableId
  * @text Variable ID

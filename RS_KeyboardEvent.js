@@ -13,7 +13,7 @@ Imported.RS_KeyboardEvent = true;
  * @target MZ
  * @plugindesc (v1.01) 수동으로 키보드 이벤트를 만들고 브라우저에 키보드 입력 이벤트를 보냅니다.
  * @author biud436
- * @url https://biud436.blog.me
+ * @url https://biud436.tistory.com
  *
  * @help
  * =============================================================================

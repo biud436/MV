@@ -10,6 +10,7 @@
  * @target MZ
  * @plugindesc This plugin allows you to type the name in Arabic <RS_ArabicNameEdit>
  * @author biud436
+ * @url https://biud436.tistory.com
  *
  * @param Font
  * @desc Specify the font face as you want.

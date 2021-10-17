@@ -9,8 +9,8 @@
 /*:
  * @target MZ
  * @plugindesc (v1.0.10) This plugin allows you to create or copy or delete an event. <RS_EventCreate>
- *
  * @author biud436
+ * @url https://biud436.tistory.com
  *
  * @param Default Event Data
  * @type struct<EventData>

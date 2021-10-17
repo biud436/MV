@@ -10,7 +10,7 @@
  * @target MZ
  * @plugindesc This plugin allows you to start playback of the YouTube video <RS_YoutubePlayer>
  * @author biud436
- * @url biud436.tistory.com
+ * @url https://biud436.tistory.com
  *
  * @param Video Quality
  * @desc highres, hd1080, hd720, large, medium, small

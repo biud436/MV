@@ -12,7 +12,7 @@
  * @base RS_HUD_4m
  * @plugindesc (v2.0.1) <RS_HUD_4m_InBattle>
  * @author biud436
- * @url biud436.tistory.com
+ * @url https://biud436.tistory.com
  *
  * @param --- Image Name
  *
