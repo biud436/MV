@@ -1283,7 +1283,7 @@
  *   \테두리크기[값]
  *   \들여쓰기[값]
  *   \파티원[번호]
- *   \주인공[번호]
+ *   \파티원[번호]
  *   \변수[번호]
  *   \아이콘[번호]
  *
@@ -1770,7 +1770,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     //============================================================================
 
     RS.MessageSystem.Reg.KoreanEscapeCode =
-        /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-ퟻ]+[!]*/i;
+        /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-힣]+[!]*/i;
     RS.MessageSystem.Reg.ChineseEscapeCode =
         /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z一-鼣]+[!]*/i;
     RS.MessageSystem.Reg.EnglishEscapeCode =
@@ -1778,7 +1778,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     RS.MessageSystem.Reg.JapaneseEscapeCode =
         /^[\$\.\|\^!><\{\}\\]|^[A-Z\u3040-\u309F\u30A0-\u30FF\u3300-\u33FF\u4E00-\u9FFF\uFF00-\uFFEF]+[!]*/i;
     RS.MessageSystem.Reg.defaultEscapeCode =
-        /^[\$\.\|\^!><\{\}\\]|^[A-Z가-ퟻ]+[!]*/i;
+        /^[\$\.\|\^!><\{\}\\]|^[A-Z가-힣]+[!]*/i;
 
     RS.MessageSystem.TextCodes = (function () {
         const rowData = RS.MessageSystem.popParameter(
@@ -1885,13 +1885,13 @@ RS.MessageSystem = RS.MessageSystem || {};
      * @return {Object} meta
      */
     RS.MessageSystem.getEventComments = function (eventId, index) {
-        var data = {
+        let data = {
             note: "",
             meta: {},
         };
         try {
             // 리스트를 가져옵니다.
-            var list = $gameMap.event(eventId).list();
+            let list = $gameMap.event(eventId).list();
 
             // 바로 이전 인덱스에 노트 태그가 있었는 지 확인합니다.
             if (index < 0) index = 0;
@@ -1908,7 +1908,7 @@ RS.MessageSystem = RS.MessageSystem || {};
                 }
             }
 
-            var param = list[index];
+            const param = list[index];
 
             // 코멘트를 읽어옵니다.
             while (param && [108, 408].contains(param.code)) {
@@ -1935,10 +1935,10 @@ RS.MessageSystem = RS.MessageSystem || {};
             }
 
             // 노트 태그를 추출합니다 (DataManager.extractMetadata의 변형입니다)
-            var re = /<([^<>:]+)(:?)([^>]*)>/g;
+            const re = /<([^<>:]+)(:?)([^>]*)>/g;
             data.meta = {};
             for (;;) {
-                var match = re.exec(data.note);
+                const match = re.exec(data.note);
                 if (match) {
                     if (match[2] === ":") {
                         data.meta[match[1].trim()] = match[3];
@@ -3418,142 +3418,6 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     Window_Message.prototype.numVisibleRows = function () {
         return RS.MessageSystem.Params.numVisibleRows;
-    };
-
-    Window_Message.prototype.processWordWrap = function (
-        textState,
-        w,
-        width,
-        isValid
-    ) {
-        // const rtl = textState.rtl;
-        // const faceWidth = ImageManager.faceWidth;
-        // const faceDirection = RS.MessageSystem.Params.faceDirection;
-
-        // // 아랍어 모드인가?
-        // if (rtl) return;
-
-        // // 문자의 현재 위치에 글자가 그려지면 컨텐츠가 그려지는 비트맵의 폭보다 커지는 가?
-        // if (Math.floor(textState.x + w * 2) > width) {
-        //     if (isValid) {
-        //         this.processNewLine(textState);
-        //         if (this.needsNewPage(textState)) {
-        //             textState.index--;
-        //             this.startPause();
-        //         }
-        //     }
-        // }
-
-        // // 얼굴 이미지가 있고 오른쪽인가?
-        // if ($gameMessage.faceName() !== "") {
-        //     // 내부 컨텐츠의 가로 크기 - 얼굴의 가로 크기로 길이를 조정한다.
-        //     width = this.innerWidth - faceWidth;
-        //     isValid = faceDirection === 2;
-        //     this.processWordWrap(textState, width, innerWidth, isValid);
-        // }
-
-        if (Math.floor(textState.x + w * 2) > width) {
-            if (isValid) {
-                this.processNewLine(textState);
-                textState.index--;
-                if (this.needsNewPage(textState)) {
-                    textState.index--;
-                    this.startPause();
-                }
-            }
-        }
-    };
-
-    Window_Message.prototype.isNextControlCharacter = function (c) {
-        return c.charCodeAt(0) < 0x20;
-    };
-
-    Window_Message.prototype.processCharacter = function (textState) {
-        const c = textState.text[textState.index++];
-        let isValid =
-            $gameMessage.getBalloon() === -2 &&
-            !this._isUsedTextWidthEx &&
-            RS.MessageSystem.Params.isParagraphMinifier;
-        const innerWidth = this.innerWidth;
-
-        // 다음 문자가 알만툴 이스케이프 문자인가?
-        if (this.isNextControlCharacter(c)) {
-            // 모아둔 텍스트 버퍼를 방출하고 화면에 그린다.
-            this.flushTextState(textState);
-            // 이스케이프 문자 처리
-            this.processControlCharacter(textState, c);
-        } else {
-            // 자동 개행 처리
-            const width = this.textWidth(c);
-            this.processWordWrap(textState, width, innerWidth, isValid);
-
-            textState.buffer += c;
-        }
-    };
-
-    Window_Message.prototype.processNormalCharacter = function (
-        textState,
-        text,
-        x,
-        y,
-        width,
-        height
-    ) {
-        const contents = this.contents;
-
-        // 배경색을 그린다.
-        if (contents.highlightTextColor !== null) {
-            const pad = 1.0;
-            contents.fillRect(
-                x,
-                y,
-                width + pad,
-                height,
-                contents.highlightTextColor
-            );
-        }
-
-        this.contents.drawText(text, x, y, width, height);
-        this.resetGradient();
-
-        !this._showFast && this.startWait($gameMessage.getWaitTime() || 0);
-    };
-
-    const alias_Window_Message_processAllText =
-        Window_Message.prototype.processAllText;
-    Window_Message.prototype.processAllText = function (textState) {
-        this._isUsedTextWidthEx = !textState.drawing;
-        alias_Window_Message_processAllText.call(this, textState);
-    };
-
-    /**
-     * 이 메소드는 텍스트를 한 번에 또는 각 글자마다 그리기 위해 만들어졌고,
-     * 한글 메시지 시스템의 그레디언트 기능과 배경색 기능 그리고 자동 개행 기능을
-     * 구현하려면 여기에 구현을 해야 한다.
-     *
-     * @param {MZ.TextState}
-     */
-    Window_Message.prototype.flushTextState = function (textState) {
-        const text = textState.buffer;
-        const rtl = textState.rtl;
-        const width = this.textWidth(text);
-        const height = textState.height;
-        const x = rtl ? textState.x - width : textState.x;
-        const y = textState.y;
-
-        if (textState.drawing) {
-            this.processNormalCharacter(textState, text, x, y, width, height);
-        }
-
-        textState.x += rtl ? -width : width;
-        textState.buffer = this.createTextBuffer(rtl);
-
-        const outputWidth = Math.abs(textState.x - textState.startX);
-        if (textState.outputWidth < outputWidth) {
-            textState.outputWidth = outputWidth;
-        }
-
-        textState.outputHeight = y - textState.startY + height;
     };
 
     RS.MessageSystem.initSystem();
