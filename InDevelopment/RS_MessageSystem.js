@@ -3415,9 +3415,26 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     // 폰트 사이즈 설정 메서드는 MZ에서 없다
-
     Window_Message.prototype.numVisibleRows = function () {
         return RS.MessageSystem.Params.numVisibleRows;
+    };
+
+    Window_Message.prototype.processWordWrap = function (
+        textState,
+        w,
+        width,
+        isValid
+    ) {
+        if (Math.floor(textState.x + w * 2) > width) {
+            if (isValid) {
+                this.processNewLine(textState);
+                textState.index--;
+                if (this.needsNewPage(textState)) {
+                    textState.index--;
+                    this.startPause();
+                }
+            }
+        }
     };
 
     RS.MessageSystem.initSystem();
