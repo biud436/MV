@@ -3185,6 +3185,17 @@ var Color = Color || {};
         this._messageDesc = undefined;
     };
 
+    Window_Base.prototype.changeTextColor = function (color) {
+        var c = parseInt(color);
+        // 색상 코드가 숫자인 경우
+        if (c > 0 && c < 32) {
+            color = ColorManager.textColor(color);
+        }
+        if (!this._isUsedTextWidthEx) {
+            this.contents.textColor = color;
+        }
+    };
+
     var alias_Window_Base_convertEscapeCharacters =
         Window_Base.prototype.convertEscapeCharacters;
     Window_Base.prototype.convertEscapeCharacters = function (text) {
