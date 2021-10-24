@@ -3446,8 +3446,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         alias_Window_Message_processCharacter.call(this, textState);
 
         const postBuffer = textState.buffer || "";
-        const postLen = postBuffer.length;
-
+        const postLen = postBuffer;
         if (preLen !== postLen) {
             isDirty = true;
         }
@@ -3455,7 +3454,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         if (isDirty) {
             // extract the latest character from the buffer.
             const c = textState.buffer.slice(-1);
-            this.processNormalCharacter(textState, c);
+            this.processNormalCharacterProxy(textState, c);
         }
     };
 
