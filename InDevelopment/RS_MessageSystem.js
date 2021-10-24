@@ -3437,5 +3437,35 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
+    const alias_Window_Message_processCharacter =
+        Window_Message.prototype.processCharacter;
+    Window_Message.prototype.processCharacter = function (textState) {
+        let isDirty = false;
+        const preBuffer = textState.buffer || "";
+        let preLen = preBuffer.length;
+        alias_Window_Message_processCharacter.call(this, textState);
+
+        const postBuffer = textState.buffer || "";
+        const postLen = postBuffer.length;
+
+        if (preLen !== postLen) {
+            isDirty = true;
+        }
+
+        if (isDirty) {
+            // extract the latest character from the buffer.
+            const c = textState.buffer.slice(-1);
+            this.processNormalCharacter(textState, c);
+        }
+    };
+
+    Window_Message.prototype.processNormalCharacterProxy = function (
+        textState,
+        c
+    ) {
+        console.dir(textState);
+        console.log("Current Character : " + c);
+    };
+
     RS.MessageSystem.initSystem();
 })(RS.MessageSystem);
