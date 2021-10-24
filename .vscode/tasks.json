@@ -4,7 +4,7 @@
         {
             "type": "shell",
             "label": "Copy file",
-            "command": "cp -r /Users/u/MZ/InDevelopment/RS_MessageSystem.js /Users/u/Documents/RMMZ/Project1/js/plugins/RS_MessageSystem.js",
+            "command": "cp -r ${file} /Users/u/Documents/RMMZ/Project1/js/plugins/${fileBasename}",
             "isBackground": true
         }
     ]
