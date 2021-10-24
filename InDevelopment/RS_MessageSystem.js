@@ -3476,7 +3476,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         Window_Message.prototype.flushTextState;
     Window_Message.prototype.flushTextState = function (textState) {
         // 기본 지연 시간 설정
-        if (!this.isEndOfText(textState)) {
+        if (!this.isEndOfText(textState) && !this._isUsedTextWidthEx) {
             this.startWait($gameMessage.getWaitTime());
         }
         alias_Window_Message_flushTextState.call(this, textState);
