@@ -3443,6 +3443,9 @@ RS.MessageSystem = RS.MessageSystem || {};
         let isDirty = false;
         const preBuffer = textState.buffer || "";
         let preLen = preBuffer.length;
+
+        // 텍스트 속도가 기본값이 아닐 경우,
+        // wait를 걸어준 후, flush 처리를 해야 한다.
         alias_Window_Message_processCharacter.call(this, textState);
 
         const postBuffer = textState.buffer || "";
@@ -3462,6 +3465,9 @@ RS.MessageSystem = RS.MessageSystem || {};
         textState,
         c
     ) {
+        // MZ에서는 텍스트 상태(textState)가 다음 제어 문자가 등장해야 flush 처리된다.
+        // 따라서 이곳에서는 텍스트가 그려질 수 없다.
+        // Note that it does not update the textState before the chcater control code appears.
         console.dir(textState);
         console.log("Current Character : " + c);
     };
