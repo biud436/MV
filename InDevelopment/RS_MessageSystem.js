@@ -3472,5 +3472,15 @@ RS.MessageSystem = RS.MessageSystem || {};
         console.log("Current Character : " + c);
     };
 
+    const alias_Window_Message_flushTextState =
+        Window_Message.prototype.flushTextState;
+    Window_Message.prototype.flushTextState = function (textState) {
+        // 기본 지연 시간 설정
+        if (!this.isEndOfText(textState)) {
+            this.startWait($gameMessage.getWaitTime());
+        }
+        alias_Window_Message_flushTextState.call(this, textState);
+    };
+
     RS.MessageSystem.initSystem();
 })(RS.MessageSystem);
