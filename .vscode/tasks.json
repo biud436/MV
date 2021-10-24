@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Copy file",
+            "command": "cp -r /Users/u/MZ/InDevelopment/RS_MessageSystem.js /Users/u/Documents/RMMZ/Project1/js/plugins/RS_MessageSystem.js",
+            "isBackground": true
+        }
+    ]
+}
