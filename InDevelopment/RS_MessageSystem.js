@@ -3517,13 +3517,10 @@ RS.MessageSystem = RS.MessageSystem || {};
         let width = this.contentsWidth();
 
         // 일반 메시지 모드에서만 동작 한다.
-        // let isValid =
-        //     $gameMessage.getBalloon() === -2 &&
-        //     !this._isUsedTextWidthEx &&
-        //     RS.MessageSystem.Params.isParagraphMinifier;
-        let isValid = true;
-
-        // textState.px += w;
+        let isValid =
+            $gameMessage.getBalloon() === -2 &&
+            !this._isUsedTextWidthEx &&
+            RS.MessageSystem.Params.isParagraphMinifier;
 
         // 소수점 자리를 버려야 정확히 계산된다.
         this.processWordWrap(textState, w, width, isValid);
@@ -3538,8 +3535,8 @@ RS.MessageSystem = RS.MessageSystem || {};
             this.processWordWrap(textState, w, width, isValid);
         }
 
+        // 배경색의 처리
         if (contents.highlightTextColor !== null) {
-            // if the background color is not empty?
             if (!this._backBuffer) {
                 const contentW = this.contentsWidth();
                 const contentH = this.contentsHeight();
@@ -3564,9 +3561,6 @@ RS.MessageSystem = RS.MessageSystem || {};
             this._backBuffer.isDirty = true;
             this._backBuffer.textState = textState;
         }
-
-        console.dir(textState);
-        console.log("Current Character : " + c);
     };
 
     const alias_Window_Message_flushTextState =
