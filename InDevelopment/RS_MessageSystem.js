@@ -3419,21 +3419,66 @@ RS.MessageSystem = RS.MessageSystem || {};
         return RS.MessageSystem.Params.numVisibleRows;
     };
 
+    /**
+     * Create text state included px and py values for text word wrapping.
+     */
+    const alias_Window_Message_createTextState =
+        Window_Message.prototype.createTextState;
+    Window_Message.prototype.createTextState = function (text, x, y, width) {
+        let textState = alias_Window_Message_createTextState.call(
+            this,
+            text,
+            x,
+            y,
+            width
+        );
+
+        const px = textState.x;
+        const py = textState.y;
+
+        // mixin
+        Object.assign(textState, {
+            px,
+            py,
+        });
+
+        return textState;
+    };
+
     Window_Message.prototype.processWordWrap = function (
         textState,
         w,
         width,
         isValid
     ) {
-        if (Math.floor(textState.x + w * 2) > width) {
+        const px = textState.px;
+
+        if (Math.floor(px + w * 2) > width) {
             if (isValid) {
                 this.processNewLine(textState);
-                textState.index--;
                 if (this.needsNewPage(textState)) {
-                    textState.index--;
                     this.startPause();
                 }
             }
+        }
+    };
+
+    const alias_Window_Message_processNewLinePW =
+        Window_Message.prototype.processNewLine;
+    Window_Message.prototype.processNewLine = function (textState) {
+        alias_Window_Message_processNewLinePW.call(this, textState);
+        // px를 시작 지점으로 초기화한다.
+        textState.px = textState.startX || textState.x;
+    };
+
+    Window_Message.prototype.processCharacter = function (textState) {
+        const c = textState.text[textState.index++];
+        if (c.charCodeAt(0) < 0x20) {
+            this.flushTextState(textState);
+            this.processControlCharacter(textState, c);
+        } else {
+            textState.buffer += c;
+            textState.px += this.textWidth(c);
         }
     };
 
@@ -3456,7 +3501,7 @@ RS.MessageSystem = RS.MessageSystem || {};
 
         if (isDirty) {
             // extract the latest character from the buffer.
-            const c = textState.buffer.slice(-1);
+            const c = textState.buffer.substr(textState.buffer.length - 1, 1);
             this.processNormalCharacterProxy(textState, c);
         }
     };
@@ -3468,6 +3513,58 @@ RS.MessageSystem = RS.MessageSystem || {};
         // MZ에서는 텍스트 상태(textState)가 다음 제어 문자가 등장해야 flush 처리된다.
         // 따라서 이곳에서는 텍스트가 그려질 수 없다.
         // Note that it does not update the textState before the chcater control code appears.
+        const w = this.textWidth(c);
+        let width = this.contentsWidth();
+
+        // 일반 메시지 모드에서만 동작 한다.
+        // let isValid =
+        //     $gameMessage.getBalloon() === -2 &&
+        //     !this._isUsedTextWidthEx &&
+        //     RS.MessageSystem.Params.isParagraphMinifier;
+        let isValid = true;
+
+        // textState.px += w;
+
+        // 소수점 자리를 버려야 정확히 계산된다.
+        this.processWordWrap(textState, w, width, isValid);
+
+        const contents = this.contents;
+        const faceName = $gameMessage.faceName();
+
+        // if the faceName is not empty and the face direction is to right?
+        if (faceName !== "") {
+            width = contents.width - ImageManager.faceWidth;
+            isValid = RS.MessageSystem.Params.faceDirection === 2;
+            this.processWordWrap(textState, w, width, isValid);
+        }
+
+        if (contents.highlightTextColor !== null) {
+            // if the background color is not empty?
+            if (!this._backBuffer) {
+                const contentW = this.contentsWidth();
+                const contentH = this.contentsHeight();
+
+                this._backBuffer = {
+                    buffer: new Bitmap(contentW, contentH),
+                    textState: null,
+                    isDirty: false,
+                };
+            }
+
+            const pad = 1.0;
+            const { x, y, height } = this.textState;
+
+            this._backBuffer.buffer.fillRect(
+                x,
+                y,
+                w + pad,
+                height,
+                contents.highlightTextColor
+            );
+            this._backBuffer.isDirty = true;
+            this._backBuffer.textState = textState;
+        }
+
         console.dir(textState);
         console.log("Current Character : " + c);
     };
@@ -3476,8 +3573,12 @@ RS.MessageSystem = RS.MessageSystem || {};
         Window_Message.prototype.flushTextState;
     Window_Message.prototype.flushTextState = function (textState) {
         // 기본 지연 시간 설정
-        if (!this.isEndOfText(textState) && !this._isUsedTextWidthEx) {
-            this.startWait($gameMessage.getWaitTime());
+        if (
+            !this._showFast &&
+            !this.isEndOfText(textState) &&
+            !this._isUsedTextWidthEx
+        ) {
+            this.startWait($gameMessage.getWaitTime() || 0);
         }
         alias_Window_Message_flushTextState.call(this, textState);
     };
