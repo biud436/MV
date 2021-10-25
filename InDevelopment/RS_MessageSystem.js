@@ -3467,10 +3467,14 @@ RS.MessageSystem = RS.MessageSystem || {};
         Window_Message.prototype.processNewLine;
     Window_Message.prototype.processNewLine = function (textState) {
         alias_Window_Message_processNewLinePW.call(this, textState);
-        // px를 시작 지점으로 초기화한다.
+        // 내부 버퍼의 위치를 시작 지점으로 초기화한다.
         textState.px = textState.startX || textState.x;
     };
 
+    /**
+     * ! Override
+     * @param {Object} textState
+     */
     Window_Message.prototype.processCharacter = function (textState) {
         const c = textState.text[textState.index++];
         if (c.charCodeAt(0) < 0x20) {
@@ -3478,6 +3482,8 @@ RS.MessageSystem = RS.MessageSystem || {};
             this.processControlCharacter(textState, c);
         } else {
             textState.buffer += c;
+
+            // 내부 버퍼의 위치를 누적 계산한다.
             textState.px += this.textWidth(c);
         }
     };
@@ -3485,14 +3491,15 @@ RS.MessageSystem = RS.MessageSystem || {};
     const alias_Window_Message_processCharacter =
         Window_Message.prototype.processCharacter;
     Window_Message.prototype.processCharacter = function (textState) {
+        // 이전 텍스트의 길이를 계산한다.
         let isDirty = false;
         const preBuffer = textState.buffer || "";
         let preLen = preBuffer.length;
 
-        // 텍스트 속도가 기본값이 아닐 경우,
-        // wait를 걸어준 후, flush 처리를 해야 한다.
         alias_Window_Message_processCharacter.call(this, textState);
 
+        // 새로운 텍스트가 이후에 있는가?
+        // 그게 문자인지 제어 문자인지는 이 로직에선 알 수 없다.
         const postBuffer = textState.buffer || "";
         const postLen = postBuffer;
         if (preLen !== postLen) {
@@ -3500,19 +3507,27 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
 
         if (isDirty) {
-            // extract the latest character from the buffer.
+            // 끝에 있는 글자를 가지고 온다.
+            // 하지만 제어 문자인지는 확인하지 않는다.
+            // 제어 문자 여부는 메인 로직에서 판단하게 둔다.
             const c = textState.buffer.substr(textState.buffer.length - 1, 1);
             this.processNormalCharacterProxy(textState, c);
         }
     };
 
+    /**
+     * MZ에서는 processNormalCharacter의 구현이 없다.
+     * 하지만, 자동 개행이나 사운드 재생 그리고 배경색 묘화를 위해 위치 계산이 필요하다.
+     * 이 때문에 추가한 메서드이며, 텍스트의 묘화를 하진 않는다.
+     * @param {*} textState
+     * @param {*} c
+     */
     Window_Message.prototype.processNormalCharacterProxy = function (
         textState,
         c
     ) {
         // MZ에서는 텍스트 상태(textState)가 다음 제어 문자가 등장해야 flush 처리된다.
         // 따라서 이곳에서는 텍스트가 그려질 수 없다.
-        // Note that it does not update the textState before the chcater control code appears.
         const w = this.textWidth(c);
         let width = this.contentsWidth();
 
@@ -3535,29 +3550,23 @@ RS.MessageSystem = RS.MessageSystem || {};
             this.processWordWrap(textState, w, width, isValid);
         }
 
-        // 배경색의 처리
+        // 배경색의 위치를 계산하고 비트맵 인스턴스를 생성한다.
         if (contents.highlightTextColor !== null) {
-            if (!this._backBuffer) {
-                const contentW = this.contentsWidth();
-                const contentH = this.contentsHeight();
+            const contentW = Math.floor(w * 2) + 1.0;
+            const contentH = this.lineHeight();
 
-                this._backBuffer = {
-                    buffer: new Bitmap(contentW, contentH),
-                    textState: null,
-                    isDirty: false,
-                };
-            }
+            // 배경 버퍼의 생성
+            this._backBuffer = {
+                buffer: new Bitmap(contentW, contentH),
+                textState: null,
+                isDirty: false,
+            };
 
-            const pad = 1.0;
-            const { x, y, height } = this.textState;
+            const { px, py } = textState;
 
-            this._backBuffer.buffer.fillRect(
-                x,
-                y,
-                w + pad,
-                height,
-                contents.highlightTextColor
-            );
+            // 배경 버퍼는 내부 버퍼의 초기 위치로부터 계산된다.
+            this._backBuffer.buffer.fillAll(contents.highlightTextColor);
+            // 이 플래그가 활성화되어있다면 flushTextState에서 그리기 처리를 해야 한다.
             this._backBuffer.isDirty = true;
             this._backBuffer.textState = textState;
         }
@@ -3573,6 +3582,29 @@ RS.MessageSystem = RS.MessageSystem || {};
             !this._isUsedTextWidthEx
         ) {
             this.startWait($gameMessage.getWaitTime() || 0);
+        }
+
+        // 배경색의 처리
+        if (
+            !this._isUsedTextWidthEx &&
+            this._backBuffer &&
+            this._backBuffer.isDirty
+        ) {
+            if (textState.drawing) {
+                /**
+                 * @type {Bitmap}
+                 */
+                const bitmap = this._backBuffer.buffer;
+                const tx = textState.px;
+                const ty = textState.py;
+                const x = textState.x;
+                const y = textState.y;
+                const w = bitmap.width;
+                const h = bitmap.height;
+
+                this.contents.blt(bitmap, 0, 0, w, h, x, y);
+                this._backBuffer.isDirty = false;
+            }
         }
         alias_Window_Message_flushTextState.call(this, textState);
     };
