@@ -3498,5 +3498,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     alias_Window_Message_flushTextState.call(this, textState);
   };
 
+  // 권한 테스트
+
   RS.MessageSystem.initSystem();
 })(RS.MessageSystem);
