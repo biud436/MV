@@ -3644,5 +3644,54 @@ RS.MessageSystem = RS.MessageSystem || {};
         alias_Window_Message_checkToNotClose.call(this);
     };
 
+    Window_Message.prototype.updatePlacement = function () {
+        // TODO: try-catch statement will be deleted later.
+        try {
+            const goldWindow = this._goldWindow;
+            this._positionType = $gameMessage.positionType();
+
+            // 말풍선 모드가 아니라면 X좌표를 화면 중앙에 맞춘다.
+            if ($gameMessage.getBalloon() === -2) {
+                this.x =
+                    Graphics.boxWidth / 2 -
+                    this.width / 2 +
+                    RS.MessageSystem.Params.windowOffset.x;
+                this.y =
+                    (this._positionType * (Graphics.boxHeight - this.height)) /
+                        2 +
+                    RS.MessageSystem.Params.windowOffset.y;
+            } else {
+                if (SceneManager._scene instanceof Scene_Map)
+                    this.updateBalloonPosition();
+            }
+
+            // 골드 윈도우의 위치 설정
+            const minGoldY = goldWindow.height;
+            this._goldWindow.y =
+                this.y > minGoldY ? 0 : Graphics.boxHeight - goldWindow.height;
+
+            // 투명도 업데이트
+            this.updateDefaultOpacity();
+            this.updateContentsOpacity();
+            this.updateBigFaceOpacity();
+
+            // 이름 윈도우 업데이트
+
+            // 얼굴 이미지의 Z-Index 업데이트
+            if ($gameMessage.faceName() !== "") {
+                const isBigFace = /^Big_/.exec($gameMessage.faceName());
+                const backIndex = 2;
+
+                if (RS.MessageSystem.Params.faceSide) {
+                    this.setFaceZIndex(isBigFace ? 0 : backIndex);
+                } else {
+                    this.setFaceZIndex(backIndex);
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     RS.MessageSystem.initSystem();
 })(RS.MessageSystem);
