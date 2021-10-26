@@ -3874,7 +3874,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         let ret = true;
 
         if (this._isDirtyWindowskin) {
-            Color.baseColor = this.textColor(0);
+            Color.baseColor = ColorManager.textColor(0);
             this.changeTextColor(Color.baseColor);
             this._isDirtyWindowskin = false;
             ret = true;
@@ -3920,10 +3920,115 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
+    // Window_Message.prototype.drawBigFace = function (faceName, faceIndex) {
+    //     this.loadMessageFace();
+
+    //     const w = Graphics.boxWidth - this._faceBitmap.width;
+    //     const h = Graphics.boxHeight - this._faceBitmap.height;
+
+    //     // 페이스칩의 투명한 영역이 실제 얼굴 이미지보다 더 큰 경우가 있다.
+    //     // 따라서 얼굴 이미지의 실제 물리적인 픽셀 위치와는 달라지므로 오프셋 값이 더해져야 한다.
+    //     const offsetX = this.x + RS.MessageSystem.Params.faceOX;
+    //     const offsetY = this.y + RS.MessageSystem.Params.faceOY;
+
+    //     const faceIndex = $gameMessage.faceIndex();
+    //     let isPlacementToRight = faceIndex > 0;
+
+    //     this._faceContents.bitmap = this._faceBitmap;
+    //     this._faceContents.scale = new Point(1.0, 1.0);
+
+    //     if (isPlacementToRight) {
+    //         this._faceContents.x = w - offsetX;
+    //     } else {
+    //         this._faceContents.x = offsetX - this._faceBitmap.width / 2;
+    //     }
+
+    //     this._faceContents.y = h - offsetY;
+    //     this._faceContents.setFrame(
+    //         0,
+    //         0,
+    //         this._faceBitmap.width,
+    //         this._faceBitmap.height
+    //     );
+    // };
+
+    // Window_Message.prototype.drawFace = function (
+    //     faceName,
+    //     faceIndex,
+    //     x,
+    //     y,
+    //     width,
+    //     height
+    // ) {
+    //     width = width || ImageManager.faceWidth;
+    //     height = height || ImageManager.faceHeight;
+    //     const bitmap = ImageManager.loadFace(faceName);
+    //     const pw = ImageManager.faceWidth;
+    //     const ph = ImageManager.faceHeight;
+    //     const sw = Math.min(width, pw);
+    //     const sh = Math.min(height, ph);
+    //     const dx = Math.floor(x + Math.max(width - pw, 0) / 2);
+    //     const dy = Math.floor(y + Math.max(height - ph, 0) / 2);
+    //     const sx = (faceIndex % 4) * pw + (pw - sw) / 2;
+    //     const sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
+
+    //     this._faceContents.bitmap = bitmap;
+    //     this._faceContents.setFrame(sx, sy, sw, sh);
+
+    //     this._faceContents.x = this.padding + dx;
+    //     this._faceContents.y = this.padding + dy;
+    //     this._faceContents.scale = new Point(1.0, 1.0);
+    // };
+
+    // Window_Message.prototype.drawNormalMessageFace = function (
+    //     faceName,
+    //     faceIndex
+    // ) {
+    //     let fx = 0;
+    //     const rtl = $gameMessage.isRTL();
+    //     const width = ImageManager.faceWidth;
+    //     const height = this.innerHeight;
+    //     const x = rtl ? this.innerWidth - width - 4 : 4;
+
+    //     const fw = ImageManager.faceWidth;
+    //     const padding = this.padding;
+
+    //     if (RS.MessageSystem.Params.faceDirection === 2 || rtl) {
+    //         fx =
+    //             ($gameMessage.getBalloon() === -2
+    //                 ? this.contents.width
+    //                 : this._bWidth - padding * 2) - fw;
+    //     }
+    //     this.drawFace(faceName, faceIndex, fx, 0);
+    // };
+
+    // Window_Message.prototype.drawMessageFace = function (faceName, faceIndex) {
+    //     const faceName = $gameMessage.faceName();
+    //     const faceIndex = $gameMessage.faceIndex();
+
+    //     if (this.isValidBigFace(faceName)) {
+    //         this.drawBigFace(faceName, faceIndex);
+    //     } else {
+    //         this.drawNormalMessageFace(faceName, faceIndex);
+    //     }
+    // };
+
+    /**
+     * @param {String} faceName
+     */
+    Window_Message.prototype.isValidBigFace = function (faceName) {
+        var reg = /^Big_/i;
+        return reg.exec(faceName);
+    };
+
+    /**
+     * TODO: deprecated
+     */
     Window_Message.prototype.updateNameWindow = function () {};
 
     /**
      * Window 구성 스프라이트 _windowBackSprite의 투명도를 조절합니다.
+     * TODO: deprecated
      * @method standardBackOpacity
      */
     Window_Message.prototype.standardBackOpacity = function () {
@@ -3961,6 +4066,74 @@ RS.MessageSystem = RS.MessageSystem || {};
     //============================================================================
     // Window_Name
     //============================================================================
+    Window_NameBox.prototype.initialize = function () {
+        Window_Base.prototype.initialize.call(this, new Rectangle());
+        this.openness = 0;
+        this._name = "";
+    };
+
+    Window_NameBox.prototype.setMessageWindow = function (messageWindow) {
+        this._messageWindow = messageWindow;
+    };
+
+    Window_NameBox.prototype.setName = function (name) {
+        if (this._name !== name) {
+            this._name = name;
+            this.refresh();
+        }
+    };
+
+    Window_NameBox.prototype.clear = function () {
+        this.setName("");
+    };
+
+    Window_NameBox.prototype.start = function () {
+        this.updatePlacement();
+        this.updateBackground();
+        this.createContents();
+        this.refresh();
+    };
+
+    Window_NameBox.prototype.updatePlacement = function () {
+        this.width = this.windowWidth();
+        this.height = this.windowHeight();
+        const messageWindow = this._messageWindow;
+        if ($gameMessage.isRTL()) {
+            this.x = messageWindow.x + messageWindow.width - this.width;
+        } else {
+            this.x = messageWindow.x;
+        }
+        if (messageWindow.y > 0) {
+            this.y = messageWindow.y - this.height;
+        } else {
+            this.y = messageWindow.y + messageWindow.height;
+        }
+    };
+
+    Window_NameBox.prototype.updateBackground = function () {
+        this.setBackgroundType($gameMessage.background());
+    };
+
+    Window_NameBox.prototype.windowWidth = function () {
+        if (this._name) {
+            const textWidth = this.textSizeEx(this._name).width;
+            const padding = this.padding + this.itemPadding();
+            const width = Math.ceil(textWidth) + padding * 2;
+            return Math.min(width, Graphics.boxWidth);
+        } else {
+            return 0;
+        }
+    };
+
+    Window_NameBox.prototype.windowHeight = function () {
+        return this.fittingHeight(1);
+    };
+
+    Window_NameBox.prototype.refresh = function () {
+        const rect = this.baseTextRect();
+        this.contents.clear();
+        this.drawTextEx(this._name, rect.x, rect.y, rect.width);
+    };
 
     //============================================================================
     // Game_Temp
