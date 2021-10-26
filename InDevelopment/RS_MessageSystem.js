@@ -3629,7 +3629,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             const openness = (this.openness || 0).clamp(0, 255);
             this._faceContents.scale.y = openness / 255;
             this._faceContents.y =
-                (this._faceContents.height / 2) * (1 - this._openness / 255);
+                (this._faceContents.height / 2) * (1 - this.openness / 255);
         }
     };
 
