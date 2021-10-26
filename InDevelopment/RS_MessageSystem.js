@@ -3624,6 +3624,10 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Window_Message.prototype.fadeInOutFaceContents = function () {
+        if (!this._faceContents) {
+            return;
+        }
+
         const isValid = this.isOpening() || this.isClosing();
         if (isValid) {
             const openness = (this.openness || 0).clamp(0, 255);
@@ -3631,6 +3635,13 @@ RS.MessageSystem = RS.MessageSystem || {};
             this._faceContents.y =
                 (this._faceContents.height / 2) * (1 - this.openness / 255);
         }
+    };
+
+    const alias_Window_Message_checkToNotClose =
+        Window_Message.prototype.checkToNotClose;
+    Window_Message.prototype.checkToNotClose = function () {
+        this.fadeInOutFaceContents();
+        alias_Window_Message_checkToNotClose.call(this);
     };
 
     RS.MessageSystem.initSystem();
