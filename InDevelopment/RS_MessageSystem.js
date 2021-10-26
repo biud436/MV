@@ -3693,5 +3693,318 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
+    const alias_Window_Message_convertEscapeCharacters =
+        Window_Message.prototype.convertEscapeCharacters;
+    Window_Message.prototype.convertEscapeCharacters = function (text) {
+        const tcGroup = RS.MessageSystem.TextCodes.ENUM;
+        const textCode = RS.MessageSystem.TextCodes.Main;
+        const regGroup = RS.MessageSystem.Reg.Group;
+        text = alias_Window_Message_convertEscapeCharacters.call(this, text);
+        text = text.replace(
+            regGroup[tcGroup.BOLD_START_CV],
+            function () {
+                return regGroup[tcGroup.BOLD_START].source;
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.BOLD_END_CV],
+            function () {
+                return regGroup[tcGroup.BOLD_END].source;
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ITALIC_START_CV],
+            function () {
+                return regGroup[tcGroup.ITALIC_START].source;
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ITALIC_END_CV],
+            function () {
+                return regGroup[tcGroup.ITALIC_END].source;
+            }.bind(this)
+        );
+        text = text.replace(regGroup[tcGroup.NAME], (...args) => {
+            let retName = args[1];
+
+            if (retName.endsWith(":left")) {
+                retName = retName.replace(":left", "");
+                RS.MessageSystem.Params.namePositionTypeAtX = "left";
+            }
+            if (retName.endsWith(":auto")) {
+                retName = retName.replace(":auto", "");
+                RS.MessageSystem.Params.namePositionTypeAtX = "auto";
+            }
+            if (retName.endsWith(":center")) {
+                retName = retName.replace(":center", "");
+                RS.MessageSystem.Params.namePositionTypeAtX = "center";
+            }
+            if (retName.endsWith(":opacity0")) {
+                retName = retName.replace(":opacity0", "");
+                RS.MessageSystem.Params.namePositionTypeAtX = "opacity0";
+            }
+            if (retName.endsWith(":defaultOpacity")) {
+                retName = retName.replace(":defaultOpacity", "");
+                RS.MessageSystem.Params.namePositionTypeAtX = "defaultOpacity";
+            }
+            if (retName.endsWith(":right")) {
+                retName = retName.replace(":right", "");
+                RS.MessageSystem.Params.namePositionTypeAtX = "right";
+            }
+            this._nameWindow.drawName(retName);
+            return "";
+        });
+        text = text.replace(
+            regGroup[tcGroup.BALLOON],
+            function () {
+                const value = Number(arguments[1] || -2);
+                if ($gameParty.inBattle()) {
+                    $gameMessage.setBalloon(
+                        value < 0
+                            ? "ENEMIES : " + Math.abs(value)
+                            : "ACTORS : " + value
+                    );
+                } else {
+                    $gameMessage.setBalloon(value);
+                }
+                return "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.FRIENDLY_TROOPS],
+            function () {
+                var value = Number(arguments[1] || 0);
+                $gameMessage.setBalloon("ACTORS : " + value);
+                return "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.ENEMY_TROOPS],
+            function () {
+                var value = Number(arguments[1] || 0);
+                $gameMessage.setBalloon("ENEMIES : " + value);
+                return "";
+            }.bind(this)
+        );
+        text = text.replace(
+            regGroup[tcGroup.FACE_DIRECTION],
+            function () {
+                var value = Number(arguments[1] || 0);
+                if (!this._isUsedTextWidthEx) {
+                    RS.MessageSystem.Params.faceDirection = value;
+                }
+                return "";
+            }.bind(this)
+        );
+        return text;
+    };
+
+    // Window_Message.prototype.terminateMessage
+
+    Window_Message.prototype.setHeight = function (n) {
+        this.contents.clear();
+        $gameMessage.setMaxLine(n);
+        this.height = this.fittingHeight(n);
+        this.createContents();
+        this.updatePlacement();
+    };
+
+    const alias_Window_Message_initialize = Window_Message.prototype.initialize;
+    Window_Message.prototype.initialize = function (rect) {
+        alias_Window_Message_initialize.call(this, rect);
+        $gameTemp.setMSHeightFunc(this.setHeight.bind(this));
+        this.setHeight(RS.MessageSystem.Params.numVisibleRows);
+        this.createFaceContents();
+        this.on("removed", this.removeEventHandler, this);
+        this.on("onLoadWindowskin", this.onLoadWindowskin, this);
+    };
+
+    Window_Message.prototype.removeEventHandler = function () {
+        this.off("onLoadWindowskin", this.onLoadWindowskin, this);
+    };
+
+    /**
+     * TODO: ColorManager.textColor의 대체 구현.
+     *
+     * @param {Number} n
+     * @returns
+     */
+    Window_Message.prototype.textColor = function (n) {
+        const windowskin = this.windowskin;
+        if (!windowskin.isReady()) {
+            // Set the default text color if the windowskin is not ready.
+            return Color.baseColor;
+        }
+        const px = 96 + (n % 8) * 12 + 6;
+        const py = 144 + Math.floor(n / 8) * 12 + 6;
+        return windowskin.getPixel(px, py);
+    };
+
+    Window_Message.prototype.onLoadWindowskin = function () {
+        Color.baseColor = this.textColor(0);
+        this.changeTextColor(Color.baseColor);
+    };
+
+    Window_Message.prototype.loadWindowskin = function () {
+        const bitmap = ImageManager.loadSystem(
+            RS.MessageSystem.Params.windowskin
+        );
+
+        // if the windowskin is changed?
+        if (bitmap !== this.windowskin) {
+            this.windowskin = bitmap;
+            this._isDirtyWindowskin = false;
+            this.windowskin.addLoadListener(() => {
+                this._isDirtyWindowskin = true;
+            });
+            if (!this.contents) {
+                this.createContents();
+            }
+            // Set the default text color if the windowskin didn't load yet.
+            this.changeTextColor(Color.baseColor);
+
+            if (!this.windowskin.isReady()) {
+                return setTimeout(() => this.loadWindowskin(), 10);
+            }
+        }
+    };
+
+    var _Window_Message_updateLoading = Window_Message.prototype.updateLoading;
+    Window_Message.prototype.updateLoading = function () {
+        let ret = true;
+
+        if (this._isDirtyWindowskin) {
+            Color.baseColor = this.textColor(0);
+            this.changeTextColor(Color.baseColor);
+            this._isDirtyWindowskin = false;
+            ret = true;
+        }
+        return _Window_Message_updateLoading.call(this) && ret;
+    };
+
+    Window_Message.prototype.needsNewPage = function (textState) {
+        return (
+            !this.isEndOfText(textState) &&
+            textState.y + textState.height > this.contentsHeight()
+        );
+    };
+
+    Window_Message.prototype.createFaceContents = function () {
+        this._faceContents = new Sprite();
+        this._faceContents.x = 0;
+        this._faceContents.y = 0;
+
+        this.addChildAt(this._faceContents, 2);
+        return this._faceContents;
+    };
+
+    Window_Message.prototype.removeFaceContents = function () {
+        if (this._faceContents) this.removeChild(this._faceContents);
+    };
+
+    /**
+     * 큰 얼굴 이미지가 설정되었을 때 텍스트 시작 위치
+     */
+    Window_Message.prototype.newLineX = function () {
+        const reg = /^Big_/i;
+        const faceName = $gameMessage.faceName();
+        const faceIndex = $gameMessage.faceIndex();
+        if (reg.exec(faceName)) {
+            var faceStartX = RS.MessageSystem.Params.faceSide
+                ? 0
+                : RS.MessageSystem.Params.textStartX;
+            return faceIndex > 0 ? 0 : faceStartX;
+        } else {
+            if (RS.MessageSystem.Params.faceDirection === 2) return 0;
+            return faceName ? RS.MessageSystem.Params.faceStartOriginX : 0;
+        }
+    };
+
+    Window_Message.prototype.updateNameWindow = function () {};
+
+    /**
+     * Window 구성 스프라이트 _windowBackSprite의 투명도를 조절합니다.
+     * @method standardBackOpacity
+     */
+    Window_Message.prototype.standardBackOpacity = function () {
+        return RS.MessageSystem.Params.backOpacity;
+    };
+
+    /**
+     * Bitmap의 context.globalAlpha 값을 변경합니다.
+     * @method translucentOpacity
+     */
+    Window_Message.prototype.translucentOpacity = function () {
+        return RS.MessageSystem.Params.translucentOpacity;
+    };
+
+    /**
+     * 윈도우를 구성하는 모든 객체의 투명도를 변경합니다.
+     * @method updateDefaultOpacity
+     */
+    Window_Message.prototype.updateDefaultOpacity = function () {
+        this.opacity = RS.MessageSystem.Params.defaultOpacity;
+    };
+
+    /**
+     * Window 구성 스프라이트 _windowContentsSprite의 투명도를 변경합니다.
+     * @method updateContentsOpacity
+     */
+    Window_Message.prototype.updateContentsOpacity = function () {
+        this.contentsOpacity = RS.MessageSystem.Params.contentsOpacity;
+    };
+
+    //============================================================================
+    // Game_Interpreter
+    //============================================================================
+
+    //============================================================================
+    // Window_Name
+    //============================================================================
+
+    //============================================================================
+    // Game_Temp
+    //============================================================================
+
+    Game_Temp.prototype.setMSHeightFunc = function (func) {
+        this._callMSHeightFunc = func;
+    };
+
+    Game_Temp.prototype.setMaxLine = function (n) {
+        if (this._callMSHeightFunc) this._callMSHeightFunc(n);
+    };
+
+    //============================================================================
+    // Game_Map
+    //============================================================================
+
+    var alias_Game_Map_initialize = Game_Map.prototype.initialize;
+    Game_Map.prototype.initialize = function () {
+        alias_Game_Map_initialize.call(this);
+        this._msgOwner = $gamePlayer;
+        this._msgEvent = 0;
+    };
+
+    Game_Map.prototype.getMsgOwner = function () {
+        return this._msgOwner;
+    };
+
+    /**
+     * @method setMsgOwner
+     * @param o {Game_Event | Game_Player}
+     */
+    Game_Map.prototype.setMsgOwner = function (o) {
+        this._msgOwner = o;
+        $gameMessage.setBalloonPatternHeight(this.tileHeight());
+    };
+
+    Game_Map.prototype.getMsgEvent = function () {
+        return this._msgEvent;
+    };
+
+    Game_Map.prototype.setMsgEvent = function (ev) {
+        this._msgEvent = ev;
+    };
+
     RS.MessageSystem.initSystem();
 })(RS.MessageSystem);
