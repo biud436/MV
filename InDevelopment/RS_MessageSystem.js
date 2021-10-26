@@ -3623,5 +3623,15 @@ RS.MessageSystem = RS.MessageSystem || {};
         this._faceContents.opacity = value;
     };
 
+    Window_Message.prototype.fadeInOutFaceContents = function () {
+        const isValid = this.isOpening() || this.isClosing();
+        if (isValid) {
+            const openness = (this.openness || 0).clamp(0, 255);
+            this._faceContents.scale.y = openness / 255;
+            this._faceContents.y =
+                (this._faceContents.height / 2) * (1 - this._openness / 255);
+        }
+    };
+
     RS.MessageSystem.initSystem();
 })(RS.MessageSystem);
