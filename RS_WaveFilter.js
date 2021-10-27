@@ -384,7 +384,9 @@ var RS = RS || {};
 RS.WaveConfig = RS.WaveConfig || {};
 
 (function () {
-  var isFilterPIXI4 =
+  "use strict";
+
+  const isFilterPIXI4 =
     PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0";
   if (!isFilterPIXI4) {
     console.error("This version does not work on your project");
@@ -394,8 +396,8 @@ RS.WaveConfig = RS.WaveConfig || {};
     console.error("https://github.com/biud436/MV/raw/MV/RS_WaveFilter.js");
     return;
   }
-  var isWebGL = PIXI.utils.isWebGLSupported();
-  var isUseCanvas = Utils.isOptionValid("canvas");
+  const isWebGL = PIXI.utils.isWebGLSupported();
+  const isUseCanvas = Utils.isOptionValid("canvas");
   if (isUseCanvas || !isWebGL) {
     console.error("This plugin does not support in your project");
     return;
@@ -411,7 +413,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   //
 
   PIXI.WaveFilter = function () {
-    var vertexSrc = [
+    const vertexSrc = [
       "attribute vec2 aVertexPosition;",
       "attribute vec2 aTextureCoord;",
 
@@ -425,12 +427,11 @@ RS.WaveConfig = RS.WaveConfig || {};
       "}",
     ].join("\n");
 
-    var fragmentSrc = [
+    const fragmentSrc = [
       "precision mediump float;",
 
       "varying vec2 vTextureCoord;",
 
-      // 'uniform float waveWidth;',
       "uniform float waveHeight;",
       "uniform float waveFrequency;",
       "uniform float waveTime;",
@@ -542,7 +543,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   // Sprite
   //============================================================================
 
-  var alias_Sprite_initialize = Sprite.prototype.initialize;
+  const alias_Sprite_initialize = Sprite.prototype.initialize;
   Sprite.prototype.initialize = function (bitmap) {
     alias_Sprite_initialize.call(this, bitmap);
     this.initWithWaveFeatures();
@@ -559,7 +560,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     this._isWaveDirty = false;
   };
 
-  var alias_Sprite_update = Sprite.prototype.update;
+  const alias_Sprite_update = Sprite.prototype.update;
   Sprite.prototype.update = function () {
     alias_Sprite_update.call(this);
     this.waveUpdate();
@@ -674,7 +675,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   // TilingSprite
   //============================================================================
 
-  var alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
+  const alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
   TilingSprite.prototype.initialize = function (bitmap) {
     alias_TilingSprite_initialize.call(this, bitmap);
     this.initWithWaveFeatures();
@@ -690,7 +691,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     this._wave = false;
   };
 
-  var alias_TilingSprite_update = TilingSprite.prototype.update;
+  const alias_TilingSprite_update = TilingSprite.prototype.update;
   TilingSprite.prototype.update = function () {
     alias_TilingSprite_update.call(this);
     this.waveUpdate();
@@ -803,7 +804,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   //============================================================================
 
   Sprite_Picture.prototype.updateWave = function () {
-    var picture = this.picture();
+    const picture = this.picture();
     const isValidWave = picture.wave();
     if (isValidWave !== this.wave) {
       this.wave = isValidWave;
@@ -812,7 +813,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     this.wave_amp = picture.waveAmp();
   };
 
-  var alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
+  const alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
   Sprite_Picture.prototype.update = function () {
     alias_Sprite_Picture_update.call(this);
     if (this.visible) {
@@ -833,7 +834,8 @@ RS.WaveConfig = RS.WaveConfig || {};
 
   Spriteset_Map.prototype.overwriteWaveProperty = function () {
     if (!this._baseSprite) return false;
-    var self = this;
+    const self = this;
+
     Object.defineProperty(this._baseSprite, "wave", {
       get: function () {
         return this._wave;
@@ -850,7 +852,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     });
   };
 
-  var alias_Spriteset_Map_update = Spriteset_Map.prototype.update;
+  const alias_Spriteset_Map_update = Spriteset_Map.prototype.update;
   Spriteset_Map.prototype.update = function () {
     alias_Spriteset_Map_update.call(this);
     this.updateWaveFilter();
@@ -879,21 +881,20 @@ RS.WaveConfig = RS.WaveConfig || {};
   Spriteset_Battle.prototype.initWithWaveEffect = function () {
     if (!$dataMap) return;
 
-    var note = $dataMap.note.split(/[\r\n]+/);
-    var self = this;
+    const note = $dataMap.note.split(/[\r\n]+/);
 
-    note.forEach(function (mapNote) {
+    note.forEach((mapNote) => {
       if ($dataMap.note.match(/<BATTLEBACK_WAVE[ ]:[ ]*(.*)[ ](.*)>/i)) {
         this._initWaveFilter = true;
-        self.changeWaveEffect(true, RegExp.$1, RegExp.$2);
+        this.changeWaveEffect(true, RegExp.$1, RegExp.$2);
       }
-    }, this);
+    });
   };
 
   Spriteset_Battle.prototype.changeWaveEffect = function (cond, fre, spd) {
     if (!this._initWaveFilter) return;
-    var backs = [this._back1Sprite, this._back2Sprite];
-    backs.forEach(function (back) {
+    const backs = [this._back1Sprite, this._back2Sprite];
+    backs.forEach((back) => {
       back.wave = cond;
       back.waveFrequency = parseFloat(fre) || 0.02;
       back.waveSpeed = parseFloat(spd) || 0.25;
@@ -904,7 +905,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   // Game_Picture
   //============================================================================
 
-  var alias_Game_Picture_initBasic = Game_Picture.prototype.initBasic;
+  const alias_Game_Picture_initBasic = Game_Picture.prototype.initBasic;
   Game_Picture.prototype.initBasic = function () {
     alias_Game_Picture_initBasic.call(this);
     this._wave = false;
@@ -939,7 +940,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   //============================================================================
 
   Game_Screen.prototype.startWave = function (pictureId, waveSpeed, waveAmp) {
-    var picture = this.picture(pictureId);
+    const picture = this.picture(pictureId);
     if (!picture) {
       console.info(
         `Cannot find the game picture ${pictureId}. Note that you can set the picture before starting the wave effect`
@@ -950,7 +951,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   };
 
   Game_Screen.prototype.stopWave = function (pictureId) {
-    var picture = this.picture(pictureId);
+    const picture = this.picture(pictureId);
     if (picture) {
       picture.stopWave();
     }
@@ -966,7 +967,7 @@ RS.WaveConfig = RS.WaveConfig || {};
    */
   Game_Temp.prototype.setBattleBackWaveEffect = function (cond, fre, spd) {
     if (!$gameParty.inBattle()) return;
-    var container = SceneManager._scene._spriteset;
+    const container = SceneManager._scene._spriteset;
     if (container) {
       container.changeWaveEffect(cond, fre, spd);
     }
@@ -976,7 +977,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   // Game_System
   //============================================================================
 
-  var alias_Game_System_initialize = Game_System.prototype.initialize;
+  const alias_Game_System_initialize = Game_System.prototype.initialize;
   Game_System.prototype.initialize = function () {
     alias_Game_System_initialize.call(this);
     this.initWaveProperty();
@@ -1035,7 +1036,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   // Game_CharacterBase
   //============================================================================
 
-  var alias_Game_CharacterBase_initMembers =
+  const alias_Game_CharacterBase_initMembers =
     Game_CharacterBase.prototype.initMembers;
   Game_CharacterBase.prototype.initMembers = function () {
     alias_Game_CharacterBase_initMembers.call(this);
@@ -1072,7 +1073,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   // Sprite_Character
   //============================================================================
 
-  var alias_Sprite_Character_updatePosition =
+  const alias_Sprite_Character_updatePosition =
     Sprite_Character.prototype.updatePosition;
   Sprite_Character.prototype.updatePosition = function () {
     alias_Sprite_Character_updatePosition.call(this);
@@ -1090,37 +1091,39 @@ RS.WaveConfig = RS.WaveConfig || {};
   // Game_Map
   //============================================================================
 
-  var alias_Game_Event_initMembers = Game_Event.prototype.initMembers;
+  const alias_Game_Event_initMembers = Game_Event.prototype.initMembers;
   Game_Event.prototype.initMembers = function () {
     alias_Game_Event_initMembers.call(this);
     this._lastPageIndex = -2;
   };
 
   Game_Event.prototype.updateWaveEffect = function () {
-    var self = this;
     if (this._pageIndex === this._lastPageIndex) return;
-    if (!self.page()) return false;
-    if (self.findProperPageIndex() < 0) return false;
-    if (self._trigger > 3) return false;
+    if (!this.page()) return false;
+    if (this.findProperPageIndex() < 0) return false;
+    if (this._trigger > 3) return false;
 
-    self.list().forEach(function (list) {
-      if (list.code === 108 || list.code === 408) {
-        if (list.parameters[0].match(/<(?:WAVE)[ ](.*)>/i)) {
-          self.setWave(Boolean(RegExp.$1 == "true"));
+    this.list().forEach((list) => {
+      const code = list.code;
+      const parameters = list.parameters;
+
+      if ([108, 408].includes(code)) {
+        if (parameters[0].match(/<(?:WAVE)[ ](.*)>/i)) {
+          this.setWave(Boolean(RegExp.$1 == "true"));
         }
-        if (list.parameters[0].match(/<(?:WAVE_AMP)[ ](.*)>/i)) {
-          self.setWaveFrequency(parseFloat(RegExp.$1) || 0.02);
+        if (parameters[0].match(/<(?:WAVE_AMP)[ ](.*)>/i)) {
+          this.setWaveFrequency(parseFloat(RegExp.$1) || 0.02);
         }
-        if (list.parameters[0].match(/<(?:WAVE_SPEED)[ ](.*)>/i)) {
-          self.setWaveSpeed(parseFloat(RegExp.$1) || 0.25);
+        if (parameters[0].match(/<(?:WAVE_SPEED)[ ](.*)>/i)) {
+          this.setWaveSpeed(parseFloat(RegExp.$1) || 0.25);
         }
       }
-    }, this);
+    });
 
     this._lastPageIndex = this._pageIndex;
   };
 
-  var alias_Game_Event_refresh = Game_Event.prototype.refresh;
+  const alias_Game_Event_refresh = Game_Event.prototype.refresh;
   Game_Event.prototype.refresh = function () {
     alias_Game_Event_refresh.call(this);
     this.updateWaveEffect();
@@ -1141,7 +1144,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     $gameScreen.startWave(1, _r.x, _r.y);
    */
   waveUtils.mix = function (vec1, vec2, t) {
-    var vec = new Point(0, 0);
+    let vec = new Point(0, 0);
     if (!t) t = (Date.now() % 10000) / 10000;
     vec.x = vec1.x + t * (vec2.x - vec1.x);
     vec.y = vec1.x + t * (vec2.y - vec1.y);
@@ -1158,7 +1161,7 @@ RS.WaveConfig = RS.WaveConfig || {};
     $gameScreen.startWave(1, _r.x, _r.y);
    */
   waveUtils.quadraticBezier = function (vec1, vec2, vec3, t) {
-    var d, e, p;
+    let d, e, p;
     if (!t) t = (Date.now() % 10000) / 10000;
     d = waveUtils.mix(vec1, vec2, t);
     e = waveUtils.mix(vec2, vec3, t);
@@ -1170,7 +1173,7 @@ RS.WaveConfig = RS.WaveConfig || {};
   // Game_Interpreter
   //============================================================================
 
-  var alias_Game_Interpreter_pluginCommand =
+  const alias_Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function (command, args) {
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
