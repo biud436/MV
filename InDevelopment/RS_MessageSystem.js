@@ -1490,6 +1490,15 @@
  *
  */
 
+/**
+ * Comment 규칙 :
+ * 코멘트는 높임말과 반말을 섞어서 쓰고 있고, JSDoc 스타일로 작성해야 합니다.
+ */
+
+// Imported 변수는 RGSS1 시절부터 이어지고 있는 전통적인 변수입니다.
+// 그러나, 이제는 플러그인 관리자에서 타 플러그인 의존성을 체크할 수 있으므로
+// 새로 작성된 플러그인들은 사용하지 않는 경향이 있습니다.
+// 그러나, 시리즈마다 계속 포팅되고 있는 오랜 플러그인들의 경우, 호환성을 위해 유지합니다.
 var Imported = Imported || {};
 Imported.RS_MessageSystem = true;
 
@@ -1499,6 +1508,13 @@ RS.MessageSystem = RS.MessageSystem || {};
 (($) => {
     "use strict";
 
+    // PluginCommonBase는 플러그인 매개변수와 플러그인 명령 처리에 공통적인 처리를 담당하는 클래스로,
+    // 대체적으로 사용을 하고 싶다는 생각이 강하지만,
+    //
+    // 플러그인 배포 시, 의존성이 강하게 생겨 XP 시절의 SDK의 악몽이 떠오르기 때문에
+    // 최대한 사용을 지양하고 있습니다.
+    //
+    // 그러나 언젠가 이 정책이 변경될 수도 있습니다.
     const pluginParams = $plugins.filter((i) => {
         return i.description.contains("<RS_MessageSystem>");
     });
@@ -1506,6 +1522,12 @@ RS.MessageSystem = RS.MessageSystem || {};
     const pluginName = pluginParams.length > 0 && pluginParams[0].name;
     const parameters = pluginParams.length > 0 && pluginParams[0].parameters;
 
+    /**
+     * JSON을 재귀적으로 처리하여 nested JSON도 파싱합니다.
+     *
+     * @param {*} str
+     * @returns
+     */
     RS.MessageSystem.jsonParse = function (str) {
         const retData = JSON.parse(str, function (k, v) {
             try {
@@ -1544,6 +1566,10 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     RS.MessageSystem.TextCodes = {};
 
+    /**
+     * PluginCommonBase를 사용하지 않아 지저분한 매개변수 파싱 필요, 하지만 어쩔 수 없음.
+     * 정리가 가능한 분이 있다면 수정 바람.
+     */
     RS.MessageSystem.Params = {
         faceStartOriginX: 168,
         nameWindowWidth: 140,
@@ -1769,16 +1795,21 @@ RS.MessageSystem = RS.MessageSystem || {};
     // Multiple Language supports
     //============================================================================
 
+    // 한글 범위
     RS.MessageSystem.Reg.KoreanEscapeCode =
         /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-힣]+[!]*/i;
+    // 중국어 범위
     RS.MessageSystem.Reg.ChineseEscapeCode =
         /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z一-鼣]+[!]*/i;
+    // 영어
     RS.MessageSystem.Reg.EnglishEscapeCode =
         /^[\$\.\|\^!><\{\}\\]|^[A-Z]+[!]*/i;
+    // 일본어 범위
     RS.MessageSystem.Reg.JapaneseEscapeCode =
         /^[\$\.\|\^!><\{\}\\]|^[A-Z\u3040-\u309F\u30A0-\u30FF\u3300-\u33FF\u4E00-\u9FFF\uFF00-\uFFEF]+[!]*/i;
+    // 기본 (한글)
     RS.MessageSystem.Reg.defaultEscapeCode =
-        /^[\$\.\|\^!><\{\}\\]|^[A-Z가-힣]+[!]*/i;
+        /^[\$\.\|\^!><\{\}\\]|^[a-zA-Z가-힣]+[!]*/i;
 
     RS.MessageSystem.TextCodes = (function () {
         const rowData = RS.MessageSystem.popParameter(
@@ -1798,6 +1829,7 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     RS.MessageSystem.TextCodes.Main = [];
 
+    // 전체 텍스트 코드의 ENUM (C 스타일)
     RS.MessageSystem.TextCodes.ENUM = {
         COLOR: 1,
         TEXT_SPEED: 2,
@@ -1857,7 +1889,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     /**
-     * 주어진 ID 값으로 텍스트 코드를 현지화하여 반환합니다.
+     * 주어진 ID 값으로 텍스트 코드를 각국의 언어에 맞게 반환합니다.
      * @param {Number} idx
      */
     RS.MessageSystem.getTextCode = function (idx) {
@@ -1959,21 +1991,21 @@ RS.MessageSystem = RS.MessageSystem || {};
         return data.meta;
     };
 
-    (function () {
+    (() => {
         "use strict";
-        var regData = ["Korean", "English", "Chinese", "Japanese"];
-        regData.forEach(function (e, i, a) {
-            var tcGroup = RS.MessageSystem.TextCodes[e];
-            tcGroup = tcGroup.map(function (e, i, a) {
+        const regData = ["Korean", "English", "Chinese", "Japanese"];
+        regData.forEach((e, i, a) => {
+            let tcGroup = RS.MessageSystem.TextCodes[e];
+            tcGroup = tcGroup.map((e, i, a) => {
                 if (e === undefined) return;
-                var data = [];
-                var ret = "";
-                for (var str of e) {
+                let data = [];
+                let ret = "";
+                for (let str of e) {
                     if (/[a-zA-Z]/i) {
                         data.push(str);
                         continue;
                     }
-                    var text = str.charCodeAt().toString(16);
+                    const text = str.charCodeAt().toString(16);
                     data.push("\\u" + "{" + text + "}");
                 }
                 ret = data.join("");
@@ -2202,8 +2234,8 @@ RS.MessageSystem = RS.MessageSystem || {};
     })();
 
     RS.MessageSystem.initSystem = function () {
-        var type = RS.MessageSystem.Params.langCode;
-        var ret = false;
+        const type = RS.MessageSystem.Params.langCode;
+        let ret = false;
         if (type.match(/ko/)) {
             RS.MessageSystem.Reg.Group = RS.MessageSystem.Reg.Korean;
             RS.MessageSystem.Reg.defaultEscapeCode =
@@ -2248,44 +2280,52 @@ RS.MessageSystem = RS.MessageSystem || {};
     // Color
     //=============================================================================
 
-    const Color = {};
+    const Color = new (class {
+        constructor() {
+            this._baseColor = this.getColor(16777215);
+        }
 
-    Color.getColor = function (n) {
-        var r = n & 255;
-        var g = (n >> 8) & 255;
-        var b = (n >> 16) & 255;
-        var result = `rgba(${r},${g},${b},1)`;
-        return result;
-    };
+        get baseColor() {
+            return this._baseColor;
+        }
 
-    Color.baseColor = Color.getColor(16777215);
+        set baseColor(value) {
+            this._baseColor = this.getColor(value);
+        }
 
-    Color.getBaseColor = function () {
-        return Color.baseColor;
-    };
+        getColor(n) {
+            var r = n & 255;
+            var g = (n >> 8) & 255;
+            var b = (n >> 16) & 255;
+            var result = `rgba(${r},${g},${b},1)`;
+            return result;
+        }
 
-    Color.getUserCustomColor = function (string) {
-        "use strict";
+        getBaseColor() {
+            return this.baseColor;
+        }
 
-        var obj = RS.MessageSystem.Params.exTextColors;
-        var ret = string;
+        getUserCustomColor(string) {
+            const obj = RS.MessageSystem.Params.exTextColors;
+            let ret = string;
 
-        if (!typeof obj[0] === "object") return ret;
-        if (!obj[0].hasOwnProperty("Color Name")) return ret;
+            if (!typeof obj[0] === "object") return ret;
+            if (!obj[0].hasOwnProperty("Color Name")) return ret;
 
-        obj.forEach(function (e, i, a) {
-            if (e["Color Name"] === string) {
-                var r = parseInt(e["Red"]) || 0;
-                var g = parseInt(e["Green"]) || 0;
-                var b = parseInt(e["Blue"]) || 0;
-                var a = parseFloat(e["Alpha"]) || 1.0;
+            obj.forEach((e, i, a) => {
+                if (e["Color Name"] === string) {
+                    var r = parseInt(e["Red"]) || 0;
+                    var g = parseInt(e["Green"]) || 0;
+                    var b = parseInt(e["Blue"]) || 0;
+                    var a = parseFloat(e["Alpha"]) || 1.0;
 
-                ret = `rgba(${r},${g},${b},${a})`;
-            }
-        }, this);
+                    ret = `rgba(${r},${g},${b},${a})`;
+                }
+            }, this);
 
-        return ret;
-    };
+            return ret;
+        }
+    })();
 
     const KOREAN_COLORS = {
         청록: "rgba(0,255,255,1)",
@@ -2530,7 +2570,7 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     RS.MessageSystem.getBrowser = function () {
         /* Refer to https://stackoverflow.com/a/16938481 */
-        var ua = navigator.userAgent,
+        let ua = navigator.userAgent,
             tem,
             M =
                 ua.match(
@@ -2578,22 +2618,25 @@ RS.MessageSystem = RS.MessageSystem || {};
         };
     };
 
-    Color.gmColor = function (string) {
-        var type = RS.MessageSystem.Params.langCode;
-        if (type.match(/ko/)) {
-            return RS.MessageSystem.getKoreanColor(string);
-        }
-        if (type.match(/zh/)) {
-            return RS.MessageSystem.getChineseColor(string);
-        }
-        if (type.match(/en/)) {
+    // mixin
+    Object.assign(Color, {
+        gmColor(string) {
+            const type = RS.MessageSystem.Params.langCode;
+            if (type.match(/ko/)) {
+                return RS.MessageSystem.getKoreanColor(string);
+            }
+            if (type.match(/zh/)) {
+                return RS.MessageSystem.getChineseColor(string);
+            }
+            if (type.match(/en/)) {
+                return RS.MessageSystem.getEnglishColor(string);
+            }
+            if (type.match(/ja/)) {
+                return RS.MessageSystem.getJapaneseColor(string);
+            }
             return RS.MessageSystem.getEnglishColor(string);
-        }
-        if (type.match(/ja/)) {
-            return RS.MessageSystem.getJapaneseColor(string);
-        }
-        return RS.MessageSystem.getEnglishColor(string);
-    };
+        },
+    });
 
     //============================================================================
     // Bitmap
@@ -3193,6 +3236,10 @@ RS.MessageSystem = RS.MessageSystem || {};
     // Window_Message
     //============================================================================
 
+    /**
+     * @param {rm.types.TextState} textState
+     * @returns
+     */
     Window_Message.prototype.obtainTextSpeed = function (textState) {
         var arr = /\[(\d+)\]/.exec(textState.text.slice(textState.index));
         if (arr) {
@@ -3203,6 +3250,10 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
+    /**
+     * @param {rm.types.TextState} textState
+     * @returns
+     */
     Window_Message.prototype.obtainGradientText = function (textState) {
         var arr = /^<(.+?)>/.exec(textState.text.slice(textState.index));
         if (arr) {
@@ -3213,6 +3264,10 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
+    /**
+     * @param {rm.types.TextState} textState
+     * @returns
+     */
     Window_Message.prototype.obtainSoundName = function (textState) {
         var arr = /\<(.+?)\>/.exec(textState.text.slice(textState.index));
         if (arr) {
@@ -3225,6 +3280,11 @@ RS.MessageSystem = RS.MessageSystem || {};
 
     var alias_Window_Message_processEscapeCharacter =
         Window_Message.prototype.processEscapeCharacter;
+    /**
+     * @param {String} code
+     * @param {rm.types.TextState} textState
+     * @returns
+     */
     Window_Message.prototype.processEscapeCharacter = function (
         code,
         textState
@@ -3920,98 +3980,8 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    // Window_Message.prototype.drawBigFace = function (faceName, faceIndex) {
-    //     this.loadMessageFace();
-
-    //     const w = Graphics.boxWidth - this._faceBitmap.width;
-    //     const h = Graphics.boxHeight - this._faceBitmap.height;
-
-    //     // 페이스칩의 투명한 영역이 실제 얼굴 이미지보다 더 큰 경우가 있다.
-    //     // 따라서 얼굴 이미지의 실제 물리적인 픽셀 위치와는 달라지므로 오프셋 값이 더해져야 한다.
-    //     const offsetX = this.x + RS.MessageSystem.Params.faceOX;
-    //     const offsetY = this.y + RS.MessageSystem.Params.faceOY;
-
-    //     const faceIndex = $gameMessage.faceIndex();
-    //     let isPlacementToRight = faceIndex > 0;
-
-    //     this._faceContents.bitmap = this._faceBitmap;
-    //     this._faceContents.scale = new Point(1.0, 1.0);
-
-    //     if (isPlacementToRight) {
-    //         this._faceContents.x = w - offsetX;
-    //     } else {
-    //         this._faceContents.x = offsetX - this._faceBitmap.width / 2;
-    //     }
-
-    //     this._faceContents.y = h - offsetY;
-    //     this._faceContents.setFrame(
-    //         0,
-    //         0,
-    //         this._faceBitmap.width,
-    //         this._faceBitmap.height
-    //     );
-    // };
-
-    // Window_Message.prototype.drawFace = function (
-    //     faceName,
-    //     faceIndex,
-    //     x,
-    //     y,
-    //     width,
-    //     height
-    // ) {
-    //     width = width || ImageManager.faceWidth;
-    //     height = height || ImageManager.faceHeight;
-    //     const bitmap = ImageManager.loadFace(faceName);
-    //     const pw = ImageManager.faceWidth;
-    //     const ph = ImageManager.faceHeight;
-    //     const sw = Math.min(width, pw);
-    //     const sh = Math.min(height, ph);
-    //     const dx = Math.floor(x + Math.max(width - pw, 0) / 2);
-    //     const dy = Math.floor(y + Math.max(height - ph, 0) / 2);
-    //     const sx = (faceIndex % 4) * pw + (pw - sw) / 2;
-    //     const sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
-
-    //     this._faceContents.bitmap = bitmap;
-    //     this._faceContents.setFrame(sx, sy, sw, sh);
-
-    //     this._faceContents.x = this.padding + dx;
-    //     this._faceContents.y = this.padding + dy;
-    //     this._faceContents.scale = new Point(1.0, 1.0);
-    // };
-
-    // Window_Message.prototype.drawNormalMessageFace = function (
-    //     faceName,
-    //     faceIndex
-    // ) {
-    //     let fx = 0;
-    //     const rtl = $gameMessage.isRTL();
-    //     const width = ImageManager.faceWidth;
-    //     const height = this.innerHeight;
-    //     const x = rtl ? this.innerWidth - width - 4 : 4;
-
-    //     const fw = ImageManager.faceWidth;
-    //     const padding = this.padding;
-
-    //     if (RS.MessageSystem.Params.faceDirection === 2 || rtl) {
-    //         fx =
-    //             ($gameMessage.getBalloon() === -2
-    //                 ? this.contents.width
-    //                 : this._bWidth - padding * 2) - fw;
-    //     }
-    //     this.drawFace(faceName, faceIndex, fx, 0);
-    // };
-
-    // Window_Message.prototype.drawMessageFace = function (faceName, faceIndex) {
-    //     const faceName = $gameMessage.faceName();
-    //     const faceIndex = $gameMessage.faceIndex();
-
-    //     if (this.isValidBigFace(faceName)) {
-    //         this.drawBigFace(faceName, faceIndex);
-    //     } else {
-    //         this.drawNormalMessageFace(faceName, faceIndex);
-    //     }
-    // };
+    // TODO: 큰 얼굴 이미지 구현 필요
+    //
 
     /**
      * @param {String} faceName
@@ -4063,9 +4033,9 @@ RS.MessageSystem = RS.MessageSystem || {};
     // Game_Interpreter
     //============================================================================
 
-    //============================================================================
-    // Window_Name
-    //============================================================================
+    /**
+     * @class Window_NameBox
+     */
     Window_NameBox.prototype.initialize = function () {
         Window_Base.prototype.initialize.call(this, new Rectangle());
         this.openness = 0;
