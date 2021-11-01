@@ -4138,6 +4138,22 @@ RS.MessageSystem = RS.MessageSystem || {};
                   };
         }
 
+        set x(value) {
+            this._messageWindow.x = value;
+        }
+
+        set y(value) {
+            this._messageWindow.y = value;
+        }
+
+        set width(value) {
+            this._messageWindow.width = value;
+        }
+
+        set height(value) {
+            this._messageWindow.height = value;
+        }
+
         execute() {}
 
         save() {
@@ -4263,6 +4279,10 @@ RS.MessageSystem = RS.MessageSystem || {};
 
         updatePlacement() {}
 
+        drawMessageFace() {
+            this._messageWindow.drawMessageFace();
+        }
+
         isActiveInBalloon() {
             const isValidBalloon = $gameMessage.getBalloon() === -2;
             if (isValidBalloon) {
@@ -4270,6 +4290,22 @@ RS.MessageSystem = RS.MessageSystem || {};
                 return false;
             }
             return true;
+        }
+
+        setBalloonRect(data) {
+            const ox = RS.MessageSystem.Params.windowOffset.x;
+            const oy = RS.MessageSystem.Params.windowOffset.y;
+            this.x = data.dx + ox;
+            this.y = data.dy + oy;
+            this.width = this._bWidth;
+            this.height = this._bHeight;
+
+            if (
+                $gameMessage.faceName() &&
+                RS.MessageSystem.Params.faceDirection === 2
+            ) {
+                this.drawMessageFace();
+            }
         }
     }
 
