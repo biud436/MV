@@ -4260,6 +4260,17 @@ RS.MessageSystem = RS.MessageSystem || {};
             // this.drawTextEx() 사용하기 이전 상태로 복구한다.
             this.restore();
         }
+
+        updatePlacement() {}
+
+        isActiveInBalloon() {
+            const isValidBalloon = $gameMessage.getBalloon() === -2;
+            if (isValidBalloon) {
+                this.updatePlacement();
+                return false;
+            }
+            return true;
+        }
     }
 
     //============================================================================
