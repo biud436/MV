@@ -4234,10 +4234,10 @@ RS.MessageSystem = RS.MessageSystem || {};
             const textPadding = this.textPadding();
 
             // 폭을 계산한다.
-            var pw = 0;
+            let pw = 0;
             for (var i = 0; i < numOfLines; i++) {
                 this._isUsedTextWidthEx = true;
-                var x = this.drawTextEx(tempText[i]);
+                const x = this.drawTextEx(tempText[i]);
                 this._isUsedTextWidthEx = false;
                 if (x >= pw) {
                     pw = x;
@@ -4262,13 +4262,13 @@ RS.MessageSystem = RS.MessageSystem || {};
                     height = height.clamp(min, height + (min - height));
             }
 
-            var type = RS.MessageSystem.Params.choiceWindowStyle;
+            const type = RS.MessageSystem.Params.choiceWindowStyle;
 
             // 선택지가 있고, XP 스타일로 설정했을 때
             if (type === "RMXP" && $gameMessage.isChoice()) {
-                var maxLines = tempText.length;
-                var maxChoices = $gameMessage.choices().length;
-                var lineHeight = this.lineHeight();
+                const maxLines = tempText.length;
+                const maxChoices = $gameMessage.choices().length;
+                const lineHeight = this.lineHeight();
                 // 선택지 갯수를 확장했을 수도 있지만, 4개로 가정한다.
                 height = height + maxChoices * lineHeight;
                 // 선택지 윈도우의 폭이 말풍선보다 크면 제한을 둔다.
