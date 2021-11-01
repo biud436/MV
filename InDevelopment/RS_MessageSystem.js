@@ -4100,6 +4100,10 @@ RS.MessageSystem = RS.MessageSystem || {};
         onDestroy() {}
     }
 
+    //============================================================================
+    // BalloonWindowTransformComponent
+    //============================================================================
+
     /**
      * @class BalloonWindowTransformComponent
      * @description
@@ -4136,22 +4140,22 @@ RS.MessageSystem = RS.MessageSystem || {};
         execute() {}
 
         save() {
-            this._messageWindow.save();
+            this._messageWindow.save ? this._messageWindow.save() : null;
         }
 
         restore() {
-            this._messageWindow.restore();
+            this._messageWindow.restore ? this._messageWindow.restore() : null;
         }
 
         standardPadding() {
             this._messageWindow.updatePadding();
-            const padding = this._messageWindow.padding;
+            const padding = this._messageWindow.padding || 12;
 
             return padding;
         }
 
         textPadding() {
-            return this._messageWindow.itemPadding();
+            return this._messageWindow.itemPadding() || 6;
         }
 
         newLineX() {
@@ -4171,6 +4175,12 @@ RS.MessageSystem = RS.MessageSystem || {};
             return this._messageWindow.lineHeight();
         }
 
+        /**
+         * 샌드박스 환경을 구성합니다.
+         *
+         * @param {String} text
+         * @returns {Number}
+         */
         calcBalloonRect(text) {
             let temp, baseWidth, tempText, height, min, pad, numOfLines;
 
