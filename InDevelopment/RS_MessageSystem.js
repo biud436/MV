@@ -4079,7 +4079,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
 
         init(props) {
-            this.on("ready", () => this.onReady());
+            this.on("ready", () => this.onReady(props));
             this.on("mounted", () => this.mounted(props));
             this.on("destroy", () => this.onDestroy());
         }
@@ -4096,7 +4096,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             this.emit("mounted");
         }
 
-        onReady() {}
+        onReady(props) {}
         onDestroy() {}
     }
 
@@ -4106,8 +4106,13 @@ RS.MessageSystem = RS.MessageSystem || {};
      * 말풍선 윈도우의 위치를 조정하기 위한 컴포넌트입니다.
      */
     class BalloonWindowTransformComponent extends Component {
-        constructor(props) {
-            super(props);
+        onReady(props) {
+            this._bWidth = 0;
+            this._bHeight = 0;
+
+            /**
+             * @type {Window_Message}
+             */
             this._messageWindow = props.messageWindow;
         }
 
@@ -4115,7 +4120,135 @@ RS.MessageSystem = RS.MessageSystem || {};
             return this._messageWindow;
         }
 
+        get contents() {
+            return this._messageWindow.contents;
+        }
+
+        get _choiceWindow() {
+            return this._messageWindow._choiceListWindow
+                ? this._messageWindow._choiceListWindow
+                : {
+                      windowWidth: () => 0,
+                      windowHeight: () => 0,
+                  };
+        }
+
         execute() {}
+
+        save() {
+            this._messageWindow.save();
+        }
+
+        restore() {
+            this._messageWindow.restore();
+        }
+
+        standardPadding() {
+            this._messageWindow.updatePadding();
+            const padding = this._messageWindow.padding;
+
+            return padding;
+        }
+
+        textPadding() {
+            return this._messageWindow.itemPadding();
+        }
+
+        newLineX() {
+            return this._messageWindow.newLineX();
+        }
+
+        fittingHeight(numLines) {
+            return this._messageWindow.fittingHeight(numLines);
+        }
+
+        drawTextEx(text) {
+            const box = this._messageWindow.textSizeEx(text);
+            return box.width;
+        }
+
+        lineHeight() {
+            return this._messageWindow.lineHeight();
+        }
+
+        calcBalloonRect(text) {
+            let temp, baseWidth, tempText, height, min, pad, numOfLines;
+
+            // drawTextEx를 사용하기 전에 현재 상태를 저장한다.
+            this.save();
+
+            temp = text;
+
+            // 라인 갯수를 구하기 위해 텍스트를 줄바꿈 문자를 기준으로 나눈다.
+            tempText = text.slice(0);
+            tempText = tempText.split(/[\r\n]+/);
+            numOfLines = tempText.length;
+
+            pad = this.standardPadding() * 2;
+
+            // 높이를 구한다.
+            height = 0;
+            tempText.forEach((i) => (height += this.calcBalloonRectHeight(i)));
+
+            if (height <= 0) {
+                // 높이를 구할 수 없었다면,
+                height = this.fittingHeight(numOfLines);
+            } else {
+                // 높이를 구했다면
+                height = height + pad;
+            }
+
+            var textPadding = this.textPadding();
+
+            // 폭을 계산한다.
+            var pw = 0;
+            for (var i = 0; i < numOfLines; i++) {
+                this._isUsedTextWidthEx = true;
+                var x = this.drawTextEx(tempText[i]);
+                this._isUsedTextWidthEx = false;
+                if (x >= pw) {
+                    pw = x;
+                }
+            }
+
+            baseWidth = pw;
+            this._bWidth =
+                baseWidth + pad + textPadding || RS.MessageSystem.Params.WIDTH;
+
+            // 얼굴 이미지가 설정되어있다면 ?
+            if ($gameMessage.faceName() !== "") {
+                // 최소 높이를 설정한다.
+                min = this.fittingHeight(4);
+                // 기존 폭 값에 얼굴 이미지의 폭을 더한다.
+                this._bWidth += this.newLineX() + pad;
+                if (RS.MessageSystem.Params.faceDirection === 2) {
+                    this._bWidth += ImageManager.faceWidth;
+                }
+                // 높이 값이 최소 높이보다 작으면, 최소 높이 값으로 설정한다.
+                if (height < min)
+                    height = height.clamp(min, height + (min - height));
+            }
+
+            var type = RS.MessageSystem.Params.choiceWindowStyle;
+
+            // 선택지가 있고, XP 스타일로 설정했을 때
+            if (type === "RMXP" && $gameMessage.isChoice()) {
+                var maxLines = tempText.length;
+                var maxChoices = $gameMessage.choices().length;
+                var lineHeight = this.lineHeight();
+                // 선택지 갯수를 확장했을 수도 있지만, 4개로 가정한다.
+                height = height + maxChoices * lineHeight;
+                // 선택지 윈도우의 폭이 말풍선보다 크면 제한을 둔다.
+                if (this._choiceWindow.windowWidth() > this._bWidth) {
+                    this._bWidth = this._choiceWindow.windowWidth();
+                }
+            }
+
+            this._bHeight = height;
+
+            // this.drawTextEx() 사용하기 이전 상태로 복구한다.
+            this.restore();
+        }
     }
 
     //============================================================================
