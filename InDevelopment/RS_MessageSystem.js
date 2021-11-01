@@ -4130,6 +4130,7 @@ RS.MessageSystem = RS.MessageSystem || {};
 
         onReady(props) {}
         onDestroy() {}
+        mounted(props) {}
     }
 
     /**
