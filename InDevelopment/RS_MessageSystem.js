@@ -4113,6 +4113,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         onReady(props) {
             this._bWidth = 0;
             this._bHeight = 0;
+            this._isUsedTextWidthEx = false;
 
             /**
              * @type {Window_Message}
