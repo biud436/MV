@@ -4029,6 +4029,96 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     //============================================================================
+    // BaseComponent
+    //============================================================================
+
+    /**
+     * @class EventEmitter
+     * @description
+     * 이벤트를 전달하기 위한 클래스입니다.
+     */
+    class EventEmitter {
+        constructor() {
+            this._listeners = {};
+        }
+
+        on(eventName, func) {
+            if (!this._listeners[eventName]) {
+                this._listeners[eventName] = [];
+            }
+
+            if (!func) {
+                return;
+            }
+
+            if (func instanceof Function) {
+                this._listeners[eventName].push(func);
+            }
+        }
+
+        emit(eventName, ...args) {
+            if (!this._listeners[eventName]) {
+                return;
+            }
+
+            this._listeners[eventName].forEach((func) => {
+                func(...args);
+            });
+        }
+    }
+
+    /**
+     * @class Component
+     * @description
+     * 컴포넌트를 구현하기 위한 클래스입니다.
+     */
+    class Component extends EventEmitter {
+        constructor(props) {
+            super();
+            this.init(props);
+        }
+
+        init(props) {
+            this.on("ready", () => this.onReady());
+            this.on("mounted", () => this.mounted(props));
+            this.on("destroy", () => this.onDestroy());
+        }
+
+        ready() {
+            this.emit("ready");
+        }
+
+        destroy() {
+            this.emit("destroy");
+        }
+
+        execute() {
+            this.emit("mounted");
+        }
+
+        onReady() {}
+        onDestroy() {}
+    }
+
+    /**
+     * @class BalloonWindowTransformComponent
+     * @description
+     * 말풍선 윈도우의 위치를 조정하기 위한 컴포넌트입니다.
+     */
+    class BalloonWindowTransformComponent extends Component {
+        constructor(props) {
+            super(props);
+            this._messageWindow = props.messageWindow;
+        }
+
+        get messageWindow() {
+            return this._messageWindow;
+        }
+
+        execute() {}
+    }
+
+    //============================================================================
     // Game_Interpreter
     //============================================================================
 
