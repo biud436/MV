@@ -4164,6 +4164,12 @@ RS.MessageSystem = RS.MessageSystem || {};
             return this._messageWindow.lineHeight();
         }
 
+        updatePlacement() {}
+
+        drawMessageFace() {
+            this._messageWindow.drawMessageFace();
+        }
+
         set x(value) {
             this._messageWindow.x = value;
         }
@@ -4281,12 +4287,6 @@ RS.MessageSystem = RS.MessageSystem || {};
 
             // this.drawTextEx() 사용하기 이전 상태로 복구한다.
             this.restore();
-        }
-
-        updatePlacement() {}
-
-        drawMessageFace() {
-            this._messageWindow.drawMessageFace();
         }
 
         isActiveInBalloon() {
