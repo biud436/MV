@@ -3875,6 +3875,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         $gameTemp.setMSHeightFunc(this.setHeight.bind(this));
         this.setHeight(RS.MessageSystem.Params.numVisibleRows);
         this.createFaceContents();
+        this._textSoundInterval = 0;
         this.on("removed", this.removeEventHandler, this);
         this.on("onLoadWindowskin", this.onLoadWindowskin, this);
     };
@@ -4026,6 +4027,37 @@ RS.MessageSystem = RS.MessageSystem || {};
      */
     Window_Message.prototype.updateContentsOpacity = function () {
         this.contentsOpacity = RS.MessageSystem.Params.contentsOpacity;
+    };
+
+    const alias_Window_Message_shouldBreakHere =
+        Window_Message.prototype.shouldBreakHere;
+    Window_Message.prototype.shouldBreakHere = function (text) {
+        const isBreakCharacter = alias_Window_Message_shouldBreakHere.call(
+            this,
+            text
+        );
+
+        if (isBreakCharacter) {
+            if (RS.MessageSystem.Params.isPlayTextSound) {
+                const interval = RS.MessageSystem.Params.textSoundInterval;
+
+                // prettier-ignore
+                if ((this._textSoundInterval--) <= 0) {
+                    AudioManager.playStaticSe({
+                        name: RS.MessageSystem.popParameter(
+                            "Text Sound",
+                            "텍스트 효과음"
+                        ),
+                        pan: 0,
+                        pitch: 100,
+                        volume: 90,
+                    });
+                    this._textSoundInterval = interval;
+                }
+            }
+        }
+
+        return isBreakCharacter;
     };
 
     //============================================================================
