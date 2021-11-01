@@ -4185,6 +4185,26 @@ RS.MessageSystem = RS.MessageSystem || {};
         set height(value) {
             this._messageWindow.height = value;
         }
+
+        get width() {
+            return this._messageWindow.width;
+        }
+
+        get height() {
+            return this._messageWindow.height;
+        }
+
+        get _height() {
+            return this._messageWindow.height;
+        }
+
+        canvasToLocalX(x) {
+            return x;
+        }
+
+        canvasToLocalY(y) {
+            return y;
+        }
     }
 
     //============================================================================
@@ -4312,6 +4332,40 @@ RS.MessageSystem = RS.MessageSystem || {};
             ) {
                 this.drawMessageFace();
             }
+        }
+
+        setBalloonPlacement(data) {
+            // 화면 좌측
+            if (!data) return;
+            if (data.mx - this._bWidth / 2 < 0) {
+                data.dx = 0;
+                data.tx = this.canvasToLocalX(data.mx);
+            }
+
+            // 화면 우측
+            if (data.mx - this._bWidth / 2 > Graphics.boxWidth - this._bWidth) {
+                data.dx = Graphics.boxWidth - this._bWidth;
+                data.tx = this.canvasToLocalX(data.mx);
+            }
+
+            // 화면 상단
+            if (data.my - this._bHeight - data.tileHeight / 2 < 0) {
+                data.dy = data.my + data.tileHeight / 2;
+                data.scaleY = -1;
+                data.ty = this._height * data.scaleY + this._height;
+                data.ny =
+                    this.y +
+                    this._bHeight +
+                    RS.MessageSystem.Params.nameWindowY;
+            }
+
+            // 화면 하단
+            if (data.my - this._bHeight > Graphics.boxHeight - this._bHeight) {
+                data.dy = Graphics.boxWidth - this._bHeight;
+                data.ty = this._height;
+            }
+
+            return data;
         }
     }
 
