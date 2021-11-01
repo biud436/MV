@@ -270,7 +270,7 @@
  * @parent Sound Effects
  * @type number
  * @desc Specify the text sound interval.
- * @default 2
+ * @default 1
  * @min 1
  *
  * @param Text Sound Volume
@@ -1021,7 +1021,7 @@
  * @parent 효과음 재생
  * @type number
  * @desc 사운드 재생 간격를 설정합니다.
- * @default 2
+ * @default 1
  * @min 1
  * 
  * @param 텍스트 효과음 볼륨
