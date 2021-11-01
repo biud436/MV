@@ -4119,6 +4119,10 @@ RS.MessageSystem = RS.MessageSystem || {};
             return this._messageWindow.contents;
         }
 
+        get _nameWindow() {
+            return this._messageWindow._nameBoxWindow;
+        }
+
         get _choiceWindow() {
             return this._messageWindow._choiceListWindow
                 ? this._messageWindow._choiceListWindow
