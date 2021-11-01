@@ -4101,20 +4101,10 @@ RS.MessageSystem = RS.MessageSystem || {};
     }
 
     //============================================================================
-    // BalloonWindowTransformComponent
+    // BaseComponent
     //============================================================================
-
-    /**
-     * @class BalloonWindowTransformComponent
-     * @description
-     * 말풍선 윈도우의 위치를 조정하기 위한 컴포넌트입니다.
-     */
-    class BalloonWindowTransformComponent extends Component {
+    class BaseComponent extends Component {
         onReady(props) {
-            this._bWidth = 0;
-            this._bHeight = 0;
-            this._isUsedTextWidthEx = false;
-
             /**
              * @type {Window_Message}
              */
@@ -4137,24 +4127,6 @@ RS.MessageSystem = RS.MessageSystem || {};
                       windowHeight: () => 0,
                   };
         }
-
-        set x(value) {
-            this._messageWindow.x = value;
-        }
-
-        set y(value) {
-            this._messageWindow.y = value;
-        }
-
-        set width(value) {
-            this._messageWindow.width = value;
-        }
-
-        set height(value) {
-            this._messageWindow.height = value;
-        }
-
-        execute() {}
 
         save() {
             this._messageWindow.save ? this._messageWindow.save() : null;
@@ -4192,6 +4164,40 @@ RS.MessageSystem = RS.MessageSystem || {};
             return this._messageWindow.lineHeight();
         }
 
+        set x(value) {
+            this._messageWindow.x = value;
+        }
+
+        set y(value) {
+            this._messageWindow.y = value;
+        }
+
+        set width(value) {
+            this._messageWindow.width = value;
+        }
+
+        set height(value) {
+            this._messageWindow.height = value;
+        }
+    }
+
+    //============================================================================
+    // BalloonWindowTransformComponent
+    //============================================================================
+
+    /**
+     * @class BalloonWindowTransformComponent
+     * @description
+     * 말풍선 윈도우의 위치를 조정하기 위한 컴포넌트입니다.
+     */
+    class BalloonWindowTransformComponent extends BaseComponent {
+        onReady(props) {
+            super.onReady(props);
+            this._bWidth = 0;
+            this._bHeight = 0;
+            this._isUsedTextWidthEx = false;
+        }
+
         /**
          * 샌드박스 환경을 구성합니다.
          *
@@ -4225,7 +4231,7 @@ RS.MessageSystem = RS.MessageSystem || {};
                 height = height + pad;
             }
 
-            var textPadding = this.textPadding();
+            const textPadding = this.textPadding();
 
             // 폭을 계산한다.
             var pw = 0;
