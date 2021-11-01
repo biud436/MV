@@ -4100,9 +4100,11 @@ RS.MessageSystem = RS.MessageSystem || {};
         onDestroy() {}
     }
 
-    //============================================================================
-    // BaseComponent
-    //============================================================================
+    /**
+     * @class BaseComponent
+     * @description
+     * 샌드박스 환경에서 MV 메소드를 호출하여 이전 버전에 대한 안전성을 제공합니다.
+     */
     class BaseComponent extends Component {
         onReady(props) {
             /**
