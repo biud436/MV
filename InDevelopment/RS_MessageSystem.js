@@ -4367,6 +4367,48 @@ RS.MessageSystem = RS.MessageSystem || {};
 
             return data;
         }
+
+        updateSubBalloonElements(data) {
+            // deprecated
+        }
+
+        updateBalloonPosition() {
+            let data = {};
+
+            if (!this.isActiveInBalloon()) return;
+
+            // 말풍선 소유자의 화면 좌표
+            const owner = $gameMap.getMsgOwner();
+
+            data.mx = owner.screenX();
+            data.my = owner.screenY();
+
+            data.tx = this._bWidth / 2;
+            data.ty = this._bHeight;
+            data.scaleY = 1;
+            data.tileHeight = $gameMessage.getBalloonPatternHeight();
+            data.dx = data.mx - this._bWidth / 2;
+            data.dy = data.my - this._bHeight - data.tileHeight;
+            data.ny =
+                this.y -
+                this._nameWindow.height -
+                RS.MessageSystem.Params.nameWindowY;
+
+            data = this.setBalloonPlacement(Object.create(data));
+
+            if (
+                data.dx + RS.MessageSystem.Params.windowOffset.x !== this.x ||
+                data.dy + RS.MessageSystem.Params.windowOffset.y !== this.y ||
+                this._bWdith !== this.width ||
+                this._bHeight !== this.height
+            ) {
+                // 말풍선 위치 및 크기 설정
+                this.setBalloonRect(data);
+
+                // 멈춤 표시 스프라이트 위치 조정
+                this.updateSubBalloonElements(data);
+            }
+        }
     }
 
     //============================================================================
