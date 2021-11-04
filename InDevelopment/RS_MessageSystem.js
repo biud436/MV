@@ -2906,8 +2906,8 @@ RS.MessageSystem = RS.MessageSystem || {};
     //============================================================================
 
     Window_Base.prototype.obtainEscapeCode = function (textState) {
-        var regExp = RS.MessageSystem.Reg.defaultEscapeCode;
-        var arr = regExp.exec(textState.text.slice(textState.index));
+        const regExp = RS.MessageSystem.Reg.defaultEscapeCode;
+        const arr = regExp.exec(textState.text.slice(textState.index));
         if (arr) {
             textState.index += arr[0].length;
             return arr[0].toUpperCase();
@@ -2922,7 +2922,7 @@ RS.MessageSystem = RS.MessageSystem || {};
      * @param {}} textState
      */
     Window_Base.prototype.obtainNameColor = function (textState) {
-        var arr = /\[(.+?)\]/gi.exec(textState.text.slice(textState.index));
+        const arr = /\[(.+?)\]/gi.exec(textState.text.slice(textState.index));
         if (arr) {
             textState.index += arr[0].length;
             return Color.gmColor(arr[1]);
@@ -2932,7 +2932,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Window_Base.prototype.changeTextColor = function (color) {
-        var c = parseInt(color);
+        const c = parseInt(color);
         // 색상 코드가 숫자인 경우
         if (c > 0 && c < 32) {
             color = ColorManager.textColor(color);
@@ -2942,11 +2942,11 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    var alias_Window_Base_processEscapeCharacter =
+    const alias_Window_Base_processEscapeCharacter =
         Window_Base.prototype.processEscapeCharacter;
     Window_Base.prototype.processEscapeCharacter = function (code, textState) {
-        var tcGroup = RS.MessageSystem.TextCodes.ENUM;
-        var textCode = RS.MessageSystem.TextCodes.Main;
+        const tcGroup = RS.MessageSystem.TextCodes.ENUM;
+        const textCode = RS.MessageSystem.TextCodes.Main;
         switch (code) {
             case "C":
                 this.changeTextColor(
@@ -2984,7 +2984,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    var alias_loadWindowskin = Window_Base.prototype.loadWindowskin;
+    const alias_loadWindowskin = Window_Base.prototype.loadWindowskin;
     Window_Base.prototype.loadWindowskin = function () {
         alias_loadWindowskin.call(this);
         this.windowskin.addLoadListener(() => {
@@ -2993,9 +2993,9 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Window_Base.prototype.getFontFace = function () {
-        var langCode =
+        const langCode =
             RS.MessageSystem.Params.langCode || navigator.language.slice(0, 2);
-        var fonts = RS.MessageSystem.Params.fonts[langCode];
+        const fonts = RS.MessageSystem.Params.fonts[langCode];
         if (fonts) {
             return fonts;
         } else {
@@ -3013,7 +3013,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     };
 
     Window_Base.prototype.processAllText = function (textState) {
-        this._isUsedTextWidthEx = !textState.draing;
+        this._isUsedTextWidthEx = !textState.drawing;
         while (textState.index < textState.text.length) {
             this.processCharacter(textState);
         }
@@ -3057,7 +3057,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         this._messageDesc = undefined;
     };
 
-    var alias_Window_Base_convertEscapeCharacters =
+    const alias_Window_Base_convertEscapeCharacters =
         Window_Base.prototype.convertEscapeCharacters;
     Window_Base.prototype.convertEscapeCharacters = function (text) {
         const regGroup = RS.MessageSystem.Reg.Group;
@@ -3065,35 +3065,20 @@ RS.MessageSystem = RS.MessageSystem || {};
         const textCode = RS.MessageSystem.TextCodes.Main;
 
         text = alias_Window_Base_convertEscapeCharacters.call(this, text);
-        text = text.replace(
-            regGroup[tcGroup.VAR],
-            function (...args) {
-                return $gameVariables.value(parseInt(args[1]));
-            }.bind(this)
+        text = text.replace(regGroup[tcGroup.VAR], (...args) =>
+            $gameVariables.value(parseInt(args[1]))
         );
-        text = text.replace(
-            regGroup[tcGroup.VAR],
-            function (...args) {
-                return $gameVariables.value(parseInt(args[1]));
-            }.bind(this)
+        text = text.replace(regGroup[tcGroup.VAR], (...args) =>
+            $gameVariables.value(parseInt(args[1]))
         );
-        text = text.replace(
-            regGroup[tcGroup.PLAYER],
-            function (...args) {
-                return this.actorName(parseInt(args[1]));
-            }.bind(this)
+        text = text.replace(regGroup[tcGroup.PLAYER], (...args) =>
+            this.actorName(parseInt(args[1]))
         );
-        text = text.replace(
-            regGroup[tcGroup.PARTY_MEMBER],
-            function (...args) {
-                return this.partyMemberName(parseInt(args[1]));
-            }.bind(this)
+        text = text.replace(regGroup[tcGroup.PARTY_MEMBER], (...args) =>
+            this.partyMemberName(parseInt(args[1]))
         );
-        text = text.replace(
-            regGroup[tcGroup.NUM],
-            function (...args) {
-                return args[1].toComma();
-            }.bind(this)
+        text = text.replace(regGroup[tcGroup.NUM], (...args) =>
+            args[1].toComma()
         );
         text = text.replace(regGroup[tcGroup.GOLD], TextManager.currencyUnit);
         text = text.replace(
@@ -3206,7 +3191,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     };
 
-    var alias_Window_Base_processNewLine_align =
+    const alias_Window_Base_processNewLine_align =
         Window_Base.prototype.processNewLine;
     Window_Base.prototype.processNewLine = function (textState) {
         alias_Window_Base_processNewLine_align.call(this, textState);
