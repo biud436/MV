@@ -4140,12 +4140,19 @@ RS.MessageSystem = RS.MessageSystem || {};
      */
     class BaseComponent extends Component {
         onReady(props) {
+            // if the message window is valid from passed props.
+            if (!("messageWindow" in props)) {
+                console.error("messageWindow is not defined");
+                return;
+            }
+
             /**
              * @type {Window_Message}
              */
             this._messageWindow = props.messageWindow;
         }
 
+        // Getters
         get messageWindow() {
             return this._messageWindow;
         }
@@ -4168,14 +4175,22 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
 
         save() {
+            // 'this._messageWindow?.save()'의 구현입니다.
+            // 하지만 save는 함수가 아닐 수도 있습니다.
+            // 타입의 안전성은 체크하지 않습니다.
             this._messageWindow.save ? this._messageWindow.save() : null;
         }
 
         restore() {
+            // 'this._messageWindow?.restore()'의 구현입니다.
+            // 하지만 save는 함수가 아닐 수도 있습니다.
+            // 타입의 안전성은 체크하지 않습니다.
             this._messageWindow.restore ? this._messageWindow.restore() : null;
         }
 
         standardPadding() {
+            // 패딩을 업데이트해야 합니다 (MZ에서 달라진 부분입니다)
+            // 꼭 체크할 필요는 없지만...
             this._messageWindow.updatePadding();
             const padding = this._messageWindow.padding || 12;
 
@@ -4183,6 +4198,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
 
         textPadding() {
+            // textPadding()의 구현입니다.
             return this._messageWindow.itemPadding() || 6;
         }
 
@@ -4203,6 +4219,9 @@ RS.MessageSystem = RS.MessageSystem || {};
             return this._messageWindow.lineHeight();
         }
 
+        /**
+         * TODO: 상속 시, 이 메소드를 오버라이드 하세요.
+         */
         updatePlacement() {}
 
         drawMessageFace() {
@@ -4247,7 +4266,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     }
 
     //============================================================================
-    // BalloonWindowTransformComponent
+    // ! BalloonWindowTransformComponent
     //============================================================================
 
     /**
