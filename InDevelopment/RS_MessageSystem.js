@@ -4470,6 +4470,16 @@ RS.MessageSystem = RS.MessageSystem || {};
                 this.updateSubBalloonElements(data);
             }
         }
+
+        calcBalloonRectHeight(text) {
+            const messageWindow = this.messageWindow;
+            const tempFontSize = this.contents.fontSize;
+            const textState = messageWindow.createTextState(text, 0, 0, 0);
+            textState.text = messageWindow.convertEscapeCharacters(text);
+            textState.height = messageWindow.calcTextHeight(textState, false);
+            messageWindow.setTextSize(tempFontSize);
+            return textState.height;
+        }
     }
 
     /**
