@@ -3083,78 +3083,53 @@ RS.MessageSystem = RS.MessageSystem || {};
         text = text.replace(regGroup[tcGroup.GOLD], TextManager.currencyUnit);
         text = text.replace(
             regGroup[tcGroup.CLASSES],
-            function (...args) {
-                return $dataClasses[parseInt(args[1])].name || "";
-            }.bind(this)
+            (...args) => $dataClasses[parseInt(args[1])].name || ""
         );
         text = text.replace(
             regGroup[tcGroup.ITEM],
-            function (...args) {
-                return $dataItems[parseInt(args[1])].name || "";
-            }.bind(this)
+            (...args) => $dataItems[parseInt(args[1])].name || ""
         );
         text = text.replace(
             regGroup[tcGroup.WEAPON],
-            function (...args) {
-                return $dataWeapons[parseInt(args[1])].name || "";
-            }.bind(this)
+            (...args) => $dataWeapons[parseInt(args[1])].name || ""
         );
         text = text.replace(
             regGroup[tcGroup.ARMOR],
-            function (...args) {
-                return $dataArmors[parseInt(args[1])].name || "";
-            }.bind(this)
+            (...args) => $dataArmors[parseInt(args[1])].name || ""
         );
         text = text.replace(
             regGroup[tcGroup.ENEMY],
-            function (...args) {
-                return $dataEnemies[parseInt(args[1])].name || "";
-            }.bind(this)
+            (...args) => $dataEnemies[parseInt(args[1])].name || ""
         );
         text = text.replace(
             regGroup[tcGroup.STATE],
-            function (...args) {
-                return $dataStates[parseInt(args[1])].name || "";
-            }.bind(this)
+            (...args) => $dataStates[parseInt(args[1])].name || ""
         );
         text = text.replace(
             regGroup[tcGroup.SKILL],
-            function (...args) {
-                return $dataSkills[parseInt(args[1])].name || "";
-            }.bind(this)
+            (...args) => $dataSkills[parseInt(args[1])].name || ""
         );
         text = text.replace(
             regGroup[tcGroup.ALIGN_LEFT],
-            function () {
-                return "\x1b" + textCode[tcGroup.ALIGN] + "[0]";
-            }.bind(this)
+            () => "\x1b" + textCode[tcGroup.ALIGN] + "[0]"
         );
         text = text.replace(
             regGroup[tcGroup.ALIGN_CENTER],
-            function () {
-                return "\x1b" + textCode[tcGroup.ALIGN] + "[1]";
-            }.bind(this)
+            () => "\x1b" + textCode[tcGroup.ALIGN] + "[1]"
         );
         text = text.replace(
             regGroup[tcGroup.ALIGN_RIGHT],
-            function () {
-                return "\x1b" + textCode[tcGroup.ALIGN] + "[2]";
-            }.bind(this)
+            () => "\x1b" + textCode[tcGroup.ALIGN] + "[2]"
         );
-        text = text.replace(
-            regGroup[tcGroup.ALIGN],
-            function (...args) {
-                if (!this._isUsedTextWidthEx) {
-                    $gameMessage.setAlign(Number(args[1] || 0));
-                }
-                return "";
-            }.bind(this)
-        );
+        text = text.replace(regGroup[tcGroup.ALIGN], (...args) => {
+            if (!this._isUsedTextWidthEx) {
+                $gameMessage.setAlign(Number(args[1] || 0));
+            }
+            return "";
+        });
         text = text.replace(
             /<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi,
-            function () {
-                return regGroup[tcGroup.ALIGN_CLEAR].source;
-            }.bind(this)
+            () => regGroup[tcGroup.ALIGN_CLEAR].source
         );
         return text;
     };
