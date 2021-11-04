@@ -4161,6 +4161,9 @@ RS.MessageSystem = RS.MessageSystem || {};
             return this._messageWindow.contents;
         }
 
+        /**
+         * @returns {Window_NameBox}
+         */
         get _nameWindow() {
             return this._messageWindow._nameBoxWindow;
         }
@@ -4482,7 +4485,7 @@ RS.MessageSystem = RS.MessageSystem || {};
             this._nameWindow.opacity = value;
         }
 
-        updateNameWindowPositionXImpl() {
+        updatePositionX() {
             // 이름 윈도우가 없다면
             if (!this._nameWindow) {
                 return;
@@ -4520,6 +4523,36 @@ RS.MessageSystem = RS.MessageSystem || {};
             }
 
             this._nameWindow.x = newX;
+        }
+
+        updatePositionY() {
+            const ox = RS.MessageSystem.Params.windowOffset.x;
+            const oy = RS.MessageSystem.Params.windowOffset.y;
+            const positionType = $gameMessage.positionType();
+            const ballonOwnerType = $gameMessage.getBalloon();
+
+            this.updatePositionX();
+
+            // 메시지 윈도우가 상단일 때
+            if (positionType === 0 && ballonOwnerType === -2) {
+                // 최상단의 위치
+                const topY = 0;
+
+                this._nameWindow.y = topY + oy;
+
+                // 이름 윈도우가 열렸는 지 여부에 따라 메시지 윈도우의 Y 좌표를 설정합니다.
+                this.y = this._nameWindow.isOpen()
+                    ? topY +
+                      this._nameWindow.height +
+                      RS.MessageSystem.Params.nameWindowY +
+                      oy
+                    : topY + oy;
+            } else {
+                this._nameWindow.y =
+                    this.y -
+                    this._nameWindow.height -
+                    RS.MessageSystem.Params.nameWindowY;
+            }
         }
     }
 
