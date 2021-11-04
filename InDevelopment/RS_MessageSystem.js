@@ -4468,6 +4468,7 @@ RS.MessageSystem = RS.MessageSystem || {};
     /**
      * @class NamwWindowPositionComponent
      * @description
+     * 이름 윈도우의 X좌표를 재설정합니다.
      */
     class NamwWindowPositionComponent extends BaseComponent {
         setOpacity(value) {
