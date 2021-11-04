@@ -4478,7 +4478,6 @@ RS.MessageSystem = RS.MessageSystem || {};
             const messageWindow = this.messageWindow;
             const tempFontSize = this.contents.fontSize;
 
-            // createTextState() 호출 시 상태가 유지되지 않는다.
             const textState = messageWindow.createTextState(text, 0, 0, 0);
             textState.text = messageWindow.convertEscapeCharacters(text);
             textState.height = messageWindow.calcTextHeight(textState, false);
