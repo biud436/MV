@@ -4094,6 +4094,10 @@ RS.MessageSystem = RS.MessageSystem || {};
             }
 
             this._listeners[eventName].forEach((func) => {
+                if (!(func instanceof Function)) {
+                    console.warn("호출된 이벤트 리스너가 함수가 아닙니다.");
+                    return;
+                }
                 func(...args);
             });
         }
@@ -4533,7 +4537,7 @@ RS.MessageSystem = RS.MessageSystem || {};
 
             this.updatePositionX();
 
-            // 메시지 윈도우가 상단일 때
+            // 메시지 윈도우가 상단이고, 말풍선 모드가 아니라면
             if (positionType === 0 && ballonOwnerType === -2) {
                 // 최상단의 위치
                 const topY = 0;
