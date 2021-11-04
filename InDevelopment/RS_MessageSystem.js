@@ -4265,10 +4265,6 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
     }
 
-    //============================================================================
-    // ! BalloonWindowTransformComponent
-    //============================================================================
-
     /**
      * @class BalloonWindowTransformComponent
      * @description
@@ -4466,6 +4462,63 @@ RS.MessageSystem = RS.MessageSystem || {};
                 // 멈춤 표시 스프라이트 위치 조정
                 this.updateSubBalloonElements(data);
             }
+        }
+    }
+
+    /**
+     * @class NamwWindowPositionComponent
+     * @description
+     */
+    class NamwWindowPositionComponent extends BaseComponent {
+        setOpacity(value) {
+            let opacity = value;
+            if (typeof opacity !== "number") {
+                opacity = Number(opacity);
+            }
+            if (isNaN(opacity)) {
+                opacity = 255;
+            }
+            this._nameWindow.opacity = value;
+        }
+
+        updateNameWindowPositionXImpl() {
+            // 이름 윈도우가 없다면
+            if (!this._nameWindow) {
+                return;
+            }
+
+            const mx = this.x;
+            const w = this.width;
+            const nw = this._nameWindow.width;
+
+            const position = RS.MessageSystem.Params.namePositionTypeAtX;
+
+            const nx = RS.MessageSystem.Params.nameWindowX;
+
+            let newX = mx + nx;
+
+            switch (position) {
+                case "right":
+                    newX = mx + w - nw - nx;
+                    break;
+                case "center":
+                    newX = mx + w / 2 - nw / 2 - nx;
+                    break;
+                case "left":
+                    newX = mx + nx;
+                    break;
+                case "opacity0":
+                    this.setOpacity(0);
+                    break;
+                case "defaultOpacity":
+                    this.setOpacity(RS.MessageSystem.Params.defaultOpacity);
+                    break;
+                case "auto":
+                    newX = this.x + this.newLineX() + nx;
+                    break;
+            }
+
+            this._nameWindow.x = newX;
         }
     }
 
