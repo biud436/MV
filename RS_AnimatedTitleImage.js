@@ -37,23 +37,23 @@
  */
 
 /*~struct~TitleImage:ko
-*
-* @param Image
-* @text 이미지
-* @desc img/titles1 폴더에 있는 이미지를 불러옵니다
-* @default
-* @require 1
-* @dir img/titles1/
-* @type file
-*
-* @param Time
-* @text 시간 간격
-* @type number
-* @decimals 1
-* @desc 일정한 시간이 흐르면 타이틀 이미지를 변경합니다
-* @default 2.0
-* @min 1.0
-*
+ *
+ * @param Image
+ * @text 이미지
+ * @desc img/titles1 폴더에 있는 이미지를 불러옵니다
+ * @default
+ * @require 1
+ * @dir img/titles1/
+ * @type file
+ *
+ * @param Time
+ * @text 시간 간격
+ * @type number
+ * @decimals 1
+ * @desc 일정한 시간이 흐르면 타이틀 이미지를 변경합니다
+ * @default 2.0
+ * @min 1.0
+ *
  */
 /*:
  * RS_AnimatedTitleImage.js
@@ -86,94 +86,96 @@
  */
 
 /*~struct~TitleImage:
-*
-* @param Image
-* @desc Specifies to import file in the path from img/titles1 folder.
-* @default
-* @require 1
-* @dir img/titles1/
-* @type file
-*
-* @param Time
-* @type number
-* @decimals 1
-* @desc redraw the title screen image at specific time intervals.
-* @default 2.0
-* @min 1.0
-*
-*/
+ *
+ * @param Image
+ * @desc Specifies to import file in the path from img/titles1 folder.
+ * @default
+ * @require 1
+ * @dir img/titles1/
+ * @type file
+ *
+ * @param Time
+ * @type number
+ * @decimals 1
+ * @desc redraw the title screen image at specific time intervals.
+ * @default 2.0
+ * @min 1.0
+ *
+ */
 
-var Imported = Imported || {};
 var RS = RS || {};
 RS.Utils = RS.Utils || {};
 RS.AnimatedTitleImage = RS.AnimatedTitleImage || {};
-Imported.AnimatedTitleImage = true;
 
-(function() {
+(() => {
+    (() => {
+        const parameters = PluginManager.parameters("RS_AnimatedTitleImage");
 
-  var parameters = PluginManager.parameters('RS_AnimatedTitleImage');
+        RS.AnimatedTitleImage.Params = RS.AnimatedTitleImage.Params || {};
+        RS.AnimatedTitleImage.Params.isPreload = Boolean(
+            parameters["Preload"] === "true"
+        );
+        RS.AnimatedTitleImage.Params.images = [];
 
-  RS.AnimatedTitleImage.Params = RS.AnimatedTitleImage.Params || {};
-  RS.AnimatedTitleImage.Params.isPreload = Boolean(parameters['Preload'] === 'true');
-  RS.AnimatedTitleImage.Params.images = [];
+        RS.Utils.jsonParse = function (str) {
+            const retData = JSON.parse(str, (k, v) => {
+                try {
+                    return RS.Utils.jsonParse(v);
+                } catch (e) {
+                    return v;
+                }
+            });
+            return retData;
+        };
 
-  if(Imported.RS_TitleManagerEx) {
-    console.warn("Cannot use together with RS_TitleManagerEx.js plugin.");
-    return false;
-  }
+        const data = RS.Utils.jsonParse(parameters["Title Image"]);
+        data.forEach((e) => RS.AnimatedTitleImage.Params.images.push(e));
+    })();
 
-  if(!Utils.RPGMAKER_VERSION || (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION < "1.3.5") ) {
-    console.warn("This plugin needs to be used for RPG Maker MV v1.3.5 or higher.");
-    return;
-  }
+    const alias_Scene_Boot_loadSystemImages =
+        Scene_Boot.prototype.loadSystemImages;
+    Scene_Boot.prototype.loadSystemImages = function () {
+        alias_Scene_Boot_loadSystemImages.call(this);
+        if (!RS.AnimatedTitleImage.Params.isPreload) return;
+        RS.AnimatedTitleImage.Params.images.forEach((i) => {
+            ImageManager.loadTitle1(i["Image"]);
+        });
+    };
 
-  RS.Utils.jsonParse = function (str) {
-    var retData = JSON.parse(str, function (k, v) {
-      try { return RS.Utils.jsonParse(v); } catch (e) { return v; }
-    });
-    return retData;
-  };
+    const alias_Scene_Title_create = Scene_Title.prototype.create;
+    Scene_Title.prototype.create = function () {
+        alias_Scene_Title_create.call(this);
+        this._spriteIndex = 0;
+        PIXI.ticker.shared.add(this.chooseIndex, this);
+        PIXI.ticker.shared.stop();
+        PIXI.ticker.shared.start();
+        this._nSavingTime = performance.now();
+    };
 
-  var data = RS.Utils.jsonParse(parameters['Title Image']);
-  data.forEach(function (e, i, a) {
-    RS.AnimatedTitleImage.Params.images.push(e);
-  });
+    const alias_Scene_Title_terminate = Scene_Title.prototype.terminate;
+    Scene_Title.prototype.terminate = function () {
+        alias_Scene_Title_terminate.call(this);
+        PIXI.ticker.shared.remove(this.chooseIndex, this);
+    };
 
-  var alias_Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
-  Scene_Boot.prototype.loadSystemImages = function() {
-    alias_Scene_Boot_loadSystemImages.call(this);
-    if(!RS.AnimatedTitleImage.Params.isPreload) return;
-    RS.AnimatedTitleImage.Params.images.forEach(function(i) {
-      ImageManager.loadTitle1(i['Image']);
-    }, this);
-  };
-
-  var alias_Scene_Title_create = Scene_Title.prototype.create;
-  Scene_Title.prototype.create = function () {
-    alias_Scene_Title_create.call(this);
-    this._spriteIndex = 0;
-    PIXI.ticker.shared.add(this.chooseIndex, this);
-    PIXI.ticker.shared.stop();
-    PIXI.ticker.shared.start();
-    this._nSavingTime = performance.now();
-  };
-
-  var alias_Scene_Title_terminate = Scene_Title.prototype.terminate;
-  Scene_Title.prototype.terminate = function () {
-    alias_Scene_Title_terminate.call(this);
-    PIXI.ticker.shared.remove(this.chooseIndex, this);
-  };
-
-  Scene_Title.prototype.chooseIndex = function() {
-    var collections = RS.AnimatedTitleImage.Params.images;
-    var data = collections[this._spriteIndex];
-    var next = (parseFloat(data['Time']) || 1) * 1000;
-    var lastTime = PIXI.ticker.shared.lastTime;
-    if( data && lastTime - this._nSavingTime >= next) {
-      this._backSprite1.bitmap = ImageManager.loadTitle1(data['Image']);
-      this._nSavingTime = lastTime;
-      this._spriteIndex = Math.floor(this._nSavingTime) % collections.length;
-    }
-  };
-
+    Scene_Title.prototype.chooseIndex = function () {
+        const collections = RS.AnimatedTitleImage.Params.images;
+        if (!collections || !Array.isArray(collections)) {
+            return;
+        }
+        const index = this._spriteIndex;
+        const data = collections[index];
+        const next = (parseFloat(data["Time"]) || 1) * 1000;
+        const lastTime = PIXI.ticker.shared.lastTime;
+        if (data && lastTime - this._nSavingTime >= next) {
+            if (this._backSprite1) {
+                this._backSprite1.bitmap = ImageManager.loadTitle1(
+                    data["Image"]
+                );
+            }
+            this._nSavingTime = lastTime;
+            this._spriteIndex =
+                Math.floor(this._nSavingTime) % collections.length;
+        }
+    };
 })();
