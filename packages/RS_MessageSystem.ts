@@ -1505,6 +1505,23 @@ declare global {
     interface String {
         contains(value: string): boolean;
     }
+
+    interface Bitmap {
+        fontBold: boolean;
+        fontGradient: boolean;
+        highlightTextColor: Required<string | null>;
+        _context: CanvasRenderingContext2D;
+
+        initialize(width: number, height: number): void;
+        setGradient(
+            text: string,
+            color1: string,
+            color2: string,
+            color3: string,
+            tx?: number,
+            ty?: number
+        ): void;
+    }
 }
 
 (($) => {
@@ -2637,7 +2654,7 @@ declare global {
     //============================================================================
 
     var alias_Bitmap_initialize = Bitmap.prototype.initialize;
-    Bitmap.prototype.initialize = function (width, height) {
+    Bitmap.prototype.initialize = function (width: number, height: number) {
         alias_Bitmap_initialize.call(this, width, height);
         this.fontBold = false;
         this.fontGradient = false;
