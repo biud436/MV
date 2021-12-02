@@ -1957,7 +1957,7 @@ declare global {
     return data.meta;
   };
 
-  (function () {
+  (() => {
     "use strict";
     var regData = ["Korean", "English", "Chinese", "Japanese"];
     regData.forEach(function (e, i, a) {
@@ -2142,7 +2142,7 @@ declare global {
         `\x1b${tcGroup[55]}\\[(\\d+)\\]`,
         "gi"
       ); // \FD
-    }, this);
+    });
   })();
 
   RS.MessageSystem.initSystem = function () {
