@@ -1959,7 +1959,7 @@ declare global {
     var regData = ["Korean", "English", "Chinese", "Japanese"];
     regData.forEach(function (e, i, a) {
       var tcGroup = RS.MessageSystem.TextCodes[e];
-      tcGroup = tcGroup.map(function (e, i, a) {
+      tcGroup = tcGroup.map((e: any, i: number, a: any[]) => {
         if (e === undefined) return;
         var data = [];
         var ret = "";
@@ -1973,7 +1973,7 @@ declare global {
         }
         ret = data.join("");
         return ret;
-      }, this);
+      });
       RS.MessageSystem.Reg[e][0] = undefined;
       RS.MessageSystem.Reg[e][1] = new RegExp(
         `(?:\x1bC|\x1b${tcGroup[1]})\\[(.+?)\\]`,
