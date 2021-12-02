@@ -1498,6 +1498,12 @@ Imported.RS_MessageSystem = true;
 var RS = <any>(RS || {});
 RS.MessageSystem = RS.MessageSystem || {};
 
+declare global {
+  interface Array<T> {
+    contains(value: T): boolean;
+  }
+}
+
 (($) => {
   "use strict";
 
@@ -1772,7 +1778,7 @@ RS.MessageSystem = RS.MessageSystem || {};
   RS.MessageSystem.TextCodes = (function () {
     const rowData = RS.MessageSystem.popParameter("Text Code", "텍스트 코드");
     const data = JSON.parse(rowData);
-    const retData = {};
+    const retData = <Record<string, any>>{};
 
     retData.Korean = [undefined].concat(JSON.parse(data.Korean));
     retData.Chinese = [undefined].concat(JSON.parse(data.Chinese));
@@ -1846,7 +1852,7 @@ RS.MessageSystem = RS.MessageSystem || {};
    * 주어진 ID 값으로 텍스트 코드를 현지화하여 반환합니다.
    * @param {Number} idx
    */
-  RS.MessageSystem.getTextCode = function (idx) {
+  RS.MessageSystem.getTextCode = function (idx: number) {
     const langCode = RS.MessageSystem.Params.langCode;
 
     if (langCode.match(/ko/)) {
@@ -1870,8 +1876,11 @@ RS.MessageSystem = RS.MessageSystem || {};
    * @param {Number} eventId
    * @return {Object} meta
    */
-  RS.MessageSystem.getEventComments = function (eventId, index) {
-    let data = {
+  RS.MessageSystem.getEventComments = function (
+    eventId: number,
+    index: number
+  ) {
+    let data = <Record<any, any>>{
       note: "",
       meta: {},
     };
@@ -1894,7 +1903,7 @@ RS.MessageSystem = RS.MessageSystem || {};
         }
       }
 
-      const param = list[index];
+      let param = list[index];
 
       // 코멘트를 읽어옵니다.
       while (param && [108, 408].contains(param.code)) {
