@@ -1502,13 +1502,16 @@ declare global {
   interface Array<T> {
     contains(value: T): boolean;
   }
+  interface String {
+    contains(value: string): boolean;
+  }
 }
 
 (($) => {
   "use strict";
 
   const pluginParams = $plugins.filter((i) => {
-    return (<any>i.description).contains("<RS_MessageSystem>");
+    return i.description.contains("<RS_MessageSystem>");
   });
 
   const pluginName = <Types.PluginName>(
