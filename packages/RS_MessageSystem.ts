@@ -2618,18 +2618,18 @@ declare global {
     Color.gmColor = function (str: string) {
         var type = RS.MessageSystem.Params.langCode;
         if (type.match(/ko/)) {
-            return RS.MessageSystem.getKoreanColor(string);
+            return RS.MessageSystem.getKoreanColor(str);
         }
         if (type.match(/zh/)) {
-            return RS.MessageSystem.getChineseColor(string);
+            return RS.MessageSystem.getChineseColor(str);
         }
         if (type.match(/en/)) {
-            return RS.MessageSystem.getEnglishColor(string);
+            return RS.MessageSystem.getEnglishColor(str);
         }
         if (type.match(/ja/)) {
-            return RS.MessageSystem.getJapaneseColor(string);
+            return RS.MessageSystem.getJapaneseColor(str);
         }
-        return RS.MessageSystem.getEnglishColor(string);
+        return RS.MessageSystem.getEnglishColor(str);
     };
 
     //============================================================================
