@@ -2282,6 +2282,7 @@ declare global {
         baseColor: string;
         getBaseColor(): string;
         getUserCustomColor(str: string): string;
+        gmColor(str: string): string;
     }
 
     const Color = <IColor>{};
@@ -2614,7 +2615,7 @@ declare global {
         };
     };
 
-    Color.gmColor = function (string) {
+    Color.gmColor = function (str: string) {
         var type = RS.MessageSystem.Params.langCode;
         if (type.match(/ko/)) {
             return RS.MessageSystem.getKoreanColor(string);
