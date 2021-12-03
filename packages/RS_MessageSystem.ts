@@ -1563,15 +1563,15 @@ declare global {
     screenX: () => number;
     screenY: () => number;
   }
+}
 
-  interface Window_Base {
-    _isUsedTextWidthEx: boolean;
-    contents: Bitmap;
+declare class Window_Base extends Window {
+  _isUsedTextWidthEx: boolean;
+  contents: Bitmap;
 
-    obtainEscapeCode(textState: any): string;
-    obtainNameColor(textState: rm.types.TextState): string;
-    changeTextColor(color: any): void;
-  }
+  obtainEscapeCode(textState: any): string;
+  obtainNameColor(textState: rm.types.TextState): string;
+  changeTextColor(color: any): void;
 }
 
 (($) => {
