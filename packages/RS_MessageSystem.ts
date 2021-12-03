@@ -1565,6 +1565,23 @@ declare global {
     clearAlignLast(n?: number): void;
     setBalloonPatternHeight(value: number): void;
     getBalloonPatternHeight: () => number;
+    isRTL: () => boolean;
+  }
+
+  interface Game_Temp {
+    _callMSHeightFunc: Function;
+    setMSHeightFunc(func: Function): void;
+    setMaxLine(maxLine: number): void;
+  }
+
+  interface Game_Map {
+    _msgOwner: Game_CharacterBase;
+    _msgEvent: number;
+
+    getMsgOwner(): Game_CharacterBase;
+    setMsgOwner(o: Game_CharacterBase): void;
+    getMsgEvent(): number;
+    setMsgEvent(eventId: number): void;
   }
 
   interface Sprite_Battler {
@@ -1580,6 +1597,8 @@ declare global {
   };
 
   interface Window_Base {
+    new (...args: any): Window_Base;
+
     _isUsedTextWidthEx: boolean;
     contents: Bitmap;
     _messageDesc: MessageDesc | undefined;
@@ -1609,6 +1628,8 @@ declare global {
   }
 
   interface Window_Message extends Window_Base {
+    new (...args: any): Window_Message;
+
     _pauseSignSprite: Sprite;
     _width: number;
     _height: number;
@@ -1617,6 +1638,12 @@ declare global {
       textState: TextState | null;
       isDirty: boolean;
     };
+    _showFast: boolean;
+    _faceContents: Sprite;
+    _goldWindow: Window_Gold;
+    _positionType: number;
+    _nameWindow: InstanceType<Window_Base>;
+    _isDirtyWindowskin: boolean;
 
     obtainTextSpeed(textState: TextState): number;
     obtainGradientText(textState: TextState): string;
@@ -1630,8 +1657,7 @@ declare global {
     setStrokeWidth(strokeWidth: number): void;
     setTextBold(bold: boolean): void;
     setTextItalic(italic: boolean): void;
-    setTextGradient(textState: TextState): void;
-    setTextGradient(textState: rm.types.TextState): void;
+    setTextGradient(textState: TextState | rm.types.TextState): void;
     setHighlightTextColor(color: string): void;
     playSe(soundName: string): void;
     showPicture<T extends Object>(param: T): void;
@@ -1646,6 +1672,27 @@ declare global {
     ): void;
     needsNewPage(textState: TextState): boolean;
     processNormalCharacterProxy(textState: TextState, c: string): void;
+    isEndOfText: (textState: TextState | rm.types.TextState) => boolean;
+    updateBigFaceOpacity(): void;
+    fadeInOutFaceContents(): void;
+    updateBalloonPosition(): void;
+    updateDefaultOpacity(): void;
+    updateContentsOpacity(): void;
+    setFaceZIndex(index: number): void;
+    setHeight: (n: number) => void;
+    createFaceContents(): void;
+    removeEventHandler: () => void;
+    onLoadWindowskin: () => void;
+    removeFaceContents: () => void;
+    isValidBigFace(faceName: string): RegExpExecArray | null;
+    updateNameWindow(): void;
+  }
+
+  export interface Window_NameBox extends Window_Base {
+    _name: string;
+    _messageWindow: Window_Message;
+
+    new (...args: any): Window_NameBox;
   }
 
   export interface MessageDesc {
@@ -3687,10 +3734,10 @@ declare global {
          * @type {Bitmap}
          */
         const bitmap = this._backBuffer.buffer;
-        const tx = textState.px;
-        const ty = textState.py;
-        const x = textState.x;
-        const y = textState.y;
+        const tx = (<TextState>textState).px;
+        const ty = (<TextState>textState).py;
+        const x = (<TextState>textState).x;
+        const y = (<TextState>textState).y;
         const w = bitmap.width;
         const h = bitmap.height;
 
@@ -3842,7 +3889,7 @@ declare global {
         retName = retName.replace(":right", "");
         RS.MessageSystem.Params.namePositionTypeAtX = "right";
       }
-      this._nameWindow.drawName(retName);
+      (this._nameWindow as any).drawName(retName);
       return "";
     });
     text = text.replace(
@@ -3851,6 +3898,7 @@ declare global {
         const value = Number(arguments[1] || -2);
         if ($gameParty.inBattle()) {
           $gameMessage.setBalloon(
+            // @ts-ignore
             value < 0 ? "ENEMIES : " + Math.abs(value) : "ACTORS : " + value
           );
         } else {
@@ -3863,7 +3911,10 @@ declare global {
       regGroup[tcGroup.FRIENDLY_TROOPS],
       function () {
         var value = Number(arguments[1] || 0);
-        $gameMessage.setBalloon("ACTORS : " + value);
+        $gameMessage.setBalloon(
+          // @ts-ignore
+          "ACTORS : " + value
+        );
         return "";
       }.bind(this)
     );
@@ -3871,20 +3922,20 @@ declare global {
       regGroup[tcGroup.ENEMY_TROOPS],
       function () {
         var value = Number(arguments[1] || 0);
-        $gameMessage.setBalloon("ENEMIES : " + value);
+        $gameMessage.setBalloon(
+          // @ts-ignore
+          "ENEMIES : " + value
+        );
         return "";
       }.bind(this)
     );
-    text = text.replace(
-      regGroup[tcGroup.FACE_DIRECTION],
-      function () {
-        var value = Number(arguments[1] || 0);
-        if (!this._isUsedTextWidthEx) {
-          RS.MessageSystem.Params.faceDirection = value;
-        }
-        return "";
-      }.bind(this)
-    );
+    text = text.replace(regGroup[tcGroup.FACE_DIRECTION], () => {
+      var value = Number(arguments[1] || 0);
+      if (!this._isUsedTextWidthEx) {
+        RS.MessageSystem.Params.faceDirection = value;
+      }
+      return "";
+    });
     return text;
   };
 
