@@ -1511,6 +1511,10 @@ declare global {
     contains(value: string): boolean;
   }
 
+  interface Number {
+    clamp(min: number, max: number): number;
+  }
+
   interface Bitmap {
     fontBold: boolean;
     fontGradient: boolean;
@@ -3395,11 +3399,11 @@ declare global {
   };
 
   Window_Message.prototype.setTextIndent = function (textState) {
-    textState.x += this.obtainEscapeParam(textState);
+    textState.x += <number>this.obtainEscapeParam(textState);
   };
 
-  Window_Message.prototype.setHighlightTextColor = function (...args) {
-    var color = args[0];
+  Window_Message.prototype.setHighlightTextColor = function (...args: any[]) {
+    let color: any = args[0];
     if (color === "null" || color === "없음") {
       color = null;
     }
@@ -3414,11 +3418,11 @@ declare global {
 
   Window_Message.prototype.playSe = function (seName) {
     var realName = seName.trim();
-    var data = {
+    var data = <rm.types.AudioParameters>{
       name: realName,
       pan: 0,
       pitch: 100,
-      volume: ConfigManager.seVolume,
+      volume: (<any>ConfigManager).seVolume,
     };
     AudioManager.playSe(data);
   };
