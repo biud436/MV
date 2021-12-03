@@ -21,3 +21,11 @@ export namespace Types {
     settings: Array<SystemFontSetting>;
   }
 }
+export interface Window_Base {
+  _isUsedTextWidthEx: boolean;
+  contents: Bitmap;
+
+  obtainEscapeCode(textState: any): string;
+  obtainNameColor(textState: rm.types.TextState): string;
+  changeTextColor(color: any): void;
+}
