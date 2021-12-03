@@ -1557,8 +1557,8 @@ declare global {
     setBalloon(n: number): void;
     getBalloon(n: number): number;
     setAlign: (n: number) => void;
-    getAlign: (n: number) => number;
-    clearAlignLast(n: number): void;
+    getAlign: (n?: number) => number;
+    clearAlignLast(n?: number): void;
     setBalloonPatternHeight(value: number): void;
     getBalloonPatternHeight: () => number;
   }
@@ -1568,13 +1568,63 @@ declare global {
     screenY: () => number;
   }
 
-  export interface Window_Base {
+  type TextState = rm.types.TextState & {
+    x: number;
+  };
+
+  interface Window_Base {
     _isUsedTextWidthEx: boolean;
     contents: Bitmap;
+    _messageDesc: MessageDesc | undefined;
+    _textState: TextState;
 
     obtainEscapeCode(textState: any): string;
-    obtainNameColor(textState: rm.types.TextState): string;
+    obtainNameColor(textState: TextState): string;
     changeTextColor(color: any): void;
+    loadWindowskin(): void;
+    getFontFace(): string;
+    save(): void;
+    restore(): void;
+    createTextState(
+      text: string,
+      x: number,
+      y: number,
+      width: number
+    ): TextState;
+    itemPadding(): number;
+    newLineX(textState: TextState): number;
+    processNewLine(textState: TextState): void;
+    processNewLine(textState: rm.types.TextState): void;
+    processAlign(textState: TextState): void;
+    setAlignLeft(textState: TextState): void;
+    setAlignCenter(textState: TextState): void;
+    setAlignRight(textState: TextState): void;
+  }
+
+  interface Window_Message extends Window_Base {
+    obtainTextSpeed(textState: TextState): number;
+    obtainGradientText(textState: TextState): string;
+    obtainSoundName(textState: TextState): string;
+    processEscapeCharacter(code: string, textState: TextState): void;
+    processEscapeCharacter(code: string, textState: TextState | string): void;
+    processCharacter(textState: TextState): void;
+    setTextSize(textSize: number): void;
+    setStrokeColor(color: string): void;
+    setTextIndent(textState: TextState): void;
+    setStrokeWidth(strokeWidth: number): void;
+    setTextBold(bold: boolean): void;
+    setTextItalic(italic: boolean): void;
+    setTextGradient(textState: TextState): void;
+    setTextGradient(textState: rm.types.TextState): void;
+    setHighlightTextColor(color: string): void;
+    playSe(soundName: string): void;
+    showPicture<T extends Object>(param: T): void;
+    erasePicture(picId: number): void;
+  }
+
+  export interface MessageDesc {
+    save(contents: Bitmap): void;
+    restore(contents: Bitmap): void;
   }
 }
 
@@ -2936,14 +2986,19 @@ declare global {
     var textCode = RS.MessageSystem.TextCodes.Main;
     switch (code) {
       case "C":
-        this.changeTextColor(this.textColor(this.obtainEscapeParam(textState)));
+        this.changeTextColor(
+          this.textColor(<number>this.obtainEscapeParam(textState))
+        );
         break;
       case textCode[tcGroup.COLOR]:
         this.changeTextColor(this.obtainNameColor(textState));
         break;
       case "I":
       case textCode[tcGroup.ICON]:
-        this.processDrawIcon(this.obtainEscapeParam(textState), textState);
+        this.processDrawIcon(
+          <number>this.obtainEscapeParam(textState),
+          textState
+        );
         break;
       case "{":
       case textCode[tcGroup.INCREASE]:
@@ -2991,7 +3046,7 @@ declare global {
   };
 
   Window_Base.prototype.processAllText = function (textState) {
-    this._isUsedTextWidthEx = !textState.draing;
+    this._isUsedTextWidthEx = !textState.drawing;
     while (textState.index < textState.text.length) {
       this.processCharacter(textState);
     }
@@ -3043,74 +3098,68 @@ declare global {
     text = alias_Window_Base_convertEscapeCharacters.call(this, text);
     text = text.replace(
       regGroup[tcGroup.VAR],
-      function (...args) {
-        return $gameVariables.value(parseInt(args[1]));
+      function (...args: any[]): string {
+        return $gameVariables.value(parseInt(<string>args[1])).toString();
       }.bind(this)
     );
     text = text.replace(
       regGroup[tcGroup.VAR],
-      function (...args) {
-        return $gameVariables.value(parseInt(args[1]));
+      function (...args: any[]) {
+        return $gameVariables.value(parseInt(args[1])).toString();
       }.bind(this)
     );
-    text = text.replace(
-      regGroup[tcGroup.PLAYER],
-      function (...args) {
-        return this.actorName(parseInt(args[1]));
-      }.bind(this)
-    );
-    text = text.replace(
-      regGroup[tcGroup.PARTY_MEMBER],
-      function (...args) {
-        return this.partyMemberName(parseInt(args[1]));
-      }.bind(this)
-    );
+    text = text.replace(regGroup[tcGroup.PLAYER], (...args: any[]) => {
+      return this.actorName(parseInt(args[1]));
+    });
+    text = text.replace(regGroup[tcGroup.PARTY_MEMBER], (...args: any[]) => {
+      return this.partyMemberName(parseInt(args[1]));
+    });
     text = text.replace(
       regGroup[tcGroup.NUM],
-      function (...args) {
+      function (...args: any[]) {
         return args[1].toComma();
       }.bind(this)
     );
     text = text.replace(regGroup[tcGroup.GOLD], TextManager.currencyUnit);
     text = text.replace(
       regGroup[tcGroup.CLASSES],
-      function (...args) {
+      function (...args: any[]) {
         return $dataClasses[parseInt(args[1])].name || "";
       }.bind(this)
     );
     text = text.replace(
       regGroup[tcGroup.ITEM],
-      function (...args) {
+      function (...args: any[]) {
         return $dataItems[parseInt(args[1])].name || "";
       }.bind(this)
     );
     text = text.replace(
       regGroup[tcGroup.WEAPON],
-      function (...args) {
+      function (...args: any[]) {
         return $dataWeapons[parseInt(args[1])].name || "";
       }.bind(this)
     );
     text = text.replace(
       regGroup[tcGroup.ARMOR],
-      function (...args) {
+      function (...args: any[]) {
         return $dataArmors[parseInt(args[1])].name || "";
       }.bind(this)
     );
     text = text.replace(
       regGroup[tcGroup.ENEMY],
-      function (...args) {
+      function (...args: any[]) {
         return $dataEnemies[parseInt(args[1])].name || "";
       }.bind(this)
     );
     text = text.replace(
       regGroup[tcGroup.STATE],
-      function (...args) {
+      function (...args: any[]) {
         return $dataStates[parseInt(args[1])].name || "";
       }.bind(this)
     );
     text = text.replace(
       regGroup[tcGroup.SKILL],
-      function (...args) {
+      function (...args: any[]) {
         return $dataSkills[parseInt(args[1])].name || "";
       }.bind(this)
     );
@@ -3132,15 +3181,12 @@ declare global {
         return "\x1b" + textCode[tcGroup.ALIGN] + "[2]";
       }.bind(this)
     );
-    text = text.replace(
-      regGroup[tcGroup.ALIGN],
-      function (...args) {
-        if (!this._isUsedTextWidthEx) {
-          $gameMessage.setAlign(Number(args[1] || 0));
-        }
-        return "";
-      }.bind(this)
-    );
+    text = text.replace(regGroup[tcGroup.ALIGN], (...args: any[]) => {
+      if (!this._isUsedTextWidthEx) {
+        $gameMessage.setAlign(Number(args[1] || 0));
+      }
+      return "";
+    });
     text = text.replace(
       /<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi,
       function () {
@@ -3186,7 +3232,7 @@ declare global {
     Window_Base.prototype.processNewLine;
   Window_Base.prototype.processNewLine = function (textState) {
     alias_Window_Base_processNewLine_align.call(this, textState);
-    this.processAlign(textState);
+    this.processAlign(<TextState>textState);
   };
 
   Window_Base.prototype.setAlignLeft = function (textState) {
@@ -3244,24 +3290,29 @@ declare global {
 
   var alias_Window_Message_processEscapeCharacter =
     Window_Message.prototype.processEscapeCharacter;
-  Window_Message.prototype.processEscapeCharacter = function (code, textState) {
+  Window_Message.prototype.processEscapeCharacter = function (
+    code,
+    textState: TextState | string
+  ) {
     var tcGroup = RS.MessageSystem.TextCodes.ENUM;
     var textCode = RS.MessageSystem.TextCodes.Main;
     switch (code) {
       case textCode[tcGroup.TEXT_SPEED]:
-        $gameMessage.setWaitTime(this.obtainEscapeParam(textState));
+        $gameMessage.setWaitTime(<number>this.obtainEscapeParam(textState));
         break;
       case textCode[tcGroup.TEXT_SIZE]:
-        this.setTextSize(this.obtainEscapeParam(textState));
+        this.setTextSize(<number>this.obtainEscapeParam(textState));
         break;
       case textCode[tcGroup.OUTLINE_COLOR]:
-        this.setStrokeColor(this.obtainNameColor(textState));
+        this.setStrokeColor(this.obtainNameColor(<TextState>textState));
         break;
       case textCode[tcGroup.INDENT]:
-        this.setTextIndent(textState);
+        this.setTextIndent(<TextState>textState);
         break;
       case textCode[tcGroup.OUTLINE_WIDTH]:
-        this.setStrokeWidth(this.obtainEscapeParam(textState));
+        this.setStrokeWidth(
+          <number>this.obtainEscapeParam(<TextState>textState)
+        );
         break;
       case textCode[tcGroup.BOLD]:
         this.setTextBold(!this.contents.fontBold);
@@ -3282,35 +3333,35 @@ declare global {
         this.setTextItalic(false);
         break;
       case textCode[tcGroup.GRADIENT]:
-        this.setTextGradient(textState);
+        this.setTextGradient(<TextState>textState);
         break;
       case textCode[tcGroup.HIGHLIGHT_TEXT_COLOR]:
-        this.setHighlightTextColor(this.obtainNameColor(textState));
+        this.setHighlightTextColor(this.obtainNameColor(<TextState>textState));
         break;
       case textCode[tcGroup.TAB]:
-        textState.x += Number(
+        (<TextState>textState).x += Number(
           this.textWidth("A") * RS.MessageSystem.Params.TabSize
         );
         break;
       case textCode[tcGroup.CARRIAGE_RETURN]:
-        textState.x = Number(textState.left || 0);
+        (<TextState>textState).x = Number((textState as TextState).startX || 0);
         if (!this._isUsedTextWidthEx) this.startWait(1);
         break;
       case textCode[tcGroup.PLAY_SE]:
         if (!this._isUsedTextWidthEx)
-          this.playSe(this.obtainSoundName(textState));
+          this.playSe(this.obtainSoundName(<TextState>textState));
         break;
       case textCode[tcGroup.SHOW_PICTURE]:
         if (this._isUsedTextWidthEx) break;
-        this.showPicture(this.obtainSoundName(textState));
+        this.showPicture(this.obtainSoundName(<TextState>textState));
         this.startWait(15);
       case textCode[tcGroup.HIDE_PICTURE]:
         if (this._isUsedTextWidthEx) break;
-        this.erasePicture(this.obtainEscapeParam(textState));
+        this.erasePicture(<number>this.obtainEscapeParam(textState));
         this.startWait(15);
       case textCode[tcGroup.FACE]:
         if (this._isUsedTextWidthEx) break;
-        var params = this.obtainSoundName(textState).split(",");
+        var params = this.obtainSoundName(<TextState>textState).split(",");
         // this.redrawFaceImage(textState, params[0], params[1], 0, 0);
         this.startWait(1);
         break;
