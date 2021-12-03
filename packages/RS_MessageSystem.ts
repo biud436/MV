@@ -1559,7 +1559,7 @@ declare global {
     getMaxLine: () => number;
     setMaxLine(maxLine: number): void;
     setBalloon(n: number): void;
-    getBalloon(n: number): number;
+    getBalloon(n?: number): number;
     setAlign: (n: number) => void;
     getAlign: (n?: number) => number;
     clearAlignLast(n?: number): void;
@@ -1574,6 +1574,9 @@ declare global {
 
   type TextState = rm.types.TextState & {
     x: number;
+    y: number;
+    px: number;
+    py: number;
   };
 
   interface Window_Base {
@@ -1606,6 +1609,15 @@ declare global {
   }
 
   interface Window_Message extends Window_Base {
+    _pauseSignSprite: Sprite;
+    _width: number;
+    _height: number;
+    _backBuffer: {
+      buffer: Bitmap;
+      textState: TextState | null;
+      isDirty: boolean;
+    };
+
     obtainTextSpeed(textState: TextState): number;
     obtainGradientText(textState: TextState): string;
     obtainSoundName(textState: TextState): string;
@@ -1623,7 +1635,17 @@ declare global {
     setHighlightTextColor(color: string): void;
     playSe(soundName: string): void;
     showPicture<T extends Object>(param: T): void;
+    showPicture(param: string): void;
     erasePicture(picId: number): void;
+    resetGradient(textState: TextState): void;
+    processWordWrap(
+      textState: TextState,
+      w: number,
+      width: number,
+      isValid: boolean
+    ): void;
+    needsNewPage(textState: TextState): boolean;
+    processNormalCharacterProxy(textState: TextState, c: string): void;
   }
 
   export interface MessageDesc {
@@ -2995,7 +3017,7 @@ declare global {
         );
         break;
       case textCode[tcGroup.COLOR]:
-        this.changeTextColor(this.obtainNameColor(textState));
+        this.changeTextColor(this.obtainNameColor(<TextState>textState));
         break;
       case "I":
       case textCode[tcGroup.ICON]:
@@ -3427,20 +3449,23 @@ declare global {
     AudioManager.playSe(data);
   };
 
-  Window_Message.prototype.showPicture = function (param) {
-    var param = param.split(",");
-    var params = [
-      Number(param[0].trim()),
-      param[1].trim(),
-      Number(param[2].trim()),
-      Number(param[3].trim()),
-      Number(param[4].trim()),
+  Window_Message.prototype.showPicture = function (param: string) {
+    const raw = param.split(",").map((e) => {
+      return e.trim();
+    });
+
+    let params = [
+      Number(raw[0]),
+      raw[1],
+      Number(raw[2]),
+      Number(raw[3]),
+      Number(raw[4]),
       100,
       100,
       255,
       0,
     ];
-    var ret = true;
+    let ret = true;
 
     // 모든 요소 검증
     if (params) {
@@ -3452,7 +3477,7 @@ declare global {
     }
     // 검증 결과가 참이라면 그림 표시
     if (ret) {
-      $gameScreen.showPicture.apply($gameScreen, params);
+      $gameScreen.showPicture.apply($gameScreen, <any>params);
       return true;
     }
     return false;
@@ -3518,7 +3543,7 @@ declare global {
     width,
     isValid
   ) {
-    const px = textState.px;
+    const px = <Required<number>>textState.px;
 
     if (Math.floor(px + w * 2) > width) {
       if (isValid) {
@@ -3535,7 +3560,7 @@ declare global {
   Window_Message.prototype.processNewLine = function (textState) {
     alias_Window_Message_processNewLinePW.call(this, textState);
     // 내부 버퍼의 위치를 시작 지점으로 초기화한다.
-    textState.px = textState.startX || textState.x;
+    (<TextState>textState).px = textState.startX || (<TextState>textState).x;
   };
 
   /**
@@ -3568,7 +3593,7 @@ declare global {
     // 새로운 텍스트가 이후에 있는가?
     // 그게 문자인지 제어 문자인지는 이 로직에선 알 수 없다.
     const postBuffer = textState.buffer || "";
-    const postLen = postBuffer;
+    const postLen = postBuffer.length;
     if (preLen !== postLen) {
       isDirty = true;
     }
@@ -3629,7 +3654,7 @@ declare global {
         isDirty: false,
       };
 
-      const { px, py } = textState;
+      const { px, py } = <TextState>textState;
 
       // 배경 버퍼는 내부 버퍼의 초기 위치로부터 계산된다.
       this._backBuffer.buffer.fillAll(contents.highlightTextColor);
