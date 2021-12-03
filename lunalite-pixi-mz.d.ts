@@ -25827,7 +25827,7 @@ declare class Bitmap {
      * @property fontItalic
      * @type Boolean
      */
-    fontItalic: number;
+    fontItalic: boolean;
     /**
      * The color of the text in CSS format.
      *
