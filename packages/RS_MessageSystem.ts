@@ -1496,8 +1496,12 @@ import { Types } from "./types/parameters";
 var Imported = <any>(Imported || {});
 Imported.RS_MessageSystem = true;
 
-var RS = <any>(RS || {});
-RS.MessageSystem = RS.MessageSystem || {};
+export namespace RS {
+  export interface TextCodes {}
+  export interface MessageSystem {
+    TextCodes: TextCodes;
+  }
+}
 
 declare global {
   interface Array<T> {
