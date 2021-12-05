@@ -46,6 +46,7 @@
     "jsdom": "^17.0.0",
     "minimist": "^1.2.5",
     "pixi.js": "^5.3.3",
+    "reflect-metadata": "^0.1.13",
     "web-vitals": "^1.1.2"
   },
   "extension": [
