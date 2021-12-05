@@ -42,20 +42,20 @@ export function beforeAlias(...args: any[]): MethodDecorator {
     };
 }
 
-// class Shape {
-//     constructor() {}
+class Shape {
+    constructor() {}
 
-//     public draw() {
-//         console.log("Shape::draw");
-//     }
-// }
+    public draw() {
+        console.log("Shape::draw");
+    }
+}
 
-// class Rectangle extends Shape {
-//     @afterAlias(Shape.prototype)
-//     public draw() {
-//         console.log("Rectangle::draw");
-//     }
-// }
+class Rectangle extends Shape {
+    @afterAlias(Shape.prototype)
+    public draw() {
+        console.log("Rectangle::draw");
+    }
+}
 
-// const rectangle = new Rectangle();
-// rectangle.draw();
+const rectangle = new Rectangle();
+rectangle.draw();
