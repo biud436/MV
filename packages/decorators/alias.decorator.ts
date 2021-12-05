@@ -51,7 +51,7 @@ class Shape {
 }
 
 class Rectangle extends Shape {
-    @afterAlias(Shape.prototype)
+    @beforeAlias(Shape.prototype)
     public draw() {
         console.log("Rectangle::draw");
     }
