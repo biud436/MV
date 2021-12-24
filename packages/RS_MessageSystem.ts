@@ -4636,10 +4636,10 @@ declare global {
         return;
       }
 
-      let data = <any>{};
+      let data = <{ [key: string]: any }>{};
 
       // 타겟의 화면 좌표 설정
-      var owner = $gameMap.getMsgOwner();
+      let owner = $gameMap.getMsgOwner();
       if (!owner) {
         console.warn("owner 변수가 없습니다");
         return;
@@ -4660,7 +4660,7 @@ declare global {
         return false;
       }
 
-      var parent;
+      let parent;
 
       // 액터인가?
       if (owner.type === "actor") {
@@ -4670,9 +4670,9 @@ declare global {
       }
 
       // 타겟 스프라이트를 id 값으로 찾는다.
-      var tempBattlers = [];
+      let tempBattlers = [];
       tempBattlers = parent;
-      var target = tempBattlers[owner.id];
+      let target = tempBattlers[owner.id];
       if (!target) {
         console.warn("타겟이 없습니다");
         return;
@@ -4706,7 +4706,9 @@ declare global {
       data.ny =
         this.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
 
-      data = this.setBalloonPlacement(Object.create(data));
+      data = <{ [key: string]: any }>(
+        this.setBalloonPlacement(Object.create(data))
+      );
 
       // 말풍선 위치 및 크기 설정
       this.setBalloonRect(data);
@@ -4718,7 +4720,7 @@ declare global {
     }
 
     updateTransform(): void {
-        this.messageWindow.updateTransform();
+      this.messageWindow.updateTransform();
     }
 
     calcBalloonRectHeight(text: string) {
