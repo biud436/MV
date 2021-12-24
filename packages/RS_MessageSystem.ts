@@ -1491,6 +1491,7 @@
  *
  */
 
+import { NullToken } from "@typescript-eslint/types/dist/ast-spec";
 import { Types } from "./types/parameters";
 
 var Imported = <any>(Imported || {});
@@ -1579,14 +1580,29 @@ declare global {
     type: string;
   }
 
-  interface Game_Map {
-    _msgOwner: Game_CharacterBase;
-    _msgEvent: number;
+  type BalloonSpriteType = "actor" | "enemy";
+  interface IBalloonSpriteTarget {
+    type: BalloonSpriteType;
+    id: number;
+  }
 
-    getMsgOwner(): Game_CharacterBase;
-    setMsgOwner(o: Game_CharacterBase): void;
-    getMsgEvent(): number;
-    setMsgEvent(eventId: number): void;
+  type MsgOwner =
+    | Game_CharacterBase
+    | IBalloonSpriteTarget
+    | Game_Event
+    | Game_Player
+    | null;
+
+  type MsgEvent = Number | Game_Event;
+
+  interface Game_Map {
+    _msgOwner: MsgOwner;
+    _msgEvent: MsgEvent;
+
+    getMsgOwner(): MsgOwner;
+    setMsgOwner(o: MsgOwner): void;
+    getMsgEvent(): MsgEvent;
+    setMsgEvent(ev: MsgEvent): void;
   }
 
   interface Sprite_Battler {
@@ -1695,6 +1711,9 @@ declare global {
     isValidBigFace(faceName: string): RegExpExecArray | null;
     updateNameWindow(): void;
     shouldBreakHere(text: string): boolean;
+    getSpriteActors(sign: number): IBalloonSpriteTarget | null;
+    getSpriteEnemies(sign: number): IBalloonSpriteTarget | null;
+    setupOwner(sign: number): void;
   }
 
   export interface Window_NameBox extends Window_Base {
@@ -4123,6 +4142,59 @@ declare global {
     this.contentsOpacity = RS.MessageSystem.Params.contentsOpacity;
   };
 
+  Window_Message.prototype.getSpriteActors = function (
+    sign: number
+  ): IBalloonSpriteTarget | null {
+    if (!$gameParty.members()) return null;
+    const max = $gameParty.members().length;
+    sign = sign.clamp(0, max);
+
+    return {
+      type: "actor",
+      id: sign - 1,
+    };
+  };
+
+  Window_Message.prototype.getSpriteEnemies = function (
+    sign: number
+  ): IBalloonSpriteTarget | null {
+    if (!$gameTroop.members()) return null;
+    const max = $gameTroop.members().length;
+    sign = sign.clamp(0, max);
+
+    return {
+      type: "enemy",
+      id: sign - 1,
+    };
+  };
+
+  Window_Message.prototype.setupOwner = function (sign) {
+    switch (sign) {
+      case -1: // 플레이어
+        $gameMap.setMsgOwner($gamePlayer);
+        break;
+      case 0: // 이 이벤트
+        $gameMap.setMsgOwner(<Game_Event>$gameMap.getMsgEvent());
+        break;
+      default:
+        if (SceneManager._scene instanceof Scene_Battle) {
+          // 전투 중인가?
+          if (/(?:ENEMIES)[ ]*:(.*)/.test(sign.toString())) {
+            // 적
+            $gameMap.setMsgOwner(this.getSpriteEnemies(parseInt(RegExp.$1)));
+          }
+          if (/(?:ACTORS)[ ]*:(.*)/.test(sign.toString())) {
+            // 아군
+            $gameMap.setMsgOwner(this.getSpriteActors(parseInt(RegExp.$1)));
+          }
+        } else {
+          // 맵 이벤트
+          $gameMap.setMsgOwner($gameMap.event(sign));
+        }
+        break;
+    }
+  };
+
   const alias_Window_Message_shouldBreakHere =
     Window_Message.prototype.shouldBreakHere;
   Window_Message.prototype.shouldBreakHere = function (text) {
@@ -4594,8 +4666,8 @@ declare global {
       // 말풍선 소유자의 화면 좌표
       const owner = $gameMap.getMsgOwner();
 
-      data.mx = owner.screenX();
-      data.my = owner.screenY();
+      data.mx = (owner as Game_Character).screenX();
+      data.my = (owner as Game_Character).screenY();
 
       data.tx = this._bWidth / 2;
       data.ty = this._bHeight;
