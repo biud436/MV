@@ -1595,6 +1595,14 @@ declare global {
 
   type MsgEvent = Number | Game_Event;
 
+  type NameWindowPositon =
+    | "right"
+    | "center"
+    | "left"
+    | "opacity0"
+    | "defaultOpacity"
+    | "auto";
+
   interface Game_Map {
     _msgOwner: MsgOwner;
     _msgEvent: MsgEvent;
@@ -1721,6 +1729,16 @@ declare global {
     _messageWindow: Window_Message;
 
     new (...args: any): Window_NameBox;
+  }
+
+  export interface Game_Interpreter {
+    processMessageParams(eventId: number, index: number): void;
+    isValidMultiLine(): boolean;
+    command101(): boolean;
+    multiLineAddMessage(): void;
+    initLineHeight(): void;
+    isMultiLine(): boolean;
+    addLineHeight(): void;
   }
 
   export interface MessageDesc {
@@ -4843,7 +4861,9 @@ declare global {
       const w = this.width;
       const nw = this._nameWindow.width;
 
-      const position = RS.MessageSystem.Params.namePositionTypeAtX;
+      const position = <NameWindowPositon>(
+        RS.MessageSystem.Params.namePositionTypeAtX
+      );
 
       const nx = RS.MessageSystem.Params.nameWindowX;
 
