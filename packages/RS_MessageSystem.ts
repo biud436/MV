@@ -4362,6 +4362,10 @@ declare global {
   /**
    * @static
    * @class DependencyInjector
+   * @description
+   * 이 클래스는 MZ에서 MV에 의존성을 갖는 메소드를 실행하는데 필요한 컴포넌트를 주입합니다.
+   * 또한 해당 컴포넌트를 안전한 샌드박스 환경에서 실행시키기 위해 사용됩니다.
+   * 샌드박스 환경이라함은 MZ에서도 오류 없이 안전하게 동작한다는 것을 의미합니다.
    */
   class DependencyInjector {
     public static COMPONENTS: typeof BaseComponent[] = [];
