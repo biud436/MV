@@ -1574,6 +1574,11 @@ declare global {
     setMaxLine(maxLine: number): void;
   }
 
+  interface Game_CharacterBase {
+    id: number;
+    type: string;
+  }
+
   interface Game_Map {
     _msgOwner: Game_CharacterBase;
     _msgEvent: number;
@@ -1702,6 +1707,14 @@ declare global {
   export interface MessageDesc {
     save(contents: Bitmap): void;
     restore(contents: Bitmap): void;
+  }
+
+  export interface Scene_Map {
+    _spriteset: Spriteset_Map;
+  }
+
+  export interface Scene_Battle {
+    _spriteset: Spriteset_Battle;
   }
 }
 
@@ -4342,6 +4355,10 @@ declare global {
       return this._messageWindow.width;
     }
 
+    get _width() {
+      return this._messageWindow.width;
+    }
+
     get height() {
       return this._messageWindow.height;
     }
@@ -4416,6 +4433,7 @@ declare global {
     private _bWidth: number = 0;
     private _bHeight: number = 0;
     private _isUsedTextWidthEx: boolean = false;
+    public transform!: PIXI.Transform;
 
     onReady(props: { [key: string]: any }) {
       super.onReady(props);
@@ -4604,6 +4622,103 @@ declare global {
         // 멈춤 표시 스프라이트 위치 조정
         this.updateSubBalloonElements(data);
       }
+    }
+
+    updateBalloonPositionInBattle() {
+      if (!$gameParty.inBattle()) {
+        // 전투 씬인지 확인
+        console.warn("전투가 아닙니다");
+        return;
+      }
+      if (!$gameSystem.isSideView()) {
+        // 사이드뷰 전투인지 확인
+        console.warn("사이드뷰 전투가 아닙니다.");
+        return;
+      }
+
+      let data = <any>{};
+
+      // 타겟의 화면 좌표 설정
+      var owner = $gameMap.getMsgOwner();
+      if (!owner) {
+        console.warn("owner 변수가 없습니다");
+        return;
+      }
+      if (!owner.hasOwnProperty("type")) {
+        console.warn("type 속성이 없습니다 : " + owner);
+        return;
+      }
+      if (!owner.hasOwnProperty("id")) {
+        console.warn("id 속성이 없습니다 : " + owner);
+        return;
+      }
+
+      // 현재 씬이 전투 씬이 아닌 경우를 확인한다.
+      let scene = SceneManager._scene;
+      if (!(scene instanceof Scene_Battle)) {
+        console.warn("전투 장면이 아닙니다");
+        return false;
+      }
+
+      var parent;
+
+      // 액터인가?
+      if (owner.type === "actor") {
+        parent = scene._spriteset._actorSprites; // 액터 스프라이트 군을 반환
+      } else {
+        parent = scene._spriteset._enemySprites; // 적 스프라이트 군을 반환
+      }
+
+      // 타겟 스프라이트를 id 값으로 찾는다.
+      var tempBattlers = [];
+      tempBattlers = parent;
+      var target = tempBattlers[owner.id];
+      if (!target) {
+        console.warn("타겟이 없습니다");
+        return;
+      }
+
+      // 이미 죽어있다면 메시지를 일반 메시지로 표시한다.
+      if (
+        (owner.type === "actor" && !(<Sprite_Actor>target)._actor.isAlive()) ||
+        (owner.type === "enemy" && !(<Sprite_Enemy>target)._enemy.isAlive())
+      ) {
+        return;
+      }
+
+      data.mx = target.x;
+      data.my = target.y;
+
+      data.padY =
+        owner.type === "actor"
+          ? (target as Sprite_Actor)._mainSprite.bitmap.height / 6
+          : target.bitmap.height;
+
+      data.tx = this._width / 2;
+      data.ty = this._height;
+
+      data.scaleY = 1;
+      data.tileHeight = $gameMessage.getBalloonPatternHeight();
+
+      data.dx = data.mx - this._bWidth / 2;
+      data.dy = data.my - this._bHeight - data.tileHeight - data.padY;
+
+      data.ny =
+        this.y - this._nameWindow.height - RS.MessageSystem.Params.nameWindowY;
+
+      data = this.setBalloonPlacement(Object.create(data));
+
+      // 말풍선 위치 및 크기 설정
+      this.setBalloonRect(data);
+
+      // 멈춤 표시 스프라이트 위치 조정
+      this.updateSubBalloonElements(data);
+
+      if (this.transform) this.updateTransform();
+    }
+
+    updateTransform(): void {
+        this.messageWindow.updateTransform();
     }
 
     calcBalloonRectHeight(text: string) {
