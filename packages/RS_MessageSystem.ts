@@ -1490,8 +1490,6 @@
  * @default 나눔고딕, Dotum, AppleGothic, sans-serif
  *
  */
-
-import { NullToken } from "@typescript-eslint/types/dist/ast-spec";
 import { Types } from "./types/parameters";
 
 var Imported = <any>(Imported || {});
@@ -1593,7 +1591,7 @@ declare global {
     | Game_Player
     | null;
 
-  type MsgEvent = Number | Game_Event;
+  type MsgEvent = Number | Game_Event | Game_Character;
 
   type NameWindowPositon =
     | "right"
@@ -1750,6 +1748,8 @@ declare global {
   }
 
   export interface Game_Interpreter {
+    _lineHeight: number;
+
     processMessageParams(eventId: number, index: number): void;
     isValidMultiLine(): boolean;
     command101(): boolean;
@@ -4998,6 +4998,114 @@ declare global {
     }
     if (meta["기본 텍스트 출력 속도"]) {
       RS.MessageSystem.Params.textSpeed = Number(meta["기본 텍스트 출력 속도"]);
+    }
+  };
+
+  Game_Interpreter.prototype.isValidMultiLine = function () {
+    const codes = [];
+    let prevCode = 401;
+    let lineCount = 0;
+    for (var i = 1; i < 8; i++) {
+      const currentCommand = this._list[this._index + i];
+      if (currentCommand) {
+        const code = currentCommand.code;
+        codes.push(code);
+        prevCode = code;
+        if ([101, 401].contains(code)) {
+          lineCount++;
+        }
+      }
+    }
+    if (codes.contains(102)) {
+      return false;
+    } else if (codes.contains(103)) {
+      return false;
+    } else if ($gameMessage.getMaxLine() <= 4) {
+      return false;
+    } else if (lineCount <= 4) {
+      return false;
+    } else if (RS.MessageSystem.Params.choiceWindowStyle == "RMXP") {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  Game_Interpreter.prototype.command101 = function () {
+    if (!$gameMessage.isBusy()) {
+      $gameMap.setMsgEvent(this.character(this._eventId > 0 ? 0 : -1));
+      $gameMessage.setFaceImage(this._params[0], this._params[1]);
+      $gameMessage.setBackground(this._params[2]);
+      $gameMessage.setPositionType(this._params[3]);
+
+      this.processMessageParams(this._eventId, this._index);
+
+      if (this.isMultiLine()) {
+        this.multiLineAddMessage();
+      } else {
+        while (this.nextEventCode() === 401) {
+          // Text data
+          this._index++;
+          $gameMessage.add(this.currentCommand().parameters[0]);
+        }
+      }
+
+      switch (this.nextEventCode()) {
+        case 102: // Show Choices
+          this._index++;
+          this.setupChoices(this.currentCommand().parameters);
+          break;
+        case 103: // Input Number
+          this._index++;
+          this.setupNumInput(this.currentCommand().parameters);
+          break;
+        case 104: // Select Item
+          this._index++;
+          this.setupItemChoice(this.currentCommand().parameters);
+          break;
+      }
+      this._index++;
+      this.setWaitMode("message");
+    }
+    return false;
+  };
+
+  Game_Interpreter.prototype.multiLineAddMessage = function () {
+    this.initLineHeight();
+
+    while ($gameMessage._texts.length < $gameMessage.getMaxLine()) {
+      while (this.nextEventCode() === 401) {
+        this._index++;
+        $gameMessage.add(this.currentCommand().parameters[0]);
+        this.addLineHeight();
+        if (this._lineHeight >= $gameMessage.getMaxLine()) {
+          break;
+        }
+      }
+      if (this.nextEventCode() !== 101) {
+        break;
+      }
+    }
+
+    // 커맨드 코드 401번이 아직 남아있는 상황이라면,
+    // 다음 인덱스로 넘겨야 선택지가 제대로 동작한다.
+    while (this.nextEventCode() === 401) {
+      this._index++;
+    }
+  };
+
+  Game_Interpreter.prototype.initLineHeight = function () {
+    this._lineHeight = 0;
+  };
+
+  Game_Interpreter.prototype.isMultiLine = function () {
+    return this.isValidMultiLine();
+  };
+
+  Game_Interpreter.prototype.addLineHeight = function () {
+    this._lineHeight++;
+    if (this.nextEventCode() === 101) {
+      this._index++;
     }
   };
 
