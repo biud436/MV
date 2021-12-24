@@ -5110,7 +5110,7 @@ declare global {
   };
 
   //============================================================================
-  // Game_Interpreter
+  // Window_NameBox
   //============================================================================
 
   Window_NameBox.prototype.updatePlacement = function () {
