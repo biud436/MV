@@ -1603,6 +1603,24 @@ declare global {
     | "defaultOpacity"
     | "auto";
 
+  namespace EventCommand {
+    type MetaKey =
+      | "윈도우 스킨"
+      | "이름 윈도우 스킨"
+      | "라인 높이"
+      | "폰트 크기"
+      | "라인"
+      | "텍스트 시작 X"
+      | "큰 페이스칩 OX"
+      | "큰 페이스칩 OY"
+      | "대화창 뒤에 얼굴 표시"
+      | "대화창 투명도"
+      | "텍스트 효과음 재생 여부"
+      | "기본 텍스트 출력 속도";
+
+    type CommentMeta = Record<MetaKey, any>;
+  }
+
   interface Game_Map {
     _msgOwner: MsgOwner;
     _msgEvent: MsgEvent;
@@ -4925,6 +4943,63 @@ declare global {
   }
 
   DependencyInjector.COMPONENTS.push(NamwWindowPositionComponent);
+
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
+
+  Game_Interpreter.prototype.processMessageParams = function (
+    eventId: number,
+    index: number
+  ) {
+    const meta = <EventCommand.CommentMeta>(
+      RS.MessageSystem.getEventComments(eventId, index - 1)
+    );
+    if (meta["윈도우 스킨"]) {
+      RS.MessageSystem.Params.windowskin =
+        meta["윈도우 스킨"].trim() || "Window";
+      ImageManager.loadSystem(RS.MessageSystem.Params.windowskin);
+    }
+    if (meta["이름 윈도우 스킨"]) {
+      RS.MessageSystem.Params.windowskinForNameWindow =
+        meta["이름 윈도우 스킨"].trim() || "Window";
+      ImageManager.loadSystem(RS.MessageSystem.Params.windowskinForNameWindow);
+    }
+    if (meta["라인 높이"]) {
+      RS.MessageSystem.Params.lineHeight = parseInt(meta["라인 높이"]);
+    }
+    if (meta["폰트 크기"]) {
+      RS.MessageSystem.Params.fontSize = parseInt(meta["폰트 크기"]);
+    }
+    if (meta["라인"]) {
+      RS.MessageSystem.Params.numVisibleRows = parseInt(meta["라인"]);
+    }
+    if (meta["텍스트 시작 X"]) {
+      RS.MessageSystem.Params.textStartX = parseInt(meta["텍스트 시작 X"]);
+    }
+    if (meta["큰 페이스칩 OX"]) {
+      RS.MessageSystem.Params.faceOX = Number(meta["큰 페이스칩 OX"]);
+    }
+    if (meta["큰 페이스칩 OY"]) {
+      RS.MessageSystem.Params.faceOY = Number(meta["큰 페이스칩 OY"]);
+    }
+    if (meta["대화창 뒤에 얼굴 표시"]) {
+      RS.MessageSystem.Params.faceSide = Boolean(
+        meta["대화창 뒤에 얼굴 표시"] === "true"
+      );
+    }
+    if (meta["대화창 투명도"]) {
+      RS.MessageSystem.Params.defaultOpacity = parseInt(meta["대화창 투명도"]);
+    }
+    if (meta["텍스트 효과음 재생 여부"]) {
+      RS.MessageSystem.Params.isPlayTextSound = Boolean(
+        meta["텍스트 효과음 재생 여부"] === "true"
+      );
+    }
+    if (meta["기본 텍스트 출력 속도"]) {
+      RS.MessageSystem.Params.textSpeed = Number(meta["기본 텍스트 출력 속도"]);
+    }
+  };
 
   //============================================================================
   // Game_Interpreter
