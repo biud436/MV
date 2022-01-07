@@ -7,6 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:ko
+ * @target MV
  * @plugindesc 특정 창의 텍스트 색상을 원하는 색상으로 변경할 수 있습니다 <RS_ChangeWindowTextColorSafely>
  * @author biud436
  *
@@ -40,6 +41,7 @@
  * 2017.12.21 (v1.0.0) - First Release.
  */
 /*:
+ * @target MV
  * @plugindesc This plugin allows you to change the text color for window as you desired. <RS_ChangeWindowTextColorSafely>
  * @author biud436
  *
@@ -74,65 +76,59 @@ Imported.RS_ChangeWindowTextColorSafely = true;
 var RS = RS || {};
 RS.Utils = RS.Utils || {};
 
-(function () {
-
-  var parameters = $plugins.filter(function (i) {
-    return i.description.contains('<RS_ChangeWindowTextColorSafely>');
-  });
-
-  parameters = (parameters.length > 0) && parameters[0].parameters;
-
-  RS.Utils.jsonParse = function (str) {
-    var retData = JSON.parse(str, function (k, v) {
-      try { return RS.Utils.jsonParse(v); } catch (e) { return v; }
+(() => {
+    let parameters = $plugins.filter(function (i) {
+        return i.description.contains("<RS_ChangeWindowTextColorSafely>");
     });
-    return retData;
-  };
 
-  var defaultWindowClasses = RS.Utils.jsonParse(parameters['windowList']);
+    parameters = parameters.length > 0 && parameters[0].parameters;
 
-  Utils.changeWindowTextColorSafely = function(NOTETAGS) {
+    RS.Utils.jsonParse = function (str) {
+        const retData = JSON.parse(str, function (k, v) {
+            try {
+                return RS.Utils.jsonParse(v);
+            } catch (e) {
+                return v;
+            }
+        });
+        return retData;
+    };
 
-      var clsName = "";
-      var funcName = "";
-      var color = "";
-      var done = false;
+    const defaultWindowClasses = RS.Utils.jsonParse(parameters["windowList"]);
 
-      var notetags = NOTETAGS.split(/[\r\n]+/);
+    Utils.changeWindowTextColorSafely = function (NOTETAGS) {
+        let clsName = "";
+        let funcName = "";
+        let color = "";
+        let done = false;
 
-      notetags.forEach(function (note) {
+        const notetags = NOTETAGS.split(/[\r\n]+/);
 
-        if(note.match(/<(.*)[ ](.*)[ ](.*)>/)) {
-
-          clsName = String(RegExp.$1);
-          funcName = String(RegExp.$2);
-          color = String(RegExp.$3);
-          done = true;
-
-        }
-
-        if(done) {
-
-          var CLASS_NAME = window[clsName];
-          var FUNC_NAME = funcName.slice(0);
-          var COLOR_NAME = color.slice(0);
-
-          if(typeof(CLASS_NAME) === 'function') {
-
-            var prototypeName = CLASS_NAME.prototype[FUNC_NAME];
-
-            if(typeof(prototypeName) === 'function') {
-              CLASS_NAME.prototype[funcName] = function() { return COLOR_NAME; };
+        notetags.forEach((note) => {
+            if (note.match(/<(.*)[ ](.*)[ ](.*)>/)) {
+                clsName = String(RegExp.$1);
+                funcName = String(RegExp.$2);
+                color = String(RegExp.$3);
+                done = true;
             }
 
-          }
+            if (done) {
+                const CLASS_NAME = window[clsName];
+                const FUNC_NAME = funcName.slice(0);
+                const COLOR_NAME = color.slice(0);
 
-        }
+                if (typeof CLASS_NAME === "function") {
+                    const prototypeName = CLASS_NAME.prototype[FUNC_NAME];
 
-      }, this);
+                    if (typeof prototypeName === "function") {
+                        CLASS_NAME.prototype[funcName] = function () {
+                            return COLOR_NAME;
+                        };
+                    }
+                }
+            }
+        });
+    };
 
-  };
-
-  Utils.changeWindowTextColorSafely(defaultWindowClasses);
-
+    Utils.changeWindowTextColorSafely(defaultWindowClasses);
 })();

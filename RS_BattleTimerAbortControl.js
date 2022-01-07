@@ -7,6 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
+ * @target MV
  * @plugindesc This plugin allows you to be maintaining the battle even if the timer is less than 0 on battle.
  * @author biud436
  * @help
@@ -17,10 +18,11 @@
  * EnableBattleAbortInTimer : if the timer is same as 0, it will abort the battle.
  * ==================================================================
  * Version Log
- * ================================================================== 
+ * ==================================================================
  * 2018.05.08 (v1.0.0) - First Release
  */
 /*:ko
+ * @target MV
  * @plugindesc 타이머가 0이된다해도 전투가 중단되지 않습니다.
  * @author biud436
  * @help
@@ -38,54 +40,51 @@
 var Imported = Imported || {};
 Imported.RS_BattleTimerAbortControl = true;
 
-(function () {
-
+(() => {
     //==================================================================
     // Game_System (For Saving)
-    //==================================================================     
+    //==================================================================
 
-    var alias_Game_System_initialize = Game_System.prototype.initialize;
-    Game_System.prototype.initialize = function() {
+    const alias_Game_System_initialize = Game_System.prototype.initialize;
+    Game_System.prototype.initialize = function () {
         alias_Game_System_initialize.call(this);
         this._battleAbortInTimer = true;
     };
 
-    Game_System.prototype.disableBattleAbortInTimer = function() {
+    Game_System.prototype.disableBattleAbortInTimer = function () {
         this._battleAbortInTimer = false;
     };
 
-    Game_System.prototype.enableBattleAbortInTimer = function() {
+    Game_System.prototype.enableBattleAbortInTimer = function () {
         this._battleAbortInTimer = true;
-    };    
+    };
 
-    Game_System.prototype.battleAbortInTimer = function() {
+    Game_System.prototype.battleAbortInTimer = function () {
         return this._battleAbortInTimer;
-    };        
+    };
 
     //==================================================================
     // Game_Timer
     //==================================================================
 
-    Game_Timer.prototype.onExpire = function() {
-        if($gameSystem.battleAbortInTimer()) {
+    Game_Timer.prototype.onExpire = function () {
+        if ($gameSystem.battleAbortInTimer()) {
             BattleManager.abort();
         }
     };
 
     //==================================================================
     // Plugin Command
-    //==================================================================    
+    //==================================================================
 
-    var alias_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_pluginCommand.call(this, command, args);
-  
-      if(command === "DisableBattleAbortInTimer") {
-        $gameSystem.disableBattleAbortInTimer();
-      }
-      if(command === "EnableBattleAbortInTimer") {
-        $gameSystem.enableBattleAbortInTimer();
-      }      
-    };    
-        
+    const alias_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+    Game_Interpreter.prototype.pluginCommand = function (command, args) {
+        alias_pluginCommand.call(this, command, args);
+
+        if (command === "DisableBattleAbortInTimer") {
+            $gameSystem.disableBattleAbortInTimer();
+        } else if (command === "EnableBattleAbortInTimer") {
+            $gameSystem.enableBattleAbortInTimer();
+        }
+    };
 })();
