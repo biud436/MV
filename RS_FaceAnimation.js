@@ -7,6 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
+ * @target MV
  * @plugindesc This plugin allows you to show up the animation face in the messsage window <RS_FaceAnimation>
  * @author biud436
  *
@@ -183,6 +184,7 @@
  *
  */
 /*:ko
+ * @target MV
  * @plugindesc This plugin allows you to show up the animation face in the messsage window <RS_FaceAnimation>
  * @author biud436
  *
