@@ -114,7 +114,7 @@
  * 2022.01.12 (v1.0.2) :
  *  - Removed the variable named 'Imported' from the global scope.
  *  - Fixed the plugin structure by adding a new pattern such as '*.mixin' or '*.extend'.
- *  - Removed reserved word named 'var' in this plugin, However some of code block are still use a reserved word named 'var' instead of 'let' or 'const'.
+ *  - Removed reserved word named 'var' in this plugin, However some of code block are still used a reserved word named 'var' instead of 'let' or 'const'.
  */
 /*:ko
  * @target MV
@@ -265,7 +265,7 @@
  * 2022.01.12 (v1.0.2) :
  *  - Removed the variable named 'Imported' from the global scope.
  *  - Fixed the plugin structure by adding a new pattern such as '*.mixin' or '*.extend'.
- *  - Removed reserved word named 'var' in this plugin, However some of code block are still use a reserved word named 'var' instead of 'let' or 'const'.
+ *  - Removed reserved word named 'var' in this plugin, However some of code block are still used a reserved word named 'var' instead of 'let' or 'const'.
  */
 
 var $gameSelfVariables = null;
