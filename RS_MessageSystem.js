@@ -661,6 +661,13 @@
  *  Message minifier true
  *  Message minifier false
  *
+ * The face image displays always smoothy on the message window.
+ * if you want to display the face image smoothly, you can use this plugin command.
+ * if not, you can pass parameter named 'false' to this plugin command.
+ *
+ * Message faceSmooth true
+ * Message faceSmooth false
+ *
  * ======================================================================================================
  * Change Log
  * =======================================================================================================
@@ -1171,6 +1178,11 @@
 * 
 * 메시지 페이스칩위치 0
 * 메시지 페이스칩위치 2
+* 
+* 얼굴 이미지를 부드럽게 표시하고 싶으시다면, 다음과 같이 하세요.
+* 
+* 메시지 페이스칩부드럽게 true    (부드럽게 표시 = 기본값)
+* 메시지 페이스칩부드럽게 false   (있는 그대로를 표시)
 *
 * =============================================================================
 * 큰 페이스칩 설정
@@ -6423,6 +6435,10 @@ var Color = Color || {};
                     RS.MessageSystem.Params.faceDirection = parseInt(
                         args[1] || 0
                     );
+                    break;
+                case "faceSmooth":
+                case "페이스칩부드럽게":
+                    RS.MessageSystem.Params.faceSmooth = args[1] === "true";
                     break;
                 //-------------------------------------------------------------------------
                 case "setTabSize":
