@@ -387,14 +387,10 @@
  * @off false
  *
  */
-
-var Imported = Imported || {};
-Imported.RS_FaceAnimation = true;
-
 var RS = RS || {};
 RS.FaceAnimation = RS.FaceAnimation || {};
 
-(function ($) {
+(($) => {
     "use strict";
 
     const pluginParams = $plugins.filter((i) => {
@@ -794,7 +790,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         return true;
     };
 
-    var alias_Window_Message_drawMessageFace =
+    const alias_Window_Message_drawMessageFace =
         Window_Message.prototype.drawMessageFace;
     Window_Message.prototype.drawMessageFace = function () {
         if (this.isAnimationFace()) {
@@ -837,7 +833,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         }
     };
 
-    var alias_Window_Message_terminateMessage =
+    const alias_Window_Message_terminateMessage =
         Window_Message.prototype.terminateMessage;
     Window_Message.prototype.terminateMessage = function () {
         alias_Window_Message_terminateMessage.call(this);
@@ -877,3 +873,4 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         PluginManager.registerCommand(pluginName, name, pluginCommands[name]);
     }
 })(RS.FaceAnimation);
+0;
