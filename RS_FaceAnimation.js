@@ -387,14 +387,10 @@
  * @off false
  *
  */
-
-var Imported = Imported || {};
-Imported.RS_FaceAnimation = true;
-
 var RS = RS || {};
 RS.FaceAnimation = RS.FaceAnimation || {};
 
-(function ($) {
+(($) => {
     "use strict";
 
     const pluginParams = $plugins.filter((i) => {
@@ -794,7 +790,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         return true;
     };
 
-    var alias_Window_Message_drawMessageFace =
+    const alias_Window_Message_drawMessageFace =
         Window_Message.prototype.drawMessageFace;
     Window_Message.prototype.drawMessageFace = function () {
         if (this.isAnimationFace()) {
@@ -803,14 +799,14 @@ RS.FaceAnimation = RS.FaceAnimation || {};
                 return alias_Window_Message_drawMessageFace.call(this);
             }
 
-            var x = Number(state.x);
-            var y = Number(state.y);
-            var width = Number(state.width);
-            var height = Number(state.height);
-            var cols = Number(state.cols);
-            var maxFrames = Number(state.maxFrames);
-            var delay = Number(state.delay);
-            var looping = state.looping;
+            const x = Number(state.x);
+            const y = Number(state.y);
+            const width = Number(state.width);
+            const height = Number(state.height);
+            const cols = Number(state.cols);
+            const maxFrames = Number(state.maxFrames);
+            const delay = Number(state.delay);
+            const looping = state.looping;
 
             this._faceSprite = new RS.FaceSprite(
                 this._faceBitmap,
@@ -837,7 +833,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         }
     };
 
-    var alias_Window_Message_terminateMessage =
+    const alias_Window_Message_terminateMessage =
         Window_Message.prototype.terminateMessage;
     Window_Message.prototype.terminateMessage = function () {
         alias_Window_Message_terminateMessage.call(this);
