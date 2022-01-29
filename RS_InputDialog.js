@@ -10,7 +10,7 @@
  * @target MZ
  * @plugindesc This plugin allows you to display Text Edit Box on the screen. <RS_InputDialog>
  * @author biud436
- * @url biud436.tistory.com
+ * @url https://biud436.tistory.com
  *
  * @param textBox Width
  * @type number
@@ -366,6 +366,187 @@ RS.Utils = RS.Utils || {};
         return false;
     };
 
+    const utils = {
+        createVirutalElement(tagName) {
+            if (typeof document === "undefined") {
+                const jsdom = require("jsdom").JSDOM;
+                const doc = new jsdom("<html><body></body></html>");
+                const document = doc.window.document;
+
+                return document.createElement(tagName);
+            } else {
+                if (tagName === "body") return document.body;
+                return document.createElement(tagName);
+            }
+        },
+        toCamelCase(name) {
+            const snake = name || "";
+
+            let nodes = snake.split(/[\s\-]/);
+            let nodesTail = nodes.slice(1);
+
+            const camel = nodes[0].concat(
+                nodesTail.map((i) => {
+                    return i[0].toUpperCase() + i.slice(1);
+                })
+            );
+            return camel;
+        },
+        getClassName(name) {
+            const str = toCamelCase(name);
+            return str.slice(0, 1).toUpperCase() + str.slice(1);
+        },
+    };
+
+    /**
+     * @class TextBoxBuilder
+     * @description
+     * This class is used to create a text box.
+     */
+
+    class TextBoxBuilder {
+        render() {
+            const elements = this.prepareElement();
+            const rootElement = elements.root;
+            let parentNode = null;
+
+            const virtualRender = (root) => {
+                if (!root.tagName) {
+                    return;
+                }
+
+                // create an element.
+                const elem = utils.createVirutalElement(root.tagName);
+                if (!parentNode) {
+                    // parentNode = document.body;
+                    parentNode = body;
+                }
+                parentNode.appendChild(elem);
+
+                // set attributes.
+                if (root.attributes) {
+                    for (const attr in root.attributes) {
+                        elem.setAttribute(attr, root.attributes[attr]);
+                    }
+                }
+
+                // set class.
+                if (root.class) {
+                    elem.className = root.class;
+                }
+
+                // set type.
+                if (root.type) {
+                    elem.setAttribute("type", root.type);
+                }
+
+                // set id.
+                if (root.id) {
+                    elem.setAttribute("id", root.id);
+                }
+
+                // set placeholder.
+                if (root.placeholder) {
+                    elem.setAttribute("placeholder", root.placeholder);
+                }
+
+                // set value.
+                if (root.value) {
+                    elem.setAttribute("value", root.value);
+                }
+
+                // set style.
+                if (root.style) {
+                    // change snake to camel.
+                    const propertyName = utils.toCamelCase(style);
+
+                    for (const style in root.style) {
+                        elem.style[propertyName] = root.style[style];
+                    }
+                }
+
+                // set injected style.
+                if (root.injectedStyle) {
+                    elem.setAttribute("style", root.injectedStyle);
+                }
+
+                // set children.
+                if (root.children) {
+                    // parent node를 이것으로 설정
+                    parentNode = elem;
+
+                    root.children.forEach((child) => {
+                        virtualRender(child);
+                    });
+                }
+            };
+
+            virtualRender(rootElement);
+        }
+
+        prepareElement() {
+            return {
+                root: {
+                    class: "inputDialogContainer",
+                    tagName: "table",
+                    children: [
+                        {
+                            tagName: "tr",
+                            children: [
+                                {
+                                    tagName: "td",
+                                    class: "col",
+                                    children: [
+                                        {
+                                            tagName: "input",
+                                            type: "text",
+                                            id: "RS.InputDialog.Params.szTextBoxId",
+                                            class: "inputDialog",
+                                            placeholder:
+                                                "RS.InputDialog.Params.localText",
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                        {
+                            tagName: "tr",
+                            class: "row",
+                            attributes: {
+                                valign: "bottom",
+                            },
+                            children: [
+                                {
+                                    tagName: "td",
+                                    class: "col",
+                                    attributes: {
+                                        align: "right",
+                                    },
+                                    children: [
+                                        {
+                                            tagName: "input",
+                                            type: "button",
+                                            class: "defaultButton",
+                                            id: "inputDialog-OkBtn",
+                                            value: "RS.InputDialog.Params.okButtonName",
+                                        },
+                                        {
+                                            tagName: "input",
+                                            type: "button",
+                                            class: "defaultButton",
+                                            id: "inputDialog-CancelBtn",
+                                            value: "RS.InputDialog.Params.cancelButtonName",
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            };
+        }
+    }
+
     //============================================================================
     // TextBox
     //============================================================================
@@ -524,7 +705,7 @@ RS.Utils = RS.Utils || {};
               <tr class="row" valign="bottom">
                   <td class="col" align="right">
                       <input class="defaultButton" id="inputDialog-OkBtn" type="button" value="${RS.InputDialog.Params.okButtonName}" name="">
-              <input class="defaultButton" id="inputDialog-CancelBtn" type="button" value="${RS.InputDialog.Params.cancelButtonName}" name="">
+                      <input class="defaultButton" id="inputDialog-CancelBtn" type="button" value="${RS.InputDialog.Params.cancelButtonName}" name="">
                   </td>
               </tr>
         <img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' onload='TextBox.onLoadAfterInnerHTML();this.parentNode.removeChild(this);'>
