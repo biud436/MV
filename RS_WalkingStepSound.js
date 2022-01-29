@@ -12,6 +12,7 @@
  * @url https://github.com/biud436
  * @plugindesc <RS_WalkingStepSound>
  * @base RS_WaveSupport
+ * @orderAfter RS_WaveSupport
  *
  * @param --- Sound Range
  * @desc
@@ -240,14 +241,17 @@
  * @default
  *
  * @param Step Interval
+ * @parent --- Settings
  * @desc
  * @default 2
  *
  * @param Volume
+ * @parent --- Settings
  * @desc
  * @default 30
  *
  * @param Step Sound
+ * @parent --- Settings
  * @desc This is a command name in the menu option.
  * @default Step Sound
  *
@@ -290,6 +294,7 @@
  * @url https://github.com/biud436
  * @plugindesc 발소리를 자동으로 재생합니다. <RS_WalkingStepSound>
  * @base RS_WaveSupport
+ * @orderAfter RS_WaveSupport
  *
  * @param --- Sound Range
  * @text 효과음 범위
@@ -584,16 +589,19 @@
  * @default
  *
  * @param Step Interval
+ * @parent --- Settings
  * @text 걸음 수
  * @desc 일정 걸음 수에 도달하면 발소리를 재생하게 됩니다.
  * @default 2
  *
  * @param Volume
+ * @parent --- Settings
  * @text 볼륨
  * @desc 기본 발소리 효과음 계수
  * @default 30
  *
  * @param Step Sound
+ * @parent --- Settings
  * @text 발걸음 소리
  * @desc 메뉴에서 옵션에 들어가면 나오는 옵션 버튼의 이름
  * @default Step Sound
@@ -671,10 +679,6 @@
 
     const pluginName = pluginParams.length > 0 && pluginParams[0].name;
     const parameters = pluginParams.length > 0 && pluginParams[0].parameters;
-
-    function TerrainManager() {
-        throw new Error("This is a static class");
-    }
 
     const TerrainTag = {
         DIRT: Number(parameters["Dirt Terrain Tag"] || 1),
@@ -766,9 +770,14 @@
 
             const index = ((1 + Math.random() * max) >> 0).clamp(min, max);
             const vol = this.getSoundVolume();
+            const volRate = AudioManager.wavVolume / 100;
 
             const targetWavFileName = "%1%2".format(originalFileName, index);
-            AudioManager.playWav(targetWavFileName, vol);
+            AudioManager.playWav(
+                targetWavFileName,
+                Math.floor(vol * volRate),
+                ".wav"
+            );
         }
 
         /**
@@ -854,7 +863,7 @@
 
     const alias_makeData = ConfigManager.makeData;
     ConfigManager.makeData = function () {
-        var config = alias_makeData.call(this);
+        const config = alias_makeData.call(this);
         config.stepSound = ConfigManager.stepSound;
         return config;
     };
@@ -862,8 +871,8 @@
     const alias_applyData = ConfigManager.applyData;
     ConfigManager.applyData = function (config) {
         alias_applyData.call(this, config);
-        var ret = config["stepSound"];
-        var temp = ConfigManager.stepSound;
+        const ret = config["stepSound"];
+        const temp = ConfigManager.stepSound;
         if (ret !== undefined) {
             this.stepSound = ret;
         } else {
@@ -878,6 +887,6 @@
     const alias_addVolumeOptions = Window_Options.prototype.addGeneralOptions;
     Window_Options.prototype.addGeneralOptions = function () {
         alias_addVolumeOptions.call(this);
-        this.addCommand(TerrainManager.params.symbolName, "stepSound");
+        this.addCommand(config.symbolName, "stepSound");
     };
 })();

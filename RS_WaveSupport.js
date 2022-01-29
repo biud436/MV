@@ -32,6 +32,7 @@
  * 2015.12.25 (v1.0.0) - First Release Date.
  */
 /*:ko
+ * @target MZ
  * @plugindesc This can be used to control playback of .wav files.
  * (AudioManager supports addtional playing the wav file)
  * @author biud436
@@ -59,29 +60,29 @@
  * 2015.12.25 (v1.0.0) - First Release Date.
  */
 (() => {
-    var parameters = PluginManager.parameters("RS_WaveSupport");
-    var _wavText = parameters["Wave Volume Text"] || "Wave Volume Text";
+    const parameters = PluginManager.parameters("RS_WaveSupport");
+    TextManager.wavText = parameters["Wave Volume Text"] || "Wave Volume Text";
 
-    //-----------------------------------------------------------------------------
-    // WebAudio
-    var alias_detectCodecs = WebAudio._detectCodecs;
-    WebAudio._detectCodecs = function () {
-        alias_detectCodecs.call(this);
-        var audio = document.createElement("audio");
-        if (audio.canPlayType) {
-            this._canPlayWav = audio.canPlayType('audio/wav; codecs="1"');
+    Utils.canPlayWav = function () {
+        if (!Utils._audioElement) {
+            Utils._audioElement = document.createElement("audio");
+        }
+        return !!(
+            Utils._audioElement &&
+            Utils._audioElement.canPlayType('audio/wav; codecs="1"')
+        );
+    };
+
+    const alias_WebAudio_startLoading = WebAudio.prototype._startLoading;
+    WebAudio.prototype._startLoading = function () {
+        alias_WebAudio_startLoading.call(this);
+        const url = this._url;
+        // detroy vorbis decoder if the file is a wav file
+        if (url.match(/\.wav$/i)) {
+            this._destroyDecoder();
         }
     };
 
-    WebAudio.canPlayWav = function () {
-        if (!this._initialized) {
-            this.initialize();
-        }
-        return !!this._canPlayWav;
-    };
-
-    //-----------------------------------------------------------------------------
-    // AudioManager
     AudioManager._wavVolume = 100;
     AudioManager._wavBuffers = [];
 
@@ -95,34 +96,40 @@
         configurable: true,
     });
 
+    /**
+     *
+     * @param {String} folder
+     * @param {String} name
+     * @param {String} extension
+     * @returns
+     */
     AudioManager.createBuffer = function (folder, name, extension) {
-        var ext = extension || this.audioFileExt();
-        var url = this._path + folder + "/" + encodeURIComponent(name) + ext;
-        if (this.shouldUseHtml5Audio() && folder === "bgm") {
-            Html5Audio.setup(url);
-            return Html5Audio;
-        } else {
-            return new WebAudio(url);
-        }
+        const ext = extension || this.audioFileExt();
+        const url = this._path + folder + "/" + Utils.encodeURI(name) + ext;
+
+        const buffer = new WebAudio(url);
+        buffer.name = name;
+        buffer.frameCount = Graphics.frameCount;
+
+        return buffer;
     };
 
-    var alias_stopAll = AudioManager.stopAll;
+    const alias_stopAll = AudioManager.stopAll;
     AudioManager.stopAll = function () {
         alias_stopAll.call(this);
         this.stopWav();
     };
 
-    var alias_checkErrors = AudioManager.checkErrors;
+    const alias_checkErrors = AudioManager.checkErrors;
     AudioManager.checkErrors = function () {
         alias_checkErrors.call(this);
-        this._wavBuffers.forEach(
-            function (buffer) {
-                this.checkWebAudioError(buffer);
-            }.bind(this)
-        );
+        this._wavBuffers.forEach((buffer) => {
+            if (buffer && buffer.isError()) {
+                this.throwLoadError(buffer);
+            }
+        });
     };
 
-    // Wave
     AudioManager.playWav = function (wavName, vol) {
         var wav = {
             name: wavName,
@@ -131,14 +138,29 @@
             volume: vol || ConfigManager.wavVolume,
         };
         if (wav.name) {
-            this._wavBuffers = this._wavBuffers.filter(function (audio) {
-                return audio.isPlaying();
-            });
-            var buffer = this.createBuffer("wav", wav.name, ".wav");
+            const latestBuffers = this._wavBuffers.filter(
+                (buffer) => buffer.frameCount === Graphics.frameCount
+            );
+            if (latestBuffers.find((buffer) => buffer.name === se.name)) {
+                return;
+            }
+            const buffer = this.createBuffer("/wav", wav.name, ".wav");
             this.updateSeParameters(buffer, wav);
             buffer.play(false);
             this._wavBuffers.push(buffer);
+            this.cleanupWav();
         }
+    };
+
+    AudioManager.cleanupWav = function () {
+        for (const buffer of this._wavBuffers) {
+            if (!buffer.isPlaying()) {
+                buffer.destroy();
+            }
+        }
+        this._wavBuffers = this._wavBuffers.filter((buffer) =>
+            buffer.isPlaying()
+        );
     };
 
     AudioManager.stopWav = function () {
@@ -152,9 +174,6 @@
         this.updateBufferParameters(buffer, this._wavVolume, wav);
     };
 
-    //-----------------------------------------------------------------------------
-    // ConfigManager
-
     Object.defineProperty(ConfigManager, "wavVolume", {
         get: function () {
             return AudioManager.wavVolume;
@@ -165,24 +184,32 @@
         configurable: true,
     });
 
-    var alias_makeData = ConfigManager.makeData;
+    const alias_makeData = ConfigManager.makeData;
     ConfigManager.makeData = function () {
-        var config = alias_makeData.call(this);
+        const config = alias_makeData.call(this);
         config.wavVolume = this.wavVolume;
         return config;
     };
 
-    var alias_applyData = ConfigManager.applyData;
+    const alias_applyData = ConfigManager.applyData;
     ConfigManager.applyData = function (config) {
         alias_applyData.call(this, config);
         this.wavVolume = this.readVolume(config, "wavVolume");
     };
 
-    //-----------------------------------------------------------------------------
-    // Window_Options
-    var alias_addVolumeOptions = Window_Options.prototype.addVolumeOptions;
+    const alias_addVolumeOptions = Window_Options.prototype.addVolumeOptions;
     Window_Options.prototype.addVolumeOptions = function () {
         alias_addVolumeOptions.call(this);
-        this.addCommand(_wavText, "wavVolume");
+        this.addCommand(TextManager.wavText, "wavVolume");
+    };
+
+    const alias_Window_Options_isVolumeSymbol =
+        Window_Options.prototype.isVolumeSymbol;
+    Window_Options.prototype.isVolumeSymbol = function (symbol) {
+        const isOriginalVolumeSymbol = alias_Window_Options_isVolumeSymbol.call(
+            this,
+            symbol
+        );
+        return symbol === TextManager.wavText || isOriginalVolumeSymbol;
     };
 })();
