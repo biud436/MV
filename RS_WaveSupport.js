@@ -30,6 +30,7 @@
  *
  * - Change Log
  * 2015.12.25 (v1.0.0) - First Release Date.
+ * 2022.01.29 (v2.0.0) - RPG Maker MZ version is released.
  */
 /*:ko
  * @target MZ
@@ -58,6 +59,7 @@
  * 변동 사항
  * ===============================================================
  * 2015.12.25 (v1.0.0) - First Release Date.
+ * 2022.01.29 (v2.0.0) - RPG Maker MZ version is released.
  */
 (() => {
     const parameters = PluginManager.parameters("RS_WaveSupport");
