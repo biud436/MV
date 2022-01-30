@@ -52,8 +52,6 @@
  * @type file
  *
  * @help
- * This plugin allows you to move vertical lines on the screen.
- * if the line collides with the out of screen, it will be changed the direction of movement.
  * ================================================================
  * Version Log
  * ================================================================
