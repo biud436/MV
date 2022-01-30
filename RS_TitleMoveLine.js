@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * @target MZ
- * @plugindesc <RS_TitleMoveLine>
+ * @plugindesc This plugin that allows many white vertical lines to move dynamically on the title screen. <RS_TitleMoveLine>
  * @author biud436
  * @url https://biud436.tistory.com/
  *
