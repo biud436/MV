@@ -8,11 +8,11 @@
 //================================================================
 /*:
  * @target MZ
- * @plugindesc (v1.4.0) This plugin displays an event's name above a head. <RS_EventName>
+ * @plugindesc (v1.4.3) This plugin displays an event's name above a head. <RS_EventName>
  * @author biud436
  * @url https://biud436.tistory.com/
  *
- * @param text Size
+ * @param textSize
  * @type number
  * @desc Changes a text size
  * @default 22
@@ -103,6 +103,8 @@
  * + Removed RPG Maker MV dependency.
  *      - Removed Utils.rgbToCssColor that can't work in MZ.
  *      - Fixed font and Graphics settings.
+ * 2022.01.31 (v1.4.3) :
+ * - fixed the issue that can't change text size.
  * ==================================================================================
  * Commands
  * ==================================================================================
@@ -127,11 +129,11 @@
  * RS_EventName.js
  *
  * @target MZ
- * @plugindesc (v1.4.0) 이벤트 이름 표시 플러그인 <RS_EventName>
+ * @plugindesc (v1.4.3) 이벤트 이름 표시 플러그인 <RS_EventName>
  * @author 러닝은빛
- * @url https://biud436.blog.me
+ * @url https://biud436.tistory.com/
  *
- * @param text Size
+ * @param textSize
  * @text 텍스트 크기
  * @type number
  * @desc 텍스트 크기를 변경합니다.
@@ -235,8 +237,8 @@
     const parameters = pluginParams.length > 0 && pluginParams[0].parameters;
 
     const RS = window.RS || {};
-    RS.EventName = RS.EventName || {};
-    RS.EventName.Params = RS.EventName.Params || {};
+    RS.EventName = {};
+    RS.EventName.Params = {};
 
     //===========================================================================
     // RS.EventName.Params
