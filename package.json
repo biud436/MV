@@ -22,6 +22,6 @@
   "homepage": "https://github.com/biud436/MV#readme",
   "dependencies": {
     "iconv": "^2.3.5",
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.6"
   }
 }
