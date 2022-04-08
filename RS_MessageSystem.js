@@ -3447,6 +3447,7 @@ var Color = Color || {};
         }
     };
 
+    var origin_Window_Base_drawTextEx = Window_Base.prototype.drawTextEx;
     Window_Base.prototype.drawTextEx = function (text, x, y) {
         if (text) {
             this.resetFontSettings();
@@ -5856,6 +5857,15 @@ var Color = Color || {};
 
         this.x = this._messageWindow.x + newLineX;
         this.y = this._messageWindow.y + currentTextHeight;
+    };
+
+    Window_ChoiceList.prototype.textWidthEx = function (text) {
+        return origin_Window_Base_drawTextEx.call(
+            this,
+            text,
+            0,
+            this.contents.height
+        );
     };
 
     //===========================================================================
