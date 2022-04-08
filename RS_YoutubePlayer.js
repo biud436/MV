@@ -72,6 +72,11 @@
  * 2018.01.08 (v1.0.7) :
  * - Now that The YouTube iframe will be newly created every times when playing back the video.
  * - Fixed the bug that is not available the function called YTPlayer.isEnded();
+ * 2022.04.08 (v1.1.0) :
+ * It is now possible to play the video as a fullscreen mode only.
+ * if you want to use previous version,
+ * Try to download this, and replace the RS_YoutubePlayer.js in the plugin folder.
+ * link : https://raw.githubusercontent.com/biud436/MZ/1a58ef44540172f675d162f32d2e11ea56fb7455/RS_YoutubePlayer.js
  *
  * @command play
  * @desc
@@ -154,6 +159,11 @@
  * 2018.01.08 (v1.0.7) :
  * - Now that The YouTube iframe will be newly created every times when playing back the video.
  * - Fixed the bug that is not available the function called YTPlayer.isEnded();
+ * 2022.04.08 (v1.1.0) :
+ * It is now possible to play the video as a fullscreen mode only.
+ * if you want to use previous version,
+ * Try to download this, and replace the RS_YoutubePlayer.js in the plugin folder.
+ * link : https://raw.githubusercontent.com/biud436/MZ/1a58ef44540172f675d162f32d2e11ea56fb7455/RS_YoutubePlayer.js
  *
  * @command play
  * @desc
@@ -234,6 +244,11 @@
  * 2018.01.08 (v1.0.7) :
  * - Now that The YouTube iframe will be newly created every times when playing back the video.
  * - Fixed the bug that is not available the function called YTPlayer.isEnded();
+ * 2022.04.08 (v1.1.0) :
+ * It is now possible to play the video as a fullscreen mode only.
+ * if you want to use previous version,
+ * Try to download this, and replace the RS_YoutubePlayer.js in the plugin folder.
+ * link : https://raw.githubusercontent.com/biud436/MZ/1a58ef44540172f675d162f32d2e11ea56fb7455/RS_YoutubePlayer.js
  *
  * @command play
  * @desc
@@ -290,8 +305,8 @@ let onPlayerStateChange = null;
              */
             this._ytPlayer = document.createElement("div");
             this._ytPlayer.id = "ytplayer";
-            this._ytPlayer.style.width = "816px";
-            this._ytPlayer.style.height = "624px";
+            this._ytPlayer.style.width = "100%";
+            this._ytPlayer.style.height = "100%";
             this._ytPlayer.style.padding = "0";
             this._ytPlayer.style.margin = "0";
             this._ytPlayer.style.overflow = "hidden";
@@ -299,63 +314,6 @@ let onPlayerStateChange = null;
             this._ytPlayer.style.display = "none";
 
             Graphics._centerElement(this._ytPlayer);
-
-            this._exitButton = document.createElement("button");
-            this._exitButton.id = "ytb-close-button";
-            this._exitButton.style.border = "1px solid #ccc";
-            this._exitButton.style.borderRadius = "50%";
-            this._exitButton.style.backgroundImage =
-                "repeating-radial-gradient(circle, white, white 10%, #ccc 10%, #ccc 20%);";
-            this._exitButton.style.padding = "0";
-            this._exitButton.style.margin = "0";
-            this._exitButton.style.width = "64px";
-            this._exitButton.style.height = "64px";
-            this._exitButton.style.float = "left";
-            this._exitButton.style.cursor = "pointer";
-            this._exitButton.style.display = "flex";
-            this._exitButton.style.justifyContent = "center";
-            this._exitButton.style.alignItems = "center";
-
-            this._exitButton.style.boxSizing = "border-box";
-
-            const p = document.createElement("p");
-            p.textContent = "X";
-            p.style.fontSize = "1.5em";
-            p.style.textAlign = "center";
-            p.style.fontWeight = "bold";
-            p.style.color = "black";
-
-            const extraStyle = document.createElement("style");
-            const css = `
-      @keyframes ytb-anime {
-        from {
-          transform: rotate(0deg);
-        }
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      #ytb-close-button:hover, #ytb-close-button:focus{ 
-        transform: scale(1.05); 
-        transition: .2s ease-in; 
-        animation-name: ytb-anime;
-        animation-duration: .2s;
-        animation-direction: alternate;
-        animation-delay: .4s;
-        animation-timing-function: ease-in-out;        
-      }        
-      `;
-            extraStyle.appendChild(document.createTextNode(css));
-
-            document.getElementsByTagName("head")[0].appendChild(extraStyle);
-
-            this._exitButton.appendChild(p);
-
-            this._exitButton.onclick = () => {
-                this.stopVideo();
-            };
-
-            this._ytPlayer.appendChild(this._exitButton);
 
             document.body.appendChild(this._ytPlayer);
             this._tag = document.createElement("script");
@@ -370,10 +328,8 @@ let onPlayerStateChange = null;
             var viewMode = RS.YoutubePlayer.Params.viewSize;
             this._iframe = document.createElement("iframe");
             this._iframe.id = "ytplayer-iframe";
-            this._iframe.width =
-                viewMode === "Fullscreen" ? Graphics.width : "560px";
-            this._iframe.height =
-                viewMode === "Fullscreen" ? Graphics.height : "315px";
+            this._iframe.width = "100%";
+            this._iframe.height = "100%";
             this._iframe.style.opacity = "0";
             this._iframe.style.zIndex = "0";
             this._iframe.frameBorder = 0;
@@ -766,4 +722,13 @@ let onPlayerStateChange = null;
                 break;
         }
     };
+
+    window.addEventListener("keydown", (ev) => {
+        // Checks escape key on Macos or Windows.
+        if (ev.keyCode === 27 && YTPlayer.isOnPlayer()) {
+            YTPlayer.removeAllElement();
+            Input.clear();
+            ev.preventDefault();
+        }
+    });
 })();
