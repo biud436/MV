@@ -77,6 +77,8 @@
  * if you want to use previous version,
  * Try to download this, and replace the RS_YoutubePlayer.js in the plugin folder.
  * link : https://raw.githubusercontent.com/biud436/MZ/1a58ef44540172f675d162f32d2e11ea56fb7455/RS_YoutubePlayer.js
+ * 2022.04.09 (v1.1.1) :
+ * - fixed the bug that is not working escape key after adding this plugin.
  *
  * @command play
  * @desc
@@ -164,6 +166,8 @@
  * if you want to use previous version,
  * Try to download this, and replace the RS_YoutubePlayer.js in the plugin folder.
  * link : https://raw.githubusercontent.com/biud436/MZ/1a58ef44540172f675d162f32d2e11ea56fb7455/RS_YoutubePlayer.js
+ * 2022.04.09 (v1.1.1) :
+ * - fixed the bug that is not working escape key after adding this plugin.
  *
  * @command play
  * @desc
@@ -249,6 +253,8 @@
  * if you want to use previous version,
  * Try to download this, and replace the RS_YoutubePlayer.js in the plugin folder.
  * link : https://raw.githubusercontent.com/biud436/MZ/1a58ef44540172f675d162f32d2e11ea56fb7455/RS_YoutubePlayer.js
+ * 2022.04.09 (v1.1.1) :
+ * - fixed the bug that is not working escape key after adding this plugin.
  *
  * @command play
  * @desc
@@ -597,14 +603,9 @@ let onPlayerStateChange = null;
     // Graphics
     //
     //
-
-    const alias_Graphics_isVideoVisible = Graphics._isVideoVisible;
     Graphics._isVideoVisible = function () {
         var youtubePlayer = document.getElementById("ytplayer-iframe");
-        return (
-            alias_Graphics_isVideoVisible.call(this) ||
-            (youtubePlayer && youtubePlayer.style.opacity > 0)
-        );
+        return youtubePlayer && youtubePlayer.style.opacity > 0;
     };
 
     //----------------------------------------------------------------------------
@@ -725,7 +726,7 @@ let onPlayerStateChange = null;
 
     window.addEventListener("keydown", (ev) => {
         // Checks escape key on Macos or Windows.
-        if (ev.keyCode === 27 && YTPlayer.isOnPlayer()) {
+        if (ev.keyCode === 27 && Graphics._isVideoVisible()) {
             YTPlayer.removeAllElement();
             Input.clear();
             ev.preventDefault();
