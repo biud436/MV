@@ -276,10 +276,121 @@ var RS = RS || {};
 RS.YoutubePlayer = RS.YoutubePlayer || {};
 RS.YoutubePlayer.Params = RS.YoutubePlayer.Params || {};
 
-let onYouTubeIframeAPIReady = null;
-let onPlayerReady = null;
-let onPlayerError = null;
-let onPlayerStateChange = null;
+window.onPlayerReady = function (event) {
+    var target = event.target;
+    target.playVideo();
+};
+
+window.onPlayerError = function (event) {
+    var errorLog = "";
+    switch (event.data) {
+        case 2:
+            // 요청에 잘못된 매개변수 값이 포함되어 있습니다. 예를 들어 11자리가 아닌 동영상 ID를 지정하거나
+            // 동영상 ID에 느낌표 또는 별표와 같은 잘못된 문자가 포함된 경우에 이 오류가 발생합니다.
+            errorLog += "Error Code : 2" + "\r\n";
+            errorLog +=
+                "The request contains an invalid parameter value. For example, " +
+                "\r\n";
+            errorLog +=
+                "this error occurs if you specify a video ID that does not have 11 characters, " +
+                "\r\n";
+            errorLog +=
+                "or if the video ID contains invalid characters, " + "\r\n";
+            errorLog +=
+                "such as exclamation points or asterisks.      " + "\r\n";
+            break;
+        case 5:
+            // 요청한 콘텐츠는 HTML5플레이어에서 재생할 수 없는, 또는 HTML5플레이어에 대한 별도의 에러가 발생했습니다.
+            errorLog += "Error Code : 5" + "\r\n";
+            errorLog +=
+                " The requested content cannot be played in an HTML5 player" +
+                "\r\n";
+            errorLog +=
+                "or another error related to the HTML5 player has occurred." +
+                "\r\n";
+            break;
+        case 100:
+            // 요청한 동영상을 찾을 수 없습니다.
+            // 어떠한 이유로든 동영상이 삭제되었거나 비공개로 표시된 경우에 이 오류가 발생합니다.
+            errorLog += "Error Code : 100" + "\r\n";
+            errorLog += "The video requested was not found. " + "\r\n";
+            errorLog +=
+                "This error occurs when a video has been removed (for any reason) " +
+                "\r\n";
+            errorLog += "or has been marked as private." + "\r\n";
+            break;
+        case 101:
+        case 150:
+            // 요청한 동영상의 소유자가 내장 플레이어에서 동영상을 재생하는 것을 허용하지 않습니다.
+            errorLog += "Error Code : 101 or 150" + "\r\n";
+            errorLog +=
+                "The owner of the requested video does not allow it to be played in embedded players.";
+            break;
+    }
+    YTPlayer.stopVideo();
+    window.alert(errorLog);
+};
+
+window.onPlayerStateChange = function (event) {
+    switch (event.data) {
+        case YT.PlayerState.ENDED: // 종료됨
+            console.log("Video has ended.");
+            YTPlayer._status = YT.PlayerState.ENDED;
+            if (RS.YoutubePlayer.Params.isLooping) {
+                YTPlayer.callPlayer("playVideo", []);
+                YTPlayer.callPlayer("seekTo", [0, true]);
+            } else {
+                YTPlayer.removeAllElement();
+            }
+            break;
+        case YT.PlayerState.PLAYING: // 재생 중
+            console.log("Video is playing.");
+            YTPlayer._status = YT.PlayerState.PLAYING;
+            break;
+        case YT.PlayerState.PAUSED: // 일시 중지
+            console.log("Video is paused.");
+            YTPlayer._status = YT.PlayerState.PAUSED;
+            break;
+        case YT.PlayerState.BUFFERING: // 버퍼링
+            console.log("Video is buffering.");
+            YTPlayer._status = YT.PlayerState.BUFFERING;
+            break;
+        case YT.PlayerState.CUED: // 동영상 신호
+            console.log("Video is cued.");
+            YTPlayer._status = YT.PlayerState.CUED;
+            break;
+        default:
+            // 시작 전
+            console.log("Unrecognized state.");
+            break;
+    }
+};
+
+//----------------------------------------------------------------------------
+// Youtube Event Handler
+//
+//
+window.onYouTubeIframeAPIReady = function () {
+    player = new YT.Player("ytplayer-iframe", {
+        height: "560",
+        width: "315",
+        videoId: "BIbpYySZ-2Q",
+        fs: 1,
+        autoplay: 1,
+        enablejsapi: 1,
+        rel: 1,
+        showinfo: 0,
+        playsinline: 0,
+        controls: 0,
+        autohide: 1,
+        loop: 1,
+        events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+            onError: onPlayerError,
+        },
+    });
+};
 
 (() => {
     var parameters = $plugins.filter(function (i) {
@@ -338,7 +449,6 @@ let onPlayerStateChange = null;
             this._iframe.height = "100%";
             this._iframe.style.opacity = "0";
             this._iframe.style.zIndex = "0";
-            this._iframe.frameBorder = 0;
             this._iframe.allowfullscreen = true;
             Graphics._centerElement(this._iframe);
             this._ytPlayer.appendChild(this._iframe);
@@ -532,10 +642,6 @@ let onPlayerStateChange = null;
         }, 2000);
     };
 
-    //----------------------------------------------------------------------------
-    // PluginManager
-    //
-    //
     PluginManager.registerCommand(pluginName, "play", (arg) => {
         const src = arg.src;
         setTimeout(() => Graphics.playYoutube(src), 20);
@@ -548,10 +654,6 @@ let onPlayerStateChange = null;
         if (YTPlayer.isPlaying()) YTPlayer.stopVideo();
     });
 
-    //----------------------------------------------------------------------------
-    // Game_Player
-    //
-    //
     const alias_Game_Player_initMembers = Game_Player.prototype.initMembers;
     Game_Player.prototype.initMembers = function () {
         alias_Game_Player_initMembers.call(this);
@@ -581,10 +683,6 @@ let onPlayerStateChange = null;
         return alias_Game_Player_canMove.call(this);
     };
 
-    //----------------------------------------------------------------------------
-    // Scene_Map
-    //
-    //
     const alias_Scene_Map_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function () {
         alias_Scene_Map_update.call(this);
@@ -599,129 +697,9 @@ let onPlayerStateChange = null;
         }
     };
 
-    //----------------------------------------------------------------------------
-    // Graphics
-    //
-    //
     Graphics._isVideoVisible = function () {
         var youtubePlayer = document.getElementById("ytplayer-iframe");
         return youtubePlayer && youtubePlayer.style.opacity > 0;
-    };
-
-    //----------------------------------------------------------------------------
-    // Youtube Event Handler
-    //
-    //
-    window.onYouTubeIframeAPIReady = function () {
-        player = new YT.Player("ytplayer-iframe", {
-            height: "560",
-            width: "315",
-            videoId: "BIbpYySZ-2Q",
-            fs: 1,
-            autoplay: 1,
-            enablejsapi: 1,
-            rel: 1,
-            showinfo: 0,
-            playsinline: 0,
-            controls: 0,
-            autohide: 1,
-            loop: 1,
-            events: {
-                onReady: onPlayerReady,
-                onStateChange: onPlayerStateChange,
-                onError: onPlayerError,
-            },
-        });
-    };
-
-    window.onPlayerReady = function (event) {
-        var target = event.target;
-        target.playVideo();
-    };
-
-    window.onPlayerError = function (event) {
-        var errorLog = "";
-        switch (event.data) {
-            case 2:
-                // 요청에 잘못된 매개변수 값이 포함되어 있습니다. 예를 들어 11자리가 아닌 동영상 ID를 지정하거나
-                // 동영상 ID에 느낌표 또는 별표와 같은 잘못된 문자가 포함된 경우에 이 오류가 발생합니다.
-                errorLog += "Error Code : 2" + "\r\n";
-                errorLog +=
-                    "The request contains an invalid parameter value. For example, " +
-                    "\r\n";
-                errorLog +=
-                    "this error occurs if you specify a video ID that does not have 11 characters, " +
-                    "\r\n";
-                errorLog +=
-                    "or if the video ID contains invalid characters, " + "\r\n";
-                errorLog +=
-                    "such as exclamation points or asterisks.      " + "\r\n";
-                break;
-            case 5:
-                // 요청한 콘텐츠는 HTML5플레이어에서 재생할 수 없는, 또는 HTML5플레이어에 대한 별도의 에러가 발생했습니다.
-                errorLog += "Error Code : 5" + "\r\n";
-                errorLog +=
-                    " The requested content cannot be played in an HTML5 player" +
-                    "\r\n";
-                errorLog +=
-                    "or another error related to the HTML5 player has occurred." +
-                    "\r\n";
-                break;
-            case 100:
-                // 요청한 동영상을 찾을 수 없습니다.
-                // 어떠한 이유로든 동영상이 삭제되었거나 비공개로 표시된 경우에 이 오류가 발생합니다.
-                errorLog += "Error Code : 100" + "\r\n";
-                errorLog += "The video requested was not found. " + "\r\n";
-                errorLog +=
-                    "This error occurs when a video has been removed (for any reason) " +
-                    "\r\n";
-                errorLog += "or has been marked as private." + "\r\n";
-                break;
-            case 101:
-            case 150:
-                // 요청한 동영상의 소유자가 내장 플레이어에서 동영상을 재생하는 것을 허용하지 않습니다.
-                errorLog += "Error Code : 101 or 150" + "\r\n";
-                errorLog +=
-                    "The owner of the requested video does not allow it to be played in embedded players.";
-                break;
-        }
-        YTPlayer.stopVideo();
-        window.alert(errorLog);
-    };
-
-    window.onPlayerStateChange = function (event) {
-        switch (event.data) {
-            case YT.PlayerState.ENDED: // 종료됨
-                console.log("Video has ended.");
-                YTPlayer._status = YT.PlayerState.ENDED;
-                if (RS.YoutubePlayer.Params.isLooping) {
-                    YTPlayer.callPlayer("playVideo", []);
-                    YTPlayer.callPlayer("seekTo", [0, true]);
-                } else {
-                    YTPlayer.removeAllElement();
-                }
-                break;
-            case YT.PlayerState.PLAYING: // 재생 중
-                console.log("Video is playing.");
-                YTPlayer._status = YT.PlayerState.PLAYING;
-                break;
-            case YT.PlayerState.PAUSED: // 일시 중지
-                console.log("Video is paused.");
-                YTPlayer._status = YT.PlayerState.PAUSED;
-                break;
-            case YT.PlayerState.BUFFERING: // 버퍼링
-                console.log("Video is buffering.");
-                YTPlayer._status = YT.PlayerState.BUFFERING;
-                break;
-            case YT.PlayerState.CUED: // 동영상 신호
-                console.log("Video is cued.");
-                YTPlayer._status = YT.PlayerState.CUED;
-                break;
-            default:
-                // 시작 전
-                console.log("Unrecognized state.");
-                break;
-        }
     };
 
     window.addEventListener("keydown", (ev) => {
