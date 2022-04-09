@@ -483,13 +483,7 @@ window.onYouTubeIframeAPIReady = function () {
             if (this._ytPlayer) {
                 this._ytPlayer.style.display = "block";
             }
-
-            if (Imported.RS_SimpleCanvasFilter) {
-                Graphics.setCanvasFilter("blur", 1.5, false, null);
-                Graphics.setCanvasFilter("contrast", 150.0, true, null);
-            } else {
-                Graphics._canvas.style.opacity = "0.5";
-            }
+            Graphics._canvas.style.opacity = "0.5";
             if ($gamePlayer) $gamePlayer.lock();
         }
 
@@ -497,11 +491,7 @@ window.onYouTubeIframeAPIReady = function () {
             if (!this._iframe) this.createIframe();
             this._iframe.style.opacity = "0";
             this._iframe.style.zIndex = "0";
-            if (Imported.RS_SimpleCanvasFilter) {
-                Graphics.setClearCanvasFilter(null);
-            } else {
-                Graphics._canvas.style.opacity = "1.0";
-            }
+            Graphics._canvas.style.opacity = "1.0";
             if (this._ytPlayer) {
                 this._ytPlayer.style.display = "none";
             }
