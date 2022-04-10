@@ -1053,7 +1053,7 @@
 
     window.RS = RS;
     window.Vector2 = Vector2;
-    window.Sprite_Name = Sprite_MapCharacterName;
+    window.Sprite_MapCharacterName = Sprite_MapCharacterName;
     window.Sprite_PlayerName = Sprite_PlayerName;
     window.Sprite_VehicleName = Sprite_VehicleName;
 })();
