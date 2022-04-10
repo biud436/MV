@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * @target MZ
- * @plugindesc (v1.4.3) This plugin displays an event's name above a head. <RS_EventName>
+ * @plugindesc (v1.4.4) This plugin displays an event's name above a head. <RS_EventName>
  * @author biud436
  * @url https://biud436.tistory.com/
  *
@@ -105,6 +105,8 @@
  *      - Fixed font and Graphics settings.
  * 2022.01.31 (v1.4.3) :
  * - fixed the issue that can't change text size.
+ * 2022.04.10 (v1.4.4) :
+ * - fixed the issue that conflicts with class name called 'Sprite_Name' in the RPG Maker MZ
  * ==================================================================================
  * Commands
  * ==================================================================================
@@ -507,7 +509,7 @@
 
     const DEFAULT_SCALE_X1_MATRIX = { x: 1, y: 1 };
 
-    class Sprite_Name extends Sprite {
+    class Sprite_MapCharacterName extends Sprite {
         constructor(data) {
             super();
 
@@ -677,7 +679,7 @@
             // 이벤트 이름 스프라이트와 마우스 간의 거리를 측정합니다.
             const eventNameDistance = Vector2.distance(
                 this,
-                Sprite_Name.MOUSE_EVENT
+                Sprite_MapCharacterName.MOUSE_EVENT
             );
 
             // 마우스 포인터의 임계값을 설정합니다.
@@ -709,7 +711,7 @@
         }
     }
 
-    Sprite_Name.MOUSE_EVENT = Vector2.empty();
+    Sprite_MapCharacterName.MOUSE_EVENT = Vector2.empty();
 
     //===========================================================================
     // Mouse
@@ -722,8 +724,8 @@
                 const x = Graphics.pageToCanvasX(event.pageX);
                 const y = Graphics.pageToCanvasY(event.pageY);
 
-                if (Sprite_Name.MOUSE_EVENT instanceof Vector2) {
-                    Sprite_Name.MOUSE_EVENT.set(x, y);
+                if (Sprite_MapCharacterName.MOUSE_EVENT instanceof Vector2) {
+                    Sprite_MapCharacterName.MOUSE_EVENT.set(x, y);
                 }
             });
         }
@@ -733,7 +735,7 @@
     // Sprite_PlayerName
     //===========================================================================
 
-    class Sprite_PlayerName extends Sprite_Name {
+    class Sprite_PlayerName extends Sprite_MapCharacterName {
         constructor(data) {
             super(data);
             this._visible = this.visible = this.isReady();
@@ -767,7 +769,7 @@
     // Sprite_VehicleName
     //===========================================================================
 
-    class Sprite_VehicleName extends Sprite_Name {
+    class Sprite_VehicleName extends Sprite_MapCharacterName {
         constructor(data) {
             super(data);
         }
@@ -864,7 +866,7 @@
                     sprite = new Sprite_VehicleName(data);
                     break;
                 case "Game_Event":
-                    sprite = new Sprite_Name(data);
+                    sprite = new Sprite_MapCharacterName(data);
                     break;
             }
 
@@ -1051,7 +1053,7 @@
 
     window.RS = RS;
     window.Vector2 = Vector2;
-    window.Sprite_Name = Sprite_Name;
+    window.Sprite_Name = Sprite_MapCharacterName;
     window.Sprite_PlayerName = Sprite_PlayerName;
     window.Sprite_VehicleName = Sprite_VehicleName;
 })();

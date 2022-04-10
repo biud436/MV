@@ -126,3 +126,4 @@ CEF
 Games
 *.DS_Store
 *-lock.json
+*.code-workspace
