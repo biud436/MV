@@ -315,6 +315,7 @@
          * @param {"Epilogue 1"|"Epilogue 2"|"Epilogue 3"|"Epilogue 4"} endingName
          */
         setEnding(endingName) {
+            if (!endingName) return;
             const id = endingName.split(" ")[1];
             this.data.epilogue.push(+id);
             this.save();
