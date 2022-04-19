@@ -178,6 +178,12 @@
  *
  * I've rewrited my MV plugin completely to fit in the modern javascript.
  *
+ * To remove epilogue screen, you have to call the following script command manually.
+ *
+ * EndingService.remove();
+ *
+ * This feature named 'Remove Epilogue' didn't perform through the plugin command.
+ *
  * ============================================================================
  * Version Log
  * ============================================================================
@@ -270,6 +276,16 @@
                 throw new Error(`${saveName} is not found.`);
             }
             return StorageManager.loadObject(saveName);
+        }
+
+        /**
+         * @param {string} saveName
+         * @returns {void}
+         */
+        remove(saveName) {
+            if (StorageManager.exists(saveName)) {
+                StorageManager.remove(saveName);
+            }
         }
     }
 
@@ -369,6 +385,13 @@
             } catch {
                 return new DataStructure();
             }
+        }
+
+        /**
+         * @returns {void}
+         */
+        async remove() {
+            this.dataService.remove(this.saveName);
         }
 
         /**
