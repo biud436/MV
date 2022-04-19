@@ -164,21 +164,42 @@
  * @parent Additional Command
  * @desc Decide whether the command window is visible.
  * @type boolean
- * @default true
+ * @default false
  * @on visible
  * @off hide
  *
  * @help
- * To change the title screen, you can use the following code.
+ * This plugin allows you to change title screen during the game or after the game epilogue.
+ * To change the title screen, you can use the following script command.
  *
  * EndingService.setEnding("Epilogue X");
  *
- * the X is the number of the epilogue and it is between 1 and 4.
+ * the value called 'X' is the number of the epilogue and it is the number between 1 and 4.
+ *
+ * I've rewrited my MV plugin completely to fit in the modern javascript.
  *
  * ============================================================================
  * Version Log
  * ============================================================================
- * 2022.04.19 (v1.0.0) - First Release
+ * 2022.04.19 (v1.0.0) :
+ *  - First Release
+ * 2022.04.19 (v1.0.1) :
+ *  - Added a new plugin command that can set epilogue.
+ *
+ * @command setEnding
+ * @text Set Ending
+ * @desc Set the ending of the game.
+ *
+ * @arg epilogue
+ * @text Epilogue 1
+ * @type select
+ * @desc Set the epilogue.
+ * @default Epilogue 1
+ * @option Epilogue 1
+ * @option Epilogue 2
+ * @option Epilogue 3
+ * @option Epilogue 4
+ *
  */
 
 (() => {
@@ -456,5 +477,15 @@
             AudioManager.stopBgs();
             AudioManager.stopMe();
         },
+    });
+
+    //=============================================================================
+
+    PluginManager.registerCommand(pluginName, "setEnding", (raw) => {
+        /**
+         * @type {{epilogue: string;}}
+         */
+        const args = raw;
+        EndingService.setEnding(args.epilogue);
     });
 })();
