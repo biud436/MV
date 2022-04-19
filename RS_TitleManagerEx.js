@@ -366,8 +366,8 @@
 
         /**
          *
-         * @param {{titleBgm: string; [key: string]: any;}} dataSystem
-         * @return {{titleBgm: string;}}
+         * @param {{titleBgm: {name: string; pan: number; pitch: number; volume: number;}; [key: string]: any;}} dataSystem
+         * @return {{titleBgm: {name: string; pan: number; pitch: number; volume: number;};}}
          */
         getTitleBgm(dataSystem) {
             return this.isAnyEnding()
