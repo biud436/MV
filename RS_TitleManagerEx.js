@@ -170,7 +170,7 @@
  *
  * @help
  * This plugin allows you to change title screen during the game or after the game epilogue.
- * To change the title screen, you can use the following script command.
+ * To change the title screen, you can use the following script command or plugin command.
  *
  * EndingService.setEnding("Epilogue X");
  *
