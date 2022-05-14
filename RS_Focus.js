@@ -21,21 +21,12 @@
  * 2021.10.11 (v1.0.2) :
  * - Fixed an event listener for the key code of the 'F12' key.
  */
-var Imported = Imported || {};
-Imported.RS_Focus = true;
-
-var RS = RS || {};
-RS.Focus = RS.Focus || {};
-
-(($) => {
+(() => {
     "use strict";
 
     const pluginParams = $plugins.filter((i) => {
         return i.description.contains("<RS_Focus>");
     });
-
-    const pluginName = pluginParams.length > 0 && pluginParams[0].name;
-    const parameters = pluginParams.length > 0 && pluginParams[0].parameters;
 
     SceneManager.isGameActive = function () {
         try {
