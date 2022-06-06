@@ -1,58 +1,25 @@
 {
-  "name": "your-app",
-  "version": "0.1.0",
-  "description": "",
-  "main": "./main.js",
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "tsc:build": "tsc -p tsconfig.json --outDir packages/dist"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/biud436/MZ"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/biud436/MZ"
-  },
-  "homepage": "https://github.com/biud436/MZ",
-  "devDependencies": {
-    "css-loader": "^4.3.0",
-    "file-loader": "^6.1.0",
-    "sass": "^1.29.0",
-    "source-map-loader": "^1.1.1",
-    "source-map-support": "^0.5.19",
-    "style-loader": "^1.2.1",
-    "ts-loader": "^8.0.5",
-    "ts-node": "^10.1.0",
-    "typescript": "^4.4.4",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
-  },
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.12.0",
-    "@testing-library/user-event": "^13.1.9",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^14.17.0",
-    "@typescript-eslint/eslint-plugin": "^4.5.0",
-    "@typescript-eslint/parser": "^4.5.0",
-    "css": "^3.0.0",
-    "esm": "^3.2.25",
-    "jsdom": "^17.0.0",
-    "minimist": "^1.2.5",
-    "pixi.js": "^5.3.3",
-    "reflect-metadata": "^0.1.13",
-    "web-vitals": "^1.1.2"
-  },
-  "extension": [
-    ".ts"
-  ],
-  "require": [
-    "ts-node/register"
-  ]
+    "name": "mz",
+    "version": "1.0.0",
+    "description": "This plugin package includes helpful features to get you on your way to create your game in RPG Maker MZ.",
+    "main": "RS_ArabicNameEdit.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/biud436/MZ.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/biud436/MZ/issues"
+    },
+    "homepage": "https://github.com/biud436/MZ#readme",
+    "dependencies": {
+        "@typescript-eslint/parser": "^5.27.0",
+        "eslint": "^8.17.0",
+        "eslint-import-resolver-typescript": "^2.7.1"
+    }
 }
