@@ -522,7 +522,7 @@
                 );
                 this.filters = [this._waveFilter];
             } else {
-                this.filters = [PIXI.filters.AlphaFilter];
+                this.filters = [new PIXI.filters.AlphaFilter()];
             }
         },
         configurable: true,
