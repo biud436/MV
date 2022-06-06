@@ -703,6 +703,16 @@
                 if (this._wave) {
                     if (!this._waveFilter) {
                         this._waveFilter = new PIXI.WaveFilter();
+                    }
+                    if (!this.filters) {
+                        this.filters = [];
+                    }
+
+                    const isFoundFilter = this.filters.find(
+                        (e) => e instanceof PIXI.WaveFilter
+                    );
+
+                    if (!isFoundFilter) {
                         this.filters = [this._waveFilter].concat(this.filters);
                     }
                 } else {
@@ -998,13 +1008,13 @@
     window.waveUtils = {};
 
     /**
-   * @example
-    var _s, _e, _r;
-    _s = new Point(0.0, 0.0);
-    _e = new Point(0.07, 0.25);
-    _r = waveUtils.mix(_s, _e);
-    $gameScreen.startWave(1, _r.x, _r.y);
-   */
+ * @example
+  var _s, _e, _r;
+  _s = new Point(0.0, 0.0);
+  _e = new Point(0.07, 0.25);
+  _r = waveUtils.mix(_s, _e);
+  $gameScreen.startWave(1, _r.x, _r.y);
+ */
     waveUtils.mix = function (vec1, vec2, t) {
         let vec = new Point(0, 0);
         if (!t) t = (Date.now() % 10000) / 10000;
@@ -1014,14 +1024,14 @@
     };
 
     /**
-   * @example
-    var _s, _p, _e, _r;
-    _s = new Point(0.0, 0.0);
-    _p = new Point(0.07, 0.25);
-    _e = new Point(0.0, 0.0);
-    _r = waveUtils.quadraticBezier(_s, _p, _e);
-    $gameScreen.startWave(1, _r.x, _r.y);
-   */
+ * @example
+  var _s, _p, _e, _r;
+  _s = new Point(0.0, 0.0);
+  _p = new Point(0.07, 0.25);
+  _e = new Point(0.0, 0.0);
+  _r = waveUtils.quadraticBezier(_s, _p, _e);
+  $gameScreen.startWave(1, _r.x, _r.y);
+ */
     waveUtils.quadraticBezier = function (vec1, vec2, vec3, t) {
         let d, e, p;
         if (!t) t = (Date.now() % 10000) / 10000;
