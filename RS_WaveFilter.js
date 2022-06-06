@@ -10,7 +10,7 @@
  * @target MZ
  * @plugindesc <RS_WaveFilter>
  * @author biud436
- * @url http://biud436.tistory.com
+ * @url https://github.com/biud436
  *
  * @help
  *
