@@ -19,5 +19,6 @@ module.exports = {
         'no-console': 'off',
         'spaced-comment': 'off',
         'max-classes-per-file': 'off',
+        strict: 'off',
     },
 };

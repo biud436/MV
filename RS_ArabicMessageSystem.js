@@ -322,27 +322,16 @@
  * - Added a feature that saves the config of the text direction as file.
  */
 
-// eslint-disable-next-line no-var
-var Imported = Imported || {};
-// eslint-disable-next-line no-var
-var RS = RS || {};
-
-Imported.RS_ArabicMessageSystem = '1.2.5';
-
-RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
-RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
-
-function ArabicUtils() {
-    throw new Error('This is a static class');
-}
-
 (() => {
-    if (Utils.RPGMAKER_VERSION < '1.5.0') {
-        console.warn(
-            'Note that RS_ArabicMessageSystem plugin can use only in RMMV v1.5.0 or above.'
-        );
-        return;
-    }
+    'use strict';
+
+    const Imported = window.Imported || {};
+    const RS = window.RS || {};
+
+    Imported.RS_ArabicMessageSystem = '1.2.5';
+
+    RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
+    RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
     let parameters = $plugins.filter(i => {
         return i.description.contains('<RS_ArabicMessageSystem>');
@@ -394,6 +383,10 @@ function ArabicUtils() {
     // http://www.unicode.org/Public/UNIDATA/Scripts.txt
     //============================================================================
 
+    function ArabicUtils() {
+        throw new Error('This is a static class');
+    }
+
     ArabicUtils.LEFT_TO_RIGHT_EMBEDDING = '\u202A';
     ArabicUtils.RIGHT_TO_LEFT_EMBEDDING = '\u202B';
     ArabicUtils.POP_DIRECTIONAL_FORMATTING = '\u202C';
@@ -413,6 +406,8 @@ function ArabicUtils() {
     ArabicUtils.makeText = function (text) {
         return String(ArabicUtils.RIGHT_TO_LEFT_EMBEDDING + text);
     };
+
+    window.ArabicUtils = ArabicUtils;
 
     //============================================================================
     // RS.ArabicMessageSystem

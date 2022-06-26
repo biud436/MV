@@ -150,78 +150,65 @@
  * @default http://itunes.apple.com/<country>/app/<app–name>/id<app-ID>?mt=8
  *
  */
-
-var Imported = Imported || {};
-Imported.RS_CheckVersions = true;
-
-var RS = RS || {};
-RS.Net = RS.Net || {};
-
 (() => {
-    const isValidRMVersion = Utils.RPGMAKER_VERSION >= "1.5.1";
-    if (!isValidRMVersion) {
-        var texts = [
-            "The version of RPG MAKER MV is lower.",
-            "This plugin is needed RM 1.5.1 version or above.",
-            "You can update as the latest versions of RPG Maker MV from the following websites.",
-            "Steam - http://store.steampowered.com/app/363890/RPG_Maker_MV/",
-            "RPG Maker Web - http://www.rpgmakerweb.com/products/programs/rpg-maker-mv",
-        ].join("\n");
-        console.warn(texts);
-        return;
-    }
+    const Imported = window.Imported || {};
+    const RS = window.RS || {};
 
-    let parameters = $plugins.filter((i) => {
-        return i.description.contains("<RS_CheckVersions>");
+    Imported.RS_CheckVersions = true;
+    RS.Net = RS.Net || {};
+
+    let parameters = $plugins.filter(i => {
+        return i.description.contains('<RS_CheckVersions>');
     });
     parameters = parameters.length > 0 && parameters[0].parameters;
 
     const defaultMessage =
-        parameters["defaultMessage"] ||
-        "There has detected a new version for this game.";
+        parameters.defaultMessage ||
+        'There has detected a new version for this game.';
     const errorMessage =
-        parameters["errorMessage"] || "Not connected to the Internet";
-    const windowTarget = parameters["target"] || "_self";
-    const marketUrl = JSON.parse(parameters["marketUrl"]);
-    const defaultUrl =
-        (parameters["url"] ||
-            "https://github.com/biud436/MV/raw/master/Laboratory/Versions.json") +
-        "?" +
-        Date.now();
+        parameters.errorMessage || 'Not connected to the Internet';
+    const windowTarget = parameters.target || '_self';
+    const marketUrl = JSON.parse(parameters.marketUrl);
+
+    const defaultUrl = `${
+        parameters.url ||
+        'https://github.com/biud436/MV/raw/master/Laboratory/Versions.json'
+    }?${Date.now()}`;
 
     DataManager._databaseFiles.push({
-        name: "$game_versions",
-        src: "Versions.json",
+        name: '$game_versions',
+        src: 'Versions.json',
     });
 
     RS.Net.initVersion = function (callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", defaultUrl);
-        xhr.onload = function () {
-            if (xhr.status < 400) {
-                const json = JsonEx.parse(xhr.responseText);
-                RS.Net._dbVersion = json["version"];
+        fetch(defaultUrl)
+            .then(response => response.json())
+            .then(json => {
+                RS.Net._dbVersion = json.version;
                 const pageUrl = Utils.isMobileSafari()
                     ? marketUrl.iOS
                     : marketUrl.Android;
                 const isNwJs = Utils.isNwjs();
                 const isRequestedNewVersion =
-                    RS.Net._dbVersion != $game_versions.version;
-                const version = RS.Net._dbVersion || "0.0.0";
-                const message = defaultMessage.replace("#{VERSION}", version);
+                    RS.Net._dbVersion !== $game_versions.version;
+                const version = RS.Net._dbVersion || '0.0.0';
+                const message = defaultMessage.replace('#{VERSION}', version);
                 if (!isNwJs && isRequestedNewVersion) {
+                    // eslint-disable-next-line no-alert
                     window.alert(message);
                     window.open(pageUrl, windowTarget);
                     return false;
                 }
+                return json();
+            })
+            .then(() => {
                 callback();
-            }
-            xhr.onerror = function () {
+            })
+            .catch(() => {
+                // eslint-disable-next-line no-alert
                 window.alert(errorMessage);
                 SceneManager.exit();
-            };
-        };
-        xhr.send();
+            });
     };
 
     const alias_Scene_Boot_initialize = Scene_Boot.prototype.initialize;

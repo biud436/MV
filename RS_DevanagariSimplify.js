@@ -44,17 +44,16 @@
  * 2022.06.24 (v1.0.0) - First Release.
  */
 
-// eslint-disable-next-line no-var
-var RS = RS || {};
-RS.DevanagariSimplify = RS.DevanagariSimplify || {};
-
 (() => {
+    const RS = window.RS || {};
+
     let parameters = $plugins.filter(i =>
         i.description.contains('<RS_DevanagariSimplify>')
     );
 
     parameters = parameters.length > 0 && parameters[0].parameters;
 
+    RS.DevanagariSimplify = RS.DevanagariSimplify || {};
     RS.DevanagariSimplify.Params = {};
     RS.DevanagariSimplify.Params.messageMode = String(
         parameters['Message Mode'] || 'devanagari'
@@ -219,4 +218,4 @@ RS.DevanagariSimplify = RS.DevanagariSimplify || {};
             RS.DevanagariSimplify.Params.messageMode = false;
         }
     };
-})(RS.DevanagariSimplify);
+})();

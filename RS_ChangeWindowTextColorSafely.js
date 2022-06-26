@@ -6,40 +6,6 @@
 // ---------------------------------------------------------------
 // Free for commercial and non commercial use.
 //================================================================
-/*:ko
- * @target MV
- * @plugindesc 특정 창의 텍스트 색상을 원하는 색상으로 변경할 수 있습니다 <RS_ChangeWindowTextColorSafely>
- * @author biud436
- *
- * @param windowList
- * @text 사용자 정의 색상
- * @type note
- * @desc 도움말을 참고하세요!
- * @default ""
- *
- * @help
- * =============================================================================
- * 사용 방법
- * =============================================================================
- * 각 창에 서로 다른 텍스트 색상을 적용하려면,
- * 사용자 정의 색상 매개변수에 다음 노트 태그를 입력해야 합니다.
- *
- *    <Window_ItemList normalColor #ff0000>
- *    <Window_SkillList normalColor #ffff00>
- *    <Window_SkillList crisisColor #ff0000>
- *
- * 노트 태그는 클래스 이름과 해당 클래스의 메소드 이름 그리고 색상 값을 제공해야 하므로,
- * 정확히 입력하시기 바랍니다.
- *
- * 정말 많은 메소드를 바꿀 수 있지만 모두 표기하진 않았습니다.
- *
- * 바뀐 색상은 게임 내에서 확인할 수 있습니다.
- *
- * =============================================================================
- * 변경 기록
- * =============================================================================
- * 2017.12.21 (v1.0.0) - First Release.
- */
 /*:
  * @target MV
  * @plugindesc This plugin allows you to change the text color for window as you desired. <RS_ChangeWindowTextColorSafely>
@@ -70,18 +36,18 @@
  * 2017.12.21 (v1.0.0) - First Release.
  */
 
-var Imported = Imported || {};
-Imported.RS_ChangeWindowTextColorSafely = true;
-
-var RS = RS || {};
-RS.Utils = RS.Utils || {};
-
 (() => {
     let parameters = $plugins.filter(function (i) {
-        return i.description.contains("<RS_ChangeWindowTextColorSafely>");
+        return i.description.contains('<RS_ChangeWindowTextColorSafely>');
     });
 
     parameters = parameters.length > 0 && parameters[0].parameters;
+
+    const Imported = window.Imported || {};
+    Imported.RS_ChangeWindowTextColorSafely = true;
+
+    const RS = window.RS || {};
+    RS.Utils = RS.Utils || {};
 
     RS.Utils.jsonParse = function (str) {
         const retData = JSON.parse(str, function (k, v) {
@@ -94,17 +60,17 @@ RS.Utils = RS.Utils || {};
         return retData;
     };
 
-    const defaultWindowClasses = RS.Utils.jsonParse(parameters["windowList"]);
+    const defaultWindowClasses = RS.Utils.jsonParse(parameters.windowList);
 
     Utils.changeWindowTextColorSafely = function (NOTETAGS) {
-        let clsName = "";
-        let funcName = "";
-        let color = "";
+        let clsName = '';
+        let funcName = '';
+        let color = '';
         let done = false;
 
         const notetags = NOTETAGS.split(/[\r\n]+/);
 
-        notetags.forEach((note) => {
+        notetags.forEach(note => {
             if (note.match(/<(.*)[ ](.*)[ ](.*)>/)) {
                 clsName = String(RegExp.$1);
                 funcName = String(RegExp.$2);
@@ -117,10 +83,10 @@ RS.Utils = RS.Utils || {};
                 const FUNC_NAME = funcName.slice(0);
                 const COLOR_NAME = color.slice(0);
 
-                if (typeof CLASS_NAME === "function") {
+                if (typeof CLASS_NAME === 'function') {
                     const prototypeName = CLASS_NAME.prototype[FUNC_NAME];
 
-                    if (typeof prototypeName === "function") {
+                    if (typeof prototypeName === 'function') {
                         CLASS_NAME.prototype[funcName] = function () {
                             return COLOR_NAME;
                         };

@@ -62,6 +62,8 @@
  */
 
 (() => {
+    'use strict';
+
     const aliasSpriteAnimationUpdate = Sprite_Animation.prototype.update;
     Sprite_Animation.prototype.update = function () {
         aliasSpriteAnimationUpdate.call(this);

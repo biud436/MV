@@ -21,24 +21,6 @@
  * ==================================================================
  * 2018.05.08 (v1.0.0) - First Release
  */
-/*:ko
- * @target MV
- * @plugindesc 타이머가 0이된다해도 전투가 중단되지 않습니다.
- * @author biud436
- * @help
- * ==================================================================
- * 플러그인 명령
- * ==================================================================
- * DisableBattleAbortInTimer : 타이머가 0이 된 이후에도 전투가 중단되지 않음
- * EnableBattleAbortInTimer : 타이머가 0이 되면 전투가 중단됨.
- * ==================================================================
- * 버전 로그
- * ==================================================================
- * 2018.05.08 (v1.0.0) - 출시
- */
-
-var Imported = Imported || {};
-Imported.RS_BattleTimerAbortControl = true;
 
 (() => {
     //==================================================================
@@ -77,13 +59,13 @@ Imported.RS_BattleTimerAbortControl = true;
     // Plugin Command
     //==================================================================
 
-    const alias_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+    const aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_pluginCommand.call(this, command, args);
+        aliasPluginCommand.call(this, command, args);
 
-        if (command === "DisableBattleAbortInTimer") {
+        if (command === 'DisableBattleAbortInTimer') {
             $gameSystem.disableBattleAbortInTimer();
-        } else if (command === "EnableBattleAbortInTimer") {
+        } else if (command === 'EnableBattleAbortInTimer') {
             $gameSystem.enableBattleAbortInTimer();
         }
     };

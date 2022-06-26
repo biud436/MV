@@ -106,6 +106,8 @@
  */
 
 (() => {
+    'use strict';
+
     const parameters = PluginManager.parameters('RS_AnimatedTitleImage');
     const RS = window.RS || {};
     RS.Utils = RS.Utils || {};
