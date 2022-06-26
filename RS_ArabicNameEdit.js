@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 //================================================================
 // RS_ArabicNameEdit.js
 // ---------------------------------------------------------------
@@ -24,25 +25,19 @@
  * - Reviewed the Arabic letters, by Koro San.
  */
 
-var Imported = Imported || {};
-Imported.RS_ArabicNameEdit = true;
-
-var RS = RS || {};
-RS.ArabicNameEdit = RS.ArabicNameEdit || {};
-
-(($) => {
-    "use strict";
-
-    let parameters = $plugins.filter((i) => {
-        return i.description.contains("<RS_ArabicNameEdit>");
+(() => {
+    let parameters = $plugins.filter(i => {
+        return i.description.contains('<RS_ArabicNameEdit>');
     });
+    const RS = window.RS || {};
+    RS.ArabicNameEdit = RS.ArabicNameEdit || {};
 
     parameters = parameters.length > 0 && parameters[0].parameters;
 
-    $.jsonParse = function (str) {
+    RS.ArabicNameEdit.jsonParse = function (str) {
         const retData = JSON.parse(str, function (k, v) {
             try {
-                return $.jsonParse(v);
+                return RS.ArabicNameEdit.jsonParse(v);
             } catch (e) {
                 return v;
             }
@@ -50,10 +45,11 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
         return retData;
     };
 
-    $.Params = {};
-    $.Params.fontFace = parameters["Font"] || "GameFont";
+    RS.ArabicNameEdit.Params = {};
+    RS.ArabicNameEdit.Params.fontFace = parameters.Font || 'GameFont';
 
     class Window_ArabicNameEdit extends Window_NameEdit {
+        // eslint-disable-next-line no-useless-constructor
         constructor(actor, maxLength) {
             super(actor, maxLength);
         }
@@ -70,19 +66,19 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
                 return super.standardFontFace();
             }
 
-            return $.Params.fontFace;
+            return RS.ArabicNameEdit.Params.fontFace;
         }
 
         /**
          * @param {Number} textWdith
          */
-        right(textWidth) {
-            let padding = this.textPadding();
+        right() {
+            const padding = this.textPadding();
             let width = this.contents.width - padding;
 
-            let faceWidth = Window_Base._faceWidth;
+            const faceWidth = Window_Base._faceWidth;
 
-            if (this._actor.faceName() !== "") {
+            if (this._actor.faceName() !== '') {
                 width -= faceWidth;
             }
 
@@ -98,8 +94,9 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
             );
         }
 
+        // eslint-disable-next-line class-methods-use-this
         makeText(text) {
-            return String("\u202B" + text);
+            return String(`\u202B${text}`);
         }
 
         add(ch) {
@@ -108,9 +105,8 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
                 this._index++;
                 this.refresh();
                 return true;
-            } else {
-                return false;
             }
+            return false;
         }
 
         name() {
@@ -142,7 +138,7 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
         drawActorFace2(rect) {
             const faceName = this._actor.faceName();
 
-            if (faceName == null || faceName == "") {
+            if (faceName == null || faceName === '') {
                 return;
             }
 
@@ -168,10 +164,10 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
             this.contents.clear();
 
             // Make an arabic text
-            const text = this.makeText(this._name || "");
+            const text = this.makeText(this._name || '');
             const textWidth = this.textWidth(text);
 
-            var rect = this.itemRect2(textWidth);
+            const rect = this.itemRect2(textWidth);
 
             if (!this._actorSprite) {
                 this.createActorFace();
@@ -187,189 +183,189 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
     window.Window_NameEdit = Window_ArabicNameEdit;
 
     Window_NameInput.ARABIC1 = [
-        "١",
-        "٢",
-        "٣",
-        "٤",
-        "٥",
-        "٦",
-        "٧",
-        "٨",
-        "٩",
-        "٠",
-        "ذ",
-        "د",
-        "خ",
-        "ح",
-        "ج",
-        "ث",
-        "ت",
-        "ب",
-        "أ",
-        "ا",
-        "غ",
-        "ع",
-        "ظ",
-        "ط",
-        "ض",
-        "ص",
-        "ش",
-        "س",
-        "ز",
-        "ر",
-        "ي",
-        "ؤ",
-        "و",
-        "ه",
-        "ن",
-        "م",
-        "ل",
-        "ك",
-        "ق",
-        "ف",
-        "",
-        "",
-        "",
-        "ـ",
-        "ئ",
-        "ى",
-        "ة",
-        "آ",
-        "إ",
-        "ء",
-        "~",
-        "!",
-        "@",
-        "#",
-        "$",
-        "%",
-        "^",
-        "&",
-        "*",
-        "(",
-        ")",
-        "_",
-        "+",
-        "=",
-        "-",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        "Page",
-        "OK",
+        '١',
+        '٢',
+        '٣',
+        '٤',
+        '٥',
+        '٦',
+        '٧',
+        '٨',
+        '٩',
+        '٠',
+        'ذ',
+        'د',
+        'خ',
+        'ح',
+        'ج',
+        'ث',
+        'ت',
+        'ب',
+        'أ',
+        'ا',
+        'غ',
+        'ع',
+        'ظ',
+        'ط',
+        'ض',
+        'ص',
+        'ش',
+        'س',
+        'ز',
+        'ر',
+        'ي',
+        'ؤ',
+        'و',
+        'ه',
+        'ن',
+        'م',
+        'ل',
+        'ك',
+        'ق',
+        'ف',
+        '',
+        '',
+        '',
+        'ـ',
+        'ئ',
+        'ى',
+        'ة',
+        'آ',
+        'إ',
+        'ء',
+        '~',
+        '!',
+        '@',
+        '#',
+        '$',
+        '%',
+        '^',
+        '&',
+        '*',
+        '(',
+        ')',
+        '_',
+        '+',
+        '=',
+        '-',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        'Page',
+        'OK',
     ];
 
     Window_NameInput.ARABIC2 = [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "u",
-        "v",
-        "w",
-        "x",
-        "y",
-        "Z",
-        "",
-        "",
-        "",
-        "",
-        "z",
-        "",
-        "",
-        "",
-        "",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        "Page",
-        "OK",
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'F',
+        'G',
+        'H',
+        'I',
+        'J',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'K',
+        'L',
+        'M',
+        'N',
+        'O',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'P',
+        'Q',
+        'R',
+        'S',
+        'T',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'U',
+        'V',
+        'W',
+        'X',
+        'Y',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'Z',
+        '',
+        '',
+        '',
+        '',
+        'z',
+        '',
+        '',
+        '',
+        '',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        'Page',
+        'OK',
     ];
 
     class Window_ArabicNameInput extends Window_NameInput {
@@ -378,13 +374,14 @@ RS.ArabicNameEdit = RS.ArabicNameEdit || {};
                 return super.standardFontFace();
             }
 
-            return $.Params.fontFace;
+            return RS.ArabicNameEdit.Params.fontFace;
         }
 
+        // eslint-disable-next-line class-methods-use-this
         table() {
             return [Window_NameInput.ARABIC1, Window_NameInput.ARABIC2];
         }
     }
 
     window.Window_NameInput = Window_ArabicNameInput;
-})(RS.ArabicNameEdit);
+})();
