@@ -120,32 +120,16 @@
  * - 배틀러 설정 없이 애니메이션을 표시할 수 있는 기능을 추가하였습니다.
  * - 화면 중앙에 표시되지 않는 문제를 수정하였습니다.
  */
-
-var Imported = Imported || {};
-Imported.RS_BattleStaticAnimation = true;
-
-var RS = RS || {};
-RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
-
 (() => {
-    "use strict";
+    const RS = window.RS || {};
+    RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
 
-    let parameters = $plugins.filter((i) => {
-        return i.description.contains("<RS_BattleStaticAnimation>");
-    });
+    const Imported = window.Imported || {};
+    Imported.RS_BattleStaticAnimation = true;
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
-
-    if (Utils.RPGMAKER_VERSION < "1.6.1") {
-        throw new Error(
-            `Sorry. This plugin couldn't execute it in the RPG Maker MV v1.5.2 or less.`
-        );
-    }
-
-    //=====================================================================
-    // Sprite_StaticAnimation
-    //=====================================================================
-
+    /**
+     * @class Sprite_StaticAnimation
+     */
     class Sprite_StaticAnimation extends Sprite_Base {
         constructor(battler, animationId) {
             super();
@@ -238,7 +222,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
         this._staticAnimation.setFrame(x, y, width, height);
 
         this._baseSprite.addChild(this._staticAnimation);
-        this.on("removed", this.removeStaticAnimation, this);
+        this.on('removed', this.removeStaticAnimation, this);
     };
 
     Spriteset_Battle.prototype.removeStaticAnimation = function () {
@@ -265,7 +249,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
         const x = battler.spriteHomeX();
         const y = battler.spriteHomeY();
 
-        let animation = new Sprite_StaticAnimation(battler, animationId);
+        const animation = new Sprite_StaticAnimation(battler, animationId);
 
         animation.x = x;
         animation.y = y;
@@ -292,7 +276,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
         if (!Imported.YEP_BattleEngineCore) return;
         if (!this._staticAnimation) return;
 
-        let animation = new Sprite_ScreenAnimation(animationId);
+        const animation = new Sprite_ScreenAnimation(animationId);
 
         animation.x = Graphics.boxWidth / 2 + ox;
         animation.y = Graphics.boxHeight / 2 + oy;
@@ -306,10 +290,10 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
         if (!Imported.YEP_BattleEngineCore) return;
         if (!this._staticAnimation) return;
 
-        const children = this._staticAnimation.children;
+        const { children } = this._staticAnimation;
         if (!children) return;
 
-        deleted = children.filter((i) => i.uniqId === uniqId);
+        deleted = children.filter(i => i.uniqId === uniqId);
 
         if (deleted[0]) {
             deleted[0].removeMembers();
@@ -340,7 +324,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
         if (!Imported.YEP_CoreEngine) return;
         if (!Imported.YEP_BattleEngineCore) return;
         if (!this._spriteset) return;
-        let battlers = BattleManager.allBattleMembers();
+        const battlers = BattleManager.allBattleMembers();
         const maxBattlers = battlers.length;
         const maxActors = $gameParty.members().length;
 
@@ -350,7 +334,7 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
             battlerId = (battlerId - 1) % maxActors;
         }
 
-        let battler = battlers[battlerId];
+        const battler = battlers[battlerId];
 
         if (battlers.contains(battler)) {
             this._spriteset.playStaticAnimation(uniqId, battler, animationId);
@@ -382,24 +366,24 @@ RS.BattleStaticAnimation = RS.BattleStaticAnimation || {};
     //=====================================================================
     // Game_Interprter
     //=====================================================================
-    var alias_Game_Interpreter_pluginCommand =
+    const aliasGameInterpreterPluginCommand =
         Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === "PlayStaticAnimation") {
+        aliasGameInterpreterPluginCommand.call(this, command, args);
+        if (command === 'PlayStaticAnimation') {
             const uniqId = args[0];
             const battlerId = Number(args[1]);
             const animationId = Number(args[2]);
             BattleManager.playStaticAnimation(uniqId, battlerId, animationId);
-        } else if (command === "PlayScreenAnimation") {
+        } else if (command === 'PlayScreenAnimation') {
             const uniqId = args[0];
             const ox = Number(args[1]);
             const oy = Number(args[2]);
             const animationId = Number(args[3]);
             BattleManager.playScreenAnimation(uniqId, ox, oy, animationId);
-        } else if (command === "StopStaticAnimation") {
+        } else if (command === 'StopStaticAnimation') {
             const uniqId = args[0];
             BattleManager.stopStaticAnimation(uniqId);
         }
     };
-})(RS.BattleStaticAnimation);
+})();
