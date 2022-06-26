@@ -44,7 +44,7 @@
  * RPG Maker MV의 경우, 캐릭터가 화면에서 보이지 않아도 애니메이션이 끝까지 재생됩니다.
  * 이 플러그인은 캐릭터가 화면에서 보이지 않으면 애니메이션을 바로 정지시킵니다.
  *
- *  ◆ 정지 조건​
+ *  ◆ 정지 조건
  *    - 이벤트 일시 삭제
  *    - 이벤트 실행 조건이 충족하지 않을 때 (변수, 스위치, 셀프 스위치)
  *    - 캐릭터 그래픽이 비어있을 때
@@ -62,13 +62,9 @@
  */
 
 (() => {
-    const parameters = $plugins.filter(function (i) {
-        return i.description.contains("<RS_AnimataionVisibility>");
-    })[0].parameters;
-
-    const alias_Sprite_Animation_update = Sprite_Animation.prototype.update;
+    const aliasSpriteAnimationUpdate = Sprite_Animation.prototype.update;
     Sprite_Animation.prototype.update = function () {
-        alias_Sprite_Animation_update.call(this);
+        aliasSpriteAnimationUpdate.call(this);
         this.updateVisibility();
     };
 
@@ -88,7 +84,7 @@
         }
 
         const isTransparent = target.isTransparent(); // 투명한가?
-        const isErased = target._erased;
+        let isErased = target._erased;
 
         if (!isErased) {
             isErased = target.isTile() ? isErased : !target._characterName;
@@ -101,10 +97,10 @@
         this.visible = this.isTargetReady();
     };
 
-    const alias_Sprite_Animation_processTimingData =
+    const aliasSpriteAnimationProcessTimingData =
         Sprite_Animation.prototype.processTimingData;
     Sprite_Animation.prototype.processTimingData = function (timing) {
         if (!this.isTargetReady()) return;
-        alias_Sprite_Animation_processTimingData.call(this, timing);
+        aliasSpriteAnimationProcessTimingData.call(this, timing);
     };
 })();
