@@ -1,11 +1,12 @@
-//================================================================
+// ================================================================
 // RS_AnimatedTitleImage.js
 // ---------------------------------------------------------------
 // The MIT License
 // Copyright (c) 2015 biud436
 // ---------------------------------------------------------------
 // Free for commercial and non commercial use.
-//================================================================
+// ================================================================
+// eslint-disable-next-line spaced-comment
 /*:ko
  * @plugindesc 일정한 시간이 지나면 타이틀 이미지를 자동으로 변경합니다.
  * @author biud436
@@ -85,6 +86,7 @@
  * - Added the feature that can add the title images dynamically via newly plugin manager features.
  */
 
+// eslint-disable-next-line spaced-comment
 /*~struct~TitleImage:
  *
  * @param Image
@@ -103,42 +105,41 @@
  *
  */
 
-var RS = RS || {};
-RS.Utils = RS.Utils || {};
-RS.AnimatedTitleImage = RS.AnimatedTitleImage || {};
-
 (() => {
-    (() => {
-        const parameters = PluginManager.parameters("RS_AnimatedTitleImage");
+    const parameters = PluginManager.parameters('RS_AnimatedTitleImage');
+    const RS = window.RS || {};
+    RS.Utils = RS.Utils || {};
+    RS.AnimatedTitleImage = RS.AnimatedTitleImage || {};
 
-        RS.AnimatedTitleImage.Params = RS.AnimatedTitleImage.Params || {};
-        RS.AnimatedTitleImage.Params.isPreload = Boolean(
-            parameters["Preload"] === "true"
-        );
-        RS.AnimatedTitleImage.Params.images = [];
+    RS.AnimatedTitleImage.Params = RS.AnimatedTitleImage.Params || {};
+    RS.AnimatedTitleImage.Params.isPreload = Boolean(
+        parameters.Preload === 'true'
+    );
+    RS.AnimatedTitleImage.Params.images = [];
 
-        RS.Utils.jsonParse = function (str) {
-            const retData = JSON.parse(str, (k, v) => {
-                try {
-                    return RS.Utils.jsonParse(v);
-                } catch (e) {
-                    return v;
-                }
-            });
-            return retData;
-        };
+    RS.Utils.jsonParse = function (str) {
+        const retData = JSON.parse(str, (k, v) => {
+            try {
+                return RS.Utils.jsonParse(v);
+            } catch (e) {
+                return v;
+            }
+        });
+        return retData;
+    };
 
-        const data = RS.Utils.jsonParse(parameters["Title Image"]);
-        data.forEach((e) => RS.AnimatedTitleImage.Params.images.push(e));
-    })();
+    function initWithImages() {
+        const data = RS.Utils.jsonParse(parameters['Title Image']);
+        data.forEach(e => RS.AnimatedTitleImage.Params.images.push(e));
+    }
 
     const alias_Scene_Boot_loadSystemImages =
         Scene_Boot.prototype.loadSystemImages;
     Scene_Boot.prototype.loadSystemImages = function () {
         alias_Scene_Boot_loadSystemImages.call(this);
         if (!RS.AnimatedTitleImage.Params.isPreload) return;
-        RS.AnimatedTitleImage.Params.images.forEach((i) => {
-            ImageManager.loadTitle1(i["Image"]);
+        RS.AnimatedTitleImage.Params.images.forEach(i => {
+            ImageManager.loadTitle1(i.Image);
         });
     };
 
@@ -165,17 +166,17 @@ RS.AnimatedTitleImage = RS.AnimatedTitleImage || {};
         }
         const index = this._spriteIndex;
         const data = collections[index];
-        const next = (parseFloat(data["Time"]) || 1) * 1000;
-        const lastTime = PIXI.ticker.shared.lastTime;
+        const next = (parseFloat(data.Time) || 1) * 1000;
+        const { lastTime } = PIXI.ticker.shared;
         if (data && lastTime - this._nSavingTime >= next) {
             if (this._backSprite1) {
-                this._backSprite1.bitmap = ImageManager.loadTitle1(
-                    data["Image"]
-                );
+                this._backSprite1.bitmap = ImageManager.loadTitle1(data.Image);
             }
             this._nSavingTime = lastTime;
             this._spriteIndex =
                 Math.floor(this._nSavingTime) % collections.length;
         }
     };
+
+    initWithImages();
 })();
