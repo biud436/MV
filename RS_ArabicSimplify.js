@@ -49,26 +49,22 @@
  * 2019.06.03 (v1.0.0) - First Release.
  */
 
-var Imported = Imported || {};
-Imported.RS_ArabicSimplify = true;
-
-var RS = RS || {};
-RS.ArabicSimplify = RS.ArabicSimplify || {};
-
-(($) => {
-    "use strict";
-
-    let parameters = $plugins.filter((i) => {
-        return i.description.contains("<RS_ArabicSimplify>");
+(() => {
+    let parameters = $plugins.filter(i => {
+        return i.description.contains('<RS_ArabicSimplify>');
     });
+    const RS = window.RS || {};
+    RS.ArabicSimplify = RS.ArabicSimplify || {};
 
     parameters = parameters.length > 0 && parameters[0].parameters;
 
-    $.Params = {};
-    $.Params.messageMode = String(parameters["Message Mode"] || "arabic");
-    $.Params.arabicFont = String(
-        parameters["Arabic Font"] ||
-            "Simplified Arabic, Times New Roman, Segoe UI"
+    RS.ArabicSimplify.Params = {};
+    RS.ArabicSimplify.Params.messageMode = String(
+        parameters['Message Mode'] || 'arabic'
+    );
+    RS.ArabicSimplify.Params.arabicFont = String(
+        parameters['Arabic Font'] ||
+            'Simplified Arabic, Times New Roman, Segoe UI'
     );
 
     //============================================================================
@@ -76,18 +72,18 @@ RS.ArabicSimplify = RS.ArabicSimplify || {};
     //============================================================================
 
     function ArabicUtils() {
-        throw new Error("This is a static class");
+        throw new Error('This is a static class');
     }
 
-    ArabicUtils.LEFT_TO_RIGHT_EMBEDDING = "\u202A";
-    ArabicUtils.RIGHT_TO_LEFT_EMBEDDING = "\u202B";
-    ArabicUtils.POP_DIRECTIONAL_FORMATTING = "\u202C";
-    ArabicUtils.LEFT_TO_RIGHT_OVERRIDE = "\u202D";
-    ArabicUtils.RIGHT_TO_LEFT_OVERRIDE = "\u202E";
-    ArabicUtils.LEFT_TO_RIGHT_ISOLATE = "\u2066";
-    ArabicUtils.RIGHT_TO_LEFT_ISOLATE = "\u2067";
-    ArabicUtils.FIRST_STRONG_ISOLATE = "\u2068";
-    ArabicUtils.POP_DIRECTIONAL_ISOLATE = "\u2069";
+    ArabicUtils.LEFT_TO_RIGHT_EMBEDDING = '\u202A';
+    ArabicUtils.RIGHT_TO_LEFT_EMBEDDING = '\u202B';
+    ArabicUtils.POP_DIRECTIONAL_FORMATTING = '\u202C';
+    ArabicUtils.LEFT_TO_RIGHT_OVERRIDE = '\u202D';
+    ArabicUtils.RIGHT_TO_LEFT_OVERRIDE = '\u202E';
+    ArabicUtils.LEFT_TO_RIGHT_ISOLATE = '\u2066';
+    ArabicUtils.RIGHT_TO_LEFT_ISOLATE = '\u2067';
+    ArabicUtils.FIRST_STRONG_ISOLATE = '\u2068';
+    ArabicUtils.POP_DIRECTIONAL_ISOLATE = '\u2069';
 
     ArabicUtils.isArabic = function (text) {
         const pattern =
@@ -112,7 +108,10 @@ RS.ArabicSimplify = RS.ArabicSimplify || {};
         lineHeight,
         align
     ) {
-        if ($.Params.messageMode === "arabic" && ArabicUtils.isArabic(text)) {
+        if (
+            RS.ArabicSimplify.Params.messageMode === 'arabic' &&
+            ArabicUtils.isArabic(text)
+        ) {
             text = ArabicUtils.makeText(text);
         }
         alias_Bitmap_drawText.call(
@@ -134,19 +133,19 @@ RS.ArabicSimplify = RS.ArabicSimplify || {};
         Window_Base.prototype.standardFontFace;
     Window_Base.prototype.standardFontFace = function () {
         if (
-            $.Params.messageMode === "arabic" ||
+            RS.ArabicSimplify.Params.messageMode === 'arabic' ||
             navigator.language.match(/^ar/)
         ) {
-            return $.Params.arabicFont;
-        } else {
-            return alias_Window_Base_standardFontFace.call(this);
+            return RS.ArabicSimplify.Params.arabicFont;
         }
+
+        return alias_Window_Base_standardFontFace.call(this);
     };
 
     const alias_Window_Base_processNormalCharacter =
         Window_Base.prototype.processNormalCharacter;
     Window_Base.prototype.processNormalCharacter = function (textState) {
-        if ($.Params.messageMode !== "arabic") {
+        if (RS.ArabicSimplify.Params.messageMode !== 'arabic') {
             return alias_Window_Base_processNormalCharacter.call(
                 this,
                 textState
@@ -156,10 +155,8 @@ RS.ArabicSimplify = RS.ArabicSimplify || {};
         const allLines = textState.text
             .slice(textState.index++)
             .split(/[\r\n]+/);
-        const currentLine = allLines[0] || "";
-        let currentText = "";
-
-        currentText = currentLine.split("\x1b")[0];
+        const currentLine = allLines[0] || '';
+        const [currentText] = currentLine.split('\x1b');
         textState.index += currentText.length - 1;
 
         const c = currentText;
@@ -174,6 +171,8 @@ RS.ArabicSimplify = RS.ArabicSimplify || {};
         );
 
         textState.x += w;
+
+        return c;
     };
 
     //============================================================================
@@ -184,13 +183,13 @@ RS.ArabicSimplify = RS.ArabicSimplify || {};
         Window_Message.prototype.standardFontFace;
     Window_Message.prototype.standardFontFace = function () {
         if (
-            $.Params.messageMode === "arabic" ||
+            RS.ArabicSimplify.Params.messageMode === 'arabic' ||
             navigator.language.match(/^ar/)
         ) {
-            return $.Params.arabicFont;
-        } else {
-            return alias_Window_Message_standardFontFace.call(this);
+            return RS.ArabicSimplify.Params.arabicFont;
         }
+
+        return alias_Window_Message_standardFontFace.call(this);
     };
 
     //============================================================================
@@ -201,11 +200,11 @@ RS.ArabicSimplify = RS.ArabicSimplify || {};
     Game_Interpreter.prototype.pluginCommand = function (command, args) {
         alias_Game_Interpreter_pluginCommand.call(this, command, args);
 
-        if (command === "ArabicMessageMode") {
-            $.Params.messageMode = true;
+        if (command === 'ArabicMessageMode') {
+            RS.ArabicSimplify.Params.messageMode = true;
         }
-        if (command === "NormalMessageMode") {
-            $.Params.messageMode = false;
+        if (command === 'NormalMessageMode') {
+            RS.ArabicSimplify.Params.messageMode = false;
         }
     };
-})(RS.ArabicSimplify);
+})();
