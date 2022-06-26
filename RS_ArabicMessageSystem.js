@@ -1,3 +1,5 @@
+/* eslint-disable prefer-rest-params */
+/* eslint-disable-next-line prefer-spread */
 //================================================================
 // RS_ArabicMessageSystem.js
 // ---------------------------------------------------------------
@@ -320,53 +322,56 @@
  * - Added a feature that saves the config of the text direction as file.
  */
 
+// eslint-disable-next-line no-var
 var Imported = Imported || {};
-Imported.RS_ArabicMessageSystem = "1.2.5";
-
+// eslint-disable-next-line no-var
 var RS = RS || {};
+
+Imported.RS_ArabicMessageSystem = '1.2.5';
+
 RS.ArabicMessageSystem = RS.ArabicMessageSystem || {};
 RS.ArabicMessageSystem.alias = RS.ArabicMessageSystem.alias || {};
 
 function ArabicUtils() {
-    throw new Error("This is a static class");
+    throw new Error('This is a static class');
 }
 
 (() => {
-    "use strict";
-
-    if (Utils.RPGMAKER_VERSION < "1.5.0") {
+    if (Utils.RPGMAKER_VERSION < '1.5.0') {
         console.warn(
-            "Note that RS_ArabicMessageSystem plugin can use only in RMMV v1.5.0 or above."
+            'Note that RS_ArabicMessageSystem plugin can use only in RMMV v1.5.0 or above.'
         );
         return;
     }
 
-    let parameters = $plugins.filter((i) => {
-        return i.description.contains("<RS_ArabicMessageSystem>");
+    let parameters = $plugins.filter(i => {
+        return i.description.contains('<RS_ArabicMessageSystem>');
     });
 
     parameters = parameters.length > 0 && parameters[0].parameters;
 
-    let messageMode = String(parameters["Message Mode"] || "arabic");
+    let messageMode = String(parameters['Message Mode'] || 'arabic');
     const arabicFont = String(
-        parameters["Arabic Font"] ||
-            "Simplified Arabic, Times New Roman, Segoe UI"
+        parameters['Arabic Font'] ||
+            'Simplified Arabic, Times New Roman, Segoe UI'
     );
 
-    const rtlWindowButtonSymbol = "Right to Left";
+    const rtlWindowButtonSymbol = 'Right to Left';
 
     RS.ArabicMessageSystem.Params = RS.ArabicMessageSystem.Params || {};
     RS.ArabicMessageSystem.Params.fontSize = parseInt(
-        parameters["Font Size"] || 28
+        parameters['Font Size'] || 28,
+        10
     );
     RS.ArabicMessageSystem.Params.textWaitTime = parseInt(
-        parameters["Text Wait Time"] || 10
+        parameters['Text Wait Time'] || 10,
+        10
     );
     RS.ArabicMessageSystem.Params.isAnimatedText = Boolean(
-        parameters["Animated Text"] === "true"
+        parameters['Animated Text'] === 'true'
     );
     RS.ArabicMessageSystem.Params.bindScripts = (function () {
-        const src = parameters["Binder"];
+        const src = parameters.Binder;
         const jsonParse = function (str) {
             const retData = JSON.parse(str, (k, v) => {
                 try {
@@ -389,18 +394,18 @@ function ArabicUtils() {
     // http://www.unicode.org/Public/UNIDATA/Scripts.txt
     //============================================================================
 
-    ArabicUtils.LEFT_TO_RIGHT_EMBEDDING = "\u202A";
-    ArabicUtils.RIGHT_TO_LEFT_EMBEDDING = "\u202B";
-    ArabicUtils.POP_DIRECTIONAL_FORMATTING = "\u202C";
-    ArabicUtils.LEFT_TO_RIGHT_OVERRIDE = "\u202D";
-    ArabicUtils.RIGHT_TO_LEFT_OVERRIDE = "\u202E";
-    ArabicUtils.LEFT_TO_RIGHT_ISOLATE = "\u2066";
-    ArabicUtils.RIGHT_TO_LEFT_ISOLATE = "\u2067";
-    ArabicUtils.FIRST_STRONG_ISOLATE = "\u2068";
-    ArabicUtils.POP_DIRECTIONAL_ISOLATE = "\u2069";
+    ArabicUtils.LEFT_TO_RIGHT_EMBEDDING = '\u202A';
+    ArabicUtils.RIGHT_TO_LEFT_EMBEDDING = '\u202B';
+    ArabicUtils.POP_DIRECTIONAL_FORMATTING = '\u202C';
+    ArabicUtils.LEFT_TO_RIGHT_OVERRIDE = '\u202D';
+    ArabicUtils.RIGHT_TO_LEFT_OVERRIDE = '\u202E';
+    ArabicUtils.LEFT_TO_RIGHT_ISOLATE = '\u2066';
+    ArabicUtils.RIGHT_TO_LEFT_ISOLATE = '\u2067';
+    ArabicUtils.FIRST_STRONG_ISOLATE = '\u2068';
+    ArabicUtils.POP_DIRECTIONAL_ISOLATE = '\u2069';
 
     ArabicUtils.isArabic = function (text) {
-        var pattern =
+        const pattern =
             /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFD\uFE70-\uFEFF\u10E600-\u10E7E\u1EE00-\u1EEFF]/;
         return pattern.test(text);
     };
@@ -414,9 +419,9 @@ function ArabicUtils() {
     //============================================================================
 
     RS.ArabicMessageSystem.createArabicLayer = function () {
-        if (messageMode === "arabic" || navigator.language.match(/^ar/)) {
-            const canvas = document.querySelector("canvas");
-            if (canvas.dir !== "rtl") canvas.dir = "rtl";
+        if (messageMode === 'arabic' || navigator.language.match(/^ar/)) {
+            const canvas = document.querySelector('canvas');
+            if (canvas.dir !== 'rtl') canvas.dir = 'rtl';
             if (this._arabicTexts) {
                 this._windowContentsSprite.removeChild(this._arabicTexts);
                 this._arabicTexts = null;
@@ -434,10 +439,10 @@ function ArabicUtils() {
         }
     };
 
-    RS.ArabicMessageSystem.defineProtoype = function (className) {};
+    RS.ArabicMessageSystem.defineProtoype = function () {};
 
     RS.ArabicMessageSystem.defineInitialize = function (className) {
-        const aliasName = "alias_%1_initialize".format(className);
+        const aliasName = 'alias_%1_initialize'.format(className);
         RS.ArabicMessageSystem.alias[aliasName] =
             className.prototype.initialize;
         className.prototype.initialize = function () {
@@ -452,7 +457,7 @@ function ArabicUtils() {
         className,
         initializer
     ) {
-        const aliasName = "alias_%1_initialize".format(className);
+        const aliasName = 'alias_%1_initialize'.format(className);
         RS.ArabicMessageSystem.alias[aliasName] =
             className.prototype.initialize;
         className.prototype.initialize = initializer.bind(className.prototype);
@@ -461,7 +466,7 @@ function ArabicUtils() {
     };
 
     RS.ArabicMessageSystem.defineRefresh = function (className) {
-        const aliasRefresh = "alias_%1_refresh".format(className);
+        const aliasRefresh = 'alias_%1_refresh'.format(className);
         RS.ArabicMessageSystem.alias[aliasRefresh] =
             className.prototype.refresh;
         className.prototype.refresh = function () {
@@ -471,7 +476,7 @@ function ArabicUtils() {
     };
 
     RS.ArabicMessageSystem.defineAlias = function (className) {
-        const aliasRefresh = "alias_%1_refresh".format(className);
+        const aliasRefresh = 'alias_%1_refresh'.format(className);
         RS.ArabicMessageSystem.alias[aliasRefresh] =
             className.prototype.refresh;
         return RS.ArabicMessageSystem.alias[aliasRefresh];
@@ -539,7 +544,7 @@ function ArabicUtils() {
             sy + sh <= source.height
         ) {
             this._context.setTransform(-1, 0, 0, 1, sw, 0);
-            this._context.globalCompositeOperation = "source-over";
+            this._context.globalCompositeOperation = 'source-over';
             this._context.drawImage(
                 source._canvas,
                 sx,
@@ -560,8 +565,9 @@ function ArabicUtils() {
     // ArabicFlipSprite
     //============================================================================
 
-    function ArabicFlipSprite() {
-        this.initialize.apply(this, arguments);
+    function ArabicFlipSprite(...args) {
+        // eslint-disable-next-line prefer-spread
+        this.initialize.apply(this, args);
     }
 
     ArabicFlipSprite.prototype = Object.create(Sprite.prototype);
@@ -631,12 +637,13 @@ function ArabicUtils() {
 
     Object.defineProperties(ArabicFlipSprite.prototype, {
         offsetX: {
-            get: function () {
+            get() {
                 if (this._arabicFlipFilter) {
                     return this._arabicFlipFilter.offsetX;
                 }
+                return 0;
             },
-            set: function (value) {
+            set(value) {
                 if (this._arabicFlipFilter) {
                     this._arabicFlipFilter.offsetX = value;
                 }
@@ -649,6 +656,7 @@ function ArabicUtils() {
     //============================================================================
 
     function ArabicTextContainer() {
+        // eslint-disable-next-line prefer-spread
         this.initialize.apply(this, arguments);
     }
 
@@ -657,31 +665,32 @@ function ArabicUtils() {
 
     ArabicTextContainer.prototype.initialize = function (bitmap) {
         Sprite.prototype.initialize.call(this, bitmap);
-        this.on("next", this.next, this);
+        this.on('next', this.next, this);
     };
 
     const alias_ArabicTextContainer_destroy =
         ArabicTextContainer.prototype.destroy;
     ArabicTextContainer.prototype.destroy = function () {
         alias_ArabicTextContainer_destroy.call(this);
-        this.off("next", this.next, this);
+        this.off('next', this.next, this);
     };
 
+    // eslint-disable-next-line consistent-return
     ArabicTextContainer.prototype.next = function (child) {
         if (!this.children) return false;
         if (child) {
             const index = this.getChildIndex(child);
-            const id = index + 1;
-            const nextChild = this.children[id];
+            let id = index + 1;
+            let nextChild = this.children[id];
             if (
                 nextChild !== undefined &&
                 nextChild instanceof ArabicTextSprite
             ) {
-                nextChild.emit("startTextAnimation");
+                nextChild.emit('startTextAnimation');
             } else {
                 nextChild = this.children[++id];
                 while (nextChild !== undefined && nextChild instanceof Sprite) {
-                    nextChild.emit("startTextAnimation");
+                    nextChild.emit('startTextAnimation');
                     nextChild = this.children[++id];
                 }
             }
@@ -693,6 +702,7 @@ function ArabicUtils() {
     //============================================================================
 
     function ArabicTextSprite() {
+        // eslint-disable-next-line prefer-spread
         this.initialize.apply(this, arguments);
     }
 
@@ -714,7 +724,7 @@ function ArabicUtils() {
         this._ty = 0;
         this._tMaxWidth = 0;
         this._tLineHeight = 0;
-        this._tAlign = "left";
+        this._tAlign = 'left';
         this._maxTextLength = 0;
         this._iTextNumber = 0;
 
@@ -748,7 +758,7 @@ function ArabicUtils() {
      * @method updateTextAnimation
      */
     ArabicTextSprite.prototype.updateTextAnimation = function () {
-        var deltaX = 0;
+        let deltaX = 0;
 
         // Don't need to always increase (So if the text is already drawn, don't need it)
         if (!this._isFinished) this._iTextNumber++;
@@ -760,7 +770,7 @@ function ArabicUtils() {
 
             if (this.parent) {
                 // Sometimes it is causing a bug at this code.
-                this.parent.emit("next", this);
+                this.parent.emit('next', this);
             }
         }
 
@@ -814,14 +824,14 @@ function ArabicUtils() {
         this._ty = y;
         this._tMaxWidth = maxWidth;
         this._tLineHeight = lineHeight;
-        this._tAlign = align || "left";
-        this.on("startTextAnimation", this.onStarted, this);
+        this._tAlign = align || 'left';
+        this.on('startTextAnimation', this.onStarted, this);
     };
 
     ArabicTextSprite.prototype.onStarted = function () {
         this._isStarted = true;
         this._deltaTime = performance.now();
-        this.off("startTextAnimation", this.onStarted, this);
+        this.off('startTextAnimation', this.onStarted, this);
     };
 
     //============================================================================
@@ -831,11 +841,11 @@ function ArabicUtils() {
     const alias_Window_Base_standardFontFace =
         Window_Base.prototype.standardFontFace;
     Window_Base.prototype.standardFontFace = function () {
-        if (messageMode === "arabic" || navigator.language.match(/^ar/)) {
+        if (messageMode === 'arabic' || navigator.language.match(/^ar/)) {
             return arabicFont;
-        } else {
-            return alias_Window_Base_standardFontFace.call(this);
         }
+
+        return alias_Window_Base_standardFontFace.call(this);
     };
 
     Window_Base.prototype.createArabicText = function (
@@ -880,19 +890,17 @@ function ArabicUtils() {
     Window_Base.prototype.processNormalCharacter = function (textState) {
         const szCompositionText = textState.text
             .slice(textState.index++)
-            .split("\n");
+            .split('\n');
         const szValidText = szCompositionText[0];
 
-        let szResultText = "";
-
-        szResultText = szValidText.split("\x1b")[0];
+        const [szResultText] = szValidText.split('\x1b');
         textState.index += szResultText.length - 1;
 
         // Draw Text
         const c = szResultText;
         const w = this.textWidth(c);
 
-        if (messageMode === "arabic") {
+        if (messageMode === 'arabic') {
             this.createArabicText(
                 c,
                 textState.x,
@@ -917,8 +925,8 @@ function ArabicUtils() {
         Window_Base.prototype.processEscapeCharacter;
     Window_Base.prototype.processEscapeCharacter = function (code, textState) {
         switch (code) {
-            case "LTR":
-                if (messageMode === "arabic") {
+            case 'LTR':
+                if (messageMode === 'arabic') {
                     this.drawLeftToRightText(
                         this.obtainLTRText(textState),
                         textState
@@ -939,9 +947,9 @@ function ArabicUtils() {
         if (arr) {
             textState.index += arr[0].length;
             return String(arr[1]);
-        } else {
-            return "";
         }
+
+        return '';
     };
 
     Window_Base.prototype.drawLeftToRightText = function (text, textState) {
@@ -959,8 +967,8 @@ function ArabicUtils() {
 
     const alias_Window_Base_drawIcon = Window_Base.prototype.drawIcon;
     Window_Base.prototype.drawIcon = function (iconIndex, x, y) {
-        if (messageMode === "arabic" && this._arabicTexts) {
-            const bitmap = ImageManager.loadSystem("IconSet");
+        if (messageMode === 'arabic' && this._arabicTexts) {
+            const bitmap = ImageManager.loadSystem('IconSet');
 
             const pw = Window_Base._iconWidth;
             const ph = Window_Base._iconHeight;
@@ -1020,7 +1028,7 @@ function ArabicUtils() {
 
     const alias_Window_Message_newPage = Window_Message.prototype.newPage;
     Window_Message.prototype.newPage = function (textState) {
-        if (messageMode === "arabic" || navigator.language.match(/^ar/)) {
+        if (messageMode === 'arabic' || navigator.language.match(/^ar/)) {
             if (this._arabicTexts) {
                 this._windowContentsSprite.removeChild(this._arabicTexts);
                 this._arabicTexts = null;
@@ -1028,12 +1036,12 @@ function ArabicUtils() {
             this._windowContentsSprite.pivot.x = this.contentsWidth();
             this._windowContentsSprite.scale.x = -1;
             this._windowContentsSprite._isMessageAracbic = true;
-            document.querySelector("canvas").dir = "rtl";
+            document.querySelector('canvas').dir = 'rtl';
             this._arabicTexts = new ArabicTextContainer();
             this._arabicTexts.visible = true;
             this._windowContentsSprite.addChild(this._arabicTexts);
             this._arabicPause = false;
-            this.on("arabicPause", this.onArabicPause, this);
+            this.on('arabicPause', this.onArabicPause, this);
         } else {
             this._windowContentsSprite.pivot.x = 0;
             this._windowContentsSprite.scale.x = 1;
@@ -1106,13 +1114,13 @@ function ArabicUtils() {
 
     Window_Message.prototype.onArabicPause = function () {
         this._arabicPause = true;
-        this.off("arabicPause", this.onArabicPause, this);
+        this.off('arabicPause', this.onArabicPause, this);
     };
 
     const alias_Window_Message_drawIcon = Window_Message.prototype.drawIcon;
     Window_Message.prototype.drawIcon = function (iconIndex, x, y) {
-        if (messageMode === "arabic") {
-            const bitmap = ImageManager.loadSystem("IconSet");
+        if (messageMode === 'arabic') {
+            const bitmap = ImageManager.loadSystem('IconSet');
 
             const pw = Window_Base._iconWidth;
             const ph = Window_Base._iconHeight;
@@ -1150,7 +1158,7 @@ function ArabicUtils() {
         width,
         height
     ) {
-        if (messageMode === "arabic") {
+        if (messageMode === 'arabic') {
             width = width || Window_Base._faceWidth;
             height = height || Window_Base._faceHeight;
             const bitmap = ImageManager.loadFace(faceName);
@@ -1180,11 +1188,11 @@ function ArabicUtils() {
         Window_Message.prototype.onEndOfText;
     Window_Message.prototype.onEndOfText = function () {
         alias_Window_Message_onEndOfText.call(this);
-        const isAnimatedText = RS.ArabicMessageSystem.Params.isAnimatedText;
+        const { isAnimatedText } = RS.ArabicMessageSystem.Params;
         if (isAnimatedText) {
             const startChild = this._arabicTexts.children[0];
             if (this._arabicTexts && this._arabicTexts.children[0]) {
-                startChild.emit("startTextAnimation");
+                startChild.emit('startTextAnimation');
             }
         }
     };
@@ -1195,13 +1203,14 @@ function ArabicUtils() {
 
     const alias_Window_Command_drawItem = Window_Command.prototype.drawItem;
     Window_Command.prototype.drawItem = function (index) {
-        if (messageMode !== "arabic") {
-            return alias_Window_Command_drawItem.call(this, index);
+        if (messageMode !== 'arabic') {
+            alias_Window_Command_drawItem.call(this, index);
+            return;
         }
         const rect = this.itemRectForText(index);
         const align = this.itemTextAlign();
         let x = 0;
-        if (align !== "center" && align !== "right") {
+        if (align !== 'center' && align !== 'right') {
             x = rect.x + rect.width - this.textWidth(this.commandName(index));
         } else {
             x = rect.x;
@@ -1216,7 +1225,7 @@ function ArabicUtils() {
     //============================================================================
 
     RS.ArabicMessageSystem.defineInitialize2(Window_Help, function (numLines) {
-        const aliasName = "alias_%1_initialize".format(Window_Help);
+        const aliasName = 'alias_%1_initialize'.format(Window_Help);
         RS.ArabicMessageSystem.alias[aliasName].call(this, numLines);
         RS.ArabicMessageSystem.createArabicLayer.call(this);
     });
@@ -1228,8 +1237,9 @@ function ArabicUtils() {
     //============================================================================
     // Script Binder
     //============================================================================
-    RS.ArabicMessageSystem.Params.bindScripts.forEach((el) => {
+    RS.ArabicMessageSystem.Params.bindScripts.forEach(el => {
         try {
+            // eslint-disable-next-line no-eval
             eval(el);
         } catch (e) {
             console.warn(e);
@@ -1248,7 +1258,7 @@ function ArabicUtils() {
         alias_Window_ScrollText_initialize.call(this);
 
         const self = this;
-        const gl = Graphics._renderer.gl;
+        const { gl } = Graphics._renderer;
 
         // Create RenderTexture
         self._renderTexture = PIXI.RenderTexture.create(
@@ -1274,11 +1284,11 @@ function ArabicUtils() {
     };
 
     Window_ScrollText.prototype.standardFontFace = function () {
-        if (messageMode === "arabic" || navigator.language.match(/^ar/)) {
+        if (messageMode === 'arabic' || navigator.language.match(/^ar/)) {
             return arabicFont;
-        } else {
-            return alias_Window_Base_standardFontFace.call(this);
         }
+
+        return alias_Window_Base_standardFontFace.call(this);
     };
 
     const alias_Window_ScrollText_update = Window_ScrollText.prototype.update;
@@ -1346,7 +1356,7 @@ function ArabicUtils() {
         Window_ChoiceList.prototype.initialize;
     Window_ChoiceList.prototype.initialize = function (messageWindow) {
         alias_Window_ChoiceList_initialize.call(this, messageWindow);
-        if (messageMode === "arabic") {
+        if (messageMode === 'arabic') {
             RS.ArabicMessageSystem.createArabicLayer.call(this);
             RS.ArabicMessageSystem.defineProtoype(Window_ChoiceList);
         }
@@ -1354,7 +1364,7 @@ function ArabicUtils() {
 
     Window_ChoiceList.prototype.textWidthEx = function (text) {
         const temp = messageMode.slice(0);
-        messageMode = "normal";
+        messageMode = 'normal';
         const ret = Window_Base.prototype.drawTextEx.call(
             this,
             text,
@@ -1371,7 +1381,7 @@ function ArabicUtils() {
         this.createContents();
         if (this.contents) {
             this.contents.clear();
-            if (messageMode === "arabic") {
+            if (messageMode === 'arabic') {
                 RS.ArabicMessageSystem.createArabicLayer.call(this);
             }
             this.drawAllItems();
@@ -1382,16 +1392,16 @@ function ArabicUtils() {
     // ConfigManager
     //===========================================================================
 
-    Object.defineProperty(ConfigManager, "rtlText", {
-        get: function () {
-            return messageMode === "arabic";
+    Object.defineProperty(ConfigManager, 'rtlText', {
+        get() {
+            return messageMode === 'arabic';
         },
-        set: function (value) {
-            messageMode = value === true ? "arabic" : "normal";
+        set(value) {
+            messageMode = value === true ? 'arabic' : 'normal';
         },
     });
 
-    ConfigManager.rtlText = messageMode === "arabic";
+    ConfigManager.rtlText = messageMode === 'arabic';
 
     const alias_makeData = ConfigManager.makeData;
     ConfigManager.makeData = function () {
@@ -1406,12 +1416,10 @@ function ArabicUtils() {
         const value = config.rtlText;
         if (value !== undefined) {
             this.rtlText = value;
+        } else if (messageMode === 'arabic') {
+            this.rtlText = true;
         } else {
-            if (messageMode === "arabic") {
-                this.rtlText = true;
-            } else {
-                this.rtlText = false;
-            }
+            this.rtlText = false;
         }
     };
 
@@ -1422,7 +1430,7 @@ function ArabicUtils() {
     const alias_addVolumeOptions = Window_Options.prototype.addGeneralOptions;
     Window_Options.prototype.addGeneralOptions = function () {
         alias_addVolumeOptions.call(this);
-        this.addCommand(rtlWindowButtonSymbol, "rtlText");
+        this.addCommand(rtlWindowButtonSymbol, 'rtlText');
     };
 
     //===========================================================================
@@ -1435,12 +1443,13 @@ function ArabicUtils() {
         alias_Game_Interpreter_pluginCommand.call(this, command, args);
 
         switch (command) {
-            case "DisableArabicTextAnimation":
+            case 'DisableArabicTextAnimation':
                 RS.ArabicMessageSystem.Params.isAnimatedText = false;
                 break;
-            case "EnableArabicTextAnimation":
+            case 'EnableArabicTextAnimation':
                 RS.ArabicMessageSystem.Params.isAnimatedText = true;
                 break;
+            default:
         }
     };
 })();
