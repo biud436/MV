@@ -1,3 +1,4 @@
+/* eslint-disable no-eval */
 //================================================================
 // RS_EventTouch.js
 // ---------------------------------------------------------------
@@ -39,10 +40,10 @@
  * ========================================================================
  * 사용법
  * ========================================================================
- * 굉장히 간단합니다! 
- * 
+ * 굉장히 간단합니다!
+ *
  * 이벤트에 Event Click이라는 메모를 작성하면 설정이 끝납니다.
- * 
+ *
  * 정규표현식을 변경했다면, 변경된 정규표현식에 맞는 메모를 작성하시기 바랍니다.
  *
  * ========================================================================
@@ -54,39 +55,34 @@
  * 2018.06.20 (v1.0.3) - Fixed the issue that wouldn't check the event has the invalid page.
  */
 
-var Imported = Imported || {};
-Imported.RS_EventTouch = true;
+(() => {
+    const parameters = PluginManager.parameters('RS_EventTouch');
+    const regex = eval(parameters['Event Regex']) || /Event[ ]*Click/gi;
 
-(function () {
-
-  var parameters = PluginManager.parameters('RS_EventTouch');
-  var regex = eval(parameters['Event Regex']) || /Event[ ]*Click/ig;
-
-  Game_Map.prototype.executeTouchEvent = function() {
-    var x, y, id, lEvent;
-
-    if(TouchInput.isTriggered()) {
-      x = $gameMap.canvasToMapX(TouchInput._x),
-      y = $gameMap.canvasToMapY(TouchInput._y),
-      id = $gameMap.eventIdXy(x, y);
-      lEvent = this.event(id);
-      if(!lEvent) return false;
-      if(lEvent.findProperPageIndex() < 0) return false;
-      if(!lEvent.page()) return false;
-      lEvent.list().forEach(function(i) {
-        if(i.code === 108 || i.code === 408) {
-          if( i.parameters[0].match(regex) ) {
-            if(lEvent._trigger < 3) lEvent.start();
-          }
+    Game_Map.prototype.executeTouchEvent = function () {
+        if (TouchInput.isTriggered()) {
+            const x = $gameMap.canvasToMapX(TouchInput._x);
+            const y = $gameMap.canvasToMapY(TouchInput._y);
+            const id = $gameMap.eventIdXy(x, y);
+            const evt = this.event(id);
+            if (!evt) return false;
+            if (evt.findProperPageIndex() < 0) return false;
+            if (!evt.page()) return false;
+            evt.list().forEach(i => {
+                if (i.code === 108 || i.code === 408) {
+                    if (i.parameters[0].match(regex)) {
+                        if (evt._trigger < 3) evt.start();
+                    }
+                }
+            });
         }
-      }, this);
-    }
-  };
 
-  var alias_Game_Map_update = Game_Map.prototype.update;
-  Game_Map.prototype.update = function(sceneActive) {
-    alias_Game_Map_update.call(this, sceneActive);
-    if(sceneActive) this.executeTouchEvent();
-  };
+        return true;
+    };
 
+    const aliasGameMapUpdate = Game_Map.prototype.update;
+    Game_Map.prototype.update = function (sceneActive) {
+        aliasGameMapUpdate.call(this, sceneActive);
+        if (sceneActive) this.executeTouchEvent();
+    };
 })();
