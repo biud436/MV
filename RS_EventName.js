@@ -226,18 +226,15 @@
  *
  */
 
-var Imported = Imported || {};
-Imported.RS_EventName = true;
-
-var RS = RS || {};
-RS.EventName = RS.EventName || {};
-RS.EventName.Params = RS.EventName.Params || {};
-
 (() => {
-    "use strict";
+    'use strict';
 
-    var parameters = $plugins.filter(function (i) {
-        return i.description.contains("<RS_EventName>");
+    const RS = window.RS || {};
+    RS.EventName = RS.EventName || {};
+    RS.EventName.Params = RS.EventName.Params || {};
+
+    let parameters = $plugins.filter(function (i) {
+        return i.description.contains('<RS_EventName>');
     });
 
     parameters = parameters.length > 0 && parameters[0].parameters;
@@ -249,16 +246,16 @@ RS.EventName.Params = RS.EventName.Params || {};
     //===========================================================================
 
     Object.assign(RS.EventName.Params, {
-        textSize: Number(parameters["textSize"] || 14),
+        textSize: Number(parameters.textSize || 14),
 
         regExpr: /(?:@color|#color)\[*(\d*)[ ]*,*[ ]*(\d*)[ ]*,*[ ]*(\d*)\]*/,
-        showPlayerText: String(parameters["Show Player Text"] || "true"),
+        showPlayerText: String(parameters['Show Player Text'] || 'true'),
 
-        airshipName: String(parameters["AirShip"] || "AirShip"),
-        shipName: String(parameters["Ship"] || "Ship"),
-        boatName: String(parameters["Boat"] || "Boat"),
+        airshipName: String(parameters.AirShip || 'AirShip'),
+        shipName: String(parameters.Ship || 'Ship'),
+        boatName: String(parameters.Boat || 'Boat'),
 
-        isRefreshName: Boolean(parameters["Refresh Name"] === "true"),
+        isRefreshName: Boolean(parameters['Refresh Name'] === 'true'),
 
         defaultOutlineWidth: 2,
         nameBoxYPadding: 10,
@@ -283,12 +280,12 @@ RS.EventName.Params = RS.EventName.Params || {};
 
     Object.assign(RS.EventName, {
         get boxWidth() {
-            return Utils.RPGMAKER_NAME === "MZ"
+            return Utils.RPGMAKER_NAME === 'MZ'
                 ? Graphics.width
                 : Graphics.boxWidth;
         },
         get boxHeight() {
-            return Utils.RPGMAKER_NAME === "MZ"
+            return Utils.RPGMAKER_NAME === 'MZ'
                 ? Graphics.height
                 : Graphics.boxHeight;
         },
@@ -334,8 +331,8 @@ RS.EventName.Params = RS.EventName.Params || {};
          * @param  {Vector2} vec
          */
         add(vec) {
-            this.x = this.x + vec.x;
-            this.y = this.y + vec.y;
+            this.x += vec.x;
+            this.y += vec.y;
             return this;
         }
 
@@ -343,8 +340,8 @@ RS.EventName.Params = RS.EventName.Params || {};
          * @param  {Vector2} vec
          */
         minus(vec) {
-            this.x = this.x - vec.x;
-            this.y = this.y - vec.y;
+            this.x -= vec.x;
+            this.y -= vec.y;
             return this;
         }
 
@@ -352,8 +349,8 @@ RS.EventName.Params = RS.EventName.Params || {};
          * @param  {Vector2} vec
          */
         mul(vec) {
-            this.x = this.x * vec.x;
-            this.y = this.y * vec.y;
+            this.x *= vec.x;
+            this.y *= vec.y;
             return this;
         }
 
@@ -364,8 +361,8 @@ RS.EventName.Params = RS.EventName.Params || {};
             if (!vec) return this;
             if (vec.x === 0.0) return this;
             if (vec.y === 0.0) return this;
-            this.x = this.x / vec.x;
-            this.y = this.y / vec.y;
+            this.x /= vec.x;
+            this.y /= vec.y;
             return this;
         }
 
@@ -406,12 +403,12 @@ RS.EventName.Params = RS.EventName.Params || {};
          */
         getAngle(vec) {
             if (Vector2.isNormalize(this) && Vector2.isNormalize(vec)) {
-                var val = this.dot(vec);
+                const val = this.dot(vec);
                 return Math.acos(val);
-            } else {
-                console.error("it doesn't a normalized vector");
-                return 0.0;
             }
+
+            console.error("it doesn't a normalized vector");
+            return 0.0;
         }
 
         static empty() {
@@ -419,8 +416,8 @@ RS.EventName.Params = RS.EventName.Params || {};
         }
 
         normalize() {
-            var rel = Vector2.empty();
-            if (this.length != 0) {
+            const rel = Vector2.empty();
+            if (this.length !== 0) {
                 rel.x = this.x / this.length;
                 rel.y = this.y / this.length;
             }
@@ -459,7 +456,7 @@ RS.EventName.Params = RS.EventName.Params || {};
          * @param  {Number} t
          */
         static mix(vec1, vec2, t) {
-            var vec = Vector2.empty();
+            const vec = Vector2.empty();
             vec.x = vec1.x + t * (vec2.x - vec1.x);
             vec.y = vec1.x + t * (vec2.y - vec1.y);
             return vec;
@@ -472,10 +469,9 @@ RS.EventName.Params = RS.EventName.Params || {};
          * @param  {Number} t
          */
         static quadraticBezier(vec1, vec2, vec3, t) {
-            var d, e, p;
-            d = Vector2.mix(vec1, vec2, t);
-            e = Vector2.mix(vec2, vec3, t);
-            p = Vector2.mix(d, e, t);
+            const d = Vector2.mix(vec1, vec2, t);
+            const e = Vector2.mix(vec2, vec3, t);
+            const p = Vector2.mix(d, e, t);
             return p;
         }
 
@@ -493,8 +489,7 @@ RS.EventName.Params = RS.EventName.Params || {};
          * @param  {Vector2} vec2
          */
         static distance(vec1, vec2) {
-            const val =
-                Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2);
+            const val = (vec2.x - vec1.x) ** 2 + (vec2.y - vec1.y) ** 2;
             return Math.sqrt(val);
         }
     }
@@ -527,17 +522,18 @@ RS.EventName.Params = RS.EventName.Params || {};
             this.setPosition();
             this.setAnchor(data.anchor);
             this.updateName();
+            // eslint-disable-next-line no-multi-assign
             this._visible = this.visible = this.isReady();
         }
 
         initMembers(data) {
             this._member = data.member;
-            this._prevName = "";
+            this._prevName = '';
         }
 
         setFontName() {
             this.bitmap.fontFace =
-                Utils.RPGMAKER_NAME === "MZ"
+                Utils.RPGMAKER_NAME === 'MZ'
                     ? $gameSystem.mainFontFace()
                     : Window_Base.prototype.standardFontFace.call(this);
         }
@@ -592,8 +588,8 @@ RS.EventName.Params = RS.EventName.Params || {};
                 return;
             }
 
-            if (!("x" in pt) || !("y" in pt)) {
-                console.warn("x and y variables are not defined");
+            if (!('x' in pt) || !('y' in pt)) {
+                console.warn('x and y variables are not defined');
                 return;
             }
 
@@ -624,7 +620,7 @@ RS.EventName.Params = RS.EventName.Params || {};
         }
 
         setTextColor(color) {
-            const makeColor = `rgba(${color.join(",")}, 1.0)`;
+            const makeColor = `rgba(${color.join(',')}, 1.0)`;
             this.bitmap.textColor = makeColor;
         }
 
@@ -632,7 +628,7 @@ RS.EventName.Params = RS.EventName.Params || {};
             const target = this._member;
             const eventId = target.eventId();
             const tempEvent = $dataMap.events[eventId];
-            const name = tempEvent.name || "";
+            const name = tempEvent.name || '';
             return name;
         }
 
@@ -641,9 +637,8 @@ RS.EventName.Params = RS.EventName.Params || {};
             if (!this.isReady()) return;
 
             const name = this.obtainName();
-            const width = RS.EventName.Params.nameBoxRect.width;
-            const height = RS.EventName.Params.nameBoxRect.height;
-            const align = "center";
+            const { width, height } = RS.EventName.Params.nameBoxRect;
+            const align = 'center';
 
             // if the text has be changed, it will be re-generated the texture so it can have a performance penalty.
             if (this._prevName !== name) {
@@ -655,7 +650,7 @@ RS.EventName.Params = RS.EventName.Params || {};
 
         updateVisibility() {
             const isReady = this.isReady();
-            const isVisible = this.isVisible;
+            const { isVisible } = this;
 
             if (isVisible !== isReady) {
                 this.visible = isReady;
@@ -699,7 +694,10 @@ RS.EventName.Params = RS.EventName.Params || {};
             }
         }
 
+        // eslint-disable-next-line class-methods-use-this
         updateFilter() {}
+
+        // eslint-disable-next-line class-methods-use-this
         updateRotation() {}
 
         update() {
@@ -720,9 +718,9 @@ RS.EventName.Params = RS.EventName.Params || {};
     //===========================================================================
 
     (() => {
-        const body = document.body;
+        const { body } = document;
         if (body) {
-            body.addEventListener("mousemove", (event) => {
+            body.addEventListener('mousemove', event => {
                 const x = Graphics.pageToCanvasX(event.pageX);
                 const y = Graphics.pageToCanvasY(event.pageY);
 
@@ -740,6 +738,7 @@ RS.EventName.Params = RS.EventName.Params || {};
     class Sprite_PlayerName extends Sprite_Name {
         constructor(data) {
             super(data);
+            // eslint-disable-next-line no-multi-assign
             this._visible = this.visible = this.isReady();
             this._pangle = 0;
         }
@@ -757,12 +756,13 @@ RS.EventName.Params = RS.EventName.Params || {};
             return (
                 $gameParty.members().length > 0 &&
                 !this.isTransparent() &&
-                RS.EventName.Params.showPlayerText === "true"
+                RS.EventName.Params.showPlayerText === 'true'
             );
         }
 
+        // eslint-disable-next-line class-methods-use-this
         obtainName() {
-            const name = $gameParty.members()[0].name() || "";
+            const name = $gameParty.members()[0].name() || '';
             return name;
         }
     }
@@ -772,15 +772,12 @@ RS.EventName.Params = RS.EventName.Params || {};
     //===========================================================================
 
     class Sprite_VehicleName extends Sprite_Name {
-        constructor(data) {
-            super(data);
-        }
-
         initMembers(data) {
             super.initMembers(data);
             this._type = data.name;
         }
 
+        // eslint-disable-next-line class-methods-use-this
         isTransparent() {
             return false;
         }
@@ -788,7 +785,7 @@ RS.EventName.Params = RS.EventName.Params || {};
         isReady() {
             const currentMapId = $gameMap.mapId();
             const isReady = this._member._mapId === currentMapId;
-            return RS.EventName.Params.showPlayerText === "true" && isReady;
+            return RS.EventName.Params.showPlayerText === 'true' && isReady;
         }
 
         isErased() {
@@ -799,11 +796,11 @@ RS.EventName.Params = RS.EventName.Params || {};
             const type = this._type.slice(0);
 
             switch (type) {
-                case "airship":
+                case 'airship':
                     return RS.EventName.Params.airshipName;
-                case "ship":
+                case 'ship':
                     return RS.EventName.Params.shipName;
-                case "boat":
+                case 'boat':
                     return RS.EventName.Params.boatName;
                 default:
                     return type;
@@ -819,13 +816,14 @@ RS.EventName.Params = RS.EventName.Params || {};
         let c;
         const character = this._character;
         if (character) c = character.constructor.name;
-        if (c === "Game_Event") return true;
-        if (c === "Game_Vehicle") return true;
-        if (c === "Game_Player") return true;
+        if (c === 'Game_Event') return true;
+        if (c === 'Game_Vehicle') return true;
+        if (c === 'Game_Player') return true;
         return false;
     };
 
     Sprite_Character.prototype.createNameSprite = function () {
+        // eslint-disable-next-line no-useless-return
         if (!this.isValidNameSprite()) return;
     };
 
@@ -861,15 +859,17 @@ RS.EventName.Params = RS.EventName.Params || {};
             let sprite = null;
 
             switch (type) {
-                case "Game_Player":
+                case 'Game_Player':
                     sprite = new Sprite_PlayerName(data);
                     break;
-                case "Game_Vehicle":
+                case 'Game_Vehicle':
                     sprite = new Sprite_VehicleName(data);
                     break;
-                case "Game_Event":
+                case 'Game_Event':
                     sprite = new Sprite_Name(data);
                     break;
+                default:
+                    throw new Error(`Unknown type: ${type}`);
             }
 
             return new NameComponent(sprite);
@@ -886,7 +886,7 @@ RS.EventName.Params = RS.EventName.Params || {};
     };
 
     Spriteset_Map.prototype.createNameLayer = function () {
-        let commonData = {
+        const commonData = {
             outlineWidth: RS.EventName.Params.defaultOutlineWidth,
             anchor: new Point(
                 RS.EventName.Params.nameAnchor.x,
@@ -907,14 +907,14 @@ RS.EventName.Params = RS.EventName.Params || {};
         this.addChild(this._nameLayer);
 
         // Create Each Characters
-        this._characterSprites.forEach((i) => {
+        this._characterSprites.forEach(i => {
             const color = [];
             const character = i._character;
             const _constructor = character.constructor.name;
 
             switch (_constructor) {
                 // Create a name sprite for game player.
-                case "Game_Player":
+                case 'Game_Player':
                     Object.assign(commonData, {
                         member: $gamePlayer,
                         textColor: RS.EventName.Params.playerNameColor,
@@ -928,7 +928,7 @@ RS.EventName.Params = RS.EventName.Params || {};
                     break;
 
                 // Create the name sprite for the game event.
-                case "Game_Event":
+                case 'Game_Event':
                     if (character._erased) return;
                     if (character.isTransparent()) return;
                     if (
@@ -953,7 +953,7 @@ RS.EventName.Params = RS.EventName.Params || {};
                     break;
 
                 // Create the name sprite for the game vehicle.
-                case "Game_Vehicle":
+                case 'Game_Vehicle':
                     // combine object to common data for Game_Vehicle.
                     Object.assign(commonData, {
                         member: character,
@@ -965,17 +965,18 @@ RS.EventName.Params = RS.EventName.Params || {};
                     this.addNewNameSprite(_constructor, commonData);
 
                     break;
+                default:
             }
         }, this);
     };
 
     Spriteset_Map.prototype.removeNameLayer = function () {
         let layer = this._nameLayer;
-        const children = layer.children;
-        const length = children.length;
+        const { children } = layer;
+        const { length } = children;
         if (!layer) return;
 
-        children.forEach((i) => {
+        children.forEach(i => {
             i.visible = false;
             if (i._member) i._member = null;
             if (i._name) i._name = null;
@@ -993,7 +994,7 @@ RS.EventName.Params = RS.EventName.Params || {};
     Spriteset_Map.prototype.createCharacters = function () {
         alias_Spriteset_Map_createCharacters.call(this);
         this.createNameLayer();
-        this.on("removed", this.removeNameLayer, this);
+        this.on('removed', this.removeNameLayer, this);
     };
 
     //===========================================================================
@@ -1019,15 +1020,15 @@ RS.EventName.Params = RS.EventName.Params || {};
     Game_Interpreter.prototype.pluginCommand = function (command, args) {
         alias_Game_Interpreter_pluginCommand.call(this, command, args);
 
-        if (command === "ChangeEventName") {
+        if (command === 'ChangeEventName') {
             if (!RS.EventName.Params.isRefreshName) return;
 
-            let eventId = parseInt(args[0]);
+            let eventId = parseInt(args[0], 10);
 
             if (eventId <= 0) eventId = this._eventId;
             if (eventId <= 0) return;
 
-            const name = args.slice(1).join(" ");
+            const name = args.slice(1).join(' ');
 
             if ($dataMap.events[eventId]) {
                 $dataMap.events[eventId].name = name;
@@ -1035,14 +1036,14 @@ RS.EventName.Params = RS.EventName.Params || {};
         }
     };
 
-    if (Utils.RPGMAKER_NAME === "MZ") {
-        PluginManager.registerCommand(pluginName, "ChangeEventName", (args) => {
+    if (Utils.RPGMAKER_NAME === 'MZ') {
+        PluginManager.registerCommand(pluginName, 'ChangeEventName', args => {
             if (!RS.EventName.Params.isRefreshName) {
                 return;
             }
 
             let eventId = Number(args.eventId);
-            const name = args.name || "";
+            const name = args.name || '';
 
             if (eventId <= 0) eventId = this._eventId;
             if (eventId <= 0) return;
