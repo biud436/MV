@@ -342,29 +342,24 @@
  *
  */
 
-var Imported = Imported || {};
-Imported.RS_Fog = true;
-
-var RS = RS || {};
-RS.Fog = RS.Fog || {};
-
-function Scene_LoadFog() {
-    this.initialize.apply(this, arguments);
+function Scene_LoadFog(...args) {
+    this.initialize.call(this, ...args);
 }
 
-(($) => {
-    "use strict";
+(() => {
+    const RS = window.RS || {};
+    RS.Fog = RS.Fog || {};
 
-    let parameters = $plugins.filter(function (i) {
-        return i.description.contains("<RS_Fog>");
+    let parameters = $plugins.filter(i => {
+        return i.description.contains('<RS_Fog>');
     });
 
     parameters = parameters.length > 0 && parameters[0].parameters;
 
-    $.jsonParse = function (str) {
-        var retData = JSON.parse(str, function (k, v) {
+    RS.Fog.jsonParse = function (str) {
+        const retData = JSON.parse(str, (k, v) => {
             try {
-                return $.jsonParse(v);
+                return RS.Fog.jsonParse(v);
             } catch (e) {
                 return v;
             }
@@ -372,16 +367,16 @@ function Scene_LoadFog() {
         return retData;
     };
 
-    $.Params = $.Params || {};
+    RS.Fog.Params = RS.Fog.Params || {};
 
-    $.Params.fogs = [null].concat($.jsonParse(parameters["fog"]));
+    RS.Fog.Params.fogs = [null].concat(RS.Fog.jsonParse(parameters.fog));
 
     //============================================================================
     // RS.Fog
     //============================================================================
 
-    $.parseInt = function (value) {
-        return parseInt(value) || 0;
+    RS.Fog.parseInt = function (value) {
+        return parseInt(value, 10) || 0;
     };
 
     /**
@@ -393,7 +388,7 @@ function Scene_LoadFog() {
      * and it collides with blend mode I've added in the PIXI v5.
      * So I'll remove a specific blend mode I added as possible for stable.
      */
-    $.fogBlendModes = {
+    RS.Fog.fogBlendModes = {
         NORMAL: 0,
         ADD: 1,
         MULTIPLY: 2,
@@ -417,8 +412,8 @@ function Scene_LoadFog() {
         SUBTRACT: 20 /** I will remove this in the future */,
     };
 
-    $.loadFog = function (filename, hue) {
-        return ImageManager.loadBitmap("img/fogs/", filename, hue, true);
+    RS.Fog.loadFog = function (filename, hue) {
+        return ImageManager.loadBitmap('img/fogs/', filename, hue, true);
     };
 
     //============================================================================
@@ -444,7 +439,7 @@ function Scene_LoadFog() {
             return;
         }
 
-        const data = { note: "", meta: {} };
+        const data = { note: '', meta: {} };
 
         if (this.findProperPageIndex() === -1) {
             return;
@@ -452,24 +447,26 @@ function Scene_LoadFog() {
 
         const list = this.list();
 
-        list.forEach((param) => {
+        list.forEach(param => {
             if ([108, 408].contains(param.code)) {
-                data.note += param.parameters[0] + "\r\n";
+                data.note += `${param.parameters[0]}\r\n`;
             }
         });
 
         // 노트 태그를 추출합니다 (DataManager.extractMetadata의 변형입니다)
-        const re = /<([^<>:]+)(:?)([^>]*)>/g;
+        let re = /<([^<>:]+)(:?)([^>]*)>/g;
 
         data.meta = {};
 
         for (;;) {
-            const match = re.exec(data.note);
-            if (match) {
-                if (match[2] === ":") {
-                    data.meta[match[1].trim()] = match[3];
+            // const [m,] = re.exec(data.note);
+            const [m, key, sep, value] = re.exec(data.note);
+
+            if (m) {
+                if (sep === ':') {
+                    data.meta[key.trim()] = value;
                 } else {
-                    data.meta[match[1].trim()] = true;
+                    data.meta[key.trim()] = true;
                 }
             } else {
                 break;
@@ -481,7 +478,7 @@ function Scene_LoadFog() {
         for (;;) {
             const match = re.exec(data.note);
             if (match) {
-                data.meta["mapFogId"] = parseInt(match[1]);
+                data.meta.mapFogId = parseInt(key, 10);
             } else {
                 break;
             }
@@ -489,32 +486,31 @@ function Scene_LoadFog() {
 
         this.meta = data.meta;
 
-        if (this.meta["mapFogId"]) {
-            const _tempId = this.meta["mapFogId"];
-            const mapFogData = $.Params.fogs[_tempId];
+        if (this.meta.mapFogId) {
+            const _tempId = this.meta.mapFogId;
+            const mapFogData = RS.Fog.Params.fogs[_tempId];
             this.meta = mapFogData;
         }
 
-        const fogName = this.meta["fogName"];
-        const fogId = this.meta["fogId"];
+        const { fogName, fogId } = this.meta;
 
         if (!this._initFog && fogName && fogId) {
             $gameTemp.addFog(fogName);
 
-            this._initFog = parseInt(this.meta.fogId);
+            this._initFog = parseInt(this.meta.fogId, 10);
         }
     };
 
-    const _Game_Event_initialize = Game_Event.prototype.initialize;
+    const gameEventInitialize = Game_Event.prototype.initialize;
     Game_Event.prototype.initialize = function (mapId, eventId) {
-        _Game_Event_initialize.call(this, mapId, eventId);
+        gameEventInitialize.call(this, mapId, eventId);
         this._initFog = false;
         this.readComments();
     };
 
-    const _Game_Event_refresh = Game_Event.prototype.refresh;
+    const gameEventRefresh = Game_Event.prototype.refresh;
     Game_Event.prototype.refresh = function () {
-        _Game_Event_refresh.call(this);
+        gameEventRefresh.call(this);
         this.readComments();
     };
 
@@ -522,18 +518,18 @@ function Scene_LoadFog() {
     // Game_Map
     //============================================================================
 
-    const _Game_Map_initialize = Game_Map.prototype.initialize;
+    const gameMapInitialize = Game_Map.prototype.initialize;
     Game_Map.prototype.initialize = function () {
-        _Game_Map_initialize.call(this);
+        gameMapInitialize.call(this);
         this._fogX = [];
         this._fogY = [];
         this._fogSX = [];
         this._fogSY = [];
     };
 
-    const _Game_Map_setDisplayPos = Game_Map.prototype.setDisplayPos;
+    const gameMapSetDisplayPos = Game_Map.prototype.setDisplayPos;
     Game_Map.prototype.setDisplayPos = function (x, y) {
-        _Game_Map_setDisplayPos.call(this, x, y);
+        gameMapSetDisplayPos.call(this, x, y);
         for (let i = 0; i < this._fogX.length; i++) {
             this._fogX[i] = this._parallaxX;
         }
@@ -542,10 +538,10 @@ function Scene_LoadFog() {
         }
     };
 
-    const _Game_Map_scrollDown = Game_Map.prototype.scrollDown;
+    const gameMapScrollDown = Game_Map.prototype.scrollDown;
     Game_Map.prototype.scrollDown = function (distance) {
         const lastY = this._displayY;
-        _Game_Map_scrollDown.call(this, distance);
+        gameMapScrollDown.call(this, distance);
         if (this.isLoopVertical()) {
             for (let i = 0; i < this._fogY.length; i++) {
                 this._fogY[i] += distance;
@@ -557,10 +553,10 @@ function Scene_LoadFog() {
         }
     };
 
-    const _Game_Map_scrollLeft = Game_Map.prototype.scrollLeft;
+    const gameMapScrollLeft = Game_Map.prototype.scrollLeft;
     Game_Map.prototype.scrollLeft = function (distance) {
         const lastX = this._displayX;
-        _Game_Map_scrollLeft.call(this, distance);
+        gameMapScrollLeft.call(this, distance);
         if (this.isLoopHorizontal()) {
             for (let i = 0; i < this._fogX.length; i++) {
                 this._fogX[i] -= distance;
@@ -587,10 +583,10 @@ function Scene_LoadFog() {
         }
     };
 
-    const _Game_Map_scrollUp = Game_Map.prototype.scrollUp;
+    const gameMapScrollUp = Game_Map.prototype.scrollUp;
     Game_Map.prototype.scrollUp = function (distance) {
         const lastY = this._displayY;
-        _Game_Map_scrollUp.call(this, distance);
+        gameMapScrollUp.call(this, distance);
         if (this.isLoopVertical()) {
             for (let i = 0; i < this._fogY.length; i++) {
                 this._fogY[i] -= distance;
@@ -643,7 +639,7 @@ function Scene_LoadFog() {
 
     Spriteset_Map.prototype.addSubtractBlendMode = function () {
         if (Graphics.isWebGL()) {
-            const gl = Graphics._renderer.gl;
+            const { gl } = Graphics._renderer;
             Graphics._renderer.state.blendModes[20] = [
                 gl.ZERO,
                 gl.ONE_MINUS_SRC_COLOR,
@@ -664,30 +660,30 @@ function Scene_LoadFog() {
          * <fogSX : 2>
          * <fogSY : 0>
          */
-        $gameMap.events().forEach((event) => {
+        $gameMap.events().forEach(event => {
             if (event.meta && (event.meta.fogName || event.meta.mapFogId)) {
                 const sprite = new TilingSprite();
                 sprite.move(0, 0, Graphics.width, Graphics.height);
-                sprite.bitmap = $.loadFog(event.meta.fogName);
+                sprite.bitmap = RS.Fog.loadFog(event.meta.fogName);
                 sprite.visible = false;
 
-                let meta = event.meta;
+                let { meta } = event;
 
                 if (event.meta.mapFogId) {
-                    const data = $.Params.fogs[event.meta.mapFogId];
+                    const data = RS.Fog.Params.fogs[event.meta.mapFogId];
                     meta = data;
                 }
 
                 sprite.fog = {
-                    id: $.parseInt(meta.fogId),
+                    id: RS.Fog.parseInt(meta.fogId),
                     name: meta.fogName,
-                    opacity: $.parseInt(meta.fogOpacity),
-                    zoom: $.parseInt(meta.fogZoom),
-                    blend: $.parseInt(meta.fogBlend),
-                    sx: $.parseInt(meta.fogSX),
-                    sy: $.parseInt(meta.fogSY),
-                    switcheId: $.parseInt(meta.fogSwitchId),
-                    variableId: $.parseInt(meta.fogVariableId),
+                    opacity: RS.Fog.parseInt(meta.fogOpacity),
+                    zoom: RS.Fog.parseInt(meta.fogZoom),
+                    blend: RS.Fog.parseInt(meta.fogBlend),
+                    sx: RS.Fog.parseInt(meta.fogSX),
+                    sy: RS.Fog.parseInt(meta.fogSY),
+                    switcheId: RS.Fog.parseInt(meta.fogSwitchId),
+                    variableId: RS.Fog.parseInt(meta.fogVariableId),
                 };
 
                 this._fogContainer.addChild(sprite);
@@ -695,12 +691,12 @@ function Scene_LoadFog() {
             }
         });
 
-        this.on("removed", this.removeFog, this);
+        this.on('removed', this.removeFog, this);
     };
 
     Spriteset_Map.prototype.removeFog = function () {
         if (!this._fogContainer) return;
-        this._fogContainer.children.forEach((sprite) => {
+        this._fogContainer.children.forEach(sprite => {
             const meta = sprite.fog;
             $gameMap.removeFog(meta.id);
         });
@@ -710,7 +706,7 @@ function Scene_LoadFog() {
         if (!this._fogContainer) return;
         const removeChilds = [];
 
-        this._fogContainer.children.forEach((sprite, i, a) => {
+        this._fogContainer.children.forEach(sprite => {
             const meta = sprite.fog;
             const mode = $gameVariables.value(meta.variableId);
             const opacity = meta.opacity.clamp(0, 255);
@@ -747,7 +743,7 @@ function Scene_LoadFog() {
             sprite.visible = $gameSwitches.value(meta.switcheId);
 
             if (!sprite.bitmap || sprite.bitmap.width <= 0) {
-                sprite.bitmap = $.loadFog(meta.fogName);
+                sprite.bitmap = RS.Fog.loadFog(meta.fogName);
             }
 
             sprite.origin.x = $gameMap.fogX(meta.id) || 0;
@@ -763,7 +759,7 @@ function Scene_LoadFog() {
             return a.fog.id - b.fog.id;
         });
 
-        removeChilds.forEach((i) => {
+        removeChilds.forEach(i => {
             this._fogContainer.removeChildAt(i);
         });
     };
@@ -809,8 +805,8 @@ function Scene_LoadFog() {
     Scene_LoadFog.prototype.create = function () {
         Scene_Base.prototype.create.call(this);
         this.createBackground();
-        this._images.forEach((src) => {
-            $.loadFog(src);
+        this._images.forEach(src => {
+            RS.Fog.loadFog(src);
         });
     };
 
@@ -823,9 +819,9 @@ function Scene_LoadFog() {
     Scene_LoadFog.prototype.isReady = function () {
         if (Scene_Base.prototype.isReady.call(this)) {
             return ImageManager.isReady();
-        } else {
-            return false;
         }
+
+        return false;
     };
 
     Scene_LoadFog.prototype.start = function () {
@@ -833,4 +829,4 @@ function Scene_LoadFog() {
         $gameTemp._preloadFog = [];
         SceneManager.pop();
     };
-})(RS.Fog);
+})();

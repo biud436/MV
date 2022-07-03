@@ -806,4 +806,4 @@
                 break;
         }
     };
-})(RS.FaceAnimation);
+})();
