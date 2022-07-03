@@ -309,25 +309,20 @@
  *
  */
 
-var Imported = Imported || {};
-Imported.RS_FaceAnimation = true;
-
-var RS = RS || {};
-RS.FaceAnimation = RS.FaceAnimation || {};
-
-(($) => {
-    "use strict";
+(() => {
+    const RS = window.RS || {};
+    RS.FaceAnimation = RS.FaceAnimation || {};
 
     let parameters = $plugins.filter(function (i) {
-        return i.description.contains("<RS_FaceAnimation>");
+        return i.description.contains('<RS_FaceAnimation>');
     });
 
     parameters = parameters.length > 0 && parameters[0].parameters;
 
-    $.jsonParse = function (str) {
-        var retData = JSON.parse(str, function (k, v) {
+    RS.FaceAnimation.jsonParse = function (str) {
+        const retData = JSON.parse(str, (k, v) => {
             try {
-                return $.jsonParse(v);
+                return RS.FaceAnimation.jsonParse(v);
             } catch (e) {
                 return v;
             }
@@ -336,22 +331,24 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         return retData;
     };
 
-    $.Params = {};
+    RS.FaceAnimation.Params = {};
 
-    $.Params.isAnimationFace = true;
+    RS.FaceAnimation.Params.isAnimationFace = true;
 
-    $.Params.data = $.jsonParse(parameters["Set Animation Face"]);
-    $.Params.states = {};
+    RS.FaceAnimation.Params.data = RS.FaceAnimation.jsonParse(
+        parameters['Set Animation Face']
+    );
+    RS.FaceAnimation.Params.states = {};
 
     // ID 값 해시 테이블을 만들어 빠른 탐색을 도모한다.
-    $.Params.data.forEach(function (e) {
-        $.Params.states[e.id] = e;
+    RS.FaceAnimation.Params.data.forEach(function (e) {
+        RS.FaceAnimation.Params.states[e.id] = e;
     });
 
     // 활성화된 상태의 ID (2개 이상의 상태는 할당할 수 없는 방식)
-    $.Params.activeStateId = "";
+    RS.FaceAnimation.Params.activeStateId = '';
 
-    $.Params.defaultState = {
+    RS.FaceAnimation.Params.defaultState = {
         x: 0,
         y: 0,
         width: 1,
@@ -364,7 +361,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
     };
 
     // 전역 상태
-    $.Params.globalStates = {
+    RS.FaceAnimation.Params.globalStates = {
         x: 0,
         y: 0,
         angle: 0.0,
@@ -667,13 +664,22 @@ RS.FaceAnimation = RS.FaceAnimation || {};
             const n = args.length;
             switch (n) {
                 case 1:
-                    this._spriteData._rect = args[0];
+                    {
+                        const rect = args[0];
+                        this._spriteData._rect = rect;
+                    }
                     break;
                 case 4:
-                    this._spriteData._rect.x = args[0];
-                    this._spriteData._rect.y = args[1];
-                    this._spriteData._rect.width = args[2];
-                    this._spriteData._rect.height = args[3];
+                    {
+                        const { x, y, width, height } = args;
+                        this._spriteData._rect = new PIXI.Rectangle(
+                            x,
+                            y,
+                            width,
+                            height
+                        );
+                    }
+                    break;
                 default:
                     this._spriteData._rect.x =
                         (this._currentFrame % this._cols) *
@@ -710,15 +716,19 @@ RS.FaceAnimation = RS.FaceAnimation || {};
 
     Window_Message.prototype.isAnimationFace = function () {
         if (this._faceSprite) return false;
-        if (!$.Params.isAnimationFace) return false;
+        if (!RS.FaceAnimation.Params.isAnimationFace) return false;
         return true;
     };
 
     const alias_Window_Message_drawMessageFace =
         Window_Message.prototype.drawMessageFace;
+    // eslint-disable-next-line consistent-return
     Window_Message.prototype.drawMessageFace = function () {
         if (this.isAnimationFace()) {
-            const state = $.Params.states[$.Params.activeStateId];
+            const state =
+                RS.FaceAnimation.Params.states[
+                    RS.FaceAnimation.Params.activeStateId
+                ];
             if (!state) {
                 return alias_Window_Message_drawMessageFace.call(this);
             }
@@ -730,7 +740,7 @@ RS.FaceAnimation = RS.FaceAnimation || {};
             const cols = Number(state.cols);
             const maxFrames = Number(state.maxFrames);
             const delay = Number(state.delay);
-            const looping = state.looping;
+            const { looping } = state;
 
             this._faceSprite = new RS.FaceSprite(
                 this._faceBitmap,
@@ -742,9 +752,12 @@ RS.FaceAnimation = RS.FaceAnimation || {};
                 cols
             );
             this._faceSprite
-                .setPosition($.Params.globalStates.x, $.Params.globalStates.y)
-                .setAngle($.Params.globalStates.angle)
-                .setScale($.Params.globalStates.scale)
+                .setPosition(
+                    RS.FaceAnimation.Params.globalStates.x,
+                    RS.FaceAnimation.Params.globalStates.y
+                )
+                .setAngle(RS.FaceAnimation.Params.globalStates.angle)
+                .setScale(RS.FaceAnimation.Params.globalStates.scale)
                 .setLoop(looping)
                 .setFrameDelay(delay)
                 .setSpriteSheets(cols)
@@ -774,18 +787,22 @@ RS.FaceAnimation = RS.FaceAnimation || {};
         alias_Game_Interpreter_pluginCommand.call(this, command, args);
 
         switch (command) {
-            case "ShowAnimationFace":
-                $.Params.isAnimationFace = true;
+            case 'ShowAnimationFace':
+                RS.FaceAnimation.Params.isAnimationFace = true;
                 break;
-            case "HideAnimationFace":
-                $.Params.isAnimationFace = false;
+            case 'HideAnimationFace':
+                RS.FaceAnimation.Params.isAnimationFace = false;
                 break;
-            case "SetAnimationFace":
-                const id = args[0];
-                $.Params.activeStateId = id;
+            case 'SetAnimationFace':
+                {
+                    const { id } = args;
+                    RS.FaceAnimation.Params.activeStateId = id;
+                }
                 break;
-            case "ChangeParamAnimationFace":
-                $.Params.globalStates[args[0]] = Number(args[1]);
+            case 'ChangeParamAnimationFace':
+                RS.FaceAnimation.Params.globalStates[args[0]] = Number(args[1]);
+                break;
+            default:
                 break;
         }
     };
