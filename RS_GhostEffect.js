@@ -74,28 +74,23 @@
  * 2019.01.19 (v1.0.0) - First Release.
  */
 
-var Imported = Imported || {};
-Imported.RS_GhostEffect = true;
-
-var RS = RS || {};
-RS.GhostEffect = RS.GhostEffect || {};
-
 (() => {
-    "use strict";
+    'use strict';
 
-    let parameters = $plugins.filter((i) => {
-        return i.description.contains("<RS_GhostEffect>");
+    const RS = window.RS || {};
+    RS.GhostEffect = RS.GhostEffect || {};
+
+    let parameters = $plugins.filter(i => {
+        return i.description.contains('<RS_GhostEffect>');
     });
 
     parameters = parameters.length > 0 && parameters[0].parameters;
 
     RS.GhostEffect.Params = RS.GhostEffect.Params || {};
 
-    RS.GhostEffect.Params.lifeTime = parseInt(parameters["lifeTime"] || 100);
-    RS.GhostEffect.Params.threshold = parseFloat(
-        parameters["threshold"] || 0.7
-    );
-    RS.GhostEffect.Params.xoffset = parseFloat(parameters["xoffset"] || 0.07);
+    RS.GhostEffect.Params.lifeTime = parseInt(parameters.lifeTime || 100, 10);
+    RS.GhostEffect.Params.threshold = parseFloat(parameters.threshold || 0.7);
+    RS.GhostEffect.Params.xoffset = parseFloat(parameters.xoffset || 0.07);
 
     //============================================================================
     // PIXI.GhostEffect
@@ -103,18 +98,18 @@ RS.GhostEffect = RS.GhostEffect || {};
 
     PIXI.GhostEffect = function () {
         const vertexSrc = [
-            "attribute vec2 aVertexPosition;",
-            "attribute vec2 aTextureCoord;",
+            'attribute vec2 aVertexPosition;',
+            'attribute vec2 aTextureCoord;',
 
-            "uniform mat3 projectionMatrix;",
+            'uniform mat3 projectionMatrix;',
 
-            "varying vec2 vTextureCoord;",
+            'varying vec2 vTextureCoord;',
 
-            "void main(void){",
-            "    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);",
-            "    vTextureCoord = aTextureCoord;",
-            "}",
-        ].join("\n");
+            'void main(void){',
+            '    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
+            '    vTextureCoord = aTextureCoord;',
+            '}',
+        ].join('\n');
 
         const fragmentSrc = `
         
@@ -218,14 +213,14 @@ RS.GhostEffect = RS.GhostEffect || {};
 
     Game_Player.prototype.ghostModeOn = function () {
         this._isGhost = true;
-        this._followers.forEach((follower) => {
+        this._followers.forEach(follower => {
             follower.ghostModeOn();
         });
     };
 
     Game_Player.prototype.ghostModeOff = function () {
         this._isGhost = false;
-        this._followers.forEach((follower) => {
+        this._followers.forEach(follower => {
             follower.ghostModeOff();
         });
     };
@@ -281,20 +276,22 @@ RS.GhostEffect = RS.GhostEffect || {};
         Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function (command, args) {
         alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === "GhostEffect") {
+        if (command === 'GhostEffect') {
             switch (args[0]) {
-                case "lifetime":
+                case 'lifetime':
                     RS.GhostEffect.Params.lifeTime = Number(args[1] || 100);
                     break;
-                case "threshold":
+                case 'threshold':
                     RS.GhostEffect.Params.threshold = parseFloat(
                         args[1] || 0.7
                     );
                     break;
-                case "xoffset":
+                case 'xoffset':
                     RS.GhostEffect.Params.xoffset = parseFloat(args[1] || 0.07);
+                    break;
+                default:
                     break;
             }
         }
     };
-})(RS.GhostEffect);
+})();
