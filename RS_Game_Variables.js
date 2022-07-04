@@ -7,10 +7,8 @@
 // Free for commercial and non commercial use.
 //================================================================
 
-var Imported = Imported || {};
-Imported.RS_Game_Variables = true;
-
 /*:
+ * @target MV
  * @plugindesc This plugin allows you to setting the maximum value or minimum value in certain game variable. <RS_GameVariables>
  * @author biud436
  *
@@ -48,6 +46,7 @@ Imported.RS_Game_Variables = true;
  *
  */
 /*:ko
+ * @target MV
  * @plugindesc 특정 변수 값에 최소, 최대 범위를 설정합니다. <RS_GameVariables>
  * @author 러닝은빛(biud436)
  *
@@ -87,49 +86,48 @@ Imported.RS_Game_Variables = true;
  *
  */
 
-var RS = RS || {};
-RS.Utils = RS.Utils || {};
+(() => {
+    const RS = window.RS || {};
+    RS.Utils = RS.Utils || {};
 
-(function() {
-
-  var parameters = $plugins.filter(function (i) {
-    return i.description.contains('<RS_GameVariables>');
-  });
-
-  parameters = (parameters.length > 0) && parameters[0].parameters;
-
-  RS.Utils.jsonParse = function (str) {
-    var retData = JSON.parse(str, function (k, v) {
-      try { return RS.Utils.jsonParse(v); } catch (e) { return v; }
+    let parameters = $plugins.filter(function (i) {
+        return i.description.contains('<RS_GameVariables>');
     });
-    return retData;
-  };
 
-  var _settings = RS.Utils.jsonParse(parameters["Settings"]);
+    parameters = parameters.length > 0 && parameters[0].parameters;
 
-  Game_Variables.prototype.setValue = function(variableId, value) {
-    if (variableId > 0 && variableId < $dataSystem.variables.length) {
-       if (typeof(value) === 'number') {
+    RS.Utils.jsonParse = function (str) {
+        const retData = JSON.parse(str, (k, v) => {
+            try {
+                return RS.Utils.jsonParse(v);
+            } catch (e) {
+                return v;
+            }
+        });
+        return retData;
+    };
 
-         var data, desc;
+    const _settings = RS.Utils.jsonParse(parameters.Settings);
 
-         // Find the variable id at the settings object.
-         data = _settings.filter(function (e, i, a) {
-           return parseInt(e.variableId) === variableId;
-         }, this);
+    Game_Variables.prototype.setValue = function (variableId, value) {
+        if (variableId > 0 && variableId < $dataSystem.variables.length) {
+            if (typeof value === 'number') {
+                // Find the variable id at the settings object.
+                const data = _settings.filter(e => {
+                    return parseInt(e.variableId, 10) === variableId;
+                }, this);
 
-        // if it finds its id, it will be limited it.
-         if(data instanceof Array && typeof(data[0]) === 'object') {
-           desc = data[0];
-           value = Math.floor(value.clamp(Number(desc.min), Number(desc.max) ));
-         }
+                // if it finds its id, it will be limited it.
+                if (data instanceof Array && typeof data[0] === 'object') {
+                    const { desc } = data;
+                    value = Math.floor(
+                        value.clamp(Number(desc.min), Number(desc.max))
+                    );
+                }
+            }
 
-       }
-
-       this._data[variableId] = value;
-       this.onChange();
-
-    }
-  };
-
+            this._data[variableId] = value;
+            this.onChange();
+        }
+    };
 })();
