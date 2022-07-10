@@ -7,6 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
+ * @target MV
  * @plugindesc This plugin allows you to type the Korean. <RS_Hangul>
  * @author biud436
  * @help
@@ -35,6 +36,7 @@
  *
  */
 /*:ko
+ * @target MV
  * @plugindesc 한글 조합 입력 기능을 제공합니다. <RS_Hangul>
  * @author biud436
  * @help
