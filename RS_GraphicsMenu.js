@@ -129,6 +129,8 @@
  * 2018.11.16 (v1.0.4) - Open Menu Screen command is not supported.
  * 2020.01.31 (v1.0.5) :
  * - Fixed the bug that appears incorrect button frame when selected the button.
+ * 2022.12.11 (v1.0.7) :
+ * - Fixed the bug that is not touched the button when using the mobile device such as Android.
  */
 
 /*~struct~MenuRect:
@@ -251,6 +253,8 @@
  * 2018.11.16 (v1.0.4) - 메뉴 화면 열기 기능으로도 열 수 있습니다.
  * 2020.01.31 (v1.0.5) :
  * - 잘못된 프레임이 표시되는 문제를 수정하였습니다.
+ * 2022.12.11 (v1.0.7) :
+ * - 모바일에서 버튼이 눌리지 않는 문제를 수정하였습니다.
  */
 
 /*~struct~MenuRect:ko
@@ -368,7 +372,7 @@
     //============================================================================
 
     function Scene_LinearMenu(...args) {
-        this.initialize.this(this, ...args);
+        this.initialize.call(this, ...args);
     }
 
     Scene_LinearMenu.prototype = Object.create(Scene_MenuBase.prototype);
@@ -466,8 +470,13 @@
         const y = RS.GraphicsMenu.Params.startY;
         const width = Math.floor(W * menu.length);
         const height = H;
-        const mx = $gameSystem.menuMouseX || 0;
-        const my = $gameSystem.menuMouseY || 0;
+        let mx = $gameSystem.menuMouseX || 0;
+        let my = $gameSystem.menuMouseY || 0;
+
+        if (Utils.isMobileDevice()) {
+            mx = TouchInput.x;
+            my = TouchInput.y;
+        }
 
         // 인덱스 값 : (마우스 좌표 - 메뉴 시작 위치) / 메뉴의 폭
         const index = Math.floor((mx - x) / W);
