@@ -141,6 +141,8 @@ Imported.RS_GraphicsMenu = true;
  * 2020.01.31 (v1.0.5) :
  * - Fixed the bug that appears incorrect button frame when selected the button.
  * 2020.09.01 (v2.0.0) : First Release for MZ.
+ * 2022.12.11 (v2.0.2) :
+ * - Fixed the bug that is not touched the button on mobile devices.
  */
 
 /*~struct~MenuRect:
@@ -268,6 +270,8 @@ Imported.RS_GraphicsMenu = true;
  * Version Log
  * -----------------------------------------------------------------------------
  * 2020.09.01 (v2.0.0) : MZ 버전으로 변환
+ * 2022.12.11 (v2.0.2) :
+ *  - 모바일에서 버튼이 눌리지 않는 문제를 수정하였습니다.
  */
 
 /*~struct~MenuRect:ko
@@ -469,8 +473,13 @@ RS.Utils = RS.Utils || {};
             const y = RS.GraphicsMenu.Params.startY;
             const width = Math.floor(W * menu.length);
             const height = H;
-            const mx = $gameSystem.menuMouseX || 0;
-            const my = $gameSystem.menuMouseY || 0;
+            let mx = $gameSystem.menuMouseX || 0;
+            let my = $gameSystem.menuMouseY || 0;
+
+            if (Utils.isMobileDevice()) {
+                mx = TouchInput.x;
+                my = TouchInput.y;
+            }
 
             // 인덱스 값 : (마우스 좌표 - 메뉴 시작 위치) / 메뉴의 폭
             const index = Math.floor((mx - x) / W);
