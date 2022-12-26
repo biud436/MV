@@ -8,6 +8,11 @@ module.exports = {
     parserOptions: {
         ecmaVersion: 'latest',
     },
+    ignorePatterns: [
+        'Windows/Resolutions/lib/*.js',
+        'Windows/Resolutions/tools/*.js',
+        'Windows/Resolutions/*.js',
+    ],
     rules: {
         'no-undef': 'off',
         'no-use-before-define': 'off',
