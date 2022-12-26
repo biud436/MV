@@ -1,3 +1,7 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* eslint-disable prefer-const */
 //================================================================
 // RS_ScreenManager.js
 // ---------------------------------------------------------------
@@ -62,7 +66,7 @@ Imported.RS_ScreenManager = true;
  * @type boolean
  * @desc To set as true, the current scene will recreate after changing screen size
  * @default true
- * 
+ *
  * @param Enable Custom Aspect Ratio
  * @text Enable Custom Aspect Ratio
  * @parent Scene Options
@@ -84,7 +88,7 @@ Imported.RS_ScreenManager = true;
  * @value 20:9
  * @option 4:3
  * @value 4:3
- * 
+ *
  * @param Auto Sync Manifest file
  * @text Auto Sync Manifest file
  * @parent Scene Options
@@ -150,7 +154,7 @@ Imported.RS_ScreenManager = true;
  * @value 1920 x 1200
  * @option 2048 x 1152 (16:9)
  * @value 2048 x 1152
- * @option 2400 x 1080 (20:9) 
+ * @option 2400 x 1080 (20:9)
  * @value 2400 x 1080
  * @option 2560 x 1440 (16:9)
  * @value 2560 x 1440
@@ -209,35 +213,35 @@ Imported.RS_ScreenManager = true;
  * @value 1920 x 1200
  * @option 2048 x 1152 (16:9)
  * @value 2048 x 1152
- * @option 2400 x 1080 (20:9) 
+ * @option 2400 x 1080 (20:9)
  * @value 2400 x 1080
  * @option 2560 x 1440 (16:9)
  * @value 2560 x 1440
  * @option 2560 x 1600 (8:5)
  * @value 2560 x 1600
- * 
+ *
  * @param Temp
- * 
+ *
  * @param PC
  * @parent Temp
  * @type struct<ScreenSize>[]
  * @desc it is using pre-written resolutions when it failed to bind node extension.
  * @default ["{\"width\":\"640\",\"height\":\"480\"}","{\"width\":\"800\",\"height\":\"600\"}","{\"width\":\"1024\",\"height\":\"768\"}","{\"width\":\"1152\",\"height\":\"864\"}","{\"width\":\"1280\",\"height\":\"720\"}","{\"width\":\"1280\",\"height\":\"800\"}","{\"width\":\"1280\",\"height\":\"960\"}","{\"width\":\"1360\",\"height\":\"768\"}","{\"width\":\"1360\",\"height\":\"768\"}","{\"width\":\"1366\",\"height\":\"768\"}","{\"width\":\"1400\",\"height\":\"1050\"}","{\"width\":\"1440\",\"height\":\"900\"}","{\"width\":\"1600\",\"height\":\"900\"}","{\"width\":\"1600\",\"height\":\"1200\"}","{\"width\":\"1680\",\"height\":\"1050\"}","{\"width\":\"1920\",\"height\":\"1080\"}","{\"width\":\"1920\",\"height\":\"1200\"}","{\"width\":\"2048\",\"height\":\"1152\"}","{\"width\":\"2560\",\"height\":\"1440\"}","{\"width\":\"2560\",\"height\":\"1600\"}"]
- * 
+ *
  * @param Mobile
  * @parent Temp
  * @type struct<ScreenSize>[]
  * @desc Set as the resolution list automatically in the mobile device.
  * @default ["{\"width\":\"120\",\"height\":\"160\"}","{\"width\":\"160\",\"height\":\"240\"}","{\"width\":\"240\",\"height\":\"320\"}","{\"width\":\"240\",\"height\":\"400\"}","{\"width\":\"320\",\"height\":\"480\"}","{\"width\":\"480\",\"height\":\"800\"}","{\"width\":\"640\",\"height\":\"960\"}","{\"width\":\"640\",\"height\":\"1136\"}","{\"width\":\"720\",\"height\":\"1280\"}","{\"width\":\"750\",\"height\":\"1334\"}","{\"width\":\"768\",\"height\":\"1024\"}","{\"width\":\"768\",\"height\":\"1280\"}","{\"width\":\"800\",\"height\":\"1280\"}","{\"width\":\"1080\",\"height\":\"1920\"}","{\"width\":\"1200\",\"height\":\"1920\"}","{\"width\":\"1242\",\"height\":\"2208\"}","{\"width\":\"1440\",\"height\":\"2560\"}","{\"width\":\"1536\",\"height\":\"2048\"}","{\"width\":\"1600\",\"height\":\"2560\"}","{\"width\":\"2048\",\"height\":\"2732\"}"]
- * 
+ *
  * @param Mobile Simple
  * @parent Temp
  * @type struct<ScreenSize>[]
  * @desc Set the list for display resolution.
  * @default ["{\"width\":\"320\",\"height\":\"480\"}","{\"width\":\"480\",\"height\":\"800\"}","{\"width\":\"720\",\"height\":\"1280\"}","{\"width\":\"1080\",\"height\":\"1920\"}"]
- * 
+ *
  * @param Pictures
- * 
+ *
  * @param Scaled Picture
  * @parent Pictures
  * @type boolean
@@ -245,7 +249,7 @@ Imported.RS_ScreenManager = true;
  * @default false
  * @on true
  * @off false
- * 
+ *
  * @param Picture Position Type
  * @parent Pictures
  * @type combo
@@ -253,28 +257,28 @@ Imported.RS_ScreenManager = true;
  * @default Virtual Coordinates
  * @option Actual Coordinates
  * @option Virtual Coordinates
- * 
+ *
  * @param Ignore Auto Scale
  * @parent Pictures
  * @type number[]
  * @desc Sometimes it must ignore auto-scale.
  * @min 1
  * @default []
- * 
+ *
  * @param Original View Size
  * @parent Pictures
  * @type struct<ScreenSize>
  * @desc Specify the original screen size.
  * @default {"width":"816","height":"624"}
- * 
+ *
  * @param BattleField
- * 
+ *
  * @param Scaled Battleback
  * @parent BattleField
  * @type boolean
  * @desc it can rescale battle background images to fit with Graphics' area.
  * @default false
- * 
+ *
  * @help
  * =============================================================================
  * Change Log
@@ -347,22 +351,21 @@ Imported.RS_ScreenManager = true;
  * @min 0
  * @desc Specify the desired height
  * @default 240
- * 
+ *
  */
 
 var RS = RS || {};
 RS.ScreenManager = RS.ScreenManager || {};
 RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
-(function ($) {
-
-    "use strict";
+(() => {
+    'use strict';
 
     var parameters = $plugins.filter(function (i) {
         return i.description.contains('<RS_ScreenManager>');
     });
 
-    parameters = (parameters.length > 0) && parameters[0].parameters;
+    parameters = parameters.length > 0 && parameters[0].parameters;
 
     RS.ScreenManager.jsonParse = function (str) {
         var retData = JSON.parse(str, function (k, v) {
@@ -380,71 +383,88 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
     // Options
     Object.assign(RS.ScreenManager.options, {
-        resize: Boolean(parameters['isGraphicsRendererResize'] === 'true'),
-        autoScaling: Boolean(parameters['isGraphicsRendererResize'] === 'true'),
-        minWidth: Boolean(parameters['isMaintainingMinimumWidth'] === 'true'),
-        minHeight: Boolean(parameters['isMaintainingMinimumHeight'] === 'true'),
-        recreate: Boolean(parameters['isMaintainingMinimumHeight'] === 'true'),
-        aspectRatio: Boolean(parameters['Enable Custom Aspect Ratio'] === 'true'),
-        isAutoSyncManifest: Boolean(parameters['Auto Sync Manifest file'] === 'true'),
+        resize: Boolean(parameters.isGraphicsRendererResize === 'true'),
+        autoScaling: Boolean(parameters.isGraphicsRendererResize === 'true'),
+        minWidth: Boolean(parameters.isMaintainingMinimumWidth === 'true'),
+        minHeight: Boolean(parameters.isMaintainingMinimumHeight === 'true'),
+        recreate: Boolean(parameters.isMaintainingMinimumHeight === 'true'),
+        aspectRatio: Boolean(
+            parameters['Enable Custom Aspect Ratio'] === 'true'
+        ),
+        isAutoSyncManifest: Boolean(
+            parameters['Auto Sync Manifest file'] === 'true'
+        ),
         allResolutions: true,
     });
 
     // Settings
     Object.assign(RS.ScreenManager.settings, {
-        customAspectRatio: (parameters['Custom Aspect Ratio'] || "16:9").trim().split(":"),
-        ptCustomScreenSize: String(parameters["Default Screen Size"] || '1280 x 720').split(' x '),
-        pcGraphicsArray: RS.ScreenManager.jsonParse(parameters["PC"]),
-        pcGraphicsTempArray: RS.ScreenManager.jsonParse(parameters["PC"]),
-        mobileGraphicsArray: RS.ScreenManager.jsonParse(parameters["Mobile"]),
-        resolutionQualityOnMobile: RS.ScreenManager.jsonParse(parameters["Mobile Simple"]),
-        state: "ready",
+        customAspectRatio: (parameters['Custom Aspect Ratio'] || '16:9')
+            .trim()
+            .split(':'),
+        ptCustomScreenSize: String(
+            parameters['Default Screen Size'] || '1280 x 720'
+        ).split(' x '),
+        pcGraphicsArray: RS.ScreenManager.jsonParse(parameters.PC),
+        pcGraphicsTempArray: RS.ScreenManager.jsonParse(parameters.PC),
+        mobileGraphicsArray: RS.ScreenManager.jsonParse(parameters.Mobile),
+        resolutionQualityOnMobile: RS.ScreenManager.jsonParse(
+            parameters['Mobile Simple']
+        ),
+        state: 'ready',
         isCatchedTaskBar: false,
         taskBarHeight: -1,
     });
 
     RS.ScreenManager.settings.defaultScreenSize = new Point(
-        (parseInt(RS.ScreenManager.settings.ptCustomScreenSize[0]) || 1280),
-        (parseInt(RS.ScreenManager.settings.ptCustomScreenSize[1]) || 720));
+        parseInt(RS.ScreenManager.settings.ptCustomScreenSize[0], 10) || 1280,
+        parseInt(RS.ScreenManager.settings.ptCustomScreenSize[1], 10) || 720
+    );
 
     // Parameters
     Object.assign(RS.ScreenManager.Params, {
         fullscreenFlag: false,
         isUsedNodeLibrary: false,
-        isAutoScaledPicture: Boolean(parameters["Scaled Picture"] === "true"),
-        ignoreAutoScalePictures: RS.ScreenManager.jsonParse(parameters["Ignore Auto Scale"]),
-        originalPictureViewSize: RS.ScreenManager.jsonParse(parameters["Original View Size"]),
-        picturePosType: parameters["Picture Position Type"] || "Actual Coordinates",
-        isValidOptionWindow: Utils.isMobileDevice() ? false : true,
-        isValidScaledBattleback: Boolean(parameters["Scaled Battleback"] === "true"),
+        isAutoScaledPicture: Boolean(parameters['Scaled Picture'] === 'true'),
+        ignoreAutoScalePictures: RS.ScreenManager.jsonParse(
+            parameters['Ignore Auto Scale']
+        ),
+        originalPictureViewSize: RS.ScreenManager.jsonParse(
+            parameters['Original View Size']
+        ),
+        picturePosType:
+            parameters['Picture Position Type'] || 'Actual Coordinates',
+        isValidOptionWindow: !Utils.isMobileDevice(),
+        isValidScaledBattleback: Boolean(
+            parameters['Scaled Battleback'] === 'true'
+        ),
     });
 
-
     Object.assign(RS.ScreenManager, {
-
         /**
          * Replace by target screen width and height values.
          */
         initWithMobile() {
-
             function replaceBy(mod, cb) {
                 let item = JSON.stringify(mod);
-                item = item.replace("screen.availWidth", screen.availWidth);
-                item = item.replace("screen.availHeight", screen.availHeight);
-                item = item.replace("window.outerWidth", window.outerWidth);
-                item = item.replace("window.outerHeight", window.outerHeight);
+                item = item.replace('screen.availWidth', screen.availWidth);
+                item = item.replace('screen.availHeight', screen.availHeight);
+                item = item.replace('window.outerWidth', window.outerWidth);
+                item = item.replace('window.outerHeight', window.outerHeight);
                 mod = RS.ScreenManager.jsonParse(item);
                 cb(mod);
             }
 
-            replaceBy(RS.ScreenManager.settings.resolutionQualityOnMobile, (mod) => {
-                RS.ScreenManager.settings.resolutionQualityOnMobile = mod;
-            });
+            replaceBy(
+                RS.ScreenManager.settings.resolutionQualityOnMobile,
+                mod => {
+                    RS.ScreenManager.settings.resolutionQualityOnMobile = mod;
+                }
+            );
 
-            replaceBy(RS.ScreenManager.settings.mobileGraphicsArray, (mod) => {
+            replaceBy(RS.ScreenManager.settings.mobileGraphicsArray, mod => {
                 RS.ScreenManager.settings.mobileGraphicsArray = mod;
             });
-
         },
 
         /**
@@ -458,19 +478,23 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
             const fs = require('fs');
             const path = require('path');
             const dirname = path.dirname(process.mainModule.filename);
-            const packageJsonPath = path.join(dirname, "package.json");
+            const packageJsonPath = path.join(dirname, 'package.json');
 
             if (fs.existsSync(packageJsonPath)) {
-                const packageConfig = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+                const packageConfig = JSON.parse(
+                    fs.readFileSync(packageJsonPath, 'utf8')
+                );
                 const config = packageConfig.window;
 
                 if (config && config.fullscreen) {
                     RS.ScreenManager.Params.fullscreenFlag = config.fullscreen;
-                    RS.ScreenManager.settings.defaultScreenSize.x = config.width;
-                    RS.ScreenManager.settings.defaultScreenSize.y = config.height;
-                    RS.ScreenManager.settings.ptCustomScreenSize = RS.ScreenManager.settings.defaultScreenSize.toString();
+                    RS.ScreenManager.settings.defaultScreenSize.x =
+                        config.width;
+                    RS.ScreenManager.settings.defaultScreenSize.y =
+                        config.height;
+                    RS.ScreenManager.settings.ptCustomScreenSize =
+                        RS.ScreenManager.settings.defaultScreenSize.toString();
                 }
-
             }
 
             const win = require('nw.gui').Window.get();
@@ -479,12 +503,11 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
                 const f = RS.ScreenManager.isFullscreen();
                 RS.ScreenManager.changeManifestFile(width, height, f);
             });
-
         },
 
         /**
          * Get a height value of Windows Taskbar using powershell C# WPF.
-         * 
+         *
          * @return {Number}
          */
         getTaskBarHeight() {
@@ -498,27 +521,31 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
             const cp = require('child_process');
             let isValidPowershell = false;
 
-            if ((process.platform === "win32") && /(\d+\.\d+).\d+/i.exec(os.release())) {
+            if (
+                process.platform === 'win32' &&
+                /(\d+\.\d+).\d+/i.exec(os.release())
+            ) {
                 const version = parseFloat(RegExp.$1);
 
                 // Windows 7 이상인가?
-                if (version >= "6.1") {
+                if (version >= '6.1') {
                     isValidPowershell = true;
                 }
             }
 
             if (!isValidPowershell) return defaultTaskBar;
-            const raw = cp.execSync(`powershell -Command "Add-Type -AssemblyName PresentationFramework; [System.Windows.SystemParameters]::PrimaryScreenHeight - [System.Windows.SystemParameters]::WorkArea.Height"`, {
-                shell: true,
-                encoding: "utf8"
-            });
+            const raw = cp.execSync(
+                `powershell -Command "Add-Type -AssemblyName PresentationFramework; [System.Windows.SystemParameters]::PrimaryScreenHeight - [System.Windows.SystemParameters]::WorkArea.Height"`,
+                {
+                    shell: true,
+                    encoding: 'utf8',
+                }
+            );
             const data = parseInt(raw);
-            if (typeof (data) === "number") return data;
+            if (typeof data === 'number') return data;
 
             return defaultTaskBar;
-
-        },        
-
+        },
     });
 
     RS.ScreenManager.initWithMobile();
@@ -535,7 +562,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
             var win = gui.Window.get();
             win.toggleFullscreen();
         } else {
-            Graphics._switchFullScreen();;
+            Graphics._switchFullScreen();
         }
     };
 
@@ -553,55 +580,63 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
      * Change the manifest file called 'package.json' and then beautifies line spaces.
      */
     RS.ScreenManager.changeManifestFile = function (width, height, fullscreen) {
-
         if (Utils.RPGMAKER_VERSION < '1.6.1') return;
         var fs = require('fs');
         var path = require('path');
         var dirname = path.dirname(process.mainModule.filename);
-        var packageJsonPath = path.join(dirname, "package.json");
+        var packageJsonPath = path.join(dirname, 'package.json');
 
         var templatePackageConfig = {
-            "name": "mytest",
-            "main": "index.html",
-            "js-flags": "--expose-gc",
-            "crhomium-args": "--disable-sync",
-            "window": {
-                "title": "",
-                "toolbar": false,
-                "width": RS.ScreenManager.settings.defaultScreenSize.x,
-                "height": RS.ScreenManager.settings.defaultScreenSize.y,
-                "icon": "icon/icon.png"
-            }
+            name: 'mytest',
+            main: 'index.html',
+            'js-flags': '--expose-gc',
+            'crhomium-args': '--disable-sync',
+            window: {
+                title: '',
+                toolbar: false,
+                width: RS.ScreenManager.settings.defaultScreenSize.x,
+                height: RS.ScreenManager.settings.defaultScreenSize.y,
+                icon: 'icon/icon.png',
+            },
         };
 
         // if the config file exists?
         if (fs.existsSync(packageJsonPath)) {
-            var packageConfig = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+            var packageConfig = JSON.parse(
+                fs.readFileSync(packageJsonPath, 'utf8')
+            );
             packageConfig.window.width = width;
             packageConfig.window.height = height;
             packageConfig.window.fullscreen = fullscreen;
 
-            fs.writeFileSync(packageJsonPath, JSON.stringify(packageConfig, null, '\t'));
-
+            fs.writeFileSync(
+                packageJsonPath,
+                JSON.stringify(packageConfig, null, '\t')
+            );
         } else {
-
-            fs.writeFileSync(packageJsonPath, JSON.stringify(templatePackageConfig, null, '\t'));
-            return RS.ScreenManager.changeManifestFile(width, height, fullscreen);
-
+            fs.writeFileSync(
+                packageJsonPath,
+                JSON.stringify(templatePackageConfig, null, '\t')
+            );
+            return RS.ScreenManager.changeManifestFile(
+                width,
+                height,
+                fullscreen
+            );
         }
-
     };
 
     RS.ScreenManager.restartGame = function () {
-        var childProcess = require("child_process");
+        var childProcess = require('child_process');
         var path = require('path');
         var projectPath = path.dirname(process.mainModule.filename);
-        childProcess.execFile(process.execPath, [
-            `--nwapp`,
-            `--url=${path.join(projectPath, "index.html")}?test`
-        ], function (err) {
-            if (err) console.warn(err);
-        });
+        childProcess.execFile(
+            process.execPath,
+            [`--nwapp`, `--url=${path.join(projectPath, 'index.html')}?test`],
+            function (err) {
+                if (err) console.warn(err);
+            }
+        );
     };
 
     //============================================================================
@@ -610,10 +645,14 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
     function ScreenConfig() {
         this.initialize.apply(this, arguments);
-    };
+    }
 
     ScreenConfig.prototype.constructor = ScreenConfig;
-    ScreenConfig.prototype.initialize = function (originWidth, originHeight, orientation) {
+    ScreenConfig.prototype.initialize = function (
+        originWidth,
+        originHeight,
+        orientation
+    ) {
         this._originWidth = originWidth;
         this._originHeight = originHeight;
         this._orientation = orientation;
@@ -625,7 +664,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         if (q === 0) return p;
 
         return this.gcd(q, p % q);
-
     };
 
     ScreenConfig.prototype.getSize = function (virtualWidth) {
@@ -642,7 +680,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         var gcd, ret;
         if (width === height) return [1, 1];
         gcd = this.gcd(width, height);
-        ret = [(width / gcd), (height / gcd)];
+        ret = [width / gcd, height / gcd];
         return ret;
     };
 
@@ -658,7 +696,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         ret = Number(width / gcd) + ':' + Number(height / gcd);
 
         return ret;
-
     };
 
     ScreenConfig.prototype.getWidth = function (newHeight) {
@@ -666,7 +703,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         var ratio = parseFloat(ar[0] / ar[1]);
 
         return ratio * newHeight;
-
     };
 
     ScreenConfig.prototype.getHeight = function (newWidth) {
@@ -674,7 +710,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         var ratio = parseFloat(ar[1] / ar[0]);
 
         return ratio * newWidth;
-
     };
 
     //============================================================================
@@ -682,7 +717,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     //============================================================================
     function CustomScreenConfig() {
         this.initialize.apply(this, arguments);
-    };
+    }
 
     CustomScreenConfig.prototype = Object.create(ScreenConfig.prototype);
     CustomScreenConfig.prototype.constructor = CustomScreenConfig;
@@ -709,7 +744,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
     /**
      * https://stackoverflow.com/a/20339709
-     * @param {Array} data 
+     * @param {Array} data
      */
     RS.ScreenManager.uniqArray = function (data) {
         var uniqData = [];
@@ -724,8 +759,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         }, this);
 
         return uniqData;
-
-    }
+    };
 
     Graphics.getAvailGraphicsArray = function (returnType) {
         var data, tw, th, pt, gArray, result, maxSW, maxSH, type;
@@ -737,27 +771,37 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
         // outerWidth : 브라우저 윈도우의 사이드바와 가장자리 경계선을 포함한 폭.
         // screen.availWidth : OS의 상태바나 작업 표시줄을 제외한 폭.
-        maxSW = Utils.isMobileDevice() ? window.outerWidth : window.screen.availWidth;
-        maxSH = Utils.isMobileDevice() ? window.outerHeight : window.screen.availHeight;
+        maxSW = Utils.isMobileDevice()
+            ? window.outerWidth
+            : window.screen.availWidth;
+        maxSH = Utils.isMobileDevice()
+            ? window.outerHeight
+            : window.screen.availHeight;
 
         // Obtain the screen orientation.
         if (Utils.isNwjs()) {
-            type = (maxSW > maxSH) ? 'landscape' : 'portrait';
+            type = maxSW > maxSH ? 'landscape' : 'portrait';
             if (maxSW === maxSH) type = 'landscape';
         } else {
-            type = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
+            type = screen.orientation.type.match(/landscape/)
+                ? 'landscape'
+                : 'portrait';
         }
 
-        data = (Utils.isNwjs()) ? RS.ScreenManager.settings.pcGraphicsArray : RS.ScreenManager.settings.resolutionQualityOnMobile;
+        data = Utils.isNwjs()
+            ? RS.ScreenManager.settings.pcGraphicsArray
+            : RS.ScreenManager.settings.resolutionQualityOnMobile;
         // if( Utils.isMobileDevice()) data = RS.ScreenManager.settings.mobileGraphicsArray;
 
         // Set a custom aspect ratio
-        config = new CustomScreenConfig(RS.ScreenManager.settings.customAspectRatio[0], RS.ScreenManager.settings.customAspectRatio[1]);
+        config = new CustomScreenConfig(
+            RS.ScreenManager.settings.customAspectRatio[0],
+            RS.ScreenManager.settings.customAspectRatio[1]
+        );
 
         data = RS.ScreenManager.uniqArray(data);
 
         data.forEach(function (i) {
-
             var sw = 0;
             var sh = 0;
 
@@ -777,14 +821,13 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
             th = Number(sh);
 
             // Swap
-            if (type === 'portrait' && (maxSW > maxSH)) {
+            if (type === 'portrait' && maxSW > maxSH) {
                 var temp = tw;
                 tw = th;
                 th = temp;
             }
 
             if (tw >= 0 && tw <= maxSW && th >= 0 && th <= maxSH) {
-
                 // Convert the screen using an Aspect Ratio
                 if (RS.ScreenManager.options.aspectRatio) {
                     temp = config.getSize(tw);
@@ -795,11 +838,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
                 pt = new Point(tw, th);
                 gArray.push(pt);
                 result.push(pt.toString());
-
             } else {
-
                 if (RS.ScreenManager.options.allResolutions) {
-
                     // Convert the screen using an Aspect Ratio
                     if (RS.ScreenManager.options.aspectRatio) {
                         temp = config.getSize(tw);
@@ -810,25 +850,26 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
                     pt = new Point(tw, th);
                     gArray.push(pt);
                     result.push(pt.toString());
-
                 }
             }
-
         }, this);
 
-        return (returnType === 'String') ? result : gArray;
-
+        return returnType === 'String' ? result : gArray;
     };
 
     Graphics.getOrientation = function (inner) {
-        var maxSW = (inner === true) ? window.innerWidth : window.screen.availWidth;
-        var maxSH = (inner === true) ? window.innerHeight : window.screen.availHeight;
+        var maxSW =
+            inner === true ? window.innerWidth : window.screen.availWidth;
+        var maxSH =
+            inner === true ? window.innerHeight : window.screen.availHeight;
         var orientation = 'landscape';
         if (Utils.isNwjs() || !screen.orientation) {
-            orientation = (maxSW > maxSH) ? 'landscape' : 'portrait';
+            orientation = maxSW > maxSH ? 'landscape' : 'portrait';
             if (maxSW === maxSH) orientation = 'landscape';
         } else {
-            orientation = screen.orientation.type.match(/landscape/) ? 'landscape' : 'portrait';
+            orientation = screen.orientation.type.match(/landscape/)
+                ? 'landscape'
+                : 'portrait';
         }
         return orientation;
     };
@@ -842,26 +883,18 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     Graphics.uniqWithPoint = function (data, callback) {
         var ret = [];
         ret = data.filter(function (e, i, a) {
-
             if (a[i - 1] instanceof Point) {
-
                 if (a[i - 1].x === e.x && a[i - 1].y === e.y) {
-
                     return false;
-
                 }
 
                 return true;
-
             } else {
-
                 return true;
-
             }
         });
 
         callback(ret);
-
     };
 
     Graphics.getVirtualWidth = function (originValue) {
@@ -899,7 +932,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         aspectRatio = config._aspectRatio || [17, 13];
 
         if (RS.ScreenManager.options.aspectRatio) {
-            config = new CustomScreenConfig(RS.ScreenManager.settings.customAspectRatio[0], RS.ScreenManager.settings.customAspectRatio[1]);
+            config = new CustomScreenConfig(
+                RS.ScreenManager.settings.customAspectRatio[0],
+                RS.ScreenManager.settings.customAspectRatio[1]
+            );
             aspectRatio = config._aspectRatio;
             temp = config.getSize(newScr.x);
             newScr.x = temp[0];
@@ -912,27 +948,28 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         SceneManager._boxHeight = newScr.y;
 
         // 화면 중앙 좌표
-        cx = (window.screen.availWidth / 2) - (newScr.x / 2);
-        cy = (window.screen.availHeight / 2) - (newScr.y / 2);
+        cx = window.screen.availWidth / 2 - newScr.x / 2;
+        cy = window.screen.availHeight / 2 - newScr.y / 2;
 
         // 화면 패딩
         xPadding = window.outerWidth - window.innerWidth;
         yPadding = window.outerHeight - window.innerHeight;
 
         // 타일 크기
-        tw = ($gameMap && $gameMap.tileWidth) ? $gameMap.tileWidth() : 48;
-        th = ($gameMap && $gameMap.tileHeight) ? $gameMap.tileHeight() : 48;
+        tw = $gameMap && $gameMap.tileWidth ? $gameMap.tileWidth() : 48;
+        th = $gameMap && $gameMap.tileHeight ? $gameMap.tileHeight() : 48;
 
         // 최소 크기
-        minW = (tw * aspectRatio[0]) || Graphics._renderer.width;
-        minH = (th * aspectRatio[1]) || Graphics._renderer.height;
+        minW = tw * aspectRatio[0] || Graphics._renderer.width;
+        minH = th * aspectRatio[1] || Graphics._renderer.height;
 
         // 작업 표시줄의 크기 때문에 수용할 수 없는 해상도라면 한 단계 낮춘다.
-        if (RS.ScreenManager.isWindowsTaskbarShown() &&
+        if (
+            RS.ScreenManager.isWindowsTaskbarShown() &&
             !this.isAvailScreenHeight(newScr.y) &&
             !Utils.isMobileDevice() &&
-            RS.ScreenManager.options.autoScaling) {
-
+            RS.ScreenManager.options.autoScaling
+        ) {
             // newScr.y = Math.min(newScr.y, newScr.y - taskHeight);
 
             var data = Graphics.getAvailGraphicsArray('Number');
@@ -943,7 +980,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
             });
 
             ret = ret.filter(function (i) {
-                return i.y < (newScr.y);
+                return i.y < newScr.y;
             }, this);
 
             var item = ret.pop();
@@ -958,18 +995,31 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         window.moveTo(cx, cy);
 
         // 해상도 최소값 & 최대값 설정 부분, 자동으로 조절하는 것에 맞겼다면.
-        if (RS.ScreenManager.options.autoScaling && (tw / th >= 1.0) && tw >= 48) {
-
+        if (
+            RS.ScreenManager.options.autoScaling &&
+            tw / th >= 1.0 &&
+            tw >= 48
+        ) {
             // 새로운 해상도 값이 최소값(tileWidth * aspectRatio) 값보다 작으면 해상도를 최소값으로 제한한다.
-            if (RS.ScreenManager.options.minWidth) Graphics.width = Graphics.boxWidth = Math.max(minW, newScr.x);
-            if (RS.ScreenManager.options.minHeight) Graphics.height = Graphics.boxHeight = Math.max(minH, newScr.y);
+            if (RS.ScreenManager.options.minWidth)
+                Graphics.width = Graphics.boxWidth = Math.max(minW, newScr.x);
+            if (RS.ScreenManager.options.minHeight)
+                Graphics.height = Graphics.boxHeight = Math.max(minH, newScr.y);
 
             // 최소 최대 제한이 없을 경우,
-            if (!RS.ScreenManager.options.minWidth && !RS.ScreenManager.options.minHeight) {
-                Graphics.width = Graphics.boxWidth = newScr.x.clamp(minW, window.outerWidth);
-                Graphics.height = Graphics.boxHeight = newScr.x.clamp(minH, window.outerHeight);
+            if (
+                !RS.ScreenManager.options.minWidth &&
+                !RS.ScreenManager.options.minHeight
+            ) {
+                Graphics.width = Graphics.boxWidth = newScr.x.clamp(
+                    minW,
+                    window.outerWidth
+                );
+                Graphics.height = Graphics.boxHeight = newScr.x.clamp(
+                    minH,
+                    window.outerHeight
+                );
             }
-
         } else {
             // 그냥 설정한다.
             Graphics.width = Graphics.boxWidth = newScr.x;
@@ -982,34 +1032,37 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         }
 
         // Reset the scene (Unsaved changes will be lost)
-        if (RS.ScreenManager.options.recreate && !(SceneManager._scene instanceof Scene_Boot)) {
-            if (SceneManager._scene) SceneManager.push(SceneManager._scene.constructor);
+        if (
+            RS.ScreenManager.options.recreate &&
+            !(SceneManager._scene instanceof Scene_Boot)
+        ) {
+            if (SceneManager._scene)
+                SceneManager.push(SceneManager._scene.constructor);
         }
-
     };
 
     /**
      * Disarms the behavior of Community_Basic plugin.
      */
-    if (PluginManager._scripts.contains("Community_Basic")) {
+    if (PluginManager._scripts.contains('Community_Basic')) {
         SceneManager.initNwjs = function () {
             if (Utils.isNwjs()) {
                 var gui = require('nw.gui');
                 var win = gui.Window.get();
                 if (process.platform === 'darwin' && !win.menu) {
                     var menubar = new gui.Menu({
-                        type: 'menubar'
+                        type: 'menubar',
                     });
                     var option = {
                         hideEdit: true,
-                        hideWindow: true
+                        hideWindow: true,
                     };
                     menubar.createMacBuiltin('Game', option);
                     win.menu = menubar;
                 }
             }
         };
-    };
+    }
 
     /**
      * Disarms the behavior of YEP_CoreEngine and ScreenResolution plugins.
@@ -1067,10 +1120,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
         mobile = Utils.isMobileDevice() || RS.ScreenManager.options.aspectRatio;
 
-        sw = (mobile === true) ? size[0] : defScrWidth;
-        sh = (mobile === true) ? size[1] : defScrHeight;
-        bw = (mobile === true) ? size[0] : defScrWidth;
-        bh = (mobile === true) ? size[1] : defScrHeight;
+        sw = mobile === true ? size[0] : defScrWidth;
+        sh = mobile === true ? size[1] : defScrHeight;
+        bw = mobile === true ? size[0] : defScrWidth;
+        bh = mobile === true ? size[1] : defScrHeight;
 
         // Calls the function changes the resolution in case of the PC.
         if (Utils.isNwjs()) {
@@ -1088,9 +1141,9 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     Graphics._onWindowResize = function () {
         alias_Graphics_onWindowResize.call(this);
         if (Utils.isNwjs()) {
-            if (!nw) var nw = require("nw.gui");
+            if (!nw) var nw = require('nw.gui');
             var win = nw.Window.get();
-            win.setPosition("center");
+            win.setPosition('center');
         }
     };
 
@@ -1115,10 +1168,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         if (bitmap.height <= 0) return;
         var scaleX = Graphics.boxWidth / bitmap.width;
         var scaleY = Graphics.boxHeight / bitmap.height;
-        sprite.scale.x = (scaleX > 1.0) ? scaleX : 1.0;
-        sprite.scale.y = (scaleY > 1.0) ? scaleY : 1.0;
+        sprite.scale.x = scaleX > 1.0 ? scaleX : 1.0;
+        sprite.scale.y = scaleY > 1.0 ? scaleY : 1.0;
 
-        if (RS.ScreenManager.Params.picturePosType === "Virtual Coordinates") {
+        if (RS.ScreenManager.Params.picturePosType === 'Virtual Coordinates') {
             var x = sprite.x;
             var y = sprite.y;
             var sw = bitmap.width * sprite.scale.x; // scale width and height
@@ -1136,9 +1189,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
             // position
             sprite.x = Math.floor(dx);
             sprite.y = Math.floor(dy);
-
         }
-
     };
     //#endregion
 
@@ -1146,15 +1197,18 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     //#region TilingSprite
     //============================================================================
     TilingSprite.prototype.reqeustResizeImage = function () {
-
         if (!this.texture.frame) {
-            this.texture.frame = new PIXI.Rectangle(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+            this.texture.frame = new PIXI.Rectangle(
+                0,
+                0,
+                Graphics.boxWidth,
+                Graphics.boxHeight
+            );
         }
 
         this.texture.frame.width = Graphics.boxWidth;
         this.texture.frame.height = Graphics.boxHeight;
-
-    }
+    };
 
     TilingSprite.prototype.isValidResizing = function () {
         if (!RS.ScreenManager.Params.isValidScaledBattleback) return;
@@ -1167,7 +1221,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         if (!this.texture) return false;
 
         var url = this.bitmap._url;
-        var fileUri = url.split("/");
+        var fileUri = url.split('/');
         var filename = fileUri.pop();
         var folderName = fileUri.pop();
 
@@ -1177,7 +1231,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         }
 
         return false;
-
     };
 
     TilingSprite.prototype.resizeImage = function () {
@@ -1196,10 +1249,9 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
     //============================================================================
     // Spriteset_Battle
-    //============================================================================    
+    //============================================================================
 
     if (RS.ScreenManager.Params.isValidScaledBattleback) {
-
         /**
          * Override
          * @method createBattleback
@@ -1225,7 +1277,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
          * @method locateBattleback
          */
         Spriteset_Battle.prototype.locateBattleback = function () {
-
             var sprite1 = this._back1Sprite;
             var sprite2 = this._back2Sprite;
             sprite1.origin.x = 0;
@@ -1234,29 +1285,26 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
                 sprite1.origin.y = 0;
                 sprite2.origin.y = 0;
             }
-
         };
-
     }
 
     //============================================================================
     //#region Sprite_Picture
-    //============================================================================  
+    //============================================================================
 
     (function () {
-
         /**
          * Find a script called "DTextPicture.js"
          */
         PluginManager._scripts.forEach(function (pluginName) {
-            if (pluginName === "DTextPicture") {
+            if (pluginName === 'DTextPicture') {
                 Imported.DTextPicture = true;
             }
         }, this);
-
     })();
 
-    var alias_Sprite_Picture_updatePosition = Sprite_Picture.prototype.updatePosition;
+    var alias_Sprite_Picture_updatePosition =
+        Sprite_Picture.prototype.updatePosition;
     Sprite_Picture.prototype.updatePosition = function () {
         if (RS.ScreenManager.Params.isAutoScaledPicture) return;
         alias_Sprite_Picture_updatePosition.call(this);
@@ -1279,7 +1327,6 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     };
 
     Sprite_Picture.prototype.updateAutoScale = function () {
-
         /**
          * @type {Game_Picture}
          */
@@ -1315,8 +1362,12 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         var x = picture.x();
         var y = picture.y();
 
-        var originalViewWidth = parseInt(RS.ScreenManager.Params.originalPictureViewSize.width);
-        var originalViewHeight = parseInt(RS.ScreenManager.Params.originalPictureViewSize.height);
+        var originalViewWidth = parseInt(
+            RS.ScreenManager.Params.originalPictureViewSize.width
+        );
+        var originalViewHeight = parseInt(
+            RS.ScreenManager.Params.originalPictureViewSize.height
+        );
         var scaleX = originSX;
         var scaleY = originSY;
 
@@ -1332,8 +1383,7 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         this.scale.x = scaleX;
         this.scale.y = scaleY;
 
-        if (RS.ScreenManager.Params.picturePosType === "Virtual Coordinates") {
-
+        if (RS.ScreenManager.Params.picturePosType === 'Virtual Coordinates') {
             var sw = bitmap.width * scaleX;
             var sh = bitmap.height * scaleY;
             var dx = x * (sw / dw);
@@ -1341,14 +1391,10 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
             this.x = Math.floor(dx);
             this.y = Math.floor(dy);
-
         } else {
-
             this.x = Math.floor(x);
             this.y = Math.floor(y);
-
         }
-
     };
 
     var alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
@@ -1373,8 +1419,8 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         if (bitmap.height <= 0) return;
         var scaleX = Graphics.boxWidth / bitmap.width;
         var scaleY = Graphics.boxHeight / bitmap.height;
-        sprite.scale.x = (scaleX > 1.0) ? scaleX : 1.0;
-        sprite.scale.y = (scaleY > 1.0) ? scaleY : 1.0;
+        sprite.scale.x = scaleX > 1.0 ? scaleX : 1.0;
+        sprite.scale.y = scaleY > 1.0 ? scaleY : 1.0;
         sprite.x = Graphics.boxWidth / 2;
         sprite.y = Graphics.boxHeight / 2;
         sprite.anchor.x = 0.5;
@@ -1395,41 +1441,64 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     // Window
     //============================================================================
 
-    if (RS.ScreenManager.settings.defaultScreenSize.x <= 320 &&
-        RS.ScreenManager.settings.defaultScreenSize.y <= 240) {
-        var alias_Window_Command_windowWidth = Window_Command.prototype.windowWidth;
+    if (
+        RS.ScreenManager.settings.defaultScreenSize.x <= 320 &&
+        RS.ScreenManager.settings.defaultScreenSize.y <= 240
+    ) {
+        var alias_Window_Command_windowWidth =
+            Window_Command.prototype.windowWidth;
         Window_Command.prototype.windowWidth = function () {
-            return Graphics.getVirtualWidth(alias_Window_Command_windowWidth.call(this));
+            return Graphics.getVirtualWidth(
+                alias_Window_Command_windowWidth.call(this)
+            );
         };
 
-        var alias_Window_Command_lineHeight = Window_Command.prototype.lineHeight;
+        var alias_Window_Command_lineHeight =
+            Window_Command.prototype.lineHeight;
         Window_Command.prototype.lineHeight = function () {
-            return Graphics.getVirtualHeight(alias_Window_Command_lineHeight.call(this));
+            return Graphics.getVirtualHeight(
+                alias_Window_Command_lineHeight.call(this)
+            );
         };
 
-        var alias_Window_Base_standardFontSize = Window_Base.prototype.standardFontSize;
+        var alias_Window_Base_standardFontSize =
+            Window_Base.prototype.standardFontSize;
         Window_Base.prototype.standardFontSize = function () {
-            return Graphics.getVirtualHeight(alias_Window_Base_standardFontSize.call(this));
+            return Graphics.getVirtualHeight(
+                alias_Window_Base_standardFontSize.call(this)
+            );
         };
 
-        var alias_Window_Base_standardPadding = Window_Base.prototype.standardPadding;
+        var alias_Window_Base_standardPadding =
+            Window_Base.prototype.standardPadding;
         Window_Base.prototype.standardPadding = function () {
-            return Graphics.getVirtualWidth(alias_Window_Base_standardPadding.call(this));
+            return Graphics.getVirtualWidth(
+                alias_Window_Base_standardPadding.call(this)
+            );
         };
 
-        var alias_Window_Selectable_spacing = Window_Selectable.prototype.spacing;
+        var alias_Window_Selectable_spacing =
+            Window_Selectable.prototype.spacing;
         Window_Selectable.prototype.spacing = function () {
-            return Graphics.getVirtualWidth(alias_Window_Selectable_spacing.call(this));
+            return Graphics.getVirtualWidth(
+                alias_Window_Selectable_spacing.call(this)
+            );
         };
 
-        var alias_Window_Options_windowWidth = Window_Options.prototype.windowWidth;
+        var alias_Window_Options_windowWidth =
+            Window_Options.prototype.windowWidth;
         Window_Options.prototype.windowWidth = function () {
-            return Graphics.getVirtualWidth(alias_Window_Options_windowWidth.call(this));
+            return Graphics.getVirtualWidth(
+                alias_Window_Options_windowWidth.call(this)
+            );
         };
 
-        var alias_Window_Options_statusWidth = Window_Options.prototype.statusWidth;
+        var alias_Window_Options_statusWidth =
+            Window_Options.prototype.statusWidth;
         Window_Options.prototype.statusWidth = function () {
-            return Graphics.getVirtualWidth(alias_Window_Options_statusWidth.call(this));
+            return Graphics.getVirtualWidth(
+                alias_Window_Options_statusWidth.call(this)
+            );
         };
 
         class Window_MenuCommandImpl extends Window_MenuCommand {
@@ -1470,16 +1539,17 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
     //============================================================================
 
     class Window_TitleCommandImpl extends Window_TitleCommand {
-
         updatePlacement() {
             this.x = (Graphics.boxWidth - this.width) / 2;
-            this.y = Graphics.boxHeight - this.height - Graphics.getVirtualHeight(96);
+            this.y =
+                Graphics.boxHeight -
+                this.height -
+                Graphics.getVirtualHeight(96);
         }
 
         windowWidth() {
             return Graphics.getVirtualWidth(super.windowWidth());
         }
-
     }
 
     window.Window_TitleCommand = Window_TitleCommandImpl;
@@ -1500,7 +1570,14 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
         this._gameTitleSprite.bitmap.outlineColor = 'black';
         this._gameTitleSprite.bitmap.outlineWidth = Graphics.getVirtualWidth(8);
         this._gameTitleSprite.bitmap.fontSize = Graphics.getVirtualHeight(72);
-        this._gameTitleSprite.bitmap.drawText(text, x, y, maxWidth, Graphics.getVirtualWidth(48), 'center');
+        this._gameTitleSprite.bitmap.drawText(
+            text,
+            x,
+            y,
+            maxWidth,
+            Graphics.getVirtualWidth(48),
+            'center'
+        );
     };
 
     //============================================================================
@@ -1515,5 +1592,4 @@ RS.ScreenManager.Params = RS.ScreenManager.Params || {};
 
     //#endregion
     window.ScreenConfig = ScreenConfig;
-
-})(RS.ScreenManager);
+})();
