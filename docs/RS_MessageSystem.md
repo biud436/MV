@@ -738,28 +738,46 @@ Tkool 홈페이지에 있는 실제로 사용되고 있는 어휘를 참고하�
 이건 여러분들의 선택에 맞깁니다.
 
 ```html
-\COLOR[html_color_name] \TEXT_SPEED[value] \OUTLINE_COLOR[color_name]
-\OUTLINE_WIDTH[value] \INDENT[value] \BOLD! \ITALIC! \NAME<event_name>
-    \GRADIENT<text>
-        \PARTY_MEMBER[nth] \PLAYER[nth] \VAR[nth] \ICON[nth] \INCREASE!
-        \DECREASE! \GOLD \BALLOON[event_id] \BALLOON[0] \BALLOON[-1] \ALIGN[1]
-        \ALIGN[2] \NUM[number] \TEXT_SIZE[number] \TAB! \CR! \PLAY_SE<se_name>
-            \SHOW_PICTURE<nth, picture_name, origin_number, x, y>
-                \HIDE_PICTURE[nth] \ITEM[nth] \WEAPON[nth] \ARMOR[nth]
-                \CLASSES[nth] \ENEMY[nth] \STATE[nth] \SKILL[nth]
-                \FACE<face_name,face_index>
-                    \FRIENDLY_TROOPS[nth] \ENEMY_TROOPS[nth]
-                    <b></b>
-                    <i></i>
-                    <LEFT></LEFT>
-                    <center></center>
-                    <RIGHT></RIGHT>
-                    \HC[color_name] \FD[face_position]</face_name,face_index
-                ></nth,
-            ></se_name
-        ></text
-    ></event_name
->
+\COLOR[html_color_name]
+\TEXT_SPEED[value]
+\OUTLINE_COLOR[color_name]
+\OUTLINE_WIDTH[value] 
+\INDENT[value] \BOLD!
+\ITALIC!
+\NAME<event_name>
+\GRADIENT<text>
+\PARTY_MEMBER[nth] \PLAYER[nth] \VAR[nth] \ICON[nth] \INCREASE!
+\DECREASE! 
+\GOLD 
+\BALLOON[event_id] 
+\BALLOON[0] 
+\BALLOON[-1] 
+\ALIGN[1]
+\ALIGN[2] 
+\NUM[number] 
+\TEXT_SIZE[number] 
+\TAB! 
+\CR! 
+\PLAY_SE<se_name>
+\SHOW_PICTURE<nth, picture_name, origin_number, x, y>
+\HIDE_PICTURE[nth]
+\ITEM[nth]
+\WEAPON[nth]
+\ARMOR[nth]
+\CLASSES[nth]
+\ENEMY[nth]
+\STATE[nth] 
+\SKILL[nth]
+\FACE<face_name,face_index>
+\FRIENDLY_TROOPS[nth]
+\ENEMY_TROOPS[nth]
+<b></b>
+<i></i>
+<LEFT></LEFT>
+<center></center>
+<RIGHT></RIGHT>
+\HC[color_name]
+\FD[face_position]
 ```
 
 한국어 텍스트 코드 이외에 중국어, 일본어를 쓰시는 분은 없을 듯 합니다. 한국어 입력은 조합형이지만 중국어와 일본어의 경우, 영어로 입력한 후 맞는 글자를 찾는 것이므로 입력이 불편하므로 쓰기에 적합하지 않다는 걸 알고 있습니다. 또한 지금까지 번역이 잘못되었다는 말이 없는 걸 보면 아무도 쓰지 않는 듯 합니다. 또한 영어로 번역을 해두지 않았기 때문에 사용자가 아예 없을 것입니다.
