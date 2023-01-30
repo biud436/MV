@@ -112,6 +112,8 @@
  *     }, 0);
  * })();
  *
+ * Note that the command named 'EVAL' is not stable in latest browser.
+ *
  * =============================================================================
  * Credits (Image)
  * -----------------------------------------------------------------------------
@@ -236,6 +238,9 @@
  *
  * 문법은 위와 같습니다.
  *
+ * EVAL 구문은 보안 상의 문제로 실무에서는 사용하지 않습니다.
+ * 또한 최신 브라우저에서는 사용이 제한됩니다.
+ *
  * =============================================================================
  * 크레딧 (이미지)
  * -----------------------------------------------------------------------------
@@ -294,7 +299,7 @@
     const Imported = window.Imported || {};
 
     let parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_GraphicsMenu>');
+        return i.description.contains("<RS_GraphicsMenu>");
     });
 
     parameters = parameters.length > 0 && parameters[0].parameters;
@@ -310,8 +315,8 @@
         return retData;
     };
 
-    RS.GraphicsMenu.Params.RECT = RS.Utils.jsonParse(parameters['Menu Rect']);
-    RS.GraphicsMenu.Params.MENU = RS.Utils.jsonParse(parameters['Menu Index']);
+    RS.GraphicsMenu.Params.RECT = RS.Utils.jsonParse(parameters["Menu Rect"]);
+    RS.GraphicsMenu.Params.MENU = RS.Utils.jsonParse(parameters["Menu Index"]);
 
     RS.GraphicsMenu.Params.isValidGameCoreUpdate = false;
 
@@ -333,7 +338,7 @@
             get: () => {
                 return this._menuMouseX;
             },
-            set: value => {
+            set: (value) => {
                 this._menuMouseX = value;
             },
             configurable: true,
@@ -343,7 +348,7 @@
             get: () => {
                 return this._menuMouseY;
             },
-            set: value => {
+            set: (value) => {
                 this._menuMouseY = value;
             },
             configurable: true,
@@ -440,13 +445,13 @@
 
     Scene_LinearMenu.prototype.updateIndex = function () {
         // 키 체크
-        if (Input.isTriggered('right')) {
+        if (Input.isTriggered("right")) {
             this.right();
         }
-        if (Input.isTriggered('left')) {
+        if (Input.isTriggered("left")) {
             this.left();
         }
-        if (Input.isTriggered('ok')) {
+        if (Input.isTriggered("ok")) {
             this.selectScene();
         }
 
@@ -501,7 +506,7 @@
         const sceneObject = RS.GraphicsMenu.Params.MENU[Scene_LinearMenu.INDEX];
         const self = this;
 
-        if (sceneObject.endsWith(':exit')) {
+        if (sceneObject.endsWith(":exit")) {
             setTimeout(function () {
                 self._touched = false;
                 SoundManager.playOk();
@@ -518,7 +523,7 @@
                 console.warn(e);
             }
         }
-        if (typeof window[sceneObject] === 'function') {
+        if (typeof window[sceneObject] === "function") {
             // push : 현재 메뉴 씬을 메뉴 스택에 누적
             this._touched = false;
             SceneManager.push(window[sceneObject]);
@@ -538,7 +543,7 @@
     Scene_LinearMenu.prototype.loadBitmap = function (x, y, w, h, index) {
         // 드로우 콜을 줄이기 위해 하나의 이미지만 사용
         const sprite = new Sprite(
-            ImageManager.loadPicture(parameters['Menu Image'])
+            ImageManager.loadPicture(parameters["Menu Image"])
         );
         // eslint-disable-next-line no-unused-vars
         const H = parseInt(parameters.H, 10);
@@ -552,8 +557,8 @@
         const W = parseInt(parameters.W, 10);
         const H = parseInt(parameters.H, 10);
 
-        RS.GraphicsMenu.Params.startX = eval(parameters['Start X']);
-        RS.GraphicsMenu.Params.startY = eval(parameters['Start Y']);
+        RS.GraphicsMenu.Params.startX = eval(parameters["Start X"]);
+        RS.GraphicsMenu.Params.startY = eval(parameters["Start Y"]);
 
         this._rect = [];
 
