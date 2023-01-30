@@ -8,6 +8,8 @@
 
 <p>버그 제보 (Feedback) : <a href="https://biud436.tistory.com/121">티스토리 블로그</a></p>
 
+> **이 플러그인은 `YEP_MessageCore`와 호환되지 않으니 주의 바랍니다. 앞으로도 호환이 되지 않을 것이고 후원금을 주셔도 호환이 안됩니다. 참고 바랍니다.**
+
 ## 최신 버전 다운로드
 
 [다운로드][1]
@@ -844,6 +846,8 @@ number가 -1이면 메시지 창이 페이스칩을 가리고, 다른 값이면 
 ```
 
 # Introduction
+
+> Please note that this plugin is not compatible with 'YEP_MessageCore'
 
 This plugin allows you to use text codes in English, Korean, Chinese, Japanese.
 
