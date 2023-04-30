@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * RS_InputDialog.js
+ * @target MV
  * @plugindesc This plugin allows you to display Text Edit Box on the screen. <RS_InputDialog>
  * @author biud436
  *
@@ -163,12 +163,14 @@
  * - In the chromium 69+ more over, The input element is always displayed even though <canvas>'s z-index is large than <input> element's z-index. so I've fixed that.
  * 2019.03.05 (v1.1.16) :
  * - Fixed the issue that can not create a background when using Irina_PerformanceUpgrade.
- * 2023.04.30 (v1.2.0) :
+ * 2023.04.30 (v1.2.1) :
  * - Added a feature that can change the font family.
  * - Added 'const' or 'let' keyword instead of 'var' keyword.
+ * - Added a comment called 'MV'
  *
  */
 /*:ko
+ * @target MV
  * @plugindesc 화면에 텍스트 에디터 띄워 텍스트 값을 변수로 받습니다 <RS_InputDialog>
  * @author 러닝은빛(biud436)
  *
@@ -370,6 +372,7 @@
  * 2023.04.30 (v1.2.0) :
  * - Added a feature that can change the font family.
  * - Added 'const' or 'let' keyword instead of 'var' keyword.
+ * - Added a comment called 'MV'
  */
 
 // eslint-disable-next-line no-var
