@@ -1336,7 +1336,6 @@
             const item = this._slots[i];
 
             if (item && 'slotId' in item) {
-                const prev = this._slots[i].slotId;
                 this._slots[i].slotId = e;
             }
         }, this);
