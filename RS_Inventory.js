@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable class-methods-use-this */
 //================================================================
 // RS_Inventory.js
 // ---------------------------------------------------------------
@@ -51,14 +53,14 @@
  * 1. 아이템이 0번 슬롯이 아닌 다른 곳에 있을 때, 같은 아이템을 획득하면 0번 슬롯으로 옮겨지는 문제가 있다.
  */
 
-(($) => {
-    "use strict";
+(() => {
+    'use strict';
 
     let $gameInventory = {};
 
-    const parameters = $plugins.filter(function (i) {
-        return i.description.contains("<RS_Inventory>");
-    })[0].parameters;
+    const { parameters } = $plugins.filter(function (i) {
+        return i.description.contains('<RS_Inventory>');
+    })[0];
 
     /**
      * Params
@@ -70,43 +72,41 @@
      * @type {Point}
      */
     Params.id = new Point(
-        Number(parameters["variableIdX"]),
-        Number(parameters["variableIdY"])
+        Number(parameters.variableIdX),
+        Number(parameters.variableIdY)
     );
 
     Params.itemBox = {
-        width: Number(parameters["item-width"]),
-        height: Number(parameters["item-height"]),
+        width: Number(parameters['item-width']),
+        height: Number(parameters['item-height']),
     };
 
-    Params.maxRows = Number(parameters["divide-area-for-height"]);
+    Params.maxRows = Number(parameters['divide-area-for-height']);
 
     //==========================================================
     // Game_Temp
     //==========================================================
 
-    Object.defineProperty(Game_System, "inventoryX", {
-        get: function () {
-            let variableId = Params.id.x;
+    Object.defineProperty(Game_System, 'inventoryX', {
+        get() {
+            const variableId = Params.id.x;
             return $gameVariables.value(variableId);
         },
-        set: function (value) {
-            let variableId = Params.id.x;
+        set(value) {
+            const variableId = Params.id.x;
             $gameVariables.setValue(variableId, value);
-            return value;
         },
         configurable: true,
     });
 
-    Object.defineProperty(Game_System, "inventoryY", {
-        get: function () {
-            let variableId = Params.id.y;
+    Object.defineProperty(Game_System, 'inventoryY', {
+        get() {
+            const variableId = Params.id.y;
             return $gameVariables.value(variableId);
         },
-        set: function (value) {
-            let variableId = Params.id.y;
+        set(value) {
+            const variableId = Params.id.y;
             $gameVariables.setValue(variableId, value);
-            return value;
         },
         configurable: true,
     });
@@ -127,10 +127,11 @@
         }
 
         itemTargetActors() {
-            let action = new Game_Action($gameParty.leader());
+            const action = new Game_Action($gameParty.leader());
             action.setItemObject(this._item.object());
             if (!action.isForFriend()) {
                 return [];
+                // eslint-disable-next-line no-else-return
             } else if (action.isForAll()) {
                 return $gameParty.members();
             } else {
@@ -150,17 +151,17 @@
                 return;
             }
 
-            let user = this._user;
-            let action = new Game_Action(user);
+            const { _user: user } = this;
+            const action = new Game_Action(user);
 
             if (item.isItem()) {
                 action.setItemObject(item.object());
 
-                this.itemTargetActors().forEach(function (target) {
-                    for (var i = 0; i < action.numRepeats(); i++) {
+                this.itemTargetActors().forEach(target => {
+                    for (let i = 0; i < action.numRepeats(); i++) {
                         action.apply(target);
                     }
-                }, this);
+                });
 
                 action.applyGlobal();
 
@@ -180,7 +181,7 @@
             super();
             this.initMembers();
             this.initComponents();
-            this.on("removed", this.dispose, this);
+            this.on('removed', this.dispose, this);
         }
 
         dispose() {
@@ -188,15 +189,18 @@
         }
 
         initMembers() {
-            let w = Params.itemBox.width;
-            let h = Params.itemBox.height;
+            const { width: w, height: h } = Params.itemBox;
 
             this._size = new Rectangle(0, 0, w, h);
             this._divideAreaForHeight = Params.maxRows;
             this._startX = this.x;
             this._startY = this.y;
             this._draggingTime = 0;
-            this._currentState = "";
+
+            /**
+             * @type {'MOUSE_OVER'|'MOUSE_OUT'|'DRAGGING'|'NONE'}
+             */
+            this._currentState = '';
         }
 
         /**
@@ -204,13 +208,13 @@
          * @method initComponents
          */
         initComponents() {
-            this.on("onDragStart", this.onDragStart, this);
-            this.on("onDragEnd", this.onDragEnd, this);
-            this.on("onDragMove", this.onDragMove, this);
-            this.on("onButtonTriggered", this.onButtonTriggered, this);
-            this.on("onButtonReleased", this.onButtonReleased, this);
-            this.on("onButtonEnter", this.onButtonEnter, this);
-            this.on("onButtonExit", this.onButtonExit, this);
+            this.on('onDragStart', this.onDragStart, this);
+            this.on('onDragEnd', this.onDragEnd, this);
+            this.on('onDragMove', this.onDragMove, this);
+            this.on('onButtonTriggered', this.onButtonTriggered, this);
+            this.on('onButtonReleased', this.onButtonReleased, this);
+            this.on('onButtonEnter', this.onButtonEnter, this);
+            this.on('onButtonExit', this.onButtonExit, this);
         }
 
         /**
@@ -218,13 +222,13 @@
          * @method removeComponents
          */
         removeComponents() {
-            this.off("onDragStart", this.onDragStart, this);
-            this.off("onDragEnd", this.onDragEnd, this);
-            this.off("onDragMove", this.onDragMove, this);
-            this.off("onButtonTriggered", this.onButtonTriggered, this);
-            this.off("onButtonReleased", this.onButtonReleased, this);
-            this.off("onButtonEnter", this.onButtonEnter, this);
-            this.off("onButtonExit", this.onButtonExit, this);
+            this.off('onDragStart', this.onDragStart, this);
+            this.off('onDragEnd', this.onDragEnd, this);
+            this.off('onDragMove', this.onDragMove, this);
+            this.off('onButtonTriggered', this.onButtonTriggered, this);
+            this.off('onButtonReleased', this.onButtonReleased, this);
+            this.off('onButtonEnter', this.onButtonEnter, this);
+            this.off('onButtonExit', this.onButtonExit, this);
         }
 
         /**
@@ -234,8 +238,8 @@
         emitOnDragStart(event) {
             if (this.children != null) {
                 this.children.forEach(function (e) {
-                    e.emit("onDragStart", event);
-                    e.emit("onButtonTriggered", event);
+                    e.emit('onDragStart', event);
+                    e.emit('onButtonTriggered', event);
                 }, this);
             }
         }
@@ -247,8 +251,8 @@
         emitOnDragEnd(event) {
             if (this.children != null) {
                 this.children.forEach(function (e) {
-                    e.emit("onDragEnd", event);
-                    e.emit("onButtonReleased", event);
+                    e.emit('onDragEnd', event);
+                    e.emit('onButtonReleased', event);
                 }, this);
             }
         }
@@ -260,7 +264,7 @@
         emitOnDragMove(event) {
             if (this.children != null) {
                 this.children.forEach(function (e) {
-                    e.emit("onDragMove", event);
+                    e.emit('onDragMove', event);
                 }, this);
             }
         }
@@ -268,7 +272,7 @@
         emitOnButtonEnter(event) {
             if (this.children != null) {
                 this.children.forEach(function (e) {
-                    e.emit("onButtonEnter", event);
+                    e.emit('onButtonEnter', event);
                 }, this);
             }
         }
@@ -276,7 +280,7 @@
         emitOnButtonExit(event) {
             if (this.children != null) {
                 this.children.forEach(function (e) {
-                    e.emit("onButtonExit", event);
+                    e.emit('onButtonExit', event);
                 }, this);
             }
         }
@@ -353,20 +357,20 @@
                 );
 
                 if (this.isInside(data)) {
-                    if (this._currentState !== "MOUSE_OVER") {
-                        this._currentState = "MOUSE_OVER";
+                    if (this._currentState !== 'MOUSE_OVER') {
+                        this._currentState = 'MOUSE_OVER';
                     }
                     this.onButtonEnter(event);
                 } else {
-                    if (this._currentState === "MOUSE_OVER") {
+                    if (this._currentState === 'MOUSE_OVER') {
                         this.onButtonExit(event);
                     }
-                    this._currentState = "MOUSE_OUT";
+                    this._currentState = 'MOUSE_OUT';
                 }
             }
 
             if (this.dragging) {
-                this._currentState = "DRAGGING";
+                this._currentState = 'DRAGGING';
                 this.data = new PIXI.Point(
                     Graphics.pageToCanvasX(event.pageX),
                     Graphics.pageToCanvasY(event.pageY)
@@ -411,7 +415,10 @@
          * @param {MouseEvent} event
          * @param {Boolean} skipEmit true이면 자식에게 이벤트가 전파되지 않습니다.
          */
-        onButtonTriggered(event, skipEmit) {}
+        onButtonTriggered(event, skipEmit) {
+            console.log('event', event);
+            console.log('skipEmit', skipEmit);
+        }
 
         /**
          * 버튼을 똈을 때
@@ -443,7 +450,7 @@
     // InventoryItem
     //==========================================================
 
-    const assignValues = Symbol("assignValues");
+    const assignValues = Symbol('assignValues');
 
     class InventoryItem extends DraggingableSprite {
         /**
@@ -462,8 +469,7 @@
         initMembers() {
             super.initComponents();
 
-            let w = Params.itemBox.width;
-            let h = Params.itemBox.height;
+            const { width: w, height: h } = Params.itemBox;
 
             this._size = new PIXI.Rectangle(0, 0, w, h);
             this._divideAreaForHeight = 1;
@@ -480,29 +486,28 @@
         initBitmaps() {
             this._item = $gameInventory._slots[this._slotIndex];
 
-            let w = this._size.width;
-            let h = this._size.height;
+            const { width: w, height: h } = this._size;
 
-            let bitmap = ImageManager.loadSystem("IconSet");
-            let iconIndex = this._item.iconIndex;
-            let pw = Window_Base._iconWidth;
-            let ph = Window_Base._iconHeight;
-            let sx = (iconIndex % 16) * pw;
-            let sy = Math.floor(iconIndex / 16) * ph;
+            const bitmap = ImageManager.loadSystem('IconSet');
+            const { iconIndex } = this._item;
+            const pw = Window_Base._iconWidth;
+            const ph = Window_Base._iconHeight;
+            const sx = (iconIndex % 16) * pw;
+            const sy = Math.floor(iconIndex / 16) * ph;
 
-            let num = $gameParty.numItems(this._item.item);
+            const num = $gameParty.numItems(this._item.item);
 
             this._background = new Sprite(new Bitmap(w, h));
             this._background.bitmap.fontSize = 12;
             this._background.bitmap.blt(bitmap, sx, sy, pw, ph, 0, 0);
-            this._background.bitmap.textColor = "white";
+            this._background.bitmap.textColor = 'white';
             this._background.bitmap.drawText(
                 num,
                 0,
                 (h - 2) / 6,
                 w - 2,
                 h,
-                "right"
+                'right'
             );
 
             this.addChild(this._background);
@@ -513,9 +518,8 @@
         }
 
         [assignValues](func) {
-            let w = this._size.width;
-            let h = this._size.height;
-            let dw = w * Params.maxRows;
+            const { width: w, height: h } = this._size;
+            const dw = w * Params.maxRows;
 
             func(w, h, dw);
         }
@@ -544,8 +548,7 @@
             const pw = this.parent._size.width;
             const ph = this.parent._size.height;
             const startY = this._startY;
-            const x = this.x;
-            const y = this.y;
+            const { x, y } = this;
 
             if (x < 0 || x > pw - w) {
                 this.x = this._startPX;
@@ -556,26 +559,25 @@
         }
 
         setGrid() {
-            let parent = this.parent;
+            const { parent } = this;
             if (!parent) return;
 
-            let w = this._size.width;
-            let h = this._size.height;
-            const maxRows = Params.maxRows;
+            const { width: w, height: h } = this._size;
+            const { maxRows } = Params;
 
             // 그리드 좌표를 구함 (32등분)
-            let gridX = Math.floor(this.x / w).clamp(0, maxRows - 1);
-            let gridY = Math.floor(this.y / h).clamp(0, maxRows - 1);
+            const gridX = Math.floor(this.x / w).clamp(0, maxRows - 1);
+            const gridY = Math.floor(this.y / h).clamp(0, maxRows - 1);
 
             // 그리드에서의 인덱스를 찾는다 (0 ~ 63)
-            let index = maxRows * gridY + gridX - maxRows;
+            const index = maxRows * gridY + gridX - maxRows;
 
             // 해당 슬롯에 아이템이 있는지 확인
             if (!$gameInventory.isExist(index)) {
                 this.x = gridX * w;
                 this.y = gridY * h;
 
-                let prevIndex = this._index;
+                const prevIndex = this._index;
                 this._index = index;
 
                 $gameInventory.moveTo(prevIndex, index);
@@ -630,7 +632,7 @@
 
         onButtonEnter(event, skipEmit) {
             super.onButtonEnter(event, skipEmit);
-            console.log("onButtonEnter");
+            console.log('onButtonEnter');
             if (this.parent) {
                 this.parent.openTooltip(this);
             }
@@ -638,7 +640,7 @@
 
         onButtonExit(event, skipEmit) {
             super.onButtonExit(event, skipEmit);
-            console.log("onButtonExit");
+            console.log('onButtonExit');
             if (this.parent) {
                 this.parent.closeTooltip();
             }
@@ -693,11 +695,11 @@
     //==========================================================
 
     Params.Tooltip = {
-        fontFace: "나눔고딕",
+        fontFace: '나눔고딕',
         fontSize: 18,
-        textColor: "white",
+        textColor: 'white',
         outlineWidth: 1,
-        outlineColor: "blue",
+        outlineColor: 'blue',
     };
 
     class Tooltip extends Sprite {
@@ -724,12 +726,12 @@
             const style = new PIXI.TextStyle({
                 breakWords: true,
                 fillGradientStops: [0],
-                fill: "white",
-                fontSize: fontSize,
-                stroke: "black",
+                fill: 'white',
+                fontSize,
+                stroke: 'black',
                 strokeThickness: 2,
                 wordWrap: true,
-                wordWrapWidth: wordWrapWidth,
+                wordWrapWidth,
             });
 
             return style;
@@ -741,13 +743,13 @@
                 breakWords: true,
                 dropShadow: true,
                 dropShadowBlur: 1,
-                dropShadowColor: "#262626",
+                dropShadowColor: '#262626',
                 dropShadowDistance: 0,
-                fill: "#f20000",
-                fontSize: fontSize,
+                fill: '#f20000',
+                fontSize,
                 strokeThickness: 1,
                 wordWrap: true,
-                wordWrapWidth: wordWrapWidth,
+                wordWrapWidth,
             });
 
             return style;
@@ -759,14 +761,14 @@
                 breakWords: true,
                 dropShadow: true,
                 dropShadowBlur: 1,
-                dropShadowColor: "#262626",
+                dropShadowColor: '#262626',
                 dropShadowDistance: 0,
-                fill: ["#eff2b7", "#e3e97e"],
+                fill: ['#eff2b7', '#e3e97e'],
                 fillGradientStops: [0],
-                fontSize: fontSize,
+                fontSize,
                 strokeThickness: 1,
                 wordWrap: true,
-                wordWrapWidth: wordWrapWidth,
+                wordWrapWidth,
             });
 
             return style;
@@ -778,15 +780,15 @@
                 breakWords: true,
                 dropShadow: true,
                 dropShadowBlur: 6,
-                dropShadowColor: "#71f4ca",
+                dropShadowColor: '#71f4ca',
                 dropShadowDistance: 0,
                 fillGradientStops: [0],
-                fontSize: fontSize,
+                fontSize,
                 fontWeight: 600,
-                stroke: "white",
+                stroke: 'white',
                 strokeThickness: 2,
                 wordWrap: true,
-                wordWrapWidth: wordWrapWidth,
+                wordWrapWidth,
             });
 
             return style;
@@ -796,14 +798,15 @@
             width = width || this._size.width;
 
             switch (color) {
+                // eslint-disable-next-line default-case-last
                 default:
-                case "normal":
+                case 'normal':
                     return this.makeNormalColor(width, fontSize);
-                case "red":
+                case 'red':
                     return this.makeRedColor(width, fontSize);
-                case "yellow":
+                case 'yellow':
                     return this.makeYellowColor(width, fontSize);
-                case "blue":
+                case 'blue':
                     return this.makeBlueGlowColor(width, fontSize);
             }
         }
@@ -842,7 +845,7 @@
             }
 
             this.bitmap.clear();
-            this.bitmap.fillAll("rgba(0, 0, 0, 0.6)");
+            this.bitmap.fillAll('rgba(0, 0, 0, 0.6)');
         }
 
         /**
@@ -871,7 +874,7 @@
             const pad = 2;
 
             // 아이템 이름 (빨강)
-            const itemName = this.makeText(0, 0, item.name, "red");
+            const itemName = this.makeText(0, 0, item.name, 'red');
             lineHeight += itemName.height;
             lineHeight += pad;
 
@@ -882,7 +885,7 @@
                 0,
                 lineHeight,
                 item.description,
-                "yellow"
+                'yellow'
             );
             lineHeight += itemDesc.height;
             lineHeight += pad;
@@ -906,19 +909,19 @@
         }
 
         initComponents() {
-            document.addEventListener("mousedown", this.onDragStart.bind(this));
-            document.addEventListener("mouseup", this.onDragEnd.bind(this));
-            document.addEventListener("mousemove", this.onDragMove.bind(this));
+            document.addEventListener('mousedown', this.onDragStart.bind(this));
+            document.addEventListener('mouseup', this.onDragEnd.bind(this));
+            document.addEventListener('mousemove', this.onDragMove.bind(this));
         }
 
         removeComponents() {
             document.removeEventListener(
-                "mousedown",
+                'mousedown',
                 this.onDragStart.bind(this)
             );
-            document.removeEventListener("mouseup", this.onDragEnd.bind(this));
+            document.removeEventListener('mouseup', this.onDragEnd.bind(this));
             document.removeEventListener(
-                "mousemove",
+                'mousemove',
                 this.onDragMove.bind(this)
             );
         }
@@ -942,7 +945,7 @@
             this._itemIndex = 0;
 
             this._mousePos = new PIXI.Point(0, 0);
-            this._currentState = "NONE";
+            this._currentState = 'NONE';
             this._mouseButtonReleased = false;
 
             this._velocityX = 0;
@@ -956,14 +959,14 @@
             if (!this._backgroundBitmap) return;
             this._data = $gameInventory.slots(); // 인벤토리에서 슬롯을 가지고 온다.
             this._backgroundBitmap.clear();
-            this.removeChild.apply(this, this._itemLayer); // 아이템 스프라이트를 모두 제거한다.
+            this.removeChild.call(this, ...this._itemLayer); // 아이템 스프라이트를 모두 제거한다.
             this.initBitmaps();
             this.initSlots();
             this._background.bitmap = this._backgroundBitmap;
         }
 
         initBitmaps() {
-            this._backgroundBitmap.fillAll("black"); // 인벤토리를 검은색으로 채운다.
+            this._backgroundBitmap.fillAll('black'); // 인벤토리를 검은색으로 채운다.
             this._backgroundBitmap.fontSize = 14;
         }
 
@@ -1005,11 +1008,11 @@
             const style = new PIXI.TextStyle({
                 dropShadow: true,
                 dropShadowBlur: 1,
-                dropShadowColor: "#585858",
+                dropShadowColor: '#585858',
                 dropShadowDistance: 0,
-                fill: ["#dd863e", "#fef7da"],
+                fill: ['#dd863e', '#fef7da'],
                 fontSize: 16,
-                fontWeight: "bold",
+                fontWeight: 'bold',
                 strokeThickness: 1,
             });
 
@@ -1020,19 +1023,21 @@
         }
 
         drawGold() {
-            let goldValue = `${$gameParty.gold()} ${TextManager.currencyUnit}`;
+            const goldValue = `${$gameParty.gold()} ${
+                TextManager.currencyUnit
+            }`;
 
             const style = new PIXI.TextStyle({
-                align: "right",
+                align: 'right',
                 breakWords: true,
                 dropShadow: true,
                 dropShadowBlur: 1,
-                dropShadowColor: "#585858",
+                dropShadowColor: '#585858',
                 dropShadowDistance: 0,
-                fill: ["#af8f45", "#4b4943"],
+                fill: ['#af8f45', '#4b4943'],
                 fontSize: 16,
-                fontWeight: "bold",
-                stroke: "#d3d3d3",
+                fontWeight: 'bold',
+                stroke: '#d3d3d3',
                 strokeThickness: 2,
                 wordWrap: true,
                 wordWrapWidth: 300,
@@ -1040,7 +1045,7 @@
 
             const text = new PIXI.Text(goldValue, style);
             const itemHeight = Params.itemBox.height;
-            const maxRows = Params.maxRows;
+            const { maxRows } = Params;
             text.x = this._size.width - text.width;
             text.y = itemHeight * maxRows;
             this._itemLayer.push(text);
@@ -1050,10 +1055,10 @@
         createTable(itemWidth, itemHeight) {
             for (let y = 0; y < 7; y++) {
                 for (let x = 0; x < 8; x++) {
-                    let mx = itemWidth * x;
-                    let my = itemHeight + itemHeight * y;
+                    const mx = itemWidth * x;
+                    const my = itemHeight + itemHeight * y;
                     // 슬롯 색상 값을 램덤으로 한다. (다시 그려진다는 것을 효과적으로 확인하기 위해)
-                    let color = "rgba(30,30,30,0.75)";
+                    const color = 'rgba(30,30,30,0.75)';
                     this._backgroundBitmap.fillRect(
                         mx,
                         my,
@@ -1094,8 +1099,7 @@
             const pad = 2;
 
             // 전체 테이블의 크기
-            const width = this._size.width;
-            const height = this._size.height;
+            const { width, height } = this._size;
 
             const maxRows = this._divideAreaForHeight;
 
@@ -1106,7 +1110,7 @@
             this.resetIndex();
 
             // 타이틀 설정
-            this.setInventoryTitle("Grid Inventory");
+            this.setInventoryTitle('Grid Inventory');
 
             // 테이블 생성
             this.createTable(itemWidth, itemHeight);
@@ -1127,8 +1131,8 @@
             this._velocityX = this._mousePos.x - (this.x + this._paddingX);
             this._velocityY = this._mousePos.y - (this.y + this._paddingY);
 
-            this._velocityX = this._velocityX / 50;
-            this._velocityY = this._velocityY / 50;
+            this._velocityX /= 50;
+            this._velocityY /= 50;
 
             this.x += this._velocityX;
             this.y += this._velocityY;
@@ -1144,20 +1148,20 @@
                 this._mousePos.y > this.y
             ) {
                 if (this.dragging && this._mouseButtonReleased) {
-                    this._currentState = "CLICKED";
+                    this._currentState = 'CLICKED';
                     this._mouseButtonReleased = false;
                     // this.emit("onButtonTriggered");
                     if (this._background)
                         this._background.setColorTone([60, 60, 60, 60]);
                 } else if (!this.dragging) {
                     this._mouseButtonReleased = true;
-                    this._currentState = "MOUSE_OVER";
+                    this._currentState = 'MOUSE_OVER';
                     // this.emit("onButtonEnter");
                     if (this._background)
                         this._background.setColorTone([30, 30, 30, 30]);
                 }
             } else {
-                this._currentState = "MOUSE_OUT";
+                this._currentState = 'MOUSE_OUT';
                 // this.emit("onButtonExit");
                 if (this._background)
                     this._background.setColorTone([0, 0, 0, 0]);
@@ -1165,15 +1169,15 @@
         }
 
         isMouseOut() {
-            return this._currentState === "MOUSE_OUT";
+            return this._currentState === 'MOUSE_OUT';
         }
 
         isMouseOver() {
-            return this._currentState === "MOUSE_OVER";
+            return this._currentState === 'MOUSE_OVER';
         }
 
         isMouseClicked() {
-            return this._currentState === "CLICKED";
+            return this._currentState === 'CLICKED';
         }
 
         drawAllItems() {
@@ -1216,13 +1220,14 @@
             this.initMembers();
             this.initView();
             this.restorePosition();
-            this.on("removed", this.dispose, this);
+            this.on('removed', this.dispose, this);
         }
 
         initMembers() {
-            const width = Params.itemBox.width;
-            const height = Params.itemBox.height;
-            const maxRows = Params.maxRows;
+            const {
+                itemBox: { width, height },
+                maxRows,
+            } = Params;
             this._size = new Rectangle(0, 0, width * maxRows, height * maxRows);
         }
 
@@ -1252,8 +1257,8 @@
     // Game_Inventory
     //==========================================================
 
-    function Game_Inventory() {
-        this.initialize.apply(this, arguments);
+    function Game_Inventory(...args) {
+        this.initialize.call(this, ...args);
     }
 
     Game_Inventory.prototype.constructor = Game_Inventory;
@@ -1319,14 +1324,15 @@
     Game_Inventory.prototype.restore = function () {
         // 인덱스 값이 배열로 저장되어있다.
         this._restoreSlots = JsonEx.parse($gameSystem._invSlots);
-        if (typeof this._restoreSlots === "array") {
-            console.warn("인덱스 배열을 찾지 못했습니다");
+        if (!this._restoreSlots || !Array.isArray(this._restoreSlots)) {
+            console.warn('인덱스 배열을 찾지 못했습니다');
             return;
         }
         this._restoreSlots.forEach(function (e, i, a) {
             const item = this._slots[i];
-            if (item && item.hasOwnProperty("slotId")) {
-                let prev = this._slots[i].slotId;
+
+            if (item && 'slotId' in item) {
+                const prev = this._slots[i].slotId;
                 this._slots[i].slotId = e;
             }
         }, this);
@@ -1354,7 +1360,7 @@
         newItem.item = item;
 
         // 아이템 제목
-        newItem.name = item.name || "";
+        newItem.name = item.name || '';
 
         // 아이템 아이콘 인덱스
         newItem.iconIndex = item.iconIndex || 0;
@@ -1433,7 +1439,7 @@
     };
 
     Game_Inventory.prototype.removeItem = function (slotId) {
-        let deleteItem = this.isExist(slotId);
+        const deleteItem = this.isExist(slotId);
         const deleteIndex = this._slots.indexOf(deleteItem);
         if (deleteIndex >= 0) {
             // 해당 인덱스의 원소를 삭제한다.
@@ -1469,7 +1475,7 @@
     const alias_Game_System_initialize = Game_System.prototype.initialize;
     Game_System.prototype.initialize = function () {
         alias_Game_System_initialize.call(this);
-        this._invSlots = "";
+        this._invSlots = '';
     };
 
     Game_System.prototype.saveSlots = function (data) {
@@ -1477,25 +1483,25 @@
     };
 
     Game_System.prototype.restoreSlots = function () {
-        return this._invSlots || "";
+        return this._invSlots || '';
     };
 
     //==========================================================
     // Game_Map
     //==========================================================
 
-    var alias_Game_Map_refresh = Game_Map.prototype.refresh;
+    const alias_Game_Map_refresh = Game_Map.prototype.refresh;
     Game_Map.prototype.refresh = function () {
         alias_Game_Map_refresh.call(this);
         $gameInventory.updateInventory();
-        eval('SceneManager._scene.emit("refreshInventory")');
+        SceneManager._scene.emit('refreshInventory');
     };
 
     //==========================================================
     // Spriteset_Map
     //==========================================================
 
-    var alias_Spriteset_Map_createLowerLayer =
+    const alias_Spriteset_Map_createLowerLayer =
         Spriteset_Map.prototype.createLowerLayer;
     Spriteset_Map.prototype.createLowerLayer = function () {
         alias_Spriteset_Map_createLowerLayer.call(this);
@@ -1507,18 +1513,18 @@
     // Scene_Map
     //==========================================================
 
-    var alias_Scene_Map_start = Scene_Map.prototype.start;
+    const alias_Scene_Map_start = Scene_Map.prototype.start;
     Scene_Map.prototype.start = function () {
         alias_Scene_Map_start.call(this);
         $gameInventory.updateInventory();
-        this.on("refreshInventory", this.refreshInventory, this);
+        this.on('refreshInventory', this.refreshInventory, this);
     };
 
     Scene_Map.prototype.saveInventory = function () {
         $gameInventory.save();
     };
 
-    var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
+    const alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
     Scene_Map.prototype.terminate = function () {
         alias_Scene_Map_terminate.call(this);
         this.saveInventory();
@@ -1526,14 +1532,17 @@
 
     Scene_Map.prototype.refreshInventory = function () {
         if (!this._spriteset) return;
-        return setTimeout(
+        const timeId = setTimeout(
             function () {
                 $gameInventory.save();
-                let inventory = this._spriteset._inventory;
+                const inventory = this._spriteset._inventory;
                 inventory.refresh();
             }.bind(this),
             5
         );
+
+        // eslint-disable-next-line consistent-return
+        return timeId;
     };
 
     Scene_Map.prototype.processMapTouch = function () {};
