@@ -1236,6 +1236,10 @@
             this.addChild(this._view);
         }
 
+        isTouched() {
+            return this._view.isMouseOver();
+        }
+
         restorePosition() {
             if (!this._view) return;
             //TODO: $gameSystem이 아직 초기화되지 않은 경우에 해당한다.
@@ -1545,5 +1549,17 @@
         return timeId;
     };
 
-    Scene_Map.prototype.processMapTouch = function () {};
+    const alias_Scene_Map_processMapTouch = Scene_Map.prototype.processMapTouch;
+    Scene_Map.prototype.processMapTouch = function () {
+        if (!this._spriteset) {
+            return alias_Scene_Map_processMapTouch.call(this);
+        }
+
+        const { _inventory: inventory } = this._spriteset;
+        if (inventory.isTouched()) {
+            return false;
+        }
+
+        return alias_Scene_Map_processMapTouch.call(this);
+    };
 })();
