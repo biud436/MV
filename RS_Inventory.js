@@ -198,7 +198,7 @@
             this._draggingTime = 0;
 
             /**
-             * @type {'MOUSE_OVER'|'MOUSE_OUT'|'DRAGGING'|'NONE'}
+             * @type {'MOUSE_OVER'|'MOUSE_OUT'|'DRAGGING'|'CLICKED'|'NONE'}
              */
             this._currentState = '';
         }
