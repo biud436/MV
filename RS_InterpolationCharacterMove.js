@@ -7,6 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
+ * @target MV
  * @plugindesc This plugin allows you to prevent the movement of the character from splashing in the slow mobile device.
  * @author biud436
  * @help
@@ -14,27 +15,11 @@
  * Version Log
  * ===========================================================================
  * 2018.06.14 (v1.0.0) - First Release
- */
-/*:ko
- * @plugindesc 이동 속도를 보간하여 느린 하드웨어에서 움직임이 튀는 것을 방지합니다.
- * @author 러닝은빛(biud436)
- * @help
- * ===========================================================================
- * Version Log
- * ===========================================================================
- * 2018.06.14 (v1.0.0) - First Release
+ * 2023.05.01 (v1.0.1) :
+ * - Fixed the realY
  */
 
- var Imported = Imported || {};
- Imported.RS_InterpolationCharacterMove = true;
-
- (function() {
-
-    // if this is used for <community-1.3> or higher, it will break.
-    if(Utils.RPGMAKER_ENGINE && Utils.RPGMAKER_ENGINE.slice(-3) >= "1.3") {
-        return;
-    }
-
+(function () {
     //======================================================================
     // SceneManager
     //======================================================================
@@ -43,16 +28,21 @@
      * 게임 루프
      * @method updateMain
      */
-    SceneManager.updateMain = function() {
+    SceneManager.updateMain = function () {
         if (Utils.isMobileSafari()) {
             this.changeScene();
             this.updateScene();
         } else {
-            var newTime = this._getTimeInMsWithoutMobileSafari();
-            var fTime = (newTime - this._currentTime) / 1000;
-            if (fTime > 0.25) fTime = 0.25;
+            const newTime = this._getTimeInMsWithoutMobileSafari();
+            let fTime = (newTime - this._currentTime) / 1000;
+
+            if (fTime > 0.25) {
+                fTime = 0.25;
+            }
+
             this._currentTime = newTime;
             this._accumulator += fTime;
+
             while (this._accumulator >= this._deltaTime) {
                 this.updateInputData();
                 this.changeScene();
@@ -60,11 +50,11 @@
                 this._accumulator -= this._deltaTime;
             }
         }
-        this.renderScene(  this._accumulator / this._deltaTime );
+        this.renderScene(this._accumulator / this._deltaTime);
         this.requestUpdate();
     };
 
-    SceneManager.renderScene = function(delta) {
+    SceneManager.renderScene = function (delta) {
         if (this.isCurrentSceneStarted()) {
             Graphics.render(this._scene, delta);
         } else if (this._scene) {
@@ -76,15 +66,15 @@
     // Graphics
     //======================================================================
 
-    var alias_Graphics_initialize = Graphics.initialize;
-    Graphics.initialize = function(width, height, type) {
+    const alias_Graphics_initialize = Graphics.initialize;
+    Graphics.initialize = function (width, height, type) {
         alias_Graphics_initialize.call(this, width, height, type);
         this._deltaTime = 1.0;
     };
 
-    Graphics.render = function(stage, deltaTime) {
+    Graphics.render = function (stage, deltaTime) {
         if (this._skipCount === 0) {
-            var startTime = Date.now();
+            const startTime = Date.now();
 
             // 소스 코드를 줄이기 위해
             Graphics._deltaTime = deltaTime;
@@ -95,8 +85,8 @@
                     this._renderer.gl.flush();
                 }
             }
-            var endTime = Date.now();
-            var elapsed = endTime - startTime;
+            const endTime = Date.now();
+            const elapsed = endTime - startTime;
             this._skipCount = Math.min(Math.floor(elapsed / 15), this._maxSkip);
             this._rendered = true;
         } else {
@@ -113,32 +103,30 @@
     /**
      * @param {Number} deltaTime 느린 하드웨어 이동 속도를 보간하기 위한 값입니다.
      */
-    Game_CharacterBase.prototype.distancePerFrame = function(deltaTime) {
+    Game_CharacterBase.prototype.distancePerFrame = function (deltaTime) {
         deltaTime = deltaTime || 1.0;
-        return (Math.pow(2, this.realMoveSpeed()) / 256) * deltaTime;
-    };    
+        return (2 ** this.realMoveSpeed() / 256) * deltaTime;
+    };
 
     //======================================================================
     // Sprite_Character
-    //======================================================================    
+    //======================================================================
 
     /**
      * 스프라이트의 최종 위치를 보간합니다 (이 함수는 렌더링 함수에서 한 번 호출됩니다)
      */
-    var alias_Sprite_Character_updateTransform = Sprite_Character.prototype.updateTransform;
-    Sprite_Character.prototype.updateTransform = function() {
+    const alias_Sprite_Character_updateTransform =
+        Sprite_Character.prototype.updateTransform;
+    Sprite_Character.prototype.updateTransform = function () {
         alias_Sprite_Character_updateTransform.call(this);
-        
-        var c;
+
+        const c = this._character;
 
         // 캐릭터가 있는가?
-        if(c = this._character) {
+        if (c) {
+            let { _realX, _realY } = c;
 
-            var _realX, _realY, _delta;
-                
-            _realX = c._realX;
-            _realY = c._realX;
-            _delta = Graphics._deltaTime;
+            const _delta = Graphics._deltaTime;
 
             // updateMove()와 같습니다.
             if (c._x < _realX) {
@@ -154,14 +142,13 @@
                 _realY = Math.min(c._realY + c.distancePerFrame(_delta), c._y);
             }
 
-            var tw = $gameMap.tileWidth();
-            var th = $gameMap.tileHeight();
+            const tw = $gameMap.tileWidth();
+            const th = $gameMap.tileHeight();
 
             this.x = Math.round($gameMap.adjustX(_realX) * tw + tw / 2);
-            this.y = Math.round($gameMap.adjustY(_realY) * th + th - c.shiftY() - c.jumpHeight());
-
+            this.y = Math.round(
+                $gameMap.adjustY(_realY) * th + th - c.shiftY() - c.jumpHeight()
+            );
         }
-
     };
-
- })();
+})();
