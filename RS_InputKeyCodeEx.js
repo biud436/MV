@@ -53,7 +53,7 @@
  *
  */
 
-(function () {
+(() => {
     const RS = window.RS || {};
     RS.InputKeyCodeEx = RS.InputKeyCodeEx || {};
 
