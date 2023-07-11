@@ -63,6 +63,15 @@
     })[0];
 
     /**
+     * @type {Record<'MOUSE_OVER' | 'MOUSE_OUT' | 'DRAGGING', any>}
+     */
+    const MOUSE_STATE = {
+        MOUSE_OVER: 'MOUSE_OVER',
+        MOUSE_OUT: 'MOUSE_OUT',
+        DRAGGING: 'DRAGGING',
+    };
+
+    /**
      * Params
      * @enum {Object}
      */
@@ -357,20 +366,20 @@
                 );
 
                 if (this.isInside(data)) {
-                    if (this._currentState !== 'MOUSE_OVER') {
-                        this._currentState = 'MOUSE_OVER';
+                    if (this._currentState !== MOUSE_STATE.MOUSE_OVER) {
+                        this._currentState = MOUSE_STATE.MOUSE_OVER;
                     }
                     this.onButtonEnter(event);
                 } else {
-                    if (this._currentState === 'MOUSE_OVER') {
+                    if (this._currentState === MOUSE_STATE.MOUSE_OVER) {
                         this.onButtonExit(event);
                     }
-                    this._currentState = 'MOUSE_OUT';
+                    this._currentState = MOUSE_STATE.MOUSE_OUT;
                 }
             }
 
             if (this.dragging) {
-                this._currentState = 'DRAGGING';
+                this._currentState = MOUSE_STATE.DRAGGING;
                 this.data = new PIXI.Point(
                     Graphics.pageToCanvasX(event.pageX),
                     Graphics.pageToCanvasY(event.pageY)
