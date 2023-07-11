@@ -246,10 +246,10 @@
          */
         emitOnDragStart(event) {
             if (this.children != null) {
-                this.children.forEach(function (e) {
+                this.children.forEach(e => {
                     e.emit('onDragStart', event);
                     e.emit('onButtonTriggered', event);
-                }, this);
+                });
             }
         }
 
@@ -259,10 +259,10 @@
          */
         emitOnDragEnd(event) {
             if (this.children != null) {
-                this.children.forEach(function (e) {
+                this.children.forEach(e => {
                     e.emit('onDragEnd', event);
                     e.emit('onButtonReleased', event);
-                }, this);
+                });
             }
         }
 
@@ -272,25 +272,25 @@
          */
         emitOnDragMove(event) {
             if (this.children != null) {
-                this.children.forEach(function (e) {
+                this.children.forEach(e => {
                     e.emit('onDragMove', event);
-                }, this);
+                });
             }
         }
 
         emitOnButtonEnter(event) {
             if (this.children != null) {
-                this.children.forEach(function (e) {
+                this.children.forEach(e => {
                     e.emit('onButtonEnter', event);
-                }, this);
+                });
             }
         }
 
         emitOnButtonExit(event) {
             if (this.children != null) {
-                this.children.forEach(function (e) {
+                this.children.forEach(e => {
                     e.emit('onButtonExit', event);
-                }, this);
+                });
             }
         }
 
