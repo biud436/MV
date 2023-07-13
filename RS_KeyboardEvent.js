@@ -201,7 +201,7 @@
  * @desc Specify the key name.
  * @default keyName
  */
-(function () {
+(() => {
     'use strict';
 
     Input._startTime = 0;
