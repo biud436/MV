@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc (v1.0.16) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.28) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -75,20 +75,25 @@
  * - Removed unused value.
  * 2020.08.13 (v1.0.16) :
  * - Fixed an issue that worked twicely when using text codes such as "\!", "\.", "\|" in the vanilla mode.
+ * 2023.07.13 (v1.0.28) :
+ * - Converted to the ES6 (Object Literal Shorthand, Spread Syntax, Arrow Function, Const/Let)
  */
 
+// eslint-disable-next-line no-var
 var Imported = Imported || {};
 Imported.RS_MessageAlign = true;
 
-var RS = RS || {};
+RS = window.RS || {};
 RS.MessageAlign = RS.MessageAlign || {};
 
 (function () {
+    'use strict';
+
     //============================================================================
     // Game_Message
     //============================================================================
 
-    var alias_Game_Message_clear = Game_Message.prototype.clear;
+    const alias_Game_Message_clear = Game_Message.prototype.clear;
     Game_Message.prototype.clear = function () {
         alias_Game_Message_clear.call(this);
         this._align = [];
@@ -102,14 +107,14 @@ RS.MessageAlign = RS.MessageAlign || {};
     };
 
     Game_Message.prototype.getAlign = function (n) {
-        var n = this._align.shift();
+        n = this._align.shift();
         if (n === undefined) {
             return this._alignLast;
         }
         return n;
     };
 
-    Game_Message.prototype.clearAlignLast = function (n) {
+    Game_Message.prototype.clearAlignLast = function () {
         this._alignLast = -1;
     };
 
@@ -118,7 +123,7 @@ RS.MessageAlign = RS.MessageAlign || {};
     //============================================================================
 
     Window_Base.prototype.isUsedTextWidthEx = function () {
-        var ret = false;
+        let ret = false;
         if (Imported.YEP_MessageCore && this._checkWordWrapMode) {
             ret = true;
         }
@@ -129,53 +134,43 @@ RS.MessageAlign = RS.MessageAlign || {};
         return ret;
     };
 
-    var alias_Window_Base_convertEscapeCharacters =
+    const alias_Window_Base_convertEscapeCharacters =
         Window_Base.prototype.convertEscapeCharacters;
     Window_Base.prototype.convertEscapeCharacters = function (text) {
         text = alias_Window_Base_convertEscapeCharacters.call(this, text);
-        text = text.replace(/\\/g, "\x1b");
-        text = text.replace(/\x1b\x1b/g, "\\");
+        text = text.replace(/\\/g, '\x1b');
+        // eslint-disable-next-line no-control-regex
+        text = text.replace(/\x1b\x1b/g, '\\');
+        text = text.replace(/(?:<LEFT>)/gi, () => {
+            return '\x1bTA[0]';
+        });
+        text = text.replace(/(?:<CENTER>)/gi, () => {
+            return '\x1bTA[1]';
+        });
+        text = text.replace(/(?:<RIGHT>)/gi, () => {
+            return '\x1bTA[2]';
+        });
         text = text.replace(
-            /(?:<LEFT>)/gi,
-            function () {
-                return "\x1bTA[0]";
-            }.bind(this)
-        );
-        text = text.replace(
-            /(?:<CENTER>)/gi,
-            function () {
-                return "\x1bTA[1]";
-            }.bind(this)
-        );
-        text = text.replace(
-            /(?:<RIGHT>)/gi,
-            function () {
-                return "\x1bTA[2]";
-            }.bind(this)
-        );
-        text = text.replace(
+            // eslint-disable-next-line no-control-regex
             /\x1bTA\[(\d+)\]/gi,
-            function () {
+            (...args) => {
                 if (!this.isUsedTextWidthEx()) {
-                    $gameMessage.setAlign(Number(arguments[1] || 0));
+                    $gameMessage.setAlign(Number(args[1] || 0));
                 }
-                return "";
-            }.bind(this)
+                return '';
+            }
         );
-        text = text.replace(
-            /<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi,
-            function () {
-                return "\x1bAEND";
-            }.bind(this)
-        );
+        text = text.replace(/<\/LEFT>|<\/CENTER>|<\/RIGHT>/gi, () => {
+            return '\x1bAEND';
+        });
         return text;
     };
 
-    var alias_Window_Base_processEscapeCharacter =
+    const alias_Window_Base_processEscapeCharacter =
         Window_Base.prototype.processEscapeCharacter;
     Window_Base.prototype.processEscapeCharacter = function (code, textState) {
         switch (code) {
-            case "AEND":
+            case 'AEND':
                 $gameMessage.clearAlignLast();
                 break;
             default:
@@ -190,6 +185,8 @@ RS.MessageAlign = RS.MessageAlign || {};
     Window_Base.prototype.processAlign = function (textState) {
         textState = textState || this._textState;
         switch ($gameMessage.getAlign()) {
+            // eslint-disable-next-line default-case-last
+            default:
             case 0:
                 this.setAlignLeft(textState);
                 break;
@@ -202,7 +199,8 @@ RS.MessageAlign = RS.MessageAlign || {};
         }
     };
 
-    var alias_Window_Base_processNewLine = Window_Base.prototype.processNewLine;
+    const alias_Window_Base_processNewLine =
+        Window_Base.prototype.processNewLine;
     Window_Base.prototype.processNewLine = function (textState) {
         alias_Window_Base_processNewLine.call(this, textState);
         this.processAlign(textState);
@@ -226,26 +224,27 @@ RS.MessageAlign = RS.MessageAlign || {};
     }
 
     Window_Base.prototype.calcTextWidth = function (text) {
-        var tempText = text;
+        let tempText = text;
         tempText = tempText.split(/[\r\n]+/);
-        var textWidth = 0;
+        let textWidth = 0;
 
         // Galv's Message Styles Compatibility
         if (Imported.Galv_MessageStyles) {
-            var ret = 0;
+            let ret = 0;
+
+            let faceoffset = Window_Base._faceWidth + 25;
 
             if (Imported.Galv_MessageBusts) {
-                if ($gameMessage.bustPos == 1) {
-                    var faceoffset = 0;
+                if ($gameMessage.bustPos === 1) {
+                    faceoffset = 0;
                 } else {
-                    var faceoffset = Galv.MB.w;
+                    faceoffset = Galv.MB.w;
                 }
-            } else {
-                var faceoffset = Window_Base._faceWidth + 25;
             }
 
             // Calc X Offset
-            var xO = $gameMessage._faceName ? faceoffset : 0;
+            let xO = $gameMessage._faceName ? faceoffset : 0;
+            // eslint-disable-next-line no-unused-vars
             xO += Galv.Mstyle.padding[1] + Galv.Mstyle.padding[3]; // Added padding
 
             if (this.pTarget != null) {
@@ -258,7 +257,7 @@ RS.MessageAlign = RS.MessageAlign || {};
         }
 
         if (Imported.YEP_MessageCore) {
-            var setting = this._wordWrap;
+            const setting = this._wordWrap;
             this._wordWrap = false;
             this.saveCurrentWindowSettings();
             this._checkWordWrapMode = true;
@@ -288,27 +287,28 @@ RS.MessageAlign = RS.MessageAlign || {};
 
     if (Imported.YEP_MessageCore) {
         Window_Base.prototype.calcTextHeight = function (textState, all) {
-            "use strict";
+            'use strict';
 
-            var lastFontSize = this.contents.fontSize;
-            var textHeight = 0;
-            var lines = textState.text.slice(textState.index).split("\n");
-            var maxLines = all ? lines.length : 1;
+            const lastFontSize = this.contents.fontSize;
+            let textHeight = 0;
+            const lines = textState.text.slice(textState.index).split('\n');
+            const maxLines = all ? lines.length : 1;
 
-            for (var i = 0; i < maxLines; i++) {
-                var maxFontSize = this.contents.fontSize;
-                var regExp = /\x1b[\{\}]|\x1bFS\[(\d+)\]/gi;
+            for (let i = 0; i < maxLines; i++) {
+                let maxFontSize = this.contents.fontSize;
+                // eslint-disable-next-line no-control-regex, no-useless-escape
+                const regExp = /\x1b[\{\}]|\x1bFS\[(\d+)\]/gi;
                 for (;;) {
-                    var array = regExp.exec(lines[i]);
+                    const array = regExp.exec(lines[i]);
                     if (array) {
-                        if (array[0] === "\x1b{") {
+                        if (array[0] === '\x1b{') {
                             this.makeFontBigger();
                         }
-                        if (array[0] === "\x1b}") {
+                        if (array[0] === '\x1b}') {
                             this.makeFontSmaller();
                         }
-                        if (array[0].contains("\x1bfs".toLowerCase())) {
-                            this.contents.fontSize = parseInt(array[1]);
+                        if (array[0].contains('\x1bfs'.toLowerCase())) {
+                            this.contents.fontSize = parseInt(array[1], 10);
                         }
                         if (maxFontSize < this.contents.fontSize) {
                             maxFontSize = this.contents.fontSize;
@@ -336,7 +336,7 @@ RS.MessageAlign = RS.MessageAlign || {};
     };
 
     Window_Base.prototype.setAlignCenter = function (textState) {
-        var padding = this.textPadding();
+        const padding = this.textPadding();
         tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x =
             (this.newLineX() + this.contentsWidth() + padding) / 2 - tx / 2;
@@ -344,14 +344,14 @@ RS.MessageAlign = RS.MessageAlign || {};
     };
 
     Window_Base.prototype.setAlignRight = function (textState) {
-        var padding = this.textPadding();
+        const padding = this.textPadding();
         tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x = this.contentsWidth() - padding - tx;
         textState.left = textState.x;
     };
 
     Window_Base.prototype.doFirstLineAlign = function (textState) {
-        var isValid = !this.isUsedTextWidthEx();
+        const isValid = !this.isUsedTextWidthEx();
         if (isValid) {
             this.processAlign(textState);
         }
@@ -359,23 +359,24 @@ RS.MessageAlign = RS.MessageAlign || {};
 
     Window_Base.prototype.drawTextExForAlign = function (text, x, y) {
         if (text) {
-            var textState = { index: 0, x: x, y: y, left: x };
+            const textState = { index: 0, x, y, left: x };
             textState.text = this.convertEscapeCharacters(text);
             textState.height = this.calcTextHeight(textState, false);
             while (textState.index < textState.text.length) {
                 this.processCharacter(textState);
             }
             return textState.x - x;
-        } else {
-            return 0;
         }
+
+        return 0;
     };
 
-    var alias_origin_Window_Base_drawTextEx = Window_Base.prototype.drawTextEx;
+    const alias_origin_Window_Base_drawTextEx =
+        Window_Base.prototype.drawTextEx;
     Window_Base.prototype.drawTextEx = function (text, x, y) {
         if (text) {
             this.resetFontSettings();
-            var textState = { index: 0, x: x, y: y, left: x };
+            const textState = { index: 0, x, y, left: x };
             textState.text = this.convertEscapeCharacters(text);
             textState.height = this.calcTextHeight(textState, false);
             this.doFirstLineAlign(textState);
@@ -383,9 +384,9 @@ RS.MessageAlign = RS.MessageAlign || {};
                 this.processCharacter(textState);
             }
             return textState.x - x;
-        } else {
-            return 0;
         }
+
+        return 0;
     };
 
     //============================================================================
@@ -395,18 +396,18 @@ RS.MessageAlign = RS.MessageAlign || {};
     // Galv's Message Styles Compatibility
     if (Imported.Galv_MessageStyles) {
         Window_Message.prototype.textPadding = function () {
+            let faceoffset = Window_Base._faceWidth + 25;
+
             if (Imported.Galv_MessageBusts) {
-                if ($gameMessage.bustPos == 1) {
-                    var faceoffset = 0;
+                if ($gameMessage.bustPos === 1) {
+                    faceoffset = 0;
                 } else {
-                    var faceoffset = Galv.MB.w;
+                    faceoffset = Galv.MB.w;
                 }
-            } else {
-                var faceoffset = Window_Base._faceWidth + 25;
             }
 
             // Calc X Offset
-            var xO = $gameMessage._faceName ? faceoffset : 0;
+            let xO = $gameMessage._faceName ? faceoffset : 0;
             xO += Galv.Mstyle.padding[1] + Galv.Mstyle.padding[3]; // Added padding
 
             return xO;
@@ -429,21 +430,22 @@ RS.MessageAlign = RS.MessageAlign || {};
     };
 
     if (!Imported.YEP_MessageCore) {
-        var alias_Window_Message_startPause =
+        const alias_Window_Message_startPause =
             Window_Message.prototype.startPause;
         Window_Message.prototype.startPause = function () {
             if (this.isUsedTextWidthEx()) return;
             alias_Window_Message_startPause.call(this);
         };
 
-        var alias_Window_Message_startWait = Window_Message.prototype.startWait;
+        const alias_Window_Message_startWait =
+            Window_Message.prototype.startWait;
         Window_Message.prototype.startWait = function (count) {
             if (this.isUsedTextWidthEx()) return;
             alias_Window_Message_startWait.call(this, count);
         };
     }
 
-    var alias_Window_Message_startMessage_setAlignCenter =
+    const alias_Window_Message_startMessage_setAlignCenter =
         Window_Message.prototype.startMessage;
     Window_Message.prototype.startMessage = function () {
         alias_Window_Message_startMessage_setAlignCenter.call(this);
@@ -462,7 +464,7 @@ RS.MessageAlign = RS.MessageAlign || {};
     //============================================================================
 
     Window_ScrollText.prototype.refresh = function () {
-        var textState = { index: 0 };
+        const textState = { index: 0 };
         textState.text = this.convertEscapeCharacters(this._text);
         this.resetFontSettings();
         this._allTextHeight = this.calcTextHeight(textState, true);
