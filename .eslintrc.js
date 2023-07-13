@@ -25,5 +25,11 @@ module.exports = {
         'spaced-comment': 'off',
         'max-classes-per-file': 'off',
         strict: 'off',
+        'prettier/prettier': [
+            'error',
+            {
+                endOfLine: 'auto',
+            },
+        ],
     },
 };
