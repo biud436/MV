@@ -952,7 +952,7 @@ function Scene_LoadDatabase(...args) {
     RS.Localization.findLanguage = function (reg) {
         try {
             let arr = Object.keys(this.lang);
-            arr = arr.filter(function (i) {
+            arr = arr.filter(i => {
                 return !!i.match(reg);
             });
             if (arr !== 0) {
