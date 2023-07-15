@@ -77,6 +77,8 @@
  * - Fixed an issue that worked twicely when using text codes such as "\!", "\.", "\|" in the vanilla mode.
  * 2023.07.13 (v1.0.28) :
  * - Converted to the ES6 (Object Literal Shorthand, Spread Syntax, Arrow Function, Const/Let)
+ * 2023.07.15 (v1.0.29) :
+ * - Fixed the issue that is not defined the variable called 'tx' after refactoring the code.
  */
 
 // eslint-disable-next-line no-var
@@ -337,7 +339,7 @@ RS.MessageAlign = RS.MessageAlign || {};
 
     Window_Base.prototype.setAlignCenter = function (textState) {
         const padding = this.textPadding();
-        tx = this.calcTextWidth(textState.text.slice(textState.index));
+        const tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x =
             (this.newLineX() + this.contentsWidth() + padding) / 2 - tx / 2;
         textState.left = textState.x;
@@ -345,7 +347,7 @@ RS.MessageAlign = RS.MessageAlign || {};
 
     Window_Base.prototype.setAlignRight = function (textState) {
         const padding = this.textPadding();
-        tx = this.calcTextWidth(textState.text.slice(textState.index));
+        const tx = this.calcTextWidth(textState.text.slice(textState.index));
         textState.x = this.contentsWidth() - padding - tx;
         textState.left = textState.x;
     };
