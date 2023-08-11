@@ -309,7 +309,9 @@
  *
  */
 
-(() => {
+(function () {
+    'use strict';
+
     const RS = window.RS || {};
     RS.FaceAnimation = RS.FaceAnimation || {};
 
