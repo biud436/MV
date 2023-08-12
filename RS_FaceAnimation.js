@@ -132,6 +132,8 @@
  * 2019.07.16 (v1.0.0) - First Release.
  * 2019.07.17 (v1.0.1) :
  * - Fixed the issue that shows up the incorrect frame in the sprite sheet.
+ * 2023.08.12 (v1.0.2) :
+ * - Fixed the issue that is not set the active state ID.
  */
 /*~struct~AnimationFace:
  *
@@ -309,11 +311,11 @@
  *
  */
 
+RS = window.RS || {};
+RS.FaceAnimation = RS.FaceAnimation || {};
+
 (function () {
     'use strict';
-
-    const RS = window.RS || {};
-    RS.FaceAnimation = RS.FaceAnimation || {};
 
     let parameters = $plugins.filter(function (i) {
         return i.description.contains('<RS_FaceAnimation>');
@@ -796,10 +798,7 @@
                 RS.FaceAnimation.Params.isAnimationFace = false;
                 break;
             case 'SetAnimationFace':
-                {
-                    const { id } = args;
-                    RS.FaceAnimation.Params.activeStateId = id;
-                }
+                RS.FaceAnimation.Params.activeStateId = args.join(' ');
                 break;
             case 'ChangeParamAnimationFace':
                 RS.FaceAnimation.Params.globalStates[args[0]] = Number(args[1]);
