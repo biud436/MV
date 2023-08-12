@@ -237,6 +237,8 @@
  * 2018.11.16 (v1.0.1) - Added the opacity mode.
  * 2021.01.09 (v1.0.2) :
  * - Fixed the bug that causes an error when using the erase event command.
+ * 2023.08.12 (v1.0.3) :
+ * - Fixed the issue that causes an error when starting the game.
  */
 /*~struct~Fog:ko
  *
