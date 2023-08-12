@@ -10,7 +10,7 @@
  * RS_EventName.js
  *
  * @target MZ
- * @plugindesc (v1.4.0) This plugin displays an event's name above a head. <RS_EventName>
+ * @plugindesc (v1.4.1) This plugin displays an event's name above a head. <RS_EventName>
  * @author biud436
  * @url https://biud436.tistory.com/
  *
@@ -105,6 +105,7 @@
  * + Removed RPG Maker MV dependency.
  *      - Removed Utils.rgbToCssColor that can't work in MZ.
  *      - Fixed font and Graphics settings.
+ * 2023.08.12 (v1.4.1) - ES6 Refactoring and tested in RMMV 1.6.2 (nw v0.55.0)
  * ==================================================================================
  * Commands
  * ==================================================================================
@@ -129,9 +130,9 @@
  * RS_EventName.js
  *
  * @target MZ
- * @plugindesc (v1.4.0) 이벤트 이름 표시 플러그인 <RS_EventName>
+ * @plugindesc (v1.4.1) 이벤트 이름 표시 플러그인 <RS_EventName>
  * @author 러닝은빛
- * @url https://biud436.blog.me
+ * @url https://biud436.tistory.com/
  *
  * @param text Size
  * @text 텍스트 크기
