@@ -58,6 +58,8 @@
  * 2018.11.16 (v1.0.1) - Added the opacity mode.
  * 2021.01.09 (v1.0.2) :
  * - Fixed the bug that causes an error when using the erase event command.
+ * 2023.08.12 (v1.0.3) :
+ * - Fixed the issue that causes an error when starting the game.
  */
 /*~struct~Fog:
  *
@@ -460,7 +462,10 @@ function Scene_LoadFog(...args) {
 
         for (;;) {
             // const [m,] = re.exec(data.note);
-            const [m, key, sep, value] = re.exec(data.note);
+            const matches = re.exec(data.note);
+
+            // const [m, key, sep, value] = re.exec(data.note);
+            const [m, key, sep, value] = matches || [];
 
             if (m) {
                 if (sep === ':') {
@@ -478,7 +483,7 @@ function Scene_LoadFog(...args) {
         for (;;) {
             const match = re.exec(data.note);
             if (match) {
-                data.meta.mapFogId = parseInt(key, 10);
+                data.meta.mapFogId = parseInt(match[1], 10);
             } else {
                 break;
             }
