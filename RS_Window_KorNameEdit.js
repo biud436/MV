@@ -189,6 +189,8 @@
  * - Fixed the issue, https://github.com/biud436/MV/issues/18
  * 2021.01.11 (v1.6.11) :
  * - Now it is possible to use a text code in the asking text.
+ * 2023.10.03 (v1.6.12) :
+ * - Fixed the issue that Korean input is not working after the recent update.
  */
 /*~struct~TextBox:
  *
@@ -465,6 +467,8 @@
  * - Fixed the issue, https://github.com/biud436/MV/issues/18
  * 2021.01.11 (v1.6.11) :
  * - 안내 텍스트에서 이제 텍스트 코드를 사용할 수 있습니다.
+ * 2023.10.03 (v1.6.12) :
+ * - 최근 업데이트 이후, 한글 입력이 되지 않았던 문제 수정
  */
 /*~struct~TextBox:ko
  *
@@ -619,10 +623,6 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     TextBox.IS_NOT_CHAR = 32;
     TextBox.KEYS_ARRAY = 255;
 
-    /**
-     * @constructor
-     * @param {Window_KorNameEdit} _editWindow
-     */
     TextBox.prototype.initialize = function (_editWindow) {
         this._editWindow = _editWindow;
         this.createTextBox();
@@ -650,7 +650,6 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
         this._textBox = document.createElement('input');
         this._textBox.type = 'text';
         this._textBox.id = 'textBox';
-        this._textBox.maxLength = this._maxLength;
 
         // Get z-index of the game canvas.
         var canvasIndex = Number(Graphics._canvas.style.zIndex);
