@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc (v1.0.28) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.0.30) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -79,6 +79,8 @@
  * - Converted to the ES6 (Object Literal Shorthand, Spread Syntax, Arrow Function, Const/Let)
  * 2023.07.15 (v1.0.29) :
  * - Fixed the issue that is not defined the variable called 'tx' after refactoring the code.
+ * 2023.11.08 (v1.0.30) :
+ * - Fixed a compatibility issue with the YEP_EventMiniLabel plugin.
  */
 
 // eslint-disable-next-line no-var
@@ -131,6 +133,9 @@ RS.MessageAlign = RS.MessageAlign || {};
         }
         if (!Imported.YEP_MessageCore) {
             ret = this._isUsedTextWidth;
+        }
+        if (Imported.YEP_EventMiniLabel) {
+            ret = true;
         }
 
         return ret;
