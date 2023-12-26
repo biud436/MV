@@ -25,6 +25,8 @@
  * 2016.07.11 (v1.0.1) - In pluginCommand, Wrong Character Fixes.
  * 2017.02.03 (v1.0.2) - Fixed the variable name.
  * 2017.12.28 (v1.0.3) - Added a feature that can set them in the certain game variable only.
+ * 2023.12.27 (v1.0.4) :
+ * - Fixed the issue that is not working in the game variable.
  */
 /*~struct~GameVariable:
  *
@@ -63,6 +65,8 @@
  * 2016.07.11 (v1.0.1) - In pluginCommand, Wrong Character Fixes.
  * 2017.02.03 (v1.0.2) - Fixed the variable name.
  * 2017.12.28 (v1.0.3) - Added a feature that can set them in the certain game variable only.
+ * 2023.12.27 (v1.0.4) :
+ * - Fixed the issue that is not working in the game variable.
  */
 /*~struct~GameVariable:ko
  *
@@ -115,11 +119,11 @@
                 // Find the variable id at the settings object.
                 const data = _settings.filter(e => {
                     return parseInt(e.variableId, 10) === variableId;
-                }, this);
+                });
 
                 // if it finds its id, it will be limited it.
                 if (data instanceof Array && typeof data[0] === 'object') {
-                    const { desc } = data;
+                    const [desc] = data;
                     value = Math.floor(
                         value.clamp(Number(desc.min), Number(desc.max))
                     );
