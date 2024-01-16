@@ -14,7 +14,7 @@
 
 ## 버전 별 다운로드
 
-<p>2024.01.16 (v0.1.7) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/a3651f1c5ad9ad8e2f6fe5b19e760faba00a19ba/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
+<p>2024.01.16 (v0.1.7) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/d1c02aac5ec29aae1adf62f568a54034b1d9b3e1/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2022.01.25 (v0.1.67) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/6daa7944a0fcd457b210013160a3baa1aba69058/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2020.05.14 (v0.1.64) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/2337b631eca1d5e0860540754dc0730ba18cab1e/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2020.01.24 (v0.1.63) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/e7489fdea35b26f6b610a93acfd35cabef5d17e6/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
