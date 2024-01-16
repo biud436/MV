@@ -6,12 +6,6 @@
 
 이 플러그인은 영어 위주로 되어있는 기존 텍스트 코드들을 한국어로 사용할 수 있게 해주는 MV 메시지 플러그인입니다.
 
-<p>버그 제보 (Feedback) : <a href="https://biud436.tistory.com/121">티스토리 블로그</a></p>
-
-> 이 플러그인은 얀플라이 메시지 플러그인(`YEP_MessageCore`)과 호환되지 않습니다. 호환성 레이어를 제공하는 것 자체가 불가능하며 돈을 주셔도 호환이 되게 만들기가 어렵습니다. 호환성을 제공하려면 코드 일부를 포함해야 합니다. 그런데 얀플라이 플러그인은 유료이며, MIT 라이센스와 호환이 되지 않기 때문에 이제 더 이상 얀플라이 플러그인들과 호환을 제공하기가 어렵습니다. 
-
-> 이 플러그인은 MZ에서는 동작하지 않습니다. MZ에서는 코어가 상당히 달라져 호환성을 그대로 제공하기가 어렵기 때문입니다. 또한 앞으로 유니티 기반의 RPG Maker Unite가 출시되는 것으로 볼 때, 자바스크립트 기반의 플러그인들은 레거시로 남을 확률이 있어서 더 이상의 작업이 어렵습니다. 이점을 참고 하시기 바랍니다.
-
 ## 최신 버전 다운로드
 
 [다운로드][1]
@@ -20,6 +14,7 @@
 
 ## 버전 별 다운로드
 
+<p>2024.01.16 (v0.1.7) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/a3651f1c5ad9ad8e2f6fe5b19e760faba00a19ba/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2022.01.25 (v0.1.67) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/6daa7944a0fcd457b210013160a3baa1aba69058/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2020.05.14 (v0.1.64) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/2337b631eca1d5e0860540754dc0730ba18cab1e/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
 <p>2020.01.24 (v0.1.63) - <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/e7489fdea35b26f6b610a93acfd35cabef5d17e6/RS_MessageSystem.js" target="_blank" rel="noopener">다운로드</a></p>
@@ -40,6 +35,8 @@
 ## 버전 로그
 
 ```text
+2024.01.16 (v0.1.7) :
+- SRD_TranslationEngine 플러그인과 호환되지 않는 문제를 수정하였습니다.
 2022.01.25 (v0.1.67) :
 - 얼굴 이미지를 부드럽게 표시하는 기능을 끌 수 있게 되었습니다.
 2021.06.29 (v0.1.66) :
