@@ -10,7 +10,7 @@
 
 [다운로드][1]
 
-[1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js "마지막으로 작업한 파일입니다"
+[1]: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/biud436/MV/blob/master/RS_MessageSystem.js '마지막으로 작업한 파일입니다'
 
 ## 버전 별 다운로드
 
@@ -295,11 +295,11 @@
 
 실제로 이렇게 입력해야 합니다.
 
-![1](./images/hms_1.png "예제")
+![1](./images/hms_1.png '예제')
 
 이렇게 하면 다음과 같이 나오게 됩니다.
 
-![2](./images/hms_2.png "예제")
+![2](./images/hms_2.png '예제')
 
 예)
 
@@ -314,7 +314,7 @@
 
 게임을 플레이하는 유저분들의 컴퓨터에 나눔고딕이 설치되어있지 않은 경우, 폰트가 두 번째 폰트로 설정됩니다. 이를 막으려면 다음 스크린샷처럼 커스텀 폰트를 로드해야 합니다.
 
-![font](./images/hms_font.png "폰트 설정하는 법")
+![font](./images/hms_font.png '폰트 설정하는 법')
 
 폰트는 기본적으로 `./fonts` 폴더에 있는 기본 폰트만 로드되지만 원한다면 추가 폰트 파일을 로드할 수 있습니다.
 
@@ -409,7 +409,7 @@
 
 웹 색상의 경우, `#RRGGBBAA` 포맷을 사용하며, 각각 빨강, 녹색, 파랑, 알파(Alpha)를 뜻합니다. 16진수 값이며 FF는 완전 불투명을 의미하고 88은 반투명이며 00은 완전히 투명한 색상입니다. 알파값을 생략하면 기본 FF로 설정됩니다. 웹 색상 값은 포토샵이나 색상 표를 검색하면 쉽게 알아낼 수 있습니다.
 
-![hms_highlight_text_color](./images/hms_highlight_text_color.png "텍스트 배경색")
+![hms_highlight_text_color](./images/hms_highlight_text_color.png '텍스트 배경색')
 
 ## 텍스트에 그레디언트 적용
 
@@ -735,46 +735,28 @@ Tkool 홈페이지에 있는 실제로 사용되고 있는 어휘를 참고하�
 이건 여러분들의 선택에 맞깁니다.
 
 ```html
-\COLOR[html_color_name]
-\TEXT_SPEED[value]
-\OUTLINE_COLOR[color_name]
-\OUTLINE_WIDTH[value] 
-\INDENT[value] \BOLD!
-\ITALIC!
-\NAME<event_name>
-\GRADIENT<text>
-\PARTY_MEMBER[nth] \PLAYER[nth] \VAR[nth] \ICON[nth] \INCREASE!
-\DECREASE! 
-\GOLD 
-\BALLOON[event_id] 
-\BALLOON[0] 
-\BALLOON[-1] 
-\ALIGN[1]
-\ALIGN[2] 
-\NUM[number] 
-\TEXT_SIZE[number] 
-\TAB! 
-\CR! 
-\PLAY_SE<se_name>
-\SHOW_PICTURE<nth, picture_name, origin_number, x, y>
-\HIDE_PICTURE[nth]
-\ITEM[nth]
-\WEAPON[nth]
-\ARMOR[nth]
-\CLASSES[nth]
-\ENEMY[nth]
-\STATE[nth] 
-\SKILL[nth]
-\FACE<face_name,face_index>
-\FRIENDLY_TROOPS[nth]
-\ENEMY_TROOPS[nth]
-<b></b>
-<i></i>
-<LEFT></LEFT>
-<center></center>
-<RIGHT></RIGHT>
-\HC[color_name]
-\FD[face_position]
+\COLOR[html_color_name] \TEXT_SPEED[value] \OUTLINE_COLOR[color_name]
+\OUTLINE_WIDTH[value] \INDENT[value] \BOLD! \ITALIC! \NAME<event_name>
+    \GRADIENT<text>
+        \PARTY_MEMBER[nth] \PLAYER[nth] \VAR[nth] \ICON[nth] \INCREASE!
+        \DECREASE! \GOLD \BALLOON[event_id] \BALLOON[0] \BALLOON[-1] \ALIGN[1]
+        \ALIGN[2] \NUM[number] \TEXT_SIZE[number] \TAB! \CR! \PLAY_SE<se_name>
+            \SHOW_PICTURE<nth, picture_name, origin_number, x, y>
+                \HIDE_PICTURE[nth] \ITEM[nth] \WEAPON[nth] \ARMOR[nth]
+                \CLASSES[nth] \ENEMY[nth] \STATE[nth] \SKILL[nth]
+                \FACE<face_name,face_index>
+                    \FRIENDLY_TROOPS[nth] \ENEMY_TROOPS[nth]
+                    <b></b>
+                    <i></i>
+                    <LEFT></LEFT>
+                    <center></center>
+                    <RIGHT></RIGHT>
+                    \HC[color_name] \FD[face_position]</face_name,face_index
+                ></nth,
+            ></se_name
+        ></text
+    ></event_name
+>
 ```
 
 한국어 텍스트 코드 이외에 중국어, 일본어를 쓰시는 분은 없을 듯 합니다. 한국어 입력은 조합형이지만 중국어와 일본어의 경우, 영어로 입력한 후 맞는 글자를 찾는 것이므로 입력이 불편하므로 쓰기에 적합하지 않다는 걸 알고 있습니다. 또한 지금까지 번역이 잘못되었다는 말이 없는 걸 보면 아무도 쓰지 않는 듯 합니다. 또한 영어로 번역을 해두지 않았기 때문에 사용자가 아예 없을 것입니다.
@@ -933,31 +915,30 @@ and automatically transforms the name window to fit the width of the text area.
 To open the name window, do as follows.
 You put the name text between Less-than sign and Greater-than sign.
 
-```html
-\NAME<text></text>
+```txt
+\NAME<text>
 ```
 
 You can add a certain command by attaching a colon(:) at the end of the name text.
 To change the position of the name window, as follows.
 
-```html
+```txt
 \NAME<text:left>
-    \NAME<text:right> \NAME<text:center></text:center></text:right
-></text:left>
+\NAME<text:right>
+\NAME<text:center>
 ```
 
 To change the opacity of the name window, as follows.
 
 ```html
 \NAME<text:opacity0>
-    \NAME<text:defaultOpacity></text:defaultOpacity
-></text:opacity0>
+\NAME<text:defaultOpacity>
 ```
 
 To set the name window above the speech balloon, as follows
 
 ```html
-\BALLOON[0]\NAME<eric>\COLOR[red]hello?</eric>
+\BALLOON[0]\NAME<eric>\COLOR[red]hello?
 ```
 
 To change the text color in the name window, as follows
@@ -1043,8 +1024,7 @@ settings by using a html tag such as `<B></B><I></I>`
 For Example, you could use the following things.
 
 ```html
-\BALLOON[0]\NAME<Wanderers
-    >Hello. <b>Eric.</b> <i>Welcome to the game.</i></Wanderers
+\BALLOON[0]\NAME<Wanderers>Hello. <b>Eric.</b> <i>Welcome to the game.</i></Wanderers
 >
 ```
 
@@ -1072,7 +1052,7 @@ For instance, You can use as follows.
 
 ```html
 <center>The god appeared in the from of a fairy</center>
-<RIGHT>The robbers hid in the bushes and fell on me from four sides.</RIGHT>
+<right>The robbers hid in the bushes and fell on me from four sides.</right>
 ```
 
 # Setting the standing CG.
@@ -1101,18 +1081,18 @@ if the face index is to `1` or more, the face image will show up on the right of
 To change a standing CG after the message window starts up, you can use this text code.
 
 ```html
-\FACE<face_name,face_index></face_name,face_index>
+\FACE<face_name,face_index>
 ```
 
 You put the face name and face index between Less-than sign and Greater-than sign, as follows
 
 ```html
-\FACE<Big_ScaredActor,0></Big_ScaredActor,0>
+\FACE<Big_ScaredActor,0>
 ```
 
 But, this text code should be used for a special purpose.
 You should preload the face image because loading image is the asynchronous.
-Otherwise, You will not be going to show anything.
+Otherwise, You will not be going to show anythding.
 
 # Changing the position of face image.
 

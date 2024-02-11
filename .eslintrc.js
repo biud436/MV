@@ -13,6 +13,7 @@ module.exports = {
         'Windows/Resolutions/tools/*.js',
         'Windows/Resolutions/*.js',
         'RS_Window_KorNameEdit.js',
+        '*.js',
     ],
     rules: {
         'no-undef': 'off',
