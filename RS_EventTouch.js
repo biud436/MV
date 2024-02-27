@@ -8,51 +8,36 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * RS_EventTouch.js
- * @plugindesc This plugin allows you to execute the event when you are clicking the event.
+ * @target MV
+ * @plugindesc This plugin allows you to make your events clickable from anywhere.
  * @author biud436
  *
  * @param Event Regex
- * @desc this parameter define a RegExp
+ * @desc This is a regular expression to check the note tag.
  * @default /Event[ ]*Click/ig
  *
  * @help
- * 1. Adding the command called 'Comment' into the event
- * 2. The event's setup is simplify. It is done that you are to enter the comment
- * called 'Event Click' into the event's list.
+ * This plugin allows you to make your events clickable from anywhere.
+ * By adding specific note tags to your events, you can make them actionable regardless of distance.
  *
- * - Change Log
- * 2016.07.03 (v1.0.0) - First Release
- * 2017.01.30 (v1.0.1) - Fixed the bug that is not working when using event starting conditions
- * 2017.01.31 (v1.0.2) - Fixed the bug is not working this plugin properly
- * 2018.06.20 (v1.0.3) - Fixed the issue that wouldn't check the event has the invalid page.
- */
-/*:ko
- * @plugindesc 이벤트를 마우스로 클릭했을 때 즉각 실행합니다.
- * @author 러닝은빛(biud436)
+ * Note Tag (Comment):
+ * Event Click
  *
- * @param Event Regex
- * @text 이벤트 터치 정규표현식
- * @desc 정규표현식을 정의할 수 있습니다 (정규표현식 가능자만 수정 바랍니다)
- * @default /Event[ ]*Click/ig
+ * You do this by simply writing the text `Event Click` without the < and > symbols to Event Comment.
  *
- * @help
- * ========================================================================
- * 사용법
- * ========================================================================
- * 굉장히 간단합니다!
+ * 1. Open the event editor and add a comment.
+ * 2. Write the text "Event Click" in the comment (without the < and > symbols).
+ * 3. Save the event.
+ * 4. Now the event can be triggered from anywhere using the mouse or touch input.
  *
- * 이벤트에 Event Click이라는 메모를 작성하면 설정이 끝납니다.
- *
- * 정규표현식을 변경했다면, 변경된 정규표현식에 맞는 메모를 작성하시기 바랍니다.
- *
- * ========================================================================
- * 변동 사항
- * ========================================================================
- * 2016.07.03 (v1.0.0) - First Release
- * 2017.01.30 (v1.0.1) - Fixed the bug that is not working when using event starting conditions
- * 2017.01.31 (v1.0.2) - Fixed the bug is not working this plugin properly
- * 2018.06.20 (v1.0.3) - Fixed the issue that wouldn't check the event has the invalid page.
+ * ===============================================================================
+ * Change Log
+ * ===============================================================================
+ * 2016.07.03 (v1.0.0): First Release.
+ * 2017.01.30 (v1.0.1): Fixed a bug that caused issues when using event starting conditions.
+ * 2017.01.31 (v1.0.2): Fixed the bug is not working this plugin properly.
+ * 2018.06.20 (v1.0.3): Resolved an issue where the plugin wouldn't properly check for events with invalid pages.
+ * 2024.02.27 (v1.0.4): Updated description.
  */
 
 (() => {
