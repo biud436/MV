@@ -730,12 +730,19 @@
 
         /**
          * Init with text layer.
+         *
+         * @returns {void}
          */
         createTextLayer() {
             this._textLayer = new Sprite();
             this.addChild(this._textLayer);
         }
 
+        /**
+         * @param {number} width
+         * @param {number} fontSize
+         * @returns {PIXI.TextStyle}
+         */
         makeNormalColor(width, fontSize = 16) {
             const wordWrapWidth = width || this._size.width;
             const style = new PIXI.TextStyle({
@@ -752,6 +759,11 @@
             return style;
         }
 
+        /**
+         * @param {number} width
+         * @param {number} fontSize
+         * @returns {PIXI.TextStyle}
+         */
         makeRedColor(width, fontSize = 16) {
             const wordWrapWidth = width || this._size.width;
             const style = new PIXI.TextStyle({
@@ -770,6 +782,11 @@
             return style;
         }
 
+        /**
+         * @param {number} width
+         * @param {number} fontSize
+         * @returns {PIXI.TextStyle}
+         */
         makeYellowColor(width, fontSize = 16) {
             const wordWrapWidth = width || this._size.width;
             const style = new PIXI.TextStyle({
@@ -789,6 +806,11 @@
             return style;
         }
 
+        /**
+         * @param {number} width
+         * @param {number} fontSize
+         * @returns {PIXI.TextStyle}
+         */
         makeBlueGlowColor(width, fontSize = 16) {
             const wordWrapWidth = width || this._size.width;
             const style = new PIXI.TextStyle({
@@ -809,6 +831,13 @@
             return style;
         }
 
+        /**
+         *
+         * @param {string} color
+         * @param {number} fontSize
+         * @param {number} width
+         * @returns {PIXI.TextStyle}
+         */
         makeColor(color, fontSize = 16, width = 0) {
             width = width || this._size.width;
 
@@ -826,6 +855,10 @@
             }
         }
 
+        /**
+         * @param {PIXI.Text} textObject
+         * @returns {void}
+         */
         addDescription(textObject) {
             if (!this._textLayer) {
                 this.createTextLayer();
@@ -836,10 +869,10 @@
 
         /**
          *
-         * @param {*} x
-         * @param {*} y
-         * @param {*} text
-         * @param {*} color
+         * @param {number} x
+         * @param {number} y
+         * @param {string} text
+         * @param {string} color
          *
          * @return {PIXI.Text}
          */
@@ -851,6 +884,9 @@
             return textObj;
         }
 
+        /**
+         * @returns {void}
+         */
         clear() {
             this.removeChildren();
             this.createTextLayer();
@@ -865,6 +901,8 @@
 
         /**
          * @param {RPG.BaseItem} item
+         *
+         * @returns {boolean}
          */
         isValid(item) {
             return (
@@ -876,6 +914,8 @@
 
         /**
          * @param {RPG.BaseItem} item
+         *
+         * @returns {void}
          */
         refresh(item) {
             if (!this.isValid(item)) {
