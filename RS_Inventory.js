@@ -9,6 +9,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
+ * @target MV
  * @plugindesc This plugin allows you to use certain item and show gold using modern game inventory system. <RS_Inventory>
  * @author biud436
  *
@@ -49,8 +50,13 @@
  * @default 8
  *
  * @help
- * // TODO:
- * 1. 아이템이 0번 슬롯이 아닌 다른 곳에 있을 때, 같은 아이템을 획득하면 0번 슬롯으로 옮겨지는 문제가 있다.
+ * This plugin implements inventory functionality.
+ * It mainly has the ability to use items, move them to different slots by dragging and display tooltips.
+ *
+ * However, this plugin is still under development, so it does not have a detailed documentation.
+ *
+ * == Known bugs ==
+ * 1. When an item is in a slot other than slot 0, picking up the same item will move it to slot 0.
  */
 
 (() => {
