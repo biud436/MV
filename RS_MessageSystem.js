@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.8) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.9) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -671,7 +671,7 @@
  * ======================================================================================================
  * Change Log
  * =======================================================================================================
- * 2024.03.09 (v0.1.8) :
+ * 2024.03.09 (v0.1.9) :
  * - Fixed readability issues with some code.
  * 2024.01.16 (v0.1.7) :
  * - fixed the issue that is not compatible with SRD_TranslationEngine.js
@@ -767,7 +767,7 @@
  */
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.8) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.9) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -1446,8 +1446,8 @@
 * =============================================================================
 * 버전 로그(Version Log)
 * =============================================================================
-* 2024.03.09 (v0.1.8) :
-* - 선택지를 기본 스타일로 초기화 할 때 플래그로 사용하는 변수 -2를 상수화하여 가독성을 높였습니다.
+* 2024.03.09 (v0.1.9) :
+* - fixed readability issues with some code.
 * 2024.01.16 (v0.1.7) :
 * - SRD_TranslationEngine 플러그인과 호환되지 않는 문제를 수정하였습니다.
 * 2022.01.25 (v0.1.67) : 
@@ -3981,7 +3981,9 @@ var Color = Color || {};
         text = text.replace(
             regGroup[tcGroup.BALLOON],
             function () {
-                var value = Number(arguments[1] || -2);
+                var value = Number(
+                    arguments[1] || RS.MessageSystem.Params.RESET_DEFAULT_STYLE
+                );
                 if ($gameParty.inBattle()) {
                     $gameMessage.setBalloon(
                         value < 0
