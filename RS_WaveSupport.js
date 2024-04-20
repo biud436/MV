@@ -29,14 +29,17 @@
  *
  * - Change Log
  * 2015.12.25 (v1.0.0) - First Release Date.
+ * 2024.04.20 (v1.1.0) :
+ * - added missing code for blobUrl.
+ *
  */
 
 var Imported = Imported || {};
 Imported.RS_WaveSupport = true;
 
 (function () {
-    var parameters = PluginManager.parameters("RS_WaveSupport");
-    var _wavText = parameters["Wave Volume Text"] || "Wave Volume Text";
+    var parameters = PluginManager.parameters('RS_WaveSupport');
+    var _wavText = parameters['Wave Volume Text'] || 'Wave Volume Text';
 
     //-----------------------------------------------------------------------------
     // WebAudio
@@ -45,7 +48,7 @@ Imported.RS_WaveSupport = true;
     var alias_detectCodecs = WebAudio._detectCodecs;
     WebAudio._detectCodecs = function () {
         alias_detectCodecs.call(this);
-        var audio = document.createElement("audio");
+        var audio = document.createElement('audio');
         if (audio.canPlayType) {
             this._canPlayWav = audio.canPlayType('audio/wav; codecs="1"');
         }
@@ -66,7 +69,7 @@ Imported.RS_WaveSupport = true;
     AudioManager._wavVolume = 100;
     AudioManager._wavBuffers = [];
 
-    Object.defineProperty(AudioManager, "wavVolume", {
+    Object.defineProperty(AudioManager, 'wavVolume', {
         get: function () {
             return this._wavVolume;
         },
@@ -78,9 +81,10 @@ Imported.RS_WaveSupport = true;
 
     AudioManager.createBuffer = function (folder, name, extension) {
         var ext = extension || this.audioFileExt();
-        var url = this._path + folder + "/" + encodeURIComponent(name) + ext;
-        if (this.shouldUseHtml5Audio() && folder === "bgm") {
-            Html5Audio.setup(url);
+        var url = this._path + folder + '/' + encodeURIComponent(name) + ext;
+        if (this.shouldUseHtml5Audio() && folder === 'bgm') {
+            if (this._blobUrl) Html5Audio.setup(this._blobUrl);
+            else Html5Audio.setup(url);
             return Html5Audio;
         } else {
             return new WebAudio(url);
@@ -116,7 +120,7 @@ Imported.RS_WaveSupport = true;
             this._wavBuffers = this._wavBuffers.filter(function (audio) {
                 return audio.isPlaying();
             });
-            var buffer = this.createBuffer("wav", wav.name, ".wav");
+            var buffer = this.createBuffer('wav', wav.name, '.wav');
             this.updateSeParameters(buffer, wav);
             buffer.play(false);
             this._wavBuffers.push(buffer);
@@ -139,7 +143,7 @@ Imported.RS_WaveSupport = true;
     //
     //
 
-    Object.defineProperty(ConfigManager, "wavVolume", {
+    Object.defineProperty(ConfigManager, 'wavVolume', {
         get: function () {
             return AudioManager.wavVolume;
         },
@@ -159,7 +163,7 @@ Imported.RS_WaveSupport = true;
     var alias_applyData = ConfigManager.applyData;
     ConfigManager.applyData = function (config) {
         alias_applyData.call(this, config);
-        this.wavVolume = this.readVolume(config, "wavVolume");
+        this.wavVolume = this.readVolume(config, 'wavVolume');
     };
 
     //-----------------------------------------------------------------------------
@@ -170,6 +174,6 @@ Imported.RS_WaveSupport = true;
     var alias_addVolumeOptions = Window_Options.prototype.addVolumeOptions;
     Window_Options.prototype.addVolumeOptions = function () {
         alias_addVolumeOptions.call(this);
-        this.addCommand(_wavText, "wavVolume");
+        this.addCommand(_wavText, 'wavVolume');
     };
 })();
