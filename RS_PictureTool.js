@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * @target MV
- * @plugindesc This plugin allows you to run with two types of events when a certain picture collides with some sprites.
+ * @plugindesc When a picture collides with a specific character sprite, a specific event is fired. <RS_PictureTool>
  * @author biud436
  *
  * @param Delay
@@ -45,10 +45,12 @@
  * 2018.04.16 (v1.0.1) - Fixed a hanging bug.
  * 2018.04.16 (v1.0.2) - Fixed the issue that the save is not working.
  * 2018.04.16 (v1.0.3) - Fixed the issue when the picture is deleted
+ * 2024.06.23 (v1.1.0):
+ * - Fixed the issue of no response when a picture collides with a specific character sprite
  */
 /*:ko
  * @target MV
- * @plugindesc 그림이 특정 캐릭터 스프라이트와 충돌하면 특정 이벤트가 실행됩니다.
+ * @plugindesc 그림이 특정 캐릭터 스프라이트와 충돌하면 특정 이벤트가 실행됩니다. <RS_PictureTool>
  * @author 러닝은빛(biud436)
  *
  * @param Delay
@@ -85,19 +87,24 @@
  * 2018.04.16 (v1.0.1) - 멈춤 버그를 수정하였습니다.
  * 2018.04.16 (v1.0.2) - 세이브 불가 버그를 수정하였습니다.
  * 2018.04.16 (v1.0.3) - 그림 삭제 불가 버그를 수정하였습니다.
+ * 2024.06.23 (v1.1.0):
+ *  - 충돌해도 아무런 반응이 없는 문제를 수정하였습니다.
  */
 
 var RS = RS || {};
 
 RS.PictureTool = RS.PictureTool || {};
 
-(($) => {
-    "use strict";
+($ => {
+    'use strict';
 
-    let parameters = PluginManager.parameters("RS_PictureTool");
+    let parameters = $plugins.filter(i => {
+        return i.description.contains('<RS_PictureTool>');
+    });
+    parameters = parameters.length > 0 && parameters[0].parameters;
 
     RS.PictureTool.Params = RS.PictureTool.Params || {};
-    ``;
+
     RS.PictureTool.Params.frameTime = performance.now();
 
     RS.PictureTool.Params.FN = {
@@ -113,7 +120,7 @@ RS.PictureTool = RS.PictureTool || {};
     RS.PictureTool.Params.isCall = false;
 
     // 멈춤 현상 방지를 위한 고정 딜레이 값 (마우스와 키보드 입력 업데이트가 선행되고 있으므로)
-    RS.PictureTool.Params.delay = Number(parameters["Delay"] || 200);
+    RS.PictureTool.Params.delay = Number(parameters['Delay'] || 200);
 
     // ===========================================================================
     // Game_Character
@@ -179,7 +186,7 @@ RS.PictureTool = RS.PictureTool || {};
         if (!RS.PictureTool.isMap()) return false;
         container = SceneManager._scene._spriteset._pictureContainer.children;
         if (!container) return false;
-        return container[picId];
+        return container.find(i => i._pictureId === picId);
     };
 
     /**
@@ -189,11 +196,7 @@ RS.PictureTool = RS.PictureTool || {};
     RS.PictureTool.findPictureBound = function (picId) {
         const pic = RS.PictureTool.findPicture(picId);
         if (!pic) return false;
-        if (pic.frame) {
-            return pic.frame;
-        } else {
-            return new Rectangle(pic.x, pic.y, pic.width, pic.height);
-        }
+        return new Rectangle(pic.x, pic.y, pic.width, pic.height);
     };
 
     /**
