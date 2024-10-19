@@ -169,7 +169,8 @@
  * - Added a comment called 'MV'
  * 2024.01.01 (v1.3.0) :
  * - fixed the issue that can't move cursor by touch on mobile device
- *
+ * 2024.10.19 (v1.4) :
+ * - Added a new event listener for onchange event.
  */
 /*:ko
  * @target MV
@@ -377,6 +378,8 @@
  * - Added a comment called 'MV'
  * 2024.01.01 (v1.3.0) :
  * - fixed the issue that can't move cursor by touch on mobile device
+ * 2024.10.19 (v1.4) :
+ * - Added a new event listener for onchange event.
  */
 
 // eslint-disable-next-line no-var
@@ -850,6 +853,17 @@ function Scene_InputDialog(...args) {
   TextBox.prototype.setEvent = function (okFunc, cancelFunc) {
     const okButton = this.getDefaultButtonId("inputDialog-OkBtn");
     const cancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
+
+    // add event listener called 'change' to the text box.
+    const textBox = this.getTextBoxId();
+
+    if (textBox) {
+      textBox.addEventListener("change", e => {
+        e.preventDefault();
+        okFunc();
+      });
+    }
+
     okButton.addEventListener(
       "click",
       (e) => {
