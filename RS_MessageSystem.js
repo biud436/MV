@@ -1785,13 +1785,17 @@ Imported.RS_MessageSystem = true;
  */
 
 /**
+ * @typedef {Object} EventMetadata
+ */
+
+/**
  * RS 타입 정의
  * 
  * @type {{
  *  MessageSystem: {
  *      Params: RS.MessageSystem.Params; 
  *      popParameter: {(...args: unknown) => any}; 
- *      jsonParse: (str: str) => Object
+ *      jsonParse: (str: str) => Object;
  *      Reg: {
  *              Default: Array,
  *              Group: Array,
@@ -1804,7 +1808,7 @@ Imported.RS_MessageSystem = true;
  *              EnglishEscapeCode: RegExp,
  *              JapaneseEscapeCode: RegExp,
  *              defaultEscapeCode: RegExp
- *       }
+ *       };
  *       TextCodes: {
  *             Korean: string[];
  *             Chinese: string[];
@@ -1812,7 +1816,9 @@ Imported.RS_MessageSystem = true;
  *             Japanese: string[];
  *             Main: string[];
  *             ENUM: Record<string, number>
- *      }
+ *      };
+ *      getTextCode: (idx: number) => string;
+ *      getEventComments: (eventId: number, index: number) => EventMetadata; 
  * 
  *  }; 
  *  Window_Name: (...args: unknown) => void; 
@@ -2223,26 +2229,34 @@ var Color = Color || {};
     };
 
     /**
-     * 노트 태그를 읽습니다.
+     * Read an event's comments and return the meta data.
+     * 
      * @memberof RS.MessageSystem
-     * @param {Number} eventId
+     * @param {number} eventId
+     * @param {number} index
+     * 
      * @return {Object} meta
      */
     RS.MessageSystem.getEventComments = function (eventId, index) {
-        var data = {
+        
+        const data = {
             note: '',
             meta: {},
         };
+
         try {
-            // 리스트를 가져옵니다.
-            var list = $gameMap.event(eventId).list();
+            let list = $gameMap.event(eventId).list();
 
             // 바로 이전 인덱스에 노트 태그가 있었는 지 확인합니다.
-            if (index < 0) index = 0;
+            if (index < 0) {
+                index = 0;
+            }
 
             // 부모 이벤트 없이 호출되는 공통 이벤트가 있는 지 확인합니다.
             if (eventId <= 0) {
-                var commonEvent = $gameTemp.reservedCommonEvent();
+                
+                const commonEvent = $gameTemp.reservedCommonEvent();
+
                 if (commonEvent) {
                     list = commonEvent.list;
                     // 공통 이벤트는 한 번 설치된 후 클리어되므로 목록을 두 번 읽을 순 없으므로 예외 처리
@@ -2252,37 +2266,42 @@ var Color = Color || {};
                 }
             }
 
-            var param = list[index];
+            let param = list[index];
+
+            const FIRST_EVENT_COMMENT = 108;
+            const OTHER_EVENT_COMMENTS = 408;
+            const EVENT_COMMENTS_RANGE = [FIRST_EVENT_COMMENT, OTHER_EVENT_COMMENTS];
+            const LINE_BREAK = '\r\n';
 
             // 코멘트를 읽어옵니다.
-            while (param && [108, 408].contains(param.code)) {
-                data.note += param.parameters[0] + '\r\n';
+            while (param && EVENT_COMMENTS_RANGE.contains(param.code)) {
+                data.note += param.parameters[0] + LINE_BREAK;
                 index--;
                 param = list[index];
             }
 
-            if (param && param.code === 108) {
-                data.note += param.parameters[0] + '\r\n';
+            if (param && param.code === FIRST_EVENT_COMMENT) {
+                data.note += param.parameters[0] + LINE_BREAK;
 
                 index--;
                 param = list[index];
 
-                while (param.code === 408) {
-                    data.note += param.parameters[0] + '\r\n';
+                while (param.code === OTHER_EVENT_COMMENTS) {
+                    data.note += param.parameters[0] + LINE_BREAK;
                     index--;
                     param = list[index];
                 }
 
-                if (param.code === 108) {
-                    data.note += param.parameters[0] + '\r\n';
+                if (param.code === FIRST_EVENT_COMMENT) {
+                    data.note += param.parameters[0] + LINE_BREAK;
                 }
             }
 
             // 노트 태그를 추출합니다 (DataManager.extractMetadata의 변형입니다)
-            var re = /<([^<>:]+)(:?)([^>]*)>/g;
+            const re = /<([^<>:]+)(:?)([^>]*)>/g;
             data.meta = {};
             for (;;) {
-                var match = re.exec(data.note);
+                const match = re.exec(data.note);
                 if (match) {
                     if (match[2] === ':') {
                         data.meta[match[1].trim()] = match[3];
