@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.9) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.12) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -767,7 +767,7 @@
  */
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.9) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.12) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -1687,6 +1687,137 @@
 var Imported = Imported || {};
 Imported.RS_MessageSystem = true;
 
+/**
+ * RS.MessageSystem.Params 타입 정의
+ * 
+ * @typedef {Object} RS.MessageSystem.Params
+ * @property {number} fontSize
+ * @property {number} textSpeed
+ * @property {number} minFontSize
+ * @property {number} maxFontSize
+ * @property {number} textStartX
+ * @property {number} faceStartOriginX
+ * @property {number} numVisibleRows
+ * @property {string} gradientColor1
+ * @property {string} gradientColor2
+ * @property {string} gradientColor3
+ * @property {number} nameWindowX
+ * @property {number} nameWindowY
+ * @property {number} nameWindowWidth
+ * @property {number} nameWindowRows
+ * @property {number} nameWindowStdPadding
+ * @property {string} namePositionTypeAtX
+ * @property {number} faceOX
+ * @property {number} faceOY
+ * @property {boolean} faceSide
+ * @property {number} FONT_SIZE
+ * @property {number} STD_PADDING
+ * @property {number} WIDTH
+ * @property {number} HEIGHT
+ * @property {number} TabSize
+ * @property {number} backOpacity
+ * @property {number} translucentOpacity
+ * @property {number} defaultOpacity
+ * @property {number} contentsOpacity
+ * @property {number} defaultOutlineWidth
+ * @property {string} defaultOutlineColor
+ * @property {boolean} isValidShakingChoice
+ * @property {{fonts: {[key: string]: string}}} fonts 시스템에 설치된 폰트 목록
+ * 
+ * @property {boolean} customFont
+ * @property {string} customFontName
+ * @property {string} customFontSrc
+ * @property {string} windowskin
+ * @property {string} windowskinForNameWindow
+ * @property {string} choiceWindowStyle
+ * @property {string} defaultChoicePostion 선택지 위치
+ * 
+ * @property {boolean} isTempSpriteContainerVisibility 
+ * @property {{}} exTextColors
+ * 
+ * @property {boolean} isPlayTextSound
+ * @property {string} pathTextSound
+ * @property {string} textSoundEval1
+ * @property {string} textSoundEval2
+ * @property {number} textSoundInterval 텍스트 사운드 재생 간격
+ * @property {number} textSoundPoolSize 텍스트 사운드 풀 크기
+ * 
+ * @property {string} langCode 언어 코드
+ * @property {number} lineHeight
+ * @property {boolean} fontSmoothingEnabled 폰트 스무딩 사용 여부
+ * @property {string[]} preloadWindowskins
+ * @property {boolean} isParagraphMinifier
+ * 
+ * @property {Point} windowOffset
+ * @property {string} gradientStyle
+ * @property {number} faceOpacity
+ * @property {number} faceDirection
+ * @property {boolean} faceSmooth
+ * 
+ * @property {number} RESET_DEFAULT_STYLE
+ * 
+ * @property {number} windowWidth
+ */
+
+/**
+ * MessageSystem 타입 정의
+ * 
+ * @typedef {Object} MessageSystem
+ * @property {(...args: unknown) => any} PopParameter
+ */
+
+/**
+ * RS 타입 정의
+ * 
+ * @typedef {Object} RS
+ * @property {Object} MessageSystem
+ * @property {Object} Window_Name
+ */
+
+/**
+ * Color 타입 정의
+ * 
+ * @typedef {Object} Color
+ * @property {(n: number) => string} getColor
+ * @property {string} baseColor
+ * @property {() => string} getBaseColor
+ * @property {(string: string) => string} getUserCustomColor
+ */
+
+/**
+ * RS 타입 정의
+ * 
+ * @type {{
+ *  MessageSystem: {
+ *      Params: RS.MessageSystem.Params; 
+ *      popParameter: {(...args: unknown) => any}; 
+ *      jsonParse: (str: str) => Object
+ *      Reg: {
+ *              Default: Array,
+ *              Group: Array,
+ *              Korean: Array,
+ *              Chinese: Array,
+ *              English: Array,
+ *              Japanese: Array,
+ *              KoreanEscapeCode: RegExp,
+ *              ChineseEscapeCode: RegExp,
+ *              EnglishEscapeCode: RegExp,
+ *              JapaneseEscapeCode: RegExp,
+ *              defaultEscapeCode: RegExp
+ *       }
+ *       TextCodes: {
+ *             Korean: string[];
+ *             Chinese: string[];
+ *             English: string[];
+ *             Japanese: string[];
+ *             Main: string[];
+ *             ENUM: Record<string, number>
+ *      }
+ * 
+ *  }; 
+ *  Window_Name: (...args: unknown) => void; 
+ * }}
+ */
 var RS = RS || {};
 RS.MessageSystem = RS.MessageSystem || {};
 
@@ -1694,6 +1825,9 @@ RS.Window_Name = function () {
     this.initialize.apply(this, arguments);
 };
 
+/**
+ * @type {Color}
+ */
 var Color = Color || {};
 
 (function () {
