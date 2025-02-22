@@ -8,7 +8,7 @@
 //================================================================
 /*:
  * RS_MessageSystem.js
- * @plugindesc (v0.1.13) Hangul Message System <RS_MessageSystem>
+ * @plugindesc (v0.1.14) Hangul Message System <RS_MessageSystem>
  * @author biud436
  *
  * @param Font Size
@@ -767,7 +767,7 @@
  */
 /*:ko
 * RS_MessageSystem.js
-* @plugindesc (v0.1.13) 한글 메시지 시스템 <RS_MessageSystem>
+* @plugindesc (v0.1.14) 한글 메시지 시스템 <RS_MessageSystem>
 * @author 러닝은빛(biud436)
 *
 * @param 글꼴 크기
@@ -1782,6 +1782,7 @@ Imported.RS_MessageSystem = true;
  * @property {string} baseColor
  * @property {() => string} getBaseColor
  * @property {(customColor: string) => string} getUserCustomColor
+ * @property {(colorName: string) => string} gmColor
  */
 
 /**
@@ -1820,6 +1821,11 @@ Imported.RS_MessageSystem = true;
  *      getTextCode: (idx: number) => string;
  *      getEventComments: (eventId: number, index: number) => EventMetadata;
  *      jsonParse: (str: string) => Object;
+ *      getKoreanColor: (colorName: string) => string;
+ *      getChineseColor: (colorName: string) => string;
+ *      getEnglishColor: (colorName: string) => string;
+ *      getJapaneseColor: (colorName: string) => string;
+ *      getBrowser: () => {name: string; version: string};
  *
  *  };
  *  Window_Name: (...args: unknown) => void;
@@ -2502,15 +2508,35 @@ var Color = Color || {};
   })();
 
   const langUtil = {
+    /**
+     * Check whether the language is Korean.
+     * @param {string} langType
+     * @returns
+     */
     isKorean(langType) {
       return langType.match(/ko/);
     },
+    /**
+     * Check whether the language is Chinese.
+     * @param {string} langType
+     * @returns
+     */
     isChinese(langType) {
       return langType.match(/zh/);
     },
+    /**
+     * Check whether the language is English.
+     * @param {string} langType
+     * @returns
+     */
     isEnglish(langType) {
       return langType.match(/en/);
     },
+    /**
+     * Check whether the language is Japanese.
+     * @param {string} langType
+     * @returns
+     */
     isJapanese(langType) {
       return langType.match(/ja/);
     },
