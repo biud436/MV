@@ -2985,10 +2985,10 @@ var Color = Color || {};
     tx,
     ty,
   ) {
-    var context = this._context;
-    var tWidth = this.measureTextWidth(text);
+    const context = this._context;
+    const tWidth = this.measureTextWidth(text);
     context.save();
-    var gradient = context.createLinearGradient(tx, 0, tx + tWidth, 0);
+    const gradient = context.createLinearGradient(tx, 0, tx + tWidth, 0);
     gradient.addColorStop('0', color1);
     gradient.addColorStop('0.6', color2);
     gradient.addColorStop('1', color3);
@@ -3004,14 +3004,14 @@ var Color = Color || {};
     tx,
     ty,
   ) {
-    var context = this._context;
-    var width = this.measureTextWidth(text);
-    var height = RS.MessageSystem.Params.lineHeight;
-    var grd;
+    const context = this._context;
+    const width = this.measureTextWidth(text);
+    const height = RS.MessageSystem.Params.lineHeight;
+    let grd;
 
     context.save();
 
-    var style = RS.MessageSystem.Params.gradientStyle;
+    const style = RS.MessageSystem.Params.gradientStyle;
 
     if (style !== 'radial') {
       if (style.contains('horizontal')) {
@@ -3020,8 +3020,8 @@ var Color = Color || {};
         grd = context.createLinearGradient(tx, 0, 0, ty + height);
       }
     } else {
-      var ws = parseFloat(width * 0.5);
-      var hs = parseFloat(height * 0.5);
+      const ws = parseFloat(width * 0.5);
+      const hs = parseFloat(height * 0.5);
       grd = context.createRadialGradient(ws, hs, 0.0, ws, hs, ws);
     }
 
@@ -3052,13 +3052,13 @@ var Color = Color || {};
   };
 
   Bitmap.prototype._drawTextBody = function (text, tx, ty, maxWidth) {
-    var context = this._context;
+    const context = this._context;
     context.save(); // 드로잉 상태 저장
     context.imageSmoothingEnabled =
       RS.MessageSystem.Params.fontSmoothingEnabled;
-    // context.imageSmoothingQuality = "low"; // firefox only?
+
     if (this.fontGradient) {
-      var gradient = this.setGradientStyle(
+      const gradient = this.setGradientStyle(
         text,
         RS.MessageSystem.Params.gradientColor1,
         RS.MessageSystem.Params.gradientColor2,
@@ -3079,9 +3079,10 @@ var Color = Color || {};
   // Game_Message
   //============================================================================
 
-  var alias_Game_Message_clear = Game_Message.prototype.clear;
+  const alias_Game_Message_clear = Game_Message.prototype.clear;
   Game_Message.prototype.clear = function () {
     alias_Game_Message_clear.call(this);
+
     this._waitTime = 0;
     this._gradientText = '';
     this._balloon = -2;
@@ -3130,7 +3131,8 @@ var Color = Color || {};
   };
 
   Game_Message.prototype.getAlign = function (n) {
-    var n = this._align.shift();
+    const n = this._align.shift();
+
     if (n === undefined) {
       return this._lastAlign;
     }
@@ -3182,7 +3184,7 @@ var Color = Color || {};
     }
 
     /**
-     *
+     * Save the current settings.
      * @param {Bitmap} contents
      */
     save(contents) {
@@ -3203,9 +3205,23 @@ var Color = Color || {};
       this._isSaved = true;
     }
 
+    /**
+     * Restore the current settings from the saved settings.
+     *
+     * @param {Bitmap} contents
+     * @returns
+     */
     restore(contents) {
-      if (!this._isSaved) return;
-      if (!(contents instanceof Bitmap)) return;
+      const isBitmap = contents instanceof Bitmap;
+
+      if (!this._isSaved) {
+        return;
+      }
+
+      if (!isBitmap) {
+        return;
+      }
+
       contents.fontFace = this.fontFace;
       contents.fontSize = this.fontSize;
       contents.fontBold = this.fontBold;
@@ -3215,9 +3231,11 @@ var Color = Color || {};
       contents.outlineWidth = this.outlineWidth;
       contents.fontGradient = this.fontGradient;
       contents.highlightTextColor = this.highlightTextColor;
+
       if ($gameMessage) {
         $gameMessage.setWaitTime(this.textSpeed);
       }
+
       this._isSaved = false;
     }
   }
