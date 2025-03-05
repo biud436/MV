@@ -101,7 +101,7 @@ RS.MessageAlign = RS.MessageAlign || {};
     Game_Message.prototype.clear = function () {
         alias_Game_Message_clear.call(this);
         this._align = [];
-        this._alignLast = -1;
+        this._alignLast = undefined;  // Changed from -1
     };
 
     Game_Message.prototype.setAlign = function (n) {
@@ -110,12 +110,11 @@ RS.MessageAlign = RS.MessageAlign || {};
         this._align.push(n);
     };
 
-    Game_Message.prototype.getAlign = function (n) {
-        n = this._align.shift();
-        if (n === undefined) {
-            return this._alignLast;
+    Game_Message.prototype.getAlign = function() {
+        if (this._align.length > 0) {
+            return this._align[0]; // Peek at next alignment without shifting
         }
-        return n;
+        return this._alignLast; // Returns undefined when no alignment set
     };
 
     Game_Message.prototype.clearAlignLast = function () {
@@ -189,11 +188,16 @@ RS.MessageAlign = RS.MessageAlign || {};
         }
     };
 
-    Window_Base.prototype.processAlign = function (textState) {
+    Window_Base.prototype.processAlign = function(textState) {
         textState = textState || this._textState;
-        switch ($gameMessage.getAlign()) {
-            // eslint-disable-next-line default-case-last
-            default:
+        const alignment = $gameMessage.getAlign();
+        
+        // Only process valid alignments
+        if (typeof alignment !== 'number' || alignment < 0 || alignment > 2) {
+            return; // Preserve original alignment
+        }
+    
+        switch(alignment) {
             case 0:
                 this.setAlignLeft(textState);
                 break;
@@ -203,6 +207,11 @@ RS.MessageAlign = RS.MessageAlign || {};
             case 2:
                 this.setAlignRight(textState);
                 break;
+        }
+        
+        // Remove processed alignment
+        if ($gameMessage._align.length > 0) {
+            $gameMessage._align.shift();
         }
     };
 
