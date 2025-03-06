@@ -7,7 +7,7 @@
 // Free for commercial and non commercial use.
 //================================================================
 /*:
- * @plugindesc (v1.0.30) This plugin allows you to align the text in the message system.
+ * @plugindesc (v1.1.0) This plugin allows you to align the text in the message system.
  * @author biud436
  * @help
  * =============================================================================
@@ -81,6 +81,8 @@
  * - Fixed the issue that is not defined the variable called 'tx' after refactoring the code.
  * 2023.11.08 (v1.0.30) :
  * - Fixed a compatibility issue with the YEP_EventMiniLabel plugin.
+ * 2025.03.06 (v1.1.0) :
+ * - Fixed the default text alignment when using the name box text codes from YEP_ExtMesPack1 plugin.
  */
 
 // eslint-disable-next-line no-var
