@@ -62,47 +62,47 @@
  */
 
 (() => {
-    'use strict';
+  'use strict';
 
-    const aliasSpriteAnimationUpdate = Sprite_Animation.prototype.update;
-    Sprite_Animation.prototype.update = function () {
-        aliasSpriteAnimationUpdate.call(this);
-        this.updateVisibility();
-    };
+  const aliasSpriteAnimationUpdate = Sprite_Animation.prototype.update;
+  Sprite_Animation.prototype.update = function () {
+    aliasSpriteAnimationUpdate.call(this);
+    this.updateVisibility();
+  };
 
-    Sprite_Animation.prototype.isTargetReady = function () {
-        if (!this._target) return false;
-        if (!(this._target instanceof Sprite_Character)) return false;
-        const target = this._target._character;
+  Sprite_Animation.prototype.isTargetReady = function () {
+    if (!this._target) return false;
+    if (!(this._target instanceof Sprite_Character)) return false;
+    const target = this._target._character;
 
-        let isActivated = false;
+    let isActivated = false;
 
-        if (target instanceof Game_Event) {
-            isActivated = target.findProperPageIndex() > -1;
-        } else if (target instanceof Game_CharacterBase) {
-            isActivated = true;
-        } else {
-            return false;
-        }
+    if (target instanceof Game_Event) {
+      isActivated = target.findProperPageIndex() > -1;
+    } else if (target instanceof Game_CharacterBase) {
+      isActivated = true;
+    } else {
+      return false;
+    }
 
-        const isTransparent = target.isTransparent(); // 투명한가?
-        let isErased = target._erased;
+    const isTransparent = target.isTransparent(); // 투명한가?
+    let isErased = target._erased;
 
-        if (!isErased) {
-            isErased = target.isTile() ? isErased : !target._characterName;
-        }
+    if (!isErased) {
+      isErased = target.isTile() ? isErased : !target._characterName;
+    }
 
-        return isActivated && !isTransparent && !isErased;
-    };
+    return isActivated && !isTransparent && !isErased;
+  };
 
-    Sprite_Animation.prototype.updateVisibility = function () {
-        this.visible = this.isTargetReady();
-    };
+  Sprite_Animation.prototype.updateVisibility = function () {
+    this.visible = this.isTargetReady();
+  };
 
-    const aliasSpriteAnimationProcessTimingData =
-        Sprite_Animation.prototype.processTimingData;
-    Sprite_Animation.prototype.processTimingData = function (timing) {
-        if (!this.isTargetReady()) return;
-        aliasSpriteAnimationProcessTimingData.call(this, timing);
-    };
+  const aliasSpriteAnimationProcessTimingData =
+    Sprite_Animation.prototype.processTimingData;
+  Sprite_Animation.prototype.processTimingData = function (timing) {
+    if (!this.isTargetReady()) return;
+    aliasSpriteAnimationProcessTimingData.call(this, timing);
+  };
 })();

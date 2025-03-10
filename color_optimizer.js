@@ -2,75 +2,75 @@ const fs = require('fs');
 
 const Color = {};
 Color.getColor = function (n) {
-    var r = (n) & 255;
-    var g = (n >> 8) & 255;
-    var b = (n >> 16) & 255;
-    var result = `rgba(${r},${g},${b},1)`;
-    return result;
+  var r = n & 255;
+  var g = (n >> 8) & 255;
+  var b = (n >> 16) & 255;
+  var result = `rgba(${r},${g},${b},1)`;
+  return result;
 };
 
 let KOREAN_COLORS = {
-    '청록': 16776960,
-    '청록색': 16776960,
-    'c_aqua': 16776960,
-    '검은색': 0,
-    '검정': 0,
-    'c_black': 0,
-    '파란색': 16711680,
-    '파랑': 16711680,
-    'c_blue': 16711680,
-    '짙은회색': 4210752,
-    'c_dkgray': 4210752,
-    '자홍색': 16711935,
-    '자홍': 16711935,
-    'c_fuchsia': 16711935,
-    '회색': 8421504,
-    'c_gray': 8421504,
-    '녹색': 32768,
-    'c_green': 32768,
-    '밝은녹색': 65280,
-    '라임': 65280,
-    'c_lime': 65280,
-    '밝은회색': 12632256,
-    'c_ltgray': 12632256,
-    '밤색': 128,
-    '마룬': 128,
-    'c_maroon': 128,
-    '감청색': 8388608,
-    '네이비': 8388608,
-    'c_navy': 8388608,
-    '황록색': 32896,
-    '올리브': 32896,
-    'c_olive': 32896,
-    '주황색': 4235519,
-    '주황': 4235519,
-    '오렌지': 4235519,
-    'c_orange': 4235519,
-    '보라색': 8388736,
-    '보라': 8388736,
-    'c_purple': 8388736,
-    '빨간색': 255,
-    '빨강': 255,
-    'c_red': 255,
-    '은색': 12632256,
-    '은': 12632256,
-    'c_silver': 12632256,
-    '민트색': 8421376,
-    'c_teal': 8421376,
-    '흰색': 16777215, 
-    '흰': 16777215,
-    'c_white': 16777215,
-    '노란색': 65535,
-    '노랑': 65535,
-    'c_yellow': 65535,
-  };
+  청록: 16776960,
+  청록색: 16776960,
+  c_aqua: 16776960,
+  검은색: 0,
+  검정: 0,
+  c_black: 0,
+  파란색: 16711680,
+  파랑: 16711680,
+  c_blue: 16711680,
+  짙은회색: 4210752,
+  c_dkgray: 4210752,
+  자홍색: 16711935,
+  자홍: 16711935,
+  c_fuchsia: 16711935,
+  회색: 8421504,
+  c_gray: 8421504,
+  녹색: 32768,
+  c_green: 32768,
+  밝은녹색: 65280,
+  라임: 65280,
+  c_lime: 65280,
+  밝은회색: 12632256,
+  c_ltgray: 12632256,
+  밤색: 128,
+  마룬: 128,
+  c_maroon: 128,
+  감청색: 8388608,
+  네이비: 8388608,
+  c_navy: 8388608,
+  황록색: 32896,
+  올리브: 32896,
+  c_olive: 32896,
+  주황색: 4235519,
+  주황: 4235519,
+  오렌지: 4235519,
+  c_orange: 4235519,
+  보라색: 8388736,
+  보라: 8388736,
+  c_purple: 8388736,
+  빨간색: 255,
+  빨강: 255,
+  c_red: 255,
+  은색: 12632256,
+  은: 12632256,
+  c_silver: 12632256,
+  민트색: 8421376,
+  c_teal: 8421376,
+  흰색: 16777215,
+  흰: 16777215,
+  c_white: 16777215,
+  노란색: 65535,
+  노랑: 65535,
+  c_yellow: 65535,
+};
 
-for(i in KOREAN_COLORS) {
-    let temp = KOREAN_COLORS[i];
-    KOREAN_COLORS[i] = Color.getColor(temp);
+for (i in KOREAN_COLORS) {
+  let temp = KOREAN_COLORS[i];
+  KOREAN_COLORS[i] = Color.getColor(temp);
 }
 
-fs.writeFileSync("opt.json", JSON.stringify(KOREAN_COLORS, null, "\t"), "utf8");
+fs.writeFileSync('opt.json', JSON.stringify(KOREAN_COLORS, null, '\t'), 'utf8');
 
 // Step 2
 
@@ -153,15 +153,15 @@ const lines = [];
 let retHash = {};
 let lastKey = [];
 chn.split(/[\r\n]+/).forEach(line => {
-    if(/(?:case)[ ]\'(.*)\'\:/gm.exec(line)) {
-        lastKey.push(RegExp.$1);
-    } else if(/(?:return)[ ](?:Color\.getColor)\(([\d]+)\)/gm.exec(line)) {
-        const value = parseInt(RegExp.$1);
-        lastKey.forEach(e => {
-            retHash[e] = Color.getColor(value);
-        });
-        lastKey = [];
-    }
+  if (/(?:case)[ ]\'(.*)\'\:/gm.exec(line)) {
+    lastKey.push(RegExp.$1);
+  } else if (/(?:return)[ ](?:Color\.getColor)\(([\d]+)\)/gm.exec(line)) {
+    const value = parseInt(RegExp.$1);
+    lastKey.forEach(e => {
+      retHash[e] = Color.getColor(value);
+    });
+    lastKey = [];
+  }
 });
 
-fs.writeFileSync("opt2.json", JSON.stringify(retHash, null, "\t"), "utf8");
+fs.writeFileSync('opt2.json', JSON.stringify(retHash, null, '\t'), 'utf8');

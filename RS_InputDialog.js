@@ -13,35 +13,35 @@
  *
  * @param textBox Width
  * @type number
- * @desc Sets the width of Text Box.
+ * @desc Specifies the width of the input text box in pixels.
  * @default 488
  * @decimals 0
  * @min 28
  *
  * @param textBox Height
  * @type number
- * @desc Sets the height of Text Box.
+ * @desc Specifies the height of the input text box in pixels.
  * @default 36
  * @decimals 0
  * @min 8
  *
  * @param variable ID
  * @type variable
- * @desc Sets an id of the game variables.
+ * @desc Sets the ID of the game variable to store the input value.
  * @default 3
  *
  * @param debug
  * @type boolean
- * @desc Whether this determines the alert window.
+ * @desc Enables or disables debug mode to show an alert with the input value when Enter is pressed.
  * @default false
  *
  * @param Text Hint
- * @desc Sets the string that is the top of the text box.
+ * @desc Displays a hint or placeholder text at the top of the input box to guide the user.
  * @default Please enter the value...
  *
  * @param direction
  * @type select
- * @desc Sets the direction of content flow.
+ * @desc Specifies the text direction for the input field (left-to-right or right-to-left).
  * @default ltr
  * @option Left to Right
  * @value ltr
@@ -50,7 +50,7 @@
  *
  * @param Max Length
  * @type number
- * @desc Specifies the maximum number of character for an input field
+ * @desc Sets the maximum number of characters that can be entered in the input field.
  * @default 255
  * @min 1
  * @max 255
@@ -60,13 +60,13 @@
  * @param CSS
  * @parent Style
  * @type note
- * @desc Edit the css as you want.
+ * @desc Allows you to customize the appearance of the input box using CSS styles.
  * @default ""
  *
  * @param Font Family
  * @parent Style
  * @type String
- * @desc Specify the font family.
+ * @desc Specifies the font family to use for the input text.
  * @default GameFont
  *
  * @param Button Name
@@ -74,46 +74,153 @@
  * @param Ok
  * @parent Button Name
  * @text Ok Button Name
- * @desc Specify the name of the Ok Button.
+ * @desc Specifies the label text for the OK button.
  * @default OK
  *
  * @param Cancel
  * @parent Button Name
  * @text Cancel Button Name
- * @desc Specify the name of the Cancel Button.
+ * @desc Specifies the label text for the Cancel button.
  * @default Cancel
  *
  * @param Position
  * @text Initial Position
- * @desc Specify the position of the input dialog.
- * ('center' or '0, 0')
+ * @desc Sets the initial position of the input dialog (use 'center' or specific coordinates like '0, 0').
  * @default center
  *
  * @help
+ * ============================================================================
+ * Introduction
+ * ============================================================================
+ *
+ * This plugin adds a robust text input system to your RPG Maker MV games,
+ * allowing players to enter text or numbers directly within the game.
+ * You can use this for character naming, password systems, quiz games,
+ * message input, numeric code entry, and many other interactive features.
+ *
+ * The input dialog works in both map scenes and battle scenes, and offers
+ * extensive customization options including size, position, appearance,
+ * and button naming.
+ *
+ * ============================================================================
+ * Features
+ * ============================================================================
+ *
+ * - Display a text input dialog anywhere in your game
+ * - Works in both map scenes and battle scenes
+ * - Automatically saves input to a game variable
+ * - Customizable width, height, position and appearance
+ * - Support for mobile devices with proper keyboard handling
+ * - RTL (Right-to-Left) language support
+ * - Custom CSS styling for complete visual control
+ * - Customizable button names and text hints
+ * - Maximum character limit setting
+ *
  * =============================================================================
  * Plugin Commands
  * =============================================================================
- * - Opens Input Dialog.
+ * This plugin allows you to create an <input> field to receive text input from the user.
+ * Below are the available commands and their descriptions:
+ *
  * InputDialog open
+ * - Opens the input dialog window and displays it on the screen.
+ * - This command activates the text input field with all current settings.
+ * - The player can then type text which will be stored in the designated variable.
  *
- * - Changes the width of Input Dialog.
- * InputDialog width 488
+ * InputDialog width [number]
+ * - Changes the width of Input Dialog in pixels.
+ * - Example: InputDialog width 488
+ * - Note: The width must be at least 28 pixels to be visible.
+ * - This affects only future dialog openings, not currently open ones.
  *
- * - Changes the text of Input Dialog for representing the description.
- * InputDialog text Please enter the string...
+ * InputDialog text [text]
+ * - Changes the text hint (placeholder text) shown in the input field.
+ * - Example: InputDialog text Please enter your character name...
+ * - Multiple words are allowed; the entire text after "text" becomes the hint.
  *
- * - Changes an id of the variable for saving the value.
- * InputDialog variableID 3
+ * InputDialog variableID [number]
+ * - Changes which game variable will store the input result.
+ * - Example: InputDialog variableID 3
+ * - The input text will be stored in this variable when OK is clicked or Enter is pressed.
+ * - If the input contains only numbers, it will be converted to a number type.
  *
- * - Displays a alert window of the browser when you are pressing the enter
- * InputDialog debug true
+ * InputDialog debug [true/false]
+ * - When set to true, shows a debug message with the input value.
+ * - Example: InputDialog debug true
+ * - Useful during development to verify the input is being captured correctly.
  *
- * - Specifies the maximum number of character for an input field
- * InputDialog maxLength 10
+ * InputDialog maxLength [number]
+ * - Specifies the maximum number of characters allowed in the input field.
+ * - Example: InputDialog maxLength 10
+ * - Valid range is from 1 to 255 characters.
  *
- * - This plugin commands decide how to set the position of the input dialog.
- * InputDialog pos center
- * InputDialog pos 0 0
+ * InputDialog pos [position]
+ * - Sets the position of the input dialog on the screen.
+ * - Two formats are supported:
+ *   InputDialog pos center (centers the dialog on screen)
+ *   InputDialog pos 0 0 (positions at specific x, y coordinates)
+ *
+ * Additional Notes:
+ * - Ensure that the specified variable ID is valid and exists in the game database.
+ * - The input field accepts alphanumeric characters unless further restrictions are applied.
+ * - Default settings apply if commands are not used.
+ *
+ * ============================================================================
+ * Script Calls
+ * ============================================================================
+ *
+ * RS.InputDialog.createInstance()
+ * - Opens the input dialog programmatically
+ *
+ * RS.InputDialog.isEqual(text)
+ * - Checks if the variable value matches the specified text
+ * - Returns true or false
+ * - Example: if(RS.InputDialog.isEqual("PASSWORD")) {
+ *               // do something
+ *            }
+ *
+ * this.isEqualInputData(text)
+ * - Same as above but usable in event scripts
+ *
+ * ============================================================================
+ * Usage Examples
+ * ============================================================================
+ *
+ * Example 1: Name Entry System
+ * 1. Use "InputDialog text Enter character name..." to set hint text
+ * 2. Use "InputDialog open" to show the dialog
+ * 3. Store player input in Variable #3 (or change with variableID command)
+ * 4. Use the variable with \V[3] in messages or for character naming
+ *
+ * Example 2: Password System
+ * 1. Set up the input dialog with appropriate settings
+ * 2. Open the dialog when player interacts with a door/chest
+ * 3. Use conditional branch with script: this.isEqualInputData("SECRET")
+ * 4. Execute different events based on correct/incorrect password
+ *
+ * Example 3: Quiz Game
+ * 1. Display a question to the player using Show Text
+ * 2. Open input dialog for answer
+ * 3. Check if the input matches the correct answer
+ * 4. Award points or proceed based on correctness
+ *
+ * ============================================================================
+ * Compatibility Notes
+ * ============================================================================
+ *
+ * - Works in both desktop and mobile environments
+ * - Compatible with most other plugins
+ * - Special compatibility with Irina_PerformanceUpgrade plugin
+ * - Optimized for RMMV 1.5.1 and later versions
+ *
+ * ============================================================================
+ * Technical Notes
+ * ============================================================================
+ *
+ * - Input is stored as a string by default unless it contains only numbers
+ * - Numeric-only input is automatically converted to number type
+ * - The dialog creates HTML elements that overlay the game canvas
+ * - Mobile optimization includes automatic keyboard display and positioning
  *
  * =============================================================================
  * Change Log
@@ -397,8 +504,8 @@ function Scene_InputDialog(...args) {
 }
 
 (function () {
-  let parameters = $plugins.filter((i) => {
-    return i.description.contains("<RS_InputDialog>");
+  let parameters = $plugins.filter(i => {
+    return i.description.contains('<RS_InputDialog>');
   });
   parameters = parameters.length > 0 && parameters[0].parameters;
 
@@ -418,36 +525,36 @@ function Scene_InputDialog(...args) {
   //============================================================================
 
   RS.InputDialog.Params.textBoxWidth = Number(
-    parameters["textBox Width"] || 488
+    parameters['textBox Width'] || 488
   );
   RS.InputDialog.Params.textBoxHeight = Number(
-    parameters["textBox Height"] || 36
+    parameters['textBox Height'] || 36
   );
-  RS.InputDialog.Params.variableID = Number(parameters["variable ID"] || 3);
+  RS.InputDialog.Params.variableID = Number(parameters['variable ID'] || 3);
 
-  RS.InputDialog.Params.debug = Boolean(parameters.debug === "true");
+  RS.InputDialog.Params.debug = Boolean(parameters.debug === 'true');
 
   RS.InputDialog.Params.localText = String(
-    parameters["Text Hint"] || "Test Message"
+    parameters['Text Hint'] || 'Test Message'
   );
-  RS.InputDialog.Params.inputDirection = String(parameters.direction || "ltr");
+  RS.InputDialog.Params.inputDirection = String(parameters.direction || 'ltr');
 
   RS.InputDialog.Params.nMaxLength = parseInt(
-    parameters["Max Length"] || "6",
+    parameters['Max Length'] || '6',
     10
   );
 
   RS.InputDialog.Params.szFontFamily = String(
-    parameters["Font Family"] || "GameFont"
+    parameters['Font Family'] || 'GameFont'
   );
 
-  RS.InputDialog.Params.szTextBoxId = "md_textBox";
-  RS.InputDialog.Params.szFieldId = "md_inputField";
+  RS.InputDialog.Params.szTextBoxId = 'md_textBox';
+  RS.InputDialog.Params.szFieldId = 'md_inputField';
 
   RS.InputDialog.Params.nCheckScreenLock = 8000;
 
-  RS.InputDialog.Params.okButtonName = parameters.Ok || "Ok";
-  RS.InputDialog.Params.cancelButtonName = parameters.Cancel || "Cancel";
+  RS.InputDialog.Params.okButtonName = parameters.Ok || 'Ok';
+  RS.InputDialog.Params.cancelButtonName = parameters.Cancel || 'Cancel';
 
   RS.InputDialog.Params.exStyle = RS.Utils.jsonParse(parameters.CSS);
 
@@ -455,7 +562,7 @@ function Scene_InputDialog(...args) {
   RS.InputDialog.Params.isCenterAlignment = (function () {
     let position = parameters.Position;
     position = position.trim();
-    if (position === "center") {
+    if (position === 'center') {
       return true;
     }
     const reg = /(.*)[ ]*,[ ]*(.*)/i;
@@ -482,7 +589,7 @@ function Scene_InputDialog(...args) {
   };
 
   RS.InputDialog.setRect = function () {
-    "use strict";
+    'use strict';
 
     const { _realScale } = Graphics;
 
@@ -497,7 +604,7 @@ function Scene_InputDialog(...args) {
 
     if (textBox) {
       textBox.style.fontSize = Utils.isMobileDevice()
-        ? "1rem"
+        ? '1rem'
         : `${2 * _realScale}em`;
       textBox.style.width = `${RS.InputDialog.getScreenWidth(
         RS.InputDialog.Params.textBoxWidth * _realScale
@@ -509,16 +616,16 @@ function Scene_InputDialog(...args) {
 
     if (OkButton)
       OkButton.style.fontSize = Utils.isMobileDevice()
-        ? "1rem"
+        ? '1rem'
         : `${1 * _realScale}em`;
     if (CancelButton)
       CancelButton.style.fontSize = Utils.isMobileDevice()
-        ? "1rem"
+        ? '1rem'
         : `${1 * _realScale}em`;
   };
 
   RS.InputDialog.startBattleBlur = function (target, value) {
-    const blur = "blur(%1px)".format(value);
+    const blur = 'blur(%1px)'.format(value);
     target.style.webkitFilter = blur;
     target.style.filter = blur;
   };
@@ -554,7 +661,7 @@ function Scene_InputDialog(...args) {
 
   TouchInput._onTouchStart = function (event) {
     const field = document.getElementById(RS.InputDialog.Params.szFieldId);
-    const isFieldVisible = field && field.style.display !== "none";
+    const isFieldVisible = field && field.style.display !== 'none';
 
     for (var i = 0; i < event.changedTouches.length; i++) {
       var touch = event.changedTouches[i];
@@ -612,15 +719,15 @@ function Scene_InputDialog(...args) {
   };
 
   TextBox.prototype.createTextBox = function (id) {
-    "use strict";
+    'use strict';
 
     const field = document.getElementById(this._fieldId);
     if (!field) {
-      console.warn("field is not defined");
+      console.warn('field is not defined');
     }
 
-    if (RS.InputDialog.Params.szFontFamily === "") {
-      RS.InputDialog.Params.szFontFamily = "GameFont";
+    if (RS.InputDialog.Params.szFontFamily === '') {
+      RS.InputDialog.Params.szFontFamily = 'GameFont';
     }
 
     const style = `
@@ -765,7 +872,7 @@ function Scene_InputDialog(...args) {
   };
 
   TextBox.prototype.getDefaultButtonId = function (id) {
-    id = id || "inputDialog-OkBtn";
+    id = id || 'inputDialog-OkBtn';
     const query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=${id}]`;
     return document.querySelector(query);
   };
@@ -780,19 +887,19 @@ function Scene_InputDialog(...args) {
     this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
     this._textBox.max = RS.InputDialog.Params.nMaxLength;
 
-    this._textBox.addEventListener("keydown", this.onKeyDown.bind(this), false);
+    this._textBox.addEventListener('keydown', this.onKeyDown.bind(this), false);
     if (!Utils.isMobileDevice()) {
-      this._textBox.addEventListener("focus", this.onFocus.bind(this), false);
+      this._textBox.addEventListener('focus', this.onFocus.bind(this), false);
     }
-    this._textBox.addEventListener("blur", this.onBlur.bind(this), false);
+    this._textBox.addEventListener('blur', this.onBlur.bind(this), false);
     this._textBox.addEventListener(
-      "touchstart",
+      'touchstart',
       this.getFocus.bind(this),
       false
     );
-    this._textBox.addEventListener("autosize", this.onResize.bind(this), false);
+    this._textBox.addEventListener('autosize', this.onResize.bind(this), false);
 
-    window.addEventListener("resize", this.onResize.bind(this), false);
+    window.addEventListener('resize', this.onResize.bind(this), false);
 
     this.startToConvertInput();
     this.setRect();
@@ -808,20 +915,20 @@ function Scene_InputDialog(...args) {
 
   TextBox.prototype.setRect = function () {
     const textBox = this.getTextBoxId();
-    const OkButton = this.getDefaultButtonId("inputDialog-OkBtn");
-    const CancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
+    const OkButton = this.getDefaultButtonId('inputDialog-OkBtn');
+    const CancelButton = this.getDefaultButtonId('inputDialog-CancelBtn');
 
     if (OkButton)
       OkButton.style.fontSize = Utils.isMobileDevice()
-        ? "1rem"
+        ? '1rem'
         : `${1 * Graphics._realScale}em`;
     if (CancelButton)
       CancelButton.style.fontSize = Utils.isMobileDevice()
-        ? "1rem"
+        ? '1rem'
         : `${1 * Graphics._realScale}em`;
 
     textBox.style.fontSize = Utils.isMobileDevice()
-      ? "1rem"
+      ? '1rem'
       : `${2 * Graphics._realScale}em`;
     textBox.style.width = `${RS.InputDialog.getScreenWidth(
       RS.InputDialog.Params.textBoxWidth * Graphics._realScale
@@ -832,17 +939,17 @@ function Scene_InputDialog(...args) {
   };
 
   TextBox.prototype.prepareElement = function (id) {
-    const field = document.createElement("div");
+    const field = document.createElement('div');
     field.id = id;
-    field.style.position = "absolute";
-    field.style.left = "0";
-    field.style.top = "0";
-    field.style.right = "0";
-    field.style.bottom = "0";
-    field.style.width = "100%";
-    field.style.height = "100%";
-    field.style.zIndex = "0";
-    field.style.display = "none";
+    field.style.position = 'absolute';
+    field.style.left = '0';
+    field.style.top = '0';
+    field.style.right = '0';
+    field.style.bottom = '0';
+    field.style.width = '100%';
+    field.style.height = '100%';
+    field.style.zIndex = '0';
+    field.style.display = 'none';
     document.body.appendChild(field);
     if (RS.InputDialog.Params.isCenterAlignment) {
       Graphics._centerElement(field);
@@ -851,46 +958,46 @@ function Scene_InputDialog(...args) {
   };
 
   TextBox.prototype.setEvent = function (okFunc, cancelFunc) {
-    const okButton = this.getDefaultButtonId("inputDialog-OkBtn");
-    const cancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
+    const okButton = this.getDefaultButtonId('inputDialog-OkBtn');
+    const cancelButton = this.getDefaultButtonId('inputDialog-CancelBtn');
 
     // add event listener called 'change' to the text box.
     const textBox = this.getTextBoxId();
 
     if (textBox) {
-      textBox.addEventListener("change", e => {
+      textBox.addEventListener('change', e => {
         e.preventDefault();
         okFunc();
       });
     }
 
     okButton.addEventListener(
-      "click",
-      (e) => {
+      'click',
+      e => {
         okFunc();
         e.preventDefault();
       },
       false
     );
     cancelButton.addEventListener(
-      "click",
-      (e) => {
+      'click',
+      e => {
         cancelFunc();
         e.preventDefault();
       },
       false
     );
     okButton.addEventListener(
-      "touchend",
-      (e) => {
+      'touchend',
+      e => {
         okFunc();
         e.preventDefault();
       },
       false
     );
     cancelButton.addEventListener(
-      "touchend",
-      (e) => {
+      'touchend',
+      e => {
         cancelFunc();
         e.preventDefault();
       },
@@ -937,7 +1044,7 @@ function Scene_InputDialog(...args) {
   TextBox.prototype.onBlur = function (e) {
     const text = this.getTextBoxId();
     if (text && Utils.isMobileDevice()) {
-      text.style.bottom = "0";
+      text.style.bottom = '0';
       text.focus();
     }
     e.preventDefault();
@@ -948,8 +1055,8 @@ function Scene_InputDialog(...args) {
     const field = document.getElementById(self._fieldId);
     const mainContainer = self.getMainContainer();
     if (field) {
-      field.style.margin = "0";
-      mainContainer.style.margin = "0";
+      field.style.margin = '0';
+      mainContainer.style.margin = '0';
       if (x < 0) {
         x = 0;
       }
@@ -1017,7 +1124,7 @@ function Scene_InputDialog(...args) {
 
   TextBox.prototype.setText = function (text) {
     const textBox = this.getTextBoxId();
-    textBox.value = text || "";
+    textBox.value = text || '';
     return textBox;
   };
 
@@ -1029,13 +1136,13 @@ function Scene_InputDialog(...args) {
   TextBox.prototype.hide = function () {
     const field = document.getElementById(this._fieldId);
     field.style.zIndex = 0;
-    field.style.display = "none"; // for 0.33.4
+    field.style.display = 'none'; // for 0.33.4
   };
 
   TextBox.prototype.show = function () {
     const field = document.getElementById(this._fieldId);
     field.style.zIndex = 1000;
-    field.style.display = "block"; // for 0.33.4
+    field.style.display = 'block'; // for 0.33.4
   };
 
   TextBox.prototype.setTextHint = function () {
@@ -1054,10 +1161,10 @@ function Scene_InputDialog(...args) {
     this._cancelFunc = null;
 
     if (this._textBox) {
-      this._textBox.outerHTML = "";
+      this._textBox.outerHTML = '';
     }
 
-    window.removeEventListener("resize", this.onResize.bind(this), false);
+    window.removeEventListener('resize', this.onResize.bind(this), false);
   };
 
   TextBox.prototype.terminate = function () {
@@ -1125,7 +1232,7 @@ function Scene_InputDialog(...args) {
   };
 
   Scene_InputDialog.prototype.okResult = function () {
-    let text = this._textBox.getText() || "";
+    let text = this._textBox.getText() || '';
     if (text.match(/^([\d]+)$/g)) {
       text = Number(RegExp.$1);
     }
@@ -1150,11 +1257,11 @@ function Scene_InputDialog(...args) {
   //============================================================================
 
   Game_Troop.prototype.battleInterpreterTaskLock = function () {
-    this._interpreter._waitMode = "IME Mode";
+    this._interpreter._waitMode = 'IME Mode';
   };
 
   Game_Troop.prototype.battleInterpreterTaskUnlock = function () {
-    this._interpreter._waitMode = "";
+    this._interpreter._waitMode = '';
   };
 
   //============================================================================
@@ -1208,7 +1315,7 @@ function Scene_InputDialog(...args) {
   };
 
   Scene_Battle.prototype.showTextBox = function () {
-    this._textBox.setText("");
+    this._textBox.setText('');
     this._textBox.show();
     this._textBox.getFocus();
     this._textBox.setTextHint();
@@ -1234,33 +1341,33 @@ function Scene_InputDialog(...args) {
   };
 
   Scene_Battle.prototype.okResult = function () {
-    if (!this._textBox) return "";
+    if (!this._textBox) return '';
     if (this.textBoxIsBusy()) {
-      let text = this._textBox.getText() || "";
+      let text = this._textBox.getText() || '';
       if (text.match(/^([\d]+)$/g)) {
         text = Number(RegExp.$1);
       }
       $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
-      this._textBox.setText("");
+      this._textBox.setText('');
       if (RS.InputDialog.Params.debug) {
-        const dmsg = "You typed the text is same as ".concat(
-          `${$gameVariables.value(RS.InputDialog.Params.variableID)}` || "NONE"
+        const dmsg = 'You typed the text is same as '.concat(
+          `${$gameVariables.value(RS.InputDialog.Params.variableID)}` || 'NONE'
         );
-        this._logWindow.push("addText", dmsg);
+        this._logWindow.push('addText', dmsg);
       }
       this.hideTextBox();
     }
 
-    return "";
+    return '';
   };
 
   Scene_Battle.prototype.cancelResult = function () {
-    if (!this._textBox) return "";
+    if (!this._textBox) return '';
     if (this.textBoxIsBusy()) {
-      this._textBox.setText("");
+      this._textBox.setText('');
       this.hideTextBox();
     }
-    return "";
+    return '';
   };
 
   //============================================================================
@@ -1270,7 +1377,7 @@ function Scene_InputDialog(...args) {
   const alias_Game_Interpreter_updateWaitMode =
     Game_Interpreter.prototype.updateWaitMode;
   Game_Interpreter.prototype.updateWaitMode = function () {
-    if (this._waitMode === "IME Mode") {
+    if (this._waitMode === 'IME Mode') {
       return true;
     }
     return alias_Game_Interpreter_updateWaitMode.call(this);
@@ -1290,33 +1397,33 @@ function Scene_InputDialog(...args) {
     Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function (command, args) {
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
-    if (command === "InputDialog") {
+    if (command === 'InputDialog') {
       // eslint-disable-next-line default-case
       switch (args[0]) {
-        case "open":
+        case 'open':
           RS.InputDialog.createInstance();
           break;
-        case "width":
+        case 'width':
           RS.InputDialog.Params.textBoxWidth = Number(args[1] || 488);
           RS.InputDialog.setRect();
           break;
-        case "text":
+        case 'text':
           RS.InputDialog.Params.localText = args
             .slice(1, args.length)
-            .join(" ");
+            .join(' ');
           break;
-        case "variableID":
+        case 'variableID':
           RS.InputDialog.Params.variableID = Number(args[1] || 3);
           break;
-        case "debug":
-          RS.InputDialog.Params.debug = Boolean(args[1] === "true");
+        case 'debug':
+          RS.InputDialog.Params.debug = Boolean(args[1] === 'true');
           break;
-        case "maxLength":
+        case 'maxLength':
           RS.InputDialog.Params.nMaxLength = Number(args[1] || 255);
           RS.InputDialog.setRect();
           break;
-        case "pos":
-          if (args[1] === "center") {
+        case 'pos':
+          if (args[1] === 'center') {
             RS.InputDialog.Params.isCenterAlignment = true;
           } else {
             RS.InputDialog.Params.isCenterAlignment = false;

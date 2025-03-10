@@ -81,47 +81,47 @@
  */
 
 (() => {
-    const Imported = window.Imported || {};
-    Imported.RS_Chaser = true;
+  const Imported = window.Imported || {};
+  Imported.RS_Chaser = true;
 
-    const parameters = PluginManager.parameters('RS_Chaser');
-    let _limit = Number(parameters['Default Search Limit'] || 12);
+  const parameters = PluginManager.parameters('RS_Chaser');
+  let _limit = Number(parameters['Default Search Limit'] || 12);
 
-    const alias_Game_Event_initMembers = Game_Event.prototype.initMembers;
-    Game_Event.prototype.initMembers = function () {
-        alias_Game_Event_initMembers.call(this);
-        this._limit = _limit || 12;
-    };
+  const alias_Game_Event_initMembers = Game_Event.prototype.initMembers;
+  Game_Event.prototype.initMembers = function () {
+    alias_Game_Event_initMembers.call(this);
+    this._limit = _limit || 12;
+  };
 
-    Game_Event.prototype.searchLimit = function () {
-        return this._limit;
-    };
+  Game_Event.prototype.searchLimit = function () {
+    return this._limit;
+  };
 
-    Game_Event.prototype.chasePlayer = function (range) {
-        this._limit = range || _limit;
-        const { x, y } = $gamePlayer;
-        const dir = this.findDirectionTo(x, y);
-        if (dir !== 0) this.moveStraight(dir);
-    };
+  Game_Event.prototype.chasePlayer = function (range) {
+    this._limit = range || _limit;
+    const { x, y } = $gamePlayer;
+    const dir = this.findDirectionTo(x, y);
+    if (dir !== 0) this.moveStraight(dir);
+  };
 
-    Game_Event.prototype.chaseEvent = function (id, range) {
-        this._limit = range || _limit;
-        const { x, y } = $gameMap.event(id);
-        const dir = this.findDirectionTo(x, y);
-        if (dir !== 0) this.moveStraight(dir);
-    };
+  Game_Event.prototype.chaseEvent = function (id, range) {
+    this._limit = range || _limit;
+    const { x, y } = $gameMap.event(id);
+    const dir = this.findDirectionTo(x, y);
+    if (dir !== 0) this.moveStraight(dir);
+  };
 
-    const alias_Game_Interpreter_pluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === 'Chase') {
-            switch (args[0].toLowerCase()) {
-                case 'range':
-                    _limit = Number(args[1] || 12);
-                    break;
-                default:
-            }
-        }
-    };
+  const alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'Chase') {
+      switch (args[0].toLowerCase()) {
+        case 'range':
+          _limit = Number(args[1] || 12);
+          break;
+        default:
+      }
+    }
+  };
 })();

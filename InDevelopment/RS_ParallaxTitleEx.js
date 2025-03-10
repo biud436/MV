@@ -16,7 +16,7 @@
 // by reading the elements in the command window and bound them.
 // 2016.11.22 (v1.0.4) - Added backgrounds that have applied a parallax scrolling.
 // 2016.11.22 (v1.0.5) - Optimized some code.
-// 2019.08.28 (v1.0.7) : 
+// 2019.08.28 (v1.0.7) :
 // - Added features for the new Plugin Manager in RPG Maker MV v1.5+
 // - Update docs.
 //================================================================
@@ -28,7 +28,7 @@
  * @type struct<Position>[]
  * @desc 여러 이미지를 타이틀 배경에 설정할 수 있습니다.
  * @default ["{\"image\":\"BlueSky\",\"x\":\"0\",\"y\":\"0\",\"blend\":\"0\"}"]
- * 
+ *
  * @param TextAnimation
  * @desc 텍스트 애니메이션을 설정하세요.
  * @default Push
@@ -80,35 +80,35 @@
  * @param Font Family
  * @desc 타이틀 텍스트의 폰트를 설정하세요.
  * @default GameFont
- * 
+ *
  * @param No Save File Opacity
  * @type number
  * @desc 세이브 파일이 없을 때, 세이브 화면 불러오기 버튼의 투명도를 낮춥니다.
  * @default 64
- * 
+ *
  * @param Parallax Formula
  * @desc 더 멀리 있는 배경을 더 느리게 스크롤 하기 위해 사용하는 공식입니다.
  * @default ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
  *
  * @help
- * 
+ *
  * 이 플러그인은 타이틀에 패러랠스 스크롤링을 적용하는 플러그인입니다.
  * 타이틀 이미지는 원경 img/parallaxes 폴더에 넣어두어야 합니다.
- * 
+ *
  * 타이틀 이미지를 2개 이상 사용할 때,
  * 스크롤 속도는 거리에 따라 다르게 지정됩니다.
- * 
+ *
  * 예를 들면, 더 멀리 있는 배경이 더 천천히 움직이게 됩니다.
  * 앞에 있는 배경은 뒷배경을 투영할 수 있게 투명성을 지니고 있어야 합니다.
  * 나무, 건물, 구름 등을 겹쳐 타이틀을 더 깊이감있게 표현할 수 있습니다.
- * 
+ *
  * 스크롤 속도는 다음과 같이 단순한 식으로 결정됩니다.
- * 
+ *
  * ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
- * 
+ *
  * 쉽게 말하면 보는 사람으로부터 더 멀어질 수록 스크롤 속도가 느려지게 됩니다.
  * 이 값은 정확한 예측 값은 아니나, 멀리 있는 배경을 천천히 움직이게 하는 데에는 충분합니다.
- * 
+ *
  * =============================================================================
  * Installation
  * =============================================================================
@@ -135,12 +135,12 @@
  * @type number
  * @desc
  * @default 0
- * 
+ *
  * @param y
  * @type number
  * @desc
  * @default 0
- * 
+ *
  * @param blend
  * @type select
  * @desc Set up the blend type.
@@ -195,7 +195,7 @@
  * @type struct<Position>[]
  * @desc 여러 이미지를 타이틀 배경에 설정할 수 있습니다.
  * @default ["{\"image\":\"BlueSky\",\"x\":\"0\",\"y\":\"0\",\"blend\":\"0\"}"]
- * 
+ *
  * @param TextAnimation
  * @text 텍스트 애니메이션
  * @desc 텍스트 애니메이션을 설정하세요.
@@ -258,13 +258,13 @@
  * @text 폰트 설정
  * @desc 타이틀 텍스트의 폰트를 설정하세요.
  * @default 나눔고딕
- * 
+ *
  * @param No Save File Opacity
  * @text 세이브 커맨드 투명도 설정
  * @type number
  * @desc 세이브 파일이 없을 때, 세이브 화면 불러오기 버튼의 투명도를 낮춥니다.
  * @default 64
- * 
+ *
  * @param Parallax Formula
  * @text 시차 공식
  * @desc 더 멀리 있는 배경을 더 느리게 스크롤 하기 위해 사용하는 공식입니다.
@@ -273,21 +273,21 @@
  * @help
  * 이 플러그인은 타이틀에 패러랠스 스크롤링을 적용하는 플러그인입니다.
  * 타이틀 이미지는 원경 img/parallaxes 폴더에 넣어두어야 합니다.
- * 
+ *
  * 타이틀 이미지를 2개 이상 사용할 때,
  * 스크롤 속도는 거리에 따라 다르게 지정됩니다.
- * 
+ *
  * 예를 들면, 더 멀리 있는 배경이 더 천천히 움직이게 됩니다.
  * 앞에 있는 배경은 뒷배경을 투영할 수 있게 투명성을 지니고 있어야 합니다.
  * 나무, 건물, 구름 등을 겹쳐 타이틀을 더 깊이감있게 표현할 수 있습니다.
- * 
+ *
  * 스크롤 속도는 다음과 같이 단순한 식으로 결정됩니다.
- * 
+ *
  * ((Graphics.boxWidth) / idx) / ((Graphics.boxWidth) / (idx - 1));
- * 
+ *
  * 쉽게 말하면 보는 사람으로부터 더 멀어질 수록 스크롤 속도가 느려지게 됩니다.
  * 이 값은 정확한 예측 값은 아니나, 멀리 있는 배경을 천천히 움직이게 하는 데에는 충분합니다.
- * 
+ *
  */
 /*~struct~Position:ko
  *
@@ -303,12 +303,12 @@
  * @type number
  * @desc
  * @default 0
- * 
+ *
  * @param y
  * @type number
  * @desc
  * @default 0
- * 
+ *
  * @param blend
  * @text 블렌드 타입
  * @type select
@@ -364,41 +364,41 @@ RS.ParallaxTitleEx = RS.ParallaxTitleEx || {};
 RS.ParallaxTitleEx.Params = RS.ParallaxTitleEx.Params || {};
 RS.Utils = RS.Utils || {};
 
-(function($) {
-
-  "use strict";
+(function ($) {
+  'use strict';
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_ParallaxTitleEx>');
   });
 
-  parameters = (parameters.length > 0) && parameters[0].parameters;    
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
   $.jsonParse = function (str) {
     var retData = JSON.parse(str, function (k, v) {
-        try {
-            return $.jsonParse(v);
-        } catch (e) {
-            return v;
-        }
+      try {
+        return $.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
     });
-    
+
     return retData;
-    
   };
 
-  $.parallaxImage = []
-  $.maxParallaxImages = 0;  
+  $.parallaxImage = [];
+  $.maxParallaxImages = 0;
 
-  (function() {
+  (function () {
     try {
-      $.parallaxImage = $.jsonParse(parameters["Parallax"]);
-      if(typeof($.parallaxImage) === "object" && 
-        Array.isArray($.parallaxImage)) {
-          $.maxParallaxImages = $.parallaxImage.length;
+      $.parallaxImage = $.jsonParse(parameters['Parallax']);
+      if (
+        typeof $.parallaxImage === 'object' &&
+        Array.isArray($.parallaxImage)
+      ) {
+        $.maxParallaxImages = $.parallaxImage.length;
       }
     } catch (error) {
-      throw new Error("Failed to parse!");
+      throw new Error('Failed to parse!');
     }
   })();
 
@@ -407,47 +407,47 @@ RS.Utils = RS.Utils || {};
   $._y = null;
   $._dist = Number(parameters['Interval'] || 80);
   $._menuSize = Number(parameters['Menu Size'] || 3);
-  $._maxAngle =  360.0 / $._menuSize;
+  $._maxAngle = 360.0 / $._menuSize;
   $._angleSpeed = parseFloat(parameters['Angle Speed'] || 120.0);
   $._outLineColor = String(parameters['Text outline Color'] || '#6799FF');
   $.selectedColor = parameters['Selected Color'] || '#6799FF';
   $.unselectedColor = parameters['Unselected Color'] || '#888888';
-  $.saveCmdOpacity = Number(parameters["No Save File Opacity"] || 64);
+  $.saveCmdOpacity = Number(parameters['No Save File Opacity'] || 64);
 
   $.fontFamily = parameters['Font Family'] || 'Arial';
 
-  $.parallaxFormula = parameters["Parallax Formula"];
+  $.parallaxFormula = parameters['Parallax Formula'];
 
   $.defaultTextStyle = {
     fontFamily: $.fontFamily,
     fontStyle: 'normal',
     align: 'center',
-    fontSize : 72,
+    fontSize: 72,
     // Color
-    fill : '#FFFFFF',
+    fill: '#FFFFFF',
     // A number that represents the thickness of the stroke.
-    strokeThickness : 0,
+    strokeThickness: 0,
     // Shadow effect
-    dropShadow : true,
+    dropShadow: true,
     // Shadow color
-    dropShadowColor : '#000000',
+    dropShadowColor: '#000000',
     // Shadow angle
-    dropShadowAngle : Math.PI / 6,
+    dropShadowAngle: Math.PI / 6,
     // Distance to shadow
-    dropShadowDistance : 3,
+    dropShadowDistance: 3,
     // Text wrap
-    wordWrap : true,
+    wordWrap: true,
     // width of the text wrap (wrapping the width automatically)
-    wordWrapWidth : 576,
-    textBaseline: 'alphabetic'
+    wordWrapWidth: 576,
+    textBaseline: 'alphabetic',
   };
 
   $.subtext = {
     text: parameters['Subtext'] || 'v1.0.0',
     fontSize: 24,
     dropShadow: true,
-    fill: [$.unselectedColor,'#FFFFFF'],
-    align: 'right'
+    fill: [$.unselectedColor, '#FFFFFF'],
+    align: 'right',
   };
 
   $.touchPoint = new PIXI.Point();
@@ -464,21 +464,29 @@ RS.Utils = RS.Utils || {};
   //
   //
 
-  RS.Utils.convertToRadian = function(angle) {
+  RS.Utils.convertToRadian = function (angle) {
     return (Math.PI / 180) * angle;
   };
 
   // This prevents the angular value from increasing continuously.
-  RS.Utils.wrapMax = function(angle) {
-    while(angle > 360.0) { angle -= 360.0; }
-    while(angle < -360.0) { angle += 360.0; }
+  RS.Utils.wrapMax = function (angle) {
+    while (angle > 360.0) {
+      angle -= 360.0;
+    }
+    while (angle < -360.0) {
+      angle += 360.0;
+    }
     return angle;
   };
 
-// This prevents the angular value from increasing continuously.
-  RS.Utils.wrapAngle = function(angle) {
-    while(angle > 180.0) { angle -= 360.0; }
-    while(angle < -180.0) { angle += 360.0; }
+  // This prevents the angular value from increasing continuously.
+  RS.Utils.wrapAngle = function (angle) {
+    while (angle > 180.0) {
+      angle -= 360.0;
+    }
+    while (angle < -180.0) {
+      angle += 360.0;
+    }
     return angle;
   };
 
@@ -487,11 +495,11 @@ RS.Utils = RS.Utils || {};
   //
   //
 
-  Array.prototype.max = function() {
+  Array.prototype.max = function () {
     return this.slice(0).sort().reverse()[0];
   };
 
-  Array.prototype.min = function() {
+  Array.prototype.min = function () {
     return this.slice(0).sort()[0];
   };
 
@@ -501,15 +509,16 @@ RS.Utils = RS.Utils || {};
   //
 
   var alias_Scene_Title_start = Scene_Title.prototype.start;
-  Scene_Title.prototype.start = function() {
+  Scene_Title.prototype.start = function () {
     alias_Scene_Title_start.call(this);
     this.initSpriteParameter();
     this.initTouchParameter();
-    if(!DataManager.isAnySavefileExists()) this._texts[1].opacity = $.saveCmdOpacity;
+    if (!DataManager.isAnySavefileExists())
+      this._texts[1].opacity = $.saveCmdOpacity;
   };
 
   var alias_Scene_Title_update = Scene_Title.prototype.update;
-  Scene_Title.prototype.update = function() {
+  Scene_Title.prototype.update = function () {
     this.updateSprite();
     this.updateTouchInput();
     this.updateKeyboardCheck();
@@ -519,15 +528,14 @@ RS.Utils = RS.Utils || {};
 
   var alias_Scene_Title_terminate = Scene_Title.prototype.terminate;
   Scene_Title.prototype.terminate = function () {
-    if(alias_Scene_Title_terminate) alias_Scene_Title_terminate.call(this);
+    if (alias_Scene_Title_terminate) alias_Scene_Title_terminate.call(this);
     // When there is already a title scene in the scene stack, this will remove the TilingSprite.
     for (var i = 0; i < $.maxParallaxImages; i++) {
-      if(this._parallax[i]) this.removeChild(this._parallax[i]);
+      if (this._parallax[i]) this.removeChild(this._parallax[i]);
     }
   };
 
-  Scene_Title.prototype.createForeground = function() {
-
+  Scene_Title.prototype.createForeground = function () {
     if (!$dataSystem.optDrawTitle) return;
 
     var style = $.defaultTextStyle;
@@ -540,15 +548,15 @@ RS.Utils = RS.Utils || {};
     textStyle2.align = $.subtext.align;
 
     this._gameTitleSprite = new PIXI.Text($dataSystem.gameTitle, textStyle1);
-    this._gameTitleSprite.addChild( new PIXI.Text('\n' + $.subtext.text, textStyle2) );
+    this._gameTitleSprite.addChild(
+      new PIXI.Text('\n' + $.subtext.text, textStyle2)
+    );
     this.addChild(this._gameTitleSprite);
 
     this.drawGameTitle();
-
   };
 
-  Scene_Title.prototype.drawGameTitle = function() {
-
+  Scene_Title.prototype.drawGameTitle = function () {
     // Set text initial position
     this._gameTitleSprite.x = Graphics.width / 2;
     this._gameTitleSprite.y = Graphics.height / 4;
@@ -562,10 +570,9 @@ RS.Utils = RS.Utils || {};
     var scroll = 0.01;
 
     // Distort the text every frame.
-    this._gameTitleSprite.update = function() {
-
+    this._gameTitleSprite.update = function () {
       // Limit amplitude.
-      if(power >= 1) {
+      if (power >= 1) {
         scroll = -scroll;
       } else if (power < 0) {
         scroll = -scroll;
@@ -576,31 +583,32 @@ RS.Utils = RS.Utils || {};
 
       // Distort the text by distortion type such as 'Push' and 'Split' types.
       this.scale.x = Math.sin(power);
-      this.scale.y = ($.textType === "Push") ? Math.sin(power) : Math.cos(power);
+      this.scale.y = $.textType === 'Push' ? Math.sin(power) : Math.cos(power);
 
       // Rotate the text.
-      if(this.rotation <= Math.PI * 2) this.rotation += (2 * Math.PI ) / 90;
+      if (this.rotation <= Math.PI * 2) this.rotation += (2 * Math.PI) / 90;
 
       // Update child objects.
-      if(this.children) {
+      if (this.children) {
         this.children.forEach(function (e) {
-          if(e.update) e.update();
+          if (e.update) e.update();
         }, this);
       }
-
     };
-
   };
 
-  Scene_Title.prototype.createBackground = function() {
-
+  Scene_Title.prototype.createBackground = function () {
     this._parallax = [];
 
     // Create tiling sprite
-    this._backSprite1 = new Sprite(ImageManager.loadTitle1($dataSystem.title1Name));
+    this._backSprite1 = new Sprite(
+      ImageManager.loadTitle1($dataSystem.title1Name)
+    );
 
     // It is a fixed window frame.
-    this._backSprite2 = new Sprite(ImageManager.loadTitle2($dataSystem.title2Name));
+    this._backSprite2 = new Sprite(
+      ImageManager.loadTitle2($dataSystem.title2Name)
+    );
 
     // Add to game screen.
     this.addChild(this._backSprite1);
@@ -608,12 +616,19 @@ RS.Utils = RS.Utils || {};
 
     for (var i = 0; i < $.maxParallaxImages; i++) {
       this._parallax[i] = new TilingSprite();
-      this._parallax[i].bitmap = ImageManager.loadParallax($.parallaxImage[i].image);
-      this._parallax[i].move($.parallaxImage[i].x, $.parallaxImage[i].y, Graphics.boxWidth, Graphics.boxHeight);
-      this._parallax[i].blendMode = $.parallaxImage[i].blend || PIXI.BLEND_MODES.NORMAL;
+      this._parallax[i].bitmap = ImageManager.loadParallax(
+        $.parallaxImage[i].image
+      );
+      this._parallax[i].move(
+        $.parallaxImage[i].x,
+        $.parallaxImage[i].y,
+        Graphics.boxWidth,
+        Graphics.boxHeight
+      );
+      this._parallax[i].blendMode =
+        $.parallaxImage[i].blend || PIXI.BLEND_MODES.NORMAL;
       this.addChild(this._parallax[i]);
     }
-
   };
 
   Scene_Title.prototype.getParallaxSpeed = function (idx) {
@@ -622,22 +637,22 @@ RS.Utils = RS.Utils || {};
 
   Scene_Title.prototype.updateParallaxBackground = function () {
     var speed = [];
-    if(Math.abs(this._parallaxSpeed) > 10000) this._parallaxSpeed = 0;
+    if (Math.abs(this._parallaxSpeed) > 10000) this._parallaxSpeed = 0;
     this._parallaxSpeed -= 1.5;
 
     for (var i = 0; i < $.maxParallaxImages; i++) {
-      if(i === 0) {
+      if (i === 0) {
         speed[0] = this._parallaxSpeed * this.getParallaxSpeed(2);
         this._parallax[0].origin.x = speed[0];
       } else {
-        speed[i] = this._parallax[i - 1].origin.x * this.getParallaxSpeed(i + 2);
+        speed[i] =
+          this._parallax[i - 1].origin.x * this.getParallaxSpeed(i + 2);
         this._parallax[i].origin.x = speed[i];
       }
     }
-
   };
 
-  Scene_Title.prototype.initSpriteParameter = function() {
+  Scene_Title.prototype.initSpriteParameter = function () {
     $._x = Graphics.width / 2 + eval($.xPadding);
     $._y = Graphics.height / 2 + $._dist;
     this._max = 1;
@@ -650,17 +665,17 @@ RS.Utils = RS.Utils || {};
     this._parallaxSpeed = 0;
   };
 
-  Scene_Title.prototype.initTouchParameter = function() {
+  Scene_Title.prototype.initTouchParameter = function () {
     this._firstPos = 0;
     this._lastPos = 0;
     this._touch_velocity = false;
   };
 
-  Scene_Title.prototype.updateTouchInput = function() {
-    if(TouchInput.isTriggered() && !this._touch_velocity) {
+  Scene_Title.prototype.updateTouchInput = function () {
+    if (TouchInput.isTriggered() && !this._touch_velocity) {
       this._firstPos = TouchInput.x;
       this._touch_velocity = true;
-    } else  if(TouchInput.isReleased() && this._touch_velocity) {
+    } else if (TouchInput.isReleased() && this._touch_velocity) {
       this._lastPos = TouchInput.x;
       this._velocity = this._lastPos - this._firstPos;
       this._velocity < 0 ? this.left(true) : this.right(true);
@@ -668,26 +683,27 @@ RS.Utils = RS.Utils || {};
     }
   };
 
-  Scene_Title.prototype.updateKeyboardCheck = function() {
-
+  Scene_Title.prototype.updateKeyboardCheck = function () {
     this._wheelBegin = TouchInput.isPressed() && TouchInput.wheelY;
 
     // Key press check and mouse wheel detection.
-    this.left(Input.isTriggered("left") || (TouchInput.wheelY - this._wheelBegin) < 0  );
-    this.right(Input.isTriggered("right") || (TouchInput.wheelY - this._wheelBegin) > 0 );
+    this.left(
+      Input.isTriggered('left') || TouchInput.wheelY - this._wheelBegin < 0
+    );
+    this.right(
+      Input.isTriggered('right') || TouchInput.wheelY - this._wheelBegin > 0
+    );
 
     // When the decision key is pressed
     // if( Input.isTriggered("ok") || TouchInput.isTriggered() ) {
-    if( Input.isTriggered("ok") ) {
+    if (Input.isTriggered('ok')) {
       this.selectMenu();
     }
 
     this._wheelBegin = TouchInput.isPressed() && TouchInput.wheelY;
-
   };
 
-  Scene_Title.prototype.isCheckDir = function(dir) {
-
+  Scene_Title.prototype.isCheckDir = function (dir) {
     // Should the button rotate left?
     var isLeft = !this._rotateRight && this._rotateLeft;
 
@@ -701,26 +717,21 @@ RS.Utils = RS.Utils || {};
     var result = null;
 
     // Check the direction and maximum angle.
-    return result = {
-      'left': isLeft && (this._angle > radian),
-      'right': isRight && (this._angle < radian)
-    }[dir] && true;
-
+    return (result =
+      {
+        left: isLeft && this._angle > radian,
+        right: isRight && this._angle < radian,
+      }[dir] && true);
   };
 
-  Scene_Title.prototype.updateSprite = function() {
-
-    if(!this._textCreated) return false;
+  Scene_Title.prototype.updateSprite = function () {
+    if (!this._textCreated) return false;
 
     // Check the direction of rotation.
-    if(this.isCheckDir('left')) {
-
-      RS.Utils.wrapAngle( this._angle -= this.upAngle() );
-
-    } else if(this.isCheckDir('right')) {
-
-      RS.Utils.wrapAngle( this._angle += this.upAngle() );
-
+    if (this.isCheckDir('left')) {
+      RS.Utils.wrapAngle((this._angle -= this.upAngle()));
+    } else if (this.isCheckDir('right')) {
+      RS.Utils.wrapAngle((this._angle += this.upAngle()));
     }
 
     // Moves the menu.
@@ -728,7 +739,6 @@ RS.Utils = RS.Utils || {};
 
     // Change the scale of all graphic objects.
     this.updateScale();
-
   };
 
   var _alias_startFadeOut = Scene_Title.prototype.startFadeOut;
@@ -739,8 +749,8 @@ RS.Utils = RS.Utils || {};
     });
   };
 
-  Scene_Title.prototype.updateScale = function() {
-    var t = (Date.now() % 1000 / 1000);
+  Scene_Title.prototype.updateScale = function () {
+    var t = (Date.now() % 1000) / 1000;
     var a = 1.0;
     var b = 1.5;
     var d = a + t * (b - a);
@@ -751,123 +761,23 @@ RS.Utils = RS.Utils || {};
     var l = this.getTopItem();
 
     // Search the entire button.
-    l.forEach( function(i) {
-
+    l.forEach(function (i) {
       // If the index value equals zero?
-      if(l.indexOf(i) === 0) {
-
+      if (l.indexOf(i) === 0) {
         // Increase size.
         i.scale.set(p, p);
-        if(i.children[0]) i.children[0].style.fill = [$.selectedColor,'#FFFFFF'];
-
+        if (i.children[0])
+          i.children[0].style.fill = [$.selectedColor, '#FFFFFF'];
       } else {
-
         // Set the original size.
         i.scale.set(1.0, 1.0);
-        if(i.children[0]) i.children[0].style.fill = [$.unselectedColor,'#FFFFFF'];
-
+        if (i.children[0])
+          i.children[0].style.fill = [$.unselectedColor, '#FFFFFF'];
       }
     }, this);
-
   };
 
-  Scene_Title.prototype.getTopItem = function() {
-    var list = this._texts.slice(0);
-    list.sort(function(a, b) { return a.y - b.y });
-    return list;
-  };
-
-  Scene_Title.prototype.selectMenu = function() {
-
-    // If the button has already been pressed.
-    if(this._isGameStarted) return false;
-
-    // Return menu index.
-    var i = this.menuIndex();
-
-    var self = this._commandWindow;
-
-    var symbol = self.commandSymbol(i);
-    if(symbol !== 'continue') {
-      if(self._handlers[symbol]) {
-        // Plays the OK sound.
-        SoundManager.playOk();
-        self._handlers[symbol]();
-      }
-    } else {
-      if(self.isContinueEnabled()) {
-        // Plays the OK sound.
-        SoundManager.playOk();
-        if(self._handlers[symbol]) self._handlers[symbol]();
-      } else {
-        SoundManager.playBuzzer();
-      }
-    }
-  };
-
-  Scene_Title.prototype.left= function(wrap) {
-
-    if(wrap) {
-      // Plays the cursor sound.
-      SoundManager.playCursor();
-
-      this._rotateLeft = true;
-      this._rotateRight = false;
-
-      // Check the range of angles.
-      RS.Utils.wrapMax(this._max -= $._maxAngle);
-
-    }
-
-  };
-
-  Scene_Title.prototype.right = function(wrap) {
-
-    if(wrap) {
-
-      // Plays the cursor sound.
-      SoundManager.playCursor();
-
-      this._rotateLeft = false;
-      this._rotateRight = true;
-
-      // Check the range of angles.
-      RS.Utils.wrapMax(this._max += $._maxAngle);
-
-    }
-
-  };
-
-  Scene_Title.prototype.upAngle = function() {
-    return (2 * Math.PI ) / $._angleSpeed;
-  };
-
-  Scene_Title.prototype.moveMenu = function() {
-    // Returns the angle of the command window (parent)
-    var parentRate = Math.atan2(this._commandWindow.y, this._commandWindow.x) * (180 / Math.PI);
-    var angle = 0;
-    for (var i = 0; i < this._listLength; i++) {
-      angle = Math.cos( (Math.PI / 2) * i );
-      if(Math.abs(angle) === 1) {
-        angle *= 90;
-      } else {
-        angle = 0;
-      }
-      this.move(this._texts[i], // sprite
-        this._r + $._dist, // r
-        this._angle + RS.Utils.convertToRadian(parentRate * angle) // angle
-      );
-    }
-  };
-
-  Scene_Title.prototype.menuIndex = function() {
-    // If the element is not found, it returns the minimum value of the array.
-    // TODO: Is it better to use the sort function?
-    var n = this.spriteDistance();
-    return this._texts.indexOf(n.min());
-  };
-
-  Scene_Title.prototype.spriteDistance = function() {
+  Scene_Title.prototype.getTopItem = function () {
     var list = this._texts.slice(0);
     list.sort(function (a, b) {
       return a.y - b.y;
@@ -875,40 +785,131 @@ RS.Utils = RS.Utils || {};
     return list;
   };
 
-  Scene_Title.prototype.move = function(sprite, r, angle) {
-    if(!sprite) return;
+  Scene_Title.prototype.selectMenu = function () {
+    // If the button has already been pressed.
+    if (this._isGameStarted) return false;
+
+    // Return menu index.
+    var i = this.menuIndex();
+
+    var self = this._commandWindow;
+
+    var symbol = self.commandSymbol(i);
+    if (symbol !== 'continue') {
+      if (self._handlers[symbol]) {
+        // Plays the OK sound.
+        SoundManager.playOk();
+        self._handlers[symbol]();
+      }
+    } else {
+      if (self.isContinueEnabled()) {
+        // Plays the OK sound.
+        SoundManager.playOk();
+        if (self._handlers[symbol]) self._handlers[symbol]();
+      } else {
+        SoundManager.playBuzzer();
+      }
+    }
+  };
+
+  Scene_Title.prototype.left = function (wrap) {
+    if (wrap) {
+      // Plays the cursor sound.
+      SoundManager.playCursor();
+
+      this._rotateLeft = true;
+      this._rotateRight = false;
+
+      // Check the range of angles.
+      RS.Utils.wrapMax((this._max -= $._maxAngle));
+    }
+  };
+
+  Scene_Title.prototype.right = function (wrap) {
+    if (wrap) {
+      // Plays the cursor sound.
+      SoundManager.playCursor();
+
+      this._rotateLeft = false;
+      this._rotateRight = true;
+
+      // Check the range of angles.
+      RS.Utils.wrapMax((this._max += $._maxAngle));
+    }
+  };
+
+  Scene_Title.prototype.upAngle = function () {
+    return (2 * Math.PI) / $._angleSpeed;
+  };
+
+  Scene_Title.prototype.moveMenu = function () {
+    // Returns the angle of the command window (parent)
+    var parentRate =
+      Math.atan2(this._commandWindow.y, this._commandWindow.x) *
+      (180 / Math.PI);
+    var angle = 0;
+    for (var i = 0; i < this._listLength; i++) {
+      angle = Math.cos((Math.PI / 2) * i);
+      if (Math.abs(angle) === 1) {
+        angle *= 90;
+      } else {
+        angle = 0;
+      }
+      this.move(
+        this._texts[i], // sprite
+        this._r + $._dist, // r
+        this._angle + RS.Utils.convertToRadian(parentRate * angle) // angle
+      );
+    }
+  };
+
+  Scene_Title.prototype.menuIndex = function () {
+    // If the element is not found, it returns the minimum value of the array.
+    // TODO: Is it better to use the sort function?
+    var n = this.spriteDistance();
+    return this._texts.indexOf(n.min());
+  };
+
+  Scene_Title.prototype.spriteDistance = function () {
+    var list = this._texts.slice(0);
+    list.sort(function (a, b) {
+      return a.y - b.y;
+    });
+    return list;
+  };
+
+  Scene_Title.prototype.move = function (sprite, r, angle) {
+    if (!sprite) return;
     var xDirAngle = Math.sin(angle);
-    if($.isCircularRotation) xDirAngle = Math.cos(angle);
-    var x = ( this._originPosition[0] ) + r * xDirAngle - sprite.width / 2;
-    var y = ( this._originPosition[1] ) + r * Math.sin(angle) - sprite.height / 2;
+    if ($.isCircularRotation) xDirAngle = Math.cos(angle);
+    var x = this._originPosition[0] + r * xDirAngle - sprite.width / 2;
+    var y = this._originPosition[1] + r * Math.sin(angle) - sprite.height / 2;
     sprite.x = x;
     sprite.y = y;
   };
 
-  Scene_Title.prototype.makeSprite = function(list) {
+  Scene_Title.prototype.makeSprite = function (list) {
     this._texts = [];
     this._listLength = parseInt(list.length);
     this._lists = list;
     $._menuSize = this._listLength;
-    $._maxAngle =  360.0 / $._menuSize;
+    $._maxAngle = 360.0 / $._menuSize;
     list.forEach(function (e, i, a) {
       this._texts.push(this.makeText(list[i]));
     }, this);
 
     // This flag indicates that the text was successfully created.
     this._textCreated = true;
-
   };
 
-  Scene_Title.prototype.makeText = function(str) {
-
+  Scene_Title.prototype.makeText = function (str) {
     // Create sprite button
     var text = new Sprite_Button();
     var textStyle = new PIXI.TextStyle($.defaultTextStyle);
     textStyle.fontSize = 32;
     textStyle.strokeThickness = 1;
     textStyle.stroke = $._outLineColor;
-    textStyle.fill = ['#888888','#FFFFFF'];
+    textStyle.fill = ['#888888', '#FFFFFF'];
 
     var bmt = new PIXI.Text(str.name, textStyle);
     var self = this._commandWindow;
@@ -916,24 +917,22 @@ RS.Utils = RS.Utils || {};
     text.setColdFrame(0, 0, bmt.width, bmt.height);
     text.setHotFrame(0, 0, bmt.width, bmt.height);
     text.setClickHandler(function () {
-
       var symbol = str.symbol;
-      if(symbol !== 'continue') {
-        if(self._handlers[symbol]) {
+      if (symbol !== 'continue') {
+        if (self._handlers[symbol]) {
           // Plays the OK sound.
           SoundManager.playOk();
           self._handlers[symbol]();
         }
       } else {
-        if(self.isContinueEnabled()) {
+        if (self.isContinueEnabled()) {
           // Plays the OK sound.
           SoundManager.playOk();
-          if(self._handlers[symbol]) self._handlers[symbol]();
+          if (self._handlers[symbol]) self._handlers[symbol]();
         } else {
           SoundManager.playBuzzer();
         }
       }
-
     });
 
     // Add text to the screen
@@ -942,17 +941,15 @@ RS.Utils = RS.Utils || {};
 
     // Return a text object.
     return text;
-
   };
 
   var _alias_createCommandWindow = Scene_Title.prototype.createCommandWindow;
-   Scene_Title.prototype.createCommandWindow = function() {
+  Scene_Title.prototype.createCommandWindow = function () {
     _alias_createCommandWindow.call(this);
-    this._commandWindow.x = (Graphics.width - this._commandWindow.width) - 20;
+    this._commandWindow.x = Graphics.width - this._commandWindow.width - 20;
     this._commandWindow.opacity = 0;
     this._commandWindow.contentsOpacity = 0;
     this._commandWindow.active = false;
     this.makeSprite(JsonEx.makeDeepCopy(this._commandWindow._list));
   };
-
 })(RS.ParallaxTitleEx.Params);

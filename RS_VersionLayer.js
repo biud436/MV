@@ -42,7 +42,7 @@
  * @default 2
  *
  * @param defaultText
-  * @parent --- Font
+ * @parent --- Font
  * @desc Specify the prefix in front a text
  * @default Version :
  *
@@ -196,25 +196,24 @@ var Imported = Imported || {};
 Imported.RS_VersionLayer = true;
 
 (function () {
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_VersionLayer>');
+  });
 
-  var parameters = $plugins.filter(function(i) {
-    return i.description.contains("<RS_VersionLayer>");
-  })
-
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
   var params = [
-    String(eval(parameters["Version"] || '1.0')),
+    String(eval(parameters['Version'] || '1.0')),
     Number(parameters['fontSize'] || 14),
-    String(parameters['textColor'] || "rgb(56, 150, 119)"),
-    String(parameters['outlineColor'] || "rgb(255, 255, 255)"),
+    String(parameters['textColor'] || 'rgb(56, 150, 119)'),
+    String(parameters['outlineColor'] || 'rgb(255, 255, 255)'),
     Number(parameters['outlineWidth'] || 2),
     String(parameters['defaultText'] || 'Version : '),
     String(parameters['textAlign'] || 'right'),
     Boolean(parameters['visible'] === 'true'),
     Number(parameters['opacity'] || 255),
     String(parameters['Position'] || 'Top'),
-    false
+    false,
   ];
 
   //----------------------------------------------------------------------------
@@ -224,7 +223,7 @@ Imported.RS_VersionLayer = true;
 
   function VersionLayer() {
     this.initialize.apply(this, arguments);
-  };
+  }
 
   VersionLayer.prototype = Object.create(Sprite.prototype);
   VersionLayer.prototype.constructor = VersionLayer;
@@ -235,7 +234,7 @@ Imported.RS_VersionLayer = true;
   };
 
   VersionLayer.prototype.refresh = function () {
-    if(!this.bitmap) return;
+    if (!this.bitmap) return;
     var width = this.bitmap.width;
     var height = this.bitmap.height;
     this.visible = params[7];
@@ -245,12 +244,19 @@ Imported.RS_VersionLayer = true;
     this.bitmap.textColor = params[2];
     this.bitmap.outlineColor = params[3];
     this.bitmap.outlineWidth = params[4];
-    this.bitmap.drawText(params[5] + ' ' + params[0], 0, 0, width, height, params[6]);
+    this.bitmap.drawText(
+      params[5] + ' ' + params[0],
+      0,
+      0,
+      width,
+      height,
+      params[6]
+    );
   };
 
   VersionLayer.prototype.update = function () {
     Sprite.prototype.update.call(this);
-    if(params[10]) {
+    if (params[10]) {
       this.refresh();
       params[10] = false;
     }
@@ -262,7 +268,7 @@ Imported.RS_VersionLayer = true;
   //
 
   var alias_Scene_Base_create = Scene_Base.prototype.create;
-  Scene_Base.prototype.create = function() {
+  Scene_Base.prototype.create = function () {
     alias_Scene_Base_create.call(this);
     this.createVersionLayer();
   };
@@ -275,7 +281,7 @@ Imported.RS_VersionLayer = true;
 
   var alias_Scene_Base_terminate = Scene_Base.prototype.terminate;
   Scene_Base.prototype.terminate = function () {
-    if(alias_Scene_Base_terminate) alias_Scene_Base_terminate.call(this);
+    if (alias_Scene_Base_terminate) alias_Scene_Base_terminate.call(this);
     this.removeChild(this._versionLayer);
   };
 
@@ -283,8 +289,13 @@ Imported.RS_VersionLayer = true;
     var pos = params[9].toLowerCase();
     var padding = 1;
     var fontSize = params[1] + 2;
-    this._versionLayer = new VersionLayer(new Bitmap(Graphics.boxWidth, fontSize));
-    this._versionLayer.y = (pos === 'bottom') ? (Graphics._renderer.height - fontSize - padding) : padding;
+    this._versionLayer = new VersionLayer(
+      new Bitmap(Graphics.boxWidth, fontSize)
+    );
+    this._versionLayer.y =
+      pos === 'bottom'
+        ? Graphics._renderer.height - fontSize - padding
+        : padding;
   };
 
   Scene_Base.prototype.addVersionLayer = function () {
@@ -297,22 +308,21 @@ Imported.RS_VersionLayer = true;
   //
   //
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_Game_Interpreter_pluginCommand.call(this, command, args);
-      if(command === "VersionLayer") {
-        switch(args[0]) {
-          case 'true':
-            params.splice(7, 1, true);
-            params.splice(10, 1, true);
-            break;
-          case 'false':
-            params.splice(7, 1, false);
-            params.splice(10, 1, true);
-            break;
-        }
+  var alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'VersionLayer') {
+      switch (args[0]) {
+        case 'true':
+          params.splice(7, 1, true);
+          params.splice(10, 1, true);
+          break;
+        case 'false':
+          params.splice(7, 1, false);
+          params.splice(10, 1, true);
+          break;
       }
+    }
   };
-
-
 })();

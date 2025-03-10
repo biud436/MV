@@ -5,7 +5,7 @@
  * =================================================================
  * How to use
  * =================================================================
- * Once downloaded the only setup we need to do is 
+ * Once downloaded the only setup we need to do is
  * to insert this plugin somewhere below MOG_Weather_EX plugin
  * =================================================================
  * Version Log
@@ -29,23 +29,22 @@
 var Imported = Imported || {};
 Imported.RS_SimpleSwapLayer_ForMOGWeatherEx = true;
 
-(function() {
+(function () {
+  if (!Imported.MOG_Weather_EX) {
+    return;
+  }
 
-    if(!Imported.MOG_Weather_EX) {
-        return;
-    }
+  Spriteset_Map.prototype.swapWeatherLayer = function () {
+    this._baseSprite.removeChild(this._WeatherPlane);
+    this.removeChild(this._pictureContainer);
+    this._baseSprite.addChild(this._pictureContainer);
+    this._baseSprite.addChild(this._WeatherPlane);
+  };
 
-    Spriteset_Map.prototype.swapWeatherLayer = function() {
-        this._baseSprite.removeChild(this._WeatherPlane);
-        this.removeChild(this._pictureContainer);
-        this._baseSprite.addChild(this._pictureContainer);
-        this._baseSprite.addChild(this._WeatherPlane);
-    };    
-
-    var alias_Spriteset_Map_createUpperLayer = Spriteset_Map.prototype.createUpperLayer;
-    Spriteset_Map.prototype.createUpperLayer = function() {
-        alias_Spriteset_Map_createUpperLayer.call(this);
-        this.swapWeatherLayer();
-    };
-        
+  var alias_Spriteset_Map_createUpperLayer =
+    Spriteset_Map.prototype.createUpperLayer;
+  Spriteset_Map.prototype.createUpperLayer = function () {
+    alias_Spriteset_Map_createUpperLayer.call(this);
+    this.swapWeatherLayer();
+  };
 })();

@@ -10,7 +10,6 @@
  * @target MZ
  * @plugindesc (v1.01) 수동으로 키보드 이벤트를 만들고 브라우저에 키보드 입력 이벤트를 보냅니다.
  * @author biud436
- * @url https://biud436.blog.me
  *
  * @help
  * =============================================================================
@@ -112,7 +111,6 @@
  * @target MZ
  * @plugindesc (v1.01) This plugin allows you to send keyboard input events manually.
  * @author biud436
- * @url https://biud436.blog.me
  * @help
  * =============================================================================
  * Introduction
@@ -202,153 +200,149 @@
  * @default keyName
  */
 (() => {
-    'use strict';
+  'use strict';
 
-    Input._startTime = 0;
+  Input._startTime = 0;
 
-    Input._makeKeyEvent = function (type, keyCode) {
-        const isShift = Boolean(keyCode === 0x10);
-        const isCtrl = Boolean(keyCode === 0x11);
-        const isAlt = Boolean(keyCode === 0x12);
-        const evt = new KeyboardEvent(type, {
-            bubbles: true,
-            shiftKey: isShift,
-            ctrlKey: isCtrl,
-            altKey: isAlt,
+  Input._makeKeyEvent = function (type, keyCode) {
+    const isShift = Boolean(keyCode === 0x10);
+    const isCtrl = Boolean(keyCode === 0x11);
+    const isAlt = Boolean(keyCode === 0x12);
+    const evt = new KeyboardEvent(type, {
+      bubbles: true,
+      shiftKey: isShift,
+      ctrlKey: isCtrl,
+      altKey: isAlt,
+    });
+    Object.defineProperty(evt, 'keyCode', {
+      get() {
+        return keyCode;
+      },
+    });
+    document.dispatchEvent(evt);
+  };
+
+  /**
+   * Swap between key/value
+   * @param {String}
+   * @return {Number | undefined | null}
+   */
+  Input._makeVirtualKey = function (keyCode) {
+    if (typeof keyCode === 'string') {
+      const tempMapper = [];
+      let vkCode = 0;
+      let mapper = JsonEx.makeDeepCopy(Input.keyMapper);
+      const { length } = Object.keys(mapper);
+      const keys = Object.keys(mapper);
+      for (let i = 0; i < length; i++) {
+        tempMapper[mapper[keys[i]]] = keys[i];
+      }
+      mapper = null;
+      vkCode = tempMapper[keyCode];
+
+      return vkCode;
+    }
+
+    return null;
+  };
+
+  Input._makeKeyTiming = function (keyCode) {
+    if (typeof keyCode === 'string') {
+      keyCode = this._makeVirtualKey(keyCode);
+    }
+    requestAnimationFrame(function (timestamp) {
+      Input._startTime = timestamp;
+      const progress = timestamp - Input._startTime;
+      Input._makeKeyEvent('keydown', keyCode);
+      if (progress < 2000) {
+        requestAnimationFrame(function () {
+          Input._makeKeyEvent('keyup', keyCode);
         });
-        Object.defineProperty(evt, 'keyCode', {
-            get() {
-                return keyCode;
-            },
-        });
-        document.dispatchEvent(evt);
+      }
+    });
+  };
+
+  Input._executeJson = function (keyInt, keyName, func) {
+    let retObj;
+    let type;
+
+    const json = {
+      keyInt: keyName,
     };
+    if (typeof json === 'object') {
+      retObj = JSON.parse(json);
+    }
+    if (retObj) {
+      type = Object.keys(retObj);
+      if (typeof type[0] === 'number') {
+        if (typeof func === 'function') {
+          func(retObj);
+        }
+      }
+    }
+  };
 
-    /**
-     * Swap between key/value
-     * @param {String}
-     * @return {Number | undefined | null}
-     */
-    Input._makeVirtualKey = function (keyCode) {
-        if (typeof keyCode === 'string') {
-            const tempMapper = [];
-            let vkCode = 0;
-            let mapper = JsonEx.makeDeepCopy(Input.keyMapper);
-            const { length } = Object.keys(mapper);
-            const keys = Object.keys(mapper);
-            for (let i = 0; i < length; i++) {
-                tempMapper[mapper[keys[i]]] = keys[i];
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
+
+  const alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'KeyEvent') {
+      // eslint-disable-next-line default-case
+      switch (args[0]) {
+        case 'executeString':
+          {
+            const keyCode = Input._makeVirtualKey(args[1]) || 0;
+            Input._makeKeyTiming(keyCode);
+          }
+          break;
+        case 'executeKey':
+          {
+            const keyCode = parseInt(args[1] || 0, 10);
+            Input._makeKeyTiming(keyCode);
+          }
+          break;
+        case 'addNewKey':
+          Input._executeJson(parseInt(args[1], 10), args[2], function (retObj) {
+            Object.assign(Input.keyMapper, retObj);
+          });
+          break;
+      }
+    }
+  };
+
+  (() => {
+    if (Utils.RPGMAKER_NAME === 'MZ') {
+      // 플러그인의 이름을 가져옵니다.
+      const pluginName = 'RS_KeyboardEvent';
+
+      const pluginCommands = {
+        executeString: args => {
+          const keyCode = Input._makeVirtualKey(args.keyCode) || 0;
+          Input._makeKeyTiming(keyCode);
+        },
+        executeKey: args => {
+          const keyCode = parseInt(args.keyCode || 0, 10);
+          Input._makeKeyTiming(keyCode);
+        },
+        addNewKey: args => {
+          Input._executeJson(
+            parseInt(args.keyInt, 10),
+            args.keyName,
+            function (retObj) {
+              Object.assign(Input.keyMapper, retObj);
             }
-            mapper = null;
-            vkCode = tempMapper[keyCode];
+          );
+        },
+      };
 
-            return vkCode;
-        }
-
-        return null;
-    };
-
-    Input._makeKeyTiming = function (keyCode) {
-        if (typeof keyCode === 'string') {
-            keyCode = this._makeVirtualKey(keyCode);
-        }
-        requestAnimationFrame(function (timestamp) {
-            Input._startTime = timestamp;
-            const progress = timestamp - Input._startTime;
-            Input._makeKeyEvent('keydown', keyCode);
-            if (progress < 2000) {
-                requestAnimationFrame(function () {
-                    Input._makeKeyEvent('keyup', keyCode);
-                });
-            }
-        });
-    };
-
-    Input._executeJson = function (keyInt, keyName, func) {
-        let retObj;
-        let type;
-
-        const json = {
-            keyInt: keyName,
-        };
-        if (typeof json === 'object') {
-            retObj = JSON.parse(json);
-        }
-        if (retObj) {
-            type = Object.keys(retObj);
-            if (typeof type[0] === 'number') {
-                if (typeof func === 'function') {
-                    func(retObj);
-                }
-            }
-        }
-    };
-
-    //============================================================================
-    // Game_Interpreter
-    //============================================================================
-
-    const alias_Game_Interpreter_pluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === 'KeyEvent') {
-            // eslint-disable-next-line default-case
-            switch (args[0]) {
-                case 'executeString':
-                    {
-                        const keyCode = Input._makeVirtualKey(args[1]) || 0;
-                        Input._makeKeyTiming(keyCode);
-                    }
-                    break;
-                case 'executeKey':
-                    {
-                        const keyCode = parseInt(args[1] || 0, 10);
-                        Input._makeKeyTiming(keyCode);
-                    }
-                    break;
-                case 'addNewKey':
-                    Input._executeJson(
-                        parseInt(args[1], 10),
-                        args[2],
-                        function (retObj) {
-                            Object.assign(Input.keyMapper, retObj);
-                        }
-                    );
-                    break;
-            }
-        }
-    };
-
-    (() => {
-        if (Utils.RPGMAKER_NAME === 'MZ') {
-            // 플러그인의 이름을 가져옵니다.
-            const pluginName = 'RS_KeyboardEvent';
-
-            const pluginCommands = {
-                executeString: args => {
-                    const keyCode = Input._makeVirtualKey(args.keyCode) || 0;
-                    Input._makeKeyTiming(keyCode);
-                },
-                executeKey: args => {
-                    const keyCode = parseInt(args.keyCode || 0, 10);
-                    Input._makeKeyTiming(keyCode);
-                },
-                addNewKey: args => {
-                    Input._executeJson(
-                        parseInt(args.keyInt, 10),
-                        args.keyName,
-                        function (retObj) {
-                            Object.assign(Input.keyMapper, retObj);
-                        }
-                    );
-                },
-            };
-
-            // eslint-disable-next-line no-restricted-syntax, guard-for-in
-            for (const i in pluginCommands) {
-                PluginManager.registerCommand(pluginName, i, pluginCommands[i]);
-            }
-        }
-    })();
+      // eslint-disable-next-line no-restricted-syntax, guard-for-in
+      for (const i in pluginCommands) {
+        PluginManager.registerCommand(pluginName, i, pluginCommands[i]);
+      }
+    }
+  })();
 })();

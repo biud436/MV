@@ -28,7 +28,7 @@
  * =============================================================================
  * Test Devices
  * =============================================================================
- * Android Chrome (64.0.3282.137) - Supported 
+ * Android Chrome (64.0.3282.137) - Supported
  * iOS Safari (iPhone8) - Not Supported
  * =============================================================================
  * How to setup an image
@@ -68,29 +68,29 @@
  * @value portrait
  *
  * @help
- * 
+ *
  * 플러그인 안드로이드 크롬 웹 브라우저 전용입니다. (홈에 추가한 상태가 아닐 때)
- * 
- * 화면 방향 변경에 대한 권한은 보통 버튼을 누르는 것과 같은 실제 상호 작용이 있을 때에만 
+ *
+ * 화면 방향 변경에 대한 권한은 보통 버튼을 누르는 것과 같은 실제 상호 작용이 있을 때에만
  * 얻을 수 있습니다.
- * 
+ *
  * 그래서 전체 화면 변경 버튼을 눌러야만 화면 방향을 변경되게 만들 수 밖에 없었습니다.
- * 
+ *
  * =============================================================================
  * 테스트 기기
  * =============================================================================
- * 
+ *
  * Android Chrome (64.0.3282.137) - 크롬 브라우저에서만 지원합니다.
  * iOS Safari (iPhone8) - 사파리는 이 기능을 지원하지 않습니다.
- * 
+ *
  * =============================================================================
  * 이미지 설정 방법
  * =============================================================================
- * 
+ *
  * 이미지를 다음 링크에서 다운로드 받은 후 img/pictures 폴더에 추가하세요.
- * 
+ *
  * 링크 - https://github.com/biud436/MV/blob/master/docs/images/btn_fullscr.png
- * 
+ *
  * =============================================================================
  * 변동 사항
  * =============================================================================
@@ -105,12 +105,11 @@ var Imported = Imported || {};
 Imported.ScreenOrientation = true;
 
 (function () {
-
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_ScreenOrientation>');
   });
 
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
   var tempEvent;
 
@@ -120,11 +119,14 @@ Imported.ScreenOrientation = true;
 
   Graphics._convertScreenOrientation = function (event) {
     Graphics._requestFullScreen();
-    var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
-    if(orientation) {
-      orientation.lock(parameters["default orientation"]).then(null, function(error) {});
+    var orientation =
+      screen.orientation || screen.mozOrientation || screen.msOrientation;
+    if (orientation) {
+      orientation
+        .lock(parameters['default orientation'])
+        .then(null, function (error) {});
     }
-    if(event) event.preventDefault();
+    if (event) event.preventDefault();
   };
 
   //============================================================================
@@ -134,53 +136,64 @@ Imported.ScreenOrientation = true;
   var alias_Scene_Title_create = Scene_Title.prototype.create;
   Scene_Title.prototype.create = function () {
     alias_Scene_Title_create.call(this);
-    if(Utils.isMobileDevice()) {
-      var userAgent = window.navigator.userAgent || "";
+    if (Utils.isMobileDevice()) {
+      var userAgent = window.navigator.userAgent || '';
       if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
         // A Safari Mobile is not supported in ScreenOrientation API.
-      } else if(userAgent.match(/Chrome/i) || userAgent.match(/Chromium/i) || userAgent.match(/Firefox/i)) {
+      } else if (
+        userAgent.match(/Chrome/i) ||
+        userAgent.match(/Chromium/i) ||
+        userAgent.match(/Firefox/i)
+      ) {
         this.createFullscreenImage();
       }
     }
   };
 
   Scene_Title.prototype.createFullscreenImage = function () {
-
     var div, path, filePath, img, imgName;
 
-    var target_div = document.querySelector("#div_fullscr");
-    if(target_div) document.body.removeChild(target_div);
+    var target_div = document.querySelector('#div_fullscr');
+    if (target_div) document.body.removeChild(target_div);
 
-    div = document.createElement("div");
-    div.id = "div_fullscr";
+    div = document.createElement('div');
+    div.id = 'div_fullscr';
 
-    imgName = parameters["Image"] + ".png";
+    imgName = parameters['Image'] + '.png';
 
-    if (Utils.RPGMAKER_VERSION >= "1.6.0" && Utils.isNwjs()) {
+    if (Utils.RPGMAKER_VERSION >= '1.6.0' && Utils.isNwjs()) {
       path = require('path');
       var base, root;
       base = path.dirname(process.mainModule.filename);
-      root = path.join(base, "img", "pictures");
+      root = path.join(base, 'img', 'pictures');
       filePath = path.join(root, imgName);
     } else {
-      filePath = "img/pictures/" + imgName;
+      filePath = 'img/pictures/' + imgName;
     }
 
     img = new Image();
-    img.id = "btn_fullscr";
+    img.id = 'btn_fullscr';
     img.src = filePath;
     img.hidden = true;
 
     img.width = 96;
     img.height = 96;
 
-    img.addEventListener("click", function (e) {
-      Graphics._convertScreenOrientation(e);
-    }, false);
+    img.addEventListener(
+      'click',
+      function (e) {
+        Graphics._convertScreenOrientation(e);
+      },
+      false
+    );
 
-    img.addEventListener("touchend", function (e) {
-      Graphics._convertScreenOrientation(e);
-    }, false);
+    img.addEventListener(
+      'touchend',
+      function (e) {
+        Graphics._convertScreenOrientation(e);
+      },
+      false
+    );
 
     div.appendChild(img);
     div.style.zIndex = 98;
@@ -188,34 +201,43 @@ Imported.ScreenOrientation = true;
     Graphics._centerElement(div);
     document.body.appendChild(div);
 
-    var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
-    if(orientation) {
-      window.addEventListener("orientationchange", Scene_Title.prototype.onorientationchange.bind(this), false);
+    var orientation =
+      screen.orientation || screen.mozOrientation || screen.msOrientation;
+    if (orientation) {
+      window.addEventListener(
+        'orientationchange',
+        Scene_Title.prototype.onorientationchange.bind(this),
+        false
+      );
       if (!orientation.type.match(/(?:landscape)/)) {
         img.hidden = false;
       }
     }
 
-    this.on('removed', function () {
-      var target_div = document.querySelector("#div_fullscr");
-      if(target_div) document.body.removeChild(target_div);
-    }, this);
+    this.on(
+      'removed',
+      function () {
+        var target_div = document.querySelector('#div_fullscr');
+        if (target_div) document.body.removeChild(target_div);
+      },
+      this
+    );
   };
 
   Scene_Title.prototype.onorientationchange = function () {
-    var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
-    if(!orientation) return;
+    var orientation =
+      screen.orientation || screen.mozOrientation || screen.msOrientation;
+    if (!orientation) return;
     if (orientation.type.match(/(?:landscape)/)) {
-      var target_div = document.querySelector("#div_fullscr");
-      if(target_div) {
+      var target_div = document.querySelector('#div_fullscr');
+      if (target_div) {
         target_div.hidden = true;
       }
     } else {
-      var target_div = document.querySelector("#div_fullscr");
-      if(target_div) {
+      var target_div = document.querySelector('#div_fullscr');
+      if (target_div) {
         target_div.hidden = false;
       }
     }
   };
-
 })();

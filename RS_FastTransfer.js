@@ -44,47 +44,47 @@
  */
 
 (() => {
-    let isFastTransfer = true;
+  let isFastTransfer = true;
 
-    //===========================================================================
-    // Scene_Map
-    //===========================================================================
+  //===========================================================================
+  // Scene_Map
+  //===========================================================================
 
-    const aliasSceneMapUpdateTransferPlayer =
-        Scene_Map.prototype.updateTransferPlayer;
-    Scene_Map.prototype.updateTransferPlayer = function () {
-        if (!isFastTransfer) {
-            aliasSceneMapUpdateTransferPlayer.call(this);
-            return;
-        }
+  const aliasSceneMapUpdateTransferPlayer =
+    Scene_Map.prototype.updateTransferPlayer;
+  Scene_Map.prototype.updateTransferPlayer = function () {
+    if (!isFastTransfer) {
+      aliasSceneMapUpdateTransferPlayer.call(this);
+      return;
+    }
 
-        if (!$gamePlayer.isTransferring()) {
-            return;
-        }
+    if (!$gamePlayer.isTransferring()) {
+      return;
+    }
 
-        const isMoveNewMap =
-            $gamePlayer && $gamePlayer._newMapId !== $gameMap.mapId();
+    const isMoveNewMap =
+      $gamePlayer && $gamePlayer._newMapId !== $gameMap.mapId();
 
-        if (isMoveNewMap) {
-            SceneManager.goto(Scene_Map);
-        } else if ($gamePlayer) {
-            $gamePlayer.performTransfer();
-        }
-    };
+    if (isMoveNewMap) {
+      SceneManager.goto(Scene_Map);
+    } else if ($gamePlayer) {
+      $gamePlayer.performTransfer();
+    }
+  };
 
-    //===========================================================================
-    // Game_Interpreter
-    //===========================================================================
+  //===========================================================================
+  // Game_Interpreter
+  //===========================================================================
 
-    const aliasGameInterpreterPluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        aliasGameInterpreterPluginCommand.call(this, command, args);
+  const aliasGameInterpreterPluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    aliasGameInterpreterPluginCommand.call(this, command, args);
 
-        if (command === 'DisableFastTransfer') {
-            isFastTransfer = false;
-        } else if (command === 'EnableFastTransfer') {
-            isFastTransfer = true;
-        }
-    };
+    if (command === 'DisableFastTransfer') {
+      isFastTransfer = false;
+    } else if (command === 'EnableFastTransfer') {
+      isFastTransfer = true;
+    }
+  };
 })();

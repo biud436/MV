@@ -17,7 +17,7 @@
  *
  * @param Show Preview Window
  * @type boolean
- * @desc if true, the preview window will file's contents show after saving the file named plugins.js 
+ * @desc if true, the preview window will file's contents show after saving the file named plugins.js
  * @default false
  *
  * @param Auto Reload
@@ -41,29 +41,29 @@
  *
  * @help
  * This plugin allows you to change the plugin configuration during the game.
- * You can change the configuration of a specific plugin that didn't use during 
+ * You can change the configuration of a specific plugin that didn't use during
  * the game without restarting the program.
- * 
+ *
  * To change a plugin configuration scene, you need to call below plugin command.
  *
  *    RefreshManager open
- * 
- * it can create a new plugin configuration and then it loads a map faster without 
+ *
+ * it can create a new plugin configuration and then it loads a map faster without
  * starting the title scene.
- * 
- * Note that this tool can be used only in PC platform and this tool is for game 
+ *
+ * Note that this tool can be used only in PC platform and this tool is for game
  * developers, not game user.
- * 
- * If you change a plugin configuration without selecting the plugin in the plugin 
+ *
+ * If you change a plugin configuration without selecting the plugin in the plugin
  * configuration window, You must call the script code, as follows.
- * 
+ *
  * PluginManager.refreshStatus("Community_Basic", false);
- * 
- * In the script command, 
+ *
+ * In the script command,
  * if you are execute it safety after exiting the current event, you can call below code blocks.
- * 
+ *
  * setTimeout(function() { PluginManager.refreshStatus("Community_Basic", false); }, 0);
- * 
+ *
  * =============================================================================
  * Change Log
  * =============================================================================
@@ -81,7 +81,7 @@
  * 2018.02.27 (v1.1.2) : (RMMV 1.6.0)
  * - Now that it will be restored as the previous plugins.js file after exiting the game.
  * - Fixed an encoding of of text in the preview window.
- * 2019.09.19 (v1.2.0) : 
+ * 2019.09.19 (v1.2.0) :
  * - Fixed the bug that is not parsed the plugin parameter that is written with Korean.
  * - Removed the unstable JSON parser that I've written while studying the compiler theory.
  * 2020.01.13 (v1.2.1) :
@@ -131,56 +131,54 @@
  * 이 플러그인을 사용하면 게임 실행 도중에 플러그인 구성 파일을 변경할 수 있으며,
  * 게임 프로그램을 종료하지 않고 게임 도중에 특정 플러그인의 사용 여부를 변경할 수 있습니다.
  * 이 플러그인은 PC 플랫폼에서만 동작합니다.
- * 
+ *
  * =============================================================================
  * 플러그인 명령에 대해...
  * =============================================================================
  * 다음 플러그인 명령을 호출하면 RefreshManager가 열립니다.
- * 
+ *
  * RefreshManager open
- * 
+ *
  * 플러그인 설정 변경은 RefreshManager에서 가능합니다.
- * 
+ *
  * 수동으로 변경하시려면 다음과 같이 하시기 바랍니다.
- * 
+ *
  * PluginManager.setStatus(pluginName, status);
- * 
+ *
  * 예를 들면, 다음과 같습니다.
  *  ex) PluginManager.refreshStatus("Community_Basic", false);
  *
  * 스크립트 커맨드에서 현재 실행 중인 이벤트가 종료된 후, 코드를 실행하려면 아래와 같이 하세요.
- * 
+ *
  * setTimeout(function() { PluginManager.refreshStatus("Community_Basic", false); }, 0);
- * 
+ *
  */
 
 var Imported = Imported || {};
- Imported.RS_RefreshManager = true;
+Imported.RS_RefreshManager = true;
 
 var RS = RS || {};
 
-(function() {
-
-  "use strict";
+(function () {
+  'use strict';
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_RefreshManager>');
   });
-  
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
   let fastLoadFileId = Number(parameters['Save File ID'] || 1);
   let nClosingTime = Number(parameters['Auto closing time'] || 2500);
   let isPreviewWindow = Boolean(parameters['Show Preview Window'] === 'true');
-  let isAutoReload =  Boolean(parameters['Auto Reload'] === 'true');
+  let isAutoReload = Boolean(parameters['Auto Reload'] === 'true');
   let _previewWindow = null;
 
   let fs = require('fs');
 
   class RefreshManager {
-
     static localFilePath(fileName) {
-      if(!Utils.isNwjs()) return '';
+      if (!Utils.isNwjs()) return '';
       var path, base;
       path = require('path');
       base = path.dirname(process.mainModule.filename);
@@ -190,10 +188,12 @@ var RS = RS || {};
     static makeTempPlugins() {
       let self = this;
       let path = this.localFilePath(self._savePath);
-      let tempPath = this.localFilePath(self._savePath.replace("plugins", "temp_plugins"));
+      let tempPath = this.localFilePath(
+        self._savePath.replace('plugins', 'temp_plugins')
+      );
       fs.readFile(path, function (err, data) {
         if (err) throw err;
-        fs.writeFile(tempPath , data, function(err) {
+        fs.writeFile(tempPath, data, function (err) {
           if (err) throw err;
         });
       });
@@ -201,26 +201,31 @@ var RS = RS || {};
 
     static restoreTempPlugins() {
       let self = this;
-      let path = this.localFilePath(self._savePath.replace("plugins", "temp_plugins"));
+      let path = this.localFilePath(
+        self._savePath.replace('plugins', 'temp_plugins')
+      );
       let tempPath = this.localFilePath(self._savePath);
       fs.readFile(path, function (err, data) {
         if (err) throw err;
-        fs.writeFile(tempPath , data, { "encoding": "utf8", "mode": 0o666, "flag": "w+" },
-          function(err) {
-          if (err) throw err;
-          fs.unlink(path, function (err) {
+        fs.writeFile(
+          tempPath,
+          data,
+          { encoding: 'utf8', mode: 0o666, flag: 'w+' },
+          function (err) {
             if (err) throw err;
-          });
-        });
-
+            fs.unlink(path, function (err) {
+              if (err) throw err;
+            });
+          }
+        );
       });
     }
 
     static makePlugins(texts) {
       let self = this;
       let path = this.localFilePath(self._savePath);
-      fs.writeFile(path , texts, function(err) {
-        if(err) throw new Error(err);
+      fs.writeFile(path, texts, function (err) {
+        if (err) throw new Error(err);
         let finText = `
         <!DOCTYPE html>
         <html>
@@ -233,13 +238,16 @@ var RS = RS || {};
           </body>
         </html>
         `;
-        let blob = new Blob( [finText], {endings:"native",type:"text/html;charset=utf-8"});
+        let blob = new Blob([finText], {
+          endings: 'native',
+          type: 'text/html;charset=utf-8',
+        });
         let url = URL.createObjectURL(blob);
-        if(isPreviewWindow) {
-            _previewWindow = window.open(url, '_blank');
-            _previewWindow.onclose = function() {
-                URL.revokeObjectURL(this.location.href);
-            };
+        if (isPreviewWindow) {
+          _previewWindow = window.open(url, '_blank');
+          _previewWindow.onclose = function () {
+            URL.revokeObjectURL(this.location.href);
+          };
         }
         RefreshManager._changed = true;
       });
@@ -249,7 +257,6 @@ var RS = RS || {};
       let self = this;
       return self._changed;
     }
-
   }
 
   RefreshManager._path = parameters['Target Path'] || '/js/plugins.js';
@@ -260,23 +267,22 @@ var RS = RS || {};
   //
   //
 
-  
   /**
-   * 이 함수는 변경된 플러그인의 상태를 plugins.js 파일에 반영합니다. 
+   * 이 함수는 변경된 플러그인의 상태를 plugins.js 파일에 반영합니다.
    * 하지만 변경된 플러그인의 내용은 게임 프로그램을 완전히 재시작해야만 반영됩니다.
    * @param  {String} pluginName
    * @param  {Boolean} status
    */
-  PluginManager.setStatus = function(pluginName, status) {
-
-    for(var i in $plugins) {
-      if($plugins[i]["name"] === pluginName) {
-        $plugins[i]["status"] = status;
+  PluginManager.setStatus = function (pluginName, status) {
+    for (var i in $plugins) {
+      if ($plugins[i]['name'] === pluginName) {
+        $plugins[i]['status'] = status;
       }
     }
 
-    RefreshManager.makePlugins("var $plugins = \r\n" + JSON.stringify($plugins, null, '\t'));
-
+    RefreshManager.makePlugins(
+      'var $plugins = \r\n' + JSON.stringify($plugins, null, '\t')
+    );
   };
 
   /**
@@ -285,32 +291,27 @@ var RS = RS || {};
    * @param  {String} pluginName
    * @param  {Boolean} status
    */
-  PluginManager.refreshStatus = function(pluginName, status) {
+  PluginManager.refreshStatus = function (pluginName, status) {
     PluginManager.setStatus(pluginName, status);
     $gameSystem.onBeforeSave();
-    
+
     if (DataManager.saveRefreshGame(fastLoadFileId)) {
-      
       StorageManager.cleanBackup(fastLoadFileId);
 
-      setTimeout(function() {
-        
-        if(_previewWindow) {
+      setTimeout(function () {
+        if (_previewWindow) {
           _previewWindow.close();
         }
-        
+
         RefreshManager._changed = false;
 
-        if(_previewWindow) {
+        if (_previewWindow) {
           _previewWindow = null;
         }
 
         window.location.reload();
-
       }, nClosingTime);
-
     }
-
   };
 
   //============================================================================
@@ -324,7 +325,7 @@ var RS = RS || {};
     }
     processNormalCharacter(textState) {
       let w = this.textWidth(textState.text[textState.index]);
-      if(textState.x + (w * 2) >= this.contentsWidth()) {
+      if (textState.x + w * 2 >= this.contentsWidth()) {
         textState.index--;
         this.processNewLine(textState);
       }
@@ -341,9 +342,13 @@ var RS = RS || {};
   //
 
   class Window_PluginManager extends Window_Selectable {
-
     constructor(x, y) {
-      super(x, y, Graphics.boxWidth, Graphics.boxHeight - Window_Base.prototype.fittingHeight(2));
+      super(
+        x,
+        y,
+        Graphics.boxWidth,
+        Graphics.boxHeight - Window_Base.prototype.fittingHeight(2)
+      );
       this._data = [];
       this._index = 0;
       this.initToken();
@@ -352,12 +357,12 @@ var RS = RS || {};
     initToken() {
       let _this = this;
 
-      for(var i in $plugins) {
+      for (var i in $plugins) {
         var plugin = $plugins[i];
         this._data.push({
-          'name': {text: plugin["name"]},
-          'status': {text: plugin["status"].toString()},
-          'description': {text: plugin["description"]},
+          name: { text: plugin['name'] },
+          status: { text: plugin['status'].toString() },
+          description: { text: plugin['description'] },
         });
       }
 
@@ -374,20 +379,22 @@ var RS = RS || {};
     }
 
     maxItems() {
-      if(this._data) {
-          return this._data.length;
+      if (this._data) {
+        return this._data.length;
       } else {
-         return 1;
+        return 1;
       }
     }
 
     item(index) {
-      if(this._data) {
-          return this._data[index];
+      if (this._data) {
+        return this._data[index];
       } else {
-        return {'name': {text: 'No Plugin'},
-                'status': {text: 'false'},
-                'description': {text: 'No Description'}};
+        return {
+          name: { text: 'No Plugin' },
+          status: { text: 'false' },
+          description: { text: 'No Description' },
+        };
       }
     }
 
@@ -415,20 +422,18 @@ var RS = RS || {};
       try {
         let item, name, enabled;
         if (this.isCurrentItemEnabled()) {
-            this.playOkSound();
-            this.updateInputData();
-            this.callOkHandler();
-            item = this.item(this.index());
-            name = item.name.text;
-            enabled = (item.status.text !== 'true');
-            item.status.text = enabled.toString();
-            PluginManager.setStatus(name, enabled);
+          this.playOkSound();
+          this.updateInputData();
+          this.callOkHandler();
+          item = this.item(this.index());
+          name = item.name.text;
+          enabled = item.status.text !== 'true';
+          item.status.text = enabled.toString();
+          PluginManager.setStatus(name, enabled);
         } else {
-            this.playBuzzerSound();
+          this.playBuzzerSound();
         }
-      } catch(e) {
-
-      }
+      } catch (e) {}
     }
 
     drawScript(index) {
@@ -436,7 +441,7 @@ var RS = RS || {};
       let item = this.item(index);
       this.changeTextColor(this.normalColor());
       this.drawText(item.name.text, rect.x, rect.y, rect.width, 'left');
-      if(item.status.text === 'true') {
+      if (item.status.text === 'true') {
         this.changeTextColor(this.mpGaugeColor1());
       } else {
         this.changeTextColor(this.hpGaugeColor1());
@@ -451,10 +456,8 @@ var RS = RS || {};
         let name = item.name.text;
         let description = item.description.text;
         this._helpWindow.setText(description);
-      } catch(e) {
-      }
+      } catch (e) {}
     }
-
   }
 
   //============================================================================
@@ -463,7 +466,6 @@ var RS = RS || {};
   //
 
   class Scene_PluginManager extends Scene_Base {
-
     constructor() {
       super();
     }
@@ -481,7 +483,7 @@ var RS = RS || {};
 
     update() {
       super.update();
-      if(RefreshManager.isChanged() && this._windowPluginManager) {
+      if (RefreshManager.isChanged() && this._windowPluginManager) {
         this._windowPluginManager.activate();
         this._windowPluginManager.refresh();
         this.onSavefileOk();
@@ -504,7 +506,10 @@ var RS = RS || {};
 
     createAllWindows() {
       this._helpWindow = new Window_PluginDesc(2);
-      this._windowPluginManager = new Window_PluginManager(0, this._helpWindow.y + this._helpWindow.height + 1);
+      this._windowPluginManager = new Window_PluginManager(
+        0,
+        this._helpWindow.y + this._helpWindow.height + 1
+      );
       this._windowPluginManager.setHelpWindow(this._helpWindow);
       this._windowPluginManager.setHandler('ok', this.onButtonOk.bind(this));
       this._windowPluginManager.setHandler('cancel', this.onCancel.bind(this));
@@ -514,9 +519,7 @@ var RS = RS || {};
       this._windowPluginManager.select(0);
     }
 
-    onButtonOk() {
-
-    }
+    onButtonOk() {}
 
     onCancel() {
       this.popScene();
@@ -525,35 +528,29 @@ var RS = RS || {};
     onSavefileOk() {
       $gameSystem.onBeforeSave();
       if (DataManager.saveRefreshGame(fastLoadFileId)) {
-          this.onSaveSuccess();
-          if(_previewWindow) {
+        this.onSaveSuccess();
+        if (_previewWindow) {
+          setTimeout(function () {
+            _previewWindow.close();
 
-            setTimeout(function() {
+            if (isAutoReload) window.location.reload();
 
-              _previewWindow.close();
-              
-              if(isAutoReload) window.location.reload();
+            _previewWindow = null;
 
-              _previewWindow = null;
-
-              RefreshManager._counter++;
-
-            }, nClosingTime );
-
-          } else {
-
-            // Decide whether or not to reload the game.
-            if(isAutoReload) window.location.reload();
-
-          }
+            RefreshManager._counter++;
+          }, nClosingTime);
+        } else {
+          // Decide whether or not to reload the game.
+          if (isAutoReload) window.location.reload();
+        }
       } else {
-          this.onSaveFailure();
+        this.onSaveFailure();
       }
     }
 
     onSaveSuccess() {
       SoundManager.playSave();
-    	StorageManager.cleanBackup(fastLoadFileId);
+      StorageManager.cleanBackup(fastLoadFileId);
       this.popScene();
     }
 
@@ -574,12 +571,10 @@ var RS = RS || {};
       SceneManager.goto(Scene_Map);
       $gameSystem.onAfterLoad();
       try {
-          if(StorageManager.exists(fastLoadFileId)) {
-            StorageManager.remove(fastLoadFileId);
-          }
-      } catch(e) {
-
-      }
+        if (StorageManager.exists(fastLoadFileId)) {
+          StorageManager.remove(fastLoadFileId);
+        }
+      } catch (e) {}
     }
 
     static onLoadFailure() {
@@ -588,11 +583,14 @@ var RS = RS || {};
 
     static reloadMapIfUpdated() {
       if ($gameSystem.versionId() !== $dataSystem.versionId) {
-        $gamePlayer.reserveTransfer($gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
+        $gamePlayer.reserveTransfer(
+          $gameMap.mapId(),
+          $gamePlayer.x,
+          $gamePlayer.y
+        );
         $gamePlayer.requestMapReload();
       }
     }
-
   }
 
   //============================================================================
@@ -600,14 +598,15 @@ var RS = RS || {};
   //
   //
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+  var alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
     alias_Game_Interpreter_pluginCommand.call(this, command, args);
-    if(command === "RefreshManager") {
+    if (command === 'RefreshManager') {
       switch (args[0]) {
-      case 'open':
-        SceneManager.push(Scene_PluginManager);
-        break;
+        case 'open':
+          SceneManager.push(Scene_PluginManager);
+          break;
       }
     }
   };
@@ -631,10 +630,10 @@ var RS = RS || {};
   //
 
   var alias_DataManager_makeSavefileInfo = DataManager.makeSavefileInfo;
-  DataManager.makeSavefileInfo = function() {
-      var info = alias_DataManager_makeSavefileInfo.call(this);
-      if($gameTemp.isRefreshMode()) info.refresh = true;
-      return info;
+  DataManager.makeSavefileInfo = function () {
+    var info = alias_DataManager_makeSavefileInfo.call(this);
+    if ($gameTemp.isRefreshMode()) info.refresh = true;
+    return info;
   };
 
   DataManager.saveRefreshGame = function (fastLoadFileId) {
@@ -644,12 +643,12 @@ var RS = RS || {};
 
   DataManager.existsRefreshVariable = function (saveFileId) {
     var info = DataManager.loadSavefileInfo(saveFileId);
-    if(info && info.refresh) {
+    if (info && info.refresh) {
       return true;
     } else {
       return false;
     }
-  }
+  };
 
   //============================================================================
   // Scene_Boot
@@ -657,8 +656,11 @@ var RS = RS || {};
   //
 
   var alias_Scene_Boot_start = Scene_Boot.prototype.start;
-  Scene_Boot.prototype.start = function() {
-    if(DataManager.existsRefreshVariable(fastLoadFileId) && StorageManager.exists(fastLoadFileId)) {
+  Scene_Boot.prototype.start = function () {
+    if (
+      DataManager.existsRefreshVariable(fastLoadFileId) &&
+      StorageManager.exists(fastLoadFileId)
+    ) {
       Scene_Base.prototype.start.call(this);
       SoundManager.preloadImportantSounds();
       this.checkPlayerLocation();
@@ -679,5 +681,4 @@ var RS = RS || {};
   });
 
   window.RefreshManager = RefreshManager;
-
 })();

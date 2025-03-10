@@ -23,50 +23,50 @@
  */
 
 (() => {
-    //==================================================================
-    // Game_System (For Saving)
-    //==================================================================
+  //==================================================================
+  // Game_System (For Saving)
+  //==================================================================
 
-    const alias_Game_System_initialize = Game_System.prototype.initialize;
-    Game_System.prototype.initialize = function () {
-        alias_Game_System_initialize.call(this);
-        this._battleAbortInTimer = true;
-    };
+  const alias_Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    alias_Game_System_initialize.call(this);
+    this._battleAbortInTimer = true;
+  };
 
-    Game_System.prototype.disableBattleAbortInTimer = function () {
-        this._battleAbortInTimer = false;
-    };
+  Game_System.prototype.disableBattleAbortInTimer = function () {
+    this._battleAbortInTimer = false;
+  };
 
-    Game_System.prototype.enableBattleAbortInTimer = function () {
-        this._battleAbortInTimer = true;
-    };
+  Game_System.prototype.enableBattleAbortInTimer = function () {
+    this._battleAbortInTimer = true;
+  };
 
-    Game_System.prototype.battleAbortInTimer = function () {
-        return this._battleAbortInTimer;
-    };
+  Game_System.prototype.battleAbortInTimer = function () {
+    return this._battleAbortInTimer;
+  };
 
-    //==================================================================
-    // Game_Timer
-    //==================================================================
+  //==================================================================
+  // Game_Timer
+  //==================================================================
 
-    Game_Timer.prototype.onExpire = function () {
-        if ($gameSystem.battleAbortInTimer()) {
-            BattleManager.abort();
-        }
-    };
+  Game_Timer.prototype.onExpire = function () {
+    if ($gameSystem.battleAbortInTimer()) {
+      BattleManager.abort();
+    }
+  };
 
-    //==================================================================
-    // Plugin Command
-    //==================================================================
+  //==================================================================
+  // Plugin Command
+  //==================================================================
 
-    const aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        aliasPluginCommand.call(this, command, args);
+  const aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    aliasPluginCommand.call(this, command, args);
 
-        if (command === 'DisableBattleAbortInTimer') {
-            $gameSystem.disableBattleAbortInTimer();
-        } else if (command === 'EnableBattleAbortInTimer') {
-            $gameSystem.enableBattleAbortInTimer();
-        }
-    };
+    if (command === 'DisableBattleAbortInTimer') {
+      $gameSystem.disableBattleAbortInTimer();
+    } else if (command === 'EnableBattleAbortInTimer') {
+      $gameSystem.enableBattleAbortInTimer();
+    }
+  };
 })();

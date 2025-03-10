@@ -25,66 +25,63 @@
  */
 
 (() => {
-    const Imported = window.Imported || {};
-    const RS = window.RS || {};
-    const parameters = PluginManager.parameters('RS_CustomCrypto');
+  const Imported = window.Imported || {};
+  const RS = window.RS || {};
+  const parameters = PluginManager.parameters('RS_CustomCrypto');
 
-    Imported.RS_CustomCrypto = true;
-    RS.CustomCrypto = RS.CustomCrypto || {};
-    RS.CustomCrypto.userKey = String(parameters.UserKey || 'Secret Passphrase');
+  Imported.RS_CustomCrypto = true;
+  RS.CustomCrypto = RS.CustomCrypto || {};
+  RS.CustomCrypto.userKey = String(parameters.UserKey || 'Secret Passphrase');
 
-    const data = [
-        'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js',
-    ];
+  const data = [
+    'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js',
+  ];
 
-    data.forEach(i => {
-        const _script = document.createElement('script');
-        _script.src = encodeURI(i);
-        _script.type = 'text/javascript';
+  data.forEach(i => {
+    const _script = document.createElement('script');
+    _script.src = encodeURI(i);
+    _script.type = 'text/javascript';
 
-        document.head.appendChild(_script);
-    });
+    document.head.appendChild(_script);
+  });
 
-    RS.CustomCrypto.getKey = function () {
-        return CryptoJS.MD5(RS.CustomCrypto.userKey).toString();
-    };
+  RS.CustomCrypto.getKey = function () {
+    return CryptoJS.MD5(RS.CustomCrypto.userKey).toString();
+  };
 
-    RS.CustomCrypto.isSetup = function () {
-        const arr = document.querySelectorAll('script');
-        let result = false;
-        for (let i = 0; i < arr.length; i++) {
-            if (data.contains(arr[i].url)) {
-                result = true;
-                break;
-            }
-        }
-        return result;
-    };
+  RS.CustomCrypto.isSetup = function () {
+    const arr = document.querySelectorAll('script');
+    let result = false;
+    for (let i = 0; i < arr.length; i++) {
+      if (data.contains(arr[i].url)) {
+        result = true;
+        break;
+      }
+    }
+    return result;
+  };
 
-    RS.CustomCrypto.compress = LZString.compressToBase64;
-    RS.CustomCrypto.decompress = LZString.decompressFromBase64;
+  RS.CustomCrypto.compress = LZString.compressToBase64;
+  RS.CustomCrypto.decompress = LZString.decompressFromBase64;
 
-    LZString.compressToBase64 = function (msg) {
-        if (msg === null || undefined) {
-            return '';
-        }
+  LZString.compressToBase64 = function (msg) {
+    if (msg === null || undefined) {
+      return '';
+    }
 
-        const encrypted = CryptoJS.AES.encrypt(msg, RS.CustomCrypto.getKey());
+    const encrypted = CryptoJS.AES.encrypt(msg, RS.CustomCrypto.getKey());
 
-        return encrypted.toString();
-    };
+    return encrypted.toString();
+  };
 
-    LZString.decompressFromBase64 = function (encrypted) {
-        if (encrypted === null || undefined) {
-            return '';
-        }
-        const decrypted = CryptoJS.AES.decrypt(
-            encrypted,
-            RS.CustomCrypto.getKey()
-        );
+  LZString.decompressFromBase64 = function (encrypted) {
+    if (encrypted === null || undefined) {
+      return '';
+    }
+    const decrypted = CryptoJS.AES.decrypt(encrypted, RS.CustomCrypto.getKey());
 
-        return decrypted.toString(CryptoJS.enc.Utf8);
-    };
+    return decrypted.toString(CryptoJS.enc.Utf8);
+  };
 })();

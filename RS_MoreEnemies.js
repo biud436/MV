@@ -17,6 +17,44 @@
  *
  * @help
  * ======================================================
+ * Introduction
+ * ======================================================
+ * This plugin allows you to add more enemies to existing enemy troops
+ * in your game. By default, RPG Maker MV has a limitation on enemy
+ * placement, but with this plugin you can add many more enemies and
+ * control their positions.
+ *
+ * ======================================================
+ * Features
+ * ======================================================
+ * - Add multiple enemies to any troop
+ * - Custom enemy positioning
+ * - Automatic grid-based positioning system
+ * - Option to make enemies hidden at battle start
+ * - Compatible with existing battle system
+ *
+ * ======================================================
+ * How to Use
+ * ======================================================
+ * 1. Set up the "Troop Settings" parameter in the plugin manager
+ * 2. For each troop you want to modify, add an entry with the troop ID
+ * 3. Add enemies to the "moreEnemies" parameter with positions
+ * 4. Optionally use the auto-positioning feature with "enemyReposition"
+ *
+ * Example of auto-positioning:
+ * - Set "reposition" to true
+ * - Set "width" and "height" for your grid (e.g. 4x6)
+ * - The formulas for x and y will automatically position enemies in a grid
+ *
+ * ======================================================
+ * Tips
+ * ======================================================
+ * - For large battles, consider using a wider battle screen
+ * - Hidden enemies can be revealed with regular event commands
+ * - You can adjust the grid spacing by modifying the x/y formulas
+ * - Make sure to balance your battles after adding more enemies
+ *
+ * ======================================================
  * Change Log
  * ======================================================
  * 2018.08.31 (v1.0.0) - First Release.
@@ -212,92 +250,89 @@
  */
 
 (() => {
-    "use strict";
+  'use strict';
 
-    let parameters = $plugins.filter((i) => {
-        return i.description.contains("<RS_MoreEnemies>");
-    });
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  let parameters = $plugins.filter(i => {
+    return i.description.contains('<RS_MoreEnemies>');
+  });
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
-    const RS = {};
-    RS.MoreEnemies = {
-        jsonParse(str) {
-            const retData = JSON.parse(str, (k, v) => {
-                try {
-                    return this.jsonParse(v);
-                } catch (e) {
-                    return v;
-                }
-            });
-            return retData;
-        },
-    };
-
-    let troopSettings;
-    if (parameters["Troop Settings"] !== "") {
-        troopSettings = RS.MoreEnemies.jsonParse(parameters["Troop Settings"]);
-    }
-
-    Object.assign(RS.MoreEnemies, {
-        createMoreEnemies() {
-            troopSettings.forEach((settings) => {
-                const troopId = settings.troopId;
-                const troop = $dataTroops && $dataTroops[troopId];
-                if (troop) {
-                    settings.moreEnemies.forEach((event) => {
-                        if ($dataTroops[troopId].members instanceof Array) {
-                            $dataTroops[troopId].members.push(event);
-                        }
-                    });
-                }
-            });
-        },
-    });
-
-    const alias_Spriteset_Battle_createEnemies =
-        Spriteset_Battle.prototype.createEnemies;
-    Spriteset_Battle.prototype.createEnemies = function () {
-        alias_Spriteset_Battle_createEnemies.call(this);
-        this.setPositionForEnemies();
-    };
-
-    Spriteset_Battle.prototype.setPositionForEnemies = function () {
-        const troopId = $gameTroop._troopId;
-
-        if (!troopSettings) return;
-
-        // if there has troop settings?
-        let enemyReposition = troopSettings.filter((settings) => {
-            return settings.troopId === troopId;
-        });
-
-        if (Array.isArray(enemyReposition) && enemyReposition.length <= 0)
-            return;
-
-        enemyReposition = enemyReposition[0].enemyReposition;
-
-        // if the reposition is enabled?
-        if (!enemyReposition.reposition) return;
-
-        let id = 0;
-        const WIDTH = enemyReposition.width || 4;
-        const HEIGHT = enemyReposition.height || 6;
-
-        for (let y = 0; y < HEIGHT; y++) {
-            for (let x = 0; x < WIDTH; x++) {
-                let mx = eval(enemyReposition.x) || 96 + 96 * x;
-                let my =
-                    eval(enemyReposition.y) || Graphics.boxHeight / 3 + 96 * y;
-                if (this._enemySprites[id])
-                    this._enemySprites[id].setHome(mx, my);
-                id += 1;
-            }
+  const RS = {};
+  RS.MoreEnemies = {
+    jsonParse(str) {
+      const retData = JSON.parse(str, (k, v) => {
+        try {
+          return this.jsonParse(v);
+        } catch (e) {
+          return v;
         }
-    };
+      });
+      return retData;
+    },
+  };
 
-    const alias_Scene_Boot_start = Scene_Boot.prototype.start;
-    Scene_Boot.prototype.start = function () {
-        RS.MoreEnemies.createMoreEnemies();
-        alias_Scene_Boot_start.call(this);
-    };
+  let troopSettings;
+  if (parameters['Troop Settings'] !== '') {
+    troopSettings = RS.MoreEnemies.jsonParse(parameters['Troop Settings']);
+  }
+
+  Object.assign(RS.MoreEnemies, {
+    createMoreEnemies() {
+      troopSettings.forEach(settings => {
+        const troopId = settings.troopId;
+        const troop = $dataTroops && $dataTroops[troopId];
+        if (troop) {
+          settings.moreEnemies.forEach(event => {
+            if ($dataTroops[troopId].members instanceof Array) {
+              $dataTroops[troopId].members.push(event);
+            }
+          });
+        }
+      });
+    },
+  });
+
+  const alias_Spriteset_Battle_createEnemies =
+    Spriteset_Battle.prototype.createEnemies;
+  Spriteset_Battle.prototype.createEnemies = function () {
+    alias_Spriteset_Battle_createEnemies.call(this);
+    this.setPositionForEnemies();
+  };
+
+  Spriteset_Battle.prototype.setPositionForEnemies = function () {
+    const troopId = $gameTroop._troopId;
+
+    if (!troopSettings) return;
+
+    // if there has troop settings?
+    let enemyReposition = troopSettings.filter(settings => {
+      return settings.troopId === troopId;
+    });
+
+    if (Array.isArray(enemyReposition) && enemyReposition.length <= 0) return;
+
+    enemyReposition = enemyReposition[0].enemyReposition;
+
+    // if the reposition is enabled?
+    if (!enemyReposition.reposition) return;
+
+    let id = 0;
+    const WIDTH = enemyReposition.width || 4;
+    const HEIGHT = enemyReposition.height || 6;
+
+    for (let y = 0; y < HEIGHT; y++) {
+      for (let x = 0; x < WIDTH; x++) {
+        let mx = eval(enemyReposition.x) || 96 + 96 * x;
+        let my = eval(enemyReposition.y) || Graphics.boxHeight / 3 + 96 * y;
+        if (this._enemySprites[id]) this._enemySprites[id].setHome(mx, my);
+        id += 1;
+      }
+    }
+  };
+
+  const alias_Scene_Boot_start = Scene_Boot.prototype.start;
+  Scene_Boot.prototype.start = function () {
+    RS.MoreEnemies.createMoreEnemies();
+    alias_Scene_Boot_start.call(this);
+  };
 })();

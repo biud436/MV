@@ -315,496 +315,488 @@ RS = window.RS || {};
 RS.FaceAnimation = RS.FaceAnimation || {};
 
 (function () {
-    'use strict';
+  'use strict';
 
-    let parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_FaceAnimation>');
+  let parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_FaceAnimation>');
+  });
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
+
+  RS.FaceAnimation.jsonParse = function (str) {
+    const retData = JSON.parse(str, (k, v) => {
+      try {
+        return RS.FaceAnimation.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
     });
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+    return retData;
+  };
 
-    RS.FaceAnimation.jsonParse = function (str) {
-        const retData = JSON.parse(str, (k, v) => {
-            try {
-                return RS.FaceAnimation.jsonParse(v);
-            } catch (e) {
-                return v;
-            }
-        });
+  RS.FaceAnimation.Params = {};
 
-        return retData;
-    };
+  RS.FaceAnimation.Params.isAnimationFace = true;
 
-    RS.FaceAnimation.Params = {};
+  RS.FaceAnimation.Params.data = RS.FaceAnimation.jsonParse(
+    parameters['Set Animation Face']
+  );
+  RS.FaceAnimation.Params.states = {};
 
-    RS.FaceAnimation.Params.isAnimationFace = true;
+  // ID 값 해시 테이블을 만들어 빠른 탐색을 도모한다.
+  RS.FaceAnimation.Params.data.forEach(function (e) {
+    RS.FaceAnimation.Params.states[e.id] = e;
+  });
 
-    RS.FaceAnimation.Params.data = RS.FaceAnimation.jsonParse(
-        parameters['Set Animation Face']
-    );
-    RS.FaceAnimation.Params.states = {};
+  // 활성화된 상태의 ID (2개 이상의 상태는 할당할 수 없는 방식)
+  RS.FaceAnimation.Params.activeStateId = '';
 
-    // ID 값 해시 테이블을 만들어 빠른 탐색을 도모한다.
-    RS.FaceAnimation.Params.data.forEach(function (e) {
-        RS.FaceAnimation.Params.states[e.id] = e;
-    });
+  RS.FaceAnimation.Params.defaultState = {
+    x: 0,
+    y: 0,
+    width: 1,
+    height: 1,
+    cols: 1,
+    startFrame: 0,
+    maxFrames: 1,
+    delay: 5.0,
+    looping: false,
+  };
 
-    // 활성화된 상태의 ID (2개 이상의 상태는 할당할 수 없는 방식)
-    RS.FaceAnimation.Params.activeStateId = '';
+  // 전역 상태
+  RS.FaceAnimation.Params.globalStates = {
+    x: 0,
+    y: 0,
+    angle: 0.0,
+    scale: 1.0,
+  };
 
-    RS.FaceAnimation.Params.defaultState = {
-        x: 0,
-        y: 0,
-        width: 1,
-        height: 1,
-        cols: 1,
-        startFrame: 0,
-        maxFrames: 1,
-        delay: 5.0,
-        looping: false,
-    };
+  // ===============================================================
+  // SpriteData
+  // ===============================================================
 
-    // 전역 상태
-    RS.FaceAnimation.Params.globalStates = {
-        x: 0,
-        y: 0,
-        angle: 0.0,
-        scale: 1.0,
-    };
+  class SpriteData {
+    constructor() {
+      this._offsetX = 0.0;
+      this._offsetY = 0.0;
+      this._width = 4;
+      this._height = 4;
+      this._scale = 1.0;
+      this._rotation = 0.0;
+      this._frameDelay = 0.0;
+      this._startFrame = 0;
+      this._endFrame = 1;
+      this._rect = new PIXI.Rectangle(0, 0, 4, 4);
+      this._position = new PIXI.Point(0, 0);
+      this._opacity = 255;
+    }
+  }
 
-    // ===============================================================
-    // SpriteData
-    // ===============================================================
+  // ===============================================================
+  // FaceSprite
+  // ===============================================================
 
-    class SpriteData {
-        constructor() {
-            this._offsetX = 0.0;
-            this._offsetY = 0.0;
-            this._width = 4;
-            this._height = 4;
-            this._scale = 1.0;
-            this._rotation = 0.0;
-            this._frameDelay = 0.0;
-            this._startFrame = 0;
-            this._endFrame = 1;
-            this._rect = new PIXI.Rectangle(0, 0, 4, 4);
-            this._position = new PIXI.Point(0, 0);
-            this._opacity = 255;
-        }
+  /**
+   *
+   * @class RS.FaceSprite
+   * @example
+   *
+   * const bitmap = ImageManager.loadCharacter("011-Lancer03");
+   * let sprite = new RS.FaceSprite(bitmap, 0, 0, 32, 48, 4);
+   * sprite
+   *  .setPosition(10, 50)
+   *  .setAngle(10.0)
+   *  .setScale(4.0)
+   *  .setLoop(true)
+   *  .setFrameDelay(0.5)
+   *  .setSpriteSheets(4, 4);
+   *
+   * SceneManager._scene.addChild(sprite);
+   *
+   */
+
+  class FaceSprite extends Sprite {
+    constructor(bitmap, x, y, width, height, maxFrames, cols) {
+      super();
+
+      this._spriteData = new SpriteData();
+      this._spriteData._position.x = x;
+      this._spriteData._position.y = y;
+      this._spriteData._width = width;
+      this._spriteData._height = height;
+
+      if (maxFrames === 0) {
+        maxFrames = 1;
+      }
+
+      this._maxFrames = maxFrames;
+
+      this.setFrames(0, this._maxFrames);
+      this.setCurrentFrame(0);
+
+      this._spriteData._frameDelay = 0.0;
+
+      this._animationTime = 0.0;
+      this._isAnimationCompleted = false;
+
+      if (!cols) {
+        cols = 1;
+      }
+
+      if (cols < 0) {
+        cols = 1;
+      }
+
+      this._cols = cols;
+
+      this.visible = false;
+      this._visible = false;
+
+      this.bitmap = bitmap;
+
+      this._last = performance.now();
+
+      this._isReady = true;
     }
 
-    // ===============================================================
-    // FaceSprite
-    // ===============================================================
+    update() {
+      super.update();
 
-    /**
-     *
-     * @class RS.FaceSprite
-     * @example
-     *
-     * const bitmap = ImageManager.loadCharacter("011-Lancer03");
-     * let sprite = new RS.FaceSprite(bitmap, 0, 0, 32, 48, 4);
-     * sprite
-     *  .setPosition(10, 50)
-     *  .setAngle(10.0)
-     *  .setScale(4.0)
-     *  .setLoop(true)
-     *  .setFrameDelay(0.5)
-     *  .setSpriteSheets(4, 4);
-     *
-     * SceneManager._scene.addChild(sprite);
-     *
-     */
+      if (!this._isReady) {
+        return;
+      }
 
-    class FaceSprite extends Sprite {
-        constructor(bitmap, x, y, width, height, maxFrames, cols) {
-            super();
+      const startFrame = this._spriteData._startFrame;
+      const endFrame = this._spriteData._endFrame;
+      const delay = this._spriteData._frameDelay;
 
-            this._spriteData = new SpriteData();
-            this._spriteData._position.x = x;
-            this._spriteData._position.y = y;
-            this._spriteData._width = width;
-            this._spriteData._height = height;
+      const now = performance.now();
 
-            if (maxFrames === 0) {
-                maxFrames = 1;
-            }
+      const elapsed = (now - this._last) / 16.666666666666;
 
-            this._maxFrames = maxFrames;
+      if (endFrame - startFrame > 0) {
+        this._animationTime += elapsed;
 
-            this.setFrames(0, this._maxFrames);
-            this.setCurrentFrame(0);
+        if (this._animationTime > delay) {
+          this._animationTime -= delay;
+          this._currentFrame++;
 
-            this._spriteData._frameDelay = 0.0;
-
-            this._animationTime = 0.0;
-            this._isAnimationCompleted = false;
-
-            if (!cols) {
-                cols = 1;
-            }
-
-            if (cols < 0) {
-                cols = 1;
-            }
-
-            this._cols = cols;
-
-            this.visible = false;
-            this._visible = false;
-
-            this.bitmap = bitmap;
-
-            this._last = performance.now();
-
-            this._isReady = true;
-        }
-
-        update() {
-            super.update();
-
-            if (!this._isReady) {
-                return;
-            }
-
-            const startFrame = this._spriteData._startFrame;
-            const endFrame = this._spriteData._endFrame;
-            const delay = this._spriteData._frameDelay;
-
-            const now = performance.now();
-
-            const elapsed = (now - this._last) / 16.666666666666;
-
-            if (endFrame - startFrame > 0) {
-                this._animationTime += elapsed;
-
-                if (this._animationTime > delay) {
-                    this._animationTime -= delay;
-                    this._currentFrame++;
-
-                    if (
-                        this._currentFrame < startFrame ||
-                        this._currentFrame > endFrame
-                    ) {
-                        if (this._isLooping) {
-                            this._currentFrame = startFrame;
-                        } else {
-                            this._currentFrame = endFrame;
-                            this._isAnimationCompleted = true;
-                        }
-                    }
-                    this.setRect();
-                }
-            }
-
-            this.updateInternalProperties();
-
-            this._last = now;
-        }
-
-        updateInternalProperties() {
-            this.opacity = this._spriteData._opacity;
-            this.visible = this._visible;
-
-            const rect = this._spriteData._rect;
-            if (rect) {
-                this.setFrame(rect.x, rect.y, rect.width, rect.height);
-            }
-
-            this.x = this._spriteData._position.x;
-            this.y = this._spriteData._position.y;
-
-            const scale = this._spriteData._scale;
-
-            if (!this.scale) {
-                this.scale = new Point(scale, scale);
+          if (
+            this._currentFrame < startFrame ||
+            this._currentFrame > endFrame
+          ) {
+            if (this._isLooping) {
+              this._currentFrame = startFrame;
             } else {
-                this.scale.x = scale;
-                this.scale.y = scale;
+              this._currentFrame = endFrame;
+              this._isAnimationCompleted = true;
             }
-
-            const rotation = this._spriteData._rotation;
-
-            this.rotation = rotation;
+          }
+          this.setRect();
         }
+      }
 
-        getX() {
-            return this._spriteData._position.x;
-        }
+      this.updateInternalProperties();
 
-        getY() {
-            return this._spriteData._position.y;
-        }
-
-        getWidth() {
-            return this._spriteData._width;
-        }
-
-        getHeight() {
-            return this._spriteData._height;
-        }
-
-        getAngle() {
-            return (180.0 / Math.PI) * this._spriteData._rotation;
-        }
-
-        getRadians() {
-            return this._spriteData._rotation;
-        }
-
-        getStartFrame() {
-            return this._spriteData._startFrame;
-        }
-
-        getEndFrame() {
-            return this._spriteData._endFrame;
-        }
-
-        getRect() {
-            return this._spriteData._rect;
-        }
-
-        getAnimCompleted() {
-            return this._isAnimationCompleted;
-        }
-
-        setX(x) {
-            this._spriteData._position.x = x;
-            return this;
-        }
-
-        setY(y) {
-            this._spriteData._position.y = y;
-            return this;
-        }
-
-        setScale(scale) {
-            this._spriteData._scale = scale;
-
-            return this;
-        }
-
-        setAngle(degree) {
-            this._spriteData._rotation = (Math.PI / 180.0) * degree;
-
-            return this;
-        }
-
-        setRadians(rad) {
-            this._spriteData._rotation = rad;
-
-            return this;
-        }
-
-        setVisible(visible) {
-            this._visible = visible;
-
-            return this;
-        }
-
-        setSpriteSheets(cols) {
-            if (cols < 0) {
-                cols = 1;
-            }
-
-            this._cols = cols;
-
-            return this;
-        }
-
-        setOpacity(opacity) {
-            if (opacity < 0) {
-                opacity = 0;
-            }
-
-            if (opacity > 255) {
-                opacity = 255;
-            }
-
-            this._spriteData._opacity = opacity;
-
-            return this;
-        }
-
-        setFrameDelay(delay) {
-            this._spriteData._frameDelay = delay;
-            return this;
-        }
-
-        setPosition(x, y) {
-            this.setX(x).setY(y);
-
-            return this;
-        }
-
-        setFrames(startNum, endNum) {
-            this._spriteData._startFrame = startNum;
-
-            if (endNum < 0) {
-                endNum = 1;
-            }
-
-            if (endNum > this._maxFrames) {
-                endNum = this._maxFrames;
-            }
-
-            this._spriteData._endFrame = endNum - 1;
-
-            return this;
-        }
-
-        setCurrentFrame(currentFrame) {
-            if (currentFrame >= 0) {
-                this._currentFrame = currentFrame;
-                this._isAnimationCompleted = false;
-                this._animationTime = 0.0;
-                this.setRect();
-            }
-
-            return this;
-        }
-
-        setRect(...args) {
-            const n = args.length;
-            switch (n) {
-                case 1:
-                    {
-                        const rect = args[0];
-                        this._spriteData._rect = rect;
-                    }
-                    break;
-                case 4:
-                    {
-                        const { x, y, width, height } = args;
-                        this._spriteData._rect = new PIXI.Rectangle(
-                            x,
-                            y,
-                            width,
-                            height
-                        );
-                    }
-                    break;
-                default:
-                    this._spriteData._rect.x =
-                        (this._currentFrame % this._cols) *
-                        this._spriteData._width;
-                    this._spriteData._rect.width = this._spriteData._width;
-                    this._spriteData._rect.y =
-                        Math.floor(this._currentFrame / this._cols) *
-                        this._spriteData._height;
-                    this._spriteData._rect.height = this._spriteData._height;
-                    break;
-            }
-
-            return this;
-        }
-
-        setLoop(isLooping) {
-            this._isLooping = isLooping;
-
-            return this;
-        }
-
-        setAnimComplete(isComplete) {
-            this._isAnimationCompleted = isComplete;
-
-            return this;
-        }
+      this._last = now;
     }
 
-    RS.FaceSprite = FaceSprite;
+    updateInternalProperties() {
+      this.opacity = this._spriteData._opacity;
+      this.visible = this._visible;
 
-    // ===============================================================
-    // Window_Message
-    // ===============================================================
+      const rect = this._spriteData._rect;
+      if (rect) {
+        this.setFrame(rect.x, rect.y, rect.width, rect.height);
+      }
 
-    Window_Message.prototype.isAnimationFace = function () {
-        if (this._faceSprite) return false;
-        if (!RS.FaceAnimation.Params.isAnimationFace) return false;
-        return true;
-    };
+      this.x = this._spriteData._position.x;
+      this.y = this._spriteData._position.y;
 
-    const alias_Window_Message_drawMessageFace =
-        Window_Message.prototype.drawMessageFace;
-    // eslint-disable-next-line consistent-return
-    Window_Message.prototype.drawMessageFace = function () {
-        if (this.isAnimationFace()) {
-            const state =
-                RS.FaceAnimation.Params.states[
-                    RS.FaceAnimation.Params.activeStateId
-                ];
-            if (!state) {
-                return alias_Window_Message_drawMessageFace.call(this);
-            }
+      const scale = this._spriteData._scale;
 
-            const x = Number(state.x);
-            const y = Number(state.y);
-            const width = Number(state.width);
-            const height = Number(state.height);
-            const cols = Number(state.cols);
-            const maxFrames = Number(state.maxFrames);
-            const delay = Number(state.delay);
-            const { looping } = state;
+      if (!this.scale) {
+        this.scale = new Point(scale, scale);
+      } else {
+        this.scale.x = scale;
+        this.scale.y = scale;
+      }
 
-            this._faceSprite = new RS.FaceSprite(
-                this._faceBitmap,
-                x,
-                y,
-                width,
-                height,
-                maxFrames,
-                cols
-            );
-            this._faceSprite
-                .setPosition(
-                    RS.FaceAnimation.Params.globalStates.x,
-                    RS.FaceAnimation.Params.globalStates.y
-                )
-                .setAngle(RS.FaceAnimation.Params.globalStates.angle)
-                .setScale(RS.FaceAnimation.Params.globalStates.scale)
-                .setLoop(looping)
-                .setFrameDelay(delay)
-                .setSpriteSheets(cols)
-                .setFrames(0, maxFrames)
-                .setVisible(true);
+      const rotation = this._spriteData._rotation;
 
-            this.addChild(this._faceSprite);
-            ImageManager.releaseReservation(this._imageReservationId);
-        } else {
-            alias_Window_Message_drawMessageFace.call(this);
-        }
-    };
+      this.rotation = rotation;
+    }
 
-    const alias_Window_Message_terminateMessage =
-        Window_Message.prototype.terminateMessage;
-    Window_Message.prototype.terminateMessage = function () {
-        alias_Window_Message_terminateMessage.call(this);
-        if (this._faceSprite) {
-            this.removeChild(this._faceSprite);
-            this._faceSprite = null;
-        }
-    };
+    getX() {
+      return this._spriteData._position.x;
+    }
 
-    const alias_Game_Interpreter_pluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    getY() {
+      return this._spriteData._position.y;
+    }
 
-        switch (command) {
-            case 'ShowAnimationFace':
-                RS.FaceAnimation.Params.isAnimationFace = true;
-                break;
-            case 'HideAnimationFace':
-                RS.FaceAnimation.Params.isAnimationFace = false;
-                break;
-            case 'SetAnimationFace':
-                RS.FaceAnimation.Params.activeStateId = args.join(' ');
-                break;
-            case 'ChangeParamAnimationFace':
-                RS.FaceAnimation.Params.globalStates[args[0]] = Number(args[1]);
-                break;
-            default:
-                break;
-        }
-    };
+    getWidth() {
+      return this._spriteData._width;
+    }
+
+    getHeight() {
+      return this._spriteData._height;
+    }
+
+    getAngle() {
+      return (180.0 / Math.PI) * this._spriteData._rotation;
+    }
+
+    getRadians() {
+      return this._spriteData._rotation;
+    }
+
+    getStartFrame() {
+      return this._spriteData._startFrame;
+    }
+
+    getEndFrame() {
+      return this._spriteData._endFrame;
+    }
+
+    getRect() {
+      return this._spriteData._rect;
+    }
+
+    getAnimCompleted() {
+      return this._isAnimationCompleted;
+    }
+
+    setX(x) {
+      this._spriteData._position.x = x;
+      return this;
+    }
+
+    setY(y) {
+      this._spriteData._position.y = y;
+      return this;
+    }
+
+    setScale(scale) {
+      this._spriteData._scale = scale;
+
+      return this;
+    }
+
+    setAngle(degree) {
+      this._spriteData._rotation = (Math.PI / 180.0) * degree;
+
+      return this;
+    }
+
+    setRadians(rad) {
+      this._spriteData._rotation = rad;
+
+      return this;
+    }
+
+    setVisible(visible) {
+      this._visible = visible;
+
+      return this;
+    }
+
+    setSpriteSheets(cols) {
+      if (cols < 0) {
+        cols = 1;
+      }
+
+      this._cols = cols;
+
+      return this;
+    }
+
+    setOpacity(opacity) {
+      if (opacity < 0) {
+        opacity = 0;
+      }
+
+      if (opacity > 255) {
+        opacity = 255;
+      }
+
+      this._spriteData._opacity = opacity;
+
+      return this;
+    }
+
+    setFrameDelay(delay) {
+      this._spriteData._frameDelay = delay;
+      return this;
+    }
+
+    setPosition(x, y) {
+      this.setX(x).setY(y);
+
+      return this;
+    }
+
+    setFrames(startNum, endNum) {
+      this._spriteData._startFrame = startNum;
+
+      if (endNum < 0) {
+        endNum = 1;
+      }
+
+      if (endNum > this._maxFrames) {
+        endNum = this._maxFrames;
+      }
+
+      this._spriteData._endFrame = endNum - 1;
+
+      return this;
+    }
+
+    setCurrentFrame(currentFrame) {
+      if (currentFrame >= 0) {
+        this._currentFrame = currentFrame;
+        this._isAnimationCompleted = false;
+        this._animationTime = 0.0;
+        this.setRect();
+      }
+
+      return this;
+    }
+
+    setRect(...args) {
+      const n = args.length;
+      switch (n) {
+        case 1:
+          {
+            const rect = args[0];
+            this._spriteData._rect = rect;
+          }
+          break;
+        case 4:
+          {
+            const { x, y, width, height } = args;
+            this._spriteData._rect = new PIXI.Rectangle(x, y, width, height);
+          }
+          break;
+        default:
+          this._spriteData._rect.x =
+            (this._currentFrame % this._cols) * this._spriteData._width;
+          this._spriteData._rect.width = this._spriteData._width;
+          this._spriteData._rect.y =
+            Math.floor(this._currentFrame / this._cols) *
+            this._spriteData._height;
+          this._spriteData._rect.height = this._spriteData._height;
+          break;
+      }
+
+      return this;
+    }
+
+    setLoop(isLooping) {
+      this._isLooping = isLooping;
+
+      return this;
+    }
+
+    setAnimComplete(isComplete) {
+      this._isAnimationCompleted = isComplete;
+
+      return this;
+    }
+  }
+
+  RS.FaceSprite = FaceSprite;
+
+  // ===============================================================
+  // Window_Message
+  // ===============================================================
+
+  Window_Message.prototype.isAnimationFace = function () {
+    if (this._faceSprite) return false;
+    if (!RS.FaceAnimation.Params.isAnimationFace) return false;
+    return true;
+  };
+
+  const alias_Window_Message_drawMessageFace =
+    Window_Message.prototype.drawMessageFace;
+  // eslint-disable-next-line consistent-return
+  Window_Message.prototype.drawMessageFace = function () {
+    if (this.isAnimationFace()) {
+      const state =
+        RS.FaceAnimation.Params.states[RS.FaceAnimation.Params.activeStateId];
+      if (!state) {
+        return alias_Window_Message_drawMessageFace.call(this);
+      }
+
+      const x = Number(state.x);
+      const y = Number(state.y);
+      const width = Number(state.width);
+      const height = Number(state.height);
+      const cols = Number(state.cols);
+      const maxFrames = Number(state.maxFrames);
+      const delay = Number(state.delay);
+      const { looping } = state;
+
+      this._faceSprite = new RS.FaceSprite(
+        this._faceBitmap,
+        x,
+        y,
+        width,
+        height,
+        maxFrames,
+        cols
+      );
+      this._faceSprite
+        .setPosition(
+          RS.FaceAnimation.Params.globalStates.x,
+          RS.FaceAnimation.Params.globalStates.y
+        )
+        .setAngle(RS.FaceAnimation.Params.globalStates.angle)
+        .setScale(RS.FaceAnimation.Params.globalStates.scale)
+        .setLoop(looping)
+        .setFrameDelay(delay)
+        .setSpriteSheets(cols)
+        .setFrames(0, maxFrames)
+        .setVisible(true);
+
+      this.addChild(this._faceSprite);
+      ImageManager.releaseReservation(this._imageReservationId);
+    } else {
+      alias_Window_Message_drawMessageFace.call(this);
+    }
+  };
+
+  const alias_Window_Message_terminateMessage =
+    Window_Message.prototype.terminateMessage;
+  Window_Message.prototype.terminateMessage = function () {
+    alias_Window_Message_terminateMessage.call(this);
+    if (this._faceSprite) {
+      this.removeChild(this._faceSprite);
+      this._faceSprite = null;
+    }
+  };
+
+  const alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+
+    switch (command) {
+      case 'ShowAnimationFace':
+        RS.FaceAnimation.Params.isAnimationFace = true;
+        break;
+      case 'HideAnimationFace':
+        RS.FaceAnimation.Params.isAnimationFace = false;
+        break;
+      case 'SetAnimationFace':
+        RS.FaceAnimation.Params.activeStateId = args.join(' ');
+        break;
+      case 'ChangeParamAnimationFace':
+        RS.FaceAnimation.Params.globalStates[args[0]] = Number(args[1]);
+        break;
+      default:
+        break;
+    }
+  };
 })();

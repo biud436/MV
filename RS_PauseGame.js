@@ -22,10 +22,10 @@
  * @require 1
  * @dir img/pictures/
  * @type file
- * 
+ *
  * @param Notification
  * @text Notification (>= v1.6.1+)
- * 
+ *
  * @param Enabled Notification
  * @parent Notification
  * @text Enabled Notification
@@ -39,7 +39,7 @@
  * @parent Notification
  * @desc Specify the text for the chromium notification.
  * @default Pause
- *  
+ *
  * @param Body Text
  * @parent Notification
  * @desc Specify the text for the chromium notification.
@@ -49,7 +49,7 @@
  * @parent Notification
  * @desc Specify the icon image for the chromium notification from icon folder.
  * @default icon
- * 
+ *
  * @param Time
  * @type number
  * @parent Notification
@@ -61,11 +61,11 @@
  * Plugin Commands
  * -----------------------------------------------------------------------------
  * This is to ensure that it cannot be toggled the pause mode when pressed the pause key.
- * 
+ *
  *  DisablePauseGame
- * 
+ *
  * if you use this feature, you can be toggled the pause mode when pressing the pause key.
- * 
+ *
  * EnablePauseGame
  * =============================================================================
  * Available Key Names
@@ -265,7 +265,7 @@
  * ------------------------------------------------------------------------------
  * 2017.05.06 (v1.0.0) - First Release.
  * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
- * 2018.10.30 (v1.0.2) : 
+ * 2018.10.30 (v1.0.2) :
  * - Fixed the issue that is not working in RPG Maker MV v1.6.1
  * - Added the chromium notification (>= v1.6.1+)
  * - Added the keycode converter.
@@ -291,7 +291,7 @@
  * @require 1
  * @dir img/pictures/
  * @type file
- * 
+ *
  * @param Notification
  * @text 알림 (v1.6.1 이상)
  *
@@ -303,13 +303,13 @@
  * @default true
  * @on 사용
  * @off 사용하지 않음
- * 
+ *
  * @param Title Text
  * @text 타이틀
  * @parent Notification
  * @desc 크로미움 알림 창에 적을 타이틀 메시지를 지정하십시오.
  * @default 일시 정지 알림
- *  
+ *
  * @param Body Text
  * @parent Notification
  * @desc 크로미움 알림 창에 적을 메시지를 지정하십시오.
@@ -319,7 +319,7 @@
  * @parent Notification
  * @desc 아이콘 폴더에 있는 아이콘의 이름을 지정하십시오 (확장자 생략)
  * @default icon
- * 
+ *
  * @param Time
  * @text 시간
  * @type number
@@ -332,11 +332,11 @@
  * 플러그인 명령
  * -----------------------------------------------------------------------------
  * 이 플러그인 명령은 일시 정지 키를 눌렀을 때 일시 정지 모드로 전환 할 수 없도록 하기 위한 것입니다.
- * 
+ *
  *  DisablePauseGame
- * 
+ *
  * 일시 정지 모드를 다시 사용할 수 있게 됩니다.
- * 
+ *
  *  EnablePauseGame
  * =============================================================================
  * 사용 가능한 키의 이름
@@ -531,7 +531,7 @@
  * _
  * +
  * =
- * 
+ *
  * =============================================================================
  * 플러그인 동작 환경
  * -----------------------------------------------------------------------------
@@ -545,7 +545,7 @@
  * -----------------------------------------------------------------------------
  * 2017.05.06 (v1.0.0) - First Release.
  * 2017.05.06 (v1.0.1) - Fixed an issue when using a option called 'Exclude unused files'
- * 2018.10.30 (v1.0.2) : 
+ * 2018.10.30 (v1.0.2) :
  * - Fixed the issue that is not working in RPG Maker MV v1.6.1
  * - Added the chromium notification (>= v1.6.1+)
  * - Added the keycode converter.
@@ -561,256 +561,255 @@ Imported.RS_PauseGame = true;
 var RS = RS || {};
 RS.PauseGame = RS.PauseGame || {};
 
-(function() {
-
-  "use strict";
+(function () {
+  'use strict';
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_PauseGame>');
   });
-  
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
   var imageSrc = parameters['Pause Image Src'] || 'pause';
-  var titleText = parameters["Title Text"] || 'Pause';
-  var bodyText = parameters["Body Text"] || 'The game has been paused.';
-  var iconPath = parameters["Icon"] || 'icon';
-  var time = parseInt(parameters["Time"]) || 2000;
+  var titleText = parameters['Title Text'] || 'Pause';
+  var bodyText = parameters['Body Text'] || 'The game has been paused.';
+  var iconPath = parameters['Icon'] || 'icon';
+  var time = parseInt(parameters['Time']) || 2000;
 
   RS.PauseGame.Params = RS.PauseGame.Params || {};
   RS.PauseGame.Params.isEnabled = true;
 
-  RS.PauseGame.Params.isEnabledNotification = Boolean(parameters["Enabled Notification"] === 'true');
+  RS.PauseGame.Params.isEnabledNotification = Boolean(
+    parameters['Enabled Notification'] === 'true'
+  );
 
   var KEY = {
-    "VK_LBUTTON" :  0x01,
-    "VK_RBUTTON" :  0x02,
-    "VK_CANCEL" :  0x03,
-    "VK_MBUTTON" :  0x04,
-    "VK_XBUTTON1" :  0x05,
-    "VK_XBUTTON2" :  0x06,
-    "VK_BACK" :  0x08, //  백스페이스
-    "VK_TAB" :  0x09, //  탭
-    "VK_CLEAR" :  0x0C, //  NumLock이 해제되었을 때의 5
-    "VK_RETURN" :  0x0D, //  Enter
-    "VK_SHIFT" :  0x10, //  Shift
-    "VK_CONTROL" :  0x11, //  Ctrl
-    "VK_MENU" :  0x12, //  Alt
-    "VK_PAUSE" :  0x13, //  Pause
-    "VK_CAPITAL" :  0x14, //  Caps Lock
-    
-    "VK_KANA" :  0x15,
-    "VK_HANGEUL" :  0x15,
-    "VK_HANGUL" :  0x15, //  한/영 변환
-    "VK_JUNJA" :  0x17, 
-    "VK_FINAL" :  0x18,
-    "VK_HANJA" :  0x19, //  한자
-    "VK_KANJI" :  0x19,
-    
-    "VK_ESCAPE" :  0x1B, //  Esc
-    "VK_CONVERT" :  0x1C, 
-    "VK_NONCONVERT" :  0x1D,
-    "VK_ACCEPT" :  0x1E,
-    "VK_MODECHANGE" :  0x1F,
-    "VK_SPACE" :  0x20,
-    "VK_PRIOR" :  0x21, //  PgUp
-    "VK_NEXT" :  0x22, //  PgDn
-    "VK_END" :  0x23, //  End
-    "VK_HOME" :  0x24, //  Home
-    "VK_LEFT" :  0x25, //  
-    "VK_UP" :  0x26,
-    "VK_RIGHT" :  0x27,
-    "VK_DOWN" :  0x28,
-    "VK_SELECT" :  0x29,
-    "VK_PRINT" :  0x2A,
-    "VK_EXECUTE" :  0x2B,
-    "VK_SNAPSHOT" :  0x2C, //  Print Screen
-    "VK_INSERT" :  0x2D, //  Insert
-    "VK_DELETE" :  0x2E, //  Delete
-    "VK_HELP" :  0x2F,
-    "VK_LWIN" :  0x5B, //  왼쪽 윈도우 키
-    "VK_RWIN" :  0x5C, //  오른쪽 윈도우 키
-    "VK_APPS" :  0x5D,
-    "VK_SLEEP" :  0x5F,
-    "VK_NUMPAD0" :  0x60, //  숫자 패드 0 ~ 9
-    "VK_NUMPAD1" :  0x61,
-    "VK_NUMPAD2" :  0x62,
-    "VK_NUMPAD3" :  0x63,
-    "VK_NUMPAD4" :  0x64,
-    "VK_NUMPAD5" :  0x65,
-    "VK_NUMPAD6" :  0x66,
-    "VK_NUMPAD7" :  0x67,
-    "VK_NUMPAD8" :  0x68,
-    "VK_NUMPAD9" :  0x69,
-    "VK_MULTIPLY" :  0x6A, //  숫자 패드 *
-    "VK_ADD" :  0x6B, //  숫자 패드 +
-    "VK_SEPARATOR" :  0x6C,
-    "VK_SUBTRACT" :  0x6D, //  숫자 패드 -
-    "VK_DECIMAL" :  0x6E, //  숫자 패드 .
-    "VK_DIVIDE" :  0x6F, //  숫자 패드 /
-    "VK_F1" :  0x70,
-    "VK_F2" :  0x71,
-    "VK_F3" :  0x72,
-    "VK_F4" :  0x73,
-    "VK_F5" :  0x74,
-    "VK_F6" :  0x75,
-    "VK_F7" :  0x76,
-    "VK_F8" :  0x77,
-    "VK_F9" :  0x78,
-    "VK_F10" :  0x79,
-    "VK_F11" :  0x7A,
-    "VK_F12" :  0x7B,
-    "VK_F13" :  0x7C,
-    "VK_F14" :  0x7D,
-    "VK_F15" :  0x7E,
-    "VK_F16" :  0x7F,
-    "VK_F17" :  0x80,
-    "VK_F18" :  0x81,
-    "VK_F19" :  0x82,
-    "VK_F20" :  0x83,
-    "VK_F21" :  0x84,
-    "VK_F22" :  0x85,
-    "VK_F23" :  0x86,
-    "VK_F24" :  0x87,
-    "VK_NUMLOCK" :  0x90, //  Num Lock
-    "VK_SCROLL" :  0x91, //  Scroll Lock
-    "VK_OEM_NEC_EQUAL" :  0x92,
-    "VK_OEM_FJ_JISHO" :  0x92,
-    "VK_OEM_FJ_MASSHOU" :0x93,
-    "VK_OEM_FJ_TOUROKU" :0x94,
-    "VK_OEM_FJ_LOYA" :  0x95,
-    "VK_OEM_FJ_ROYA" :  0x96,
-    "VK_LSHIFT" :  0xA0,
-    "VK_RSHIFT" :  0xA1,
-    "VK_LCONTROL" :  0xA2,
-    "VK_RCONTROL" :  0xA3,
-    "VK_LMENU" :  0xA4,
-    "VK_RMENU" :  0xA5,
-    "VK_BROWSER_BACK" : 0xA6,
-    "VK_BROWSER_FORWARD" : 0xA7,
-    "VK_BROWSER_REFRESH" : 0xA8,
-    "VK_BROWSER_STOP" : 0xA9,
-    "VK_BROWSER_SEARCH" : 0xAA,
-    "VK_BROWSER_FAVORITES" : 0xAB,
-    "VK_BROWSER_HOME" : 0xAC,
-    "VK_VOLUME_MUTE" : 0xAD,
-    "VK_VOLUME_DOWN" : 0xAE,
-    "VK_VOLUME_UP" : 0xAF,
-    "VK_MEDIA_NEXT_TRACK" : 0xB0,
-    "VK_MEDIA_PREV_TRACK" : 0xB1,
-    "VK_MEDIA_STOP" : 0xB2,
-    "VK_MEDIA_PLAY_PAUSE" : 0xB3,
-    "VK_LAUNCH_MAIL" : 0xB4,
-    "VK_LAUNCH_MEDIA_SELECT" : 0xB5,
-    "VK_LAUNCH_APP1" : 0xB6,
-    "VK_LAUNCH_APP2" : 0xB7,
-    "VK_OEM_1" :  0xBA,
-    "VK_OEM_PLUS" :  0xBB,
-    "VK_OEM_COMMA" :  0xBC,
-    "VK_OEM_MINUS" :  0xBD,
-    "VK_OEM_PERIOD" :  0xBE,
-    "VK_OEM_2" :  0xBF,
-    "VK_OEM_3" :  0xC0, //  `
-    "VK_OEM_4" :  0xDB,
-    "VK_OEM_5" :  0xDC,
-    "VK_OEM_6" :  0xDD,
-    "VK_OEM_7" :  0xDE,
-    "VK_OEM_8" :  0xDF,
-    "VK_OEM_AX" :  0xE1,
-    "VK_OEM_102" :  0xE2,
-    "VK_ICO_HELP" :  0xE3,
-    "VK_ICO_00" :  0xE4,
-    "VK_PROCESSKEY" :  0xE5,
-    "VK_ICO_CLEAR" :  0xE6,
-    "VK_PACKET" :  0xE7,
-    "VK_OEM_RESET" :  0xE9,
-    "VK_OEM_JUMP" :  0xEA,
-    "VK_OEM_PA1" :  0xEB,
-    "VK_OEM_PA2" :  0xEC,
-    "VK_OEM_PA3" :  0xED,
-    "VK_OEM_WSCTRL" :  0xEE,
-    "VK_OEM_CUSEL" :  0xEF,
-    "VK_OEM_ATTN" :  0xF0,
-    "VK_OEM_FINISH" :  0xF1,
-    "VK_OEM_COPY" :  0xF2,
-    "VK_OEM_AUTO" :  0xF3,
-    "VK_OEM_ENLW" :  0xF4,
-    "VK_OEM_BACKTAB" :  0xF5,
-    "VK_ATTN" :  0xF6,
-    "VK_CRSEL" :  0xF7,
-    "VK_EXSEL" :  0xF8,
-    "VK_EREOF" :  0xF9,
-    "VK_PLAY" :  0xFA,
-    "VK_ZOOM" :  0xFB,
-    "VK_NONAME" :  0xFC,
-    "VK_PA1" :  0xFD,
-    "VK_OEM_CLEAR" :  0xFE,
-    
-    //  상단 숫자 키
-    "VK_KEY_0 " : 0x30,
-    "VK_KEY_1 " : 0x31,
-    "VK_KEY_2 " : 0x32,
-    "VK_KEY_3 " : 0x33,
-    "VK_KEY_4 " : 0x34,
-    "VK_KEY_5 " : 0x35,
-    "VK_KEY_6 " : 0x36,
-    "VK_KEY_7 " : 0x37,
-    "VK_KEY_8 " : 0x38,
-    "VK_KEY_9 " : 0x39,
+    VK_LBUTTON: 0x01,
+    VK_RBUTTON: 0x02,
+    VK_CANCEL: 0x03,
+    VK_MBUTTON: 0x04,
+    VK_XBUTTON1: 0x05,
+    VK_XBUTTON2: 0x06,
+    VK_BACK: 0x08, //  백스페이스
+    VK_TAB: 0x09, //  탭
+    VK_CLEAR: 0x0c, //  NumLock이 해제되었을 때의 5
+    VK_RETURN: 0x0d, //  Enter
+    VK_SHIFT: 0x10, //  Shift
+    VK_CONTROL: 0x11, //  Ctrl
+    VK_MENU: 0x12, //  Alt
+    VK_PAUSE: 0x13, //  Pause
+    VK_CAPITAL: 0x14, //  Caps Lock
 
-    "~" : 192,
-    "`" : 192,
-    "[" : 219,
-    "{" : 219,
-    "}" : 221,
-    "]" : 221,
-    ";" : 186,
-    ":" : 186,
-    '"' : 222,
-    "'" : 222,
-    "<" : 188,
-    "," : 188,
-    ">" : 190,
-    "?" : 191,
-    "/" : 191,
-    "-" : 189,
-    "_" : 189,
-    "+" : 187,
-    "=" : 187    
+    VK_KANA: 0x15,
+    VK_HANGEUL: 0x15,
+    VK_HANGUL: 0x15, //  한/영 변환
+    VK_JUNJA: 0x17,
+    VK_FINAL: 0x18,
+    VK_HANJA: 0x19, //  한자
+    VK_KANJI: 0x19,
+
+    VK_ESCAPE: 0x1b, //  Esc
+    VK_CONVERT: 0x1c,
+    VK_NONCONVERT: 0x1d,
+    VK_ACCEPT: 0x1e,
+    VK_MODECHANGE: 0x1f,
+    VK_SPACE: 0x20,
+    VK_PRIOR: 0x21, //  PgUp
+    VK_NEXT: 0x22, //  PgDn
+    VK_END: 0x23, //  End
+    VK_HOME: 0x24, //  Home
+    VK_LEFT: 0x25, //
+    VK_UP: 0x26,
+    VK_RIGHT: 0x27,
+    VK_DOWN: 0x28,
+    VK_SELECT: 0x29,
+    VK_PRINT: 0x2a,
+    VK_EXECUTE: 0x2b,
+    VK_SNAPSHOT: 0x2c, //  Print Screen
+    VK_INSERT: 0x2d, //  Insert
+    VK_DELETE: 0x2e, //  Delete
+    VK_HELP: 0x2f,
+    VK_LWIN: 0x5b, //  왼쪽 윈도우 키
+    VK_RWIN: 0x5c, //  오른쪽 윈도우 키
+    VK_APPS: 0x5d,
+    VK_SLEEP: 0x5f,
+    VK_NUMPAD0: 0x60, //  숫자 패드 0 ~ 9
+    VK_NUMPAD1: 0x61,
+    VK_NUMPAD2: 0x62,
+    VK_NUMPAD3: 0x63,
+    VK_NUMPAD4: 0x64,
+    VK_NUMPAD5: 0x65,
+    VK_NUMPAD6: 0x66,
+    VK_NUMPAD7: 0x67,
+    VK_NUMPAD8: 0x68,
+    VK_NUMPAD9: 0x69,
+    VK_MULTIPLY: 0x6a, //  숫자 패드 *
+    VK_ADD: 0x6b, //  숫자 패드 +
+    VK_SEPARATOR: 0x6c,
+    VK_SUBTRACT: 0x6d, //  숫자 패드 -
+    VK_DECIMAL: 0x6e, //  숫자 패드 .
+    VK_DIVIDE: 0x6f, //  숫자 패드 /
+    VK_F1: 0x70,
+    VK_F2: 0x71,
+    VK_F3: 0x72,
+    VK_F4: 0x73,
+    VK_F5: 0x74,
+    VK_F6: 0x75,
+    VK_F7: 0x76,
+    VK_F8: 0x77,
+    VK_F9: 0x78,
+    VK_F10: 0x79,
+    VK_F11: 0x7a,
+    VK_F12: 0x7b,
+    VK_F13: 0x7c,
+    VK_F14: 0x7d,
+    VK_F15: 0x7e,
+    VK_F16: 0x7f,
+    VK_F17: 0x80,
+    VK_F18: 0x81,
+    VK_F19: 0x82,
+    VK_F20: 0x83,
+    VK_F21: 0x84,
+    VK_F22: 0x85,
+    VK_F23: 0x86,
+    VK_F24: 0x87,
+    VK_NUMLOCK: 0x90, //  Num Lock
+    VK_SCROLL: 0x91, //  Scroll Lock
+    VK_OEM_NEC_EQUAL: 0x92,
+    VK_OEM_FJ_JISHO: 0x92,
+    VK_OEM_FJ_MASSHOU: 0x93,
+    VK_OEM_FJ_TOUROKU: 0x94,
+    VK_OEM_FJ_LOYA: 0x95,
+    VK_OEM_FJ_ROYA: 0x96,
+    VK_LSHIFT: 0xa0,
+    VK_RSHIFT: 0xa1,
+    VK_LCONTROL: 0xa2,
+    VK_RCONTROL: 0xa3,
+    VK_LMENU: 0xa4,
+    VK_RMENU: 0xa5,
+    VK_BROWSER_BACK: 0xa6,
+    VK_BROWSER_FORWARD: 0xa7,
+    VK_BROWSER_REFRESH: 0xa8,
+    VK_BROWSER_STOP: 0xa9,
+    VK_BROWSER_SEARCH: 0xaa,
+    VK_BROWSER_FAVORITES: 0xab,
+    VK_BROWSER_HOME: 0xac,
+    VK_VOLUME_MUTE: 0xad,
+    VK_VOLUME_DOWN: 0xae,
+    VK_VOLUME_UP: 0xaf,
+    VK_MEDIA_NEXT_TRACK: 0xb0,
+    VK_MEDIA_PREV_TRACK: 0xb1,
+    VK_MEDIA_STOP: 0xb2,
+    VK_MEDIA_PLAY_PAUSE: 0xb3,
+    VK_LAUNCH_MAIL: 0xb4,
+    VK_LAUNCH_MEDIA_SELECT: 0xb5,
+    VK_LAUNCH_APP1: 0xb6,
+    VK_LAUNCH_APP2: 0xb7,
+    VK_OEM_1: 0xba,
+    VK_OEM_PLUS: 0xbb,
+    VK_OEM_COMMA: 0xbc,
+    VK_OEM_MINUS: 0xbd,
+    VK_OEM_PERIOD: 0xbe,
+    VK_OEM_2: 0xbf,
+    VK_OEM_3: 0xc0, //  `
+    VK_OEM_4: 0xdb,
+    VK_OEM_5: 0xdc,
+    VK_OEM_6: 0xdd,
+    VK_OEM_7: 0xde,
+    VK_OEM_8: 0xdf,
+    VK_OEM_AX: 0xe1,
+    VK_OEM_102: 0xe2,
+    VK_ICO_HELP: 0xe3,
+    VK_ICO_00: 0xe4,
+    VK_PROCESSKEY: 0xe5,
+    VK_ICO_CLEAR: 0xe6,
+    VK_PACKET: 0xe7,
+    VK_OEM_RESET: 0xe9,
+    VK_OEM_JUMP: 0xea,
+    VK_OEM_PA1: 0xeb,
+    VK_OEM_PA2: 0xec,
+    VK_OEM_PA3: 0xed,
+    VK_OEM_WSCTRL: 0xee,
+    VK_OEM_CUSEL: 0xef,
+    VK_OEM_ATTN: 0xf0,
+    VK_OEM_FINISH: 0xf1,
+    VK_OEM_COPY: 0xf2,
+    VK_OEM_AUTO: 0xf3,
+    VK_OEM_ENLW: 0xf4,
+    VK_OEM_BACKTAB: 0xf5,
+    VK_ATTN: 0xf6,
+    VK_CRSEL: 0xf7,
+    VK_EXSEL: 0xf8,
+    VK_EREOF: 0xf9,
+    VK_PLAY: 0xfa,
+    VK_ZOOM: 0xfb,
+    VK_NONAME: 0xfc,
+    VK_PA1: 0xfd,
+    VK_OEM_CLEAR: 0xfe,
+
+    //  상단 숫자 키
+    'VK_KEY_0 ': 0x30,
+    'VK_KEY_1 ': 0x31,
+    'VK_KEY_2 ': 0x32,
+    'VK_KEY_3 ': 0x33,
+    'VK_KEY_4 ': 0x34,
+    'VK_KEY_5 ': 0x35,
+    'VK_KEY_6 ': 0x36,
+    'VK_KEY_7 ': 0x37,
+    'VK_KEY_8 ': 0x38,
+    'VK_KEY_9 ': 0x39,
+
+    '~': 192,
+    '`': 192,
+    '[': 219,
+    '{': 219,
+    '}': 221,
+    ']': 221,
+    ';': 186,
+    ':': 186,
+    '"': 222,
+    "'": 222,
+    '<': 188,
+    ',': 188,
+    '>': 190,
+    '?': 191,
+    '/': 191,
+    '-': 189,
+    _: 189,
+    '+': 187,
+    '=': 187,
   };
 
   /**
-   * 
-   * @param {String} _char 
+   *
+   * @param {String} _char
    */
   function convertKeycode(_char) {
     // upper case
     var ret = false;
     var c = _char;
-    
-    if(c.length === 1) {
+
+    if (c.length === 1) {
       var keycode = c.charCodeAt();
       // 65 ~ 90, 90 ~ 122
-      if(keycode >= 65 && keycode <= 90 &&
-        keycode >= 90 && keycode <= 122) {
+      if (keycode >= 65 && keycode <= 90 && keycode >= 90 && keycode <= 122) {
         ret = true;
       }
     } else {
       keycode = KEY[c];
-      if(keycode) {
+      if (keycode) {
         ret = true;
       }
     }
 
-    if(ret) {
+    if (ret) {
       return keycode;
     } else {
       return null;
     }
-
   }
 
-  var keyCode = convertKeycode(parameters['keyCode'] || "p") || 0x50;
+  var keyCode = convertKeycode(parameters['keyCode'] || 'p') || 0x50;
 
   SceneManager.pause = false;
 
@@ -818,15 +817,14 @@ RS.PauseGame = RS.PauseGame || {};
   // Event Listener
   //=========================================================================
 
-  window.addEventListener('keydown', function(event) {
+  window.addEventListener('keydown', function (event) {
     var ret = SceneManager.pause;
     var ctx, dx, dy;
 
-    if(event.keyCode === keyCode && 
-      RS.PauseGame.Params.isEnabled) {
+    if (event.keyCode === keyCode && RS.PauseGame.Params.isEnabled) {
       event.preventDefault();
       SceneManager.pause = !ret;
-      if(SceneManager.pause) {
+      if (SceneManager.pause) {
         Graphics.showPause();
       } else {
         Graphics.hidePause();
@@ -837,15 +835,14 @@ RS.PauseGame = RS.PauseGame || {};
   //=========================================================================
   // Graphics
   //=========================================================================
-  Graphics.initPause = function() {
+  Graphics.initPause = function () {
     this._pauseImage = new Image();
     this._pauseImage.src = 'img/pictures/' + imageSrc + '.png';
     this._pauseZIndex = 5;
     this._pauseZIndexTemp = 0;
   };
 
-  Graphics.showPause = function() {
-
+  Graphics.showPause = function () {
     var self = this;
 
     var canvas = self._upperCanvas;
@@ -869,18 +866,22 @@ RS.PauseGame = RS.PauseGame || {};
     ctx.drawImage(self._pauseImage, mx, my);
     ctx.restore();
 
-    if(Utils.isNwjs() && 
-    Utils.RPGMAKER_VERSION >= '1.6.1' && 
-    RS.PauseGame.Params.isEnabledNotification) {
-      var t = new Notification(titleText, {body: bodyText, icon:`icon/${iconPath}.png`});
-      setTimeout(function() {
+    if (
+      Utils.isNwjs() &&
+      Utils.RPGMAKER_VERSION >= '1.6.1' &&
+      RS.PauseGame.Params.isEnabledNotification
+    ) {
+      var t = new Notification(titleText, {
+        body: bodyText,
+        icon: `icon/${iconPath}.png`,
+      });
+      setTimeout(function () {
         t.close();
       }, time);
     }
-
   };
 
-  Graphics.hidePause = function() {
+  Graphics.hidePause = function () {
     var self = this;
     var canvas = self._upperCanvas;
 
@@ -890,7 +891,6 @@ RS.PauseGame = RS.PauseGame || {};
 
     // Restore zIndex
     canvas.style.zIndex = this._pauseZIndexTemp;
-
   };
 
   //=========================================================================
@@ -898,16 +898,16 @@ RS.PauseGame = RS.PauseGame || {};
   // Setting the main framework with pause scene
   //=========================================================================
 
-  if(Utils.RPGMAKER_VERSION < '1.6.1') {
-    SceneManager._getTimeInMsWithoutMobileSafari = function() {
+  if (Utils.RPGMAKER_VERSION < '1.6.1') {
+    SceneManager._getTimeInMsWithoutMobileSafari = function () {
       return performance.now();
-    };    
+    };
   }
 
-  SceneManager.updateMain = function() {
+  SceneManager.updateMain = function () {
     var self = this;
 
-    if(!self.pause) {
+    if (!self.pause) {
       if (Utils.isMobileSafari()) {
         this.changeScene();
         this.updateScene();
@@ -929,17 +929,17 @@ RS.PauseGame = RS.PauseGame || {};
     this.requestUpdate();
   };
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+  var alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
     alias_Game_Interpreter_pluginCommand.call(this);
-    if(command === "EnablePauseGame") {
+    if (command === 'EnablePauseGame') {
       RS.PauseGame.Params.isEnabled = true;
-    }    
-    if(command === "DisablePauseGame") {
+    }
+    if (command === 'DisablePauseGame') {
       RS.PauseGame.Params.isEnabled = false;
     }
   };
 
   Graphics.initPause();
-
 })();

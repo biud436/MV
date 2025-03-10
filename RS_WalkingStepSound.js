@@ -659,205 +659,203 @@
  * - Added the MOG_Footsteps Compatibility.
  */
 (function () {
-    function RSMatch() {
-        throw new Error("This is a static class");
+  function RSMatch() {
+    throw new Error('This is a static class');
+  }
+
+  RSMatch.params = RSMatch.params || {};
+
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_WalkingStepSound>');
+  });
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
+
+  RSMatch.params.stepInterval = Number(parameters['Step Interval'] || 2);
+  RSMatch.params.volume = Number(parameters['Volume'] || 30);
+  RSMatch.params.dirtSoundName = eval(parameters['Dirt Sound Name']);
+  RSMatch.params.snowSoundName = eval(parameters['Snow Sound Name']);
+  RSMatch.params.stoneSoundName = eval(parameters['Stone Sound Name']);
+  RSMatch.params.waterSoundName = eval(parameters['Water Sound Name']);
+  RSMatch.params.woodSoundName = eval(parameters['Wood Sound Name']);
+  RSMatch.params.symbolName = String(parameters['Step Sound'] || 'Step Sound');
+
+  RSMatch.ENUM_DIRT = Number(parameters['Dirt Terrain Tag'] || 1);
+  RSMatch.ENUM_SNOW = Number(parameters['Snow Terrain Tag'] || 2);
+  RSMatch.ENUM_STONE = Number(parameters['Stone Terrain Tag'] || 3);
+  RSMatch.ENUM_WATER = Number(parameters['Water Terrain Tag'] || 4);
+  RSMatch.ENUM_WOOD = Number(parameters['Wood Terrain Tag'] || 5);
+
+  RSMatch.params.terrainTags = [
+    RSMatch.ENUM_DIRT,
+    RSMatch.ENUM_SNOW,
+    RSMatch.ENUM_STONE,
+    RSMatch.ENUM_WATER,
+    RSMatch.ENUM_WOOD,
+  ];
+
+  RSMatch.type = {
+    dirt: RSMatch.params.dirtSoundName,
+    snow: RSMatch.params.snowSoundName,
+    stone: RSMatch.params.stoneSoundName,
+    water: RSMatch.params.waterSoundName,
+    wood: RSMatch.params.woodSoundName,
+  };
+
+  RSMatch.setState = function (value) {
+    this._state = value;
+  };
+
+  RSMatch.isRunning = function () {
+    RSMatch._init = false;
+    RSMatch._state = false;
+    RSMatch._steps = 0;
+    var tileset = $gameMap.tileset();
+    var note = tileset.note.split(/[\r\n]/);
+    note.forEach(function (i) {
+      if (i.match(/<Step Sounds>/i)) {
+        RSMatch._init = true;
+        ConfigManager.save();
+      }
+    }, this);
+  };
+
+  RSMatch.requestSound = function (type) {
+    if (!Imported.RS_WaveSupport) {
+      return;
     }
+    var array = RSMatch.type[type];
+    var min = array[1];
+    var max = array[2];
+    var index = ((1 + Math.random() * max) >> 0).clamp(min, max);
+    var vol = (30 + Math.random() * 10) >> 0;
+    AudioManager.playWav('%1%2'.format(array[0], index), vol);
+  };
 
-    RSMatch.params = RSMatch.params || {};
+  RSMatch.isInit = function () {
+    return RSMatch._init && !!ConfigManager.stepSound;
+  };
 
-    var parameters = $plugins.filter(function (i) {
-        return i.description.contains("<RS_WalkingStepSound>");
-    });
+  RSMatch.playSound = function () {
+    if (RSMatch._state && this.isInit()) {
+      switch ($gamePlayer.terrainTag()) {
+        case RSMatch.ENUM_DIRT:
+          this.requestSound('dirt');
+          break;
+        case RSMatch.ENUM_SNOW:
+          this.requestSound('snow');
+          break;
+        case RSMatch.ENUM_STONE:
+          this.requestSound('stone');
+          break;
+        case RSMatch.ENUM_WATER:
+          this.requestSound('water');
+          break;
+        case RSMatch.ENUM_WOOD:
+          this.requestSound('wood');
+          break;
+      }
+      this.setState(false);
+    }
+  };
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  var alias_Scene_Map_start = Scene_Map.prototype.start;
+  Scene_Map.prototype.start = function () {
+    alias_Scene_Map_start.call(this);
+    RSMatch.isRunning();
+  };
 
-    RSMatch.params.stepInterval = Number(parameters["Step Interval"] || 2);
-    RSMatch.params.volume = Number(parameters["Volume"] || 30);
-    RSMatch.params.dirtSoundName = eval(parameters["Dirt Sound Name"]);
-    RSMatch.params.snowSoundName = eval(parameters["Snow Sound Name"]);
-    RSMatch.params.stoneSoundName = eval(parameters["Stone Sound Name"]);
-    RSMatch.params.waterSoundName = eval(parameters["Water Sound Name"]);
-    RSMatch.params.woodSoundName = eval(parameters["Wood Sound Name"]);
-    RSMatch.params.symbolName = String(
-        parameters["Step Sound"] || "Step Sound"
-    );
-
-    RSMatch.ENUM_DIRT = Number(parameters["Dirt Terrain Tag"] || 1);
-    RSMatch.ENUM_SNOW = Number(parameters["Snow Terrain Tag"] || 2);
-    RSMatch.ENUM_STONE = Number(parameters["Stone Terrain Tag"] || 3);
-    RSMatch.ENUM_WATER = Number(parameters["Water Terrain Tag"] || 4);
-    RSMatch.ENUM_WOOD = Number(parameters["Wood Terrain Tag"] || 5);
-
-    RSMatch.params.terrainTags = [
-        RSMatch.ENUM_DIRT,
-        RSMatch.ENUM_SNOW,
-        RSMatch.ENUM_STONE,
-        RSMatch.ENUM_WATER,
-        RSMatch.ENUM_WOOD,
-    ];
-
-    RSMatch.type = {
-        dirt: RSMatch.params.dirtSoundName,
-        snow: RSMatch.params.snowSoundName,
-        stone: RSMatch.params.stoneSoundName,
-        water: RSMatch.params.waterSoundName,
-        wood: RSMatch.params.woodSoundName,
-    };
-
-    RSMatch.setState = function (value) {
-        this._state = value;
-    };
-
-    RSMatch.isRunning = function () {
-        RSMatch._init = false;
-        RSMatch._state = false;
-        RSMatch._steps = 0;
-        var tileset = $gameMap.tileset();
-        var note = tileset.note.split(/[\r\n]/);
-        note.forEach(function (i) {
-            if (i.match(/<Step Sounds>/i)) {
-                RSMatch._init = true;
-                ConfigManager.save();
-            }
-        }, this);
-    };
-
-    RSMatch.requestSound = function (type) {
-        if (!Imported.RS_WaveSupport) {
-            return;
-        }
-        var array = RSMatch.type[type];
-        var min = array[1];
-        var max = array[2];
-        var index = ((1 + Math.random() * max) >> 0).clamp(min, max);
-        var vol = (30 + Math.random() * 10) >> 0;
-        AudioManager.playWav("%1%2".format(array[0], index), vol);
-    };
-
-    RSMatch.isInit = function () {
-        return RSMatch._init && !!ConfigManager.stepSound;
-    };
-
-    RSMatch.playSound = function () {
-        if (RSMatch._state && this.isInit()) {
-            switch ($gamePlayer.terrainTag()) {
-                case RSMatch.ENUM_DIRT:
-                    this.requestSound("dirt");
-                    break;
-                case RSMatch.ENUM_SNOW:
-                    this.requestSound("snow");
-                    break;
-                case RSMatch.ENUM_STONE:
-                    this.requestSound("stone");
-                    break;
-                case RSMatch.ENUM_WATER:
-                    this.requestSound("water");
-                    break;
-                case RSMatch.ENUM_WOOD:
-                    this.requestSound("wood");
-                    break;
-            }
-            this.setState(false);
-        }
-    };
-
-    var alias_Scene_Map_start = Scene_Map.prototype.start;
-    Scene_Map.prototype.start = function () {
-        alias_Scene_Map_start.call(this);
-        RSMatch.isRunning();
-    };
-
-    RSMatch.update = function () {
-        if (RSMatch._state && $gameParty.steps() === RSMatch._steps) {
-            this.playSound();
-        } else {
-            if (!RSMatch._state) {
-                RSMatch._steps = $gameParty.steps() + this.getDistance();
-                this.setState(true);
-            }
-        }
-    };
-
-    RSMatch.getDistance = function () {
-        return RSMatch.params.stepInterval;
-    };
-
-    //========================================================
-    // Frame Update
-    //========================================================
-
-    if (Imported.MOG_Footsteps) {
-        /**
-         * Creating the footstep sprites and then plays back the footstep sounds.
-         * @method prepareFootSteps
-         */
-        var alias_Game_Player_prepareFootSteps =
-            Game_Player.prototype.prepareFootSteps;
-        Game_Player.prototype.prepareFootSteps = function () {
-            alias_Game_Player_prepareFootSteps.call(this);
-
-            var terrainTag = $gameMap.terrainTag(
-                this._footSteps[1],
-                this._footSteps[2]
-            );
-            var terrainTag2 = $gameMap.terrainTag(this._x, this._y);
-
-            if (RSMatch.params.terrainTags.contains(terrainTag)) {
-                this._footSteps[0] = true;
-                this._footSteps[4] = this._footSteps[1];
-                this._footSteps[5] = this._footSteps[2];
-                this._footSteps[6] = 0;
-                this._footSteps[7] = 1;
-                this._footSteps[9] = 1.0;
-                if (this._type && this.isBoat()) {
-                    this._footSteps[0] = false;
-                }
-            }
-            this._footSteps[1] = this._x;
-            this._footSteps[2] = this._y;
-
-            if (this._footSteps[0]) RSMatch.update();
-        };
+  RSMatch.update = function () {
+    if (RSMatch._state && $gameParty.steps() === RSMatch._steps) {
+      this.playSound();
     } else {
-        var alias_Game_Map_update = Game_Map.prototype.update;
-        Game_Map.prototype.update = function (sceneActive) {
-            alias_Game_Map_update.call(this, sceneActive);
-            RSMatch.update();
-        };
+      if (!RSMatch._state) {
+        RSMatch._steps = $gameParty.steps() + this.getDistance();
+        this.setState(true);
+      }
     }
+  };
 
-    //========================================================
-    // ConfigManager
-    //========================================================
+  RSMatch.getDistance = function () {
+    return RSMatch.params.stepInterval;
+  };
 
-    ConfigManager.stepSound = true;
+  //========================================================
+  // Frame Update
+  //========================================================
 
-    var alias_makeData = ConfigManager.makeData;
-    ConfigManager.makeData = function () {
-        var config = alias_makeData.call(this);
-        config.stepSound = ConfigManager.stepSound;
-        return config;
-    };
+  if (Imported.MOG_Footsteps) {
+    /**
+     * Creating the footstep sprites and then plays back the footstep sounds.
+     * @method prepareFootSteps
+     */
+    var alias_Game_Player_prepareFootSteps =
+      Game_Player.prototype.prepareFootSteps;
+    Game_Player.prototype.prepareFootSteps = function () {
+      alias_Game_Player_prepareFootSteps.call(this);
 
-    var alias_applyData = ConfigManager.applyData;
-    ConfigManager.applyData = function (config) {
-        alias_applyData.call(this, config);
-        var ret = config["stepSound"];
-        var temp = ConfigManager.stepSound;
-        if (ret !== undefined) {
-            this.stepSound = ret;
-        } else {
-            this.stepSound = temp;
+      var terrainTag = $gameMap.terrainTag(
+        this._footSteps[1],
+        this._footSteps[2]
+      );
+      var terrainTag2 = $gameMap.terrainTag(this._x, this._y);
+
+      if (RSMatch.params.terrainTags.contains(terrainTag)) {
+        this._footSteps[0] = true;
+        this._footSteps[4] = this._footSteps[1];
+        this._footSteps[5] = this._footSteps[2];
+        this._footSteps[6] = 0;
+        this._footSteps[7] = 1;
+        this._footSteps[9] = 1.0;
+        if (this._type && this.isBoat()) {
+          this._footSteps[0] = false;
         }
-    };
+      }
+      this._footSteps[1] = this._x;
+      this._footSteps[2] = this._y;
 
-    //========================================================
-    // Window_Options
-    //========================================================
-
-    var alias_addVolumeOptions = Window_Options.prototype.addGeneralOptions;
-    Window_Options.prototype.addGeneralOptions = function () {
-        alias_addVolumeOptions.call(this);
-        this.addCommand(RSMatch.params.symbolName, "stepSound");
+      if (this._footSteps[0]) RSMatch.update();
     };
+  } else {
+    var alias_Game_Map_update = Game_Map.prototype.update;
+    Game_Map.prototype.update = function (sceneActive) {
+      alias_Game_Map_update.call(this, sceneActive);
+      RSMatch.update();
+    };
+  }
+
+  //========================================================
+  // ConfigManager
+  //========================================================
+
+  ConfigManager.stepSound = true;
+
+  var alias_makeData = ConfigManager.makeData;
+  ConfigManager.makeData = function () {
+    var config = alias_makeData.call(this);
+    config.stepSound = ConfigManager.stepSound;
+    return config;
+  };
+
+  var alias_applyData = ConfigManager.applyData;
+  ConfigManager.applyData = function (config) {
+    alias_applyData.call(this, config);
+    var ret = config['stepSound'];
+    var temp = ConfigManager.stepSound;
+    if (ret !== undefined) {
+      this.stepSound = ret;
+    } else {
+      this.stepSound = temp;
+    }
+  };
+
+  //========================================================
+  // Window_Options
+  //========================================================
+
+  var alias_addVolumeOptions = Window_Options.prototype.addGeneralOptions;
+  Window_Options.prototype.addGeneralOptions = function () {
+    alias_addVolumeOptions.call(this);
+    this.addCommand(RSMatch.params.symbolName, 'stepSound');
+  };
 })();

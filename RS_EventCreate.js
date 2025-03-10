@@ -839,359 +839,337 @@
  */
 
 (() => {
-    const RS = window.RS || {};
-    RS.Event = RS.Event || {};
+  const RS = window.RS || {};
+  RS.Event = RS.Event || {};
 
-    let parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_EventCreate>');
+  let parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_EventCreate>');
+  });
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
+
+  const defaultFolder = 'data/Map';
+
+  RS.Event.Params = {};
+
+  //============================================================================
+  // Array
+  //============================================================================
+
+  // eslint-disable-next-line no-extend-native
+  Object.defineProperty(Array.prototype, 'first', {
+    get() {
+      return this[0];
+    },
+  });
+
+  // eslint-disable-next-line no-extend-native
+  Object.defineProperty(Array.prototype, 'last', {
+    get() {
+      const idx = this.length - 1;
+      return this[idx];
+    },
+  });
+
+  // eslint-disable-next-line no-extend-native
+  Array.prototype.delete = function (deleteItem) {
+    const tmp = this.filter(function (findValue) {
+      return findValue !== deleteItem;
+    });
+    return tmp;
+  };
+
+  //============================================================================
+  // RS.Event
+  //============================================================================
+
+  RS.Event.makeEventId = function () {
+    return $gameMap.events().length + 1;
+  };
+
+  RS.Event.makeEventName = function (eventId) {
+    return `EV${String(eventId).padZero(3)}`;
+  };
+
+  RS.Event.jsonParse = function (str) {
+    const retData = JSON.parse(str, (k, v) => {
+      try {
+        return RS.Event.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
+    });
+    return retData;
+  };
+
+  RS.Event.Params.template = RS.Event.jsonParse(parameters.Template);
+
+  RS.Event.getTemplate = function () {
+    const matches = RS.Event.Params.template.filter(e => {
+      return e.key;
     });
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+    if (matches && Array.isArray(matches)) {
+      return matches[0].data;
+    }
+    return RS.Event.jsonParse(parameters['Default Event Data']);
+  };
 
-    const defaultFolder = 'data/Map';
+  RS.Event.makeEventData = function (
+    x,
+    y,
+    charName,
+    charIdx,
+    eventId,
+    eventName
+  ) {
+    const defaultEventData = RS.Event.jsonParse(
+      parameters['Default Event Data']
+    );
+    defaultEventData.id = eventId;
+    defaultEventData.name = eventName;
+    defaultEventData.x = x;
+    defaultEventData.y = y;
+    defaultEventData.pages[0].image.characterName = charName;
+    defaultEventData.pages[0].image.characterIndex = charIdx;
+    return defaultEventData;
+  };
 
-    RS.Event.Params = {};
+  RS.Event.makeEventData2 = function (key, x, y, eventId, eventName) {
+    const defaultEventData = RS.Event.getTemplate(key);
+    defaultEventData.id = eventId;
+    defaultEventData.name = eventName;
+    defaultEventData.x = x;
+    defaultEventData.y = y;
 
-    //============================================================================
-    // Array
-    //============================================================================
+    return defaultEventData;
+  };
 
-    // eslint-disable-next-line no-extend-native
-    Object.defineProperty(Array.prototype, 'first', {
-        get() {
-            return this[0];
-        },
-    });
+  RS.Event.applyEventOnMap = function (ev) {
+    if (ev && ev.id) {
+      $dataMap.events[ev.id] = ev;
+    }
+  };
 
-    // eslint-disable-next-line no-extend-native
-    Object.defineProperty(Array.prototype, 'last', {
-        get() {
-            const idx = this.length - 1;
-            return this[idx];
-        },
-    });
+  RS.Event.instanceCreate = function (x, y, charName, charIdx) {
+    const eventId = RS.Event.makeEventId();
+    const eventName = RS.Event.makeEventName(eventId);
+    const newEvent = RS.Event.makeEventData(
+      x,
+      y,
+      charName,
+      charIdx,
+      eventId,
+      eventName
+    );
 
-    // eslint-disable-next-line no-extend-native
-    Array.prototype.delete = function (deleteItem) {
-        const tmp = this.filter(function (findValue) {
-            return findValue !== deleteItem;
-        });
-        return tmp;
-    };
+    RS.Event.applyEventOnMap(newEvent);
 
-    //============================================================================
-    // RS.Event
-    //============================================================================
+    return RS.Event.instanceCopy(x, y, $gameMap.mapId(), eventId, newEvent);
+  };
 
-    RS.Event.makeEventId = function () {
-        return $gameMap.events().length + 1;
-    };
+  RS.Event.instanceCreate2 = function (key, x, y) {
+    const eventId = RS.Event.makeEventId();
+    const eventName = RS.Event.makeEventName(eventId);
+    const newEvent = RS.Event.makeEventData2(key, x, y, eventId, eventName);
 
-    RS.Event.makeEventName = function (eventId) {
-        return `EV${String(eventId).padZero(3)}`;
-    };
+    RS.Event.applyEventOnMap(newEvent);
 
-    RS.Event.jsonParse = function (str) {
-        const retData = JSON.parse(str, (k, v) => {
-            try {
-                return RS.Event.jsonParse(v);
-            } catch (e) {
-                return v;
-            }
-        });
-        return retData;
-    };
+    return RS.Event.instanceCopy(x, y, $gameMap.mapId(), eventId, newEvent);
+  };
 
-    RS.Event.Params.template = RS.Event.jsonParse(parameters.Template);
+  RS.Event.instanceCopy = function (x, y, mapID, eventId, ...args) {
+    // Check that the map ID is the same.
+    if ($gameMap.mapId() === mapID) {
+      // Create a new event.
+      const eventData = new Game_Event(mapID || $gameMap.mapId(), eventId || 1);
 
-    RS.Event.getTemplate = function () {
-        const matches = RS.Event.Params.template.filter(e => {
-            return e.key;
-        });
+      // Set up the position of the event itself.
+      eventData.locate(x, y);
 
-        if (matches && Array.isArray(matches)) {
-            return matches[0].data;
+      // Check whether the fourth argument is used.
+      if (args[0]) eventData.setCustomData(args[0]);
+
+      // Set up the event page.
+      eventData.refresh();
+
+      // Added the event to event elements.
+      $gameMap._events[eventId] = eventData;
+
+      // Check whether the user is on the map.
+      scene = SceneManager._scene;
+      if (scene instanceof Scene_Map) {
+        // Add the child of Sprite_Character
+        const spriteset = scene._spriteset;
+        spriteset._characterSprites.push(new Sprite_Character(eventData));
+        spriteset._tilemap.addChild(spriteset._characterSprites.last);
+      }
+
+      return $gameMap._events.last;
+    }
+
+    return this.getMapData(x, y, mapID, eventId);
+  };
+
+  RS.Event.getMapData = function (x, y, mapID, eventId) {
+    const xhr = new XMLHttpRequest();
+    const parentFolder = RS.Event.getParentFolder();
+
+    const url = `${parentFolder}${defaultFolder}${mapID.padZero(3)}.json`;
+    xhr.open('GET', url);
+    xhr.overrideMimeType('application/json');
+    xhr.onload = () => {
+      if (xhr.status < 400) {
+        const item = JSON.parse(xhr.responseText);
+        const event = item.events[eventId];
+        event.id = RS.Event.makeEventId();
+        RS.Event.applyEventOnMap(event);
+        const newEvent = this.instanceCopy(x, y, $gameMap.mapId(), event.id);
+        if (newEvent) {
+          newEvent.setCustomData(event);
         }
-        return RS.Event.jsonParse(parameters['Default Event Data']);
+      }
     };
-
-    RS.Event.makeEventData = function (
-        x,
-        y,
-        charName,
-        charIdx,
-        eventId,
-        eventName
-    ) {
-        const defaultEventData = RS.Event.jsonParse(
-            parameters['Default Event Data']
-        );
-        defaultEventData.id = eventId;
-        defaultEventData.name = eventName;
-        defaultEventData.x = x;
-        defaultEventData.y = y;
-        defaultEventData.pages[0].image.characterName = charName;
-        defaultEventData.pages[0].image.characterIndex = charIdx;
-        return defaultEventData;
+    xhr.onerror = () => {
+      throw new Error('Failed to load map data.');
     };
+    xhr.send(null);
+  };
 
-    RS.Event.makeEventData2 = function (key, x, y, eventId, eventName) {
-        const defaultEventData = RS.Event.getTemplate(key);
-        defaultEventData.id = eventId;
-        defaultEventData.name = eventName;
-        defaultEventData.x = x;
-        defaultEventData.y = y;
+  RS.Event.getParentFolder = function (url2) {
+    url2 = url2 || window.location.href;
+    let i = 0;
+    let ret = '';
+    while (url2[i] !== undefined) {
+      i++;
+    }
+    while (url2[i] !== '/') {
+      i--;
+    }
+    ret = url2.slice(0, i).concat('/');
+    return ret;
+  };
 
-        return defaultEventData;
+  RS.Event.checkCharacterImage = function (imageName, func) {
+    const xhr = new XMLHttpRequest();
+    const url = `${RS.Event.getParentFolder()}img/characters/${imageName}.png`;
+    xhr.open('GET', url);
+    xhr.overrideMimeType('application/json');
+    xhr.onload = () => {
+      if (xhr.status < 400) {
+        func();
+      }
     };
+    xhr.onerror = () => {
+      throw new Error(`Failed to load an image ${imageName}`);
+    };
+    xhr.send(null);
+  };
 
-    RS.Event.applyEventOnMap = function (ev) {
-        if (ev && ev.id) {
-            $dataMap.events[ev.id] = ev;
+  RS.Event.instanceDestroy = function (_event) {
+    if (_event instanceof Game_Event) {
+      const mapId = $gameMap.mapId();
+      const eventId = _event.eventId();
+      if ($gameMap._events[eventId]) {
+        delete $gameMap._events[eventId];
+        RS.Event.deleteSpriteCharacter(_event);
+        $gameSelfSwitches.setValue([mapId, eventId, 'A'], false);
+        $gameSelfSwitches.setValue([mapId, eventId, 'B'], false);
+        $gameSelfSwitches.setValue([mapId, eventId, 'C'], false);
+        $gameSelfSwitches.setValue([mapId, eventId, 'D'], false);
+      }
+    }
+  };
+
+  RS.Event.deleteSpriteCharacter = function (owner) {
+    const scene = SceneManager._scene;
+    let index = -1;
+    if (scene instanceof Scene_Map) {
+      const target = scene._spriteset;
+      target._characterSprites.forEach((e, idx) => {
+        if (e._character === owner) {
+          index = idx;
         }
-    };
+      });
+      if (index !== -1) {
+        target._tilemap.removeChild(target._characterSprites[index]);
+      }
+    }
+  };
 
-    RS.Event.instanceCreate = function (x, y, charName, charIdx) {
-        const eventId = RS.Event.makeEventId();
-        const eventName = RS.Event.makeEventName(eventId);
-        const newEvent = RS.Event.makeEventData(
-            x,
-            y,
-            charName,
-            charIdx,
-            eventId,
-            eventName
-        );
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
 
-        RS.Event.applyEventOnMap(newEvent);
-
-        return RS.Event.instanceCopy(x, y, $gameMap.mapId(), eventId, newEvent);
-    };
-
-    RS.Event.instanceCreate2 = function (key, x, y) {
-        const eventId = RS.Event.makeEventId();
-        const eventName = RS.Event.makeEventName(eventId);
-        const newEvent = RS.Event.makeEventData2(key, x, y, eventId, eventName);
-
-        RS.Event.applyEventOnMap(newEvent);
-
-        return RS.Event.instanceCopy(x, y, $gameMap.mapId(), eventId, newEvent);
-    };
-
-    RS.Event.instanceCopy = function (x, y, mapID, eventId, ...args) {
-        // Check that the map ID is the same.
-        if ($gameMap.mapId() === mapID) {
-            // Create a new event.
-            const eventData = new Game_Event(
-                mapID || $gameMap.mapId(),
-                eventId || 1
-            );
-
-            // Set up the position of the event itself.
-            eventData.locate(x, y);
-
-            // Check whether the fourth argument is used.
-            if (args[0]) eventData.setCustomData(args[0]);
-
-            // Set up the event page.
-            eventData.refresh();
-
-            // Added the event to event elements.
-            $gameMap._events[eventId] = eventData;
-
-            // Check whether the user is on the map.
-            scene = SceneManager._scene;
-            if (scene instanceof Scene_Map) {
-                // Add the child of Sprite_Character
-                const spriteset = scene._spriteset;
-                spriteset._characterSprites.push(
-                    new Sprite_Character(eventData)
-                );
-                spriteset._tilemap.addChild(spriteset._characterSprites.last);
-            }
-
-            return $gameMap._events.last;
-        }
-
-        return this.getMapData(x, y, mapID, eventId);
-    };
-
-    RS.Event.getMapData = function (x, y, mapID, eventId) {
-        const xhr = new XMLHttpRequest();
-        const parentFolder = RS.Event.getParentFolder();
-
-        const url = `${parentFolder}${defaultFolder}${mapID.padZero(3)}.json`;
-        xhr.open('GET', url);
-        xhr.overrideMimeType('application/json');
-        xhr.onload = () => {
-            if (xhr.status < 400) {
-                const item = JSON.parse(xhr.responseText);
-                const event = item.events[eventId];
-                event.id = RS.Event.makeEventId();
-                RS.Event.applyEventOnMap(event);
-                const newEvent = this.instanceCopy(
-                    x,
-                    y,
-                    $gameMap.mapId(),
-                    event.id
-                );
-                if (newEvent) {
-                    newEvent.setCustomData(event);
-                }
-            }
-        };
-        xhr.onerror = () => {
-            throw new Error('Failed to load map data.');
-        };
-        xhr.send(null);
-    };
-
-    RS.Event.getParentFolder = function (url2) {
-        url2 = url2 || window.location.href;
-        let i = 0;
-        let ret = '';
-        while (url2[i] !== undefined) {
-            i++;
-        }
-        while (url2[i] !== '/') {
-            i--;
-        }
-        ret = url2.slice(0, i).concat('/');
-        return ret;
-    };
-
-    RS.Event.checkCharacterImage = function (imageName, func) {
-        const xhr = new XMLHttpRequest();
-        const url = `${RS.Event.getParentFolder()}img/characters/${imageName}.png`;
-        xhr.open('GET', url);
-        xhr.overrideMimeType('application/json');
-        xhr.onload = () => {
-            if (xhr.status < 400) {
-                func();
-            }
-        };
-        xhr.onerror = () => {
-            throw new Error(`Failed to load an image ${imageName}`);
-        };
-        xhr.send(null);
-    };
-
-    RS.Event.instanceDestroy = function (_event) {
-        if (_event instanceof Game_Event) {
-            const mapId = $gameMap.mapId();
-            const eventId = _event.eventId();
-            if ($gameMap._events[eventId]) {
-                delete $gameMap._events[eventId];
-                RS.Event.deleteSpriteCharacter(_event);
-                $gameSelfSwitches.setValue([mapId, eventId, 'A'], false);
-                $gameSelfSwitches.setValue([mapId, eventId, 'B'], false);
-                $gameSelfSwitches.setValue([mapId, eventId, 'C'], false);
-                $gameSelfSwitches.setValue([mapId, eventId, 'D'], false);
-            }
-        }
-    };
-
-    RS.Event.deleteSpriteCharacter = function (owner) {
-        const scene = SceneManager._scene;
-        let index = -1;
-        if (scene instanceof Scene_Map) {
-            const target = scene._spriteset;
-            target._characterSprites.forEach((e, idx) => {
-                if (e._character === owner) {
-                    index = idx;
-                }
+  const aliasGameInterpreterPluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    aliasGameInterpreterPluginCommand.call(this, command, args);
+    if (command === 'Event') {
+      switch (args[0].toLowerCase()) {
+        case 'create':
+          {
+            const x = Number(args[1]).clamp(0, $gameMap.width() - 1);
+            const y = Number(args[2]).clamp(0, $gameMap.height() - 1);
+            const charName = args[3];
+            const charIdx = Number(args[4]).clamp(0, 7);
+            RS.Event.checkCharacterImage(charName, function () {
+              RS.Event.instanceCreate(x, y, charName, charIdx);
             });
-            if (index !== -1) {
-                target._tilemap.removeChild(target._characterSprites[index]);
-            }
-        }
-    };
+          }
+          break;
+        case 'copy':
+          {
+            let mapId = Number(args[3]);
+            if (mapId <= 0) mapId = $gameMap.mapId();
+            RS.Event.instanceCopy(
+              Number(args[1]),
+              Number(args[2]),
+              mapId,
+              Number(args[4])
+            );
+          }
+          break;
+        case 'delete':
+          RS.Event.instanceDestroy(this.character(Number(args[1])));
+          break;
+        case 'template':
+          {
+            const key = args[1];
+            const x = Number(args[2]).clamp(0, $gameMap.width() - 1);
+            const y = Number(args[3]).clamp(0, $gameMap.height() - 1);
+            RS.Event.instanceCreate2(key, x, y);
+          }
+          break;
+        default:
+      }
+    }
+  };
 
-    //============================================================================
-    // Game_Interpreter
-    //============================================================================
+  //============================================================================
+  // Game_Event
+  //============================================================================
 
-    const aliasGameInterpreterPluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        aliasGameInterpreterPluginCommand.call(this, command, args);
-        if (command === 'Event') {
-            switch (args[0].toLowerCase()) {
-                case 'create':
-                    {
-                        const x = Number(args[1]).clamp(
-                            0,
-                            $gameMap.width() - 1
-                        );
-                        const y = Number(args[2]).clamp(
-                            0,
-                            $gameMap.height() - 1
-                        );
-                        const charName = args[3];
-                        const charIdx = Number(args[4]).clamp(0, 7);
-                        RS.Event.checkCharacterImage(charName, function () {
-                            RS.Event.instanceCreate(x, y, charName, charIdx);
-                        });
-                    }
-                    break;
-                case 'copy':
-                    {
-                        let mapId = Number(args[3]);
-                        if (mapId <= 0) mapId = $gameMap.mapId();
-                        RS.Event.instanceCopy(
-                            Number(args[1]),
-                            Number(args[2]),
-                            mapId,
-                            Number(args[4])
-                        );
-                    }
-                    break;
-                case 'delete':
-                    RS.Event.instanceDestroy(this.character(Number(args[1])));
-                    break;
-                case 'template':
-                    {
-                        const key = args[1];
-                        const x = Number(args[2]).clamp(
-                            0,
-                            $gameMap.width() - 1
-                        );
-                        const y = Number(args[3]).clamp(
-                            0,
-                            $gameMap.height() - 1
-                        );
-                        RS.Event.instanceCreate2(key, x, y);
-                    }
-                    break;
-                default:
-            }
-        }
-    };
+  const aliasGameEventInitialize = Game_Event.prototype.initialize;
+  Game_Event.prototype.initialize = function (mapId, eventId) {
+    aliasGameEventInitialize.call(this, mapId, eventId);
+    this._isCustomData = false;
+  };
 
-    //============================================================================
-    // Game_Event
-    //============================================================================
+  Game_Event.prototype.setCustomData = function (data) {
+    if (data) {
+      this._isCustomData = true;
+      this._customData = data;
+    }
 
-    const aliasGameEventInitialize = Game_Event.prototype.initialize;
-    Game_Event.prototype.initialize = function (mapId, eventId) {
-        aliasGameEventInitialize.call(this, mapId, eventId);
-        this._isCustomData = false;
-    };
+    return this;
+  };
 
-    Game_Event.prototype.setCustomData = function (data) {
-        if (data) {
-            this._isCustomData = true;
-            this._customData = data;
-        }
+  Game_Event.prototype.event = function () {
+    if (this._isCustomData) {
+      return this._customData;
+    }
 
-        return this;
-    };
-
-    Game_Event.prototype.event = function () {
-        if (this._isCustomData) {
-            return this._customData;
-        }
-
-        return $dataMap.events[this._eventId];
-    };
+    return $dataMap.events[this._eventId];
+  };
 })();

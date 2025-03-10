@@ -99,8 +99,7 @@
 var Imported = Imported || {};
 Imported.RS_MessageParamManagers = '1.0.1';
 
-(function() {
-
+(function () {
   var parameters = PluginManager.parameters('RS_MessageParamManagers');
   var __backOpacity = Number(parameters['back Opacity'] || 192);
   var __translucentOpacity = Number(parameters['translucent Opacity'] || 160);
@@ -109,36 +108,37 @@ Imported.RS_MessageParamManagers = '1.0.1';
   var __defaultOutlineWidth = Number(parameters['default outline width'] || 2);
   var __defaultOutlineColor = parameters['default outline Color'] || 'white';
 
-  Window_Message.prototype.standardBackOpacity = function() {
-      return __backOpacity;
+  Window_Message.prototype.standardBackOpacity = function () {
+    return __backOpacity;
   };
 
-  Window_Message.prototype.translucentOpacity = function() {
-      return __translucentOpacity;
+  Window_Message.prototype.translucentOpacity = function () {
+    return __translucentOpacity;
   };
 
-  Window_Message.prototype.updateDefaultOpacity = function() {
-      this.opacity = __defaultOpacity;
+  Window_Message.prototype.updateDefaultOpacity = function () {
+    this.opacity = __defaultOpacity;
   };
 
-  Window_Message.prototype.updateContentsOpacity = function() {
-      this.contentsOpacity = __contentsOpacity;
+  Window_Message.prototype.updateContentsOpacity = function () {
+    this.contentsOpacity = __contentsOpacity;
   };
 
-  var alias_Window_Message_updatePlacement = Window_Message.prototype.updatePlacement;
-  Window_Message.prototype.updatePlacement = function() {
+  var alias_Window_Message_updatePlacement =
+    Window_Message.prototype.updatePlacement;
+  Window_Message.prototype.updatePlacement = function () {
     alias_Window_Message_update.call(this);
     this.updateDefaultOpacity();
     this.updateContentsOpacity();
   };
 
-  var alias_Window_Message_resetFontSettings = Window_Message.prototype.resetFontSettings;
-  Window_Message.prototype.resetFontSettings = function() {
+  var alias_Window_Message_resetFontSettings =
+    Window_Message.prototype.resetFontSettings;
+  Window_Message.prototype.resetFontSettings = function () {
     alias_Window_Message_resetFontSettings.call(this);
     this.contents.fontBold = false;
     this.contents.fontItalic = false;
     this.contents.outlineWidth = __defaultOutlineWidth;
     this.contents.outlineColor = __defaultOutlineColor;
   };
-
 })();

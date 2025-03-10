@@ -68,27 +68,27 @@
  */
 
 (() => {
-    const RS = RS || {};
-    RS.GameSpeed = RS.GameSpeed || {};
+  const RS = RS || {};
+  RS.GameSpeed = RS.GameSpeed || {};
 
-    let parameters = $plugins.filter(i => {
-        return i.description.contains('<RS_GameSpeed>');
-    });
+  let parameters = $plugins.filter(i => {
+    return i.description.contains('<RS_GameSpeed>');
+  });
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
-    $.Params = {};
-    $.Params.FPS = parseFloat(parameters.FPS || 60);
+  $.Params = {};
+  $.Params.FPS = parseFloat(parameters.FPS || 60);
 
-    SceneManager._deltaTime = 1.0 / $.Params.FPS;
+  SceneManager._deltaTime = 1.0 / $.Params.FPS;
 
-    const alias_Game_Interpreter_pluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === 'ChangeFPS') {
-            RS.GameSpeed.Params.FPS = parseFloat(args[0] || 60);
-            SceneManager._deltaTime = 1.0 / $.Params.FPS;
-        }
-    };
+  const alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'ChangeFPS') {
+      RS.GameSpeed.Params.FPS = parseFloat(args[0] || 60);
+      SceneManager._deltaTime = 1.0 / $.Params.FPS;
+    }
+  };
 })();

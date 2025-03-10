@@ -268,8 +268,7 @@ var RS = RS || {};
 RS.MultipleViewports = RS.MultipleViewports || {};
 
 (function () {
-
-  "use strict";
+  'use strict';
 
   let isMultipleViewport = false;
   let isShake = 0;
@@ -277,441 +276,421 @@ RS.MultipleViewports = RS.MultipleViewports || {};
 
   let isStoppingMainScene = false;
 
-  let parameters = $plugins.filter(function(i) {
-    return i.description.contains("<RS_MultipleViewports>");
+  let parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_MultipleViewports>');
   });
 
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
-  RS.MultipleViewports.isVertical = Boolean(parameters['Viewport orientation'] === 'false');
+  RS.MultipleViewports.isVertical = Boolean(
+    parameters['Viewport orientation'] === 'false'
+  );
 
   //============================================================================
   // Fixed bug in library that can not play the texture video in PIXI 4.0.3 version.
   //============================================================================
 
-  if( (PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0") ) {
-
+  if (PIXI.VERSION >= '4.0.0' && Utils.RPGMAKER_VERSION >= '1.3.0') {
     let ticker = PIXI.ticker;
 
     PIXI.VideoBaseTexture.prototype._onPlayStart = function _onPlayStart() {
-        // Just in case the video has not recieved its can play even yet..
-        if (!this.hasLoaded) {
-            this._onCanPlay();
-        }
+      // Just in case the video has not recieved its can play even yet..
+      if (!this.hasLoaded) {
+        this._onCanPlay();
+      }
 
-        if (!this._isAutoUpdating && this.autoUpdate) {
-            ticker.shared.add(this.update, this);
-            ticker.shared.stop();
-            ticker.shared.start();
-            this._isAutoUpdating = true;
-
-        }
+      if (!this._isAutoUpdating && this.autoUpdate) {
+        ticker.shared.add(this.update, this);
+        ticker.shared.stop();
+        ticker.shared.start();
+        this._isAutoUpdating = true;
+      }
     };
-
   }
 
   //============================================================================
   // ViewportTarget
   //============================================================================
 
-  class ViewportTarget
-  {
-    constructor()
-    {
+  class ViewportTarget {
+    constructor() {
       this._target = null;
       this._x = 0;
       this._y = 0;
     }
-    setTarget(target)
-    {
+    setTarget(target) {
       this._target = target;
     }
-    clearTarget()
-    {
+    clearTarget() {
       this._target = undefined;
     }
-    update()
-    {
-      if(!this._target) return;
+    update() {
+      if (!this._target) return;
       this._x = this._target._realX - $gamePlayer.centerX();
       this._y = this._target._realY - $gamePlayer.centerY();
       $gameMap.setDisplayPos(this._x, this._y);
     }
-    get x() { return this._x; }
-    set x(value) { this._x = value; }
-    get y() { return this._y; }
-    set y(value) { this._y = value; }
+    get x() {
+      return this._x;
+    }
+    set x(value) {
+      this._x = value;
+    }
+    get y() {
+      return this._y;
+    }
+    set y(value) {
+      this._y = value;
+    }
   }
 
   //============================================================================
   // ViewportManager
   //============================================================================
 
-  class ViewportManager
-  {
-      constructor(g)
-      {
-          this._graphics = g;
+  class ViewportManager {
+    constructor(g) {
+      this._graphics = g;
+    }
+
+    initMembers() {
+      this._mtHorizontalScale = 1.0;
+      this._mtVerticalScale = 1.0;
+      this._renderSprite = [];
+      this._viewportDisplayPos = [];
+      this._frameWidth = 0;
+      this._frameHeight = 0;
+      this._renderTexture = [];
+      this._rect = null;
+      this._renderTarget = null;
+      this._renderSprite = null;
+      this._tempPos = new PIXI.Point(0, 0);
+      this._viewImageCached = [];
+      this._renderBounds = null;
+      this._target = null;
+      this._maxDisplayCounts = Number(
+        parameters['Maximum viewport'] || 4
+      ).clamp(2, 4);
+    }
+
+    clear() {
+      for (var i = 0; i < this._maxDisplayCounts; i++) {
+        this._viewportDisplayPos[i].clearTarget();
+      }
+    }
+
+    isValid() {
+      return SceneManager._scene instanceof Scene_Map;
+    }
+
+    isRendererValid() {
+      return this._graphics._renderer;
+    }
+
+    isWebGL() {
+      return this._graphics.isWebGL();
+    }
+
+    restore() {
+      for (var i = 0; i < this._maxDisplayCounts; i++) {
+        Graphics.viewport.setDisplayPos(
+          i + 1,
+          $gameMap._multipleViewportTargetIds[i]
+        );
+      }
+    }
+
+    renderer() {
+      return this._graphics._renderer;
+    }
+
+    createRenderTexture() {
+      if (!this.isRendererValid()) return;
+
+      let gl;
+
+      if (Graphics.isWebGL()) gl = this.renderer().gl;
+
+      this.initMembers();
+
+      // Calculrate Screen
+      if (this.isWebGL()) {
+        this._frameWidth = gl.drawingBufferWidth || 816;
+        this._frameHeight = gl.drawingBufferHeight || 624;
+      } else {
+        this._frameWidth = this.renderer().width || 816;
+        this._frameHeight = this.renderer().height || 624;
       }
 
-      initMembers()
-      {
-        this._mtHorizontalScale = 1.0;
-        this._mtVerticalScale = 1.0;
-        this._renderSprite = [];
-        this._viewportDisplayPos = [];
-        this._frameWidth = 0;
-        this._frameHeight = 0;
-        this._renderTexture = [];
-        this._rect = null;
-        this._renderTarget = null;
-        this._renderSprite = null;
-        this._tempPos = new PIXI.Point(0, 0);
-        this._viewImageCached = [];
-        this._renderBounds = null;
-        this._target = null;
-        this._maxDisplayCounts = Number(parameters['Maximum viewport'] || 4).clamp(2, 4);
+      // Create RenderTexture
+      for (let i = 0; i < this._maxDisplayCounts; i++) {
+        this._renderTexture[i] = PIXI.RenderTexture.create(
+          this._frameWidth,
+          this._frameHeight,
+          PIXI.SCALE_MODES.NEAREST
+        );
+      }
+      // Create Rect
+      this._rect = this.getRenderPosition(this._frameWidth, this._frameHeight);
+
+      // Create RenderTarget
+      if (this.isWebGL()) {
+        this._renderTarget = new PIXI.RenderTarget(
+          gl,
+          this._frameWidth,
+          this._frameHeight,
+          PIXI.SCALE_MODES.NEAREST
+        );
+      } else {
+        this._renderTarget = new PIXI.CanvasRenderTarget(
+          this._frameWidth,
+          this._frameHeight
+        );
       }
 
-      clear()
-      {
-        for (var i = 0; i < this._maxDisplayCounts; i++) {
-          this._viewportDisplayPos[i].clearTarget();
-        }
+      // Create Sprite
+      this._renderSprite = new Sprite();
+
+      // Add Child Sprite
+      for (let i = 0; i < this._maxDisplayCounts; i++) {
+        this._renderSprite.addChild(new Sprite());
+        this._viewportDisplayPos[i] = new ViewportTarget();
       }
 
-      isValid()
-      {
-        return (SceneManager._scene instanceof Scene_Map);
-      }
+      this._tempPos = new ViewportTarget();
+      this._viewImageCached = [];
+      this._renderBounds = new Rectangle(
+        0,
+        0,
+        this._frameWidth,
+        this._frameHeight
+      );
+    }
 
-      isRendererValid()
-      {
-        return this._graphics._renderer;
-      }
-
-      isWebGL()
-      {
-        return this._graphics.isWebGL();
-      }
-
-      restore()
-      {
-        for(var i = 0; i < this._maxDisplayCounts; i++) {
-          Graphics.viewport.setDisplayPos(i + 1, $gameMap._multipleViewportTargetIds[i]);
-        }
-      }
-
-      renderer() {
-        return this._graphics._renderer;
-      }
-
-      createRenderTexture()
-      {
-        if(!this.isRendererValid()) return;
-
-        let gl;
-
-        if(Graphics.isWebGL()) gl = this.renderer().gl;
-
-        this.initMembers();
-
-        // Calculrate Screen
-        if( this.isWebGL() ) {
-
-          this._frameWidth = gl.drawingBufferWidth || 816;
-          this._frameHeight = gl.drawingBufferHeight || 624;
-
-        } else {
-
-          this._frameWidth = this.renderer().width || 816;
-          this._frameHeight = this.renderer().height || 624;
-
-        }
-
-        // Create RenderTexture
-        for(let i = 0; i < this._maxDisplayCounts; i++) {
-
-          this._renderTexture[i] = PIXI.RenderTexture.create(this._frameWidth,
-                                                          this._frameHeight,
-                                                          PIXI.SCALE_MODES.NEAREST);
-        }
-        // Create Rect
-        this._rect = this.getRenderPosition(this._frameWidth, this._frameHeight);
-
-        // Create RenderTarget
-        if( this.isWebGL() ) {
-
-          this._renderTarget = new PIXI.RenderTarget(gl, this._frameWidth,
-                                                        this._frameHeight,
-                                                        PIXI.SCALE_MODES.NEAREST);
-
-        } else {
-
-          this._renderTarget = new PIXI.CanvasRenderTarget(this._frameWidth,
-                                                          this._frameHeight);
-
-        }
-
-        // Create Sprite
-        this._renderSprite = new Sprite();
-
-        // Add Child Sprite
-        for(let i = 0; i < this._maxDisplayCounts; i++) {
-
-          this._renderSprite.addChild(new Sprite());
-          this._viewportDisplayPos[i] = new ViewportTarget();
-
-        }
-
-        this._tempPos = new ViewportTarget();
-        this._viewImageCached = [];
-        this._renderBounds = new Rectangle(0, 0, this._frameWidth, this._frameHeight);
-
-      }
-
-      getRenderPosition(width, height)
-      {
-        let positionType = [];
-        let w, h;
-        let vx, vy;
-        let size = this._maxDisplayCounts;
-        switch (this._maxDisplayCounts) {
-          case 2: case 3:
-            if(RS.MultipleViewports.isVertical) {
-              w = width / size;
-              h = height;
-              this._mtHorizontalScale = 1 / this._maxDisplayCounts;
-              this._mtVerticalScale = 1.0;
+    getRenderPosition(width, height) {
+      let positionType = [];
+      let w, h;
+      let vx, vy;
+      let size = this._maxDisplayCounts;
+      switch (this._maxDisplayCounts) {
+        case 2:
+        case 3:
+          if (RS.MultipleViewports.isVertical) {
+            w = width / size;
+            h = height;
+            this._mtHorizontalScale = 1 / this._maxDisplayCounts;
+            this._mtVerticalScale = 1.0;
+          } else {
+            w = width;
+            h = height / size;
+            this._mtHorizontalScale = 1.0;
+            this._mtVerticalScale = 1 / this._maxDisplayCounts;
+          }
+          for (let i = (vx = vy = 0); i < this._maxDisplayCounts; i++) {
+            vx = i % this._maxDisplayCounts;
+            vy = i / this._maxDisplayCounts;
+            if (RS.MultipleViewports.isVertical) {
+              positionType[i] = new Rectangle(w * vx, 0, w, h);
             } else {
-              w = width;
-              h = height / size;
-              this._mtHorizontalScale = 1.0;
-              this._mtVerticalScale = (1 / this._maxDisplayCounts);
+              positionType[i] = new Rectangle(0, h * i, w, h);
             }
-            for(let i = vx = vy = 0; i < this._maxDisplayCounts; i++) {
-              vx = (i % this._maxDisplayCounts);
-              vy = (i / this._maxDisplayCounts);
-              if(RS.MultipleViewports.isVertical) {
-                positionType[i] = new Rectangle(w * vx, 0, w, h);
-              } else {
-                positionType[i] = new Rectangle(0, h * i, w, h);
-              }
-            }
+          }
+          break;
+        case 4: // Grid
+          w = width / 2;
+          h = height / 2;
+          this._mtHorizontalScale = 1 / 2;
+          this._mtVerticalScale = 1 / 2;
+          for (let i = (vx = vy = 0); i < this._maxDisplayCounts; i++) {
+            vx = i % 2;
+            vy = Math.floor(i / 2);
+            positionType[i] = new Rectangle(w * vx, h * vy, w, h);
+          }
+          break;
+      }
+      return positionType;
+    }
+
+    setRenderSprite(i) {
+      let sPower =
+        $gameMap._multipleViewportShakePower *
+        $gameMap._multipleViewportShakeEnabled;
+      let shake = (-0.5 + Math.random()) * sPower;
+      let child = this._renderSprite.getChildAt(i);
+
+      child.x = this._rect[i].x + shake;
+      child.y = this._rect[i].y + shake;
+
+      if (this.isCheckedViewImage(i)) {
+        const texture = (child.texture = this._viewImageCached[i]);
+        child.scale.x =
+          (Graphics.boxWidth / texture.width) * this._mtHorizontalScale;
+        child.scale.y =
+          (Graphics.boxHeight / texture.height) * this._mtVerticalScale;
+      } else {
+        child.texture = this._renderTexture[i];
+        child.scale.x = this._mtHorizontalScale;
+        child.scale.y = this._mtVerticalScale;
+      }
+    }
+
+    // Image
+
+    setViewportImage(viewID, texture) {
+      if (this._viewImageCached[viewID - 1]) {
+        this._viewImageCached[viewID - 1] = null;
+      }
+      this._viewImageCached.splice(viewID - 1, texture);
+      this._viewImageCached[viewID - 1] = texture;
+    }
+
+    isCheckedViewImage(viewID) {
+      const texture = this._viewImageCached[viewID];
+      if (texture instanceof PIXI.Texture) {
+        return !!texture.baseTexture && texture.baseTexture.hasLoaded;
+      } else {
+        return false;
+      }
+    }
+
+    clearViewImage(viewID) {
+      if (this._viewImageCached[viewID - 1]) {
+        const texture = this._viewImageCached[viewID - 1];
+        if (texture) texture.destroy({ destroyBase: true });
+        delete this._viewImageCached[viewID - 1];
+      }
+    }
+
+    // Video
+
+    moveMoviesToCertainView(viewID, funcName, second) {
+      const texture = this._viewImageCached[viewID - 1];
+      if (texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
+        let video = texture.baseTexture.source;
+        switch (funcName) {
+          case 'Move Back':
+            if (video) video.currentTime -= second;
             break;
-          case 4: // Grid
-            w = width / 2;
-            h = height / 2;
-            this._mtHorizontalScale = 1 / 2;
-            this._mtVerticalScale = 1 / 2;
-            for(let i = vx = vy = 0; i < this._maxDisplayCounts; i++) {
-              vx = (i % 2);
-              vy = Math.floor(i / 2);
-              positionType[i] = new Rectangle(w * vx, h * vy, w, h);
-            }
+          case 'Move Forward':
+            if (video) video.currentTime += second;
             break;
         }
-        return positionType;
       }
+    }
 
-      setRenderSprite(i)
-      {
-        let sPower = $gameMap._multipleViewportShakePower * $gameMap._multipleViewportShakeEnabled;
-        let shake = (-0.5 + Math.random()) * sPower;
-        let child = this._renderSprite.getChildAt(i);
-
-        child.x = this._rect[i].x + shake;
-        child.y = this._rect[i].y + shake;
-
-          if(this.isCheckedViewImage(i)) {
-
-            const texture = child.texture = this._viewImageCached[i];
-            child.scale.x = (Graphics.boxWidth / texture.width) * this._mtHorizontalScale;
-            child.scale.y = (Graphics.boxHeight / texture.height) * this._mtVerticalScale;
-
-          } else {
-
-            child.texture = this._renderTexture[i];
-            child.scale.x = this._mtHorizontalScale;
-            child.scale.y = this._mtVerticalScale;
-          }
-      }
-
-      // Image
-
-      setViewportImage(viewID, texture)
-      {
-        if(this._viewImageCached[viewID - 1]) {
-          this._viewImageCached[viewID - 1] = null;
-        }
-        this._viewImageCached.splice(viewID - 1, texture);
-        this._viewImageCached[viewID - 1] = texture;
-      }
-
-      isCheckedViewImage(viewID)
-      {
-        const texture = this._viewImageCached[viewID];
-        if(texture instanceof PIXI.Texture) {
-          return !!texture.baseTexture && texture.baseTexture.hasLoaded;
+    playMoviesToCertainView(viewID) {
+      const texture = this._viewImageCached[viewID - 1];
+      if (texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
+        let video = texture.baseTexture.source;
+        if (video) {
+          video.play();
         } else {
-          return false;
+          if (texture.baseTexture._onCanPlay) texture.baseTexture._onCanPlay();
         }
       }
+    }
 
-      clearViewImage(viewID)
-      {
-        if(this._viewImageCached[viewID - 1]) {
-            const texture = this._viewImageCached[viewID - 1];
-            if(texture) texture.destroy({ destroyBase: true });
-            delete this._viewImageCached[viewID - 1];
+    pauseMoviesToCertainView(viewID) {
+      const texture = this._viewImageCached[viewID - 1];
+      if (texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
+        let video = texture.baseTexture.source;
+        if (video) video.pause();
+      }
+    }
+
+    stopMoviesToCertainView(viewID) {
+      const texture = this._viewImageCached[viewID - 1];
+      if (texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
+        let video = texture.baseTexture.source;
+        if (video) {
+          video.pause();
+          video.currentTime = 0.0;
         }
       }
+    }
 
-      // Video
+    pauseAllMovies() {
+      this._viewImageCached.forEach(function (i) {
+        if (i.baseTexture instanceof PIXI.VideoBaseTexture)
+          i.baseTexture.source.pause();
+      });
+    }
 
-      moveMoviesToCertainView(viewID, funcName, second)
-      {
-        const texture = this._viewImageCached[viewID - 1];
-        if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
-          let video = texture.baseTexture.source;
-          switch (funcName) {
-            case 'Move Back':
-              if(video) video.currentTime -= second;
-              break;
-            case 'Move Forward':
-              if(video) video.currentTime += second;
-              break;
-          }
+    playAllMovies() {
+      this._viewImageCached.forEach(function (i) {
+        if (i.baseTexture instanceof PIXI.VideoBaseTexture)
+          i.baseTexture.source.play();
+      });
+    }
+
+    // Display
+
+    saveCurrentDisplayPos() {
+      if (!$gameMap) return;
+      this._tempPos.setTarget($gamePlayer);
+      this._viewportDisplayPos['temp'] = this._tempPos;
+    }
+
+    setDisplayPos(viewID, targetId) {
+      let target;
+      if (targetId < 0) {
+        target = $gamePlayer;
+        targetId = -1;
+      } else {
+        let evt = $gameMap.event(targetId);
+        if (evt) target = evt;
+      }
+      $gameMap._multipleViewportTargetIds[viewID - 1] = targetId;
+      var targetPos = this._viewportDisplayPos[viewID - 1];
+      if (targetPos) targetPos.setTarget(target || $gamePlayer);
+    }
+
+    lockDisplayPos(stage, i) {
+      const targetPos = this._viewportDisplayPos[i];
+      if (!targetPos) return false;
+      targetPos.update();
+      SceneManager._scene._spriteset.update();
+    }
+
+    unlockDisplayPos(stage) {
+      this.lockDisplayPos(stage, 'temp');
+    }
+
+    setTarget(target) {
+      this._target = target;
+    }
+
+    disposeTarget() {
+      this._target = null;
+    }
+
+    // Render
+
+    render(stage) {
+      if ($gameMap._multipleViewportEnabled) {
+        this.saveCurrentDisplayPos();
+
+        for (let i = 0; i < this._maxDisplayCounts; i++) {
+          // Lock
+          this.lockDisplayPos(stage, i);
+
+          // Render
+          if (this.isWebGL())
+            this.renderer().bindRenderTexture(this._renderTexture[i]);
+          this.renderer().render(stage, this._renderTexture[i]);
+          if (this.isWebGL())
+            this.renderer().bindRenderTarget(this._renderTarget);
+          this.setRenderSprite(i);
+
+          // Unlock
+          this.unlockDisplayPos(stage);
         }
+
+        this.renderer().render(this._renderSprite);
+      } else {
+        this.renderer().render(stage);
       }
-
-      playMoviesToCertainView(viewID)
-      {
-        const texture = this._viewImageCached[viewID - 1];
-        if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
-          let video = texture.baseTexture.source;
-          if(video) {
-            video.play();
-          } else {
-            if(texture.baseTexture._onCanPlay) texture.baseTexture._onCanPlay();
-          }
-        }
-      }
-
-      pauseMoviesToCertainView(viewID)
-      {
-        const texture = this._viewImageCached[viewID - 1];
-        if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
-          let video = texture.baseTexture.source;
-          if(video) video.pause();
-        }
-      }
-
-      stopMoviesToCertainView(viewID)
-      {
-        const texture = this._viewImageCached[viewID - 1];
-        if(texture && texture.baseTexture instanceof PIXI.VideoBaseTexture) {
-          let video = texture.baseTexture.source;
-          if(video) {
-            video.pause();
-            video.currentTime = 0.0;
-          }
-        }
-      }
-
-      pauseAllMovies()
-      {
-        this._viewImageCached.forEach(function (i) {
-          if(i.baseTexture instanceof PIXI.VideoBaseTexture) i.baseTexture.source.pause();
-        });
-      }
-
-      playAllMovies()
-      {
-        this._viewImageCached.forEach(function (i) {
-          if(i.baseTexture instanceof PIXI.VideoBaseTexture) i.baseTexture.source.play();
-        })
-      }
-
-      // Display
-
-      saveCurrentDisplayPos()
-      {
-        if(!$gameMap) return;
-        this._tempPos.setTarget($gamePlayer);
-        this._viewportDisplayPos["temp"] = this._tempPos;
-      }
-
-      setDisplayPos(viewID, targetId)
-      {
-        let target;
-        if(targetId < 0) {
-          target = $gamePlayer;
-          targetId = -1;
-        } else {
-          let evt = $gameMap.event(targetId);
-          if(evt) target = evt;
-        }
-        $gameMap._multipleViewportTargetIds[viewID - 1] = targetId;
-        var targetPos = this._viewportDisplayPos[viewID - 1];
-        if(targetPos) targetPos.setTarget(target || $gamePlayer);
-      }
-
-      lockDisplayPos(stage, i)
-      {
-        const targetPos = this._viewportDisplayPos[i];
-        if(!targetPos) return false;
-        targetPos.update();
-        SceneManager._scene._spriteset.update();
-      }
-
-      unlockDisplayPos(stage)
-      {
-        this.lockDisplayPos(stage, "temp");
-      }
-
-      setTarget(target)
-      {
-        this._target = target;
-      }
-
-      disposeTarget()
-      {
-        this._target = null;
-      }
-
-      // Render
-
-      render(stage)
-      {
-        if($gameMap._multipleViewportEnabled) {
-
-          this.saveCurrentDisplayPos();
-
-          for(let i = 0; i < this._maxDisplayCounts; i++) {
-
-            // Lock
-            this.lockDisplayPos(stage, i);
-
-            // Render
-            if(this.isWebGL()) this.renderer().bindRenderTexture(this._renderTexture[i]);
-            this.renderer().render(stage, this._renderTexture[i]);
-            if(this.isWebGL()) this.renderer().bindRenderTarget(this._renderTarget);
-            this.setRenderSprite(i);
-
-            // Unlock
-            this.unlockDisplayPos(stage);
-
-          }
-
-          this.renderer().render(this._renderSprite);
-
-        } else {
-
-          this.renderer().render(stage);
-
-        }
-      }
+    }
   }
 
   //============================================================================
@@ -719,29 +698,29 @@ RS.MultipleViewports = RS.MultipleViewports || {};
   //============================================================================
 
   var alias_Graphics_createRenderer = Graphics._createRenderer;
-  Graphics._createRenderer = function() {
+  Graphics._createRenderer = function () {
     alias_Graphics_createRenderer.call(this);
     this._viewportManager = new ViewportManager(this);
     this._viewportManager.createRenderTexture();
   };
 
-  Graphics.render = function(stage) {
+  Graphics.render = function (stage) {
     if (this._skipCount === 0) {
-        var startTime = Date.now();
-        if (stage) {
-          if(this._viewportManager.isValid()) {
-            this._viewportManager.render(stage);
-          } else {
-            this._renderer.render(stage);
-          }
+      var startTime = Date.now();
+      if (stage) {
+        if (this._viewportManager.isValid()) {
+          this._viewportManager.render(stage);
+        } else {
+          this._renderer.render(stage);
         }
-        var endTime = Date.now();
-        var elapsed = endTime - startTime;
-        this._skipCount = Math.min(Math.floor(elapsed / 15), this._maxSkip);
-        this._rendered = true;
+      }
+      var endTime = Date.now();
+      var elapsed = endTime - startTime;
+      this._skipCount = Math.min(Math.floor(elapsed / 15), this._maxSkip);
+      this._rendered = true;
     } else {
-        this._skipCount--;
-        this._rendered = false;
+      this._skipCount--;
+      this._rendered = false;
     }
     this.frameCount++;
   };
@@ -750,7 +729,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     get: function () {
       return this._viewportManager;
     },
-    configurable: false
+    configurable: false,
   });
 
   //============================================================================
@@ -786,8 +765,9 @@ RS.MultipleViewports = RS.MultipleViewports || {};
   // Game_Player
   //============================================================================
 
-  var alias_Game_Player_clearTransferInfo = Game_Player.prototype.clearTransferInfo
-  Game_Player.prototype.clearTransferInfo = function() {
+  var alias_Game_Player_clearTransferInfo =
+    Game_Player.prototype.clearTransferInfo;
+  Game_Player.prototype.clearTransferInfo = function () {
     alias_Game_Player_clearTransferInfo.call(this);
 
     // clear target and target ids when transferring
@@ -795,7 +775,7 @@ RS.MultipleViewports = RS.MultipleViewports || {};
     Graphics.viewport.clear();
 
     // initializing the target as the player when transferring
-    for(var i = 0; i < Graphics.viewport._maxDisplayCounts; i++) {
+    for (var i = 0; i < Graphics.viewport._maxDisplayCounts; i++) {
       Graphics.viewport.setDisplayPos(i + 1, $gamePlayer);
     }
   };
@@ -805,14 +785,14 @@ RS.MultipleViewports = RS.MultipleViewports || {};
   //============================================================================
 
   var alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
-  DataManager.makeSaveContents = function() {
-      var contents = alias_DataManager_makeSaveContents.call(this);
-      contents.viewportTargetIds = $gameMap._multipleViewportTargetIds;
-      return contents;
+  DataManager.makeSaveContents = function () {
+    var contents = alias_DataManager_makeSaveContents.call(this);
+    contents.viewportTargetIds = $gameMap._multipleViewportTargetIds;
+    return contents;
   };
 
   var alias_DataManager_extractSaveContents = DataManager.extractSaveContents;
-  DataManager.extractSaveContents = function(contents) {
+  DataManager.extractSaveContents = function (contents) {
     alias_DataManager_extractSaveContents.call(this, contents);
     $gameMap._multipleViewportTargetIds = contents.viewportTargetIds;
     Graphics.viewport.restore();
@@ -822,88 +802,92 @@ RS.MultipleViewports = RS.MultipleViewports || {};
   // Game_Interpreter
   //============================================================================
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_Game_Interpreter_pluginCommand.call(this, command, args);
-      if(command === "MultipleViewport") {
-        switch(args[0]) {
-          case 'Enable':
-            $gameMap.setViewport(true);
-            Graphics.viewport.playAllMovies();
-            Graphics.viewport.setTarget($gamePlayer);
-            for(var i = 0; i < Graphics.viewport._maxDisplayCounts; i++) {
-              Graphics.viewport.setDisplayPos(i + 1, $gamePlayer);
-            }
-            break;
-          case 'Disable':
-            $gameMap.setViewport(false);
-            Graphics.viewport.unlockDisplayPos(SceneManager._scene);
-            Graphics.viewport.pauseAllMovies();
-            Graphics.viewport.disposeTarget();
-            break;
-          case 'StartShake':
-            $gameMap.setViewportShake(1);
-            $gameMap.setViewportShakePower(Number(args[1] || 10));
-            break;
-          case 'EndShake':
-            $gameMap.setViewportShake(0);
-            break;
-          case 'Image':
-            var viewID = Number(args[1] || 1).clamp(1, 4);
-            var name = args.slice(2, args.length).join(' ');
-            var imageName = 'img/pictures/' + name + '.png';
-            var texture = PIXI.Texture.fromImage(imageName);
-            Graphics.viewport.clearViewImage(viewID);
-            Graphics.viewport.setViewportImage(viewID, texture);
-            break;
-          case 'ClearImage':
-            Graphics.viewport.clearViewImage(Number(args[1]));
-            break;
-          case 'Video':
-            var viewID = Number(args[1] || 1).clamp(1, 4);
-            var name = args[2];
-            var looping = (args[3] === 'true');
-            var videoName = 'movies/' + name + '.webm';
-            var texture = PIXI.Texture.fromVideoUrl(videoName);
-            texture.baseTexture.source.loop = looping;
-            Graphics.viewport.stopMoviesToCertainView(viewID);
-            Graphics.viewport.clearViewImage(viewID);
-            Graphics.viewport.setViewportImage(viewID, texture);
-            break;
-          case 'PlayVideo':
-            var viewID = Number(args[1] || 1);
-            Graphics.viewport.playMoviesToCertainView(viewID);
-            break;
-          case 'PauseVideo':
-            var viewID = Number(args[1] || 1);
-            Graphics.viewport.pauseMoviesToCertainView(viewID);
-            break;
-          case 'MoveBackSeconds':
-            var viewID = Number(args[1] || 1);
-            var sec = parseInt(args[2] || 0);
-            Graphics.viewport.moveMoviesToCertainView(viewID, 'Move Back', sec);
-            break;
-          case 'MoveForwardSeconds':
-            var viewID = Number(args[1] || 1);
-            var sec = parseInt(args[2] || 0);
-            Graphics.viewport.moveMoviesToCertainView(viewID, 'Move Forward', sec);
-            break;
-          case 'StopVideo':
-            var viewID = Number(args[1] || 1);
-            Graphics.viewport.stopMoviesToCertainView(viewID);
-            break;
-          case 'ClearVideo':
-            var viewID = Number(args[1] || 1);
-            Graphics.viewport.stopMoviesToCertainView(viewID);
-            Graphics.viewport.clearViewImage(viewID);
-            break;
-          case 'Target':
-            var viewID = Number(args[1] || 1).clamp(1, 4);
-            var eventId = parseInt(args[2] || 0);
-            Graphics.viewport.setDisplayPos(viewID, eventId);
-            break;
-        }
+  var alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'MultipleViewport') {
+      switch (args[0]) {
+        case 'Enable':
+          $gameMap.setViewport(true);
+          Graphics.viewport.playAllMovies();
+          Graphics.viewport.setTarget($gamePlayer);
+          for (var i = 0; i < Graphics.viewport._maxDisplayCounts; i++) {
+            Graphics.viewport.setDisplayPos(i + 1, $gamePlayer);
+          }
+          break;
+        case 'Disable':
+          $gameMap.setViewport(false);
+          Graphics.viewport.unlockDisplayPos(SceneManager._scene);
+          Graphics.viewport.pauseAllMovies();
+          Graphics.viewport.disposeTarget();
+          break;
+        case 'StartShake':
+          $gameMap.setViewportShake(1);
+          $gameMap.setViewportShakePower(Number(args[1] || 10));
+          break;
+        case 'EndShake':
+          $gameMap.setViewportShake(0);
+          break;
+        case 'Image':
+          var viewID = Number(args[1] || 1).clamp(1, 4);
+          var name = args.slice(2, args.length).join(' ');
+          var imageName = 'img/pictures/' + name + '.png';
+          var texture = PIXI.Texture.fromImage(imageName);
+          Graphics.viewport.clearViewImage(viewID);
+          Graphics.viewport.setViewportImage(viewID, texture);
+          break;
+        case 'ClearImage':
+          Graphics.viewport.clearViewImage(Number(args[1]));
+          break;
+        case 'Video':
+          var viewID = Number(args[1] || 1).clamp(1, 4);
+          var name = args[2];
+          var looping = args[3] === 'true';
+          var videoName = 'movies/' + name + '.webm';
+          var texture = PIXI.Texture.fromVideoUrl(videoName);
+          texture.baseTexture.source.loop = looping;
+          Graphics.viewport.stopMoviesToCertainView(viewID);
+          Graphics.viewport.clearViewImage(viewID);
+          Graphics.viewport.setViewportImage(viewID, texture);
+          break;
+        case 'PlayVideo':
+          var viewID = Number(args[1] || 1);
+          Graphics.viewport.playMoviesToCertainView(viewID);
+          break;
+        case 'PauseVideo':
+          var viewID = Number(args[1] || 1);
+          Graphics.viewport.pauseMoviesToCertainView(viewID);
+          break;
+        case 'MoveBackSeconds':
+          var viewID = Number(args[1] || 1);
+          var sec = parseInt(args[2] || 0);
+          Graphics.viewport.moveMoviesToCertainView(viewID, 'Move Back', sec);
+          break;
+        case 'MoveForwardSeconds':
+          var viewID = Number(args[1] || 1);
+          var sec = parseInt(args[2] || 0);
+          Graphics.viewport.moveMoviesToCertainView(
+            viewID,
+            'Move Forward',
+            sec
+          );
+          break;
+        case 'StopVideo':
+          var viewID = Number(args[1] || 1);
+          Graphics.viewport.stopMoviesToCertainView(viewID);
+          break;
+        case 'ClearVideo':
+          var viewID = Number(args[1] || 1);
+          Graphics.viewport.stopMoviesToCertainView(viewID);
+          Graphics.viewport.clearViewImage(viewID);
+          break;
+        case 'Target':
+          var viewID = Number(args[1] || 1).clamp(1, 4);
+          var eventId = parseInt(args[2] || 0);
+          Graphics.viewport.setDisplayPos(viewID, eventId);
+          break;
       }
+    }
   };
-
 })();

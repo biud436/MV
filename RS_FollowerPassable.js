@@ -98,122 +98,122 @@
  */
 
 (() => {
-    const parameters = PluginManager.parameters('RS_FollowerPassable');
-    let passable = Boolean(parameters.Enabled === 'true');
-    let isSeparate = Boolean(parameters['Separate Mode'] === 'true');
+  const parameters = PluginManager.parameters('RS_FollowerPassable');
+  let passable = Boolean(parameters.Enabled === 'true');
+  let isSeparate = Boolean(parameters['Separate Mode'] === 'true');
 
-    const KIT = Object.assign(
-        Object.create({
-            fpSendMessage: (index, func, args) => {
-                const callFunc = $gamePlayer.followers().follower(index);
-                callFunc[func].apply(callFunc, [args]);
-            },
-        })
-    );
+  const KIT = Object.assign(
+    Object.create({
+      fpSendMessage: (index, func, args) => {
+        const callFunc = $gamePlayer.followers().follower(index);
+        callFunc[func].apply(callFunc, [args]);
+      },
+    })
+  );
 
-    //============================================================================
-    // Game_Player
+  //============================================================================
+  // Game_Player
 
-    const aliasGamePlayerCanPass = Game_Player.prototype.canPass;
-    Game_Player.prototype.canPass = function (x, y, d) {
-        const x2 = $gameMap.roundXWithDirection(x, d);
-        const y2 = $gameMap.roundYWithDirection(y, d);
-        if (this.isFollowerPassable(x2, y2) && passable) {
-            return false;
-        }
-        return aliasGamePlayerCanPass.call(this, x, y, d);
-    };
+  const aliasGamePlayerCanPass = Game_Player.prototype.canPass;
+  Game_Player.prototype.canPass = function (x, y, d) {
+    const x2 = $gameMap.roundXWithDirection(x, d);
+    const y2 = $gameMap.roundYWithDirection(y, d);
+    if (this.isFollowerPassable(x2, y2) && passable) {
+      return false;
+    }
+    return aliasGamePlayerCanPass.call(this, x, y, d);
+  };
 
-    Game_Player.prototype.isFollowerPassable = function (x, y) {
-        return this._followers.isFollowerPassable(x, y);
-    };
+  Game_Player.prototype.isFollowerPassable = function (x, y) {
+    return this._followers.isFollowerPassable(x, y);
+  };
 
-    const aliasGameFollowerInitialize = Game_Follower.prototype.initialize;
-    Game_Follower.prototype.initialize = function (memberIndex) {
-        aliasGameFollowerInitialize.call(this, memberIndex);
-        this.setThrough(false);
-    };
+  const aliasGameFollowerInitialize = Game_Follower.prototype.initialize;
+  Game_Follower.prototype.initialize = function (memberIndex) {
+    aliasGameFollowerInitialize.call(this, memberIndex);
+    this.setThrough(false);
+  };
 
-    Game_Follower.prototype.update = function () {
-        Game_Character.prototype.update.call(this);
-        if (!isSeparate) {
-            this.setMoveSpeed($gamePlayer.realMoveSpeed());
-            this.setOpacity($gamePlayer.opacity());
-            this.setBlendMode($gamePlayer.blendMode());
-            this.setWalkAnime($gamePlayer.hasWalkAnime());
-            this.setStepAnime($gamePlayer.hasStepAnime());
-            this.setDirectionFix($gamePlayer.isDirectionFixed());
-            this.setTransparent($gamePlayer.isTransparent());
-        }
-    };
+  Game_Follower.prototype.update = function () {
+    Game_Character.prototype.update.call(this);
+    if (!isSeparate) {
+      this.setMoveSpeed($gamePlayer.realMoveSpeed());
+      this.setOpacity($gamePlayer.opacity());
+      this.setBlendMode($gamePlayer.blendMode());
+      this.setWalkAnime($gamePlayer.hasWalkAnime());
+      this.setStepAnime($gamePlayer.hasStepAnime());
+      this.setDirectionFix($gamePlayer.isDirectionFixed());
+      this.setTransparent($gamePlayer.isTransparent());
+    }
+  };
 
-    Game_Followers.prototype.isFollowerPassable = function (x, y) {
-        const result = this._data.some(follower => {
-            return follower.posNt(x, y);
-        });
+  Game_Followers.prototype.isFollowerPassable = function (x, y) {
+    const result = this._data.some(follower => {
+      return follower.posNt(x, y);
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    const aliasGameInterpreterPluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        aliasGameInterpreterPluginCommand.call(this, command, args);
+  const aliasGameInterpreterPluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    aliasGameInterpreterPluginCommand.call(this, command, args);
 
-        if (command === 'FollowerPassable') {
-            switch (args[0]) {
-                case 'enabled':
-                case 'passable':
-                    passable = Boolean(args[1] === 'true');
-                    break;
-                case 'SeparateMode':
-                    isSeparate = Boolean(args[1] === 'true');
-                    break;
-                case 'setOpacity':
-                    {
-                        const n = Number(args[2] || 255);
+    if (command === 'FollowerPassable') {
+      switch (args[0]) {
+        case 'enabled':
+        case 'passable':
+          passable = Boolean(args[1] === 'true');
+          break;
+        case 'SeparateMode':
+          isSeparate = Boolean(args[1] === 'true');
+          break;
+        case 'setOpacity':
+          {
+            const n = Number(args[2] || 255);
 
-                        KIT.fpSendMessage(
-                            Number(args[1] || 0),
-                            'setOpacity',
-                            n.clamp(0, 255)
-                        );
-                    }
-                    break;
-                case 'setBlendMode':
-                    {
-                        const type = Number(args[2] || 0);
-                        KIT.fpSendMessage(
-                            Number(args[1] || 0),
-                            'setBlendMode',
-                            type.clamp(0, 3)
-                        );
-                    }
-                    break;
-                case 'setMoveSpeed':
-                    KIT.fpSendMessage(
-                        Number(args[1] || 0),
-                        'setMoveSpeed',
-                        type.clamp(1, 6)
-                    );
-                    break;
-                case 'setDirectionFix':
-                    KIT.fpSendMessage(
-                        Number(args[1] || 0),
-                        'setDirectionFix',
-                        args[2] === 'true'
-                    );
-                    break;
-                case 'setTransparent':
-                    KIT.fpSendMessage(
-                        Number(args[1] || 0),
-                        'setTransparent',
-                        args[2] === 'true'
-                    );
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+            KIT.fpSendMessage(
+              Number(args[1] || 0),
+              'setOpacity',
+              n.clamp(0, 255)
+            );
+          }
+          break;
+        case 'setBlendMode':
+          {
+            const type = Number(args[2] || 0);
+            KIT.fpSendMessage(
+              Number(args[1] || 0),
+              'setBlendMode',
+              type.clamp(0, 3)
+            );
+          }
+          break;
+        case 'setMoveSpeed':
+          KIT.fpSendMessage(
+            Number(args[1] || 0),
+            'setMoveSpeed',
+            type.clamp(1, 6)
+          );
+          break;
+        case 'setDirectionFix':
+          KIT.fpSendMessage(
+            Number(args[1] || 0),
+            'setDirectionFix',
+            args[2] === 'true'
+          );
+          break;
+        case 'setTransparent':
+          KIT.fpSendMessage(
+            Number(args[1] || 0),
+            'setTransparent',
+            args[2] === 'true'
+          );
+          break;
+        default:
+          break;
+      }
+    }
+  };
 })();

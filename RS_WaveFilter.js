@@ -190,759 +190,758 @@ var RS = RS || {};
 RS.WaveConfig = RS.WaveConfig || {};
 
 (function () {
-    "use strict";
+  'use strict';
 
-    const isFilterPIXI4 =
-        PIXI.VERSION >= "4.0.0" && Utils.RPGMAKER_VERSION >= "1.3.0";
-    if (!isFilterPIXI4) {
-        console.error("This version does not work on your project");
-        console.error(
-            "Please download the compatible version from the following link : "
+  const isFilterPIXI4 =
+    PIXI.VERSION >= '4.0.0' && Utils.RPGMAKER_VERSION >= '1.3.0';
+  if (!isFilterPIXI4) {
+    console.error('This version does not work on your project');
+    console.error(
+      'Please download the compatible version from the following link : '
+    );
+    console.error('https://github.com/biud436/MV/raw/MV/RS_WaveFilter.js');
+    return;
+  }
+  const isWebGL = PIXI.utils.isWebGLSupported();
+  const isUseCanvas = Utils.isOptionValid('canvas');
+  if (isUseCanvas || !isWebGL) {
+    console.error('This plugin does not support in your project');
+    return;
+  }
+
+  if (PIXI.VERSION >= '5.2.4') {
+    PIXI.filters.VoidFilter = PIXI.filters.AlphaFilter;
+  }
+
+  //----------------------------------------------------------------------------
+  // PIXI.WaveFilter
+  //
+  //
+
+  PIXI.WaveFilter = function () {
+    const vertexSrc = [
+      'attribute vec2 aVertexPosition;',
+      'attribute vec2 aTextureCoord;',
+
+      'uniform mat3 projectionMatrix;',
+
+      'varying vec2 vTextureCoord;',
+
+      'void main(void){',
+      '    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
+      '    vTextureCoord = aTextureCoord;',
+      '}',
+    ].join('\n');
+
+    const fragmentSrc = [
+      'precision mediump float;',
+
+      'varying vec2 vTextureCoord;',
+
+      'uniform float waveHeight;',
+      'uniform float waveFrequency;',
+      'uniform float waveTime;',
+      'uniform float wavePhase;',
+      'uniform float UVSpeed;',
+
+      'uniform vec4 filterArea;',
+      'uniform vec4 filterClamp;',
+      'uniform vec2 origin;',
+
+      'uniform sampler2D uSampler;',
+
+      'void main(void) {',
+      '   float time = waveFrequency * sin( wavePhase * (waveTime - vTextureCoord.y / (waveHeight / filterArea.y)) );',
+      '   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);',
+      '   gl_FragColor = texture2D(uSampler, clamp(vCoord, filterClamp.xy, filterClamp.zw));',
+      '}',
+    ].join('\n');
+
+    PIXI.Filter.call(this, vertexSrc, fragmentSrc);
+
+    this.padding = 0;
+
+    this.uniforms.waveHeight = 0.5;
+    this.uniforms.waveFrequency = 0.02;
+    this.uniforms.waveTime = 0.0;
+    this.uniforms.UVSpeed = 0.25;
+    this.uniforms.origin = new PIXI.Point(0, 0);
+    this.uniforms.wavePhase = 3.141592653589793 * 2;
+
+    this.enabled = true;
+    this.resolution = 1;
+  };
+
+  PIXI.WaveFilter.prototype = Object.create(PIXI.Filter.prototype);
+  PIXI.WaveFilter.prototype.constructor = PIXI.WaveFilter;
+
+  PIXI.WaveFilter.prototype.apply = function (
+    filterManager,
+    input,
+    output,
+    clear
+  ) {
+    this.uniforms.waveHeight = input.sourceFrame.height / 4;
+
+    filterManager.applyFilter(this, input, output, clear);
+  };
+
+  Object.defineProperties(PIXI.WaveFilter.prototype, {
+    waveHeight: {
+      get: function () {
+        return this.uniforms.waveHeight;
+      },
+      set: function (value) {
+        this.uniforms.waveHeight = value;
+      },
+    },
+    waveSpeed: {
+      get: function () {
+        return this.uniforms.UVSpeed;
+      },
+      set: function (value) {
+        this.uniforms.UVSpeed = value;
+      },
+    },
+    waveFrequency: {
+      get: function () {
+        return this.uniforms.waveFrequency;
+      },
+      set: function (value) {
+        this.uniforms.waveFrequency = value;
+      },
+    },
+    UVSpeed: {
+      get: function () {
+        return this.uniforms.UVSpeed;
+      },
+      set: function (value) {
+        this.uniforms.UVSpeed = value;
+      },
+    },
+    waveTime: {
+      get: function () {
+        return this.uniforms.waveTime;
+      },
+      set: function (value) {
+        this.uniforms.waveTime = value;
+      },
+    },
+    wavePhase: {
+      get: function () {
+        return this.uniforms.wavePhase;
+      },
+      set: function (value) {
+        this.uniforms.wavePhase = (Math.PI / 180) * Number(value);
+      },
+    },
+    origin: {
+      get: function () {
+        return this.uniforms.origin;
+      },
+      set: function (value) {
+        this.uniforms.origin = value;
+      },
+    },
+  });
+
+  //============================================================================
+  // Sprite
+  //============================================================================
+
+  const alias_Sprite_initialize = Sprite.prototype.initialize;
+  Sprite.prototype.initialize = function (bitmap) {
+    alias_Sprite_initialize.call(this, bitmap);
+    this.initWithWaveFeatures();
+  };
+
+  Sprite.prototype.initWithWaveFeatures = function () {
+    this._waveTime = 0;
+    this._waveHeight = 0.5;
+    this._waveSpeed = 0.25;
+    this._waveFrequency = 0.02;
+    this._wavePhase = 360;
+    this._waveFilter = null;
+    this._wave = false;
+    this._isWaveDirty = false;
+  };
+
+  const alias_Sprite_update = Sprite.prototype.update;
+  Sprite.prototype.update = function () {
+    alias_Sprite_update.call(this);
+    this.waveUpdate();
+  };
+
+  Sprite.prototype.getWaveFrameTime = function () {
+    this._waveTime = (Date.now() % 10000) / 10000;
+    return this._waveTime;
+  };
+
+  Sprite.prototype.setWaveHeight = function (n) {
+    this._waveHeight = this.height;
+  };
+
+  Sprite.prototype.getWaveHeight = function () {
+    return this._waveHeight;
+  };
+
+  Sprite.prototype.waveUpdate = function () {
+    if (this._wave) {
+      this._waveFilter.waveTime = this.getWaveFrameTime();
+      this._waveFilter.waveHeight = this.getWaveHeight();
+      this._waveFilter.waveSpeed = this._waveSpeed;
+      this._waveFilter.waveFrequency = this._waveFrequency;
+      this._waveFilter.wavePhase = this._wavePhase;
+      this._waveFilter.origin.x = $gameMap.canvasToMapX(this.x);
+      this._waveFilter.origin.y = $gameMap.canvasToMapY(this.y);
+    }
+  };
+
+  Object.defineProperty(Sprite.prototype, 'waveSpeed', {
+    get: function () {
+      return this._waveSpeed;
+    },
+    set: function (value) {
+      this._waveSpeed = value;
+    },
+  });
+
+  Object.defineProperty(Sprite.prototype, 'waveFrequency', {
+    get: function () {
+      return this._waveFrequency;
+    },
+    set: function (value) {
+      this._waveFrequency = value;
+    },
+  });
+
+  Object.defineProperty(Sprite.prototype, 'wave_amp', {
+    get: function () {
+      return this._waveFrequency;
+    },
+    set: function (value) {
+      this._waveFrequency = value;
+    },
+  });
+
+  Object.defineProperty(Sprite.prototype, 'wave_length', {
+    get: function () {
+      return this._waveHeight;
+    },
+    set: function (value) {
+      this.setWaveHeight(value);
+    },
+  });
+
+  Object.defineProperty(Sprite.prototype, 'wave_speed', {
+    get: function () {
+      return this._waveSpeed;
+    },
+    set: function (value) {
+      this._waveSpeed = value;
+    },
+  });
+
+  Object.defineProperty(Sprite.prototype, 'wave_phase', {
+    get: function () {
+      return this._wavePhase;
+    },
+    set: function (value) {
+      this._wavePhase = value;
+    },
+  });
+
+  Object.defineProperty(Sprite.prototype, 'wave', {
+    get: function () {
+      return this._wave;
+    },
+    set: function (value) {
+      this._wave = value;
+      this._isWaveDirty = true;
+
+      if (this._wave) {
+        if (!this._waveFilter) {
+          this._waveFilter = new PIXI.WaveFilter();
+        }
+        this.filterArea = new PIXI.Rectangle(
+          0,
+          0,
+          Graphics.boxWidth,
+          Graphics.boxHeight
         );
-        console.error("https://github.com/biud436/MV/raw/MV/RS_WaveFilter.js");
-        return;
+        this.filters = [this._waveFilter];
+      } else {
+        this.filters = [Sprite.voidFilter];
+      }
+    },
+    configurable: true,
+  });
+
+  //============================================================================
+  // TilingSprite
+  //============================================================================
+
+  const alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
+  TilingSprite.prototype.initialize = function (bitmap) {
+    alias_TilingSprite_initialize.call(this, bitmap);
+    this.initWithWaveFeatures();
+  };
+
+  TilingSprite.prototype.initWithWaveFeatures = function () {
+    this._waveTime = 0;
+    this._waveHeight = 0.5;
+    this._waveSpeed = 0.25;
+    this._waveFrequency = 0.02;
+    this._wavePhase = 360;
+    this._waveFilter = null;
+    this._wave = false;
+  };
+
+  const alias_TilingSprite_update = TilingSprite.prototype.update;
+  TilingSprite.prototype.update = function () {
+    alias_TilingSprite_update.call(this);
+    this.waveUpdate();
+  };
+
+  TilingSprite.prototype.getWaveFrameTime = function () {
+    this._waveTime = (Date.now() % 10000) / 10000;
+    return this._waveTime;
+  };
+
+  TilingSprite.prototype.setWaveHeight = function (n) {
+    this._waveHeight = this.height;
+  };
+
+  TilingSprite.prototype.getWaveHeight = function () {
+    return this._waveHeight;
+  };
+
+  TilingSprite.prototype.waveUpdate = function () {
+    if (this._wave) {
+      this._waveFilter.waveTime = this.getWaveFrameTime();
+      this._waveFilter.waveHeight = this.getWaveHeight();
+      this._waveFilter.waveSpeed = this._waveSpeed;
+      this._waveFilter.waveFrequency = this._waveFrequency;
+      this._waveFilter.wavePhase = this._wavePhase;
     }
-    const isWebGL = PIXI.utils.isWebGLSupported();
-    const isUseCanvas = Utils.isOptionValid("canvas");
-    if (isUseCanvas || !isWebGL) {
-        console.error("This plugin does not support in your project");
-        return;
+  };
+
+  Object.defineProperty(TilingSprite.prototype, 'waveSpeed', {
+    get: function () {
+      return this._waveSpeed;
+    },
+    set: function (value) {
+      this._waveSpeed = value;
+    },
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'waveFrequency', {
+    get: function () {
+      return this._waveFrequency;
+    },
+    set: function (value) {
+      this._waveFrequency = value;
+    },
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave_amp', {
+    get: function () {
+      return this._waveFrequency;
+    },
+    set: function (value) {
+      this._waveFrequency = value;
+    },
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave_length', {
+    get: function () {
+      return this._waveHeight;
+    },
+    set: function (value) {
+      this.setWaveHeight(value);
+    },
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave_speed', {
+    get: function () {
+      return this._waveSpeed;
+    },
+    set: function (value) {
+      this._waveSpeed = value;
+    },
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave_phase', {
+    get: function () {
+      return this._wavePhase;
+    },
+    set: function (value) {
+      this._wavePhase = value;
+    },
+  });
+
+  Object.defineProperty(TilingSprite.prototype, 'wave', {
+    get: function () {
+      return this._wave;
+    },
+    set: function (value) {
+      this._wave = value;
+
+      if (this._wave) {
+        if (!this._waveFilter) {
+          this._waveFilter = new PIXI.WaveFilter();
+        }
+        this.filterArea = new PIXI.Rectangle(
+          0,
+          0,
+          Graphics.boxWidth,
+          Graphics.boxHeight
+        );
+        this.filters = [this._waveFilter];
+      } else {
+        this.filters = [new PIXI.filters.VoidFilter()];
+      }
+    },
+    configurable: true,
+  });
+
+  //============================================================================
+  // Sprite_Picture
+  //============================================================================
+
+  Sprite_Picture.prototype.updateWave = function () {
+    const picture = this.picture();
+    const isValidWave = picture.wave();
+    if (isValidWave !== this.wave) {
+      this.wave = isValidWave;
     }
+    this.wave_speed = picture.waveSpeed();
+    this.wave_amp = picture.waveAmp();
+  };
 
-    if (PIXI.VERSION >= "5.2.4") {
-        PIXI.filters.VoidFilter = PIXI.filters.AlphaFilter;
+  const alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
+  Sprite_Picture.prototype.update = function () {
+    alias_Sprite_Picture_update.call(this);
+    if (this.visible) {
+      this.updateWave();
     }
-
-    //----------------------------------------------------------------------------
-    // PIXI.WaveFilter
-    //
-    //
-
-    PIXI.WaveFilter = function () {
-        const vertexSrc = [
-            "attribute vec2 aVertexPosition;",
-            "attribute vec2 aTextureCoord;",
-
-            "uniform mat3 projectionMatrix;",
-
-            "varying vec2 vTextureCoord;",
-
-            "void main(void){",
-            "    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);",
-            "    vTextureCoord = aTextureCoord;",
-            "}",
-        ].join("\n");
-
-        const fragmentSrc = [
-            "precision mediump float;",
-
-            "varying vec2 vTextureCoord;",
-
-            "uniform float waveHeight;",
-            "uniform float waveFrequency;",
-            "uniform float waveTime;",
-            "uniform float wavePhase;",
-            "uniform float UVSpeed;",
-
-            "uniform vec4 filterArea;",
-            "uniform vec4 filterClamp;",
-            "uniform vec2 origin;",
-
-            "uniform sampler2D uSampler;",
-
-            "void main(void) {",
-            "   float time = waveFrequency * sin( wavePhase * (waveTime - vTextureCoord.y / (waveHeight / filterArea.y)) );",
-            "   vec2 vCoord = vec2(vTextureCoord.x + time * UVSpeed, vTextureCoord.y);",
-            "   gl_FragColor = texture2D(uSampler, clamp(vCoord, filterClamp.xy, filterClamp.zw));",
-            "}",
-        ].join("\n");
-
-        PIXI.Filter.call(this, vertexSrc, fragmentSrc);
-
-        this.padding = 0;
-
-        this.uniforms.waveHeight = 0.5;
-        this.uniforms.waveFrequency = 0.02;
-        this.uniforms.waveTime = 0.0;
-        this.uniforms.UVSpeed = 0.25;
-        this.uniforms.origin = new PIXI.Point(0, 0);
-        this.uniforms.wavePhase = 3.141592653589793 * 2;
-
-        this.enabled = true;
-        this.resolution = 1;
-    };
-
-    PIXI.WaveFilter.prototype = Object.create(PIXI.Filter.prototype);
-    PIXI.WaveFilter.prototype.constructor = PIXI.WaveFilter;
-
-    PIXI.WaveFilter.prototype.apply = function (
-        filterManager,
-        input,
-        output,
-        clear
-    ) {
-        this.uniforms.waveHeight = input.sourceFrame.height / 4;
-
-        filterManager.applyFilter(this, input, output, clear);
-    };
-
-    Object.defineProperties(PIXI.WaveFilter.prototype, {
-        waveHeight: {
-            get: function () {
-                return this.uniforms.waveHeight;
-            },
-            set: function (value) {
-                this.uniforms.waveHeight = value;
-            },
-        },
-        waveSpeed: {
-            get: function () {
-                return this.uniforms.UVSpeed;
-            },
-            set: function (value) {
-                this.uniforms.UVSpeed = value;
-            },
-        },
-        waveFrequency: {
-            get: function () {
-                return this.uniforms.waveFrequency;
-            },
-            set: function (value) {
-                this.uniforms.waveFrequency = value;
-            },
-        },
-        UVSpeed: {
-            get: function () {
-                return this.uniforms.UVSpeed;
-            },
-            set: function (value) {
-                this.uniforms.UVSpeed = value;
-            },
-        },
-        waveTime: {
-            get: function () {
-                return this.uniforms.waveTime;
-            },
-            set: function (value) {
-                this.uniforms.waveTime = value;
-            },
-        },
-        wavePhase: {
-            get: function () {
-                return this.uniforms.wavePhase;
-            },
-            set: function (value) {
-                this.uniforms.wavePhase = (Math.PI / 180) * Number(value);
-            },
-        },
-        origin: {
-            get: function () {
-                return this.uniforms.origin;
-            },
-            set: function (value) {
-                this.uniforms.origin = value;
-            },
-        },
-    });
-
-    //============================================================================
-    // Sprite
-    //============================================================================
-
-    const alias_Sprite_initialize = Sprite.prototype.initialize;
-    Sprite.prototype.initialize = function (bitmap) {
-        alias_Sprite_initialize.call(this, bitmap);
-        this.initWithWaveFeatures();
-    };
-
-    Sprite.prototype.initWithWaveFeatures = function () {
-        this._waveTime = 0;
-        this._waveHeight = 0.5;
-        this._waveSpeed = 0.25;
-        this._waveFrequency = 0.02;
-        this._wavePhase = 360;
-        this._waveFilter = null;
-        this._wave = false;
-        this._isWaveDirty = false;
-    };
-
-    const alias_Sprite_update = Sprite.prototype.update;
-    Sprite.prototype.update = function () {
-        alias_Sprite_update.call(this);
-        this.waveUpdate();
-    };
-
-    Sprite.prototype.getWaveFrameTime = function () {
-        this._waveTime = (Date.now() % 10000) / 10000;
-        return this._waveTime;
-    };
-
-    Sprite.prototype.setWaveHeight = function (n) {
-        this._waveHeight = this.height;
-    };
-
-    Sprite.prototype.getWaveHeight = function () {
-        return this._waveHeight;
-    };
-
-    Sprite.prototype.waveUpdate = function () {
-        if (this._wave) {
-            this._waveFilter.waveTime = this.getWaveFrameTime();
-            this._waveFilter.waveHeight = this.getWaveHeight();
-            this._waveFilter.waveSpeed = this._waveSpeed;
-            this._waveFilter.waveFrequency = this._waveFrequency;
-            this._waveFilter.wavePhase = this._wavePhase;
-            this._waveFilter.origin.x = $gameMap.canvasToMapX(this.x);
-            this._waveFilter.origin.y = $gameMap.canvasToMapY(this.y);
-        }
-    };
-
-    Object.defineProperty(Sprite.prototype, "waveSpeed", {
-        get: function () {
-            return this._waveSpeed;
-        },
-        set: function (value) {
-            this._waveSpeed = value;
-        },
-    });
-
-    Object.defineProperty(Sprite.prototype, "waveFrequency", {
-        get: function () {
-            return this._waveFrequency;
-        },
-        set: function (value) {
-            this._waveFrequency = value;
-        },
-    });
-
-    Object.defineProperty(Sprite.prototype, "wave_amp", {
-        get: function () {
-            return this._waveFrequency;
-        },
-        set: function (value) {
-            this._waveFrequency = value;
-        },
-    });
-
-    Object.defineProperty(Sprite.prototype, "wave_length", {
-        get: function () {
-            return this._waveHeight;
-        },
-        set: function (value) {
-            this.setWaveHeight(value);
-        },
-    });
-
-    Object.defineProperty(Sprite.prototype, "wave_speed", {
-        get: function () {
-            return this._waveSpeed;
-        },
-        set: function (value) {
-            this._waveSpeed = value;
-        },
-    });
-
-    Object.defineProperty(Sprite.prototype, "wave_phase", {
-        get: function () {
-            return this._wavePhase;
-        },
-        set: function (value) {
-            this._wavePhase = value;
-        },
-    });
-
-    Object.defineProperty(Sprite.prototype, "wave", {
-        get: function () {
-            return this._wave;
-        },
-        set: function (value) {
-            this._wave = value;
-            this._isWaveDirty = true;
-
-            if (this._wave) {
-                if (!this._waveFilter) {
-                    this._waveFilter = new PIXI.WaveFilter();
-                }
-                this.filterArea = new PIXI.Rectangle(
-                    0,
-                    0,
-                    Graphics.boxWidth,
-                    Graphics.boxHeight
-                );
-                this.filters = [this._waveFilter];
-            } else {
-                this.filters = [Sprite.voidFilter];
-            }
-        },
-        configurable: true,
-    });
-
-    //============================================================================
-    // TilingSprite
-    //============================================================================
-
-    const alias_TilingSprite_initialize = TilingSprite.prototype.initialize;
-    TilingSprite.prototype.initialize = function (bitmap) {
-        alias_TilingSprite_initialize.call(this, bitmap);
-        this.initWithWaveFeatures();
-    };
-
-    TilingSprite.prototype.initWithWaveFeatures = function () {
-        this._waveTime = 0;
-        this._waveHeight = 0.5;
-        this._waveSpeed = 0.25;
-        this._waveFrequency = 0.02;
-        this._wavePhase = 360;
-        this._waveFilter = null;
-        this._wave = false;
-    };
-
-    const alias_TilingSprite_update = TilingSprite.prototype.update;
-    TilingSprite.prototype.update = function () {
-        alias_TilingSprite_update.call(this);
-        this.waveUpdate();
-    };
-
-    TilingSprite.prototype.getWaveFrameTime = function () {
-        this._waveTime = (Date.now() % 10000) / 10000;
-        return this._waveTime;
-    };
-
-    TilingSprite.prototype.setWaveHeight = function (n) {
-        this._waveHeight = this.height;
-    };
-
-    TilingSprite.prototype.getWaveHeight = function () {
-        return this._waveHeight;
-    };
-
-    TilingSprite.prototype.waveUpdate = function () {
-        if (this._wave) {
-            this._waveFilter.waveTime = this.getWaveFrameTime();
-            this._waveFilter.waveHeight = this.getWaveHeight();
-            this._waveFilter.waveSpeed = this._waveSpeed;
-            this._waveFilter.waveFrequency = this._waveFrequency;
-            this._waveFilter.wavePhase = this._wavePhase;
-        }
-    };
-
-    Object.defineProperty(TilingSprite.prototype, "waveSpeed", {
-        get: function () {
-            return this._waveSpeed;
-        },
-        set: function (value) {
-            this._waveSpeed = value;
-        },
-    });
-
-    Object.defineProperty(TilingSprite.prototype, "waveFrequency", {
-        get: function () {
-            return this._waveFrequency;
-        },
-        set: function (value) {
-            this._waveFrequency = value;
-        },
-    });
-
-    Object.defineProperty(TilingSprite.prototype, "wave_amp", {
-        get: function () {
-            return this._waveFrequency;
-        },
-        set: function (value) {
-            this._waveFrequency = value;
-        },
-    });
-
-    Object.defineProperty(TilingSprite.prototype, "wave_length", {
-        get: function () {
-            return this._waveHeight;
-        },
-        set: function (value) {
-            this.setWaveHeight(value);
-        },
-    });
-
-    Object.defineProperty(TilingSprite.prototype, "wave_speed", {
-        get: function () {
-            return this._waveSpeed;
-        },
-        set: function (value) {
-            this._waveSpeed = value;
-        },
-    });
-
-    Object.defineProperty(TilingSprite.prototype, "wave_phase", {
-        get: function () {
-            return this._wavePhase;
-        },
-        set: function (value) {
-            this._wavePhase = value;
-        },
-    });
-
-    Object.defineProperty(TilingSprite.prototype, "wave", {
-        get: function () {
-            return this._wave;
-        },
-        set: function (value) {
-            this._wave = value;
-
-            if (this._wave) {
-                if (!this._waveFilter) {
-                    this._waveFilter = new PIXI.WaveFilter();
-                }
-                this.filterArea = new PIXI.Rectangle(
-                    0,
-                    0,
-                    Graphics.boxWidth,
-                    Graphics.boxHeight
-                );
-                this.filters = [this._waveFilter];
-            } else {
-                this.filters = [new PIXI.filters.VoidFilter()];
-            }
-        },
-        configurable: true,
-    });
-
-    //============================================================================
-    // Sprite_Picture
-    //============================================================================
-
-    Sprite_Picture.prototype.updateWave = function () {
-        const picture = this.picture();
-        const isValidWave = picture.wave();
-        if (isValidWave !== this.wave) {
-            this.wave = isValidWave;
-        }
-        this.wave_speed = picture.waveSpeed();
-        this.wave_amp = picture.waveAmp();
-    };
-
-    const alias_Sprite_Picture_update = Sprite_Picture.prototype.update;
-    Sprite_Picture.prototype.update = function () {
-        alias_Sprite_Picture_update.call(this);
-        if (this.visible) {
-            this.updateWave();
-        }
-    };
-
-    //============================================================================
-    // Spriteset_Map
-    //============================================================================
-
-    var alias_Spriteset_Map_createLowerLayer =
-        Spriteset_Map.prototype.createLowerLayer;
-    Spriteset_Map.prototype.createLowerLayer = function () {
-        alias_Spriteset_Map_createLowerLayer.call(this);
-        this.overwriteWaveProperty();
-    };
-
-    Spriteset_Map.prototype.overwriteWaveProperty = function () {
-        if (!this._baseSprite) return false;
-        const self = this;
-
-        Object.defineProperty(this._baseSprite, "wave", {
-            get: function () {
-                return this._wave;
-            },
-            set: function (value) {
-                this._wave = value;
-                if (this._wave) {
-                    if (!this._waveFilter)
-                        this._waveFilter = new PIXI.WaveFilter();
-                    this.filters = [this._waveFilter, self._toneFilter];
-                } else {
-                    this.filters = [self._toneFilter];
-                }
-            },
-        });
-    };
-
-    const alias_Spriteset_Map_update = Spriteset_Map.prototype.update;
-    Spriteset_Map.prototype.update = function () {
-        alias_Spriteset_Map_update.call(this);
-        this.updateWaveFilter();
-    };
-
-    Spriteset_Map.prototype.updateWaveFilter = function () {
-        if ($gameSystem && $gameSystem.getWaveEnabled) {
-            this._baseSprite.wave = $gameSystem.getWaveEnabled() || false;
-            this._baseSprite.wave_amp = $gameSystem.getWaveFrequency() || 0.02;
-            this._baseSprite.wave_phase = $gameSystem.getWavePhase() || 360;
-            this._baseSprite.wave_speed = $gameSystem.getUVSpeed() || 0.25;
-        }
-    };
-
-    //============================================================================
-    // Spriteset_Battle
-    //============================================================================
-
-    var alias_Spriteset_Battle_createBattleback =
-        Spriteset_Battle.prototype.createBattleback;
-    Spriteset_Battle.prototype.createBattleback = function () {
-        alias_Spriteset_Battle_createBattleback.call(this);
-        this.initWithWaveEffect();
-    };
-
-    Spriteset_Battle.prototype.initWithWaveEffect = function () {
-        if (!$dataMap) return;
-
-        const note = $dataMap.note.split(/[\r\n]+/);
-
-        note.forEach((mapNote) => {
-            if ($dataMap.note.match(/<BATTLEBACK_WAVE[ ]:[ ]*(.*)[ ](.*)>/i)) {
-                this._initWaveFilter = true;
-                this.changeWaveEffect(true, RegExp.$1, RegExp.$2);
-            }
-        });
-    };
-
-    Spriteset_Battle.prototype.changeWaveEffect = function (cond, fre, spd) {
-        if (!this._initWaveFilter) return;
-        const backs = [this._back1Sprite, this._back2Sprite];
-        backs.forEach((back) => {
-            back.wave = cond;
-            back.waveFrequency = parseFloat(fre) || 0.02;
-            back.waveSpeed = parseFloat(spd) || 0.25;
-        }, this);
-    };
-
-    //============================================================================
-    // Game_Picture
-    //============================================================================
-
-    const alias_Game_Picture_initBasic = Game_Picture.prototype.initBasic;
-    Game_Picture.prototype.initBasic = function () {
-        alias_Game_Picture_initBasic.call(this);
-        this._wave = false;
-        this._waveSpeed = 0.25;
-        this._waveAmp = 0.02;
-    };
-
-    Game_Picture.prototype.wave = function () {
+  };
+
+  //============================================================================
+  // Spriteset_Map
+  //============================================================================
+
+  var alias_Spriteset_Map_createLowerLayer =
+    Spriteset_Map.prototype.createLowerLayer;
+  Spriteset_Map.prototype.createLowerLayer = function () {
+    alias_Spriteset_Map_createLowerLayer.call(this);
+    this.overwriteWaveProperty();
+  };
+
+  Spriteset_Map.prototype.overwriteWaveProperty = function () {
+    if (!this._baseSprite) return false;
+    const self = this;
+
+    Object.defineProperty(this._baseSprite, 'wave', {
+      get: function () {
         return this._wave;
-    };
-
-    Game_Picture.prototype.waveSpeed = function () {
-        return this._waveSpeed;
-    };
-
-    Game_Picture.prototype.waveAmp = function () {
-        return this._waveAmp;
-    };
-
-    Game_Picture.prototype.startWave = function (waveSpeed, waveAmp) {
-        this._wave = true;
-        this._waveSpeed = waveSpeed;
-        this._waveAmp = waveAmp;
-    };
-
-    Game_Picture.prototype.stopWave = function () {
-        this._wave = false;
-    };
-
-    //============================================================================
-    // Game_Screen
-    //============================================================================
-
-    Game_Screen.prototype.startWave = function (pictureId, waveSpeed, waveAmp) {
-        const picture = this.picture(pictureId);
-        if (!picture) {
-            console.info(
-                `Cannot find the game picture ${pictureId}. Note that you can set the picture before starting the wave effect`
-            );
-            return;
+      },
+      set: function (value) {
+        this._wave = value;
+        if (this._wave) {
+          if (!this._waveFilter) this._waveFilter = new PIXI.WaveFilter();
+          this.filters = [this._waveFilter, self._toneFilter];
+        } else {
+          this.filters = [self._toneFilter];
         }
-        picture.startWave(waveSpeed, waveAmp);
-    };
+      },
+    });
+  };
 
-    Game_Screen.prototype.stopWave = function (pictureId) {
-        const picture = this.picture(pictureId);
-        if (picture) {
-            picture.stopWave();
+  const alias_Spriteset_Map_update = Spriteset_Map.prototype.update;
+  Spriteset_Map.prototype.update = function () {
+    alias_Spriteset_Map_update.call(this);
+    this.updateWaveFilter();
+  };
+
+  Spriteset_Map.prototype.updateWaveFilter = function () {
+    if ($gameSystem && $gameSystem.getWaveEnabled) {
+      this._baseSprite.wave = $gameSystem.getWaveEnabled() || false;
+      this._baseSprite.wave_amp = $gameSystem.getWaveFrequency() || 0.02;
+      this._baseSprite.wave_phase = $gameSystem.getWavePhase() || 360;
+      this._baseSprite.wave_speed = $gameSystem.getUVSpeed() || 0.25;
+    }
+  };
+
+  //============================================================================
+  // Spriteset_Battle
+  //============================================================================
+
+  var alias_Spriteset_Battle_createBattleback =
+    Spriteset_Battle.prototype.createBattleback;
+  Spriteset_Battle.prototype.createBattleback = function () {
+    alias_Spriteset_Battle_createBattleback.call(this);
+    this.initWithWaveEffect();
+  };
+
+  Spriteset_Battle.prototype.initWithWaveEffect = function () {
+    if (!$dataMap) return;
+
+    const note = $dataMap.note.split(/[\r\n]+/);
+
+    note.forEach(mapNote => {
+      if ($dataMap.note.match(/<BATTLEBACK_WAVE[ ]:[ ]*(.*)[ ](.*)>/i)) {
+        this._initWaveFilter = true;
+        this.changeWaveEffect(true, RegExp.$1, RegExp.$2);
+      }
+    });
+  };
+
+  Spriteset_Battle.prototype.changeWaveEffect = function (cond, fre, spd) {
+    if (!this._initWaveFilter) return;
+    const backs = [this._back1Sprite, this._back2Sprite];
+    backs.forEach(back => {
+      back.wave = cond;
+      back.waveFrequency = parseFloat(fre) || 0.02;
+      back.waveSpeed = parseFloat(spd) || 0.25;
+    }, this);
+  };
+
+  //============================================================================
+  // Game_Picture
+  //============================================================================
+
+  const alias_Game_Picture_initBasic = Game_Picture.prototype.initBasic;
+  Game_Picture.prototype.initBasic = function () {
+    alias_Game_Picture_initBasic.call(this);
+    this._wave = false;
+    this._waveSpeed = 0.25;
+    this._waveAmp = 0.02;
+  };
+
+  Game_Picture.prototype.wave = function () {
+    return this._wave;
+  };
+
+  Game_Picture.prototype.waveSpeed = function () {
+    return this._waveSpeed;
+  };
+
+  Game_Picture.prototype.waveAmp = function () {
+    return this._waveAmp;
+  };
+
+  Game_Picture.prototype.startWave = function (waveSpeed, waveAmp) {
+    this._wave = true;
+    this._waveSpeed = waveSpeed;
+    this._waveAmp = waveAmp;
+  };
+
+  Game_Picture.prototype.stopWave = function () {
+    this._wave = false;
+  };
+
+  //============================================================================
+  // Game_Screen
+  //============================================================================
+
+  Game_Screen.prototype.startWave = function (pictureId, waveSpeed, waveAmp) {
+    const picture = this.picture(pictureId);
+    if (!picture) {
+      console.info(
+        `Cannot find the game picture ${pictureId}. Note that you can set the picture before starting the wave effect`
+      );
+      return;
+    }
+    picture.startWave(waveSpeed, waveAmp);
+  };
+
+  Game_Screen.prototype.stopWave = function (pictureId) {
+    const picture = this.picture(pictureId);
+    if (picture) {
+      picture.stopWave();
+    }
+  };
+
+  //============================================================================
+  // Game_Temp
+  //============================================================================
+
+  /**
+   * In Action Sequence Pack 1, you can use this function.
+   * eval: $gameTemp.setBattleBackWaveEffect(cond, waveAmp, waveSpeed);
+   */
+  Game_Temp.prototype.setBattleBackWaveEffect = function (cond, fre, spd) {
+    if (!$gameParty.inBattle()) return;
+    const container = SceneManager._scene._spriteset;
+    if (container) {
+      container.changeWaveEffect(cond, fre, spd);
+    }
+  };
+
+  //============================================================================
+  // Game_System
+  //============================================================================
+
+  const alias_Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    alias_Game_System_initialize.call(this);
+    this.initWaveProperty();
+  };
+
+  Game_System.prototype.initWaveProperty = function () {
+    this._waveProp = {
+      wave: false,
+      waveHeight: Graphics.boxHeight,
+      waveFrequency: 0.02,
+      waveTime: 0.0,
+      UVSpeed: 0.25,
+      wavePhase: 360,
+    };
+  };
+
+  Game_System.prototype.setWaveProperty = function (name, value) {
+    if (this._waveProp) {
+      this._waveProp[name] = value;
+      return this._waveProp[name];
+    }
+    return 0.0;
+  };
+
+  Game_System.prototype.getWaveEnabled = function () {
+    if (!this._waveProp) this.initWaveProperty();
+    return this._waveProp.wave;
+  };
+
+  Game_System.prototype.getWaveHeight = function () {
+    if (!this._waveProp) this.initWaveProperty();
+    return this._waveProp.waveHeight;
+  };
+
+  Game_System.prototype.getWaveFrequency = function () {
+    if (!this._waveProp) this.initWaveProperty();
+    return this._waveProp.waveFrequency;
+  };
+
+  Game_System.prototype.getWaveTime = function () {
+    if (!this._waveProp) this.initWaveProperty();
+    return this._waveProp.waveTime;
+  };
+
+  Game_System.prototype.getUVSpeed = function () {
+    if (!this._waveProp) this.initWaveProperty();
+    return this._waveProp.UVSpeed;
+  };
+
+  Game_System.prototype.getWavePhase = function () {
+    if (!this._waveProp) this.initWaveProperty();
+    return this._waveProp.wavePhase;
+  };
+
+  //============================================================================
+  // Game_CharacterBase
+  //============================================================================
+
+  const alias_Game_CharacterBase_initMembers =
+    Game_CharacterBase.prototype.initMembers;
+  Game_CharacterBase.prototype.initMembers = function () {
+    alias_Game_CharacterBase_initMembers.call(this);
+    this._wave = false;
+    this._waveFrequency = 0.02;
+    this._waveSpeed = 0.25;
+  };
+
+  Game_CharacterBase.prototype.setWave = function (toggle) {
+    this._wave = toggle;
+  };
+
+  Game_CharacterBase.prototype.setWaveFrequency = function (value) {
+    this._waveFrequency = value;
+  };
+
+  Game_CharacterBase.prototype.setWaveSpeed = function (value) {
+    this._waveSpeed = value;
+  };
+
+  Game_CharacterBase.prototype.wave = function () {
+    return this._wave;
+  };
+
+  Game_CharacterBase.prototype.waveFrequency = function () {
+    return this._waveFrequency || 0.02;
+  };
+
+  Game_CharacterBase.prototype.waveSpeed = function () {
+    return this._waveSpeed || 0.25;
+  };
+
+  //============================================================================
+  // Sprite_Character
+  //============================================================================
+
+  const alias_Sprite_Character_updatePosition =
+    Sprite_Character.prototype.updatePosition;
+  Sprite_Character.prototype.updatePosition = function () {
+    alias_Sprite_Character_updatePosition.call(this);
+    if (!this._character) return;
+    if (!(this._character instanceof Game_Event)) return;
+    const isValidWave = this._character.wave();
+    if (this.wave !== isValidWave) this.wave = isValidWave;
+    if (this.wave) {
+      this.waveFrequency = this._character.waveFrequency();
+      this.waveSpeed = this._character.waveSpeed();
+    }
+  };
+
+  //============================================================================
+  // Game_Map
+  //============================================================================
+
+  const alias_Game_Event_initMembers = Game_Event.prototype.initMembers;
+  Game_Event.prototype.initMembers = function () {
+    alias_Game_Event_initMembers.call(this);
+    this._lastPageIndex = -2;
+  };
+
+  Game_Event.prototype.updateWaveEffect = function () {
+    if (this._pageIndex === this._lastPageIndex) return;
+    if (!this.page()) return false;
+    if (this.findProperPageIndex() < 0) return false;
+    if (this._trigger > 3) return false;
+
+    this.list().forEach(list => {
+      const code = list.code;
+      const parameters = list.parameters;
+
+      if ([108, 408].includes(code)) {
+        if (parameters[0].match(/<(?:WAVE)[ ](.*)>/i)) {
+          this.setWave(Boolean(RegExp.$1 == 'true'));
         }
-    };
-
-    //============================================================================
-    // Game_Temp
-    //============================================================================
-
-    /**
-     * In Action Sequence Pack 1, you can use this function.
-     * eval: $gameTemp.setBattleBackWaveEffect(cond, waveAmp, waveSpeed);
-     */
-    Game_Temp.prototype.setBattleBackWaveEffect = function (cond, fre, spd) {
-        if (!$gameParty.inBattle()) return;
-        const container = SceneManager._scene._spriteset;
-        if (container) {
-            container.changeWaveEffect(cond, fre, spd);
+        if (parameters[0].match(/<(?:WAVE_AMP)[ ](.*)>/i)) {
+          this.setWaveFrequency(parseFloat(RegExp.$1) || 0.02);
         }
-    };
-
-    //============================================================================
-    // Game_System
-    //============================================================================
-
-    const alias_Game_System_initialize = Game_System.prototype.initialize;
-    Game_System.prototype.initialize = function () {
-        alias_Game_System_initialize.call(this);
-        this.initWaveProperty();
-    };
-
-    Game_System.prototype.initWaveProperty = function () {
-        this._waveProp = {
-            wave: false,
-            waveHeight: Graphics.boxHeight,
-            waveFrequency: 0.02,
-            waveTime: 0.0,
-            UVSpeed: 0.25,
-            wavePhase: 360,
-        };
-    };
-
-    Game_System.prototype.setWaveProperty = function (name, value) {
-        if (this._waveProp) {
-            this._waveProp[name] = value;
-            return this._waveProp[name];
+        if (parameters[0].match(/<(?:WAVE_SPEED)[ ](.*)>/i)) {
+          this.setWaveSpeed(parseFloat(RegExp.$1) || 0.25);
         }
-        return 0.0;
-    };
+      }
+    });
 
-    Game_System.prototype.getWaveEnabled = function () {
-        if (!this._waveProp) this.initWaveProperty();
-        return this._waveProp.wave;
-    };
+    this._lastPageIndex = this._pageIndex;
+  };
 
-    Game_System.prototype.getWaveHeight = function () {
-        if (!this._waveProp) this.initWaveProperty();
-        return this._waveProp.waveHeight;
-    };
+  const alias_Game_Event_refresh = Game_Event.prototype.refresh;
+  Game_Event.prototype.refresh = function () {
+    alias_Game_Event_refresh.call(this);
+    this.updateWaveEffect();
+  };
 
-    Game_System.prototype.getWaveFrequency = function () {
-        if (!this._waveProp) this.initWaveProperty();
-        return this._waveProp.waveFrequency;
-    };
+  //============================================================================
+  // Wave Utils
+  //============================================================================
 
-    Game_System.prototype.getWaveTime = function () {
-        if (!this._waveProp) this.initWaveProperty();
-        return this._waveProp.waveTime;
-    };
+  window.waveUtils = {};
 
-    Game_System.prototype.getUVSpeed = function () {
-        if (!this._waveProp) this.initWaveProperty();
-        return this._waveProp.UVSpeed;
-    };
-
-    Game_System.prototype.getWavePhase = function () {
-        if (!this._waveProp) this.initWaveProperty();
-        return this._waveProp.wavePhase;
-    };
-
-    //============================================================================
-    // Game_CharacterBase
-    //============================================================================
-
-    const alias_Game_CharacterBase_initMembers =
-        Game_CharacterBase.prototype.initMembers;
-    Game_CharacterBase.prototype.initMembers = function () {
-        alias_Game_CharacterBase_initMembers.call(this);
-        this._wave = false;
-        this._waveFrequency = 0.02;
-        this._waveSpeed = 0.25;
-    };
-
-    Game_CharacterBase.prototype.setWave = function (toggle) {
-        this._wave = toggle;
-    };
-
-    Game_CharacterBase.prototype.setWaveFrequency = function (value) {
-        this._waveFrequency = value;
-    };
-
-    Game_CharacterBase.prototype.setWaveSpeed = function (value) {
-        this._waveSpeed = value;
-    };
-
-    Game_CharacterBase.prototype.wave = function () {
-        return this._wave;
-    };
-
-    Game_CharacterBase.prototype.waveFrequency = function () {
-        return this._waveFrequency || 0.02;
-    };
-
-    Game_CharacterBase.prototype.waveSpeed = function () {
-        return this._waveSpeed || 0.25;
-    };
-
-    //============================================================================
-    // Sprite_Character
-    //============================================================================
-
-    const alias_Sprite_Character_updatePosition =
-        Sprite_Character.prototype.updatePosition;
-    Sprite_Character.prototype.updatePosition = function () {
-        alias_Sprite_Character_updatePosition.call(this);
-        if (!this._character) return;
-        if (!(this._character instanceof Game_Event)) return;
-        const isValidWave = this._character.wave();
-        if (this.wave !== isValidWave) this.wave = isValidWave;
-        if (this.wave) {
-            this.waveFrequency = this._character.waveFrequency();
-            this.waveSpeed = this._character.waveSpeed();
-        }
-    };
-
-    //============================================================================
-    // Game_Map
-    //============================================================================
-
-    const alias_Game_Event_initMembers = Game_Event.prototype.initMembers;
-    Game_Event.prototype.initMembers = function () {
-        alias_Game_Event_initMembers.call(this);
-        this._lastPageIndex = -2;
-    };
-
-    Game_Event.prototype.updateWaveEffect = function () {
-        if (this._pageIndex === this._lastPageIndex) return;
-        if (!this.page()) return false;
-        if (this.findProperPageIndex() < 0) return false;
-        if (this._trigger > 3) return false;
-
-        this.list().forEach((list) => {
-            const code = list.code;
-            const parameters = list.parameters;
-
-            if ([108, 408].includes(code)) {
-                if (parameters[0].match(/<(?:WAVE)[ ](.*)>/i)) {
-                    this.setWave(Boolean(RegExp.$1 == "true"));
-                }
-                if (parameters[0].match(/<(?:WAVE_AMP)[ ](.*)>/i)) {
-                    this.setWaveFrequency(parseFloat(RegExp.$1) || 0.02);
-                }
-                if (parameters[0].match(/<(?:WAVE_SPEED)[ ](.*)>/i)) {
-                    this.setWaveSpeed(parseFloat(RegExp.$1) || 0.25);
-                }
-            }
-        });
-
-        this._lastPageIndex = this._pageIndex;
-    };
-
-    const alias_Game_Event_refresh = Game_Event.prototype.refresh;
-    Game_Event.prototype.refresh = function () {
-        alias_Game_Event_refresh.call(this);
-        this.updateWaveEffect();
-    };
-
-    //============================================================================
-    // Wave Utils
-    //============================================================================
-
-    window.waveUtils = {};
-
-    /**
+  /**
    * @example
     var _s, _e, _r;
     _s = new Point(0.0, 0.0);
@@ -950,15 +949,15 @@ RS.WaveConfig = RS.WaveConfig || {};
     _r = waveUtils.mix(_s, _e);
     $gameScreen.startWave(1, _r.x, _r.y);
    */
-    waveUtils.mix = function (vec1, vec2, t) {
-        let vec = new Point(0, 0);
-        if (!t) t = (Date.now() % 10000) / 10000;
-        vec.x = vec1.x + t * (vec2.x - vec1.x);
-        vec.y = vec1.x + t * (vec2.y - vec1.y);
-        return vec;
-    };
+  waveUtils.mix = function (vec1, vec2, t) {
+    let vec = new Point(0, 0);
+    if (!t) t = (Date.now() % 10000) / 10000;
+    vec.x = vec1.x + t * (vec2.x - vec1.x);
+    vec.y = vec1.x + t * (vec2.y - vec1.y);
+    return vec;
+  };
 
-    /**
+  /**
    * @example
     var _s, _p, _e, _r;
     _s = new Point(0.0, 0.0);
@@ -967,57 +966,54 @@ RS.WaveConfig = RS.WaveConfig || {};
     _r = waveUtils.quadraticBezier(_s, _p, _e);
     $gameScreen.startWave(1, _r.x, _r.y);
    */
-    waveUtils.quadraticBezier = function (vec1, vec2, vec3, t) {
-        let d, e, p;
-        if (!t) t = (Date.now() % 10000) / 10000;
-        d = waveUtils.mix(vec1, vec2, t);
-        e = waveUtils.mix(vec2, vec3, t);
-        p = waveUtils.mix(d, e, t);
-        return p;
-    };
+  waveUtils.quadraticBezier = function (vec1, vec2, vec3, t) {
+    let d, e, p;
+    if (!t) t = (Date.now() % 10000) / 10000;
+    d = waveUtils.mix(vec1, vec2, t);
+    e = waveUtils.mix(vec2, vec3, t);
+    p = waveUtils.mix(d, e, t);
+    return p;
+  };
 
-    //============================================================================
-    // Game_Interpreter
-    //============================================================================
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
 
-    const alias_Game_Interpreter_pluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === "Tilemap_Wave" || command === "TilemapWave") {
-            switch (args[0]) {
-                case "Enable":
-                    $gameSystem.setWaveProperty("wave", true);
-                    break;
-                case "Disable":
-                    $gameSystem.setWaveProperty("wave", false);
-                    break;
-                case "waveSpeed":
-                    $gameSystem.setWaveProperty("waveSpeed", Number(args[1]));
-                    break;
-                case "waveFrequency":
-                    $gameSystem.setWaveProperty(
-                        "waveFrequency",
-                        Number(args[1])
-                    );
-                    break;
-                case "UVSpeed":
-                    $gameSystem.setWaveProperty("UVSpeed", Number(args[1]));
-                    break;
-            }
-        }
-        if (command === "Picture_Wave" || command === "PictureWave") {
-            switch (args[0].toLowerCase()) {
-                case "start":
-                    $gameScreen.startWave(
-                        Number(args[1]),
-                        Number(args[2]),
-                        Number(args[3])
-                    );
-                    break;
-                case "stop":
-                    $gameScreen.stopWave(Number(args[1]));
-            }
-        }
-    };
+  const alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'Tilemap_Wave' || command === 'TilemapWave') {
+      switch (args[0]) {
+        case 'Enable':
+          $gameSystem.setWaveProperty('wave', true);
+          break;
+        case 'Disable':
+          $gameSystem.setWaveProperty('wave', false);
+          break;
+        case 'waveSpeed':
+          $gameSystem.setWaveProperty('waveSpeed', Number(args[1]));
+          break;
+        case 'waveFrequency':
+          $gameSystem.setWaveProperty('waveFrequency', Number(args[1]));
+          break;
+        case 'UVSpeed':
+          $gameSystem.setWaveProperty('UVSpeed', Number(args[1]));
+          break;
+      }
+    }
+    if (command === 'Picture_Wave' || command === 'PictureWave') {
+      switch (args[0].toLowerCase()) {
+        case 'start':
+          $gameScreen.startWave(
+            Number(args[1]),
+            Number(args[2]),
+            Number(args[3])
+          );
+          break;
+        case 'stop':
+          $gameScreen.stopWave(Number(args[1]));
+      }
+    }
+  };
 })();

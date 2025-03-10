@@ -85,15 +85,15 @@
  * @help
  * This plugin allows you to type the text and save to certain game variable.
  * and it also provides a hint list that is possible the auto-complete when clicking a list.
- * 
+ *
  * if you'll going to set the hint list, Try to call script command as belows before opening the input dialog.
- * 
+ *
  * RS.InputDialog.Params.words = ["godmother", "godfather", "goddess"];
  * RS.InputDialog.Params.words = ["빨리 없애버려", "뭐하는 거냐?", "나가자!"];
  * RS.InputDialog.Params.words = ["きのうの明洞わにぎやかでしたか？"];
- * 
+ *
  * Note that you must set the screen size as HD (1280x720) or more.
- * 
+ *
  * =============================================================================
  * Plugin Commands
  * =============================================================================
@@ -184,18 +184,21 @@ function Scene_InputDialog() {
 }
 
 (function () {
-
-  "use strict";
+  'use strict';
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_InputDialog>');
   });
 
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
   RS.Utils.jsonParse = function (str) {
     var retData = JSON.parse(str, function (k, v) {
-      try { return RS.Utils.jsonParse(v); } catch (e) { return v; }
+      try {
+        return RS.Utils.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
     });
     return retData;
   };
@@ -204,14 +207,22 @@ function Scene_InputDialog() {
   // Global Variables in RS.InputDialog
   //============================================================================
 
-  RS.InputDialog.Params.textBoxWidth = Number(parameters['textBox Width'] || 488);
-  RS.InputDialog.Params.textBoxHeight = Number(parameters['textBox Height'] || 36);
+  RS.InputDialog.Params.textBoxWidth = Number(
+    parameters['textBox Width'] || 488
+  );
+  RS.InputDialog.Params.textBoxHeight = Number(
+    parameters['textBox Height'] || 36
+  );
   RS.InputDialog.Params.variableID = Number(parameters['variable ID'] || 3);
 
   RS.InputDialog.Params.debug = Boolean(parameters['debug'] === 'true');
 
-  RS.InputDialog.Params.localText = String(parameters['Text Hint'] || 'Test Message');
-  RS.InputDialog.Params.inputDirection = String(parameters['direction'] || 'ltr');
+  RS.InputDialog.Params.localText = String(
+    parameters['Text Hint'] || 'Test Message'
+  );
+  RS.InputDialog.Params.inputDirection = String(
+    parameters['direction'] || 'ltr'
+  );
 
   RS.InputDialog.Params.nMaxLength = parseInt(parameters['Max Length'] || '6');
 
@@ -220,22 +231,21 @@ function Scene_InputDialog() {
 
   RS.InputDialog.Params.nCheckScreenLock = 8000;
 
-  RS.InputDialog.Params.okButtonName = parameters['Ok'] || "Ok";
-  RS.InputDialog.Params.cancelButtonName = parameters['Cancel'] || "Cancel";
+  RS.InputDialog.Params.okButtonName = parameters['Ok'] || 'Ok';
+  RS.InputDialog.Params.cancelButtonName = parameters['Cancel'] || 'Cancel';
 
   RS.InputDialog.Params.exStyle = RS.Utils.jsonParse(parameters['CSS']);
 
   RS.InputDialog.Params.pos = new PIXI.Point(0, 0);
-  RS.InputDialog.Params.isCenterAlignment = (function() {
-    
+  RS.InputDialog.Params.isCenterAlignment = (function () {
     var position = parameters['Position'];
     position = position.trim();
-    if(position === "center") {
+    if (position === 'center') {
       return true;
     }
     var reg = /(.*)[ ]*,[ ]*(.*)/i;
-    if(reg.exec(position)) {
-      if(RS.InputDialog.Params.pos) {
+    if (reg.exec(position)) {
+      if (RS.InputDialog.Params.pos) {
         RS.InputDialog.Params.pos.x = parseFloat(RegExp.$1);
         RS.InputDialog.Params.pos.y = parseFloat(RegExp.$2);
       }
@@ -247,9 +257,9 @@ function Scene_InputDialog() {
   // public methods in RS.InputDialog
   //============================================================================
 
-  RS.InputDialog.createInstance = function() {
+  RS.InputDialog.createInstance = function () {
     var scene = SceneManager._scene;
-    if(scene instanceof Scene_Battle) {
+    if (scene instanceof Scene_Battle) {
       scene.showTextBox();
     } else {
       SceneManager.push(Scene_InputDialog);
@@ -257,7 +267,7 @@ function Scene_InputDialog() {
   };
 
   RS.InputDialog.setRect = function () {
-    "use strict";
+    'use strict';
 
     var query, textBox, OkButton, CancelButton;
 
@@ -270,19 +280,32 @@ function Scene_InputDialog() {
     query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=inputDialog-CancelBtn]`;
     CancelButton = document.querySelector(query);
 
-    if(textBox) {
-      textBox.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(2 * Graphics._realScale) + "em";      
-      textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
-      textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
+    if (textBox) {
+      textBox.style.fontSize = Utils.isMobileDevice()
+        ? '1rem'
+        : 2 * Graphics._realScale + 'em';
+      textBox.style.width =
+        RS.InputDialog.getScreenWidth(
+          RS.InputDialog.Params.textBoxWidth * Graphics._realScale
+        ) + 'px';
+      textBox.style.height =
+        RS.InputDialog.getScreenHeight(
+          RS.InputDialog.Params.textBoxHeight * Graphics._realScale
+        ) + 'px';
     }
 
-    if(OkButton) OkButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(1 * Graphics._realScale) + "em";
-    if(CancelButton) CancelButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(1 * Graphics._realScale) + "em";
-
+    if (OkButton)
+      OkButton.style.fontSize = Utils.isMobileDevice()
+        ? '1rem'
+        : 1 * Graphics._realScale + 'em';
+    if (CancelButton)
+      CancelButton.style.fontSize = Utils.isMobileDevice()
+        ? '1rem'
+        : 1 * Graphics._realScale + 'em';
   };
 
-  RS.InputDialog.startBattleBlur = function(target, value) {
-    var blur = "blur(%1px)".format(value);
+  RS.InputDialog.startBattleBlur = function (target, value) {
+    var blur = 'blur(%1px)'.format(value);
     target.style.webkitFilter = blur;
     target.style.filter = blur;
   };
@@ -300,23 +323,23 @@ function Scene_InputDialog() {
   //============================================================================
 
   var original_Input_shouldPreventDefault = Input._shouldPreventDefault;
-  var dialog_Input_shouldPreventDefault = function(keyCode) {
-      switch (keyCode) {
-      case 33:    // pageup
-      case 34:    // pagedown
+  var dialog_Input_shouldPreventDefault = function (keyCode) {
+    switch (keyCode) {
+      case 33: // pageup
+      case 34: // pagedown
       // case 37:    // left arrow
-      case 38:    // up arrow
+      case 38: // up arrow
       // case 39:    // right arrow
-      case 40:    // down arrow
-          return true;
-      }
-      return false;
+      case 40: // down arrow
+        return true;
+    }
+    return false;
   };
 
   //============================================================================
   // RSEvent
-  //============================================================================  
-  
+  //============================================================================
+
   // This is a list for searchable in the input dialog.
   RS.InputDialog.Params.words = [
     // "안녕하세요", "사과", "바나나",
@@ -328,7 +351,6 @@ function Scene_InputDialog() {
   RS.InputDialog.Params.queryCount = 6;
 
   const RSEvent = {
-
     over() {
       this.className = 'on-over';
     },
@@ -339,13 +361,13 @@ function Scene_InputDialog() {
 
     setText() {
       const inputElement = document.querySelector('.inputDialog');
-      if(!inputElement) return;      
+      if (!inputElement) return;
       inputElement.value = this.firstChild.textContent;
-    }
-  }
+    },
+  };
 
   let rs = {
-    deltaTime: performance.now()
+    deltaTime: performance.now(),
   };
 
   //============================================================================
@@ -353,23 +375,20 @@ function Scene_InputDialog() {
   //============================================================================
 
   class ListBoxImpl {
-
-    constructor() {
-
-    }
+    constructor() {}
 
     removeBoard() {
-      const board = document.querySelector(".board");
+      const board = document.querySelector('.board');
       for (let elem of board.children) {
         board.removeChild(elem);
       }
     }
 
     addBoard(word) {
-      const board = document.querySelector(".board");
+      const board = document.querySelector('.board');
 
-      let divElem = document.createElement("div");
-      let spanElem = document.createElement("span");
+      let divElem = document.createElement('div');
+      let spanElem = document.createElement('span');
       spanElem.textContent = word;
 
       divElem.appendChild(spanElem);
@@ -381,11 +400,11 @@ function Scene_InputDialog() {
     }
 
     static async onInput() {
-      if(!DatabaseService.Listbox) return;
+      if (!DatabaseService.Listbox) return;
       DatabaseService.Listbox.removeBoard();
       const inputElement = document.querySelector('.inputDialog');
-      if(!inputElement) return;
-      
+      if (!inputElement) return;
+
       const query = inputElement.value;
       if (query.length < 2) {
         return;
@@ -394,34 +413,44 @@ function Scene_InputDialog() {
         rs.deltaTime = performance.now();
         return;
       }
-      var promise = Database.searchQuery(query, RS.InputDialog.Params.queryCount);
-      await promise.then(value => {
-        DatabaseService.Listbox.removeBoard();
-        value.forEach(i => {
-          DatabaseService.Listbox.addBoard(i);
+      var promise = Database.searchQuery(
+        query,
+        RS.InputDialog.Params.queryCount
+      );
+      await promise
+        .then(value => {
+          DatabaseService.Listbox.removeBoard();
+          value.forEach(i => {
+            DatabaseService.Listbox.addBoard(i);
+          });
         })
-      }).catch(err => {
-        console.warn("Error!");
-      });
+        .catch(err => {
+          console.warn('Error!');
+        });
     }
-
-  }  
+  }
 
   //============================================================================
   // Database
   //============================================================================
-  
-  class Database {
 
+  class Database {
     static open() {
-      this._db = openDatabase("Dictionary", "1.0", "print out word list", 2 * 1024 * 1024);
+      this._db = openDatabase(
+        'Dictionary',
+        '1.0',
+        'print out word list',
+        2 * 1024 * 1024
+      );
     }
 
     static create() {
       if (!this._db) return;
       const db = this._db;
       db.transaction(function (tx) {
-        tx.executeSql("CREATE TABLE IF NOT EXISTS Dictionary (name varchar(30))");
+        tx.executeSql(
+          'CREATE TABLE IF NOT EXISTS Dictionary (name varchar(30))'
+        );
       });
     }
 
@@ -440,11 +469,12 @@ function Scene_InputDialog() {
       words.forEach(i => {
         // 데이터 추가
         db.transaction(function (tx) {
-          tx.executeSql("INSERT INTO Dictionary(name) VALUES(?)", [i], (tx, result) => {
-
-          }, (err) => {
-
-          })
+          tx.executeSql(
+            'INSERT INTO Dictionary(name) VALUES(?)',
+            [i],
+            (tx, result) => {},
+            err => {}
+          );
         });
       });
     }
@@ -455,11 +485,12 @@ function Scene_InputDialog() {
       const db = this._db;
       words.forEach(word => {
         db.transaction(function (tx) {
-          tx.executeSql(`DELETE FROM Dictionary WHERE name='${word}'`, [], (tx, result) => {
-
-          }, (err) => {
-
-          });
+          tx.executeSql(
+            `DELETE FROM Dictionary WHERE name='${word}'`,
+            [],
+            (tx, result) => {},
+            err => {}
+          );
         });
       });
     }
@@ -470,11 +501,12 @@ function Scene_InputDialog() {
       const db = this._db;
       words.forEach(word => {
         db.transaction(function (tx) {
-          tx.executeSql(`DELETE FROM Dictionary`, [], (tx, result) => {
-
-          }, (err) => {
-
-          });
+          tx.executeSql(
+            `DELETE FROM Dictionary`,
+            [],
+            (tx, result) => {},
+            err => {}
+          );
         });
       });
     }
@@ -484,13 +516,18 @@ function Scene_InputDialog() {
       const db = this._db;
       return new Promise((resolve, reject) => {
         db.transaction(function (tx) {
-          tx.executeSql(`SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit ${count}`, [], function (tx, result) {
-            let data = [];
-            for (var i of result.rows) {
-              data.push(i["name"]);
-            }
-            resolve(data);
-          }, reject);
+          tx.executeSql(
+            `SELECT name FROM Dictionary WHERE name LIKE '%${query}%' limit ${count}`,
+            [],
+            function (tx, result) {
+              let data = [];
+              for (var i of result.rows) {
+                data.push(i['name']);
+              }
+              resolve(data);
+            },
+            reject
+          );
         });
       });
     }
@@ -500,7 +537,6 @@ function Scene_InputDialog() {
   // DatabaseService
   //============================================================================
   class DatabaseService {
-    
     constructor() {
       this.init();
     }
@@ -516,19 +552,23 @@ function Scene_InputDialog() {
        * @type {HTMLInputElement}
        */
       const inputElement = document.querySelector('.inputDialog');
-      if(!inputElement) return;   
+      if (!inputElement) return;
 
-      inputElement.oninput = function() {
+      inputElement.oninput = function () {
         ListBoxImpl.onInput.call(this);
       };
 
-      inputElement.onfocus = function() {
-        document.querySelector(".inputDialogContainer .row .col").children[1].hidden = false;
+      inputElement.onfocus = function () {
+        document.querySelector(
+          '.inputDialogContainer .row .col'
+        ).children[1].hidden = false;
       };
 
-      inputElement.onblur = function() {
-        document.querySelector(".inputDialogContainer .row .col").children[1].hidden = true;
-      }
+      inputElement.onblur = function () {
+        document.querySelector(
+          '.inputDialogContainer .row .col'
+        ).children[1].hidden = true;
+      };
     }
 
     disconnect() {
@@ -536,10 +576,10 @@ function Scene_InputDialog() {
        * @type {HTMLInputElement}
        */
       const inputElement = document.querySelector('.inputDialog');
-      if(!inputElement) return;    
-      inputElement.oninput = "";  
-      inputElement.onfocus = "";
-      inputElement.onblur = "";
+      if (!inputElement) return;
+      inputElement.oninput = '';
+      inputElement.onfocus = '';
+      inputElement.onblur = '';
     }
 
     remove() {
@@ -558,25 +598,22 @@ function Scene_InputDialog() {
     }
 
     initWithDatabase() {
-
       // Open database
       Database.open();
-      
+
       // Remove table
       Database.remove();
-      
+
       // Create table
       Database.create();
-      
-      // Add new data
-      Database.addItems(RS.InputDialog.Params.words); 
 
+      // Add new data
+      Database.addItems(RS.InputDialog.Params.words);
     }
 
     removeDatabase() {
       Database.remove();
     }
-
   }
 
   window.DatabaseService = DatabaseService;
@@ -588,7 +625,7 @@ function Scene_InputDialog() {
 
   function TextBox() {
     this.initialize.apply(this, arguments);
-  };
+  }
 
   TextBox.BACK_SPACE = 8;
   TextBox.ENTER = 13;
@@ -596,7 +633,7 @@ function Scene_InputDialog() {
   TextBox.IS_NOT_CHAR = 32;
   TextBox.KEYS_ARRAY = 255;
 
-  TextBox.prototype.initialize = function(fieldID, textBoxID)  {
+  TextBox.prototype.initialize = function (fieldID, textBoxID) {
     this._fieldId = fieldID;
     this._textBoxID = textBoxID;
     this._lastInputTime = performance.now();
@@ -613,9 +650,8 @@ function Scene_InputDialog() {
     Input._shouldPreventDefault = original_Input_shouldPreventDefault;
   };
 
-  TextBox.prototype.createTextBox = function(id) {
-
-    "use strict";
+  TextBox.prototype.createTextBox = function (id) {
+    'use strict';
 
     var self = this;
     var field = document.getElementById(this._fieldId);
@@ -760,50 +796,52 @@ function Scene_InputDialog() {
     `;
 
     field.innerHTML = divInnerHTML;
-
   };
 
   TextBox.onLoadAfterInnerHTML = function () {
-    if(SceneManager._scene) {
-      if( (SceneManager._scene instanceof Scene_InputDialog)) {
-          if(SceneManager._scene._textBox) {
-            SceneManager._scene._textBox.addAllEventListener();
-          }
+    if (SceneManager._scene) {
+      if (SceneManager._scene instanceof Scene_InputDialog) {
+        if (SceneManager._scene._textBox) {
+          SceneManager._scene._textBox.addAllEventListener();
+        }
       }
     }
   };
 
   TextBox.prototype.getTextBoxId = function () {
-    "use strict";
+    'use strict';
     var query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=text]`;
     return document.querySelector(query);
   };
 
   TextBox.prototype.getDefaultButtonId = function (id) {
-    "use strict";
-    id = id || "inputDialog-OkBtn";
+    'use strict';
+    id = id || 'inputDialog-OkBtn';
     var query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer tr td input[type=button][id=${id}]`;
     return document.querySelector(query);
   };
 
   TextBox.prototype.getMainContainer = function () {
-    "use strict";
+    'use strict';
     var query = `div#${RS.InputDialog.Params.szFieldId} table.inputDialogContainer`;
     return document.querySelector(query);
   };
 
   TextBox.prototype.addAllEventListener = function () {
-
     this._textBox = this.getTextBoxId();
     this._textBox.maxLength = RS.InputDialog.Params.nMaxLength;
     this._textBox.max = RS.InputDialog.Params.nMaxLength;
 
     this._textBox.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    if(!Utils.isMobileDevice()) {
+    if (!Utils.isMobileDevice()) {
       this._textBox.addEventListener('focus', this.onFocus.bind(this), false);
     }
     this._textBox.addEventListener('blur', this.onBlur.bind(this), false);
-    this._textBox.addEventListener('touchstart', this.getFocus.bind(this), false);
+    this._textBox.addEventListener(
+      'touchstart',
+      this.getFocus.bind(this),
+      false
+    );
     this._textBox.addEventListener('autosize', this.onResize.bind(this), false);
 
     window.addEventListener('resize', this.onResize.bind(this), false);
@@ -815,30 +853,42 @@ function Scene_InputDialog() {
     // Create the database service on the screen.
     this._service = new DatabaseService();
 
-    if(SceneManager._scene instanceof Scene_InputDialog) {
+    if (SceneManager._scene instanceof Scene_InputDialog) {
       this.getFocus();
       this.show();
     }
 
     this._ready = true;
-
   };
 
   TextBox.prototype.setRect = function () {
     var textBox = this.getTextBoxId();
-    var OkButton = this.getDefaultButtonId("inputDialog-OkBtn");
-    var CancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
+    var OkButton = this.getDefaultButtonId('inputDialog-OkBtn');
+    var CancelButton = this.getDefaultButtonId('inputDialog-CancelBtn');
 
-    if(OkButton) OkButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(1 * Graphics._realScale) + "em";
-    if(CancelButton) CancelButton.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(1 * Graphics._realScale) + "em";
+    if (OkButton)
+      OkButton.style.fontSize = Utils.isMobileDevice()
+        ? '1rem'
+        : 1 * Graphics._realScale + 'em';
+    if (CancelButton)
+      CancelButton.style.fontSize = Utils.isMobileDevice()
+        ? '1rem'
+        : 1 * Graphics._realScale + 'em';
 
-    textBox.style.fontSize = (Utils.isMobileDevice()) ? '1rem':(2 * Graphics._realScale) + "em";
-    textBox.style.width = RS.InputDialog.getScreenWidth(RS.InputDialog.Params.textBoxWidth * Graphics._realScale) + 'px';
-    textBox.style.height = RS.InputDialog.getScreenHeight(RS.InputDialog.Params.textBoxHeight * Graphics._realScale) + 'px';
-
+    textBox.style.fontSize = Utils.isMobileDevice()
+      ? '1rem'
+      : 2 * Graphics._realScale + 'em';
+    textBox.style.width =
+      RS.InputDialog.getScreenWidth(
+        RS.InputDialog.Params.textBoxWidth * Graphics._realScale
+      ) + 'px';
+    textBox.style.height =
+      RS.InputDialog.getScreenHeight(
+        RS.InputDialog.Params.textBoxHeight * Graphics._realScale
+      ) + 'px';
   };
 
-  TextBox.prototype.prepareElement = function(id) {
+  TextBox.prototype.prepareElement = function (id) {
     var field = document.createElement('div');
     field.id = id;
     field.style.position = 'absolute';
@@ -848,108 +898,125 @@ function Scene_InputDialog() {
     field.style.bottom = '0';
     field.style.width = '100%';
     field.style.height = '100%';
-    field.style.zIndex = "0";
-    field.style.display = "none"; // there is a bug occurs in nwjs 0.33.4
+    field.style.zIndex = '0';
+    field.style.display = 'none'; // there is a bug occurs in nwjs 0.33.4
     document.body.appendChild(field);
-    if(RS.InputDialog.Params.isCenterAlignment) {
+    if (RS.InputDialog.Params.isCenterAlignment) {
       Graphics._centerElement(field);
     }
     return field;
   };
 
-  TextBox.prototype.setEvent = function(okFunc, cancelFunc) {
-    var okButton = this.getDefaultButtonId("inputDialog-OkBtn");
-    var cancelButton = this.getDefaultButtonId("inputDialog-CancelBtn");
-    okButton.addEventListener('click', function (e) {
-      okFunc();
-      e.preventDefault();
-    }, false);
-    cancelButton.addEventListener('click', function (e) {
-      cancelFunc();
-      e.preventDefault();
-    }, false);
-    okButton.addEventListener('touchend', function (e) {
-      okFunc();
-      e.preventDefault();
-    }, false);
-    cancelButton.addEventListener('touchend', function (e) {
-      cancelFunc();
-      e.preventDefault();
-    }, false);
+  TextBox.prototype.setEvent = function (okFunc, cancelFunc) {
+    var okButton = this.getDefaultButtonId('inputDialog-OkBtn');
+    var cancelButton = this.getDefaultButtonId('inputDialog-CancelBtn');
+    okButton.addEventListener(
+      'click',
+      function (e) {
+        okFunc();
+        e.preventDefault();
+      },
+      false
+    );
+    cancelButton.addEventListener(
+      'click',
+      function (e) {
+        cancelFunc();
+        e.preventDefault();
+      },
+      false
+    );
+    okButton.addEventListener(
+      'touchend',
+      function (e) {
+        okFunc();
+        e.preventDefault();
+      },
+      false
+    );
+    cancelButton.addEventListener(
+      'touchend',
+      function (e) {
+        cancelFunc();
+        e.preventDefault();
+      },
+      false
+    );
 
     this._okFunc = okFunc;
     this._cancelFunc = cancelFunc;
   };
 
-  TextBox.prototype.terminateTextBox = function() {
-    
+  TextBox.prototype.terminateTextBox = function () {
     // Remove with the database service
-    if(this._service) {
+    if (this._service) {
       this._service.remove();
     }
 
     var field = document.getElementById(this._fieldId);
 
-    if(field) {
+    if (field) {
       document.body.removeChild(field);
     }
 
     this.startToOriginalInput();
   };
 
-  TextBox.prototype.onKeyDown = function(e) {
+  TextBox.prototype.onKeyDown = function (e) {
     var keyCode = e.which;
     if (keyCode < TextBox.IS_NOT_CHAR) {
-      if(keyCode === TextBox.ENTER) {
-        if(this._okFunc instanceof Function) this._okFunc();
+      if (keyCode === TextBox.ENTER) {
+        if (this._okFunc instanceof Function) this._okFunc();
       }
-      if(keyCode === TextBox.ESC) {
-        if(this._cancelFunc instanceof Function) this._cancelFunc();
+      if (keyCode === TextBox.ESC) {
+        if (this._cancelFunc instanceof Function) this._cancelFunc();
       }
     }
 
     this._lastInputTime = performance.now();
-
   };
 
   TextBox.prototype.onFocus = function (e) {
     var text = this.getTextBoxId();
-    if(text && Utils.isMobileDevice()) {
-      text.style.bottom = RS.InputDialog.getScreenHeight(Graphics.boxHeight / 2) + 'px';
+    if (text && Utils.isMobileDevice()) {
+      text.style.bottom =
+        RS.InputDialog.getScreenHeight(Graphics.boxHeight / 2) + 'px';
     }
   };
 
   TextBox.prototype.onBlur = function (e) {
     var text = this.getTextBoxId();
-    if(text && Utils.isMobileDevice()) {
+    if (text && Utils.isMobileDevice()) {
       text.style.bottom = '0';
       text.focus();
     }
     e.preventDefault();
   };
-  
-  TextBox.prototype.setPosition = function(x, y) {
+
+  TextBox.prototype.setPosition = function (x, y) {
     var self = this;
     var field = document.getElementById(self._fieldId);
     var textBox = self.getTextBoxId();
     var mainContainer = self.getMainContainer();
-    if(field) {
-      field.style.margin = "0";
-      mainContainer.style.margin = "0";
-      if(x < 0) {
+    if (field) {
+      field.style.margin = '0';
+      mainContainer.style.margin = '0';
+      if (x < 0) {
         x = 0;
       }
-      if(x > Graphics.boxWidth - RS.InputDialog.Params.textBoxWidth) {
+      if (x > Graphics.boxWidth - RS.InputDialog.Params.textBoxWidth) {
         x = Graphics.boxWidth - RS.InputDialog.Params.textBoxWidth;
       }
-      if(y < 0) {
+      if (y < 0) {
         y = 0;
       }
-      if(y > Graphics.boxHeight - RS.InputDialog.Params.textBoxHeight) {
+      if (y > Graphics.boxHeight - RS.InputDialog.Params.textBoxHeight) {
         y = Graphics.boxHeight - RS.InputDialog.Params.textBoxHeight;
       }
-      mainContainer.style.left = Graphics._canvas.getBoundingClientRect().left + x + "px";
-      mainContainer.style.top = Graphics._canvas.getBoundingClientRect().top + y + "px";
+      mainContainer.style.left =
+        Graphics._canvas.getBoundingClientRect().left + x + 'px';
+      mainContainer.style.top =
+        Graphics._canvas.getBoundingClientRect().top + y + 'px';
     }
   };
 
@@ -958,35 +1025,40 @@ function Scene_InputDialog() {
     var field = document.getElementById(self._fieldId);
     var textBox = self.getTextBoxId();
     var mainContainer = self.getMainContainer();
-    if(field && textBox) {
-        Graphics._centerElement(field);
-        Graphics._centerElement(mainContainer);          
-        this.setRect();  
-        
-        if(RS.InputDialog.Params.isCenterAlignment) {
-          var px = (Graphics.boxWidth / 2) - (RS.InputDialog.Params.textBoxWidth / 2);
-          var py = (Graphics.boxHeight / 2) - (RS.InputDialog.Params.textBoxHeight / 2);
-          this.setPosition(px, py);
-        } else {
-          this.setPosition(RS.InputDialog.Params.pos.x, RS.InputDialog.Params.pos.y);
-        }
+    if (field && textBox) {
+      Graphics._centerElement(field);
+      Graphics._centerElement(mainContainer);
+      this.setRect();
+
+      if (RS.InputDialog.Params.isCenterAlignment) {
+        var px = Graphics.boxWidth / 2 - RS.InputDialog.Params.textBoxWidth / 2;
+        var py =
+          Graphics.boxHeight / 2 - RS.InputDialog.Params.textBoxHeight / 2;
+        this.setPosition(px, py);
+      } else {
+        this.setPosition(
+          RS.InputDialog.Params.pos.x,
+          RS.InputDialog.Params.pos.y
+        );
+      }
     }
   };
 
   TextBox.prototype.isScreenLock = function () {
     var val = parseInt(performance.now() - this._lastInputTime);
     var ret = false;
-    if(val >= RS.InputDialog.Params.nCheckScreenLock && this.isBusy()) ret = true;
+    if (val >= RS.InputDialog.Params.nCheckScreenLock && this.isBusy())
+      ret = true;
     this._lastInputTime = performance.now();
     return ret;
   };
 
-  TextBox.prototype.getTextLength = function() {
+  TextBox.prototype.getTextLength = function () {
     var textBox = this.getTextBoxId();
     return textBox.value.length;
   };
 
-  TextBox.prototype.getFocus = function() {
+  TextBox.prototype.getFocus = function () {
     var textBox = this.getTextBoxId();
     textBox.focus();
   };
@@ -1005,18 +1077,18 @@ function Scene_InputDialog() {
   TextBox.prototype.hide = function () {
     var field = document.getElementById(this._fieldId);
     field.style.zIndex = 0;
-    field.style.display = "none"; // for 0.33.4 
+    field.style.display = 'none'; // for 0.33.4
   };
 
   TextBox.prototype.show = function () {
     var field = document.getElementById(this._fieldId);
     field.style.zIndex = 1000;
-    field.style.display = "block"; // for 0.33.4 
+    field.style.display = 'block'; // for 0.33.4
   };
 
   TextBox.prototype.setTextHint = function () {
     var textBox = this.getTextBoxId();
-    return textBox.placeholder = RS.InputDialog.Params.localText;
+    return (textBox.placeholder = RS.InputDialog.Params.localText);
   };
 
   TextBox.prototype.isBusy = function () {
@@ -1028,15 +1100,14 @@ function Scene_InputDialog() {
     this._okFunc = null;
     this._cancelFunc = null;
 
-    if(this._textBox) {
+    if (this._textBox) {
       this._textBox.outerHTML = this._textBox.outerHTML;
     }
 
     window.removeEventListener('resize', this.onResize.bind(this), false);
-
   };
 
-  TextBox.prototype.terminate =  function() {
+  TextBox.prototype.terminate = function () {
     this.removeAllEventListener();
     this.terminateTextBox();
   };
@@ -1048,7 +1119,7 @@ function Scene_InputDialog() {
   Scene_InputDialog.prototype = Object.create(Scene_Base.prototype);
   Scene_InputDialog.prototype.constructor = Scene_InputDialog;
 
-  Scene_InputDialog.prototype.initialize = function() {
+  Scene_InputDialog.prototype.initialize = function () {
     Scene_Base.prototype.initialize.call(this);
   };
 
@@ -1063,7 +1134,7 @@ function Scene_InputDialog() {
     alias_Scene_InputDialog_update.call(this);
     // TODO: 모바일에서 취소키를 누르면 키입력 창이 사라지는 버그가 있다.
     // 그래서 추가했지만 화면을 누르면 꺼진다는 것을 모르는 유저들이 버그로 착각할 수 있다.
-    if(this.isScreenLock() && TouchInput.isTriggered()) {
+    if (this.isScreenLock() && TouchInput.isTriggered()) {
       this.okResult();
     }
   };
@@ -1078,41 +1149,47 @@ function Scene_InputDialog() {
     return this._textBox.isScreenLock();
   };
 
-  Scene_InputDialog.prototype.createBackground = function() {
-    if(Imported.Irina_PerformanceUpgrade) {
+  Scene_InputDialog.prototype.createBackground = function () {
+    if (Imported.Irina_PerformanceUpgrade) {
       Scene_MenuBase.prototype.createBackground.call(this);
     } else {
       this._backgroundSprite = new Sprite();
       this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
       this._backgroundSprite.opacity = 128;
-      this.addChild(this._backgroundSprite);      
+      this.addChild(this._backgroundSprite);
     }
   };
 
   Scene_InputDialog.prototype.createTextBox = function () {
-    this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
-    this._textBox.setEvent(this.okResult.bind(this), this.cancelResult.bind(this));
+    this._textBox = new TextBox(
+      RS.InputDialog.Params.szFieldId,
+      RS.InputDialog.Params.szTextBoxId
+    );
+    this._textBox.setEvent(
+      this.okResult.bind(this),
+      this.cancelResult.bind(this)
+    );
     this._textBox.show();
     this._textBox.setTextHint();
   };
 
   Scene_InputDialog.prototype.okResult = function () {
     var text = this._textBox.getText() || '';
-    if(text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
+    if (text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
     $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
-    if(SceneManager._stack.length > 0) {
+    if (SceneManager._stack.length > 0) {
       TouchInput.clear();
       Input.clear();
       this.popScene();
-    };
+    }
   };
 
   Scene_InputDialog.prototype.cancelResult = function () {
-    if(SceneManager._stack.length > 0) {
+    if (SceneManager._stack.length > 0) {
       TouchInput.clear();
       Input.clear();
       this.popScene();
-    };
+    }
   };
 
   //============================================================================
@@ -1147,7 +1224,7 @@ function Scene_InputDialog() {
     alias_Scene_Battle_update.call(this);
     // TODO: 모바일에서 취소키를 누르면 키입력 창이 사라지는 버그가 있다.
     // 그래서 추가했지만 화면을 누르면 꺼진다는 것을 모르는 유저들이 버그로 착각할 수 있다.
-    if(this.isScreenLock() && TouchInput.isTriggered()) {
+    if (this.isScreenLock() && TouchInput.isTriggered()) {
       this.okResult();
     }
   };
@@ -1155,18 +1232,24 @@ function Scene_InputDialog() {
   var alias_Scene_Battle_terminate = Scene_Battle.prototype.terminate;
   Scene_Battle.prototype.terminate = function () {
     alias_Scene_Battle_terminate.call(this);
-    if(this._textBox) {
+    if (this._textBox) {
       this._textBox.terminate();
       this._textBox = null;
     }
-    if($gameTemp.isCommonEventReserved()) {
+    if ($gameTemp.isCommonEventReserved()) {
       $gameTemp.clearCommonEvent();
     }
   };
 
   Scene_Battle.prototype.createTextBox = function () {
-    this._textBox = new TextBox(RS.InputDialog.Params.szFieldId, RS.InputDialog.Params.szTextBoxId);
-    this._textBox.setEvent(this.okResult.bind(this), this.cancelResult.bind(this));
+    this._textBox = new TextBox(
+      RS.InputDialog.Params.szFieldId,
+      RS.InputDialog.Params.szTextBoxId
+    );
+    this._textBox.setEvent(
+      this.okResult.bind(this),
+      this.cancelResult.bind(this)
+    );
   };
 
   Scene_Battle.prototype.textBoxIsBusy = function () {
@@ -1185,7 +1268,7 @@ function Scene_InputDialog() {
   };
 
   Scene_Battle.prototype.hideTextBox = function () {
-    if(!this.textBoxIsBusy()) return false;
+    if (!this.textBoxIsBusy()) return false;
     this._textBox.hide();
     Input.clear();
     $gameTroop.battleInterpreterTaskUnlock();
@@ -1196,14 +1279,16 @@ function Scene_InputDialog() {
   };
 
   Scene_Battle.prototype.okResult = function () {
-    if(!this._textBox) return '';
-    if( this.textBoxIsBusy() ) {
+    if (!this._textBox) return '';
+    if (this.textBoxIsBusy()) {
       var text = this._textBox.getText() || '';
-      if(text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
+      if (text.match(/^([\d]+)$/g)) text = Number(RegExp.$1);
       $gameVariables.setValue(RS.InputDialog.Params.variableID, text);
       this._textBox.setText('');
-      if(RS.InputDialog.Params.debug) {
-        var dmsg = 'You typed the text is same as '.concat($gameVariables.value(RS.InputDialog.Params.variableID) + '' || 'NONE');
+      if (RS.InputDialog.Params.debug) {
+        var dmsg = 'You typed the text is same as '.concat(
+          $gameVariables.value(RS.InputDialog.Params.variableID) + '' || 'NONE'
+        );
         this._logWindow.push('addText', dmsg);
       }
       this.hideTextBox();
@@ -1211,8 +1296,8 @@ function Scene_InputDialog() {
   };
 
   Scene_Battle.prototype.cancelResult = function () {
-    if(!this._textBox) return '';
-    if( this.textBoxIsBusy() ) {
+    if (!this._textBox) return '';
+    if (this.textBoxIsBusy()) {
       this._textBox.setText('');
       this.hideTextBox();
     }
@@ -1222,63 +1307,66 @@ function Scene_InputDialog() {
   // Game_Interpreter
   //============================================================================
 
-  var alias_Game_Interpreter_updateWaitMode = Game_Interpreter.prototype.updateWaitMode;
-  Game_Interpreter.prototype.updateWaitMode = function() {
-    if(this._waitMode === 'IME Mode') {
+  var alias_Game_Interpreter_updateWaitMode =
+    Game_Interpreter.prototype.updateWaitMode;
+  Game_Interpreter.prototype.updateWaitMode = function () {
+    if (this._waitMode === 'IME Mode') {
       return true;
     } else {
       return alias_Game_Interpreter_updateWaitMode.call(this);
     }
   };
 
-  RS.InputDialog.isEqual = function(eq) {
+  RS.InputDialog.isEqual = function (eq) {
     var data = String($gameVariables.value(RS.InputDialog.Params.variableID));
     eq = String(eq);
-    return (data === eq);
+    return data === eq;
   };
 
-  Game_Interpreter.prototype.isEqualInputData = function(eq) {
+  Game_Interpreter.prototype.isEqualInputData = function (eq) {
     return RS.InputDialog.isEqual(eq);
   };
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_Game_Interpreter_pluginCommand.call(this, command, args);
-      if(command === "InputDialog") {
-        switch(args[0]) {
-          case 'open':
-            RS.InputDialog.createInstance();
-            break;
-          case 'width':
-            RS.InputDialog.Params.textBoxWidth = Number(args[1] || 488);
-            RS.InputDialog.setRect();
-            break;
-          case 'text':
-            RS.InputDialog.Params.localText = args.slice(1, args.length).join(' ');
-            break;
-          case 'variableID':
-            RS.InputDialog.Params.variableID = Number(args[1] || 3);
-            break;
-          case 'debug':
-            RS.InputDialog.Params.debug = Boolean(args[1] === 'true');
-            break;
-          case 'maxLength':
-            RS.InputDialog.Params.nMaxLength  = Number(args[1] || 255);
-            RS.InputDialog.setRect();
-            break;
-          case 'pos':
-            if(args[1] === "center") {
-              RS.InputDialog.Params.isCenterAlignment = true;
-            } else {
-              RS.InputDialog.Params.isCenterAlignment = false;
-              RS.InputDialog.Params.pos.x = parseFloat(args[1] || 0);
-              RS.InputDialog.Params.pos.y = parseFloat(args[2] || 0);              
-            }
-            break;
-        }
+  var alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'InputDialog') {
+      switch (args[0]) {
+        case 'open':
+          RS.InputDialog.createInstance();
+          break;
+        case 'width':
+          RS.InputDialog.Params.textBoxWidth = Number(args[1] || 488);
+          RS.InputDialog.setRect();
+          break;
+        case 'text':
+          RS.InputDialog.Params.localText = args
+            .slice(1, args.length)
+            .join(' ');
+          break;
+        case 'variableID':
+          RS.InputDialog.Params.variableID = Number(args[1] || 3);
+          break;
+        case 'debug':
+          RS.InputDialog.Params.debug = Boolean(args[1] === 'true');
+          break;
+        case 'maxLength':
+          RS.InputDialog.Params.nMaxLength = Number(args[1] || 255);
+          RS.InputDialog.setRect();
+          break;
+        case 'pos':
+          if (args[1] === 'center') {
+            RS.InputDialog.Params.isCenterAlignment = true;
+          } else {
+            RS.InputDialog.Params.isCenterAlignment = false;
+            RS.InputDialog.Params.pos.x = parseFloat(args[1] || 0);
+            RS.InputDialog.Params.pos.y = parseFloat(args[2] || 0);
+          }
+          break;
       }
+    }
   };
 
   window.TextBox = TextBox;
-
 })();

@@ -23,7 +23,7 @@
  * @type boolean
  * @desc To activate the preview window, change to true.
  * @default true
- * 
+ *
  * @param In-Game Preview Window
  * @type boolean
  * @desc To activate the in-game preview, change to true.
@@ -82,25 +82,26 @@ Imported.RS_ScreenShot = true;
 var RS = RS || {};
 RS.ScreenShot = RS.ScreenShot || {};
 
-(function($) {
+(function ($) {
+  'use strict';
 
-  "use strict";
-
-  var parameters = $plugins.filter(function(i) {
-    return i.description.contains("<RS_ScreenShot>");
+  var parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_ScreenShot>');
   });
 
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
-  $.KEY = Number(parameters['key'] || 118 );
-  $.isPreviewWindow = Boolean(parameters['Screenshot Preview Window'] === 'true');
+  $.KEY = Number(parameters['key'] || 118);
+  $.isPreviewWindow = Boolean(
+    parameters['Screenshot Preview Window'] === 'true'
+  );
   $.isPlaySe = Boolean(parameters['Play Se'] === 'true');
   $.seName = parameters['Se Name'] || 'Save';
-  $.fileFormat = parameters["file format"] || "png";
+  $.fileFormat = parameters['file format'] || 'png';
   $.isInGamePreview = true;
 
   $.localFilePath = function (fileName) {
-    if(!Utils.isNwjs()) return '';
+    if (!Utils.isNwjs()) return '';
     var path, base;
     path = require('path');
     base = path.dirname(process.mainModule.filename);
@@ -108,8 +109,11 @@ RS.ScreenShot = RS.ScreenShot || {};
   };
 
   $.getPath = function () {
-    if(Utils.RPGMAKER_VERSION >= '1.6.0') return $.localFilePath();
-    var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/, '/ScreenShots/');
+    if (Utils.RPGMAKER_VERSION >= '1.6.0') return $.localFilePath();
+    var path = window.location.pathname.replace(
+      /(\/www|)\/[^\/]*$/,
+      '/ScreenShots/'
+    );
     if (path.match(/^\/([A-Z]\:)/)) {
       path = path.slice(1);
     }
@@ -118,15 +122,18 @@ RS.ScreenShot = RS.ScreenShot || {};
 
   $.previewScreenShot = function (fileName) {
     const renderer = Graphics._renderer;
-    const renderTexture = PIXI.RenderTexture.create(renderer.width, renderer.height);
+    const renderTexture = PIXI.RenderTexture.create(
+      renderer.width,
+      renderer.height
+    );
     const stage = SceneManager._scene;
 
-    if(stage) {
+    if (stage) {
       renderer.render(stage, renderTexture);
       let canvas = renderer.extract.base64(renderTexture);
 
-      if($.isInGamePreview) {
-        stage.emit("screenshot_hookat", canvas, fileName);
+      if ($.isInGamePreview) {
+        stage.emit('screenshot_hookat', canvas, fileName);
       } else {
         let html = `
         <!DOCTYPE html>
@@ -154,77 +161,84 @@ RS.ScreenShot = RS.ScreenShot || {};
           </body>
           </html>
         `;
-  
-        const blob = new Blob([html], {type : 'text/html'});
+
+        const blob = new Blob([html], { type: 'text/html' });
         let url = URL.createObjectURL(blob);
         let win = window.open(url, '_blank');
-        
-        if(Utils.RPGMAKER_VERSION >= "1.6.0") {
+
+        if (Utils.RPGMAKER_VERSION >= '1.6.0') {
           url = canvas.toDataURL(`image/${$.fileFormat}`);
           win = window.open(url, '_blank');
         }
       }
-
     }
 
-    if(renderTexture) {
-      renderTexture.destroy( { destroyBase: true } );
+    if (renderTexture) {
+      renderTexture.destroy({ destroyBase: true });
     }
 
-    if(!$.isInGamePreview) {
+    if (!$.isInGamePreview) {
       // Call this method when it doesn't need to keep the reference to URL object any longer.
       URL.revokeObjectURL(url);
     }
-
   };
 
-  $.takeSnapshot = function() {
-
-    if(!StorageManager.isLocalMode()) {
-      console.warn('takeSnapshot function does not support on your mobile device');
+  $.takeSnapshot = function () {
+    if (!StorageManager.isLocalMode()) {
+      console.warn(
+        'takeSnapshot function does not support on your mobile device'
+      );
       return;
     }
 
     const fs = require('fs');
-    const {promisify} = require('util');
+    const { promisify } = require('util');
     const screenshotFolder = this.getPath();
 
     let gui = require('nw.gui');
     let win = gui.Window.get();
 
-    if( !fs.existsSync(screenshotFolder) ) fs.mkdirSync(screenshotFolder);
-    let fileName = new Date().toJSON().replace(/[.:]+/g, "-");
+    if (!fs.existsSync(screenshotFolder)) fs.mkdirSync(screenshotFolder);
+    let fileName = new Date().toJSON().replace(/[.:]+/g, '-');
     let filePath = screenshotFolder + `${fileName}.${$.fileFormat}`;
 
-    let result = win.capturePage(buffer => {
-      promisify(fs.writeFile)(filePath, buffer).then(val => {
-        if($.isPlaySe) AudioManager.playStaticSe({name: $.seName, pan: 0, pitch: 100, volume: ConfigManager.seVolume});
-        if($.isPreviewWindow) $.previewScreenShot(fileName);
-      }).catch(err => {
-        throw new Error(err);
-      });
-
-    }, { format : $.fileFormat, datatype : 'buffer'} );
-
+    let result = win.capturePage(
+      buffer => {
+        promisify(fs.writeFile)(filePath, buffer)
+          .then(val => {
+            if ($.isPlaySe)
+              AudioManager.playStaticSe({
+                name: $.seName,
+                pan: 0,
+                pitch: 100,
+                volume: ConfigManager.seVolume,
+              });
+            if ($.isPreviewWindow) $.previewScreenShot(fileName);
+          })
+          .catch(err => {
+            throw new Error(err);
+          });
+      },
+      { format: $.fileFormat, datatype: 'buffer' }
+    );
   };
 
   const alias_SceneManager_onKeyDown = SceneManager.onKeyDown;
-  SceneManager.onKeyDown = function(event) {
-      alias_SceneManager_onKeyDown.call(this, event);
-      if (!event.ctrlKey && !event.altKey) {
-        switch (event.keyCode) {
-        case $.KEY:   // F7
+  SceneManager.onKeyDown = function (event) {
+    alias_SceneManager_onKeyDown.call(this, event);
+    if (!event.ctrlKey && !event.altKey) {
+      switch (event.keyCode) {
+        case $.KEY: // F7
           $.takeSnapshot();
-        break;
-        }
+          break;
       }
+    }
   };
 
   /**
    * This class allows you to hook a new screenshot in the game.
    */
   class Window_ScreenshotHooker extends Window_Base {
-
     constructor() {
       super(0, 0, Graphics.boxWidth, Graphics.boxHeight);
       this._isWindow = false;
@@ -235,10 +249,10 @@ RS.ScreenShot = RS.ScreenShot || {};
 
     setVisible(value) {
       this.children.forEach(e => {
-        if(e.constructor.name.contains("_window")) {
+        if (e.constructor.name.contains('_window')) {
           e.visible = value;
         }
-      });   
+      });
     }
 
     on(canvas, filename) {
@@ -247,11 +261,11 @@ RS.ScreenShot = RS.ScreenShot || {};
       this._screenshot = PIXI.Sprite.from(canvas);
 
       const style = {
-        "dropShadow": true,
-        "dropShadowAlpha": 0.4,
-        "dropShadowDistance": 1,
-        "stroke": "white",
-        "strokeThickness": 2
+        dropShadow: true,
+        dropShadowAlpha: 0.4,
+        dropShadowDistance: 1,
+        stroke: 'white',
+        strokeThickness: 2,
       };
 
       this._text = new PIXI.Text(`${filename}.${$.fileFormat}`, style);
@@ -267,49 +281,45 @@ RS.ScreenShot = RS.ScreenShot || {};
     off() {
       this.setVisible(false);
 
-      if(this._screenshot) {
+      if (this._screenshot) {
         this._windowContentsSprite.removeChild(this._screenshot);
       }
 
       this.visible = false;
-
     }
 
     update() {
       super.update();
 
-      if(Input.isTriggered("ok") || Input.isTriggered("escape")) {
-        if(this.visible) {
+      if (Input.isTriggered('ok') || Input.isTriggered('escape')) {
+        if (this.visible) {
           this.off();
         }
       }
-
     }
-
   }
 
   var alias_Scene_Map_start = Scene_Map.prototype.start;
-  Scene_Map.prototype.start = function() {
+  Scene_Map.prototype.start = function () {
     alias_Scene_Map_start.call(this);
-    if($.isInGamePreview) {    
+    if ($.isInGamePreview) {
       this._screenshotHooker = new Window_ScreenshotHooker();
       this.addChild(this._screenshotHooker);
 
-      this.on("screenshot_hookat", this.screenshotHookAt, this);
+      this.on('screenshot_hookat', this.screenshotHookAt, this);
     }
   };
 
   var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
-  Scene_Map.prototype.terminate = function() {
+  Scene_Map.prototype.terminate = function () {
     alias_Scene_Map_terminate.call(this);
-    if($.isInGamePreview) {  
-      this.off("screenshot_hookat", this.screenshotHookAt, this);
+    if ($.isInGamePreview) {
+      this.off('screenshot_hookat', this.screenshotHookAt, this);
     }
   };
 
-  Scene_Map.prototype.screenshotHookAt = function(canvas, fileName) {
-    if(!this._screenshotHooker) return;
+  Scene_Map.prototype.screenshotHookAt = function (canvas, fileName) {
+    if (!this._screenshotHooker) return;
     this._screenshotHooker.on(canvas, fileName);
   };
-
 })(RS.ScreenShot);

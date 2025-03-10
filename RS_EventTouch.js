@@ -41,33 +41,33 @@
  */
 
 (() => {
-    const parameters = PluginManager.parameters('RS_EventTouch');
-    const regex = eval(parameters['Event Regex']) || /Event[ ]*Click/gi;
+  const parameters = PluginManager.parameters('RS_EventTouch');
+  const regex = eval(parameters['Event Regex']) || /Event[ ]*Click/gi;
 
-    Game_Map.prototype.executeTouchEvent = function () {
-        if (TouchInput.isTriggered()) {
-            const x = $gameMap.canvasToMapX(TouchInput._x);
-            const y = $gameMap.canvasToMapY(TouchInput._y);
-            const id = $gameMap.eventIdXy(x, y);
-            const evt = this.event(id);
-            if (!evt) return false;
-            if (evt.findProperPageIndex() < 0) return false;
-            if (!evt.page()) return false;
-            evt.list().forEach(i => {
-                if (i.code === 108 || i.code === 408) {
-                    if (i.parameters[0].match(regex)) {
-                        if (evt._trigger < 3) evt.start();
-                    }
-                }
-            });
+  Game_Map.prototype.executeTouchEvent = function () {
+    if (TouchInput.isTriggered()) {
+      const x = $gameMap.canvasToMapX(TouchInput._x);
+      const y = $gameMap.canvasToMapY(TouchInput._y);
+      const id = $gameMap.eventIdXy(x, y);
+      const evt = this.event(id);
+      if (!evt) return false;
+      if (evt.findProperPageIndex() < 0) return false;
+      if (!evt.page()) return false;
+      evt.list().forEach(i => {
+        if (i.code === 108 || i.code === 408) {
+          if (i.parameters[0].match(regex)) {
+            if (evt._trigger < 3) evt.start();
+          }
         }
+      });
+    }
 
-        return true;
-    };
+    return true;
+  };
 
-    const aliasGameMapUpdate = Game_Map.prototype.update;
-    Game_Map.prototype.update = function (sceneActive) {
-        aliasGameMapUpdate.call(this, sceneActive);
-        if (sceneActive) this.executeTouchEvent();
-    };
+  const aliasGameMapUpdate = Game_Map.prototype.update;
+  Game_Map.prototype.update = function (sceneActive) {
+    aliasGameMapUpdate.call(this, sceneActive);
+    if (sceneActive) this.executeTouchEvent();
+  };
 })();

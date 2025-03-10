@@ -53,44 +53,44 @@
  * 2017.06.10 (v0.0.9) - Fixed the bug that is not working fine on RMMV 1.5.0 or more
  * 2018.08.21 (v0.0.10) - Fixed the bug that causes a new error after dissecting a long method as small pieces of code.
  */
- /*~struct~MirrorBase:
-  *
-  * @param note
-  * @desc This plugin finds out a target character via this note string on the map
-  * @default MIRROR_TYPE
-  * @type string
-  *
-  * @param w
-  * @type number
-  * @desc Specify the width of the mask bitmap
-  * @min 1
-  *
-  * @param h
-  * @type number
-  * @desc Specify the height of the mask bitmap
-  * @min 1
-  *
-  * @param mask_ox
-  * @type number
-  * @desc Specify the offset-x of the mask bitmap
-  * @default 0
-  *
-  * @param mask_oy
-  * @type number
-  * @desc Specify the offset-x of the mask bitmap
-  * @default 0
-  *
-  * @param char_ox
-  * @type number
-  * @desc Specify the offset-x of the target character
-  * @default 0
-  *
-  * @param char_oy
-  * @type number
-  * @desc Specify the offset-x of the target character
-  * @default 0
-  *
-  */
+/*~struct~MirrorBase:
+ *
+ * @param note
+ * @desc This plugin finds out a target character via this note string on the map
+ * @default MIRROR_TYPE
+ * @type string
+ *
+ * @param w
+ * @type number
+ * @desc Specify the width of the mask bitmap
+ * @min 1
+ *
+ * @param h
+ * @type number
+ * @desc Specify the height of the mask bitmap
+ * @min 1
+ *
+ * @param mask_ox
+ * @type number
+ * @desc Specify the offset-x of the mask bitmap
+ * @default 0
+ *
+ * @param mask_oy
+ * @type number
+ * @desc Specify the offset-x of the mask bitmap
+ * @default 0
+ *
+ * @param char_ox
+ * @type number
+ * @desc Specify the offset-x of the target character
+ * @default 0
+ *
+ * @param char_oy
+ * @type number
+ * @desc Specify the offset-x of the target character
+ * @default 0
+ *
+ */
 /*:ko
  * @plugindesc 캐릭터가 비치는 완벽한 거울 오브젝트를 만들 수 있습니다. <RS_MirrorArea>
  * @author 러닝은빛(biud436)
@@ -118,14 +118,14 @@
  *
  *   특정 이벤트 캐릭터를 거울 {DRESSER}에 표시합니다.
  *       <MIRROR_DRESSER : EVENT_ID>
- * 
+ *
  * =============================================================================
  * 플러그인 명령에 대하여...
  * =============================================================================
- * 
+ *
  * Mirror Show
  * Mirror Hide
- * 
+ *
  * =============================================================================
  * 변동 사항
  * =============================================================================
@@ -142,51 +142,51 @@
  * 2017.06.10 (v0.0.9) - RMMV 1.5.0 이상에서 제대로 작동하지 않는 버그가 수정되었습니다.
  * 2018.08.21 (v0.0.10) - 긴 메소드를 작은 메소드로 분리하는 리팩토링 과정에서 문제가 있었는데 수정되었습니다.
  */
- /*~struct~MirrorBase:ko
-  *
-  * @param note
-  * @text 노트 태그
-  * @desc 노트 태그를 검출할 때 여기에 적힌 문자를 기준으로 찾습니다
-  * @default MIRROR_TYPE
-  * @type string
-  *
-  * @param w
-  * @text 거울 내부의 가로 크기
-  * @type number
-  * @desc 거울 내부(마스크) 영역의 가로 크기를 지정해주세요.
-  * @min 1
-  *
-  * @param h
-  * @text 거울 내부의 세로 크기
-  * @type number
-  * @desc 거울 내부(마스크) 영역의 세로 크기를 지정해주세요.
-  * @min 1
-  *
-  * @param mask_ox
-  * @text 거울 내부의 오프셋 좌표 X
-  * @type number
-  * @desc 거울 내부(마스크) 영역의 오프셋 좌표를 지정합니다.
-  * @default 0
-  *
-  * @param mask_oy
-  * @text 거울 내부의 오프셋 좌표 Y
-  * @type number
-  * @desc 거울 내부(마스크) 영역의 오프셋 좌표를 지정합니다.
-  * @default 0
-  *
-  * @param char_ox
-  * @text 대상 캐릭터 오프셋 좌표 X
-  * @type number
-  * @desc 거울 내부에 비춰지는 대상 캐릭터의 좌표에 오프셋 좌표를 더합니다.
-  * @default 0
-  *
-  * @param char_oy
-  * @text 대상 캐릭터 오프셋 좌표 Y
-  * @type number
-  * @desc 거울 내부에 비춰지는 대상 캐릭터의 좌표에 오프셋 좌표를 더합니다.
-  * @default 0
-  *
-  */
+/*~struct~MirrorBase:ko
+ *
+ * @param note
+ * @text 노트 태그
+ * @desc 노트 태그를 검출할 때 여기에 적힌 문자를 기준으로 찾습니다
+ * @default MIRROR_TYPE
+ * @type string
+ *
+ * @param w
+ * @text 거울 내부의 가로 크기
+ * @type number
+ * @desc 거울 내부(마스크) 영역의 가로 크기를 지정해주세요.
+ * @min 1
+ *
+ * @param h
+ * @text 거울 내부의 세로 크기
+ * @type number
+ * @desc 거울 내부(마스크) 영역의 세로 크기를 지정해주세요.
+ * @min 1
+ *
+ * @param mask_ox
+ * @text 거울 내부의 오프셋 좌표 X
+ * @type number
+ * @desc 거울 내부(마스크) 영역의 오프셋 좌표를 지정합니다.
+ * @default 0
+ *
+ * @param mask_oy
+ * @text 거울 내부의 오프셋 좌표 Y
+ * @type number
+ * @desc 거울 내부(마스크) 영역의 오프셋 좌표를 지정합니다.
+ * @default 0
+ *
+ * @param char_ox
+ * @text 대상 캐릭터 오프셋 좌표 X
+ * @type number
+ * @desc 거울 내부에 비춰지는 대상 캐릭터의 좌표에 오프셋 좌표를 더합니다.
+ * @default 0
+ *
+ * @param char_oy
+ * @text 대상 캐릭터 오프셋 좌표 Y
+ * @type number
+ * @desc 거울 내부에 비춰지는 대상 캐릭터의 좌표에 오프셋 좌표를 더합니다.
+ * @default 0
+ *
+ */
 
 var Imported = Imported || {};
 Imported.RS_MirrorArea = true;
@@ -200,14 +200,13 @@ function Sprite_Mirror() {
 }
 
 (function ($) {
-
-  "use strict";
+  'use strict';
 
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_MirrorArea>');
   });
 
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
   $.allMirrors = JSON.parse(parameters['Mirrors']);
 
@@ -222,17 +221,17 @@ function Sprite_Mirror() {
   //============================================================================
 
   /**
-   * 
-   * @param {Number} eventId 
+   *
+   * @param {Number} eventId
    */
   Game_Map.prototype.findEventInMap = function (eventId) {
-      var events = [];
-      if(eventId === 0) return $gamePlayer;
-      events = this._events.filter(function (e, i, a) {
-        if(e && e.eventId() === eventId) return true;
-        return false;
-      });
-      return events[0];
+    var events = [];
+    if (eventId === 0) return $gamePlayer;
+    events = this._events.filter(function (e, i, a) {
+      if (e && e.eventId() === eventId) return true;
+      return false;
+    });
+    return events[0];
   };
 
   /**
@@ -240,18 +239,18 @@ function Sprite_Mirror() {
    * @return {Array} result
    */
   Game_Map.prototype.getRealEvents = function () {
-      var events = this._events;
-      var last = events.slice(-1);
-      var maxId = (last[0] || 0) && last[0].eventId();
-      var result = [];
-      for (var i = 0; i <= maxId; i++) {
-        if(events[i]) {
-          result.push(events[i]);
-        } else {
-          result.push(null);
-        }
+    var events = this._events;
+    var last = events.slice(-1);
+    var maxId = (last[0] || 0) && last[0].eventId();
+    var result = [];
+    for (var i = 0; i <= maxId; i++) {
+      if (events[i]) {
+        result.push(events[i]);
+      } else {
+        result.push(null);
       }
-      return result;
+    }
+    return result;
   };
 
   //============================================================================
@@ -262,78 +261,96 @@ function Sprite_Mirror() {
   Sprite_Mirror.prototype.constructor = Sprite_Mirror;
 
   Sprite_Mirror.prototype.initialize = function (character) {
-      Sprite_Character.prototype.initialize.call(this, character);
-      this._offset = {};
-      this.scale = $.allScale;
+    Sprite_Character.prototype.initialize.call(this, character);
+    this._offset = {};
+    this.scale = $.allScale;
   };
 
-  Sprite_Mirror.prototype.setCharacterBitmap = function() {
-      var smooth = true;
-      this.bitmap = ImageManager.loadBitmap('img/characters/', this._characterName, null, smooth);
-      this._isBigCharacter = ImageManager.isBigCharacter(this._characterName);
+  Sprite_Mirror.prototype.setCharacterBitmap = function () {
+    var smooth = true;
+    this.bitmap = ImageManager.loadBitmap(
+      'img/characters/',
+      this._characterName,
+      null,
+      smooth
+    );
+    this._isBigCharacter = ImageManager.isBigCharacter(this._characterName);
   };
 
   Sprite_Mirror.prototype.updateVisibility = function () {
-      Sprite_Character.prototype.updateVisibility.call(this);
-      this.visible = this.mask && $.allImagesVisible;
+    Sprite_Character.prototype.updateVisibility.call(this);
+    this.visible = this.mask && $.allImagesVisible;
   };
 
-  Sprite_Mirror.prototype.updatePosition = function() {
-      var maskY = parseInt(this._offset['h']);
-      this.x = this._character.screenX();
-      this.y = this._character.screenY() - maskY - parseInt(this._offset['char_oy'] / 2);
-      this.z = this._character.screenZ() + 4;
-      this.updateMask();
+  Sprite_Mirror.prototype.updatePosition = function () {
+    var maskY = parseInt(this._offset['h']);
+    this.x = this._character.screenX();
+    this.y =
+      this._character.screenY() - maskY - parseInt(this._offset['char_oy'] / 2);
+    this.z = this._character.screenZ() + 4;
+    this.updateMask();
   };
 
-  var alias_Sprite_Mirror_characterPatternY = Sprite_Mirror.prototype.characterPatternY;
-  Sprite_Mirror.prototype.characterPatternY = function() {
-      var idx = alias_Sprite_Mirror_characterPatternY.call(this);
-      return (3 ^ idx) === 1 ? 2 : (3 ^ idx) === 2 ? 1 : (3 ^ idx);
+  var alias_Sprite_Mirror_characterPatternY =
+    Sprite_Mirror.prototype.characterPatternY;
+  Sprite_Mirror.prototype.characterPatternY = function () {
+    var idx = alias_Sprite_Mirror_characterPatternY.call(this);
+    return (3 ^ idx) === 1 ? 2 : (3 ^ idx) === 2 ? 1 : 3 ^ idx;
   };
 
   var alias_Sprite_Mirror_destroy = Sprite_Mirror.prototype.destroy;
   Sprite_Mirror.prototype.destroy = function () {
-      alias_Sprite_Mirror_destroy.call(this);
-      this._targetEvent = null;
-      SceneManager._scene.getMirrorSprite().removeChild(this._maskSprite);
-      this.mask = null;
+    alias_Sprite_Mirror_destroy.call(this);
+    this._targetEvent = null;
+    SceneManager._scene.getMirrorSprite().removeChild(this._maskSprite);
+    this.mask = null;
   };
 
   Sprite_Mirror.prototype.setProperties = function (mask, targetEvent, offset) {
+    this._targetEvent = targetEvent;
+    this._offset = offset;
 
-      this._targetEvent = targetEvent;
-      this._offset = offset;
+    var version = PIXI.VERSION || '4.5.4';
+    version = version.replace(/[Vv]/, '');
 
-      var version = PIXI.VERSION || "4.5.4";
-      version = version.replace(/[Vv]/, "");
-
-      // MV v1.5.1 => PIXI v4.5.4
-      // MV v1.4.1 => PIXI v4.0.3
-      // MV v1.3.5 => PIXI v4.0.3
-      // MV v1.2.0 => PIXI v2.2.9
-      // MV v1.1.0 => PIXI v2.2.10
-      // MV v1.0.1 => PIXI v2.2.9
-      this._maskSprite = new Sprite();          
-      this._maskSprite.texture = Graphics._renderer.generateTexture(mask);
-      if(!this._maskSprite.texture.valid || this._maskSprite.texture.width <= 0) {
-        setTimeout(function() {
+    // MV v1.5.1 => PIXI v4.5.4
+    // MV v1.4.1 => PIXI v4.0.3
+    // MV v1.3.5 => PIXI v4.0.3
+    // MV v1.2.0 => PIXI v2.2.9
+    // MV v1.1.0 => PIXI v2.2.10
+    // MV v1.0.1 => PIXI v2.2.9
+    this._maskSprite = new Sprite();
+    this._maskSprite.texture = Graphics._renderer.generateTexture(mask);
+    if (
+      !this._maskSprite.texture.valid ||
+      this._maskSprite.texture.width <= 0
+    ) {
+      setTimeout(
+        function () {
           this._maskSprite.texture = Graphics._renderer.generateTexture(mask);
-        }.bind(this), 0);
-      }
+        }.bind(this),
+        0
+      );
+    }
 
-      SceneManager._scene.getMirrorSprite().addChild(this._maskSprite);
+    SceneManager._scene.getMirrorSprite().addChild(this._maskSprite);
 
-      this.mask = this._maskSprite;
+    this.mask = this._maskSprite;
   };
 
   Sprite_Mirror.prototype.updateMask = function () {
-      if(this._targetEvent && this._maskSprite) {
-        var x = this._targetEvent.screenX() - $gameMap.tileWidth() / 2 + parseInt(this._offset['mask_ox']);
-        var y = this._targetEvent.screenY() - $gameMap.tileHeight() - parseInt(this._offset['mask_oy']);
-        this._maskSprite.x = x;
-        this._maskSprite.y = y;
-      }
+    if (this._targetEvent && this._maskSprite) {
+      var x =
+        this._targetEvent.screenX() -
+        $gameMap.tileWidth() / 2 +
+        parseInt(this._offset['mask_ox']);
+      var y =
+        this._targetEvent.screenY() -
+        $gameMap.tileHeight() -
+        parseInt(this._offset['mask_oy']);
+      this._maskSprite.x = x;
+      this._maskSprite.y = y;
+    }
   };
 
   //============================================================================
@@ -342,169 +359,172 @@ function Sprite_Mirror() {
 
   var alias_Scene_Map_create = Scene_Map.prototype.create;
   Scene_Map.prototype.create = function () {
-      alias_Scene_Map_create.call(this);
-      this.createMirrorSprite();
+    alias_Scene_Map_create.call(this);
+    this.createMirrorSprite();
   };
 
   Scene_Map.prototype.createMirrorSprite = function () {
-      this._mirrorSprite = new Sprite();
-      this.addChild(this._mirrorSprite);
+    this._mirrorSprite = new Sprite();
+    this.addChild(this._mirrorSprite);
   };
 
   Scene_Map.prototype.getMirrorSprite = function () {
-      return this._mirrorSprite;
+    return this._mirrorSprite;
   };
 
   var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function () {
-      alias_Scene_Map_terminate.call(this);
-      this.removeChild(this._mirrorSprite);
+    alias_Scene_Map_terminate.call(this);
+    this.removeChild(this._mirrorSprite);
   };
 
   //============================================================================
   // Spriteset_Map
   //============================================================================
 
-  var alias_Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer
-  Spriteset_Map.prototype.createLowerLayer = function() {
-      alias_Spriteset_Map_createLowerLayer.call(this);
-      this.initMirrorMembers();
-      this.findAllTypeMirrors();
+  var alias_Spriteset_Map_createLowerLayer =
+    Spriteset_Map.prototype.createLowerLayer;
+  Spriteset_Map.prototype.createLowerLayer = function () {
+    alias_Spriteset_Map_createLowerLayer.call(this);
+    this.initMirrorMembers();
+    this.findAllTypeMirrors();
   };
 
   Spriteset_Map.prototype.destroyMirrorTexture = function () {
-      this._mirrorRenderTexture.destroy(true);
+    this._mirrorRenderTexture.destroy(true);
   };
 
   Spriteset_Map.prototype.initMirrorMembers = function () {
-      this._mirrorCharacters = [];
-      this._mirrorInitialized = false;
+    this._mirrorCharacters = [];
+    this._mirrorInitialized = false;
   };
 
   /**
    * Bitmap.snap 호출 시 캐릭터 스프라이트를 숨긴다.
    */
-  var alias_Spriteset_Map_hideCharacters = Spriteset_Map.prototype.hideCharacters;
-  Spriteset_Map.prototype.hideCharacters = function() {
-      alias_Spriteset_Map_hideCharacters.call(this);
-      for (var i = 0; i < this._mirrorCharacters.length; i++) {
-          var sprite = this._mirrorCharacters[i];
-          if (!sprite.isTile()) {
-              sprite.hide();
-          }
+  var alias_Spriteset_Map_hideCharacters =
+    Spriteset_Map.prototype.hideCharacters;
+  Spriteset_Map.prototype.hideCharacters = function () {
+    alias_Spriteset_Map_hideCharacters.call(this);
+    for (var i = 0; i < this._mirrorCharacters.length; i++) {
+      var sprite = this._mirrorCharacters[i];
+      if (!sprite.isTile()) {
+        sprite.hide();
       }
+    }
   };
 
   /**
    * 마스크를 많이 사용하면 성능이 하락할 수 있다는 단점이 있다.
-   * @param {Number} x 
-   * @param {Number} y 
-   * @param {Number} w 
-   * @param {Number} h 
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Number} w
+   * @param {Number} h
    */
   RS.MirrorArea.makeRoundedRect = function (x, y, w, h) {
     var graphics = new PIXI.Graphics();
-    graphics.beginFill(0xffffff, 0.9 );
+    graphics.beginFill(0xffffff, 0.9);
     graphics.x = x;
     graphics.y = y;
-    graphics.drawRoundedRect( 0, 0, w, h, 1 );
+    graphics.drawRoundedRect(0, 0, w, h, 1);
     graphics.endFill();
     return graphics;
   };
 
-  Spriteset_Map.prototype.addChildMirrorImage = function(target, graphics, event, offset) {
-    if(!this._mirrorCharacters) return false; // 객체 풀이 없으면
-    if(!this._tilemap) return false; // 타일맵이 없으면
+  Spriteset_Map.prototype.addChildMirrorImage = function (
+    target,
+    graphics,
+    event,
+    offset
+  ) {
+    if (!this._mirrorCharacters) return false; // 객체 풀이 없으면
+    if (!this._tilemap) return false; // 타일맵이 없으면
 
     // 좌우 반전 캐릭터 스프라이트를 생성한다.
-    var child = new Sprite_Mirror( target );
-    child.setProperties( graphics, event, offset );    
+    var child = new Sprite_Mirror(target);
+    child.setProperties(graphics, event, offset);
 
     // 캐릭터 객체 풀과 타일맵에 추가한다.
-    this._mirrorCharacters.push( child );
-    this._tilemap.addChild( child );
+    this._mirrorCharacters.push(child);
+    this._tilemap.addChild(child);
 
     return child;
-    
   };
 
   Spriteset_Map.prototype.createMirrorImage = function (event, type, id) {
+    var offset = type;
+    var target = $gameMap.findEventInMap(id); // 이벤트를 찾는다.
 
-      var offset = type;
-      var target = $gameMap.findEventInMap(id); // 이벤트를 찾는다.
+    var x = event.screenX() - parseInt(offset['mask_ox']);
+    var y = event.screenY() - parseInt(offset['mask_oy']);
+    var w = parseInt(offset['w']);
+    var h = parseInt(offset['h']);
 
-      var x = event.screenX() - parseInt(offset['mask_ox']);
-      var y = event.screenY() - parseInt(offset['mask_oy']);
-      var w = parseInt(offset['w']);
-      var h = parseInt(offset['h']);
+    // 마스크 영역을 생성한다.
+    var graphics = RS.MirrorArea.makeRoundedRect(x, y, w, h);
 
-      // 마스크 영역을 생성한다.
-      var graphics = RS.MirrorArea.makeRoundedRect(x, y, w, h);
+    this.addChildMirrorImage(target, graphics, event, offset);
 
-      this.addChildMirrorImage( target, graphics, event, offset);
-
-      // 게임 플레이어라면 followers까지 모두 감안한다.
-      if(target instanceof Game_Player) {
-        $gamePlayer._followers.forEach(function (e, i, a) {
-            this.addChildMirrorImage( e, graphics, event, offset);
-        }, this);
-      }
-
+    // 게임 플레이어라면 followers까지 모두 감안한다.
+    if (target instanceof Game_Player) {
+      $gamePlayer._followers.forEach(function (e, i, a) {
+        this.addChildMirrorImage(e, graphics, event, offset);
+      }, this);
+    }
   };
 
-  Spriteset_Map.prototype.findAllTypeMirrors = function() {
-      var self = this;
-      var id = -1;
+  Spriteset_Map.prototype.findAllTypeMirrors = function () {
+    var self = this;
+    var id = -1;
 
-      $gameMap.getRealEvents().forEach(function (event) {
-          
-        if(event === null || event === undefined) return false; // 이벤트가 정의되었는가
-        if(event._erased) return false; // 이벤트 일시 삭제
-        if(event.findProperPageIndex() < 0) return false; // 이벤트 시간 조건
-        if(!event.page()) return false; // 페이지 존재 여부
-        var eventlist = event.list();
-        if(!eventlist) return false; // 이벤트 목록 존재 여부
+    $gameMap.getRealEvents().forEach(function (event) {
+      if (event === null || event === undefined) return false; // 이벤트가 정의되었는가
+      if (event._erased) return false; // 이벤트 일시 삭제
+      if (event.findProperPageIndex() < 0) return false; // 이벤트 시간 조건
+      if (!event.page()) return false; // 페이지 존재 여부
+      var eventlist = event.list();
+      if (!eventlist) return false; // 이벤트 목록 존재 여부
 
-        // 전체 이벤트 목록을 검색한다.
-        eventlist.forEach(function (list, i ,a) {
-          if(list.code === 108 || list.code === 408) {
-            $.allMirrors.forEach(function (mirror) {
-              var data = JSON.parse(mirror);
-              // 노트 태그를 검색하고 ID 값을 추출한다.
-              if(typeof data === 'object' && data.hasOwnProperty('note')) {
-                if(list.parameters[0].match(new RegExp(`<(?:${data.note}).W*\:.\W*(.+?)>`, 'gi'))) {
-                  id = parseInt(RegExp.$1);
-                  // 유효한 ID라면 이미지 생성 성공.
-                  if(id >= 0) self.createMirrorImage(event, data, id);
-                }
+      // 전체 이벤트 목록을 검색한다.
+      eventlist.forEach(function (list, i, a) {
+        if (list.code === 108 || list.code === 408) {
+          $.allMirrors.forEach(function (mirror) {
+            var data = JSON.parse(mirror);
+            // 노트 태그를 검색하고 ID 값을 추출한다.
+            if (typeof data === 'object' && data.hasOwnProperty('note')) {
+              if (
+                list.parameters[0].match(
+                  new RegExp(`<(?:${data.note}).W*\:.\W*(.+?)>`, 'gi')
+                )
+              ) {
+                id = parseInt(RegExp.$1);
+                // 유효한 ID라면 이미지 생성 성공.
+                if (id >= 0) self.createMirrorImage(event, data, id);
               }
-
-            }, this);
-          }
-
-        });
-
-      }, this);
-
+            }
+          }, this);
+        }
+      });
+    }, this);
   };
 
   //============================================================================
   // Game_Interpreter
   //============================================================================
 
-  var alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-      alias_Game_Interpreter_pluginCommand.call(this, command, args);
-      if(command === "Mirror") {
-        switch(args[0]) {
-          case 'Show':
-            $.allImagesVisible = true;
+  var alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'Mirror') {
+      switch (args[0]) {
+        case 'Show':
+          $.allImagesVisible = true;
           break;
-          case 'Hide':
-            $.allImagesVisible = false;
+        case 'Hide':
+          $.allImagesVisible = false;
           break;
-        }
       }
+    }
   };
-
 })(RS.MirrorArea.Params);

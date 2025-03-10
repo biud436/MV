@@ -203,271 +203,253 @@
  */
 
 (() => {
-    const RS = window.RS || {};
-    RS.HangulDamages = RS.HangulDamages || {};
-    RS.HangulDamages.Params = RS.HangulDamages.Params || {};
+  const RS = window.RS || {};
+  RS.HangulDamages = RS.HangulDamages || {};
+  RS.HangulDamages.Params = RS.HangulDamages.Params || {};
 
-    let parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_HangulDamages>');
+  let parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_HangulDamages>');
+  });
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
+
+  //===================================================================
+  // String
+  //===================================================================
+
+  String.prototype.toArray = function () {
+    return this.split('');
+  };
+
+  String.prototype.reverse = function () {
+    return this.toArray().reverse().join('');
+  };
+
+  String.prototype.toCommaAlpha = function () {
+    return this.reverse()
+      .match(/.{1,4}/g)
+      .join(',')
+      .reverse();
+  };
+
+  //===================================================================
+  // RS.HangulDamages
+  //===================================================================
+
+  RS.HangulDamages.Params.damageBitmapName =
+    parameters.damageBitmapName || 'Damage_1';
+
+  RS.HangulDamages.jsonParse = function (str) {
+    const retData = JSON.parse(str, (k, v) => {
+      try {
+        return RS.HangulDamages.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
     });
+    return retData;
+  };
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  RS.HangulDamages.Params.HANGUL_DIGITS_INDEX = RS.HangulDamages.jsonParse(
+    parameters.hangulDigitsTable
+  ) || {
+    // "천": 0,
+    만: 1,
+    억: 2,
+    조: 3,
+    경: 4,
+    해: 5,
+    자: 6,
+    양: 7,
+    구: 8,
+    간: 9,
+    X: 10,
+  };
 
-    //===================================================================
-    // String
-    //===================================================================
+  RS.HangulDamages.Params.HANGUL_DIGITS = [
+    '천',
+    '만',
+    '억',
+    '조',
+    '경',
+    '해',
+    '자',
+    '양',
+    '구',
+    '간',
+  ];
 
-    String.prototype.toArray = function () {
-        return this.split('');
-    };
+  RS.HangulDamages.Params.HANGUL_BASE_ROW =
+    Number(parameters.hangulBaseRow) || 5;
+  RS.HangulDamages.Params.MISS_BASE_ROW = Number(parameters.missBaseRow) || 4;
+  RS.HangulDamages.Params.bounceLevel = Number(parameters.bounceLevel || 0);
 
-    String.prototype.reverse = function () {
-        return this.toArray().reverse().join('');
-    };
+  //===================================================================
+  // Sprite_HangulDamage
+  //===================================================================
 
-    String.prototype.toCommaAlpha = function () {
-        return this.reverse()
-            .match(/.{1,4}/g)
-            .join(',')
-            .reverse();
-    };
-
-    //===================================================================
-    // RS.HangulDamages
-    //===================================================================
-
-    RS.HangulDamages.Params.damageBitmapName =
-        parameters.damageBitmapName || 'Damage_1';
-
-    RS.HangulDamages.jsonParse = function (str) {
-        const retData = JSON.parse(str, (k, v) => {
-            try {
-                return RS.HangulDamages.jsonParse(v);
-            } catch (e) {
-                return v;
-            }
-        });
-        return retData;
-    };
-
-    RS.HangulDamages.Params.HANGUL_DIGITS_INDEX = RS.HangulDamages.jsonParse(
-        parameters.hangulDigitsTable
-    ) || {
-        // "천": 0,
-        만: 1,
-        억: 2,
-        조: 3,
-        경: 4,
-        해: 5,
-        자: 6,
-        양: 7,
-        구: 8,
-        간: 9,
-        X: 10,
-    };
-
-    RS.HangulDamages.Params.HANGUL_DIGITS = [
-        '천',
-        '만',
-        '억',
-        '조',
-        '경',
-        '해',
-        '자',
-        '양',
-        '구',
-        '간',
-    ];
-
-    RS.HangulDamages.Params.HANGUL_BASE_ROW =
-        Number(parameters.hangulBaseRow) || 5;
-    RS.HangulDamages.Params.MISS_BASE_ROW = Number(parameters.missBaseRow) || 4;
-    RS.HangulDamages.Params.bounceLevel = Number(parameters.bounceLevel || 0);
-
-    //===================================================================
-    // Sprite_HangulDamage
-    //===================================================================
-
-    class Sprite_HangulDamage extends Sprite_Damage {
-        constructor() {
-            super();
-            this._duration = 90;
-            this._flashColor = [0, 0, 0, 0];
-            this._flashDuration = 0;
-            this._damageBitmap = ImageManager.loadSystem(
-                RS.HangulDamages.Params.damageBitmapName
-            );
-            this.on('updateDirty', this.updateDirty, this);
-        }
-
-        digitWidth(n) {
-            n = n || 10;
-            return this._damageBitmap ? this._damageBitmap.width / n : 0;
-        }
-
-        digitHeight() {
-            return this._damageBitmap ? this._damageBitmap.height / 6 : 0;
-        }
-
-        createMiss() {
-            const w = this.digitWidth();
-            const h = this.digitHeight();
-            const sprite = this.createChildSprite();
-            sprite.setFrame(
-                0,
-                RS.HangulDamages.Params.MISS_BASE_ROW * h,
-                4 * w,
-                h
-            );
-            sprite.dy = 0;
-        }
-
-        static whereDigits(strings) {
-            const digits = [];
-            let numberString = [];
-            let len = 0;
-
-            numberString = strings.toCommaAlpha().split(',');
-            len = numberString.length;
-
-            numberString = numberString.reverse();
-
-            for (let i = 0; i < len; i++) {
-                const n = Number(numberString[i]);
-                if (n === 0 || !n) {
-                    continue;
-                }
-
-                if (i === 0) {
-                    continue;
-                }
-
-                const currentChar = RS.HangulDamages.Params.HANGUL_DIGITS[i];
-                if (currentChar !== '') {
-                    digits.push(n + currentChar);
-                }
-            }
-
-            return digits.reverse().join('X');
-        }
-
-        updateDirty(string, baseRow, value, row, w, h) {
-            return setTimeout(
-                function () {
-                    for (let i = 0; i < string.length; i++) {
-                        const sprite = this.createChildSprite();
-                        let n = Number(string[i]);
-                        row = baseRow + (value < 0 ? 1 : 0);
-                        if (Number.isNaN(n)) {
-                            // 만, 억, 조, 경
-                            row = RS.HangulDamages.Params.HANGUL_BASE_ROW;
-                            n =
-                                RS.HangulDamages.Params.HANGUL_DIGITS_INDEX[
-                                    string[i]
-                                ];
-                        }
-                        sprite.setFrame(n * w, row * h, w, h);
-                        sprite.x = (i - (string.length - 1) / 2) * w;
-                        sprite.dy = -i.clamp(
-                            0,
-                            RS.HangulDamages.Params.bounceLevel
-                        );
-                    }
-                }.bind(this),
-                0
-            );
-        }
-
-        createDigits(baseRow, value) {
-            // 큰 숫자 값 표기를 위해 사용.
-            const Formatter = new Intl.NumberFormat('ko-KR', {
-                useGrouping: false,
-            });
-            let string = Formatter.format(Math.abs(value));
-
-            const row = baseRow + (value < 0 ? 1 : 0);
-
-            const w = this.digitWidth();
-            const h = this.digitHeight();
-
-            string = Sprite_HangulDamage.whereDigits(string); // 배열을 변환한다.
-            this.emit('updateDirty', string, baseRow, value, row, w, h);
-        }
+  class Sprite_HangulDamage extends Sprite_Damage {
+    constructor() {
+      super();
+      this._duration = 90;
+      this._flashColor = [0, 0, 0, 0];
+      this._flashDuration = 0;
+      this._damageBitmap = ImageManager.loadSystem(
+        RS.HangulDamages.Params.damageBitmapName
+      );
+      this.on('updateDirty', this.updateDirty, this);
     }
 
-    window.Sprite_Damage = Sprite_HangulDamage;
+    digitWidth(n) {
+      n = n || 10;
+      return this._damageBitmap ? this._damageBitmap.width / n : 0;
+    }
 
-    //===================================================================
-    // Window_BattleLog
-    //===================================================================
+    digitHeight() {
+      return this._damageBitmap ? this._damageBitmap.height / 6 : 0;
+    }
 
-    Window_BattleLog.prototype.whereDigits = function (strings) {
-        const digits = [];
-        let numberString = [];
-        let len = 0;
-        const Formatter = new Intl.NumberFormat('ko-KR', {
-            useGrouping: false,
-        });
+    createMiss() {
+      const w = this.digitWidth();
+      const h = this.digitHeight();
+      const sprite = this.createChildSprite();
+      sprite.setFrame(0, RS.HangulDamages.Params.MISS_BASE_ROW * h, 4 * w, h);
+      sprite.dy = 0;
+    }
 
-        strings = Formatter.format(Math.abs(strings));
+    static whereDigits(strings) {
+      const digits = [];
+      let numberString = [];
+      let len = 0;
 
-        numberString = strings.toCommaAlpha().split(',');
-        len = numberString.length;
+      numberString = strings.toCommaAlpha().split(',');
+      len = numberString.length;
 
-        numberString = numberString.reverse();
+      numberString = numberString.reverse();
 
-        for (let i = 0; i < len; i++) {
-            const n = Number(numberString[i]);
-            if (n === 0 || !n) continue;
+      for (let i = 0; i < len; i++) {
+        const n = Number(numberString[i]);
+        if (n === 0 || !n) {
+          continue;
+        }
 
-            if (i === 0) continue;
+        if (i === 0) {
+          continue;
+        }
 
-            const currentChar = RS.HangulDamages.Params.HANGUL_DIGITS[i];
-            if (currentChar !== '') {
-                digits.push(n + currentChar);
+        const currentChar = RS.HangulDamages.Params.HANGUL_DIGITS[i];
+        if (currentChar !== '') {
+          digits.push(n + currentChar);
+        }
+      }
+
+      return digits.reverse().join('X');
+    }
+
+    updateDirty(string, baseRow, value, row, w, h) {
+      return setTimeout(
+        function () {
+          for (let i = 0; i < string.length; i++) {
+            const sprite = this.createChildSprite();
+            let n = Number(string[i]);
+            row = baseRow + (value < 0 ? 1 : 0);
+            if (Number.isNaN(n)) {
+              // 만, 억, 조, 경
+              row = RS.HangulDamages.Params.HANGUL_BASE_ROW;
+              n = RS.HangulDamages.Params.HANGUL_DIGITS_INDEX[string[i]];
             }
-        }
+            sprite.setFrame(n * w, row * h, w, h);
+            sprite.x = (i - (string.length - 1) / 2) * w;
+            sprite.dy = -i.clamp(0, RS.HangulDamages.Params.bounceLevel);
+          }
+        }.bind(this),
+        0
+      );
+    }
 
-        return digits.reverse().join(' ');
-    };
+    createDigits(baseRow, value) {
+      // 큰 숫자 값 표기를 위해 사용.
+      const Formatter = new Intl.NumberFormat('ko-KR', {
+        useGrouping: false,
+      });
+      let string = Formatter.format(Math.abs(value));
 
-    Window_BattleLog.prototype.makeHpDamageText = function (target) {
-        const result = target.result();
-        const damage = result.hpDamage;
-        const isActor = target.isActor();
+      const row = baseRow + (value < 0 ? 1 : 0);
 
-        let fmt;
+      const w = this.digitWidth();
+      const h = this.digitHeight();
 
-        if (damage > 0 && result.drain) {
-            fmt = isActor ? TextManager.actorDrain : TextManager.enemyDrain;
-            return fmt.format(target.name(), TextManager.hp, damage);
-            // eslint-disable-next-line no-else-return
-        } else if (damage > 0) {
-            fmt = isActor ? TextManager.actorDamage : TextManager.enemyDamage;
-            return fmt.format(
-                target.name(),
-                Sprite_HangulDamage.whereDigits(damage)
-            );
-        } else if (damage < 0) {
-            fmt = isActor
-                ? TextManager.actorRecovery
-                : TextManager.enemyRecovery;
-            return fmt.format(target.name(), TextManager.hp, -damage);
-        } else {
-            fmt = isActor
-                ? TextManager.actorNoDamage
-                : TextManager.enemyNoDamage;
-            return fmt.format(target.name());
-        }
-    };
+      string = Sprite_HangulDamage.whereDigits(string); // 배열을 변환한다.
+      this.emit('updateDirty', string, baseRow, value, row, w, h);
+    }
+  }
 
-    //===================================================================
-    // Scene_Boot
-    //===================================================================
+  window.Sprite_Damage = Sprite_HangulDamage;
 
-    const aliasSceneBootLoadSystemImages = Scene_Boot.loadSystemImages;
-    Scene_Boot.loadSystemImages = function () {
-        aliasSceneBootLoadSystemImages.call(this);
-        ImageManager.reserveSystem(RS.HangulDamages.Params.damageBitmapName);
-    };
+  //===================================================================
+  // Window_BattleLog
+  //===================================================================
+
+  Window_BattleLog.prototype.whereDigits = function (strings) {
+    const digits = [];
+    let numberString = [];
+    let len = 0;
+    const Formatter = new Intl.NumberFormat('ko-KR', {
+      useGrouping: false,
+    });
+
+    strings = Formatter.format(Math.abs(strings));
+
+    numberString = strings.toCommaAlpha().split(',');
+    len = numberString.length;
+
+    numberString = numberString.reverse();
+
+    for (let i = 0; i < len; i++) {
+      const n = Number(numberString[i]);
+      if (n === 0 || !n) continue;
+
+      if (i === 0) continue;
+
+      const currentChar = RS.HangulDamages.Params.HANGUL_DIGITS[i];
+      if (currentChar !== '') {
+        digits.push(n + currentChar);
+      }
+    }
+
+    return digits.reverse().join(' ');
+  };
+
+  Window_BattleLog.prototype.makeHpDamageText = function (target) {
+    const result = target.result();
+    const damage = result.hpDamage;
+    const isActor = target.isActor();
+
+    let fmt;
+
+    if (damage > 0 && result.drain) {
+      fmt = isActor ? TextManager.actorDrain : TextManager.enemyDrain;
+      return fmt.format(target.name(), TextManager.hp, damage);
+      // eslint-disable-next-line no-else-return
+    } else if (damage > 0) {
+      fmt = isActor ? TextManager.actorDamage : TextManager.enemyDamage;
+      return fmt.format(target.name(), Sprite_HangulDamage.whereDigits(damage));
+    } else if (damage < 0) {
+      fmt = isActor ? TextManager.actorRecovery : TextManager.enemyRecovery;
+      return fmt.format(target.name(), TextManager.hp, -damage);
+    } else {
+      fmt = isActor ? TextManager.actorNoDamage : TextManager.enemyNoDamage;
+      return fmt.format(target.name());
+    }
+  };
+
+  //===================================================================
+  // Scene_Boot
+  //===================================================================
+
+  const aliasSceneBootLoadSystemImages = Scene_Boot.loadSystemImages;
+  Scene_Boot.loadSystemImages = function () {
+    aliasSceneBootLoadSystemImages.call(this);
+    ImageManager.reserveSystem(RS.HangulDamages.Params.damageBitmapName);
+  };
 })();

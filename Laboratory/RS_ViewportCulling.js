@@ -60,7 +60,6 @@ var Imported = Imported || {};
 Imported.RS_ViewportCulling = true;
 
 (function () {
-
   var parameters = PluginManager.parameters('RS_ViewportCulling');
 
   var useTilemap = Boolean(parameters['Use Tilemap'] === 'true');
@@ -74,30 +73,32 @@ Imported.RS_ViewportCulling = true;
    * @author Alex Harrison
    * @refer https://github.com/pixijs/pixi.js/pull/956/commits/fadb9badfe18812f5471fa17574f916a9ed707da
    */
-  PIXI.DisplayObject.prototype.viewportCheck = function(renderer) {
-
+  PIXI.DisplayObject.prototype.viewportCheck = function (renderer) {
     var bounds = this.getBounds();
 
     var stageW = renderer.width;
     var stageH = renderer.height;
 
-    if(bounds.x > stageW || bounds.y > stageH ||
+    if (
+      bounds.x > stageW ||
+      bounds.y > stageH ||
       bounds.x + bounds.width < 0 ||
-      bounds.y + bounds.height < 0) {
-        return false;
-      }
-      return true;
+      bounds.y + bounds.height < 0
+    ) {
+      return false;
+    }
+    return true;
   };
 
   //============================================================================
   // Sprite
   //============================================================================
 
-  Sprite.prototype._renderWebGL = function(renderer) {
+  Sprite.prototype._renderWebGL = function (renderer) {
     if (this.bitmap) {
       this.bitmap.touch();
     }
-    if(this.bitmap && !this.bitmap.isReady()){
+    if (this.bitmap && !this.bitmap.isReady()) {
       return;
     }
     if (this.texture.frame.width > 0 && this.texture.frame.height > 0) {
@@ -105,7 +106,7 @@ Imported.RS_ViewportCulling = true;
         this._bitmap.checkDirty();
       }
 
-      if(useCulling && !this.viewportCheck(renderer)) return;
+      if (useCulling && !this.viewportCheck(renderer)) return;
 
       //copy of pixi-v4 internal code
       this.calculateVertices();
@@ -124,22 +125,19 @@ Imported.RS_ViewportCulling = true;
     }
   };
 
-  Sprite.prototype._renderCanvas = function(renderer) {
+  Sprite.prototype._renderCanvas = function (renderer) {
     if (this.bitmap) {
       this.bitmap.touch();
     }
-    if(this.bitmap && !this.bitmap.isReady()){
+    if (this.bitmap && !this.bitmap.isReady()) {
       return;
     }
 
     if (this.texture.frame.width > 0 && this.texture.frame.height > 0) {
-
-      if(useCulling && !this.viewportCheck(renderer)) return;
+      if (useCulling && !this.viewportCheck(renderer)) return;
 
       this._renderCanvas_PIXI(renderer);
-
     }
-
   };
 
   //============================================================================
@@ -148,13 +146,13 @@ Imported.RS_ViewportCulling = true;
 
   var alias_PIXI_Graphics_renderWebGL = PIXI.Graphics.prototype._renderWebGL;
   PIXI.Graphics.prototype._renderWebGL = function (renderer) {
-    if(useCulling && !this.viewportCheck(renderer)) return;
+    if (useCulling && !this.viewportCheck(renderer)) return;
     alias_PIXI_Graphics_renderWebGL.call(this, renderer);
   };
 
   var alias_PIXI_Graphics__renderCanvas = PIXI.Graphics.prototype._renderCanvas;
   PIXI.Graphics.prototype._renderCanvas = function (renderer) {
-    if(useCulling && !this.viewportCheck(renderer)) return;
+    if (useCulling && !this.viewportCheck(renderer)) return;
     alias_PIXI_Graphics__renderCanvas.call(this, renderer);
   };
 
@@ -163,18 +161,17 @@ Imported.RS_ViewportCulling = true;
   // It can reduce the memory for 78 MB or more.
   //============================================================================
 
-  if(!useTilemap) {
-    Spriteset_Map.prototype.createTilemap = function() {
+  if (!useTilemap) {
+    Spriteset_Map.prototype.createTilemap = function () {
       this._tilemap = new Sprite();
       this._baseSprite.addChild(this._tilemap);
     };
-    Spriteset_Map.prototype.loadTileset = function() {
-    };
-    Spriteset_Map.prototype.updateTilemap = function() {
+    Spriteset_Map.prototype.loadTileset = function () {};
+    Spriteset_Map.prototype.updateTilemap = function () {
       this._tilemap.pivot.x = $gameMap.displayX() * $gameMap.tileWidth();
       this._tilemap.pivot.y = $gameMap.displayY() * $gameMap.tileHeight();
     };
-  };
+  }
 
   //============================================================================
   // SceneManager
@@ -194,16 +191,20 @@ Imported.RS_ViewportCulling = true;
   // Game_CharacterBase
   //============================================================================
 
-  Game_CharacterBase.prototype.distancePerFrame = function() {
-    return Math.pow(2, this.realMoveSpeed()) / SceneManager.getDistancePerFrame(256);
+  Game_CharacterBase.prototype.distancePerFrame = function () {
+    return (
+      Math.pow(2, this.realMoveSpeed()) / SceneManager.getDistancePerFrame(256)
+    );
   };
 
   //============================================================================
   // Game_Map
   //============================================================================
 
-  Game_Map.prototype.scrollDistance = function() {
-    return Math.pow(2, this._scrollSpeed) / SceneManager.getDistancePerFrame(256);
+  Game_Map.prototype.scrollDistance = function () {
+    return (
+      Math.pow(2, this._scrollSpeed) / SceneManager.getDistancePerFrame(256)
+    );
   };
 
   //============================================================================
@@ -211,10 +212,10 @@ Imported.RS_ViewportCulling = true;
   //============================================================================
 
   var alias_Scene_Base_startFadeOut = Scene_Base.prototype.startFadeOut;
-  Scene_Base.prototype.startFadeOut = function(duration, white) {
+  Scene_Base.prototype.startFadeOut = function (duration, white) {
     var isMobile = Utils.isMobileDevice();
-    if(isMobile) {
-      if(this._fadeSprite) {
+    if (isMobile) {
+      if (this._fadeSprite) {
         this._fadeSprite.visible = false;
       }
       return false;
@@ -223,9 +224,9 @@ Imported.RS_ViewportCulling = true;
   };
 
   var alias_Scene_Map_callMenu = Scene_Map.prototype.callMenu;
-  Scene_Map.prototype.callMenu = function() {
+  Scene_Map.prototype.callMenu = function () {
     var isMobile = Utils.isMobileDevice();
-    if(isMobile) return;
+    if (isMobile) return;
     alias_Scene_Map_callMenu.call(this);
   };
 
@@ -233,12 +234,11 @@ Imported.RS_ViewportCulling = true;
   // Sprite_Destination
   //============================================================================
 
-  var alias_Sprite_Destination_createBitmap = Sprite_Destination.prototype.createBitmap;
-  Sprite_Destination.prototype.createBitmap = function() {
+  var alias_Sprite_Destination_createBitmap =
+    Sprite_Destination.prototype.createBitmap;
+  Sprite_Destination.prototype.createBitmap = function () {
     alias_Sprite_Destination_createBitmap.call(this);
     // 가산 혼합을 방지하기 위해 노말로 되돌린다.
     this.blendMode = Graphics.BLEND_NORMAL;
   };
-
-
-  })();
+})();

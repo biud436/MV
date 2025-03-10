@@ -1,7 +1,7 @@
 {
   "dbVersion": "0.1.2",
   "data": {
-    "pictures":{
+    "pictures": {
       "src": "/img/pictures",
       "list": [
         "https://raw.githubusercontent.com/biud436/MV/master/HUD/hp.png",

@@ -11,7 +11,7 @@
  * @author biud436
  * @help
  * This plugin unifies all of javascript files except library file to one javascript file.
- * also it couldn't access global variables in the developer tool. 
+ * also it couldn't access global variables in the developer tool.
  * that is because the game will be executed the sandbox mode.
  * ===============================================================
  * Version Log
@@ -28,60 +28,63 @@
  * ===============================================================
  * 2018.11.02 (v1.0.0) - First Release.
  */
-   
+
 var Imported = Imported || {};
 Imported.RS_UnifyAllPlugins = true;
 
 var RS = RS || {};
 RS.UnifyAllPlugins = RS.UnifyAllPlugins || {};
-  
-(function(_plugins) {
-  
-  "use strict";
-  
-  if(!Utils.isNwjs() || !Utils.isOptionValid('test')) {
+
+(function (_plugins) {
+  'use strict';
+
+  if (!Utils.isNwjs() || !Utils.isOptionValid('test')) {
     return;
   }
-  
+
   var fs = require('fs');
-  var childProcess = require("child_process");
+  var childProcess = require('child_process');
   var path = require('path');
-  var mainPath = path.join(process.mainModule.filename, "..");
-  var pluginPath = path.join(mainPath, "js/plugins.js");
-  var corePath = path.join(mainPath, "js/unify_plugins.js");
-  var retPath = path.join(mainPath, "js/core.js");
-  var data = "";
-  
-  RS.UnifyAllPlugins.getPath = function(filename) {
-    filename = filename.replace(/\//gm, "\\");
+  var mainPath = path.join(process.mainModule.filename, '..');
+  var pluginPath = path.join(mainPath, 'js/plugins.js');
+  var corePath = path.join(mainPath, 'js/unify_plugins.js');
+  var retPath = path.join(mainPath, 'js/core.js');
+  var data = '';
+
+  RS.UnifyAllPlugins.getPath = function (filename) {
+    filename = filename.replace(/\//gm, '\\');
     return path.join(mainPath, filename);
   };
-  
-  RS.UnifyAllPlugins.copyFile = function(filename1, filename2) {
-    filename1 = filename1.replace(/\//gm, "\\");
-    filename2 = filename2.replace(/\//gm, "\\");
-    if(process.platform.indexOf('win') >= 0) {
+
+  RS.UnifyAllPlugins.copyFile = function (filename1, filename2) {
+    filename1 = filename1.replace(/\//gm, '\\');
+    filename2 = filename2.replace(/\//gm, '\\');
+    if (process.platform.indexOf('win') >= 0) {
       childProcess.execSync(`copy ${filename1} ${filename2}`);
     }
   };
-  
-  RS.UnifyAllPlugins.modifyRPGManagersFile = function() {
-    var _rpg_managers = RS.UnifyAllPlugins.getPath("js/rpg_managers.js");
-    var _test_rpg_managers = RS.UnifyAllPlugins.getPath("js/test_rpg_managers.js");
-    var _optimization_rpg_managers = RS.UnifyAllPlugins.getPath("js/optimization_rpg_managers.js");
+
+  RS.UnifyAllPlugins.modifyRPGManagersFile = function () {
+    var _rpg_managers = RS.UnifyAllPlugins.getPath('js/rpg_managers.js');
+    var _test_rpg_managers = RS.UnifyAllPlugins.getPath(
+      'js/test_rpg_managers.js'
+    );
+    var _optimization_rpg_managers = RS.UnifyAllPlugins.getPath(
+      'js/optimization_rpg_managers.js'
+    );
     RS.UnifyAllPlugins.copyFile(_rpg_managers, _test_rpg_managers);
-    var data = fs.readFileSync(_test_rpg_managers, "utf8");
+    var data = fs.readFileSync(_test_rpg_managers, 'utf8');
     var lines = data.split(/[\r\n]+/);
     var lineNumber = 0;
-    lines.forEach(function(e, i, a) {
-      if(e.indexOf("DataManager.loadMapData = function(mapId) {") >= 0) {
+    lines.forEach(function (e, i, a) {
+      if (e.indexOf('DataManager.loadMapData = function(mapId) {') >= 0) {
         lineNumber = i;
         return;
       }
     });
-    
+
     lines = lines.slice(lineNumber);
-    
+
     var header = `
 
 //=============================================================================
@@ -162,41 +165,51 @@ DataManager.isDatabaseLoaded = function() {
 
     `;
 
-    var body = lines.join("\r\n");
+    var body = lines.join('\r\n');
 
-    fs.writeFileSync(_optimization_rpg_managers, header.concat(body), "utf8");
-    if(fs.existsSync(_test_rpg_managers)) fs.unlinkSync(_test_rpg_managers);
-
+    fs.writeFileSync(_optimization_rpg_managers, header.concat(body), 'utf8');
+    if (fs.existsSync(_test_rpg_managers)) fs.unlinkSync(_test_rpg_managers);
   };
-  
-  RS.UnifyAllPlugins.unifyAllRPGMakerCoreFiles = function(corePath) {
-    
-    var _rpg_header = RS.UnifyAllPlugins.getPath("js/rpg_header.js");
-    var _rpg_core = RS.UnifyAllPlugins.getPath("js/rpg_core.js");
-    var _optimization_rpg_managers = RS.UnifyAllPlugins.getPath("js/optimization_rpg_managers.js");
-    var _rpg_objects = RS.UnifyAllPlugins.getPath("js/rpg_objects.js");
-    var _rpg_scenes = RS.UnifyAllPlugins.getPath("js/rpg_scenes.js");
-    var _rpg_sprites = RS.UnifyAllPlugins.getPath("js/rpg_sprites.js");
-    var _rpg_windows = RS.UnifyAllPlugins.getPath("js/rpg_windows.js");
-    var _convert_rpg_managers = RS.UnifyAllPlugins.getPath("js/convert_rpg_managers.js");    
-    var _plugins = RS.UnifyAllPlugins.getPath("js/plugins.js");
-    var _mains = RS.UnifyAllPlugins.getPath("js/main.js");
-    var _rpg_tail = RS.UnifyAllPlugins.getPath("js/rpg_tail.js");
-    
-    childProcess.execSync(`copy ${_rpg_header} + ${_rpg_core} + ${_optimization_rpg_managers} + ${_rpg_objects} + ${_rpg_scenes} + ${_rpg_sprites} + ${_rpg_windows} + ${_convert_rpg_managers} + ${_plugins} + ${_mains} + ${corePath} + ${_rpg_tail} ${retPath} /b`);
 
-    if(fs.existsSync(_rpg_header)) fs.unlinkSync(_rpg_header);  
-    if(fs.existsSync(_rpg_tail)) fs.unlinkSync(_rpg_tail);
-    if(fs.existsSync(corePath)) fs.unlinkSync(corePath);
-    if(fs.existsSync(_convert_rpg_managers)) fs.unlinkSync(_convert_rpg_managers);
-    if(fs.existsSync(_optimization_rpg_managers)) fs.unlinkSync(_optimization_rpg_managers);
+  RS.UnifyAllPlugins.unifyAllRPGMakerCoreFiles = function (corePath) {
+    var _rpg_header = RS.UnifyAllPlugins.getPath('js/rpg_header.js');
+    var _rpg_core = RS.UnifyAllPlugins.getPath('js/rpg_core.js');
+    var _optimization_rpg_managers = RS.UnifyAllPlugins.getPath(
+      'js/optimization_rpg_managers.js'
+    );
+    var _rpg_objects = RS.UnifyAllPlugins.getPath('js/rpg_objects.js');
+    var _rpg_scenes = RS.UnifyAllPlugins.getPath('js/rpg_scenes.js');
+    var _rpg_sprites = RS.UnifyAllPlugins.getPath('js/rpg_sprites.js');
+    var _rpg_windows = RS.UnifyAllPlugins.getPath('js/rpg_windows.js');
+    var _convert_rpg_managers = RS.UnifyAllPlugins.getPath(
+      'js/convert_rpg_managers.js'
+    );
+    var _plugins = RS.UnifyAllPlugins.getPath('js/plugins.js');
+    var _mains = RS.UnifyAllPlugins.getPath('js/main.js');
+    var _rpg_tail = RS.UnifyAllPlugins.getPath('js/rpg_tail.js');
+
+    childProcess.execSync(
+      `copy ${_rpg_header} + ${_rpg_core} + ${_optimization_rpg_managers} + ${_rpg_objects} + ${_rpg_scenes} + ${_rpg_sprites} + ${_rpg_windows} + ${_convert_rpg_managers} + ${_plugins} + ${_mains} + ${corePath} + ${_rpg_tail} ${retPath} /b`
+    );
+
+    if (fs.existsSync(_rpg_header)) fs.unlinkSync(_rpg_header);
+    if (fs.existsSync(_rpg_tail)) fs.unlinkSync(_rpg_tail);
+    if (fs.existsSync(corePath)) fs.unlinkSync(corePath);
+    if (fs.existsSync(_convert_rpg_managers))
+      fs.unlinkSync(_convert_rpg_managers);
+    if (fs.existsSync(_optimization_rpg_managers))
+      fs.unlinkSync(_optimization_rpg_managers);
   };
-  
-  RS.UnifyAllPlugins.readyFiles = function() {
-    var _rpg_header = RS.UnifyAllPlugins.getPath("js/rpg_header.js");
-    var _rpg_tail = RS.UnifyAllPlugins.getPath("js/rpg_tail.js");
-    var _convert_rpg_managers = RS.UnifyAllPlugins.getPath("js/convert_rpg_managers.js");    
-    fs.writeFileSync(_rpg_header, `
+
+  RS.UnifyAllPlugins.readyFiles = function () {
+    var _rpg_header = RS.UnifyAllPlugins.getPath('js/rpg_header.js');
+    var _rpg_tail = RS.UnifyAllPlugins.getPath('js/rpg_tail.js');
+    var _convert_rpg_managers = RS.UnifyAllPlugins.getPath(
+      'js/convert_rpg_managers.js'
+    );
+    fs.writeFileSync(
+      _rpg_header,
+      `
 (function() {
 
   var $dataActors       = null;
@@ -231,9 +244,13 @@ DataManager.isDatabaseLoaded = function() {
 
   var ____self = this;
   
-  `, "utf8");
-    
-    fs.writeFileSync(_convert_rpg_managers, `
+  `,
+      'utf8'
+    );
+
+    fs.writeFileSync(
+      _convert_rpg_managers,
+      `
     
 PluginManager.setup = function(plugins) {
     plugins.forEach(function(plugin) {
@@ -245,17 +262,22 @@ PluginManager.setup = function(plugins) {
     }, this);
 };    
 
-    `, "utf8");
-    
-    fs.writeFileSync(_rpg_tail, `
+    `,
+      'utf8'
+    );
+
+    fs.writeFileSync(
+      _rpg_tail,
+      `
     PluginManager.setup($plugins);
-    })();\r\n`, "utf8");
-    
+    })();\r\n`,
+      'utf8'
+    );
+
     RS.UnifyAllPlugins.modifyRPGManagersFile();
-    
   };
-  
-  RS.UnifyAllPlugins.makeIndexHtmlFile = function() {
+
+  RS.UnifyAllPlugins.makeIndexHtmlFile = function () {
     var htmlText = `
     <!DOCTYPE html>
     <html>
@@ -287,34 +309,32 @@ PluginManager.setup = function(plugins) {
     </html>
     
     `;
-    
-    var htmlPath = RS.UnifyAllPlugins.getPath("index_test.html");
+
+    var htmlPath = RS.UnifyAllPlugins.getPath('index_test.html');
     fs.writeFileSync(htmlPath, htmlPath, 'utf8');
   };
-  
-  RS.UnifyAllPlugins.unifyAllPluginFiles = function() {
-    
-    if(fs.existsSync(corePath)) {
-      fs.unlinkSync(corePath);  
+
+  RS.UnifyAllPlugins.unifyAllPluginFiles = function () {
+    if (fs.existsSync(corePath)) {
+      fs.unlinkSync(corePath);
     }
-    
-    _plugins.forEach(function(i) {
-      if(i.name === "RS_UnifyAllPlugins") return;
-      var _filePath = path.join(mainPath, "js", "plugins", i.name + '.js');
-      if(fs.existsSync(_filePath)) {
-        data += fs.readFileSync(_filePath, "utf8");
-        data += "\r\n";      
-        console.log(_filePath + "파일을 통합하였습니다");
+
+    _plugins.forEach(function (i) {
+      if (i.name === 'RS_UnifyAllPlugins') return;
+      var _filePath = path.join(mainPath, 'js', 'plugins', i.name + '.js');
+      if (fs.existsSync(_filePath)) {
+        data += fs.readFileSync(_filePath, 'utf8');
+        data += '\r\n';
+        console.log(_filePath + '파일을 통합하였습니다');
       }
     }, this);
-    
-    fs.writeFileSync(corePath, data, "utf8");    
+
+    fs.writeFileSync(corePath, data, 'utf8');
     RS.UnifyAllPlugins.unifyAllRPGMakerCoreFiles(corePath);
     RS.UnifyAllPlugins.makeIndexHtmlFile();
-    window.alert("파일 통합이 완료되었습니다");
+    window.alert('파일 통합이 완료되었습니다');
   };
-  
+
   RS.UnifyAllPlugins.readyFiles();
   RS.UnifyAllPlugins.unifyAllPluginFiles();
-  
 })($plugins);

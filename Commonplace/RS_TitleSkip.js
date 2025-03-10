@@ -34,49 +34,47 @@
 var Imported = Imported || {};
 Imported.RS_TitleSkip = true;
 
-(function() {
-
+(function () {
   var parameters = $plugins.filter(function (i) {
     return i.description.contains('<RS_TitleSkip>');
   });
 
-  parameters = (parameters.length > 0) && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
-  var isReload = Boolean(parameters["Reload"] === 'true');
+  var isReload = Boolean(parameters['Reload'] === 'true');
 
   //============================================================================
   // Scene_Boot
   //============================================================================
 
-  Scene_Boot.prototype.start = function() {
-      Scene_Base.prototype.start.call(this);
-      SoundManager.preloadImportantSounds();
-      if (DataManager.isBattleTest()) {
-          DataManager.setupBattleTest();
-          SceneManager.goto(Scene_Battle);
-      } else if (DataManager.isEventTest()) {
-          DataManager.setupEventTest();
-          SceneManager.goto(Scene_Map);
-      } else {
-          this.checkPlayerLocation();
-          DataManager.setupNewGame();
-          SceneManager.goto(Scene_Map);
-          Window_TitleCommand.initCommandPosition();
-      }
-      this.updateDocumentTitle();
+  Scene_Boot.prototype.start = function () {
+    Scene_Base.prototype.start.call(this);
+    SoundManager.preloadImportantSounds();
+    if (DataManager.isBattleTest()) {
+      DataManager.setupBattleTest();
+      SceneManager.goto(Scene_Battle);
+    } else if (DataManager.isEventTest()) {
+      DataManager.setupEventTest();
+      SceneManager.goto(Scene_Map);
+    } else {
+      this.checkPlayerLocation();
+      DataManager.setupNewGame();
+      SceneManager.goto(Scene_Map);
+      Window_TitleCommand.initCommandPosition();
+    }
+    this.updateDocumentTitle();
   };
 
   //============================================================================
   // Scene_GameEnd
   //============================================================================
 
-  Scene_GameEnd.prototype.commandToTitle = function() {
-      this.fadeOutAll();
-      if(isReload) {
-        location.reload();
-      } else {
-        SceneManager.goto(Scene_Boot);
-      }
+  Scene_GameEnd.prototype.commandToTitle = function () {
+    this.fadeOutAll();
+    if (isReload) {
+      location.reload();
+    } else {
+      SceneManager.goto(Scene_Boot);
+    }
   };
-
-})()
+})();

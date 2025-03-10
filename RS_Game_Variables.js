@@ -91,47 +91,45 @@
  */
 
 (() => {
-    const RS = window.RS || {};
-    RS.Utils = RS.Utils || {};
+  const RS = window.RS || {};
+  RS.Utils = RS.Utils || {};
 
-    let parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_GameVariables>');
+  let parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_GameVariables>');
+  });
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
+
+  RS.Utils.jsonParse = function (str) {
+    const retData = JSON.parse(str, (k, v) => {
+      try {
+        return RS.Utils.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
     });
+    return retData;
+  };
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  const _settings = RS.Utils.jsonParse(parameters.Settings);
 
-    RS.Utils.jsonParse = function (str) {
-        const retData = JSON.parse(str, (k, v) => {
-            try {
-                return RS.Utils.jsonParse(v);
-            } catch (e) {
-                return v;
-            }
+  Game_Variables.prototype.setValue = function (variableId, value) {
+    if (variableId > 0 && variableId < $dataSystem.variables.length) {
+      if (typeof value === 'number') {
+        // Find the variable id at the settings object.
+        const data = _settings.filter(e => {
+          return parseInt(e.variableId, 10) === variableId;
         });
-        return retData;
-    };
 
-    const _settings = RS.Utils.jsonParse(parameters.Settings);
-
-    Game_Variables.prototype.setValue = function (variableId, value) {
-        if (variableId > 0 && variableId < $dataSystem.variables.length) {
-            if (typeof value === 'number') {
-                // Find the variable id at the settings object.
-                const data = _settings.filter(e => {
-                    return parseInt(e.variableId, 10) === variableId;
-                });
-
-                // if it finds its id, it will be limited it.
-                if (data instanceof Array && typeof data[0] === 'object') {
-                    const [desc] = data;
-                    value = Math.floor(
-                        value.clamp(Number(desc.min), Number(desc.max))
-                    );
-                }
-            }
-
-            this._data[variableId] = value;
-            this.onChange();
+        // if it finds its id, it will be limited it.
+        if (data instanceof Array && typeof data[0] === 'object') {
+          const [desc] = data;
+          value = Math.floor(value.clamp(Number(desc.min), Number(desc.max)));
         }
-    };
+      }
+
+      this._data[variableId] = value;
+      this.onChange();
+    }
+  };
 })();

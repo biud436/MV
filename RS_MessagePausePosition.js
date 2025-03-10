@@ -113,75 +113,73 @@ RS = window.RS || {};
 RS.MessagePausePosition = RS.MessagePausePosition || {};
 
 (function ($) {
-    'use strict';
+  'use strict';
 
-    let parameters = $plugins.filter(i => {
-        return i.description.contains('<RS_MessagePausePosition>');
-    });
+  let parameters = $plugins.filter(i => {
+    return i.description.contains('<RS_MessagePausePosition>');
+  });
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
-    $.Params = {};
-    $.Params.pauseX = parameters.pauseX;
-    $.Params.pauseY = parameters.pauseY;
+  $.Params = {};
+  $.Params.pauseX = parameters.pauseX;
+  $.Params.pauseY = parameters.pauseY;
 
-    const alias_Window_Message_updatePlacement =
-        Window_Message.prototype.updatePlacement;
-    Window_Message.prototype.updatePlacement = function () {
-        alias_Window_Message_updatePlacement.call(this);
-        this.updatePauseSprite();
+  const alias_Window_Message_updatePlacement =
+    Window_Message.prototype.updatePlacement;
+  Window_Message.prototype.updatePlacement = function () {
+    alias_Window_Message_updatePlacement.call(this);
+    this.updatePauseSprite();
+  };
+
+  Window_Message.prototype.updatePauseSprite = function () {
+    const tx = eval($.Params.pauseX);
+    const ty = eval($.Params.pauseY);
+
+    this._windowPauseSignSprite.move(tx, ty);
+  };
+
+  if (Imported.RS_MessageSystem) {
+    Window_Message.prototype.updateSubBalloonElements = function (data) {
+      data.tx = eval($.Params.pauseX);
+      data.ty = eval($.Params.pauseY);
+
+      this._windowPauseSignSprite.move(data.tx, data.ty);
+      this._windowPauseSignSprite.scale.y = data.scaleY;
+      this._nameWindow.y = data.ny;
     };
 
-    Window_Message.prototype.updatePauseSprite = function () {
-        const tx = eval($.Params.pauseX);
-        const ty = eval($.Params.pauseY);
+    Window_Message.prototype.resetFontSettings = function () {
+      Window_Base.prototype.resetFontSettings.call(this);
+      this.contents.fontBold = false;
+      this.contents.fontItalic = false;
+      this.contents.outlineWidth = RS.MessageSystem.Params.defaultOutlineWidth;
+      this.contents.outlineColor = RS.MessageSystem.Params.defaultOutlineColor;
+      this.contents.fontGradient = false;
+      this.contents.highlightTextColor = null;
 
-        this._windowPauseSignSprite.move(tx, ty);
+      let ty = this._height;
+
+      tx = eval($.Params.pauseX);
+      ty = eval($.Params.pauseY);
+
+      this._windowPauseSignSprite.move(tx, ty);
+      this._windowPauseSignSprite.scale.y = 1;
+      $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
     };
+  }
 
-    if (Imported.RS_MessageSystem) {
-        Window_Message.prototype.updateSubBalloonElements = function (data) {
-            data.tx = eval($.Params.pauseX);
-            data.ty = eval($.Params.pauseY);
-
-            this._windowPauseSignSprite.move(data.tx, data.ty);
-            this._windowPauseSignSprite.scale.y = data.scaleY;
-            this._nameWindow.y = data.ny;
-        };
-
-        Window_Message.prototype.resetFontSettings = function () {
-            Window_Base.prototype.resetFontSettings.call(this);
-            this.contents.fontBold = false;
-            this.contents.fontItalic = false;
-            this.contents.outlineWidth =
-                RS.MessageSystem.Params.defaultOutlineWidth;
-            this.contents.outlineColor =
-                RS.MessageSystem.Params.defaultOutlineColor;
-            this.contents.fontGradient = false;
-            this.contents.highlightTextColor = null;
-
-            let ty = this._height;
-
-            tx = eval($.Params.pauseX);
-            ty = eval($.Params.pauseY);
-
-            this._windowPauseSignSprite.move(tx, ty);
-            this._windowPauseSignSprite.scale.y = 1;
-            $gameMessage.setWaitTime(RS.MessageSystem.Params.textSpeed);
-        };
+  const alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'ChangePauseSpriteX') {
+      const evaluantValue = args.join('');
+      $.Params.pauseX = evaluantValue;
     }
-
-    const alias_Game_Interpreter_pluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === 'ChangePauseSpriteX') {
-            const evaluantValue = args.join('');
-            $.Params.pauseX = evaluantValue;
-        }
-        if (command === 'ChangePauseSpriteY') {
-            const evaluantValue = args.join('');
-            $.Params.pauseY = evaluantValue;
-        }
-    };
+    if (command === 'ChangePauseSpriteY') {
+      const evaluantValue = args.join('');
+      $.Params.pauseY = evaluantValue;
+    }
+  };
 })(RS.MessagePausePosition);

@@ -151,72 +151,72 @@
  *
  */
 (() => {
-    const Imported = window.Imported || {};
-    const RS = window.RS || {};
+  const Imported = window.Imported || {};
+  const RS = window.RS || {};
 
-    Imported.RS_CheckVersions = true;
-    RS.Net = RS.Net || {};
+  Imported.RS_CheckVersions = true;
+  RS.Net = RS.Net || {};
 
-    let parameters = $plugins.filter(i => {
-        return i.description.contains('<RS_CheckVersions>');
-    });
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  let parameters = $plugins.filter(i => {
+    return i.description.contains('<RS_CheckVersions>');
+  });
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
-    const defaultMessage =
-        parameters.defaultMessage ||
-        'There has detected a new version for this game.';
-    const errorMessage =
-        parameters.errorMessage || 'Not connected to the Internet';
-    const windowTarget = parameters.target || '_self';
-    const marketUrl = JSON.parse(parameters.marketUrl);
+  const defaultMessage =
+    parameters.defaultMessage ||
+    'There has detected a new version for this game.';
+  const errorMessage =
+    parameters.errorMessage || 'Not connected to the Internet';
+  const windowTarget = parameters.target || '_self';
+  const marketUrl = JSON.parse(parameters.marketUrl);
 
-    const defaultUrl = `${
-        parameters.url ||
-        'https://github.com/biud436/MV/raw/master/Laboratory/Versions.json'
-    }?${Date.now()}`;
+  const defaultUrl = `${
+    parameters.url ||
+    'https://github.com/biud436/MV/raw/master/Laboratory/Versions.json'
+  }?${Date.now()}`;
 
-    DataManager._databaseFiles.push({
-        name: '$game_versions',
-        src: 'Versions.json',
-    });
+  DataManager._databaseFiles.push({
+    name: '$game_versions',
+    src: 'Versions.json',
+  });
 
-    RS.Net.initVersion = function (callback) {
-        fetch(defaultUrl)
-            .then(response => response.json())
-            .then(json => {
-                RS.Net._dbVersion = json.version;
-                const pageUrl = Utils.isMobileSafari()
-                    ? marketUrl.iOS
-                    : marketUrl.Android;
-                const isNwJs = Utils.isNwjs();
-                const isRequestedNewVersion =
-                    RS.Net._dbVersion !== $game_versions.version;
-                const version = RS.Net._dbVersion || '0.0.0';
-                const message = defaultMessage.replace('#{VERSION}', version);
-                if (!isNwJs && isRequestedNewVersion) {
-                    // eslint-disable-next-line no-alert
-                    window.alert(message);
-                    window.open(pageUrl, windowTarget);
-                    return false;
-                }
-                return json();
-            })
-            .then(() => {
-                callback();
-            })
-            .catch(() => {
-                // eslint-disable-next-line no-alert
-                window.alert(errorMessage);
-                SceneManager.exit();
-            });
-    };
+  RS.Net.initVersion = function (callback) {
+    fetch(defaultUrl)
+      .then(response => response.json())
+      .then(json => {
+        RS.Net._dbVersion = json.version;
+        const pageUrl = Utils.isMobileSafari()
+          ? marketUrl.iOS
+          : marketUrl.Android;
+        const isNwJs = Utils.isNwjs();
+        const isRequestedNewVersion =
+          RS.Net._dbVersion !== $game_versions.version;
+        const version = RS.Net._dbVersion || '0.0.0';
+        const message = defaultMessage.replace('#{VERSION}', version);
+        if (!isNwJs && isRequestedNewVersion) {
+          // eslint-disable-next-line no-alert
+          window.alert(message);
+          window.open(pageUrl, windowTarget);
+          return false;
+        }
+        return json();
+      })
+      .then(() => {
+        callback();
+      })
+      .catch(() => {
+        // eslint-disable-next-line no-alert
+        window.alert(errorMessage);
+        SceneManager.exit();
+      });
+  };
 
-    const alias_Scene_Boot_initialize = Scene_Boot.prototype.initialize;
-    const alias_Scene_Boot_start = Scene_Boot.prototype.start;
-    Scene_Boot.prototype.initialize = function () {
-        alias_Scene_Boot_initialize.call(this);
-        RS.Net.initVersion(alias_Scene_Boot_start);
-    };
+  const alias_Scene_Boot_initialize = Scene_Boot.prototype.initialize;
+  const alias_Scene_Boot_start = Scene_Boot.prototype.start;
+  Scene_Boot.prototype.initialize = function () {
+    alias_Scene_Boot_initialize.call(this);
+    RS.Net.initVersion(alias_Scene_Boot_start);
+  };
 
-    Scene_Boot.prototype.start = function () {};
+  Scene_Boot.prototype.start = function () {};
 })();

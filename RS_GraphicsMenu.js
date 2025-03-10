@@ -164,343 +164,327 @@
  *
  */
 (() => {
-    const RS = window.RS || {};
-    RS.GraphicsMenu = RS.GraphicsMenu || {};
-    RS.GraphicsMenu.Params = RS.GraphicsMenu.Params || {};
-    RS.Utils = RS.Utils || {};
+  const RS = window.RS || {};
+  RS.GraphicsMenu = RS.GraphicsMenu || {};
+  RS.GraphicsMenu.Params = RS.GraphicsMenu.Params || {};
+  RS.Utils = RS.Utils || {};
 
-    const Imported = window.Imported || {};
+  const Imported = window.Imported || {};
 
-    let parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_GraphicsMenu>');
+  let parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_GraphicsMenu>');
+  });
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
+
+  RS.Utils.jsonParse = function (str) {
+    const retData = JSON.parse(str, (k, v) => {
+      try {
+        return RS.Utils.jsonParse(v);
+      } catch (e) {
+        return v;
+      }
     });
+    return retData;
+  };
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  RS.GraphicsMenu.Params.RECT = RS.Utils.jsonParse(parameters['Menu Rect']);
+  RS.GraphicsMenu.Params.MENU = RS.Utils.jsonParse(parameters['Menu Index']);
 
-    RS.Utils.jsonParse = function (str) {
-        const retData = JSON.parse(str, (k, v) => {
-            try {
-                return RS.Utils.jsonParse(v);
-            } catch (e) {
-                return v;
-            }
-        });
-        return retData;
-    };
+  RS.GraphicsMenu.Params.isValidGameCoreUpdate = false;
 
-    RS.GraphicsMenu.Params.RECT = RS.Utils.jsonParse(parameters['Menu Rect']);
-    RS.GraphicsMenu.Params.MENU = RS.Utils.jsonParse(parameters['Menu Index']);
+  //============================================================================
+  // Game_System
+  //============================================================================
 
-    RS.GraphicsMenu.Params.isValidGameCoreUpdate = false;
+  const aliasGameSystemInitialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    aliasGameSystemInitialize.call(this);
+    // 세이브 데이터에 저장을 하기 위해 여기에 변수를 정의했습니다.
+    this._menuMouseX = 0;
+    this._menuMouseY = 0;
+  };
 
-    //============================================================================
-    // Game_System
-    //============================================================================
+  Object.defineProperties(Game_System.prototype, {
+    // 마우스 X 좌표
+    menuMouseX: {
+      get: () => {
+        return this._menuMouseX;
+      },
+      set: value => {
+        this._menuMouseX = value;
+      },
+      configurable: true,
+    },
+    // 마우스 Y 좌표
+    menuMouseY: {
+      get: () => {
+        return this._menuMouseY;
+      },
+      set: value => {
+        this._menuMouseY = value;
+      },
+      configurable: true,
+    },
+  });
 
-    const aliasGameSystemInitialize = Game_System.prototype.initialize;
-    Game_System.prototype.initialize = function () {
-        aliasGameSystemInitialize.call(this);
-        // 세이브 데이터에 저장을 하기 위해 여기에 변수를 정의했습니다.
-        this._menuMouseX = 0;
-        this._menuMouseY = 0;
-    };
+  //============================================================================
+  // TouchInput
+  //============================================================================
 
-    Object.defineProperties(Game_System.prototype, {
-        // 마우스 X 좌표
-        menuMouseX: {
-            get: () => {
-                return this._menuMouseX;
-            },
-            set: value => {
-                this._menuMouseX = value;
-            },
-            configurable: true,
-        },
-        // 마우스 Y 좌표
-        menuMouseY: {
-            get: () => {
-                return this._menuMouseY;
-            },
-            set: value => {
-                this._menuMouseY = value;
-            },
-            configurable: true,
-        },
-    });
+  const aliasTouchInputOnMouseMove = TouchInput._onMouseMove;
+  TouchInput._onMouseMove = function (event) {
+    aliasTouchInputOnMouseMove.call(this, event);
+    // 마우스의 움직임이 감지되면 마우스 좌표를 업데이트 합니다
+    // 일반 마우스 좌표는 업데이트를 하지 않으므로 호환성을 위해 그대로 두었습니다
+    const x = Graphics.pageToCanvasX(event.pageX);
+    const y = Graphics.pageToCanvasY(event.pageY);
+    if ($gameSystem) {
+      $gameSystem.menuMouseX = x;
+      $gameSystem.menuMouseY = y;
+    }
+  };
 
-    //============================================================================
-    // TouchInput
-    //============================================================================
+  //============================================================================
+  // Scene_LinearMenu
+  //============================================================================
 
-    const aliasTouchInputOnMouseMove = TouchInput._onMouseMove;
-    TouchInput._onMouseMove = function (event) {
-        aliasTouchInputOnMouseMove.call(this, event);
-        // 마우스의 움직임이 감지되면 마우스 좌표를 업데이트 합니다
-        // 일반 마우스 좌표는 업데이트를 하지 않으므로 호환성을 위해 그대로 두었습니다
-        const x = Graphics.pageToCanvasX(event.pageX);
-        const y = Graphics.pageToCanvasY(event.pageY);
-        if ($gameSystem) {
-            $gameSystem.menuMouseX = x;
-            $gameSystem.menuMouseY = y;
-        }
-    };
+  function Scene_LinearMenu(...args) {
+    this.initialize.call(this, ...args);
+  }
 
-    //============================================================================
-    // Scene_LinearMenu
-    //============================================================================
+  Scene_LinearMenu.prototype = Object.create(Scene_MenuBase.prototype);
+  Scene_LinearMenu.prototype.constructor = Scene_LinearMenu;
 
-    function Scene_LinearMenu(...args) {
-        this.initialize.call(this, ...args);
+  Scene_LinearMenu.INDEX = 0;
+
+  Scene_LinearMenu.prototype.create = function () {
+    Scene_MenuBase.prototype.create.call(this);
+    this._touched = false;
+    this.createImage();
+
+    if (Imported.YEP_CommonEventMenu) {
+      this.createCommonEventMenuWindows();
+    }
+  };
+
+  Scene_LinearMenu.prototype.start = function () {
+    Scene_MenuBase.prototype.start.call(this);
+  };
+
+  Scene_LinearMenu.prototype.createHelpWindow = function () {};
+
+  Scene_LinearMenu.prototype.terminate = function () {
+    Scene_MenuBase.prototype.terminate.call(this);
+  };
+
+  Scene_LinearMenu.prototype.update = function () {
+    Scene_MenuBase.prototype.update.call(this);
+
+    if (Imported.YEP_CommonEventMenu) {
+      /**
+       * @type {Window} targetWindow
+       */
+      const targetWindow = this._commonEventMenuWindow;
+
+      if (targetWindow.active) {
+        const isActive = this.isActive();
+
+        $gameMap.update(isActive);
+        $gamePlayer.update(isActive);
+        $gameTimer.update(isActive);
+        $gameScreen.update();
+      } else {
+        this.updateIndex();
+        this.processExit();
+      }
+    } else {
+      this.updateIndex();
+      this.processExit();
+    }
+  };
+
+  Scene_LinearMenu.prototype.right = function () {
+    const { RECT } = RS.GraphicsMenu.Params;
+    Scene_LinearMenu.INDEX = (Scene_LinearMenu.INDEX + 1).mod(RECT.length);
+    SoundManager.playCursor();
+  };
+
+  Scene_LinearMenu.prototype.left = function () {
+    const { RECT } = RS.GraphicsMenu.Params;
+    Scene_LinearMenu.INDEX = (Scene_LinearMenu.INDEX - 1).mod(RECT.length);
+    SoundManager.playCursor();
+  };
+
+  Scene_LinearMenu.prototype.updateIndex = function () {
+    // 키 체크
+    if (Input.isTriggered('right')) {
+      this.right();
+    }
+    if (Input.isTriggered('left')) {
+      this.left();
+    }
+    if (Input.isTriggered('ok')) {
+      this.selectScene();
     }
 
-    Scene_LinearMenu.prototype = Object.create(Scene_MenuBase.prototype);
-    Scene_LinearMenu.prototype.constructor = Scene_LinearMenu;
+    // 마우스 및 터치
+    this.isSelectedInTouchInput();
 
-    Scene_LinearMenu.INDEX = 0;
+    // 현재 인덱스에 맞는 영역으로 재설정한다.
+    this.setRect(this._rect[Scene_LinearMenu.INDEX], Scene_LinearMenu.INDEX);
+  };
 
-    Scene_LinearMenu.prototype.create = function () {
-        Scene_MenuBase.prototype.create.call(this);
-        this._touched = false;
-        this.createImage();
+  Scene_LinearMenu.prototype.isSelectedInTouchInput = function () {
+    const menu = RS.GraphicsMenu.Params.MENU;
+    if (!menu) return;
 
-        if (Imported.YEP_CommonEventMenu) {
-            this.createCommonEventMenuWindows();
-        }
-    };
+    const W = parseInt(parameters.W, 10);
+    const H = parseInt(parameters.H, 10);
+    const x = RS.GraphicsMenu.Params.startX;
+    const y = RS.GraphicsMenu.Params.startY;
+    const width = Math.floor(W * menu.length);
+    const height = H;
+    let mx = $gameSystem.menuMouseX || 0;
+    let my = $gameSystem.menuMouseY || 0;
 
-    Scene_LinearMenu.prototype.start = function () {
-        Scene_MenuBase.prototype.start.call(this);
-    };
+    if (Utils.isMobileDevice()) {
+      mx = TouchInput.x;
+      my = TouchInput.y;
+    }
 
-    Scene_LinearMenu.prototype.createHelpWindow = function () {};
+    // 인덱스 값 : (마우스 좌표 - 메뉴 시작 위치) / 메뉴의 폭
+    const index = Math.floor((mx - x) / W);
+    const previousIndex = Scene_LinearMenu.INDEX;
 
-    Scene_LinearMenu.prototype.terminate = function () {
-        Scene_MenuBase.prototype.terminate.call(this);
-    };
+    // 범위 내에 있는 지 확인
+    if (mx > x && my > y && mx < x + width && my < y + height) {
+      Scene_LinearMenu.INDEX = index.clamp(0, menu.length - 1);
+      if (TouchInput.isTriggered()) this.selectScene();
+    }
 
-    Scene_LinearMenu.prototype.update = function () {
-        Scene_MenuBase.prototype.update.call(this);
+    // 커서 사운드 재생
+    if (previousIndex !== Scene_LinearMenu.INDEX && !this._touched) {
+      SoundManager.playCursor();
+      this._touched = true;
+    } else {
+      this._touched = false;
+    }
+  };
 
-        if (Imported.YEP_CommonEventMenu) {
-            /**
-             * @type {Window} targetWindow
-             */
-            const targetWindow = this._commonEventMenuWindow;
+  Scene_LinearMenu.prototype.selectScene = function () {
+    const sceneObject = RS.GraphicsMenu.Params.MENU[Scene_LinearMenu.INDEX];
+    const self = this;
 
-            if (targetWindow.active) {
-                const isActive = this.isActive();
-
-                $gameMap.update(isActive);
-                $gamePlayer.update(isActive);
-                $gameTimer.update(isActive);
-                $gameScreen.update();
-            } else {
-                this.updateIndex();
-                this.processExit();
-            }
-        } else {
-            this.updateIndex();
-            this.processExit();
-        }
-    };
-
-    Scene_LinearMenu.prototype.right = function () {
-        const { RECT } = RS.GraphicsMenu.Params;
-        Scene_LinearMenu.INDEX = (Scene_LinearMenu.INDEX + 1).mod(RECT.length);
-        SoundManager.playCursor();
-    };
-
-    Scene_LinearMenu.prototype.left = function () {
-        const { RECT } = RS.GraphicsMenu.Params;
-        Scene_LinearMenu.INDEX = (Scene_LinearMenu.INDEX - 1).mod(RECT.length);
-        SoundManager.playCursor();
-    };
-
-    Scene_LinearMenu.prototype.updateIndex = function () {
-        // 키 체크
-        if (Input.isTriggered('right')) {
-            this.right();
-        }
-        if (Input.isTriggered('left')) {
-            this.left();
-        }
-        if (Input.isTriggered('ok')) {
-            this.selectScene();
-        }
-
-        // 마우스 및 터치
-        this.isSelectedInTouchInput();
-
-        // 현재 인덱스에 맞는 영역으로 재설정한다.
-        this.setRect(
-            this._rect[Scene_LinearMenu.INDEX],
-            Scene_LinearMenu.INDEX
-        );
-    };
-
-    Scene_LinearMenu.prototype.isSelectedInTouchInput = function () {
-        const menu = RS.GraphicsMenu.Params.MENU;
-        if (!menu) return;
-
-        const W = parseInt(parameters.W, 10);
-        const H = parseInt(parameters.H, 10);
-        const x = RS.GraphicsMenu.Params.startX;
-        const y = RS.GraphicsMenu.Params.startY;
-        const width = Math.floor(W * menu.length);
-        const height = H;
-        let mx = $gameSystem.menuMouseX || 0;
-        let my = $gameSystem.menuMouseY || 0;
-
-        if (Utils.isMobileDevice()) {
-            mx = TouchInput.x;
-            my = TouchInput.y;
-        }
-
-        // 인덱스 값 : (마우스 좌표 - 메뉴 시작 위치) / 메뉴의 폭
-        const index = Math.floor((mx - x) / W);
-        const previousIndex = Scene_LinearMenu.INDEX;
-
-        // 범위 내에 있는 지 확인
-        if (mx > x && my > y && mx < x + width && my < y + height) {
-            Scene_LinearMenu.INDEX = index.clamp(0, menu.length - 1);
-            if (TouchInput.isTriggered()) this.selectScene();
-        }
-
-        // 커서 사운드 재생
-        if (previousIndex !== Scene_LinearMenu.INDEX && !this._touched) {
-            SoundManager.playCursor();
-            this._touched = true;
-        } else {
-            this._touched = false;
-        }
-    };
-
-    Scene_LinearMenu.prototype.selectScene = function () {
-        const sceneObject = RS.GraphicsMenu.Params.MENU[Scene_LinearMenu.INDEX];
-        const self = this;
-
-        if (sceneObject.endsWith(':exit')) {
-            setTimeout(function () {
-                self._touched = false;
-                SoundManager.playOk();
-                SceneManager.exit();
-            }, 0);
-            return;
-        }
-        if (sceneObject.match(/(?:EVAL[ ]*:[ ]*)(.*)/i)) {
-            try {
-                this._touched = false;
-                eval(RegExp.$1);
-                SoundManager.playOk();
-            } catch (e) {
-                console.warn(e);
-            }
-        }
-        if (typeof window[sceneObject] === 'function') {
-            // push : 현재 메뉴 씬을 메뉴 스택에 누적
-            this._touched = false;
-            SceneManager.push(window[sceneObject]);
-            SoundManager.playOk();
-        }
-    };
-
-    Scene_LinearMenu.prototype.processExit = function () {
-        if (Scene_Map.prototype.isMenuCalled.call(this)) {
-            // goto : 메뉴 스택에 누적하지 않고 씬 오브젝트 생성
-            this._touched = false;
-            SceneManager.goto(Scene_Map);
-            SoundManager.playCancel();
-        }
-    };
-
-    Scene_LinearMenu.prototype.loadBitmap = function (x, y, w, h, index) {
-        // 드로우 콜을 줄이기 위해 하나의 이미지만 사용
-        const sprite = new Sprite(
-            ImageManager.loadPicture(parameters['Menu Image'])
-        );
-        // eslint-disable-next-line no-unused-vars
-        const H = parseInt(parameters.H, 10);
-        sprite.setFrame(x, y, w, h);
-        this.addChild(sprite);
-        return sprite;
-    };
-
-    Scene_LinearMenu.prototype.createImage = function () {
-        const { RECT } = RS.GraphicsMenu.Params;
-        const W = parseInt(parameters.W, 10);
-        const H = parseInt(parameters.H, 10);
-
-        RS.GraphicsMenu.Params.startX = eval(parameters['Start X']);
-        RS.GraphicsMenu.Params.startY = eval(parameters['Start Y']);
-
-        this._rect = [];
-
-        for (let i = 0; i < RECT.length; i++) {
-            const imageRect = RECT[i];
-
-            if (!imageRect) {
-                continue;
-            }
-            this._rect[i] = this.loadBitmap(
-                imageRect.x,
-                0,
-                imageRect.width,
-                imageRect.height
-            );
-            this._rect[i].x = RS.GraphicsMenu.Params.startX + imageRect.x;
-            this._rect[i].y = RS.GraphicsMenu.Params.startY + 0;
-        }
-        this.setRect(
-            this._rect[Scene_LinearMenu.INDEX],
-            Scene_LinearMenu.INDEX
-        );
-    };
-
-    /**
-     * @method setRect
-     * @param {Object} rect
-     * @param {Number} i
-     */
-    Scene_LinearMenu.prototype.setRect = function (rect, index) {
-        const dRect = RS.GraphicsMenu.Params.RECT;
-        const H = parseInt(parameters.H, 10);
-
-        // 선택된 메뉴를 마우스 오버 상태의 이미지로 변경
-        rect.setFrame(
-            dRect[index].x,
-            H,
-            dRect[index].width,
-            dRect[index].height
-        );
-
-        for (let i = 0; i < dRect.length; i++) {
-            // 선택된 메뉴가 아니라면 모두 일반 이미지로 변경
-            if (i === Scene_LinearMenu.INDEX) continue;
-            this._rect[i].setFrame(
-                dRect[i].x,
-                0,
-                dRect[i].width,
-                dRect[i].height
-            );
-        }
-    };
-
-    //============================================================================
-    // Scene_Map
-    //============================================================================
-    Scene_Map.prototype.callMenu = function () {
+    if (sceneObject.endsWith(':exit')) {
+      setTimeout(function () {
+        self._touched = false;
         SoundManager.playOk();
-        SceneManager.push(Scene_LinearMenu);
-        $gameTemp.clearDestination();
-        this._mapNameWindow.hide();
-        this._waitCount = 2;
-    };
+        SceneManager.exit();
+      }, 0);
+      return;
+    }
+    if (sceneObject.match(/(?:EVAL[ ]*:[ ]*)(.*)/i)) {
+      try {
+        this._touched = false;
+        eval(RegExp.$1);
+        SoundManager.playOk();
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+    if (typeof window[sceneObject] === 'function') {
+      // push : 현재 메뉴 씬을 메뉴 스택에 누적
+      this._touched = false;
+      SceneManager.push(window[sceneObject]);
+      SoundManager.playOk();
+    }
+  };
 
-    Game_Interpreter.prototype.command351 = function () {
-        if (!$gameParty.inBattle()) {
-            SceneManager.push(Scene_LinearMenu);
-            Window_MenuCommand.initCommandPosition();
-        }
-        return true;
-    };
+  Scene_LinearMenu.prototype.processExit = function () {
+    if (Scene_Map.prototype.isMenuCalled.call(this)) {
+      // goto : 메뉴 스택에 누적하지 않고 씬 오브젝트 생성
+      this._touched = false;
+      SceneManager.goto(Scene_Map);
+      SoundManager.playCancel();
+    }
+  };
+
+  Scene_LinearMenu.prototype.loadBitmap = function (x, y, w, h, index) {
+    // 드로우 콜을 줄이기 위해 하나의 이미지만 사용
+    const sprite = new Sprite(
+      ImageManager.loadPicture(parameters['Menu Image'])
+    );
+    // eslint-disable-next-line no-unused-vars
+    const H = parseInt(parameters.H, 10);
+    sprite.setFrame(x, y, w, h);
+    this.addChild(sprite);
+    return sprite;
+  };
+
+  Scene_LinearMenu.prototype.createImage = function () {
+    const { RECT } = RS.GraphicsMenu.Params;
+    const W = parseInt(parameters.W, 10);
+    const H = parseInt(parameters.H, 10);
+
+    RS.GraphicsMenu.Params.startX = eval(parameters['Start X']);
+    RS.GraphicsMenu.Params.startY = eval(parameters['Start Y']);
+
+    this._rect = [];
+
+    for (let i = 0; i < RECT.length; i++) {
+      const imageRect = RECT[i];
+
+      if (!imageRect) {
+        continue;
+      }
+      this._rect[i] = this.loadBitmap(
+        imageRect.x,
+        0,
+        imageRect.width,
+        imageRect.height
+      );
+      this._rect[i].x = RS.GraphicsMenu.Params.startX + imageRect.x;
+      this._rect[i].y = RS.GraphicsMenu.Params.startY + 0;
+    }
+    this.setRect(this._rect[Scene_LinearMenu.INDEX], Scene_LinearMenu.INDEX);
+  };
+
+  /**
+   * @method setRect
+   * @param {Object} rect
+   * @param {Number} i
+   */
+  Scene_LinearMenu.prototype.setRect = function (rect, index) {
+    const dRect = RS.GraphicsMenu.Params.RECT;
+    const H = parseInt(parameters.H, 10);
+
+    // 선택된 메뉴를 마우스 오버 상태의 이미지로 변경
+    rect.setFrame(dRect[index].x, H, dRect[index].width, dRect[index].height);
+
+    for (let i = 0; i < dRect.length; i++) {
+      // 선택된 메뉴가 아니라면 모두 일반 이미지로 변경
+      if (i === Scene_LinearMenu.INDEX) continue;
+      this._rect[i].setFrame(dRect[i].x, 0, dRect[i].width, dRect[i].height);
+    }
+  };
+
+  //============================================================================
+  // Scene_Map
+  //============================================================================
+  Scene_Map.prototype.callMenu = function () {
+    SoundManager.playOk();
+    SceneManager.push(Scene_LinearMenu);
+    $gameTemp.clearDestination();
+    this._mapNameWindow.hide();
+    this._waitCount = 2;
+  };
+
+  Game_Interpreter.prototype.command351 = function () {
+    if (!$gameParty.inBattle()) {
+      SceneManager.push(Scene_LinearMenu);
+      Window_MenuCommand.initCommandPosition();
+    }
+    return true;
+  };
 })();

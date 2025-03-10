@@ -658,526 +658,526 @@ RS.Localization.lang = RS.Localization.lang || {};
 RS.Localization.lang.parent = RS.Localization;
 
 function Scene_LoadDatabase(...args) {
-    this.initialize.call(this, ...args);
+  this.initialize.call(this, ...args);
 }
 
 (function ($) {
-    'use strict';
+  'use strict';
 
-    let parameters = $plugins.filter(function (i) {
-        return i.description.contains('<RS_Localization>');
+  let parameters = $plugins.filter(function (i) {
+    return i.description.contains('<RS_Localization>');
+  });
+
+  parameters = parameters.length > 0 && parameters[0].parameters;
+
+  $.parent.Params = $.parent.Params || {};
+
+  $.parent.Params.__defaultLang = parameters['Default Language'] || 'English';
+  $.parent.Params.isUsedSystemLanguage = Boolean(
+    parameters['Use System Language'] === 'true'
+  );
+
+  // All Supported Languages
+  $.parent.Params.supportedLanguages = (function () {
+    return parameters['Supported Languages'].split(' ') || ['en'];
+  })();
+
+  $.afrikaans = 'af';
+  $.afrikaans_south_africa = 'af_ZA';
+  $.arabic = 'ar';
+  $.arabic_uae = 'ar_AE';
+  $.arabic_bahrain = 'ar_BH';
+  $.arabic_algeria = 'ar_DZ';
+  $.arabic_egypt = 'ar_EG';
+  $.arabic_iraq = 'ar_IQ';
+  $.arabic_jordan = 'ar_JO';
+  $.arabic_kuwait = 'ar_KW';
+  $.arabic_lebanon = 'ar_LB';
+  $.arabic_libya = 'ar_LY';
+  $.arabic_morocco = 'ar_MA';
+  $.arabic_oman = 'ar_OM';
+  $.arabic_qatar = 'ar_QA';
+  $.arabic_saudi_arabia = 'ar_SA';
+  $.arabic_syria = 'ar_SY';
+  $.arabic_tunisia = 'ar_TN';
+  $.arabic_yemen = 'ar_YE';
+  $.azeri_latin = 'az';
+  $.azeri_latin_azerbaijan = 'az_AZ';
+  $.azeri_cyrillic_azerbaijan = 'az_AZ';
+  $.belarusian = 'be';
+  $.belarusian_belarus = 'be_BY';
+  $.bulgarian = 'bg';
+  $.bulgarian_bulgaria = 'bg_BG';
+  $.bosnian_bosnia_and_herzegovina = 'bs_BA';
+  $.catalan = 'ca';
+  $.catalan_spain = 'ca_ES';
+  $.czech = 'cs';
+  $.czech_czech_republic = 'cs_CZ';
+  $.welsh = 'cy';
+  $.welsh_united_kingdom = 'cy_GB';
+  $.danish = 'da';
+  $.danish_denmark = 'da_DK';
+  $.german = 'de';
+  $.german_austria = 'de_AT';
+  $.german_switzerland = 'de_CH';
+  $.german_germany = 'de_DE';
+  $.german_liechtenstein = 'de_LI';
+  $.german_luxembourg = 'de_LU';
+  $.divehi = 'dv';
+  $.divehi_maldives = 'dv_MV';
+  $.greek = 'el';
+  $.greek_greece = 'el_GR';
+  $.english = 'en';
+  $.english_australia = 'en_AU';
+  $.english_belize = 'en_BZ';
+  $.english_canada = 'en_CA';
+  $.english_caribbean = 'en_CB';
+  $.english_united_kingdom = 'en_GB';
+  $.english_ireland = 'en_IE';
+  $.english_jamaica = 'en_JM';
+  $.english_new_zealand = 'en_NZ';
+  $.english_republic_of_the_philippines = 'en_PH';
+  $.english_trinidad_and_tobago = 'en_TT';
+  $.english_united_states = 'en_US';
+  $.english_south_africa = 'en_ZA';
+  $.english_zimbabwe = 'en_ZW';
+  $.esperanto = 'eo';
+  $.spanish = 'es';
+  $.spanish_argentina = 'es_AR';
+  $.spanish_bolivia = 'es_BO';
+  $.spanish_chile = 'es_CL';
+  $.spanish_colombia = 'es_CO';
+  $.spanish_costa_rica = 'es_CR';
+  $.spanish_dominican_republic = 'es_DO';
+  $.spanish_ecuador = 'es_EC';
+  $.spanish_castilian = 'es_ES';
+  $.spanish_spain = 'es_ES';
+  $.spanish_guatemala = 'es_GT';
+  $.spanish_honduras = 'es_HN';
+  $.spanish_mexico = 'es_MX';
+  $.spanish_nicaragua = 'es_NI';
+  $.spanish_panama = 'es_PA';
+  $.spanish_peru = 'es_PE';
+  $.spanish_puerto_rico = 'es_PR';
+  $.spanish_paraguay = 'es_PY';
+  $.spanish_el_salvador = 'es_SV';
+  $.spanish_uruguay = 'es_UY';
+  $.spanish_venezuela = 'es_VE';
+  $.estonian = 'et';
+  $.estonian_estonia = 'et_EE';
+  $.basque = 'eu';
+  $.basque_spain = 'eu_ES';
+  $.farsi = 'fa';
+  $.farsi_iran = 'fa_IR';
+  $.finnish = 'fi';
+  $.finnish_finland = 'fi_FI';
+  $.faroese = 'fo';
+  $.faroese_faroe_islands = 'fo_FO';
+  $.french = 'fr';
+  $.french_belgium = 'fr_BE';
+  $.french_canada = 'fr_CA';
+  $.french_switzerland = 'fr_CH';
+  $.french_france = 'fr_FR';
+  $.french_luxembourg = 'fr_LU';
+  $.french_principality_of_monaco = 'fr_MC';
+  $.galician = 'gl';
+  $.galician_spain = 'gl_ES';
+  $.gujarati = 'gu';
+  $.gujarati_india = 'gu_IN';
+  $.hebrew = 'he';
+  $.hebrew_israel = 'he_IL';
+  $.hindi = 'hi';
+  $.hindi_india = 'hi_IN';
+  $.croatian = 'hr';
+  $.croatian_bosnia_and_herzegovina = 'hr_BA';
+  $.croatian_croatia = 'hr_HR';
+  $.hungarian = 'hu';
+  $.hungarian_hungary = 'hu_HU';
+  $.armenian = 'hy';
+  $.armenian_armenia = 'hy_AM';
+  $.indonesian = 'id';
+  $.indonesian_indonesia = 'id_ID';
+  $.icelandic = 'is';
+  $.icelandic_iceland = 'is_IS';
+  $.italian = 'it';
+  $.italian_switzerland = 'it_CH';
+  $.italian_italy = 'it_IT';
+  $.japanese = 'ja';
+  $.japanese_japan = 'ja_JP';
+  $.georgian = 'ka';
+  $.georgian_georgia = 'ka_GE';
+  $.kazakh = 'kk';
+  $.kazakh_kazakhstan = 'kk_KZ';
+  $.kannada = 'kn';
+  $.kannada_india = 'kn_IN';
+  $.korean = 'ko';
+  $.korean_korea = 'ko_KR';
+  $.konkani = 'kok';
+  $.konkani_india = 'kok_IN';
+  $.kyrgyz = 'ky';
+  $.kyrgyz_kyrgyzstan = 'ky_KG';
+  $.lithuanian = 'lt';
+  $.lithuanian_lithuania = 'lt_LT';
+  $.latvian = 'lv';
+  $.latvian_latvia = 'lv_LV';
+  $.maori = 'mi';
+  $.maori_new_zealand = 'mi_NZ';
+  $.fyro_macedonian = 'mk';
+  $.fyro_macedonian_former_yugoslav_republic_of_macedonia = 'mk_MK';
+  $.mongolian = 'mn';
+  $.mongolian_mongolia = 'mn_MN';
+  $.marathi = 'mr';
+  $.marathi_india = 'mr_IN';
+  $.malay = 'ms';
+  $.malay_brunei_darussalam = 'ms_BN';
+  $.malay_malaysia = 'ms_MY';
+  $.maltese = 'mt';
+  $.maltese_malta = 'mt_MT';
+  $.norwegian_bokmal = 'nb';
+  $.norwegian_bokmal_norway = 'nb_NO';
+  $.dutch = 'nl';
+  $.dutch_belgium = 'nl_BE';
+  $.dutch_netherlands = 'nl_NL';
+  $.norwegian_nynorsk_norway = 'nn_NO';
+  $.northern_sotho = 'ns';
+  $.northern_sotho_south_africa = 'ns_ZA';
+  $.punjabi = 'pa';
+  $.punjabi_india = 'pa_IN';
+  $.polish = 'pl';
+  $.polish_poland = 'pl_PL';
+  $.pashto = 'ps';
+  $.pashto_afghanistan = 'ps_AR';
+  $.portuguese = 'pt';
+  $.portuguese_brazil = 'pt_BR';
+  $.portuguese_portugal = 'pt_PT';
+  $.quechua = 'qu';
+  $.quechua_bolivia = 'qu_BO';
+  $.quechua_ecuador = 'qu_EC';
+  $.quechua_peru = 'qu_PE';
+  $.romanian = 'ro';
+  $.romanian_romania = 'ro_RO';
+  $.russian = 'ru';
+  $.russian_russia = 'ru_RU';
+  $.sanskrit = 'sa';
+  $.sanskrit_india = 'sa_IN';
+  $.sami_northern = 'se';
+  $.sami_northern_finland = 'se_FI';
+  $.sami_skolt_finland = 'se_FI';
+  $.sami_inari_finland = 'se_FI';
+  $.sami_northern_norway = 'se_NO';
+  $.sami_lule_norway = 'se_NO';
+  $.sami_southern_norway = 'se_NO';
+  $.sami_northern_sweden = 'se_SE';
+  $.sami_lule_sweden = 'se_SE';
+  $.sami_southern_sweden = 'se_SE';
+  $.slovak = 'sk';
+  $.slovak_slovakia = 'sk_SK';
+  $.slovenian = 'sl';
+  $.slovenian_slovenia = 'sl_SI';
+  $.albanian = 'sq';
+  $.albanian_albania = 'sq_AL';
+  $.serbian_latin_bosnia_and_herzegovina = 'sr_BA';
+  $.serbian_cyrillic_bosnia_and_herzegovina = 'sr_BA';
+  $.serbian_latin_serbia_and_montenegro = 'sr_SP';
+  $.serbian_cyrillic_serbia_and_montenegro = 'sr_SP';
+  $.swedish = 'sv';
+  $.swedish_finland = 'sv_FI';
+  $.swedish_sweden = 'sv_SE';
+  $.swahili = 'sw';
+  $.swahili_kenya = 'sw_KE';
+  $.syriac = 'syr';
+  $.syriac_syria = 'syr_SY';
+  $.tamil = 'ta';
+  $.tamil_india = 'ta_IN';
+  $.telugu = 'te';
+  $.telugu_india = 'te_IN';
+  $.thai = 'th';
+  $.thai_thailand = 'th_TH';
+  $.tagalog = 'tl';
+  $.tagalog_philippines = 'tl_PH';
+  $.tswana = 'tn';
+  $.tswana_south_africa = 'tn_ZA';
+  $.turkish = 'tr';
+  $.turkish_turkey = 'tr_TR';
+  $.tatar = 'tt';
+  $.tatar_russia = 'tt_RU';
+  $.tsonga = 'ts';
+  $.ukrainian = 'uk';
+  $.ukrainian_ukraine = 'uk_UA';
+  $.urdu = 'ur';
+  $.urdu_islamic_republic_of_pakistan = 'ur_PK';
+  $.uzbek_latin = 'uz';
+  $.uzbek_latin_uzbekistan = 'uz_UZ';
+  $.uzbek_cyrillic_uzbekistan = 'uz_UZ';
+  $.vietnamese = 'vi';
+  $.vietnamese_viet_nam = 'vi_VN';
+  $.xhosa = 'xh';
+  $.xhosa_south_africa = 'xh_ZA';
+  $.chinese = 'zh';
+  $.chinese_s = 'zh_CN';
+  $.chinese_hong_kong = 'zh_HK';
+  $.chinese_macau = 'zh_MO';
+  $.chinese_singapore = 'zh_SG';
+  $.chinese_t = 'zh_TW';
+  $.zulu = 'zu';
+  $.zulu_south_africa = 'zu_ZA';
+
+  // Set up the default language code.
+  $.parent.Params.locale = (function () {
+    const type = $.parent.Params.__defaultLang.toLowerCase();
+    const languageCollection = $[type];
+    return languageCollection || 'en';
+  })();
+
+  $.parent.Params.isDirty = false;
+
+  //============================================================================
+  // RS.Localization
+  //============================================================================
+
+  RS.Localization.createSwapLangList = function () {
+    const typeArray = Object.keys(this.lang);
+    const temp = [];
+    typeArray.forEach(key => {
+      const value = $[i];
+      temp[value] = key;
     });
+    return temp;
+  };
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  RS.Localization.hasOwnLanguage = function (langType) {
+    return langType.toLowerCase() in this.lang;
+  };
 
-    $.parent.Params = $.parent.Params || {};
+  RS.Localization.findLanguage = function (reg) {
+    try {
+      let arr = Object.keys(this.lang);
+      arr = arr.filter(i => {
+        return !!i.match(reg);
+      });
+      if (arr !== 0) {
+        return arr[0];
+      }
 
-    $.parent.Params.__defaultLang = parameters['Default Language'] || 'English';
-    $.parent.Params.isUsedSystemLanguage = Boolean(
-        parameters['Use System Language'] === 'true'
+      return 'english';
+    } catch (err) {
+      throw new Error('Cannot find Language Type');
+    }
+  };
+
+  RS.Localization.setSL = function (value) {
+    if ($dataSystem) {
+      $dataSystem.locale = value;
+    }
+    $.parent.Params.locale = value;
+  };
+
+  RS.Localization.changeSystemLanguage = function (reg) {
+    const lang = RS.Localization.findLanguage(reg.toLowerCase());
+    this.setSL(RS.Localization.lang[lang]);
+    SceneManager.push(Scene_LoadDatabase);
+  };
+
+  //============================================================================
+  // Game_System
+  //============================================================================
+
+  const alias_Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    alias_Game_System_initialize.call(this);
+    RS.Localization.changeSystemLanguage(
+      $.parent.Params.__defaultLang.toLowerCase()
     );
+  };
 
-    // All Supported Languages
-    $.parent.Params.supportedLanguages = (function () {
-        return parameters['Supported Languages'].split(' ') || ['en'];
-    })();
+  Game_System.prototype.isEnglish = function () {
+    return $dataSystem.locale.match(/^en/);
+  };
 
-    $.afrikaans = 'af';
-    $.afrikaans_south_africa = 'af_ZA';
-    $.arabic = 'ar';
-    $.arabic_uae = 'ar_AE';
-    $.arabic_bahrain = 'ar_BH';
-    $.arabic_algeria = 'ar_DZ';
-    $.arabic_egypt = 'ar_EG';
-    $.arabic_iraq = 'ar_IQ';
-    $.arabic_jordan = 'ar_JO';
-    $.arabic_kuwait = 'ar_KW';
-    $.arabic_lebanon = 'ar_LB';
-    $.arabic_libya = 'ar_LY';
-    $.arabic_morocco = 'ar_MA';
-    $.arabic_oman = 'ar_OM';
-    $.arabic_qatar = 'ar_QA';
-    $.arabic_saudi_arabia = 'ar_SA';
-    $.arabic_syria = 'ar_SY';
-    $.arabic_tunisia = 'ar_TN';
-    $.arabic_yemen = 'ar_YE';
-    $.azeri_latin = 'az';
-    $.azeri_latin_azerbaijan = 'az_AZ';
-    $.azeri_cyrillic_azerbaijan = 'az_AZ';
-    $.belarusian = 'be';
-    $.belarusian_belarus = 'be_BY';
-    $.bulgarian = 'bg';
-    $.bulgarian_bulgaria = 'bg_BG';
-    $.bosnian_bosnia_and_herzegovina = 'bs_BA';
-    $.catalan = 'ca';
-    $.catalan_spain = 'ca_ES';
-    $.czech = 'cs';
-    $.czech_czech_republic = 'cs_CZ';
-    $.welsh = 'cy';
-    $.welsh_united_kingdom = 'cy_GB';
-    $.danish = 'da';
-    $.danish_denmark = 'da_DK';
-    $.german = 'de';
-    $.german_austria = 'de_AT';
-    $.german_switzerland = 'de_CH';
-    $.german_germany = 'de_DE';
-    $.german_liechtenstein = 'de_LI';
-    $.german_luxembourg = 'de_LU';
-    $.divehi = 'dv';
-    $.divehi_maldives = 'dv_MV';
-    $.greek = 'el';
-    $.greek_greece = 'el_GR';
-    $.english = 'en';
-    $.english_australia = 'en_AU';
-    $.english_belize = 'en_BZ';
-    $.english_canada = 'en_CA';
-    $.english_caribbean = 'en_CB';
-    $.english_united_kingdom = 'en_GB';
-    $.english_ireland = 'en_IE';
-    $.english_jamaica = 'en_JM';
-    $.english_new_zealand = 'en_NZ';
-    $.english_republic_of_the_philippines = 'en_PH';
-    $.english_trinidad_and_tobago = 'en_TT';
-    $.english_united_states = 'en_US';
-    $.english_south_africa = 'en_ZA';
-    $.english_zimbabwe = 'en_ZW';
-    $.esperanto = 'eo';
-    $.spanish = 'es';
-    $.spanish_argentina = 'es_AR';
-    $.spanish_bolivia = 'es_BO';
-    $.spanish_chile = 'es_CL';
-    $.spanish_colombia = 'es_CO';
-    $.spanish_costa_rica = 'es_CR';
-    $.spanish_dominican_republic = 'es_DO';
-    $.spanish_ecuador = 'es_EC';
-    $.spanish_castilian = 'es_ES';
-    $.spanish_spain = 'es_ES';
-    $.spanish_guatemala = 'es_GT';
-    $.spanish_honduras = 'es_HN';
-    $.spanish_mexico = 'es_MX';
-    $.spanish_nicaragua = 'es_NI';
-    $.spanish_panama = 'es_PA';
-    $.spanish_peru = 'es_PE';
-    $.spanish_puerto_rico = 'es_PR';
-    $.spanish_paraguay = 'es_PY';
-    $.spanish_el_salvador = 'es_SV';
-    $.spanish_uruguay = 'es_UY';
-    $.spanish_venezuela = 'es_VE';
-    $.estonian = 'et';
-    $.estonian_estonia = 'et_EE';
-    $.basque = 'eu';
-    $.basque_spain = 'eu_ES';
-    $.farsi = 'fa';
-    $.farsi_iran = 'fa_IR';
-    $.finnish = 'fi';
-    $.finnish_finland = 'fi_FI';
-    $.faroese = 'fo';
-    $.faroese_faroe_islands = 'fo_FO';
-    $.french = 'fr';
-    $.french_belgium = 'fr_BE';
-    $.french_canada = 'fr_CA';
-    $.french_switzerland = 'fr_CH';
-    $.french_france = 'fr_FR';
-    $.french_luxembourg = 'fr_LU';
-    $.french_principality_of_monaco = 'fr_MC';
-    $.galician = 'gl';
-    $.galician_spain = 'gl_ES';
-    $.gujarati = 'gu';
-    $.gujarati_india = 'gu_IN';
-    $.hebrew = 'he';
-    $.hebrew_israel = 'he_IL';
-    $.hindi = 'hi';
-    $.hindi_india = 'hi_IN';
-    $.croatian = 'hr';
-    $.croatian_bosnia_and_herzegovina = 'hr_BA';
-    $.croatian_croatia = 'hr_HR';
-    $.hungarian = 'hu';
-    $.hungarian_hungary = 'hu_HU';
-    $.armenian = 'hy';
-    $.armenian_armenia = 'hy_AM';
-    $.indonesian = 'id';
-    $.indonesian_indonesia = 'id_ID';
-    $.icelandic = 'is';
-    $.icelandic_iceland = 'is_IS';
-    $.italian = 'it';
-    $.italian_switzerland = 'it_CH';
-    $.italian_italy = 'it_IT';
-    $.japanese = 'ja';
-    $.japanese_japan = 'ja_JP';
-    $.georgian = 'ka';
-    $.georgian_georgia = 'ka_GE';
-    $.kazakh = 'kk';
-    $.kazakh_kazakhstan = 'kk_KZ';
-    $.kannada = 'kn';
-    $.kannada_india = 'kn_IN';
-    $.korean = 'ko';
-    $.korean_korea = 'ko_KR';
-    $.konkani = 'kok';
-    $.konkani_india = 'kok_IN';
-    $.kyrgyz = 'ky';
-    $.kyrgyz_kyrgyzstan = 'ky_KG';
-    $.lithuanian = 'lt';
-    $.lithuanian_lithuania = 'lt_LT';
-    $.latvian = 'lv';
-    $.latvian_latvia = 'lv_LV';
-    $.maori = 'mi';
-    $.maori_new_zealand = 'mi_NZ';
-    $.fyro_macedonian = 'mk';
-    $.fyro_macedonian_former_yugoslav_republic_of_macedonia = 'mk_MK';
-    $.mongolian = 'mn';
-    $.mongolian_mongolia = 'mn_MN';
-    $.marathi = 'mr';
-    $.marathi_india = 'mr_IN';
-    $.malay = 'ms';
-    $.malay_brunei_darussalam = 'ms_BN';
-    $.malay_malaysia = 'ms_MY';
-    $.maltese = 'mt';
-    $.maltese_malta = 'mt_MT';
-    $.norwegian_bokmal = 'nb';
-    $.norwegian_bokmal_norway = 'nb_NO';
-    $.dutch = 'nl';
-    $.dutch_belgium = 'nl_BE';
-    $.dutch_netherlands = 'nl_NL';
-    $.norwegian_nynorsk_norway = 'nn_NO';
-    $.northern_sotho = 'ns';
-    $.northern_sotho_south_africa = 'ns_ZA';
-    $.punjabi = 'pa';
-    $.punjabi_india = 'pa_IN';
-    $.polish = 'pl';
-    $.polish_poland = 'pl_PL';
-    $.pashto = 'ps';
-    $.pashto_afghanistan = 'ps_AR';
-    $.portuguese = 'pt';
-    $.portuguese_brazil = 'pt_BR';
-    $.portuguese_portugal = 'pt_PT';
-    $.quechua = 'qu';
-    $.quechua_bolivia = 'qu_BO';
-    $.quechua_ecuador = 'qu_EC';
-    $.quechua_peru = 'qu_PE';
-    $.romanian = 'ro';
-    $.romanian_romania = 'ro_RO';
-    $.russian = 'ru';
-    $.russian_russia = 'ru_RU';
-    $.sanskrit = 'sa';
-    $.sanskrit_india = 'sa_IN';
-    $.sami_northern = 'se';
-    $.sami_northern_finland = 'se_FI';
-    $.sami_skolt_finland = 'se_FI';
-    $.sami_inari_finland = 'se_FI';
-    $.sami_northern_norway = 'se_NO';
-    $.sami_lule_norway = 'se_NO';
-    $.sami_southern_norway = 'se_NO';
-    $.sami_northern_sweden = 'se_SE';
-    $.sami_lule_sweden = 'se_SE';
-    $.sami_southern_sweden = 'se_SE';
-    $.slovak = 'sk';
-    $.slovak_slovakia = 'sk_SK';
-    $.slovenian = 'sl';
-    $.slovenian_slovenia = 'sl_SI';
-    $.albanian = 'sq';
-    $.albanian_albania = 'sq_AL';
-    $.serbian_latin_bosnia_and_herzegovina = 'sr_BA';
-    $.serbian_cyrillic_bosnia_and_herzegovina = 'sr_BA';
-    $.serbian_latin_serbia_and_montenegro = 'sr_SP';
-    $.serbian_cyrillic_serbia_and_montenegro = 'sr_SP';
-    $.swedish = 'sv';
-    $.swedish_finland = 'sv_FI';
-    $.swedish_sweden = 'sv_SE';
-    $.swahili = 'sw';
-    $.swahili_kenya = 'sw_KE';
-    $.syriac = 'syr';
-    $.syriac_syria = 'syr_SY';
-    $.tamil = 'ta';
-    $.tamil_india = 'ta_IN';
-    $.telugu = 'te';
-    $.telugu_india = 'te_IN';
-    $.thai = 'th';
-    $.thai_thailand = 'th_TH';
-    $.tagalog = 'tl';
-    $.tagalog_philippines = 'tl_PH';
-    $.tswana = 'tn';
-    $.tswana_south_africa = 'tn_ZA';
-    $.turkish = 'tr';
-    $.turkish_turkey = 'tr_TR';
-    $.tatar = 'tt';
-    $.tatar_russia = 'tt_RU';
-    $.tsonga = 'ts';
-    $.ukrainian = 'uk';
-    $.ukrainian_ukraine = 'uk_UA';
-    $.urdu = 'ur';
-    $.urdu_islamic_republic_of_pakistan = 'ur_PK';
-    $.uzbek_latin = 'uz';
-    $.uzbek_latin_uzbekistan = 'uz_UZ';
-    $.uzbek_cyrillic_uzbekistan = 'uz_UZ';
-    $.vietnamese = 'vi';
-    $.vietnamese_viet_nam = 'vi_VN';
-    $.xhosa = 'xh';
-    $.xhosa_south_africa = 'xh_ZA';
-    $.chinese = 'zh';
-    $.chinese_s = 'zh_CN';
-    $.chinese_hong_kong = 'zh_HK';
-    $.chinese_macau = 'zh_MO';
-    $.chinese_singapore = 'zh_SG';
-    $.chinese_t = 'zh_TW';
-    $.zulu = 'zu';
-    $.zulu_south_africa = 'zu_ZA';
+  Game_System.prototype.isLangType = function (lang) {
+    lang = RS.Localization.findLanguage(new RegExp(`^${lang}`, 'ig'));
+    return $dataSystem.locale.match(RS.Localization.lang[lang]);
+  };
 
-    // Set up the default language code.
-    $.parent.Params.locale = (function () {
-        const type = $.parent.Params.__defaultLang.toLowerCase();
-        const languageCollection = $[type];
-        return languageCollection || 'en';
-    })();
+  Game_System.prototype.isSupportedLanguage = function (locale) {
+    return $.parent.Params.supportedLanguages.indexOf(locale) !== -1;
+  };
 
-    $.parent.Params.isDirty = false;
+  //============================================================================
+  // DataManager
+  //============================================================================
 
-    //============================================================================
-    // RS.Localization
-    //============================================================================
-
-    RS.Localization.createSwapLangList = function () {
-        const typeArray = Object.keys(this.lang);
-        const temp = [];
-        typeArray.forEach(key => {
-            const value = $[i];
-            temp[value] = key;
-        });
-        return temp;
-    };
-
-    RS.Localization.hasOwnLanguage = function (langType) {
-        return langType.toLowerCase() in this.lang;
-    };
-
-    RS.Localization.findLanguage = function (reg) {
-        try {
-            let arr = Object.keys(this.lang);
-            arr = arr.filter(i => {
-                return !!i.match(reg);
-            });
-            if (arr !== 0) {
-                return arr[0];
-            }
-
-            return 'english';
-        } catch (err) {
-            throw new Error('Cannot find Language Type');
-        }
-    };
-
-    RS.Localization.setSL = function (value) {
-        if ($dataSystem) {
-            $dataSystem.locale = value;
-        }
-        $.parent.Params.locale = value;
-    };
-
-    RS.Localization.changeSystemLanguage = function (reg) {
-        const lang = RS.Localization.findLanguage(reg.toLowerCase());
-        this.setSL(RS.Localization.lang[lang]);
-        SceneManager.push(Scene_LoadDatabase);
-    };
-
-    //============================================================================
-    // Game_System
-    //============================================================================
-
-    const alias_Game_System_initialize = Game_System.prototype.initialize;
-    Game_System.prototype.initialize = function () {
-        alias_Game_System_initialize.call(this);
-        RS.Localization.changeSystemLanguage(
-            $.parent.Params.__defaultLang.toLowerCase()
-        );
-    };
-
-    Game_System.prototype.isEnglish = function () {
-        return $dataSystem.locale.match(/^en/);
-    };
-
-    Game_System.prototype.isLangType = function (lang) {
-        lang = RS.Localization.findLanguage(new RegExp(`^${lang}`, 'ig'));
-        return $dataSystem.locale.match(RS.Localization.lang[lang]);
-    };
-
-    Game_System.prototype.isSupportedLanguage = function (locale) {
-        return $.parent.Params.supportedLanguages.indexOf(locale) !== -1;
-    };
-
-    //============================================================================
-    // DataManager
-    //============================================================================
-
-    /**
-     * @override
-     * @method loadDataFile
-     * @param {String} name
-     * @param {String} src
-     */
-    DataManager.loadDataFile = function (name, src) {
-        const xhr = new XMLHttpRequest();
-        let url = `data/${src}`;
-        let locale = $.parent.Params.locale.slice(0, 2);
-        if ($.parent.Params.isUsedSystemLanguage) {
-            locale = navigator.language.slice(0, 2);
-        }
-        if ($.parent.Params.supportedLanguages.indexOf(locale) !== -1) {
-            if (!src.contains('Test_') && !locale.contains('en')) {
-                url = `data/${locale}/${src}`;
-            } else if (locale.contains('en')) {
-                url = `data/${src}`;
-            }
-        }
-        xhr.open('GET', url);
-        xhr.overrideMimeType('application/json');
-        xhr.onload = function () {
-            if (xhr.status < 400) {
-                if (Imported.RS_UnifyAllPlugins) {
-                    // RS_UnifyAllPlugins do not use global variables and then it is used inside an unique scope.
-                    eval(`${name} = JSON.parse(xhr.responseText);`);
-                    eval(`DataManager.onLoad(${name})`);
-                } else {
-                    window[name] = JSON.parse(xhr.responseText);
-                    DataManager.onLoad(window[name]);
-                }
-            }
-        };
-        xhr.onerror = function () {
-            DataManager._errorUrl = DataManager._errorUrl || url;
-        };
+  /**
+   * @override
+   * @method loadDataFile
+   * @param {String} name
+   * @param {String} src
+   */
+  DataManager.loadDataFile = function (name, src) {
+    const xhr = new XMLHttpRequest();
+    let url = `data/${src}`;
+    let locale = $.parent.Params.locale.slice(0, 2);
+    if ($.parent.Params.isUsedSystemLanguage) {
+      locale = navigator.language.slice(0, 2);
+    }
+    if ($.parent.Params.supportedLanguages.indexOf(locale) !== -1) {
+      if (!src.contains('Test_') && !locale.contains('en')) {
+        url = `data/${locale}/${src}`;
+      } else if (locale.contains('en')) {
+        url = `data/${src}`;
+      }
+    }
+    xhr.open('GET', url);
+    xhr.overrideMimeType('application/json');
+    xhr.onload = function () {
+      if (xhr.status < 400) {
         if (Imported.RS_UnifyAllPlugins) {
-            eval(`${name} = null;`);
+          // RS_UnifyAllPlugins do not use global variables and then it is used inside an unique scope.
+          eval(`${name} = JSON.parse(xhr.responseText);`);
+          eval(`DataManager.onLoad(${name})`);
         } else {
-            window[name] = null;
+          window[name] = JSON.parse(xhr.responseText);
+          DataManager.onLoad(window[name]);
         }
-        xhr.send();
+      }
     };
-
-    //============================================================================
-    // Scene_Boot
-    //============================================================================
-
-    const _Scene_Boot_isReady = Scene_Boot.prototype.isReady;
-    Scene_Boot.prototype.isReady = function () {
-        const ret = _Scene_Boot_isReady.call(this);
-        if (ret) {
-            $dataSystem.locale = $.parent.Params.locale;
-        }
-        return ret;
+    xhr.onerror = function () {
+      DataManager._errorUrl = DataManager._errorUrl || url;
     };
+    if (Imported.RS_UnifyAllPlugins) {
+      eval(`${name} = null;`);
+    } else {
+      window[name] = null;
+    }
+    xhr.send();
+  };
 
-    //============================================================================
-    // Scene_LoadDatabase
-    //============================================================================
+  //============================================================================
+  // Scene_Boot
+  //============================================================================
 
-    Scene_LoadDatabase.prototype = Object.create(Scene_Base.prototype);
-    Scene_LoadDatabase.prototype.constructor = Scene_LoadDatabase;
+  const _Scene_Boot_isReady = Scene_Boot.prototype.isReady;
+  Scene_Boot.prototype.isReady = function () {
+    const ret = _Scene_Boot_isReady.call(this);
+    if (ret) {
+      $dataSystem.locale = $.parent.Params.locale;
+    }
+    return ret;
+  };
 
-    Scene_LoadDatabase.prototype.initialize = function () {
-        Scene_Base.prototype.initialize.call(this);
-        this._startDate = Date.now();
-        if ($dataSystem) {
-            $dataSystem.changeLanguage = true;
-        }
-    };
+  //============================================================================
+  // Scene_LoadDatabase
+  //============================================================================
 
-    Scene_LoadDatabase.prototype.create = function () {
-        Scene_Base.prototype.create.call(this);
-        this.createBackground();
-        $dataActors = null;
-        $dataClasses = null;
-        $dataSkills = null;
-        $dataItems = null;
-        $dataWeapons = null;
-        $dataArmors = null;
-        $dataEnemies = null;
-        $dataTroops = null;
-        $dataStates = null;
-        $dataAnimations = null;
-        $dataTilesets = null;
-        $dataCommonEvents = null;
-        $dataSystem = null;
-        $dataMapInfos = null;
-        $dataMap = null;
-        DataManager.loadDatabase();
-    };
+  Scene_LoadDatabase.prototype = Object.create(Scene_Base.prototype);
+  Scene_LoadDatabase.prototype.constructor = Scene_LoadDatabase;
 
-    Scene_LoadDatabase.prototype.createBackground = function () {
-        this._backgroundSprite = new Sprite();
-        this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
-        this.addChild(this._backgroundSprite);
-    };
+  Scene_LoadDatabase.prototype.initialize = function () {
+    Scene_Base.prototype.initialize.call(this);
+    this._startDate = Date.now();
+    if ($dataSystem) {
+      $dataSystem.changeLanguage = true;
+    }
+  };
 
-    Scene_LoadDatabase.prototype.isReady = function () {
-        if (Scene_Base.prototype.isReady.call(this)) {
-            return DataManager.isDatabaseLoaded();
-        }
+  Scene_LoadDatabase.prototype.create = function () {
+    Scene_Base.prototype.create.call(this);
+    this.createBackground();
+    $dataActors = null;
+    $dataClasses = null;
+    $dataSkills = null;
+    $dataItems = null;
+    $dataWeapons = null;
+    $dataArmors = null;
+    $dataEnemies = null;
+    $dataTroops = null;
+    $dataStates = null;
+    $dataAnimations = null;
+    $dataTilesets = null;
+    $dataCommonEvents = null;
+    $dataSystem = null;
+    $dataMapInfos = null;
+    $dataMap = null;
+    DataManager.loadDatabase();
+  };
 
-        return false;
-    };
+  Scene_LoadDatabase.prototype.createBackground = function () {
+    this._backgroundSprite = new Sprite();
+    this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
+    this.addChild(this._backgroundSprite);
+  };
 
-    Scene_LoadDatabase.prototype.start = function () {
-        Scene_Base.prototype.start.call(this);
-        if ($dataSystem) {
-            $dataSystem.locale = $.parent.Params.locale;
-            if (!$dataSystem.changeLanguage) {
-                $.parent.Params.isDirty = true;
-            }
-        }
-        this.updateDocumentTitle();
+  Scene_LoadDatabase.prototype.isReady = function () {
+    if (Scene_Base.prototype.isReady.call(this)) {
+      return DataManager.isDatabaseLoaded();
+    }
 
-        if (Imported['SumRndmDde Battle Status Customizer']) {
-            SRD.BattleStatusCustomizer.loadNotetags();
-        }
+    return false;
+  };
 
-        SceneManager.pop();
-    };
+  Scene_LoadDatabase.prototype.start = function () {
+    Scene_Base.prototype.start.call(this);
+    if ($dataSystem) {
+      $dataSystem.locale = $.parent.Params.locale;
+      if (!$dataSystem.changeLanguage) {
+        $.parent.Params.isDirty = true;
+      }
+    }
+    this.updateDocumentTitle();
 
-    Scene_LoadDatabase.prototype.updateDocumentTitle = function () {
-        document.title = $dataSystem.gameTitle;
-    };
+    if (Imported['SumRndmDde Battle Status Customizer']) {
+      SRD.BattleStatusCustomizer.loadNotetags();
+    }
 
-    const alias_Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
-    Scene_Map.prototype.onMapLoaded = function () {
-        if (!this._transfer) {
-            if ($.parent.Params.isDirty) {
-                $gameMap.setup($gameMap._mapId);
-                $gameParty.onChangeLanguage();
-                $.parent.Params.isDirty = false;
-            }
-        }
-        alias_Scene_Map_onMapLoaded.call(this);
-    };
+    SceneManager.pop();
+  };
 
-    Game_Party.prototype.onChangeLanguage = function () {
-        this.members().forEach(function (member) {
-            member.onChangeLanguage(member.actorId());
-        }, this);
-    };
+  Scene_LoadDatabase.prototype.updateDocumentTitle = function () {
+    document.title = $dataSystem.gameTitle;
+  };
 
-    Game_Actor.prototype.onChangeLanguage = function (actorId) {
-        const actor = $dataActors[actorId];
-        this._name = actor.name;
-        this._nickname = actor.nickname;
-        this._profile = actor.profile;
-    };
+  const alias_Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
+  Scene_Map.prototype.onMapLoaded = function () {
+    if (!this._transfer) {
+      if ($.parent.Params.isDirty) {
+        $gameMap.setup($gameMap._mapId);
+        $gameParty.onChangeLanguage();
+        $.parent.Params.isDirty = false;
+      }
+    }
+    alias_Scene_Map_onMapLoaded.call(this);
+  };
 
-    //============================================================================
-    // Game_Interpreter
-    //============================================================================
+  Game_Party.prototype.onChangeLanguage = function () {
+    this.members().forEach(function (member) {
+      member.onChangeLanguage(member.actorId());
+    }, this);
+  };
 
-    const alias_Game_Interpreter_pluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === 'Localization' || command === '언어설정') {
-            switch (args[0].toLowerCase()) {
-                case 'change':
-                case '변경':
-                    RS.Localization.changeSystemLanguage(args[1]);
-                    break;
-                default:
-                    RS.Localization.changeSystemLanguage(args[1]);
-            }
-        }
-    };
+  Game_Actor.prototype.onChangeLanguage = function (actorId) {
+    const actor = $dataActors[actorId];
+    this._name = actor.name;
+    this._nickname = actor.nickname;
+    this._profile = actor.profile;
+  };
+
+  //============================================================================
+  // Game_Interpreter
+  //============================================================================
+
+  const alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'Localization' || command === '언어설정') {
+      switch (args[0].toLowerCase()) {
+        case 'change':
+        case '변경':
+          RS.Localization.changeSystemLanguage(args[1]);
+          break;
+        default:
+          RS.Localization.changeSystemLanguage(args[1]);
+      }
+    }
+  };
 })(RS.Localization.lang);

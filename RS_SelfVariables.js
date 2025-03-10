@@ -273,260 +273,251 @@ var RS = RS || {};
 RS.SelfVariables = {};
 
 (() => {
-    "use strict";
+  'use strict';
 
-    let parameters = $plugins.filter((i) => {
-        return i.description.contains("<RS_SelfVariables>");
-    });
+  let parameters = $plugins.filter(i => {
+    return i.description.contains('<RS_SelfVariables>');
+  });
 
-    parameters = parameters.length > 0 && parameters[0].parameters;
+  parameters = parameters.length > 0 && parameters[0].parameters;
 
-    RS.SelfVariables.notifyingVarNum = Number(
-        parameters["notifying variable number"] || 1
-    );
-    RS.SelfVariables.saveFlags = Boolean(
-        parameters["Save notifying variable"] === "true"
-    );
-    RS.SelfVariables.nonEventPointer = 10000;
-    RS.SelfVariables.length = 10000;
-    RS.SelfVariables.battleFlags = 15000;
+  RS.SelfVariables.notifyingVarNum = Number(
+    parameters['notifying variable number'] || 1
+  );
+  RS.SelfVariables.saveFlags = Boolean(
+    parameters['Save notifying variable'] === 'true'
+  );
+  RS.SelfVariables.nonEventPointer = 10000;
+  RS.SelfVariables.length = 10000;
+  RS.SelfVariables.battleFlags = 15000;
 
-    /**
-     * @class Game_SelfVariables
-     */
-    class Game_SelfVariables extends Game_Variables {
-        constructor() {
-            super();
-        }
-
-        clear() {
-            this._data = {};
-        }
-
-        setValue(variableId, value) {
-            if (typeof value === "number") {
-                value = Math.floor(value);
-            }
-            this._data[variableId] = value;
-            this.onChange();
-        }
-
-        value(variableId) {
-            return this._data[variableId] || 0;
-        }
-
-        getCurrentMapPointerKeys() {
-            const keys = Object.keys(this._data);
-            const mapId = $gameMap.mapId();
-            const result = keys.filter((key) => {
-                return key[0] === mapId && key[1] >= RS.SelfVariables.length;
-            });
-            return result;
-        }
+  /**
+   * @class Game_SelfVariables
+   */
+  class Game_SelfVariables extends Game_Variables {
+    constructor() {
+      super();
     }
 
-    window.Game_SelfVariables = Game_SelfVariables;
+    clear() {
+      this._data = {};
+    }
 
-    Object.assign(RS.SelfVariables, {
-        makeKey(value) {
-            const self = $gameMap._interpreter;
-            const mapId = $gameMap.mapId();
-            const isBattleEvent = $gameParty.inBattle();
-            const isReadyNormalEvent =
-                self && self._mapId !== 0 && self._eventId !== 0;
+    setValue(variableId, value) {
+      if (typeof value === 'number') {
+        value = Math.floor(value);
+      }
+      this._data[variableId] = value;
+      this.onChange();
+    }
 
-            // Notice that the variable named 'key' is the unique value during the game.
-            let key;
+    value(variableId) {
+      return this._data[variableId] || 0;
+    }
 
-            if (isReadyNormalEvent) {
-                key = [self._mapId, self._eventId, value];
-            } else {
-                // In case of Battle Events
-                if (isBattleEvent) {
-                    key = [mapId, this.battleFlags++, value || 0];
-                } else {
-                    // In case of Common Events
-                    key = [mapId, this.nonEventPointer++, value || 0];
-                }
-            }
-            return key;
-        },
+    getCurrentMapPointerKeys() {
+      const keys = Object.keys(this._data);
+      const mapId = $gameMap.mapId();
+      const result = keys.filter(key => {
+        return key[0] === mapId && key[1] >= RS.SelfVariables.length;
+      });
+      return result;
+    }
+  }
 
-        setValue(key, value) {
-            if (typeof key === "number" || key instanceof Number) {
-                key = this.makeKey(key);
-            }
-            this.setEventProperties(key, value);
+  window.Game_SelfVariables = Game_SelfVariables;
 
-            $gameSelfVariables.setValue(key, value);
-            return key;
-        },
+  Object.assign(RS.SelfVariables, {
+    makeKey(value) {
+      const self = $gameMap._interpreter;
+      const mapId = $gameMap.mapId();
+      const isBattleEvent = $gameParty.inBattle();
+      const isReadyNormalEvent =
+        self && self._mapId !== 0 && self._eventId !== 0;
 
-        value(key) {
-            if (typeof key === "number" || key instanceof Number) {
-                key = this.makeKey(key);
-            }
+      // Notice that the variable named 'key' is the unique value during the game.
+      let key;
 
-            this.onChangeBuiltInVariable();
-            const value = $gameSelfVariables.value(key);
-
-            if (this.saveFlags) {
-                $gameVariables.setValue(this.notifyingVarNum, value);
-            }
-
-            return value;
-        },
-
-        clearPointer() {
-            this.nonEventPointer = 10000;
-            this.battleFlags = 15000;
-        },
-
-        setEventProperties(key, newValue) {
-            if ($gameParty.inBattle()) return false;
-            if (!this.isValidEventKey(key)) {
-                // console.warn(key + " is invalid in an event");
-                // console.warn('or '+ key + " value is defined only in an event object, so you cannot change this");
-                return false;
-            }
-
-            const interpreter = $gameMap._interpreter;
-            if (!self) {
-                console.warn(
-                    "It does not have a instance for the game interpreter."
-                );
-                return false;
-            }
-
-            const eventId = interpreter._eventId;
-            let event = undefined;
-
-            if (eventId > 0) {
-                event = $gameMap.event(eventId || 0);
-            }
-
-            if (!event) {
-                console.warn("It couldn't find the event object.");
-                return false;
-            }
-
-            switch (key) {
-                case "direction":
-                case "moveSpeed":
-                case "moveFrequency":
-                case "opacity":
-                    const fName = "set".concat(
-                        key[0].toUpperCase() + key.substr(1)
-                    );
-                    let fc = event[fName];
-                    if (typeof f === "function") fc(newValue);
-                    break;
-                case "x":
-                    event.locate(newValue, event.y);
-                    break;
-                case "y":
-                    event.locate(event.x, newValue);
-                    break;
-            }
-
-            return true;
-        },
-
-        isValidEventKey(key) {
-            const keys = [
-                "x",
-                "y",
-                "direction",
-                "tileId",
-                "moveSpeed",
-                "moveFrequency",
-                "opacity",
-            ];
-            return keys.contains(key);
-        },
-
-        onChangeBuiltInVariable() {
-            const isBattleEvent = $gameParty.inBattle();
-            if (isBattleEvent) return false;
-            const interpreter = $gameMap._interpreter;
-            const eventId = interpreter._eventId;
-            let event = undefined;
-
-            if (eventId > 0) {
-                event = $gameMap.event(eventId);
-            }
-
-            if (event) {
-                this.setValue("x", event.x);
-                this.setValue("y", event.y);
-                this.setValue("id", event.eventId() || eventId);
-                this.setValue("name", event.event().name || "");
-                this.setValue("direction", event.direction());
-                this.setValue("screenX", event.screenX());
-                this.setValue("screenY", event.screenY());
-                this.setValue("screenZ", event.screenZ());
-                this.setValue("moveSpeed", event.moveSpeed());
-                this.setValue("moveFrequency", event.moveFrequency());
-                this.setValue("opacity", event.opacity());
-                this.setValue("characterName", event.characterName());
-                this.setValue("characterIndex", event.characterIndex());
-            }
-        },
-    });
-
-    // Game_Map
-    const alias_Game_Map_setup = Game_Map.prototype.setup;
-    Game_Map.prototype.setup = function (mapId) {
-        alias_Game_Map_setup.call(this, mapId);
-        RS.SelfVariables.clearPointer();
-    };
-
-    // DataManager
-    const alias_DataManager_createGameObjects = DataManager.createGameObjects;
-    DataManager.createGameObjects = function () {
-        alias_DataManager_createGameObjects.call(this);
-        $gameSelfVariables = new Game_SelfVariables();
-    };
-
-    const alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
-    DataManager.makeSaveContents = function () {
-        var contents = alias_DataManager_makeSaveContents.call(this);
-        contents.selfVariables = $gameSelfVariables;
-        return contents;
-    };
-
-    const alias_DataManager_extractSaveContents =
-        DataManager.extractSaveContents;
-    DataManager.extractSaveContents = function (contents) {
-        alias_DataManager_extractSaveContents.call(this, contents);
-        $gameSelfVariables = contents.selfVariables;
-    };
-
-    // Game_Interpreter
-    const alias_Game_Interpreter_pluginCommand =
-        Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        alias_Game_Interpreter_pluginCommand.call(this, command, args);
-        if (command === "GSV") {
-            switch (args[0]) {
-                case "set":
-                    {
-                        const key = RS.SelfVariables.makeKey(
-                            Number(args[1] || 0)
-                        );
-                        const value = Number(args.slice(2).join(" ") || 0);
-                        RS.SelfVariables.setValue(key, value);
-                    }
-                    break;
-                case "get":
-                    {
-                        const key = RS.SelfVariables.makeKey(
-                            Number(args[1] || 0)
-                        );
-                        RS.SelfVariables.value(key);
-                    }
-                    break;
-            }
+      if (isReadyNormalEvent) {
+        key = [self._mapId, self._eventId, value];
+      } else {
+        // In case of Battle Events
+        if (isBattleEvent) {
+          key = [mapId, this.battleFlags++, value || 0];
+        } else {
+          // In case of Common Events
+          key = [mapId, this.nonEventPointer++, value || 0];
         }
-    };
+      }
+      return key;
+    },
+
+    setValue(key, value) {
+      if (typeof key === 'number' || key instanceof Number) {
+        key = this.makeKey(key);
+      }
+      this.setEventProperties(key, value);
+
+      $gameSelfVariables.setValue(key, value);
+      return key;
+    },
+
+    value(key) {
+      if (typeof key === 'number' || key instanceof Number) {
+        key = this.makeKey(key);
+      }
+
+      this.onChangeBuiltInVariable();
+      const value = $gameSelfVariables.value(key);
+
+      if (this.saveFlags) {
+        $gameVariables.setValue(this.notifyingVarNum, value);
+      }
+
+      return value;
+    },
+
+    clearPointer() {
+      this.nonEventPointer = 10000;
+      this.battleFlags = 15000;
+    },
+
+    setEventProperties(key, newValue) {
+      if ($gameParty.inBattle()) return false;
+      if (!this.isValidEventKey(key)) {
+        // console.warn(key + " is invalid in an event");
+        // console.warn('or '+ key + " value is defined only in an event object, so you cannot change this");
+        return false;
+      }
+
+      const interpreter = $gameMap._interpreter;
+      if (!self) {
+        console.warn('It does not have a instance for the game interpreter.');
+        return false;
+      }
+
+      const eventId = interpreter._eventId;
+      let event = undefined;
+
+      if (eventId > 0) {
+        event = $gameMap.event(eventId || 0);
+      }
+
+      if (!event) {
+        console.warn("It couldn't find the event object.");
+        return false;
+      }
+
+      switch (key) {
+        case 'direction':
+        case 'moveSpeed':
+        case 'moveFrequency':
+        case 'opacity':
+          const fName = 'set'.concat(key[0].toUpperCase() + key.substr(1));
+          let fc = event[fName];
+          if (typeof f === 'function') fc(newValue);
+          break;
+        case 'x':
+          event.locate(newValue, event.y);
+          break;
+        case 'y':
+          event.locate(event.x, newValue);
+          break;
+      }
+
+      return true;
+    },
+
+    isValidEventKey(key) {
+      const keys = [
+        'x',
+        'y',
+        'direction',
+        'tileId',
+        'moveSpeed',
+        'moveFrequency',
+        'opacity',
+      ];
+      return keys.contains(key);
+    },
+
+    onChangeBuiltInVariable() {
+      const isBattleEvent = $gameParty.inBattle();
+      if (isBattleEvent) return false;
+      const interpreter = $gameMap._interpreter;
+      const eventId = interpreter._eventId;
+      let event = undefined;
+
+      if (eventId > 0) {
+        event = $gameMap.event(eventId);
+      }
+
+      if (event) {
+        this.setValue('x', event.x);
+        this.setValue('y', event.y);
+        this.setValue('id', event.eventId() || eventId);
+        this.setValue('name', event.event().name || '');
+        this.setValue('direction', event.direction());
+        this.setValue('screenX', event.screenX());
+        this.setValue('screenY', event.screenY());
+        this.setValue('screenZ', event.screenZ());
+        this.setValue('moveSpeed', event.moveSpeed());
+        this.setValue('moveFrequency', event.moveFrequency());
+        this.setValue('opacity', event.opacity());
+        this.setValue('characterName', event.characterName());
+        this.setValue('characterIndex', event.characterIndex());
+      }
+    },
+  });
+
+  // Game_Map
+  const alias_Game_Map_setup = Game_Map.prototype.setup;
+  Game_Map.prototype.setup = function (mapId) {
+    alias_Game_Map_setup.call(this, mapId);
+    RS.SelfVariables.clearPointer();
+  };
+
+  // DataManager
+  const alias_DataManager_createGameObjects = DataManager.createGameObjects;
+  DataManager.createGameObjects = function () {
+    alias_DataManager_createGameObjects.call(this);
+    $gameSelfVariables = new Game_SelfVariables();
+  };
+
+  const alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
+  DataManager.makeSaveContents = function () {
+    var contents = alias_DataManager_makeSaveContents.call(this);
+    contents.selfVariables = $gameSelfVariables;
+    return contents;
+  };
+
+  const alias_DataManager_extractSaveContents = DataManager.extractSaveContents;
+  DataManager.extractSaveContents = function (contents) {
+    alias_DataManager_extractSaveContents.call(this, contents);
+    $gameSelfVariables = contents.selfVariables;
+  };
+
+  // Game_Interpreter
+  const alias_Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    alias_Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === 'GSV') {
+      switch (args[0]) {
+        case 'set':
+          {
+            const key = RS.SelfVariables.makeKey(Number(args[1] || 0));
+            const value = Number(args.slice(2).join(' ') || 0);
+            RS.SelfVariables.setValue(key, value);
+          }
+          break;
+        case 'get':
+          {
+            const key = RS.SelfVariables.makeKey(Number(args[1] || 0));
+            RS.SelfVariables.value(key);
+          }
+          break;
+      }
+    }
+  };
 })();
