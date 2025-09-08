@@ -659,8 +659,10 @@ RS.Window_KorNameEdit = RS.Window_KorNameEdit || {};
     this._textBox.style.bottom = 0;
 
     // 자동 완성 off
-    var chrome_versions_ = navigator.userAgent.split(/(?:Chrome\/)(.{2})/);
-    if (chrome_versions_ && chrome_versions_[1] >= '69') {
+    var chrome_version_ = Number(
+      navigator.userAgent.split(/(?:Chrome\/)/)[1].split('.')[0],
+    );
+    if (chrome_version_ && !isNaN(chrome_version_) && chrome_version_ >= 69) {
       this._textBox.autocomplete = 'off';
     }
 
